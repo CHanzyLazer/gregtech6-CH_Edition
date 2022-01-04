@@ -20,6 +20,7 @@
 package gregtech.tileentity.energy.converters;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.*;
 
 import java.util.List;
 
@@ -35,6 +36,7 @@ import gregapi.render.IIconContainer;
 import gregapi.render.ITexture;
 import gregapi.tileentity.energy.TileEntityBase11Motor;
 import gregapi.util.UT;
+import gregtechCH.data.LH_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -79,7 +81,7 @@ public class MultiTileEntityTurbineSteam extends TileEntityBase11Motor implement
 	@Override
 	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
 		super.addToolTips(aList, aStack, aF3_H);
-		aList.add(Chat.ORANGE + LH.get(LH.EMITS_USED_STEAM) + " ("+LH.get(LH.FACE_SIDES)+", " + LH.getToolTipEfficiencySimple(mEfficiencyWater) + ")");
+		aList.add(Chat.ORANGE + LH.get(LH.EMITS_USED_STEAM) + " ("+LH.get(LH.FACE_SIDES)+", " + LH_CH.getToolTipEfficiencySimple(mEfficiencyWater) + ")");
 	}
 	
 	@Override

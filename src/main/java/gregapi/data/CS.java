@@ -1213,10 +1213,6 @@ public class CS {
 	, NBT_CHEAP_OVERCLOCKING        = "gt.cheap.overclocking"       // Boolean
 	, NBT_NO_CONSTANT_POWER         = "gt.no.constant.power"        // Boolean
 	, NBT_EFFICIENCY                = "gt.eff"                      // Short from 0 to 10000 describing the Efficiency of a Generator or Converter.
-
-	, NBT_EFFICIENCY_CH             = "gtch.eff"                    // Short from 0 to 10000 describing the global Efficiency. CHanzy
-	, NBT_EFFICIENCY_WATER          = "gtch.eff.water"              // Short from 0 to 10000 describing the water Efficiency. CHanzy
-
 	, NBT_MULTIPLIER                = "gt.multiplier"               // Number
 	, NBT_INV_SIZE                  = "gt.invsize"                  // Short
 	, NBT_INV_LIST                  = "gt.invlist"                  // NBT List
@@ -1295,8 +1291,6 @@ public class CS {
 	, NBT_INPUT_AU                  = "gt.input.au"                 // Long containing a specified Energy Variable.
 	, NBT_INPUT_MJ                  = "gt.input.mj"                 // Long containing a specified Energy Variable.
 	, NBT_INPUT_RF                  = "gt.input.rf"                 // Long containing a specified Energy Variable.
-
-	, NBT_INPUT_REC                 = "gtch.input.rec"              // Recommend input energy, for OmniOcular usage. CHanzy
 	
 	, NBT_OUTPUT                    = "gt.output"                   // Long containing a generic Energy Variable.
 	, NBT_OUTPUT_MIN                = "gt.output.min"               // Long containing a generic Energy Variable.
@@ -1310,8 +1304,6 @@ public class CS {
 	, NBT_OUTPUT_AU                 = "gt.output.au"                // Long containing a specified Energy Variable.
 	, NBT_OUTPUT_MJ                 = "gt.output.mj"                // Long containing a specified Energy Variable.
 	, NBT_OUTPUT_RF                 = "gt.output.rf"                // Long containing a specified Energy Variable.
-
-	, NBT_OUTPUT_REC                = "gtch.output.rec"              // Recommend input energy, for OmniOcular usage. CHanzy
 
 	, NBT_ENERGY                    = "gt.energy"                   // Long containing a generic Energy Variable.
 	, NBT_ENERGY_EU                 = "gt.energy.eu"                // Long containing a specified Energy Variable.
@@ -1879,9 +1871,7 @@ public class CS {
 		LOGS,
 		CONFIG,
 		CONFIG_GT,
-		CONFIG_RECIPES,
-
-		CONFIG_GTCH;
+		CONFIG_RECIPES;
 	}
 
 	/** Configs */
@@ -1896,14 +1886,6 @@ public class CS {
 		OREPROCESSING;
 		
 		@Deprecated public static Config SPECIAL, MACHINES, OVERPOWERED;
-	}
-
-	/** Configs CH */
-	public static class ConfigsGTCH {
-		public static Config
-				MACHINES,
-				REACTORS;
-
 	}
 
 	/** Class Containing MOD ID Strings used in GT, since they are very common Parameters. */

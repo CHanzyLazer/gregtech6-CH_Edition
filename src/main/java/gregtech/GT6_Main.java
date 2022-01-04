@@ -87,6 +87,7 @@ import gregtech.loaders.b.Loader_MultiTileEntities;
 import gregtech.loaders.b.Loader_OreProcessing;
 import gregtech.loaders.b.Loader_Worldgen;
 import gregtech.loaders.c.*;
+import gregtechCH.loaders.b.Loader_MultiTileEntities_CH;
 import ic2.core.Ic2Items;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
@@ -339,7 +340,8 @@ public class GT6_Main extends Abstract_Mod {
 		if (MD.IC2C.mLoaded) for (int i = 0; i <= 6; i++) FMLInterModComms.sendMessage(MD.IC2C.mID, "generatorDrop", ST.save(UT.NBT.makeInt("Key", i), "Value", IL.IC2_Machine.get(1)));
 		
 		ArrayListNoNulls<Runnable> tList = new ArrayListNoNulls<>(F,
-			new Loader_MultiTileEntities(),
+//			new Loader_MultiTileEntities(),
+			new Loader_MultiTileEntities_CH(),
 			new Loader_Books(),
 			new Loader_OreProcessing(),
 			new Loader_Worldgen(),

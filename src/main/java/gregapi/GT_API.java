@@ -20,6 +20,7 @@
 package gregapi;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.*;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -144,6 +145,7 @@ import gregapi.util.CR;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.worldgen.GT6WorldGenerator;
+import gregtechCH.config.ConfigManager_CH;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -285,20 +287,23 @@ public class GT_API extends Abstract_Mod {
 	@Mod.EventHandler
 	public void onPreLoad(FMLPreInitializationEvent aEvent) {
 		DirectoriesGT.CONFIG = aEvent.getModConfigurationDirectory();
-		
+
 		DirectoriesGT.CONFIG_GT = new File(DirectoriesGT.CONFIG, "GregTech");
 		if (!DirectoriesGT.CONFIG_GT.exists()) DirectoriesGT.CONFIG_GT = new File(DirectoriesGT.CONFIG, "gregtech");
 
-		DirectoriesGT.CONFIG_GTCH = new File(DirectoriesGT.CONFIG, "GregTechCH");
-		if (!DirectoriesGT.CONFIG_GTCH.exists()) DirectoriesGT.CONFIG_GTCH = new File(DirectoriesGT.CONFIG, "gregtechCH");
-		
+		//CH config init file
+//		CONFIG_MANAGER_CH.initFile();
+		ConfigManager_CH.initFile();
+//		DirectoriesGTCH.CONFIG_GTCH = new File(DirectoriesGT.CONFIG, "GregTechCH");
+//		if (!DirectoriesGTCH.CONFIG_GTCH.exists()) DirectoriesGTCH.CONFIG_GTCH = new File(DirectoriesGT.CONFIG, "gregtechCH");
+
 		DirectoriesGT.CONFIG_RECIPES = new File(DirectoriesGT.CONFIG, "Recipes");
 		if (!DirectoriesGT.CONFIG_RECIPES.exists()) DirectoriesGT.CONFIG_RECIPES = new File(DirectoriesGT.CONFIG, "recipes");
 		
 		DirectoriesGT.MINECRAFT = DirectoriesGT.CONFIG.getParentFile();
 		
 		DirectoriesGT.LOGS = new File(DirectoriesGT.MINECRAFT, "logs");
-		
+
 		onModPreInit(aEvent);
 	}
 	
@@ -337,8 +342,7 @@ public class GT_API extends Abstract_Mod {
 	@Override
 	@SuppressWarnings({ "resource", "deprecation" })
 	public void onModPreInit2(FMLPreInitializationEvent aEvent) {
-		File
-		tFile = new File(DirectoriesGT.CONFIG_GT, "IDs.cfg");
+		File tFile = new File(DirectoriesGT.CONFIG_GT, "IDs.cfg");
 		if (!tFile.exists()) tFile = new File(DirectoriesGT.CONFIG_GT, "ids.cfg");
 		Config.sConfigFileIDs = new Configuration(tFile); Config.sConfigFileIDs.save();
 		
@@ -351,11 +355,13 @@ public class GT_API extends Abstract_Mod {
 		// Deprecated Config Files.
 		ConfigsGT.OVERPOWERED = ConfigsGT.MACHINES = ConfigsGT.SPECIAL = ConfigsGT.GREGTECH;
 
-		//CH config
-		ConfigsGTCH.MACHINES    = new Config(DirectoriesGT.CONFIG_GTCH, "Machines.cfg");
-		ConfigsGTCH.REACTORS    = new Config(DirectoriesGT.CONFIG_GTCH, "Reactors.cfg");
-		
-		
+		//CH config init config
+//		CONFIG_MANAGER_CH.initConfig();
+		ConfigManager_CH.initConfig();
+//		ConfigsGTCH.MACHINES    = new Config(DirectoriesGTCH.CONFIG_GTCH, "Machines.cfg");
+//		ConfigsGTCH.REACTORS    = new Config(DirectoriesGTCH.CONFIG_GTCH, "Reactors.cfg");
+//		ConfigsGTCH.GTCH        = new Config(DirectoriesGTCH.CONFIG_GTCH, "GTCH.cfg");
+
 		tFile = new File(DirectoriesGT.CONFIG_GT, "Stacksizes.cfg");
 		if (!tFile.exists()) tFile = new File(DirectoriesGT.CONFIG_GT, "stacksizes.cfg");
 		Configuration tStackConfig = new Configuration(tFile);

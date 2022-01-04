@@ -26,7 +26,7 @@
 !/gradle/wrapper/gradle-wrapper.jar
 !/gradle/wrapper/gradle-wrapper.properties
 !/.tool-versions
-!/build/**/*
+/build/*
 
 # Meta Project Files
 !/.meta/**/*
@@ -56,3 +56,5 @@
 !/src/main/resources/**/*.mcmeta
 # Some old scripts in resources...
 !/src/main/resources/**/*.bat
+
+!README-greg.md

@@ -291,9 +291,7 @@ public class GT_API extends Abstract_Mod {
 		DirectoriesGT.CONFIG_GT = new File(DirectoriesGT.CONFIG, "GregTech");
 		if (!DirectoriesGT.CONFIG_GT.exists()) DirectoriesGT.CONFIG_GT = new File(DirectoriesGT.CONFIG, "gregtech");
 
-		//CH config init file
-		ConfigJson_CH.initFile();
-		ConfigForge_CH.initFile();
+		ConfigForge_CH.initFile(); // init GTCH config file in forge
 
 		DirectoriesGT.CONFIG_RECIPES = new File(DirectoriesGT.CONFIG, "Recipes");
 		if (!DirectoriesGT.CONFIG_RECIPES.exists()) DirectoriesGT.CONFIG_RECIPES = new File(DirectoriesGT.CONFIG, "recipes");
@@ -317,8 +315,6 @@ public class GT_API extends Abstract_Mod {
 				tMaterial.mHandleMaterial = OreDictMaterial.get(ConfigsGT.MATERIAL.get(tMaterial.mNameInternal, "ToolHandle", tMaterial.mHandleMaterial.mNameInternal));
 			}
 		}
-		//CH config init config
-		ConfigJson_CH.initConfigMachine();
 
 		onModInit(aEvent);
 	}

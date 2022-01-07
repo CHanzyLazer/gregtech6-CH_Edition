@@ -26,7 +26,7 @@ public class AttributesStrongSteamBoilerTank_CH extends AttributesSteamBoilerTan
         };
         recipeNames = new String[]{
                 " P ", "PwP", "PhP",
-                "P", "OreDictItemData:" + OP.plateDense.mNameInternal + aMaterialName,
+                "P", "OreDictItemData:" + OP.plateDense.mNameInternal + aMaterialName
         };
     }
 }

@@ -38,5 +38,11 @@ public class MA_Machine_CH extends HashMap<String, MA_Machine_CH.GeneralAttribut
         put(ANY.W.mNameInternal,            new GeneralAttributes(7,      16,    10.0F,  10.0F, 10000,  128,    128));
         put(MT.TungstenSteel.mNameInternal, new GeneralAttributes(8,      16,    12.5F,  12.5F, 9000,   128,    128));
         put(MT.Ta4HfC5.mNameInternal,       new GeneralAttributes(9,      16,    12.5F,  12.5F, 10000,  256,    256));
+
+        put(MT.TinAlloy.mNameInternal,      new GeneralAttributes(1,      16,    4.0F,   4.0F,  6666,   20,     20));
+        put(MT.Brass.mNameInternal,         new GeneralAttributes(9,      16,    7.0F,   7.0F,  7500,   24,     24));
+        put(MT.IronWood.mNameInternal,      new GeneralAttributes(10,     16,    4.0F,   4.0F,  10000,  16,     16));
+        put(MT.FierySteel.mNameInternal,    new GeneralAttributes(11,     16,    7.0F,   7.0F,  8500,   64,     64));
+        put(MT.FierySteel.mNameInternal,    new GeneralAttributes(11,     16,    7.0F,   7.0F,  8500,   64,     64));
     }
 }

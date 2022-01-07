@@ -20,6 +20,11 @@ public class DataMachines_CH {
     public Map<String, AttributesSteamBoilerTank_CH> SteamBoilerTank = new LinkedHashMap<>();
     @JSONField(ordinal = 4)
     public Map<String, AttributesStrongSteamBoilerTank_CH> StrongSteamBoilerTank = new LinkedHashMap<>();
+    // Steam Engines
+    @JSONField(ordinal = 5)
+    public Map<String, AttributesSteamEngine_CH> SteamEngine = new LinkedHashMap<>();
+    @JSONField(ordinal = 6)
+    public Map<String, AttributesStrongSteamEngine_CH> StrongSteamEngine = new LinkedHashMap<>();
 
 
     public DataMachines_CH() {}
@@ -53,6 +58,19 @@ public class DataMachines_CH {
         StrongSteamBoilerTank.clear();
         for (String mtName : availableMaterials) {
             StrongSteamBoilerTank.put(mtName, new AttributesStrongSteamBoilerTank_CH(mtName));
+        }
+        // Steam Engines
+        availableMaterials = new String[]{
+                MT.Pb.mNameInternal,        MT.TinAlloy.mNameInternal,      MT.Bronze.mNameInternal,        MT.Brass.mNameInternal, MT.Invar.mNameInternal,
+                MT.IronWood.mNameInternal,  ANY.Steel.mNameInternal,        MT.FierySteel.mNameInternal,    MT.Cr.mNameInternal,    MT.Ti.mNameInternal,
+                ANY.W.mNameInternal,        MT.TungstenSteel.mNameInternal};
+        SteamEngine.clear();
+        for (String mtName : availableMaterials) {
+            SteamEngine.put(mtName, new AttributesSteamEngine_CH(mtName));
+        }
+        StrongSteamEngine.clear();
+        for (String mtName : availableMaterials) {
+            StrongSteamEngine.put(mtName, new AttributesStrongSteamEngine_CH(mtName));
         }
     }
 }

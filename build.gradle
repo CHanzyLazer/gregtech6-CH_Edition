@@ -92,6 +92,7 @@ repositories {
 		name = "sonatype"
 		url = "https://oss.sonatype.org/content/repositories/snapshots/"
 	}
+	mavenCentral()
 	//maven {
 	//	name = "forge"
 	//	url = "https://files.minecraftforge.net/maven"
@@ -191,6 +192,7 @@ dependencies {
 	compile "codechicken:CodeChickenLib:1.7.10-1.1.3.140:dev"
 	compile "codechicken:CodeChickenCore:1.7.10-1.0.7.47:dev"
 	compile "codechicken:NotEnoughItems:1.7.10-1.0.5.120:dev"
+	compile 'com.alibaba:fastjson:1.2.79'            // CHanzy json
 	compileOnly "inventorytweaks:InventoryTweaks:1.59-dev:deobf"
 	compileOnly "net.electricalage.eln:ElectricalAge-jrddunbr:1.16.3:dev"
 	compileOnly "net.sengir.forestry:forestry_1.7.10:4.2.16.64:dev"

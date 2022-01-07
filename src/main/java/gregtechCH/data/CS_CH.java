@@ -1,7 +1,6 @@
 package gregtechCH.data;
 
 import gregapi.config.Config;
-import gregtechCH.config.ConfigManager_CH;
 
 import java.io.File;
 
@@ -16,7 +15,8 @@ public class CS_CH {
 
     public static class DirectoriesGTCH {
         public static File
-                CONFIG_GTCH;
+                CONFIG_GTCH,
+                JSON_GTCH;
     }
 
     /** Configs CH */

@@ -20,7 +20,6 @@
 package gregapi;
 
 import static gregapi.data.CS.*;
-import static gregtechCH.data.CS_CH.*;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -145,7 +144,8 @@ import gregapi.util.CR;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.worldgen.GT6WorldGenerator;
-import gregtechCH.config.ConfigManager_CH;
+import gregtechCH.config.ConfigForge_CH;
+import gregtechCH.config.ConfigJson_CH;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -292,10 +292,8 @@ public class GT_API extends Abstract_Mod {
 		if (!DirectoriesGT.CONFIG_GT.exists()) DirectoriesGT.CONFIG_GT = new File(DirectoriesGT.CONFIG, "gregtech");
 
 		//CH config init file
-//		CONFIG_MANAGER_CH.initFile();
-		ConfigManager_CH.initFile();
-//		DirectoriesGTCH.CONFIG_GTCH = new File(DirectoriesGT.CONFIG, "GregTechCH");
-//		if (!DirectoriesGTCH.CONFIG_GTCH.exists()) DirectoriesGTCH.CONFIG_GTCH = new File(DirectoriesGT.CONFIG, "gregtechCH");
+		ConfigJson_CH.initFile();
+		ConfigForge_CH.initFile();
 
 		DirectoriesGT.CONFIG_RECIPES = new File(DirectoriesGT.CONFIG, "Recipes");
 		if (!DirectoriesGT.CONFIG_RECIPES.exists()) DirectoriesGT.CONFIG_RECIPES = new File(DirectoriesGT.CONFIG, "recipes");
@@ -319,6 +317,9 @@ public class GT_API extends Abstract_Mod {
 				tMaterial.mHandleMaterial = OreDictMaterial.get(ConfigsGT.MATERIAL.get(tMaterial.mNameInternal, "ToolHandle", tMaterial.mHandleMaterial.mNameInternal));
 			}
 		}
+		//CH config init config
+		ConfigJson_CH.initConfigMachine();
+
 		onModInit(aEvent);
 	}
 	
@@ -356,11 +357,7 @@ public class GT_API extends Abstract_Mod {
 		ConfigsGT.OVERPOWERED = ConfigsGT.MACHINES = ConfigsGT.SPECIAL = ConfigsGT.GREGTECH;
 
 		//CH config init config
-//		CONFIG_MANAGER_CH.initConfig();
-		ConfigManager_CH.initConfig();
-//		ConfigsGTCH.MACHINES    = new Config(DirectoriesGTCH.CONFIG_GTCH, "Machines.cfg");
-//		ConfigsGTCH.REACTORS    = new Config(DirectoriesGTCH.CONFIG_GTCH, "Reactors.cfg");
-//		ConfigsGTCH.GTCH        = new Config(DirectoriesGTCH.CONFIG_GTCH, "GTCH.cfg");
+		ConfigForge_CH.initConfig();
 
 		tFile = new File(DirectoriesGT.CONFIG_GT, "Stacksizes.cfg");
 		if (!tFile.exists()) tFile = new File(DirectoriesGT.CONFIG_GT, "stacksizes.cfg");

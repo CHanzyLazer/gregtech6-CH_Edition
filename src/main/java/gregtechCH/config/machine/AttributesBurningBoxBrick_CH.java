@@ -1,10 +1,8 @@
 package gregtechCH.config.machine;
 
-import gregapi.data.MD;
 import gregapi.data.OD;
 import gregapi.data.OP;
 import gregapi.oredict.OreDictMaterial;
-import gregapi.util.ST;
 import gregtechCH.config.ConfigJson_CH;
 
 

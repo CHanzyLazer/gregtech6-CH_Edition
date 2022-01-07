@@ -29,8 +29,8 @@ public class AttributesSteamEngine_CH extends AttributesRecipe_CH {
         nbtCapacity = ConfigJson_CH.MATERIALS_ATTRIBUTES.get(aMaterialName).mNbtOutput * 1000;
         nbtOutput = ConfigJson_CH.MATERIALS_ATTRIBUTES.get(aMaterialName).mNbtOutput / STEAM_PER_EU;
         nbtEfficiency = Objects.equals(aMaterialName, MT.IronWood.mNameInternal) ?
-                (int) UT.Code.units((ConfigJson_CH.MATERIALS_ATTRIBUTES.get(aMaterialName).mNbtEfficiency + 1) / 100, 100, 61, F) * 100:
-                (int) UT.Code.units((ConfigJson_CH.MATERIALS_ATTRIBUTES.get(aMaterialName).mNbtEfficiency + 1) / 100, 100, 60, F) * 100;
+                (int) UT.Code.units(ConfigJson_CH.MATERIALS_ATTRIBUTES.get(aMaterialName).mNbtEfficiency / 100 + 1, 10, 7, F) * 100 :
+                (int) UT.Code.units(ConfigJson_CH.MATERIALS_ATTRIBUTES.get(aMaterialName).mNbtEfficiency / 100 + 1, 10, 6, F) * 100;
 
         recipeObject = new Object[]{
                 "PhP", "SIS", "PwP",

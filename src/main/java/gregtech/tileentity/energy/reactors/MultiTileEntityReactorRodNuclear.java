@@ -20,11 +20,10 @@
 package gregtech.tileentity.energy.reactors;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.config.ConfigForge_CH.*;
 
 import java.util.List;
 
-import gregapi.config.ConfigCategories;
-import gregapi.config.ConfigDataCH;
 import gregapi.data.*;
 import gregapi.render.BlockTextureDefault;
 import gregapi.render.BlockTextureMulti;
@@ -108,7 +107,7 @@ public class MultiTileEntityReactorRodNuclear extends MultiTileEntityReactorRodB
 				break;
 			case 3:
 				aList.add(LH.Chat.CYAN + "When used with Industrial Coolant:");
-				aList.add(LH.Chat.GREEN + "Emission: " + LH.Chat.WHITE + (UT.Code.divup(mNeutronOther * 4 * ConfigDataCH.adjustCoolantOtherMul, ConfigDataCH.adjustCoolantOtherDiv)) + LH.Chat.PURPLE + " Neutrons/t");
+				aList.add(LH.Chat.GREEN + "Emission: " + LH.Chat.WHITE + (UT.Code.divup(mNeutronOther * 4 * DATA_REACTORS.adjustCoolantOtherMul, DATA_REACTORS.adjustCoolantOtherDiv)) + LH.Chat.PURPLE + " Neutrons/t");
 				aList.add(LH.Chat.GREEN + "Self: " + LH.Chat.WHITE + mNeutronSelf * 4 + LH.Chat.PURPLE + " Neutrons/t");
 				aList.add(LH.Chat.GREEN + "Maximum: " + LH.Chat.WHITE + mNeutronMax + LH.Chat.PURPLE + " Neutrons/t");
 				aList.add(LH.Chat.YELLOW + "Factor: " + LH.Chat.WHITE + "1/" + mNeutronDiv * 2);
@@ -154,8 +153,8 @@ public class MultiTileEntityReactorRodNuclear extends MultiTileEntityReactorRodB
 	public int getReactorRodNeutronEmission(MultiTileEntityReactorCore aReactor, int aSlot, ItemStack aStack) {
 		if (FL.Coolant_IC2.is(aReactor.mTanks[0])) {
 			mNeutronOther *= 4;
-			mNeutronOther *= ConfigDataCH.adjustCoolantOtherMul;
-			mNeutronOther = (int)UT.Code.divup(mNeutronOther, ConfigDataCH.adjustCoolantOtherDiv);
+			mNeutronOther *= DATA_REACTORS.adjustCoolantOtherMul;
+			mNeutronOther = (int)UT.Code.divup(mNeutronOther, DATA_REACTORS.adjustCoolantOtherDiv);
 			mNeutronSelf *= 4;
 			mNeutronDiv *= 2;
 		} else if (MT.CO2.mGas.isFluidEqual(aReactor.mTanks[0].getFluid())) {

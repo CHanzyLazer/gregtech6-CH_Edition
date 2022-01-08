@@ -66,17 +66,7 @@ public enum ConfigCategories {
 		massfabamplifier,
 		maceration,
 		rockcrushing,
-		pulverization,
-
-		dieselengine,
-		steamboiler,
-		burningboxessolid,
-		burningboxesliquid,
-		burningboxesgas;
-	}
-
-	public enum Reactors {
-		adjustemission;
+		pulverization;
 	}
 
 	public enum Fuels {

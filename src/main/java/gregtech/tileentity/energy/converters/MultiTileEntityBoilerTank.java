@@ -20,6 +20,7 @@
 package gregtech.tileentity.energy.converters;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -67,7 +68,8 @@ import net.minecraftforge.fluids.IFluidTank;
 public class MultiTileEntityBoilerTank extends TileEntityBase09FacingSingle implements ITileEntityEnergy, ITileEntityFunnelAccessible, ITileEntityGibbl, ITileEntityEnergyDataCapacitor, IFluidHandler, IMTE_RemovedByPlayer, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnEntityCollidedWithBlock {
 	protected byte mBarometer = 0, oBarometer = 0;
 	protected short mEfficiency = 10000, mCoolDownResetTimer = 128;
-	protected long mEnergy = 0, mCapacity = 640000, mOutput = 6400, mInput = 6400;
+	protected long mEnergy = 0, mCapacity = 640000, mOutput = 64, mInput = 64;
+	protected long mInputNow = 0;
 	protected TagData mEnergyTypeAccepted = TD.Energy.HU;
 	protected FluidTankGT[] mTanks = new FluidTankGT[] {new FluidTankGT(4000), new FluidTankGT(64000)};
 
@@ -96,6 +98,7 @@ public class MultiTileEntityBoilerTank extends TileEntityBase09FacingSingle impl
 		super.writeToNBT2(aNBT);
 		UT.NBT.setNumber(aNBT, NBT_ENERGY, mEnergy);
 		if (mEfficiency != 10000) aNBT.setShort(NBT_EFFICIENCY, mEfficiency);
+		if (mInputNow != 0) aNBT.setLong(NBT_OUTPUT_SU, mInputNow);
 		for (int i = 0; i < mTanks.length; i++) mTanks[i].writeToNBT(aNBT, NBT_TANK+"."+i);
 	}
 	
@@ -151,10 +154,15 @@ public class MultiTileEntityBoilerTank extends TileEntityBase09FacingSingle impl
 			long tAmount = mTanks[1].amount() - mTanks[1].capacity() / 2;
 			
 			// Emit Steam
-			if (tAmount > 0) FL.move(mTanks[1], getAdjacentTank(SIDE_UP), Math.min(tAmount > mTanks[1].capacity() / 4 ?
-					mOutput * 2 :
-					mOutput + UT.Code.units(mOutput, mTanks[1].capacity() / 4, tAmount, F), //现在改为连续超频
-					tAmount));
+			if (tAmount > 0) {
+				mInputNow = Math.min(tAmount > mTanks[1].capacity() / 4 ?
+								mOutput * 2 :
+								mOutput + UT.Code.units(mOutput, mTanks[1].capacity() / 4, tAmount, F),
+						tAmount);
+				FL.move(mTanks[1], getAdjacentTank(SIDE_UP), mInputNow);
+			} else {
+				mInputNow = 0;
+			}
 			
 			// Set Barometer
 			mBarometer = (byte)UT.Code.scale(mTanks[1].amount(), mTanks[1].capacity(), 31, F);

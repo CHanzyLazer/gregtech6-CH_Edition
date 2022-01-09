@@ -10,42 +10,44 @@ import java.util.Map;
 public class DataMachines_CH {
     // Burning Boxes
     @JSONField(ordinal = 0)
-    public Map<String, AttributesBurningBoxBrick_CH> BurningBoxesBrick = new LinkedHashMap<>();
+    public Map<String, AttributesBurningBoxBrick_CH> BurningBoxBrick = new LinkedHashMap<>();
     @JSONField(ordinal = 1)
-    public Map<String, AttributesBurningBoxSolid_CH> BurningBoxesSolid = new LinkedHashMap<>();
+    public Map<String, AttributesBurningBoxSolid_CH> BurningBoxSolid = new LinkedHashMap<>();
     @JSONField(ordinal = 2)
-    public Map<String, AttributesDenseBurningBoxSolid_CH> DenseBurningBoxesSolid = new LinkedHashMap<>();
+    public Map<String, AttributesDenseBurningBoxSolid_CH> DenseBurningBoxSolid = new LinkedHashMap<>();
     // Steam Boilers
-    @JSONField(ordinal = 3)
-    public Map<String, AttributesSteamBoilerTank_CH> SteamBoilerTank = new LinkedHashMap<>();
     @JSONField(ordinal = 4)
+    public Map<String, AttributesSteamBoilerTank_CH> SteamBoilerTank = new LinkedHashMap<>();
+    @JSONField(ordinal = 5)
     public Map<String, AttributesStrongSteamBoilerTank_CH> StrongSteamBoilerTank = new LinkedHashMap<>();
     // Steam Engines
-    @JSONField(ordinal = 5)
-    public Map<String, AttributesSteamEngine_CH> SteamEngine = new LinkedHashMap<>();
     @JSONField(ordinal = 6)
+    public Map<String, AttributesSteamEngine_CH> SteamEngine = new LinkedHashMap<>();
+    @JSONField(ordinal = 7)
     public Map<String, AttributesStrongSteamEngine_CH> StrongSteamEngine = new LinkedHashMap<>();
-
+    // Burning Boxes Liquid
+    @JSONField(ordinal = 3)
+    public Map<String, AttributesBurningBoxLiquid_CH> BurningBoxLiquid = new LinkedHashMap<>();
 
     public DataMachines_CH() {}
     public void initDefault() {
         // Burning Boxes
         String[] availableMaterials = {MT.Brick.mNameInternal};
-        BurningBoxesBrick.clear();
+        BurningBoxBrick.clear();
         for (String mtName : availableMaterials) {
-            BurningBoxesBrick.put(mtName, new AttributesBurningBoxBrick_CH(mtName));
+            BurningBoxBrick.put(mtName, new AttributesBurningBoxBrick_CH(mtName));
         }
         availableMaterials = new String[]{
                 MT.Pb.mNameInternal, MT.Bi.mNameInternal, MT.Bronze.mNameInternal,      MT.Invar.mNameInternal, ANY.Steel.mNameInternal,
                 MT.Cr.mNameInternal, MT.Ti.mNameInternal, MT.Netherite.mNameInternal,   ANY.W.mNameInternal,    MT.TungstenSteel.mNameInternal,
                 MT.Ta4HfC5.mNameInternal};
-        BurningBoxesSolid.clear();
+        BurningBoxSolid.clear();
         for (String mtName : availableMaterials) {
-            BurningBoxesSolid.put(mtName, new AttributesBurningBoxSolid_CH(mtName));
+            BurningBoxSolid.put(mtName, new AttributesBurningBoxSolid_CH(mtName));
         }
-        DenseBurningBoxesSolid.clear();
+        DenseBurningBoxSolid.clear();
         for (String mtName : availableMaterials) {
-            DenseBurningBoxesSolid.put(mtName, new AttributesDenseBurningBoxSolid_CH(mtName));
+            DenseBurningBoxSolid.put(mtName, new AttributesDenseBurningBoxSolid_CH(mtName));
         }
         // Steam Boilers
         availableMaterials = new String[]{
@@ -71,6 +73,14 @@ public class DataMachines_CH {
         StrongSteamEngine.clear();
         for (String mtName : availableMaterials) {
             StrongSteamEngine.put(mtName, new AttributesStrongSteamEngine_CH(mtName));
+        }
+        // Burning Boxes Liquid
+        availableMaterials = new String[]{
+                MT.Bronze.mNameInternal,        MT.Invar.mNameInternal,     ANY.Steel.mNameInternal,        MT.Cr.mNameInternal,        MT.Ti.mNameInternal,
+                MT.Netherite.mNameInternal,     MT.W.mNameInternal,         MT.TungstenSteel.mNameInternal, MT.Ta4HfC5.mNameInternal};
+        BurningBoxLiquid.clear();
+        for (String mtName : availableMaterials) {
+            BurningBoxLiquid.put(mtName, new AttributesBurningBoxLiquid_CH(mtName));
         }
     }
 }

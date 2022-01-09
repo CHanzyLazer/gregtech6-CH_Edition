@@ -29,6 +29,17 @@ derivative of it are licensed under the
 - 燃烧室：  除了砖头燃烧室和流化床燃烧室，其余所有燃烧室的产热翻倍
 - 核反应堆：工业冷却剂下燃料棒向周围释放中子数的 4 倍消弱到原来的 3/8，即 1.5 倍
 
+## CH-0.2 (WIP)
+- 配置文件：现在主要配置文件改为用 json 存储，并且实现了配置文件修改合成表，例如对于铅固体燃烧室，对应合成表的属性为：
+`"recipeObject":["PCP","PwP","BBB","B","Blocks:brick_block","P","OreDictItemData:plateLead","C","OreDictItemData:plateDoubleAnyCopper"]`，
+大写字母`"P", "C", "B"`代指物品（没有实际意义），在后面统一定义，物品格式为 `[格式名]:[物品名]`，支持的格式名有：
+- `OreDictItemData`，GT6 添加的矿物词典，可以识别对应材料
+- `OD`，GT6 类 `gregapi.data.OD` 中添加的矿物词典
+- `Blocks`，Minecraft 类 `net.minecraft.init.Blocks` 中添加的原版方块
+- `Items`，Minecraft 类 `net.minecraft.init.Items` 中添加的原版物品
+- `ore`，矿物词典，注意这个不能识别出材料
+- `[任意已加载的 ModID]`，可以添加其他 mod 的物品
+
 # 加入项目
 如果你也有魔改 GT6 的想法，欢迎加入这个项目，目前我发现的指令：
 - `./gradlew setupDevWorkspace setupDecompWorkspace` 设置工作环境

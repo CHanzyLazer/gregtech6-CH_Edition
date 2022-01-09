@@ -104,8 +104,8 @@ public class MultiTileEntityBoilerTank extends TileEntityBase09FacingSingle impl
 	
 	@Override
 	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
-		aList.add(Chat.CYAN     + LH.get(LH.CONVERTS_FROM_X)        + " 1 L " + FL.name(FluidRegistry.WATER, T) + " " + LH.get(LH.CONVERTS_TO_Y) + " 160 L " + FL.name(FL.Steam.make(0), T) + " " + LH.get(LH.CONVERTS_USING_Z) + " 80 " + mEnergyTypeAccepted.getLocalisedNameShort());
-		aList.add(LH.getToolTipEfficiency(UT.Code.units(mEfficiency, 10000, mEfficiencyCH, F)));
+		aList.add(Chat.CYAN     + LH.get(LH.CONVERTS_FROM_X)        + " 1 L " + FL.name(FluidRegistry.WATER, T) + " " + LH.get(LH.CONVERTS_TO_Y) + " " + STEAM_PER_WATER + " L " + FL.name(FL.Steam.make(0), T) + " " + LH.get(LH.CONVERTS_USING_Z) + " " + UT.Code.units(EU_PER_WATER, mEfficiencyCH, 10000, F) + " " + mEnergyTypeAccepted.getLocalisedNameShort());
+		aList.add(LH.getToolTipEfficiency(mEfficiencyCH));
 		aList.add(Chat.GREEN    + LH.get(LH.ENERGY_INPUT)           + ": " + Chat.WHITE + mInput    + " " + mEnergyTypeAccepted.getLocalisedChatNameShort() + Chat.WHITE + "/t ("+LH.get(LH.FACE_ANY)+")");
 		aList.add(Chat.GREEN    + LH.get(LH.ENERGY_CAPACITY)        + ": " + Chat.WHITE + mCapacity + " " + mEnergyTypeAccepted.getLocalisedChatNameShort() + Chat.WHITE);
 		aList.add(Chat.RED      + LH.get(LH.ENERGY_OUTPUT)          + ": " + Chat.WHITE + mOutput	+ " " + TD.Energy.STEAM.getLocalisedChatNameLong()      + Chat.WHITE + "/t ("+LH.get(LH.FACE_TOP)+")");
@@ -124,8 +124,8 @@ public class MultiTileEntityBoilerTank extends TileEntityBase09FacingSingle impl
 		
 		if (aIsServerSide) {
 			// Convert Water to Steam
-			long tConversionsEnergy = Math.min(mTanks[1].capacity() / (16 * STEAM_PER_EU), Math.min(mEnergy, mTanks[0].amount() * EU_PER_WATER));
-			long tConversionsEnergyEff = UT.Code.units(tConversionsEnergy, 10000, UT.Code.units(mEfficiency, 10000, mEfficiencyCH, F), F);
+			long tConversionsEnergy = Math.min(mTanks[1].capacity() / (16 * STEAM_PER_EU), mEnergy);
+			long tConversionsEnergyEff = Math.min(UT.Code.units(tConversionsEnergy, 10000, UT.Code.units(mEfficiency, 10000, mEfficiencyCH, F), F), mTanks[0].amount() * EU_PER_WATER);
 			long tConversionsEff = tConversionsEnergyEff / EU_PER_WATER;
 			tConversionsEnergyEff = tConversionsEff * EU_PER_WATER;
 			tConversionsEnergy = UT.Code.units(tConversionsEnergyEff, UT.Code.units(mEfficiency, 10000, mEfficiencyCH, F), 10000, T); // upround for consuming energy

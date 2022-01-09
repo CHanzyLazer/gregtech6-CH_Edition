@@ -77,7 +77,7 @@ public class DataMachines_CH {
         // Burning Boxes Liquid
         availableMaterials = new String[]{
                 MT.Bronze.mNameInternal,        MT.Invar.mNameInternal,     ANY.Steel.mNameInternal,        MT.Cr.mNameInternal,        MT.Ti.mNameInternal,
-                MT.Netherite.mNameInternal,     MT.W.mNameInternal,         MT.TungstenSteel.mNameInternal, MT.Ta4HfC5.mNameInternal};
+                MT.Netherite.mNameInternal,     ANY.W.mNameInternal,        MT.TungstenSteel.mNameInternal, MT.Ta4HfC5.mNameInternal};
         BurningBoxLiquid.clear();
         for (String mtName : availableMaterials) {
             BurningBoxLiquid.put(mtName, new AttributesBurningBoxLiquid_CH(mtName));

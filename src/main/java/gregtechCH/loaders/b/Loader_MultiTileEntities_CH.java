@@ -1,8 +1,6 @@
 package gregtechCH.loaders.b;
 
 import static gregapi.data.CS.*;
-import static gregapi.util.CR.*;
-import static gregapi.util.CR.ONLY_IF_HAS_OTHER_RECIPES;
 import static gregtechCH.config.ConfigJson_CH.DATA_MACHINES;
 import static gregtechCH.data.CS_CH.*;
 import static gregtechCH.config.ConfigForge_CH.*;
@@ -15,9 +13,7 @@ import gregapi.data.*;
 import gregapi.data.CS.ItemsGT;
 import gregapi.oredict.OreDictItemData;
 import gregapi.oredict.OreDictMaterial;
-import gregapi.util.CR;
 import gregapi.util.OM;
-import gregapi.util.ST;
 import gregapi.util.UT;
 import gregtech.loaders.b.Loader_MultiTileEntities;
 import gregtech.tileentity.energy.converters.*;
@@ -41,8 +37,6 @@ import gregtechCH.config.ConfigCategories_CH;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
 import java.util.*;
@@ -53,7 +47,7 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities implem
         MultiTileEntityRegistry aRegistry = MultiTileEntityRegistry.getRegistry("gt.multitileentity");
 
         MultiTileEntityBlock
-                  aMetal      = MultiTileEntityBlock.getOrCreate(MD.GT.mID, "iron"         , Material.iron             , Block.soundTypeMetal, TOOL_pickaxe, 0, 0, 15, F, F)
+                aMetal      = MultiTileEntityBlock.getOrCreate(MD.GT.mID, "iron"         , Material.iron             , Block.soundTypeMetal, TOOL_pickaxe, 0, 0, 15, F, F)
                 , aMetalChips = MultiTileEntityBlock.getOrCreate(MD.GT.mID, "iron"         , Material.iron             , Block.soundTypeMetal, TOOL_shovel , 0, 0, 15, F, F)
                 , aMetalWires = MultiTileEntityBlock.getOrCreate(MD.GT.mID, "machine"      , MaterialMachines.instance , Block.soundTypeMetal, TOOL_cutter , 0, 0, 15, F, F)
                 , aMachine    = MultiTileEntityBlock.getOrCreate(MD.GT.mID, "machine"      , MaterialMachines.instance , Block.soundTypeMetal, TOOL_wrench , 0, 0, 15, F, F)
@@ -95,24 +89,24 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities implem
 
         // Burning Boxes
         aClass = MultiTileEntityGeneratorBrick.class;
-        for (String mtName : DATA_MACHINES.BurningBoxesBrick.keySet()) {
+        for (String mtName : DATA_MACHINES.BurningBoxBrick.keySet()) {
             aMat = OreDictMaterial.get(mtName);
-            aRegistry.add("Brick Burning Box (Solid)",                      "Burning Boxes",  DATA_MACHINES.BurningBoxesBrick.get(mtName).ID,       1104, aClass, aMat.mToolQuality, DATA_MACHINES.BurningBoxesBrick.get(mtName).stackSize,         aStone,
-                    UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   DATA_MACHINES.BurningBoxesBrick.get(mtName).nbtHardness,        NBT_RESISTANCE,   DATA_MACHINES.BurningBoxesBrick.get(mtName).nbtResistance,        NBT_FUELMAP, FM.Furnace, NBT_EFFICIENCY,  DATA_MACHINES.BurningBoxesBrick.get(mtName).nbtEfficiency,        NBT_OUTPUT,  DATA_MACHINES.BurningBoxesBrick.get(mtName).nbtOutput,         NBT_ENERGY_EMITTED, TD.Energy.HU),
-                    DATA_MACHINES.BurningBoxesBrick.get(mtName).recipeObject);
+            aRegistry.add("Brick Burning Box (Solid)",                      "Burning Boxes",  DATA_MACHINES.BurningBoxBrick.get(mtName).ID,       1104, aClass, aMat.mToolQuality, DATA_MACHINES.BurningBoxBrick.get(mtName).stackSize,         aStone,
+                    UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   DATA_MACHINES.BurningBoxBrick.get(mtName).nbtHardness,        NBT_RESISTANCE,   DATA_MACHINES.BurningBoxBrick.get(mtName).nbtResistance,        NBT_FUELMAP, FM.Furnace, NBT_EFFICIENCY,  DATA_MACHINES.BurningBoxBrick.get(mtName).nbtEfficiency,        NBT_OUTPUT,  DATA_MACHINES.BurningBoxBrick.get(mtName).nbtOutput,         NBT_ENERGY_EMITTED, TD.Energy.HU),
+                    DATA_MACHINES.BurningBoxBrick.get(mtName).recipeObject);
         }
         aClass = MultiTileEntityGeneratorMetal.class;
-        for (String mtName : DATA_MACHINES.BurningBoxesSolid.keySet()) {
+        for (String mtName : DATA_MACHINES.BurningBoxSolid.keySet()) {
             aMat = OreDictMaterial.get(mtName);
-            aRegistry.add("Burning Box (Solid, "+aMat.getLocal()+")",       "Burning Boxes",  DATA_MACHINES.BurningBoxesSolid.get(mtName).ID,       1104, aClass, aMat.mToolQuality, DATA_MACHINES.BurningBoxesSolid.get(mtName).stackSize,         aMachine,
-                    UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   DATA_MACHINES.BurningBoxesSolid.get(mtName).nbtHardness,        NBT_RESISTANCE,   DATA_MACHINES.BurningBoxesSolid.get(mtName).nbtResistance,        NBT_FUELMAP, FM.Furnace, NBT_EFFICIENCY,  DATA_MACHINES.BurningBoxesSolid.get(mtName).nbtEfficiency,        NBT_OUTPUT,  DATA_MACHINES.BurningBoxesSolid.get(mtName).nbtOutput,         NBT_ENERGY_EMITTED, TD.Energy.HU),
-                    DATA_MACHINES.BurningBoxesSolid.get(mtName).recipeObject);
+            aRegistry.add("Burning Box (Solid, "+aMat.getLocal()+")",       "Burning Boxes",  DATA_MACHINES.BurningBoxSolid.get(mtName).ID,       1104, aClass, aMat.mToolQuality, DATA_MACHINES.BurningBoxSolid.get(mtName).stackSize,         aMachine,
+                    UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   DATA_MACHINES.BurningBoxSolid.get(mtName).nbtHardness,        NBT_RESISTANCE,   DATA_MACHINES.BurningBoxSolid.get(mtName).nbtResistance,        NBT_FUELMAP, FM.Furnace, NBT_EFFICIENCY,  DATA_MACHINES.BurningBoxSolid.get(mtName).nbtEfficiency,        NBT_OUTPUT,  DATA_MACHINES.BurningBoxSolid.get(mtName).nbtOutput,         NBT_ENERGY_EMITTED, TD.Energy.HU),
+                    DATA_MACHINES.BurningBoxSolid.get(mtName).recipeObject);
         }
-        for (String mtName : DATA_MACHINES.DenseBurningBoxesSolid.keySet()) {
+        for (String mtName : DATA_MACHINES.DenseBurningBoxSolid.keySet()) {
             aMat = OreDictMaterial.get(mtName);
-            aRegistry.add("Dense Burning Box (Solid, "+aMat.getLocal()+")", "Burning Boxes",  DATA_MACHINES.DenseBurningBoxesSolid.get(mtName).ID,  1104, aClass, aMat.mToolQuality, DATA_MACHINES.DenseBurningBoxesSolid.get(mtName).stackSize,    aMachine,
-                    UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   DATA_MACHINES.DenseBurningBoxesSolid.get(mtName).nbtHardness,   NBT_RESISTANCE,   DATA_MACHINES.DenseBurningBoxesSolid.get(mtName).nbtResistance,   NBT_FUELMAP, FM.Furnace, NBT_EFFICIENCY,  DATA_MACHINES.DenseBurningBoxesSolid.get(mtName).nbtEfficiency,   NBT_OUTPUT,  DATA_MACHINES.DenseBurningBoxesSolid.get(mtName).nbtOutput,    NBT_ENERGY_EMITTED, TD.Energy.HU),
-                    DATA_MACHINES.DenseBurningBoxesSolid.get(mtName).recipeObject);
+            aRegistry.add("Dense Burning Box (Solid, "+aMat.getLocal()+")", "Burning Boxes",  DATA_MACHINES.DenseBurningBoxSolid.get(mtName).ID,  1104, aClass, aMat.mToolQuality, DATA_MACHINES.DenseBurningBoxSolid.get(mtName).stackSize,    aMachine,
+                    UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   DATA_MACHINES.DenseBurningBoxSolid.get(mtName).nbtHardness,   NBT_RESISTANCE,   DATA_MACHINES.DenseBurningBoxSolid.get(mtName).nbtResistance,   NBT_FUELMAP, FM.Furnace, NBT_EFFICIENCY,  DATA_MACHINES.DenseBurningBoxSolid.get(mtName).nbtEfficiency,   NBT_OUTPUT,  DATA_MACHINES.DenseBurningBoxSolid.get(mtName).nbtOutput,    NBT_ENERGY_EMITTED, TD.Energy.HU),
+                    DATA_MACHINES.DenseBurningBoxSolid.get(mtName).recipeObject);
         }
 
         // Steam Boilers
@@ -147,27 +141,12 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities implem
 
         // Liquid Burning Boxes
         aClass = MultiTileEntityGeneratorLiquid.class;
-//      aMat = MT.Pb;                   aRegistry.add("Burning Box (Liquid, "           +aMat.getLocal()+")", "Burning Boxes"                       ,  1400,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   4.0F, NBT_RESISTANCE,   4.0F, NBT_FUELMAP, FM.Burn, NBT_EFFICIENCY,  5000, NBT_OUTPUT,  16, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "IwI", "BBB", 'B', Blocks.brick_block, 'P', OP.plate.dat(aMat), 'I', OP.pipeSmall.dat(aMat), 'C', OP.plateDouble.dat(ANY.Cu));
-//      aMat = MT.Bi;                   aRegistry.add("Burning Box (Liquid, "           +aMat.getLocal()+")", "Burning Boxes"                       ,  1401,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   4.0F, NBT_RESISTANCE,   4.0F, NBT_FUELMAP, FM.Burn, NBT_EFFICIENCY,  4500, NBT_OUTPUT,  20, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "IwI", "BBB", 'B', Blocks.brick_block, 'P', OP.plate.dat(aMat), 'I', OP.pipeSmall.dat(aMat), 'C', OP.plateDouble.dat(ANY.Cu));
-        aMat = MT.Bronze;               toutput = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.burningboxesliquid, "hu_output_(gt6_24)_"  + aMat.mNameLocal, 48);					tefficiency = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.burningboxesliquid, "efficiency_(gt6_7500)_"  + aMat.mNameLocal, 7500);
-        aRegistry.add("Burning Box (Liquid, "           +aMat.getLocal()+")", "Burning Boxes"                       ,  1402,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   7.0F, NBT_RESISTANCE,   7.0F, NBT_FUELMAP, FM.Burn, NBT_EFFICIENCY,  tefficiency, NBT_OUTPUT,  toutput, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "IwI", "BBB", 'B', Blocks.brick_block, 'P', OP.plate.dat(aMat), 'I', OP.pipeSmall.dat(aMat), 'C', OP.plateDouble.dat(ANY.Cu));
-        aMat = MT.Invar;                toutput = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.burningboxesliquid, "hu_output_(gt6_16)_"  + aMat.mNameLocal, 32);					tefficiency = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.burningboxesliquid, "efficiency_(gt6_10000)_" + aMat.mNameLocal, 10000);
-        aRegistry.add("Burning Box (Liquid, "           +aMat.getLocal()+")", "Burning Boxes"                       ,  1403,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   4.0F, NBT_RESISTANCE,   4.0F, NBT_FUELMAP, FM.Burn, NBT_EFFICIENCY,  tefficiency, NBT_OUTPUT,  toutput, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "IwI", "BBB", 'B', Blocks.brick_block, 'P', OP.plate.dat(aMat), 'I', OP.pipeSmall.dat(aMat), 'C', OP.plateDouble.dat(ANY.Cu));
-        aMat = ANY.Steel;               toutput = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.burningboxesliquid, "hu_output_(gt6_32)_"  + aMat.mNameLocal, 64);					tefficiency = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.burningboxesliquid, "efficiency_(gt6_7000)_"  + aMat.mNameLocal, 7000);
-        aRegistry.add("Burning Box (Liquid, "           +aMat.getLocal()+")", "Burning Boxes"                       ,  1404,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Burn, NBT_EFFICIENCY,  tefficiency, NBT_OUTPUT,  toutput, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "IwI", "BBB", 'B', Blocks.brick_block, 'P', OP.plate.dat(aMat), 'I', OP.pipeSmall.dat(aMat), 'C', OP.plateDouble.dat(ANY.Cu));
-        aMat = MT.Cr;                   toutput = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.burningboxesliquid, "hu_output_(gt6_112)_" + aMat.mNameLocal, 224);				tefficiency = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.burningboxesliquid, "efficiency_(gt6_8500)_"  + aMat.mNameLocal, 8500);
-        aRegistry.add("Burning Box (Liquid, "           +aMat.getLocal()+")", "Burning Boxes"                       ,  1405,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   4.0F, NBT_RESISTANCE,   4.0F, NBT_FUELMAP, FM.Burn, NBT_EFFICIENCY,  tefficiency, NBT_OUTPUT,  toutput, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "IwI", "BBB", 'B', Blocks.brick_block, 'P', OP.plate.dat(aMat), 'I', OP.pipeSmall.dat(aMat), 'C', OP.plateDouble.dat(ANY.Cu));
-        aMat = MT.Ti;                   toutput = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.burningboxesliquid, "hu_output_(gt6_96)_"  + aMat.mNameLocal, 192);				tefficiency = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.burningboxesliquid, "efficiency_(gt6_8500)_"  + aMat.mNameLocal, 8500);
-        aRegistry.add("Burning Box (Liquid, "           +aMat.getLocal()+")", "Burning Boxes"                       ,  1406,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   9.0F, NBT_RESISTANCE,   9.0F, NBT_FUELMAP, FM.Burn, NBT_EFFICIENCY,  tefficiency, NBT_OUTPUT,  toutput, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "IwI", "BBB", 'B', Blocks.brick_block, 'P', OP.plate.dat(aMat), 'I', OP.pipeSmall.dat(aMat), 'C', OP.plateDouble.dat(ANY.Cu));
-        aMat = MT.Netherite;            toutput = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.burningboxesliquid, "hu_output_(gt6_96)_"  + aMat.mNameLocal, 192);				tefficiency = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.burningboxesliquid, "efficiency_(gt6_9000)_"  + aMat.mNameLocal, 9000);
-        aRegistry.add("Burning Box (Liquid, "           +aMat.getLocal()+")", "Burning Boxes"                       ,  1410,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   9.0F, NBT_RESISTANCE,   9.0F, NBT_FUELMAP, FM.Burn, NBT_EFFICIENCY,  tefficiency, NBT_OUTPUT,  toutput, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "IwI", "BBB", 'B', Blocks.brick_block, 'P', OP.plate.dat(aMat), 'I', OP.pipeSmall.dat(aMat), 'C', OP.plateDouble.dat(ANY.Cu));
-        aMat = ANY.W;                   toutput = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.burningboxesliquid, "hu_output_(gt6_128)_" + aMat.mNameLocal, 256);				tefficiency = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.burningboxesliquid, "efficiency_(gt6_10000)_" + aMat.mNameLocal, 10000);
-        aRegistry.add("Burning Box (Liquid, "           +aMat.getLocal()+")", "Burning Boxes"                       ,  1407,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F, NBT_FUELMAP, FM.Burn, NBT_EFFICIENCY,  tefficiency, NBT_OUTPUT,  toutput, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "IwI", "BBB", 'B', Blocks.brick_block, 'P', OP.plate.dat(aMat), 'I', OP.pipeSmall.dat(aMat), 'C', OP.plateDouble.dat(ANY.Cu));
-        aMat = MT.TungstenSteel;        toutput = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.burningboxesliquid, "hu_output_(gt6_128)_" + aMat.mNameLocal, 256);				tefficiency = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.burningboxesliquid, "efficiency_(gt6_9000)_"  + aMat.mNameLocal, 9000);
-        aRegistry.add("Burning Box (Liquid, "           +aMat.getLocal()+")", "Burning Boxes"                       ,  1408,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_FUELMAP, FM.Burn, NBT_EFFICIENCY,  tefficiency, NBT_OUTPUT,  toutput, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "IwI", "BBB", 'B', Blocks.brick_block, 'P', OP.plate.dat(aMat), 'I', OP.pipeSmall.dat(aMat), 'C', OP.plateDouble.dat(ANY.Cu));
-        aMat = MT.Ta4HfC5;              toutput = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.burningboxesliquid, "hu_output_(gt6_256)_" + aMat.mNameLocal, 512);				tefficiency = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.burningboxesliquid, "efficiency_(gt6_10000)_" + aMat.mNameLocal, 10000);
-        aRegistry.add("Burning Box (Liquid, "           +aMat.getLocal()+")", "Burning Boxes"                       ,  1409,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_FUELMAP, FM.Burn, NBT_EFFICIENCY,  tefficiency, NBT_OUTPUT,  toutput, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "IwI", "BBB", 'B', Blocks.brick_block, 'P', OP.plate.dat(aMat), 'I', OP.pipeSmall.dat(aMat), 'C', OP.plateDouble.dat(ANY.Cu));
-
+        for (String mtName : DATA_MACHINES.BurningBoxLiquid.keySet()) {
+            aMat = OreDictMaterial.get(mtName);
+            aRegistry.add("Burning Box (Liquid, "+aMat.getLocal()+")",       "Burning Boxes",  DATA_MACHINES.BurningBoxLiquid.get(mtName).ID,       1104, aClass, aMat.mToolQuality, DATA_MACHINES.BurningBoxLiquid.get(mtName).stackSize,         aMachine,
+                    UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   DATA_MACHINES.BurningBoxLiquid.get(mtName).nbtHardness,        NBT_RESISTANCE,   DATA_MACHINES.BurningBoxLiquid.get(mtName).nbtResistance,        NBT_FUELMAP, FM.Burn, NBT_EFFICIENCY,  DATA_MACHINES.BurningBoxLiquid.get(mtName).nbtEfficiency,        NBT_OUTPUT,  DATA_MACHINES.BurningBoxLiquid.get(mtName).nbtOutput,         NBT_ENERGY_EMITTED, TD.Energy.HU),
+                    DATA_MACHINES.BurningBoxLiquid.get(mtName).recipeObject);
+        }
 //      aMat = MT.Pb;                   aRegistry.add("Dense Burning Box (Liquid, "     +aMat.getLocal()+")", "Burning Boxes"                       ,  1450,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   4.0F, NBT_RESISTANCE,   4.0F, NBT_FUELMAP, FM.Burn, NBT_EFFICIENCY,  5000, NBT_OUTPUT,  64, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "IwI", "BBB", 'B', Blocks.brick_block, 'P', OP.plateQuintuple.dat(aMat), 'I', OP.pipeLarge.dat(aMat), 'C', OP.plateDense.dat(ANY.Cu));
 //      aMat = MT.Bi;                   aRegistry.add("Dense Burning Box (Liquid, "     +aMat.getLocal()+")", "Burning Boxes"                       ,  1451,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   4.0F, NBT_RESISTANCE,   4.0F, NBT_FUELMAP, FM.Burn, NBT_EFFICIENCY,  4500, NBT_OUTPUT,  80, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "IwI", "BBB", 'B', Blocks.brick_block, 'P', OP.plateQuintuple.dat(aMat), 'I', OP.pipeLarge.dat(aMat), 'C', OP.plateDense.dat(ANY.Cu));
         aMat = MT.Bronze;               toutput = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.burningboxesliquid, "hu_output_(gt6_96)_"   + aMat.mNameLocal + "_dense", 192);	tefficiency = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.burningboxesliquid, "efficiency_(gt6_7500)_"  + aMat.mNameLocal + "_dense", 7500);

@@ -16,18 +16,35 @@ public class DataMachines_CH {
     @JSONField(ordinal = 2)
     public Map<String, AttributesDenseBurningBoxSolid_CH> DenseBurningBoxSolid = new LinkedHashMap<>();
     // Steam Boilers
-    @JSONField(ordinal = 4)
+    @JSONField(ordinal = 9)
     public Map<String, AttributesSteamBoilerTank_CH> SteamBoilerTank = new LinkedHashMap<>();
-    @JSONField(ordinal = 5)
+    @JSONField(ordinal = 10)
     public Map<String, AttributesStrongSteamBoilerTank_CH> StrongSteamBoilerTank = new LinkedHashMap<>();
     // Steam Engines
-    @JSONField(ordinal = 6)
+    @JSONField(ordinal = 11)
     public Map<String, AttributesSteamEngine_CH> SteamEngine = new LinkedHashMap<>();
-    @JSONField(ordinal = 7)
+    @JSONField(ordinal = 12)
     public Map<String, AttributesStrongSteamEngine_CH> StrongSteamEngine = new LinkedHashMap<>();
     // Burning Boxes Liquid
     @JSONField(ordinal = 3)
     public Map<String, AttributesBurningBoxLiquid_CH> BurningBoxLiquid = new LinkedHashMap<>();
+    @JSONField(ordinal = 4)
+    public Map<String, AttributesDenseBurningBoxLiquid_CH> DenseBurningBoxLiquid = new LinkedHashMap<>();
+    // Burning Boxes Gas
+    @JSONField(ordinal = 5)
+    public Map<String, AttributesBurningBoxGas_CH> BurningBoxGas = new LinkedHashMap<>();
+    @JSONField(ordinal = 6)
+    public Map<String, AttributesDenseBurningBoxGas_CH> DenseBurningBoxGas = new LinkedHashMap<>();
+    @JSONField(ordinal = 7)
+    public Map<String, AttributesBurningBoxFluidizedBed_CH> BurningBoxFluidizedBed = new LinkedHashMap<>();
+    @JSONField(ordinal = 8)
+    public Map<String, AttributesDenseBurningBoxFluidizedBed_CH> DenseBurningBoxFluidizedBed = new LinkedHashMap<>();
+    //Heat Exchangers
+    @JSONField(ordinal = 13)
+    public Map<String, AttributesHeatExchanger_CH> HeatExchanger = new LinkedHashMap<>();
+    @JSONField(ordinal = 14)
+    public Map<String, AttributesDenseHeatExchanger_CH> DenseHeatExchanger = new LinkedHashMap<>();
+
 
     public DataMachines_CH() {}
     public void initDefault() {
@@ -81,6 +98,42 @@ public class DataMachines_CH {
         BurningBoxLiquid.clear();
         for (String mtName : availableMaterials) {
             BurningBoxLiquid.put(mtName, new AttributesBurningBoxLiquid_CH(mtName));
+        }
+        DenseBurningBoxLiquid.clear();
+        for (String mtName : availableMaterials) {
+            DenseBurningBoxLiquid.put(mtName, new AttributesDenseBurningBoxLiquid_CH(mtName));
+        }
+        // Burning Boxes Gas
+        BurningBoxGas.clear();
+        for (String mtName : availableMaterials) {
+            BurningBoxGas.put(mtName, new AttributesBurningBoxGas_CH(mtName));
+        }
+        DenseBurningBoxGas.clear();
+        for (String mtName : availableMaterials) {
+            DenseBurningBoxGas.put(mtName, new AttributesDenseBurningBoxGas_CH(mtName));
+        }
+        // Burning Boxes Fluidized
+        availableMaterials = new String[]{
+                MT.Pb.mNameInternal,        MT.Bi.mNameInternal,      MT.Bronze.mNameInternal,      MT.Invar.mNameInternal,         ANY.Steel.mNameInternal,
+                MT.Cr.mNameInternal,        MT.Ti.mNameInternal,      MT.Netherite.mNameInternal,   ANY.W.mNameInternal,            MT.TungstenSteel.mNameInternal,
+                MT.Ta4HfC5.mNameInternal};
+        BurningBoxFluidizedBed.clear();
+        for (String mtName : availableMaterials){
+            BurningBoxFluidizedBed.put(mtName, new AttributesBurningBoxFluidizedBed_CH(mtName));
+        }
+        DenseBurningBoxFluidizedBed.clear();
+        for (String mtName : availableMaterials){
+            DenseBurningBoxFluidizedBed.put(mtName, new AttributesDenseBurningBoxFluidizedBed_CH(mtName));
+        }
+        // Heat Exchanger
+        availableMaterials = new String[]{
+                MT.Invar.mNameInternal,     ANY.W.mNameInternal,        MT.TungstenSteel.mNameInternal,     MT.Ta4HfC5.mNameInternal};
+        HeatExchanger.clear();
+        for (String mtName : availableMaterials){
+            HeatExchanger.put(mtName, new AttributesHeatExchanger_CH(mtName));
+        }
+        for (String mtName : availableMaterials){
+            DenseHeatExchanger.put(mtName, new AttributesDenseHeatExchanger_CH(mtName));
         }
     }
 }

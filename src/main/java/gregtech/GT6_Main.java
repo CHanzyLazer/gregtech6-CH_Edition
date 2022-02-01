@@ -87,6 +87,8 @@ import gregtech.loaders.b.Loader_MultiTileEntities;
 import gregtech.loaders.b.Loader_OreProcessing;
 import gregtech.loaders.b.Loader_Worldgen;
 import gregtech.loaders.c.*;
+import gregtechCH.config.ConfigJson_CH;
+import gregtechCH.loaders.b.Loader_MultiTileEntities_CH;
 import ic2.core.Ic2Items;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
@@ -116,6 +118,9 @@ public class GT6_Main extends Abstract_Mod {
 	
 	@Override
 	public void onModPreInit2(FMLPreInitializationEvent aEvent) {
+		//CH config pre init
+		ConfigJson_CH.preInit();
+
 		try {
 			LoadController tLoadController = ((LoadController)UT.Reflection.getFieldContent(Loader.instance(), "modController", T, T));
 			List<ModContainer> tModList = tLoadController.getActiveModList(), tNewModsList = new ArrayList<>(tModList.size());
@@ -331,15 +336,18 @@ public class GT6_Main extends Abstract_Mod {
 	
 	@Override
 	public void onModInit2(FMLInitializationEvent aEvent) {
+		//CH config init config
+		ConfigJson_CH.init();
 
 		for (FluidContainerData tData : FluidContainerRegistry.getRegisteredFluidContainerData()) if (tData.filledContainer.getItem() == Items.potionitem && ST.meta_(tData.filledContainer) == 0) {tData.fluid.amount = 0; break;}
 		
 		new Loader_Late_Items_And_Blocks().run();
 		
 		if (MD.IC2C.mLoaded) for (int i = 0; i <= 6; i++) FMLInterModComms.sendMessage(MD.IC2C.mID, "generatorDrop", ST.save(UT.NBT.makeInt("Key", i), "Value", IL.IC2_Machine.get(1)));
-		
+
 		ArrayListNoNulls<Runnable> tList = new ArrayListNoNulls<>(F,
-			new Loader_MultiTileEntities(),
+//			new Loader_MultiTileEntities(),
+			new Loader_MultiTileEntities_CH(),
 			new Loader_Books(),
 			new Loader_OreProcessing(),
 			new Loader_Worldgen(),
@@ -350,6 +358,9 @@ public class GT6_Main extends Abstract_Mod {
 	
 	@Override
 	public void onModPostInit2(FMLPostInitializationEvent aEvent) {
+		//CH config post init config
+		ConfigJson_CH.postInit();
+
 		ItemStack tLignite = ST.make(MD.UB, "ligniteCoal", 1, 0);
 		if (ST.valid(tLignite)) CR.remove(tLignite, tLignite, tLignite, tLignite, tLignite, tLignite, tLignite, tLignite, tLignite);
 		

@@ -91,8 +91,8 @@ public class MultiTileEntityEngineElectric extends TileEntityBase09FacingSingle 
 	
 	@Override
 	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
-		LH.addEnergyToolTips(this, aList, mEnergyTypeAccepted, mEnergyTypeEmitted, LH.get(LH.FACE_BACK), LH.get(LH.FACE_FRONT));
 		addToolTipsEfficiency(aList, aStack, aF3_H);
+		LH.addEnergyToolTips(this, aList, mEnergyTypeAccepted, mEnergyTypeEmitted, LH.get(LH.FACE_BACK), LH.get(LH.FACE_FRONT));
 		aList.add(Chat.DGRAY    + LH.get(LH.TOOL_TO_TOGGLE_SCREWDRIVER));
 		aList.add(Chat.DGRAY    + LH.get(LH.TOOL_TO_DETAIL_MAGNIFYINGGLASS));
 		super.addToolTips(aList, aStack, aF3_H);
@@ -101,12 +101,15 @@ public class MultiTileEntityEngineElectric extends TileEntityBase09FacingSingle 
 	public void addToolTipsEfficiency(List<String> aList, ItemStack aStack, boolean aF3_H) {
 		if (TD.Energy.ALL_EU.contains(mEnergyTypeAccepted)) {
 			if (TD.Energy.ALL_EU.contains(mEnergyTypeEmitted)) {
-				aList.add(LH.getToolTipEfficiency(UT.Code.units(10000, mInput, mOutput*2, F)));
+				aList.add(LH.getToolTipEfficiency(UT.Code.units(10000, mInput, mOutput, F)));
 			} else {
-				if (mEnergyTypeEmitted == TD.Energy.RF) aList.add(LH.getToolTipEfficiency(UT.Code.units(10000, mInput*4, mOutput*2, F)));
+				if (mEnergyTypeEmitted == TD.Energy.RF  ) aList.add(LH.getToolTipEfficiency(UT.Code.units(10000, mInput*RF_PER_EU, mOutput, F)));
 			}
 		} else {
-			if (TD.Energy.ALL_EU.contains(mEnergyTypeEmitted) && mEnergyTypeAccepted == TD.Energy.RF) aList.add(LH.getToolTipEfficiency(UT.Code.units(10000, mInput, mOutput*8, F)));
+			if (TD.Energy.ALL_EU.contains(mEnergyTypeEmitted)) {
+				if (mEnergyTypeAccepted == TD.Energy.RF   ) aList.add(LH.getToolTipEfficiency(UT.Code.units(10000, mInput, mOutput*RF_PER_EU, F)));
+				if (mEnergyTypeAccepted == TD.Energy.STEAM) aList.add(LH.getToolTipEfficiency(UT.Code.units(10000, mInput, mOutput*STEAM_PER_EU, F)));
+			}
 		}
 	}
 	

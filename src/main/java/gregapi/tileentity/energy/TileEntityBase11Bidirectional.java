@@ -59,6 +59,7 @@ public abstract class TileEntityBase11Bidirectional extends TileEntityBase10Ener
 		mConverter = new TE_Behavior_Energy_Converter(this, aNBT, mStorage, mEnergyIN, mEnergyOUT, tMultiplier, aNBT.getBoolean(NBT_WASTE_ENERGY), F, aNBT.hasKey(NBT_LIMIT_CONSUMPTION) ? aNBT.getBoolean(NBT_LIMIT_CONSUMPTION) : TD.Energy.ALL_COMSUMPTION_LIMITED.contains(mEnergyIN.mType));
 		mConRevert = new TE_Behavior_Energy_Converter(this, aNBT, mStorage, tEnergyIN, tEnergyOUT,           1, aNBT.getBoolean(NBT_WASTE_ENERGY), F, aNBT.hasKey(NBT_LIMIT_CONSUMPTION) ? aNBT.getBoolean(NBT_LIMIT_CONSUMPTION) : TD.Energy.ALL_COMSUMPTION_LIMITED.contains(mEnergyIN.mType));
 		if (mReversed) {TE_Behavior_Energy_Converter tConverter = mConverter; mConverter = mConRevert; mConRevert = tConverter;}
+		mEfficiency = LH.getEfficiencyConverter(mConverter);
 	}
 	
 	@Override public boolean isInput (byte aSide) {return mReversed ? aSide != mFacing : aSide == mFacing;}

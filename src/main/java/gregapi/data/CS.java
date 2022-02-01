@@ -215,39 +215,39 @@ public class CS {
 	/** The value of how many RF are worth an EU. */
 	public static final int RF_PER_EU =  4;
 	/** The value of how many Fuel Ticks a Furnace Smelt has. */
-	public static int TICKS_PER_SMELT = 200;
+	public static final int TICKS_PER_SMELT = 200;
 	/** The value of how many Energy Units are worth a Furnace Tick in regards of Fuel -> Energy */
-	public static int EU_PER_FURNACE_TICK = 25;
+	public static final int EU_PER_FURNACE_TICK = 25;
 	/** The value of how many Energy Units are worth a Smelt Operation in regards of Energy -> Smelt, because many Mods including IC2 have cheaper smelting. In GT, I go for a Max Efficiency of 19.53125 times that value, so 256 GU per Furnace Operation. */
-	public static int EU_PER_SMELT = 256;
+	public static final int EU_PER_SMELT = 256;
 	/** The value of how many Energy Units a Liter of Lava is worth. It is worth about 180 to 333 RF in TE. Well, I go for 320 RF in GT, meaning 80 GU/L or 80000 GU per Bucket. Cannot be above 200 GU/L or else MFR exploit with infinite Lava! */
-	public static int EU_PER_LAVA = 80;
+	public static final int EU_PER_LAVA = 80;
 	/** The value of how many Energy Units a Liter of Hot Coolant also known as Heatant is worth. It is worth 20 EU in IC2 Experimental, so it's the same 20 GU in GT6. */
-	public static int EU_PER_COOLANT = 20;
+	public static final int EU_PER_COOLANT = 20;
 	/** The value of how many Energy Units a Liter of Semiheavy Water needs to turn into Hot Semiheavy Water. */
-	public static int EU_PER_SEMI_HEAVY_WATER = 40;
+	public static final int EU_PER_SEMI_HEAVY_WATER = 40;
 	/** The value of how many Energy Units a Liter of Heavy Water needs to turn into Hot Heavy Water. */
-	public static int EU_PER_HEAVY_WATER = 50;
+	public static final int EU_PER_HEAVY_WATER = 50;
 	/** The value of how many Energy Units a Liter of Heavy Water needs to turn into Hot Tritiated Water. */
-	public static int EU_PER_TRITIATED_WATER = 60;
+	public static final int EU_PER_TRITIATED_WATER = 60;
 	/** The value of how many Energy Units a Liter of Molten Sodium needs to turn into Hot Molten Sodium. */
-	public static int EU_PER_SODIUM = 30;
+	public static final int EU_PER_SODIUM = 30;
 	/** The value of how many Energy Units a Liter of Molten Tin needs to turn into Hot Molten Tin. */
-	public static int EU_PER_TIN = 40;
+	public static final int EU_PER_TIN = 40;
 	/** The value of how many Energy Units a Liter of Carbon Dioxide needs to turn into Hot Carbon Dioxide. */
-	public static int EU_PER_CO2 = 20;
+	public static final int EU_PER_CO2 = 20;
 	/** The value of how many Energy Units a Liter of Helium needs to turn into Hot Helium. */
-	public static int EU_PER_HELIUM = 30;
+	public static final int EU_PER_HELIUM = 30;
 	/** The value of how many Energy Units a Liter of Lithium Chloride needs to turn into Hot Helium. */
-	public static int EU_PER_LICL = 15;
+	public static final int EU_PER_LICL = 15;
 	/** The value of how many Energy Units a Liter of Molten Thorium Salt needs to turn into Molten Salt. */
-	public static int EU_PER_THORIUM_SALT = 10000;
+	public static final int EU_PER_THORIUM_SALT = 10000;
 	/** The value of how many Energy Units a Liter of Water needs to turn into Steam. */
-	public static int EU_PER_WATER = 80;
+	public static final int EU_PER_WATER = 80;
 	/** The value of how much Steam an Energy Unit is worth. The Standard is 2 Steam = 1 EU. */
-	public static int STEAM_PER_EU = 2;
+	public static final int STEAM_PER_EU = 2;
 	/** The value of how much Steam a Liter of Water is worth. The Standard is 160 Steam = 1 Water. */
-	public static int STEAM_PER_WATER = 160;
+	public static final int STEAM_PER_WATER = 160;
 
 	/** A few Default Values for Light Opacity. */
 	public static final int LIGHT_OPACITY_NONE = 0, LIGHT_OPACITY_LEAVES = 1, LIGHT_OPACITY_WATER = 3, LIGHT_OPACITY_MAX = 255;
@@ -1213,10 +1213,6 @@ public class CS {
 	, NBT_CHEAP_OVERCLOCKING        = "gt.cheap.overclocking"       // Boolean
 	, NBT_NO_CONSTANT_POWER         = "gt.no.constant.power"        // Boolean
 	, NBT_EFFICIENCY                = "gt.eff"                      // Short from 0 to 10000 describing the Efficiency of a Generator or Converter.
-
-	, NBT_EFFICIENCY_CH             = "gtch.eff"                    // Short from 0 to 10000 describing the global Efficiency. CHanzy
-	, NBT_EFFICIENCY_WATER          = "gtch.eff.water"              // Short from 0 to 10000 describing the water Efficiency. CHanzy
-
 	, NBT_MULTIPLIER                = "gt.multiplier"               // Number
 	, NBT_INV_SIZE                  = "gt.invsize"                  // Short
 	, NBT_INV_LIST                  = "gt.invlist"                  // NBT List
@@ -1295,8 +1291,6 @@ public class CS {
 	, NBT_INPUT_AU                  = "gt.input.au"                 // Long containing a specified Energy Variable.
 	, NBT_INPUT_MJ                  = "gt.input.mj"                 // Long containing a specified Energy Variable.
 	, NBT_INPUT_RF                  = "gt.input.rf"                 // Long containing a specified Energy Variable.
-
-	, NBT_INPUT_REC                 = "gtch.input.rec"              // Recommend input energy, for OmniOcular usage. CHanzy
 	
 	, NBT_OUTPUT                    = "gt.output"                   // Long containing a generic Energy Variable.
 	, NBT_OUTPUT_MIN                = "gt.output.min"               // Long containing a generic Energy Variable.
@@ -1310,8 +1304,6 @@ public class CS {
 	, NBT_OUTPUT_AU                 = "gt.output.au"                // Long containing a specified Energy Variable.
 	, NBT_OUTPUT_MJ                 = "gt.output.mj"                // Long containing a specified Energy Variable.
 	, NBT_OUTPUT_RF                 = "gt.output.rf"                // Long containing a specified Energy Variable.
-
-	, NBT_OUTPUT_REC                = "gtch.output.rec"              // Recommend input energy, for OmniOcular usage. CHanzy
 
 	, NBT_ENERGY                    = "gt.energy"                   // Long containing a generic Energy Variable.
 	, NBT_ENERGY_EU                 = "gt.energy.eu"                // Long containing a specified Energy Variable.
@@ -1879,9 +1871,7 @@ public class CS {
 		LOGS,
 		CONFIG,
 		CONFIG_GT,
-		CONFIG_RECIPES,
-
-		CONFIG_GTCH;
+		CONFIG_RECIPES;
 	}
 
 	/** Configs */
@@ -1896,14 +1886,6 @@ public class CS {
 		OREPROCESSING;
 		
 		@Deprecated public static Config SPECIAL, MACHINES, OVERPOWERED;
-	}
-
-	/** Configs CH */
-	public static class ConfigsGTCH {
-		public static Config
-				MACHINES,
-				REACTORS;
-
 	}
 
 	/** Class Containing MOD ID Strings used in GT, since they are very common Parameters. */

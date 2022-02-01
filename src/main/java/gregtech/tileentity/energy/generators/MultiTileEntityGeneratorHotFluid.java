@@ -49,6 +49,7 @@ import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.tileentity.machines.ITileEntityRunningActively;
 import gregapi.util.UT;
 import gregapi.util.WD;
+import gregtechCH.fluid.IFluidHandler_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.IInventory;
@@ -62,7 +63,7 @@ import net.minecraftforge.fluids.IFluidTank;
 /**
  * @author Gregorius Techneticies
  */
-public class MultiTileEntityGeneratorHotFluid extends TileEntityBase09FacingSingle implements IFluidHandler, ITileEntityTapAccessible, ITileEntityFunnelAccessible, ITileEntityEnergy, ITileEntityRunningActively, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnEntityCollidedWithBlock {
+public class MultiTileEntityGeneratorHotFluid extends TileEntityBase09FacingSingle implements IFluidHandler_CH, ITileEntityTapAccessible, ITileEntityFunnelAccessible, ITileEntityEnergy, ITileEntityRunningActively, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnEntityCollidedWithBlock {
 	private static int FLAME_RANGE = 2;
 	
 	public short mEfficiency = 10000;
@@ -268,4 +269,9 @@ public class MultiTileEntityGeneratorHotFluid extends TileEntityBase09FacingSing
 	};
 	
 	@Override public String getTileEntityName() {return "gt.multitileentity.generator.hot_fluid";}
+
+	@Override
+	public boolean canFillExtra(FluidStack aFluid) {
+		return T;
+	}
 }

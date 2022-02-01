@@ -48,6 +48,7 @@ import gregapi.tileentity.machines.ITileEntityRunningActively;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
+import gregtechCH.fluid.IFluidHandler_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -62,7 +63,7 @@ import net.minecraftforge.fluids.IFluidTank;
 /**
  * @author Gregorius Techneticies
  */
-public class MultiTileEntityGeneratorFluidBed extends TileEntityBase09FacingSingle implements IFluidHandler, ITileEntityTapAccessible, ITileEntityFunnelAccessible, ITileEntityEnergy, ITileEntityRunningActively, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnEntityCollidedWithBlock {
+public class MultiTileEntityGeneratorFluidBed extends TileEntityBase09FacingSingle implements IFluidHandler_CH, ITileEntityTapAccessible, ITileEntityFunnelAccessible, ITileEntityEnergy, ITileEntityRunningActively, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnEntityCollidedWithBlock {
 	private static int FLAME_RANGE = 2;
 	
 	protected short mEfficiency = 10000;
@@ -302,4 +303,10 @@ public class MultiTileEntityGeneratorFluidBed extends TileEntityBase09FacingSing
 	};
 	
 	@Override public String getTileEntityName() {return "gt.multitileentity.generator.burning_fluidbed";}
+
+	//熔融方解石，可能会不允许存储
+	@Override
+	public boolean canFillExtra(FluidStack aFluid) {
+		return T;
+	}
 }

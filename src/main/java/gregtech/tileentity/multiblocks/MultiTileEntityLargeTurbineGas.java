@@ -42,7 +42,8 @@ import net.minecraftforge.fluids.IFluidTank;
  * @author Gregorius Techneticies
  */
 public class MultiTileEntityLargeTurbineGas extends MultiTileEntityLargeTurbine {
-	public FluidTankGT mInputTank = new FluidTankGT(), mTanksOutput[] = new FluidTankGT[] {new FluidTankGT(), new FluidTankGT(), new FluidTankGT()};
+	public FluidTankGT mInputTank = new FluidTankGT();
+	public FluidTankGT[] mTanksOutput = new FluidTankGT[] {new FluidTankGT(), new FluidTankGT(), new FluidTankGT()};
 	public FluidTankGT[] mTanks = new FluidTankGT[] {mInputTank, mTanksOutput[0], mTanksOutput[1], mTanksOutput[2]};
 	public RecipeMap mRecipes = FM.Gas;
 	public Recipe mLastRecipe = null;
@@ -147,4 +148,9 @@ public class MultiTileEntityLargeTurbineGas extends MultiTileEntityLargeTurbine 
 	}
 	
 	@Override public String getTileEntityName() {return "gt.multitileentity.multiblock.turbine.gas";}
+
+	@Override
+	public boolean canFillExtra(FluidStack aFluid) {
+		return F;
+	}
 }

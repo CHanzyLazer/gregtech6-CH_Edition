@@ -20,6 +20,7 @@
 package gregtech.tileentity.energy.converters;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.*;
 
 import java.util.List;
 
@@ -35,6 +36,8 @@ import gregapi.render.IIconContainer;
 import gregapi.render.ITexture;
 import gregapi.tileentity.energy.TileEntityBase11Motor;
 import gregapi.util.UT;
+import gregtechCH.data.LH_CH;
+import gregtechCH.fluid.IFluidHandler_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -45,11 +48,11 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fluids.IFluidTank;
 
-public class MultiTileEntityTurbineSteam extends TileEntityBase11Motor implements IFluidHandler {
+public class MultiTileEntityTurbineSteam extends TileEntityBase11Motor implements IFluidHandler_CH {
 	public FluidTankGT mTank = new FluidTankGT();
 	public long mSteamCounter = 0, mOutputSU = 0;
-	private int STEAM_PER_WATER_SELF = 200;
-	private short mEfficiencyWater = 8000;
+	protected int STEAM_PER_WATER_SELF = 200;
+	protected short mEfficiencyWater = 8000;
 	
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {
@@ -59,7 +62,7 @@ public class MultiTileEntityTurbineSteam extends TileEntityBase11Motor implement
 		if (aNBT.hasKey(NBT_OUTPUT_SU)) mOutputSU = aNBT.getLong(NBT_OUTPUT_SU);
 
 		if (aNBT.hasKey(NBT_EFFICIENCY_WATER)) mEfficiencyWater = (short)UT.Code.bind_(0, 10000, aNBT.getShort(NBT_EFFICIENCY_WATER));
-		STEAM_PER_WATER_SELF = (int)UT.Code.units(STEAM_PER_WATER, mEfficiencyWater, 10000, T);
+		STEAM_PER_WATER_SELF = mEfficiencyWater < 100 ? -1 : (int)UT.Code.units(STEAM_PER_WATER, mEfficiencyWater, 10000, T);
 
 		mTank.readFromNBT(aNBT, NBT_TANK+"."+0);
 		mTank.setCapacity(mConverter.mEnergyIN.mMax*4);
@@ -71,15 +74,12 @@ public class MultiTileEntityTurbineSteam extends TileEntityBase11Motor implement
 		UT.NBT.setNumber(aNBT, NBT_ENERGY_SU, mSteamCounter);
 		UT.NBT.setNumber(aNBT, NBT_OUTPUT_SU, mOutputSU); // 保留兼容
 		mTank.writeToNBT(aNBT, NBT_TANK+"."+0);
-
-		UT.NBT.setNumber(aNBT, NBT_OUTPUT_REC, mConverter.mEnergyOUT.mRec); // for OmniOcular usage
-		UT.NBT.setNumber(aNBT, NBT_INPUT_REC, mConverter.mEnergyIN.mRec);  // for OmniOcular usage
 	}
 	
 	@Override
 	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
 		super.addToolTips(aList, aStack, aF3_H);
-		aList.add(Chat.ORANGE + LH.get(LH.EMITS_USED_STEAM) + " ("+LH.get(LH.FACE_SIDES)+", " + LH.getToolTipEfficiencySimple(mEfficiencyWater) + ")");
+		aList.add(Chat.ORANGE + LH.get(LH.EMITS_USED_STEAM) + " ("+LH.get(LH.FACE_SIDES)+", " + LH_CH.getToolTipEfficiencySimple(mEfficiencyWater) + ")");
 	}
 	
 	@Override
@@ -166,4 +166,9 @@ public class MultiTileEntityTurbineSteam extends TileEntityBase11Motor implement
 	};
 	
 	@Override public String getTileEntityName() {return "gt.multitileentity.turbines.rotation_steam";}
+
+	@Override
+	public boolean canFillExtra(FluidStack aFluid) {
+		return T;
+	}
 }

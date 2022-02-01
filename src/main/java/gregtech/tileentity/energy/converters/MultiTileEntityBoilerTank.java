@@ -20,6 +20,7 @@
 package gregtech.tileentity.energy.converters;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -46,13 +47,13 @@ import gregapi.tileentity.data.ITileEntityGibbl;
 import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.tileentity.energy.ITileEntityEnergyDataCapacitor;
 import gregapi.util.UT;
+import gregtechCH.data.LH_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
@@ -67,10 +68,11 @@ import net.minecraftforge.fluids.IFluidTank;
 public class MultiTileEntityBoilerTank extends TileEntityBase09FacingSingle implements ITileEntityEnergy, ITileEntityFunnelAccessible, ITileEntityGibbl, ITileEntityEnergyDataCapacitor, IFluidHandler, IMTE_RemovedByPlayer, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnEntityCollidedWithBlock {
 	protected byte mBarometer = 0, oBarometer = 0;
 	protected short mEfficiency = 10000, mCoolDownResetTimer = 128;
-	protected long mEnergy = 0, mCapacity = 640000, mOutput = 6400, mInput = 6400;
+	protected long mEnergy = 0, mCapacity = 640000, mOutput = 64, mInput = 64;
 	protected TagData mEnergyTypeAccepted = TD.Energy.HU;
 	protected FluidTankGT[] mTanks = new FluidTankGT[] {new FluidTankGT(4000), new FluidTankGT(64000)};
 
+	protected long mOutputNow = 0;
 	protected short mEfficiencyCH = 10000;
 	
 	@Override
@@ -80,11 +82,11 @@ public class MultiTileEntityBoilerTank extends TileEntityBase09FacingSingle impl
 		if (aNBT.hasKey(NBT_VISUAL)) mBarometer = aNBT.getByte(NBT_VISUAL);
 		if (aNBT.hasKey(NBT_CAPACITY)) mCapacity = aNBT.getLong(NBT_CAPACITY);
 		if (aNBT.hasKey(NBT_CAPACITY_SU)) mTanks[1].setCapacity(aNBT.getLong(NBT_CAPACITY_SU));
-		//if (aNBT.hasKey(NBT_OUTPUT_SU)) mOutput = aNBT.getLong(NBT_OUTPUT_SU);
+		if (aNBT.hasKey(NBT_OUTPUT_SU)) mInput = aNBT.getLong(NBT_OUTPUT_SU) / STEAM_PER_EU; //保留兼容
 		if (aNBT.hasKey(NBT_EFFICIENCY)) mEfficiency = (short)UT.Code.bind_(0, 10000, aNBT.getShort(NBT_EFFICIENCY));
 		if (aNBT.hasKey(NBT_ENERGY_ACCEPTED)) mEnergyTypeAccepted = TagData.createTagData(aNBT.getString(NBT_ENERGY_ACCEPTED));
 
-		if (aNBT.hasKey(NBT_INPUT_HU)) mInput = aNBT.getLong(NBT_INPUT_HU);
+		if (aNBT.hasKey(NBT_INPUT)) mInput = aNBT.getLong(NBT_INPUT);
 		if (aNBT.hasKey(NBT_EFFICIENCY_CH)) mEfficiencyCH = (short)UT.Code.bind_(0, 10000, aNBT.getShort(NBT_EFFICIENCY_CH));
 		mOutput = UT.Code.units(mInput, 10000, UT.Code.units(mEfficiency, 10000, mEfficiencyCH, F), F) * STEAM_PER_EU;
 
@@ -96,17 +98,20 @@ public class MultiTileEntityBoilerTank extends TileEntityBase09FacingSingle impl
 		super.writeToNBT2(aNBT);
 		UT.NBT.setNumber(aNBT, NBT_ENERGY, mEnergy);
 		if (mEfficiency != 10000) aNBT.setShort(NBT_EFFICIENCY, mEfficiency);
+		if (mOutputNow != 0) aNBT.setLong(NBT_OUTPUT_NOW, mOutputNow);
 		for (int i = 0; i < mTanks.length; i++) mTanks[i].writeToNBT(aNBT, NBT_TANK+"."+i);
+		for (int i = 0; i < mTanks.length; i++) UT.NBT.setNumber(aNBT, NBT_TANK_CAPACITY+"."+i, mTanks[i].capacity());
 	}
 	
 	@Override
 	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
-		aList.add(Chat.CYAN     + LH.get(LH.CONVERTS_FROM_X)        + " 1 L " + FL.name(FluidRegistry.WATER, T) + " " + LH.get(LH.CONVERTS_TO_Y) + " 160 L " + FL.name(FL.Steam.make(0), T) + " " + LH.get(LH.CONVERTS_USING_Z) + " 80 " + mEnergyTypeAccepted.getLocalisedNameShort());
-		aList.add(LH.getToolTipEfficiency(UT.Code.units(mEfficiency, 10000, mEfficiencyCH, F)));
-		aList.add(Chat.GREEN    + LH.get(LH.ENERGY_INPUT)           + ": " + Chat.WHITE + mInput    + " " + mEnergyTypeAccepted.getLocalisedChatNameShort() + Chat.WHITE + "/t ("+LH.get(LH.FACE_ANY)+")");
-		aList.add(Chat.GREEN    + LH.get(LH.ENERGY_CAPACITY)        + ": " + Chat.WHITE + mCapacity + " " + mEnergyTypeAccepted.getLocalisedChatNameShort() + Chat.WHITE);
-		aList.add(Chat.RED      + LH.get(LH.ENERGY_OUTPUT)          + ": " + Chat.WHITE + mOutput	+ " " + TD.Energy.STEAM.getLocalisedChatNameLong()      + Chat.WHITE + "/t ("+LH.get(LH.FACE_TOP)+")");
-		aList.add(Chat.RED      + LH.get(LH.ENERGY_CAPACITY)        + ": " + Chat.WHITE + mCapacity + " " + TD.Energy.STEAM.getLocalisedChatNameLong()      + Chat.WHITE);
+		aList.add(Chat.CYAN     + LH.get(LH.CONVERTS_FROM_X)        + " 1 L " + FL.name(FluidRegistry.WATER, T) + " " + LH.get(LH.CONVERTS_TO_Y) + " " + STEAM_PER_WATER + " L " + FL.name(FL.Steam.make(0), T) + " " + LH.get(LH.CONVERTS_USING_Z) + " " + UT.Code.units(EU_PER_WATER, mEfficiencyCH, 10000, F) + " " + mEnergyTypeAccepted.getLocalisedNameShort());
+		aList.add(LH.getToolTipEfficiency(mEfficiencyCH));
+		aList.add(Chat.GREEN    + LH.get(LH.ENERGY_INPUT)           + ": " + Chat.WHITE + mInput 	+ " - " + (mInput*2)   	+ " " + mEnergyTypeAccepted.getLocalisedChatNameShort() + Chat.WHITE + "/t ("+LH.get(LH.FACE_ANY)+")");
+//		aList.add(Chat.GREEN    + LH.get(LH.ENERGY_CAPACITY)        + ": " + Chat.WHITE + mCapacity 						+ " " + mEnergyTypeAccepted.getLocalisedChatNameShort() + Chat.WHITE);
+		aList.add(Chat.RED      + LH.get(LH.ENERGY_OUTPUT)          + ": " + Chat.WHITE + mOutput	+ " - " + (mOutput*2)	+ " " + TD.Energy.STEAM.getLocalisedChatNameLong()      + Chat.WHITE + "/t ("+LH.get(LH.FACE_TOP)+")");
+//		aList.add(Chat.RED      + LH.get(LH.ENERGY_CAPACITY)        + ": " + Chat.WHITE + mCapacity 						+ " " + TD.Energy.STEAM.getLocalisedChatNameLong()      + Chat.WHITE);
+		aList.add(Chat.GREEN    + LH_CH.get(LH_CH.TOOLTIP_PREHEAT));
 		aList.add(Chat.ORANGE   + LH.get(LH.REQUIREMENT_WATER_PURE));
 		aList.add(Chat.ORANGE   + LH.get(LH.NO_GUI_FUNNEL_TO_TANK));
 		aList.add(Chat.DRED     + LH.get(LH.HAZARD_EXPLOSION_STEAM));
@@ -121,8 +126,8 @@ public class MultiTileEntityBoilerTank extends TileEntityBase09FacingSingle impl
 		
 		if (aIsServerSide) {
 			// Convert Water to Steam
-			long tConversionsEnergy = Math.min(mTanks[1].capacity() / (16 * STEAM_PER_EU), Math.min(mEnergy, mTanks[0].amount() * EU_PER_WATER));
-			long tConversionsEnergyEff = UT.Code.units(tConversionsEnergy, 10000, UT.Code.units(mEfficiency, 10000, mEfficiencyCH, F), F);
+			long tConversionsEnergy = Math.min(mTanks[1].capacity() / (16 * STEAM_PER_EU), mEnergy);
+			long tConversionsEnergyEff = Math.min(UT.Code.units(tConversionsEnergy, 10000, UT.Code.units(mEfficiency, 10000, mEfficiencyCH, F), F), mTanks[0].amount() * EU_PER_WATER);
 			long tConversionsEff = tConversionsEnergyEff / EU_PER_WATER;
 			tConversionsEnergyEff = tConversionsEff * EU_PER_WATER;
 			tConversionsEnergy = UT.Code.units(tConversionsEnergyEff, UT.Code.units(mEfficiency, 10000, mEfficiencyCH, F), 10000, T); // upround for consuming energy
@@ -151,10 +156,15 @@ public class MultiTileEntityBoilerTank extends TileEntityBase09FacingSingle impl
 			long tAmount = mTanks[1].amount() - mTanks[1].capacity() / 2;
 			
 			// Emit Steam
-			if (tAmount > 0) FL.move(mTanks[1], getAdjacentTank(SIDE_UP), Math.min(tAmount > mTanks[1].capacity() / 4 ?
-					mOutput * 2 :
-					mOutput + UT.Code.units(mOutput, mTanks[1].capacity() / 4, tAmount, F), //现在改为连续超频
-					tAmount));
+			if (tAmount > 0) {
+				mOutputNow = Math.min(tAmount > mTanks[1].capacity() / 4 ?
+								mOutput * 2 :
+								mOutput + UT.Code.units(mOutput, mTanks[1].capacity() / 4, tAmount, F),
+						tAmount);
+				FL.move(mTanks[1], getAdjacentTank(SIDE_UP), mOutputNow);
+			} else {
+				mOutputNow = 0;
+			}
 			
 			// Set Barometer
 			mBarometer = (byte)UT.Code.scale(mTanks[1].amount(), mTanks[1].capacity(), 31, F);

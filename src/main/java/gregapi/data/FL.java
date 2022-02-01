@@ -21,6 +21,7 @@ package gregapi.data;
 
 import static gregapi.data.CS.*;
 import static gregapi.data.CS.FluidsGT.*;
+import static gregtechCH.config.ConfigForge_CH.DATA_GTCH.disableAllStoragePowerconducting;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -37,14 +38,18 @@ import gregapi.old.Textures;
 import gregapi.oredict.OreDictMaterial;
 import gregapi.render.IIconContainer;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
+import gregapi.tileentity.multiblocks.IMultiBlockFluidHandler;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.UT.Code;
 import gregapi.util.UT.NBT;
+import gregtechCH.fluid.IFluidHandler_CH;
 import net.minecraft.block.Block;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -763,7 +768,17 @@ public enum FL {
 	public static boolean heavier(IFluidTank aFluid)     {return aFluid != null && heavier(aFluid.getFluid());}
 	public static boolean heavier(FluidStack aFluid)     {return aFluid != null && aFluid.getFluid() != null && aFluid.getFluid().getDensity(aFluid) > 0;}
 	public static boolean heavier(Fluid aFluid)          {return aFluid != null && aFluid.getDensity(make(aFluid, 1000)) > 0;}
-	
+
+	// GTCH 判断是否属于默认的可以填充的流体，即全局白名单（使用黑名单的形式实现）
+	// 目前只排除了能量流体，后续考虑酸，熔融金属等都可以考虑
+	public static boolean canFillDefault(FluidStack aFluid) {return aFluid != null && canFillDefault_(aFluid);}
+	public static boolean canFillDefault_(FluidStack aFluid) {return !(disableAllStoragePowerconducting && powerconducting(aFluid));}
+
+	// GTCH 通过流体类型和实体在 fill 失败时放出音频
+	public static boolean fillFailSound(FluidStack aFluid, TileEntity aTank) {
+		return UT.Sounds.send(aTank.getWorldObj(), SFX.MC_FIZZ, 1.0F, 1.0F, new ChunkCoordinates(aTank.xCoord, aTank.yCoord, aTank.zCoord));
+	}
+
 	public static int dir(BlockFluidBase aFluid) {return lighter(aFluid) ? +1 : -1;}
 	public static int dir(IFluidTank aFluid)     {return lighter(aFluid) ? +1 : -1;}
 	public static int dir(FluidStack aFluid)     {return lighter(aFluid) ? +1 : -1;}
@@ -803,13 +818,52 @@ public enum FL {
 	
 	public static FluidStack mul(FluidStack aFluid, long aMultiplier) {return aFluid == null ? null : amount(aFluid, aFluid.amount * aMultiplier);}
 	public static FluidStack mul(FluidStack aFluid, long aMultiplier, long aDivider, boolean aRoundUp) {return aFluid == null ? null : amount(aFluid, Code.units(aFluid.amount, aDivider, aMultiplier, aRoundUp));}
-	
+
+	// GTCH 通过在 gt 自己的实体的 drain 和 FL 中的 fill （gt 实体 fill 其他实体）添加检测来实现白名单的效果
 	public static long fill (@SuppressWarnings("rawtypes") DelegatorTileEntity aDelegator, FluidStack aFluid, boolean aDoFill) {return aDelegator != null && aDelegator.mTileEntity instanceof IFluidHandler && aFluid != null ? fill_(aDelegator, aFluid, aDoFill) : 0;}
 	public static long fill_(@SuppressWarnings("rawtypes") DelegatorTileEntity aDelegator, FluidStack aFluid, boolean aDoFill) {return fill_((IFluidHandler)aDelegator.mTileEntity, aDelegator.mSideOfTileEntity, aFluid, aDoFill);}
 	public static long fill (IFluidHandler aFluidHandler, byte aSide, FluidStack aFluid, boolean aDoFill) {return aFluidHandler != null && aFluid != null ? fill_(aFluidHandler, aSide, aFluid, aDoFill) : 0;}
-	public static long fill_(IFluidHandler aFluidHandler, byte aSide, FluidStack aFluid, boolean aDoFill) {return aFluidHandler.fill(FORGE_DIR[aSide], aFluid, aDoFill);}
+	public static long fill_(IFluidHandler aFluidHandler, byte aSide, FluidStack aFluid, boolean aDoFill) {
+		if (((aFluidHandler instanceof IFluidHandler_CH) && ((IFluidHandler_CH)aFluidHandler).canFillExtra(aFluid) || canFillDefault(aFluid)) ||
+				(!(aFluidHandler instanceof IFluidHandler_CH) && canFillDefault(aFluid))) {
+			return aFluidHandler.fill(FORGE_DIR[aSide], aFluid, aDoFill);
+		} else {
+			long rFilled = aFluidHandler.fill(FORGE_DIR[aSide], aFluid, F);
+			if (rFilled > 0) {
+				// 如果有fill则播放音频和存入垃圾桶，但是不进行实际fill
+				if (aDoFill) {
+					if (aFluidHandler instanceof TileEntity) fillFailSound(aFluid, (TileEntity)aFluidHandler);
+					GarbageGT.trash(aFluid);
+				}
+				return rFilled;
+			}
+		}
+		return 0;
+	}
 	public static long fill (IFluidHandler aFluidHandler, byte[] aSides, FluidStack aFluid, boolean aDoFill) {return aFluidHandler != null && aFluid != null ? fill_(aFluidHandler, aSides, aFluid, aDoFill) : 0;}
-	public static long fill_(IFluidHandler aFluidHandler, byte[] aSides, FluidStack aFluid, boolean aDoFill) {for (byte tSide : aSides) {long rFilled = aFluidHandler.fill(FORGE_DIR[tSide], aFluid, aDoFill); if (rFilled > 0) return rFilled;} return 0;}
+	public static long fill_(IFluidHandler aFluidHandler, byte[] aSides, FluidStack aFluid, boolean aDoFill) {
+		long rFilled;
+		if (((aFluidHandler instanceof IFluidHandler_CH) && ((IFluidHandler_CH)aFluidHandler).canFillExtra(aFluid) || canFillDefault_(aFluid)) ||
+				(!(aFluidHandler instanceof IFluidHandler_CH) && canFillDefault_(aFluid))) {
+			for (byte tSide : aSides) {
+				rFilled = aFluidHandler.fill(FORGE_DIR[tSide], aFluid, aDoFill);
+				if (rFilled > 0) return rFilled;
+			}
+		} else {
+			for (byte tSide : aSides) {
+				rFilled = aFluidHandler.fill(FORGE_DIR[tSide], aFluid, F);
+				if (rFilled > 0) {
+					// 如果有fill则播放音频和存入垃圾桶，但是不进行实际fill
+					if (aDoFill) {
+						if (aFluidHandler instanceof TileEntity) fillFailSound(aFluid, (TileEntity)aFluidHandler);
+						GarbageGT.trash(aFluid);
+					}
+					return rFilled;
+				}
+			}
+		}
+		return 0;
+	}
 	
 	public static boolean fillAll (@SuppressWarnings("rawtypes") DelegatorTileEntity aDelegator, FluidStack aFluid, boolean aDoFill) {return aDelegator != null && aDelegator.mTileEntity instanceof IFluidHandler && aFluid != null && fillAll_(aDelegator, aFluid, aDoFill);}
 	public static boolean fillAll_(@SuppressWarnings("rawtypes") DelegatorTileEntity aDelegator, FluidStack aFluid, boolean aDoFill) {return fillAll_((IFluidHandler)aDelegator.mTileEntity, aDelegator.mSideOfTileEntity, aFluid, aDoFill);}

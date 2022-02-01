@@ -59,6 +59,7 @@ import gregapi.tileentity.delegate.ITileEntityCanDelegate;
 import gregapi.util.CR;
 import gregapi.util.UT;
 import gregapi.util.WD;
+import gregtechCH.fluid.IFluidHandler_CH;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCauldron;
 import net.minecraft.entity.Entity;
@@ -75,8 +76,9 @@ import net.minecraftforge.fluids.IFluidTank;
 /**
  * @author Gregorius Techneticies
  */
-public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered implements ITileEntityQuickObstructionCheck, IFluidHandler, ITileEntityGibbl, ITileEntityTemperature, ITileEntityProgress, ITileEntityServerTickPre, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnEntityCollidedWithBlock {
-	public byte mLastReceivedFrom[] = ZL_BYTE, mRenderType = 0;
+public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered implements ITileEntityQuickObstructionCheck, IFluidHandler_CH, ITileEntityGibbl, ITileEntityTemperature, ITileEntityProgress, ITileEntityServerTickPre, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnEntityCollidedWithBlock {
+	public byte[] mLastReceivedFrom = ZL_BYTE;
+	public byte mRenderType = 0;
 	public long mTemperature = DEF_ENV_TEMP, mMaxTemperature, mTransferredAmount = 0, mCapacity = 1000;
 	public boolean mGasProof = F, mAcidProof = F, mPlasmaProof = F, mBlocking = F;
 	public FluidTankGT[] mTanks = ZL_FT;
@@ -522,4 +524,9 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	@Override public String getFacingTool() {return TOOL_wrench;}
 	
 	@Override public String getTileEntityName() {return "gt.multitileentity.connector.pipe.fluid";}
+
+	@Override
+	public boolean canFillExtra(FluidStack aFluid) {
+		return T;
+	}
 }

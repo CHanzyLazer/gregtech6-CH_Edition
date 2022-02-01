@@ -54,10 +54,12 @@ import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.tileentity.delegate.ITileEntityCanDelegate;
 import gregapi.tileentity.delegate.ITileEntityDelegating;
 import gregapi.tileentity.energy.ITileEntityEnergy;
+import gregapi.tileentity.multiblocks.IMultiBlockFluidHandler;
 import gregapi.tileentity.multiblocks.MultiTileEntityMultiBlockPart;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
+import gregtechCH.fluid.IFluidHandler_CH;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergyTile;
@@ -585,23 +587,52 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 		if (rFilledAmount > 0 && aDoFill) updateInventory();
 		return rFilledAmount;
 	}
-	
+
+	// GTCH 通过在 gt 自己的实体的 drain 和 FL 中的 fill （gt 实体 fill 其他实体）添加检测来实现白名单的效果
 	public FluidStack drain(ForgeDirection aDirection, FluidStack aFluid, boolean aDoDrain) {
 		if (aFluid == null || aFluid.amount <= 0) return null;
-		IFluidTank tTank = getFluidTankDrainable(UT.Code.side(aDirection), aFluid);
+		byte tSide = UT.Code.side(aDirection);
+		IFluidTank tTank = getFluidTankDrainable(tSide, aFluid);
 		if (tTank == null || tTank.getFluid() == null || tTank.getFluidAmount() == 0 || !tTank.getFluid().isFluidEqual(aFluid)) return null;
 		FluidStack rDrained = tTank.drain(aFluid.amount, aDoDrain);
 		if (rDrained != null && aDoDrain) updateInventory();
-		return rDrained;
+
+		IFluidHandler tOutTank = getAdjacentTank(tSide).mTileEntity;
+		if (((tOutTank instanceof IFluidHandler_CH) && ((IFluidHandler_CH)tOutTank).canFillExtra(rDrained) || FL.canFillDefault(rDrained)) ||
+				(!(tOutTank instanceof IFluidHandler_CH) && FL.canFillDefault(rDrained))) {
+			return rDrained;
+		} else {
+			if (rDrained != null && rDrained.amount > 0) {
+				if (!aDoDrain) tTank.drain(rDrained.amount, T); // 由于技术问题，非实际 drain 只能也只能进行清空操作，影响不会很大
+				// 如果有drain则则播放音频和存入垃圾桶，只进行 drain，返回 NF 表示不进行 fill
+				if (tOutTank instanceof TileEntity) FL.fillFailSound(rDrained, (TileEntity)tOutTank);
+				GarbageGT.trash(rDrained);
+			}
+			return NF;
+		}
 	}
 	
 	public FluidStack drain(ForgeDirection aDirection, int aAmountToDrain, boolean aDoDrain) {
 		if (aAmountToDrain <= 0) return null;
-		IFluidTank tTank = getFluidTankDrainable(UT.Code.side(aDirection), null);
+		byte tSide = UT.Code.side(aDirection);
+		IFluidTank tTank = getFluidTankDrainable(tSide, null);
 		if (tTank == null || tTank.getFluid() == null || tTank.getFluidAmount() == 0) return null;
 		FluidStack rDrained = tTank.drain(aAmountToDrain, aDoDrain);
 		if (rDrained != null && aDoDrain) updateInventory();
-		return rDrained;
+
+		IFluidHandler tOutTank = getAdjacentTank(tSide).mTileEntity;
+		if (((tOutTank instanceof IFluidHandler_CH) && ((IFluidHandler_CH)tOutTank).canFillExtra(rDrained) || FL.canFillDefault(rDrained)) ||
+				(!(tOutTank instanceof IFluidHandler_CH) && FL.canFillDefault(rDrained))) {
+			return rDrained;
+		} else {
+			if (rDrained != null && rDrained.amount > 0) {
+				if (!aDoDrain) tTank.drain(rDrained.amount, T); // 由于技术问题，非实际 drain 只能也只能进行清空操作，影响不会很大
+				// 如果有drain则则播放音频和存入垃圾桶，只进行 drain，返回NF表示不进行 fill
+				if (tOutTank instanceof TileEntity) FL.fillFailSound(rDrained, (TileEntity)tOutTank);
+				GarbageGT.trash(rDrained);
+			}
+			return NF;
+		}
 	}
 	
 	public boolean canFill(ForgeDirection aDirection, Fluid aFluid) {

@@ -42,6 +42,7 @@ import gregapi.tileentity.machines.ITileEntitySwitchableOnOff;
 import gregapi.util.UT;
 import gregapi.util.WD;
 import gregtech.blocks.tool.BlockLongDistPipe;
+import gregtechCH.fluid.IFluidHandler_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.IInventory;
@@ -55,7 +56,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class MultiTileEntityLongDistancePipelineFluid extends TileEntityBase09FacingSingle implements IFluidHandler, ITileEntityCanDelegate, IMTE_HasMultiBlockMachineRelevantData, ITileEntityMachineBlockUpdateable, ITileEntitySwitchableOnOff {
+public class MultiTileEntityLongDistancePipelineFluid extends TileEntityBase09FacingSingle implements IFluidHandler_CH, ITileEntityCanDelegate, IMTE_HasMultiBlockMachineRelevantData, ITileEntityMachineBlockUpdateable, ITileEntitySwitchableOnOff {
 	protected boolean mStopped = F;
 	protected long mTemperature = 0;
 	protected MultiTileEntityLongDistancePipelineFluid mTarget = null, mSender = null;
@@ -251,4 +252,9 @@ public class MultiTileEntityLongDistancePipelineFluid extends TileEntityBase09Fa
 	};
 	
 	@Override public String getTileEntityName() {return "gt.multitileentity.pipelines.fluid";}
+
+	@Override
+	public boolean canFillExtra(FluidStack aFluid) {
+		return T;
+	}
 }

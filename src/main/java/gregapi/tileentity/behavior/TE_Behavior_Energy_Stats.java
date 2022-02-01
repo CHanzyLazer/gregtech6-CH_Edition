@@ -29,6 +29,7 @@ import gregapi.data.LH;
 import gregapi.data.LH.Chat;
 import gregapi.data.TD;
 import gregapi.util.UT;
+import gregtechCH.data.LH_CH;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -50,7 +51,7 @@ public class TE_Behavior_Energy_Stats extends TE_Behavior_Energy {
 	public Collection<TagData> getTypes() {return mType.AS_LIST;}
 	
 	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H, String aSides, boolean aEmitting) {
-		aList.add((aEmitting ? (Chat.RED + LH.get(LH.ENERGY_OUTPUT)) : (Chat.GREEN + LH.get(LH.ENERGY_INPUT))) + ": " + Chat.WHITE + mRec + " " + mType.getLocalisedChatNameShort() + Chat.WHITE + "/t ("+(mMin>1?mMin+" to ":"up to ")+mMax+(UT.Code.stringInvalid(aSides)?"":", "+aSides)+")");
+		aList.add((aEmitting ? (Chat.RED + LH.get(LH.ENERGY_OUTPUT)) : (Chat.GREEN + LH.get(LH.ENERGY_INPUT))) + ": " + Chat.WHITE + mRec + " " + mType.getLocalisedChatNameShort() + Chat.WHITE + "/t ("+(mMin>1?mMin+ " " + LH_CH.get(LH_CH.ENERGY_TO):LH_CH.get(LH_CH.ENERGY_UPTO)) + " " +mMax+(UT.Code.stringInvalid(aSides)?"":", "+aSides)+")");
 		aList.add(aEmitting ? LH.getToolTipRedstoneFluxEmit(mType) : LH.getToolTipRedstoneFluxAccept(mType));
 	}
 	

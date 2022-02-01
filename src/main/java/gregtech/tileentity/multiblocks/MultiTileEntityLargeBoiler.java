@@ -20,6 +20,7 @@
 package gregtech.tileentity.multiblocks;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.NBT_EFFICIENCY_CH;
 
 import java.util.Collection;
 import java.util.List;
@@ -49,6 +50,7 @@ import gregapi.tileentity.multiblocks.MultiTileEntityMultiBlockPart;
 import gregapi.tileentity.multiblocks.TileEntityBase10MultiBlockBase;
 import gregapi.util.UT;
 import gregapi.util.WD;
+import gregtechCH.data.LH_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -70,9 +72,12 @@ public class MultiTileEntityLargeBoiler extends TileEntityBase10MultiBlockBase i
 	public short mBoilerWalls = 18002;
 	public byte mBarometer = 0, oBarometer = 0;
 	public short mEfficiency = 10000, mCoolDownResetTimer = 128;
-	public long mEnergy = 0, mCapacity = 20480000, mOutput = 204800;
+	public long mEnergy = 0, mCapacity = 20480000, mOutput = 204800, mInput = 204800;
 	public TagData mEnergyTypeAccepted = TD.Energy.HU;
 	public FluidTankGT[] mTanks = new FluidTankGT[] {new FluidTankGT(128000), new FluidTankGT(2048000)};
+
+	protected long mOutputNow = 0;
+	protected short mEfficiencyCH = 10000;
 	
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {
@@ -82,9 +87,14 @@ public class MultiTileEntityLargeBoiler extends TileEntityBase10MultiBlockBase i
 		if (aNBT.hasKey(NBT_VISUAL)) mBarometer = aNBT.getByte(NBT_VISUAL);
 		if (aNBT.hasKey(NBT_CAPACITY)) mCapacity = aNBT.getLong(NBT_CAPACITY);
 		if (aNBT.hasKey(NBT_CAPACITY_SU)) mTanks[1].setCapacity(aNBT.getLong(NBT_CAPACITY_SU));
-		if (aNBT.hasKey(NBT_OUTPUT_SU)) mOutput = aNBT.getLong(NBT_OUTPUT_SU);
+		if (aNBT.hasKey(NBT_OUTPUT_SU)) mInput = aNBT.getLong(NBT_OUTPUT_SU) / STEAM_PER_EU;
 		if (aNBT.hasKey(NBT_EFFICIENCY)) mEfficiency = (short)UT.Code.bind_(0, 10000, aNBT.getShort(NBT_EFFICIENCY));
 		if (aNBT.hasKey(NBT_ENERGY_ACCEPTED)) mEnergyTypeAccepted = TagData.createTagData(aNBT.getString(NBT_ENERGY_ACCEPTED));
+
+		if (aNBT.hasKey(NBT_INPUT_HU)) mInput = aNBT.getLong(NBT_INPUT_HU);
+		if (aNBT.hasKey(NBT_EFFICIENCY_CH)) mEfficiencyCH = (short)UT.Code.bind_(0, 10000, aNBT.getShort(NBT_EFFICIENCY_CH));
+		mOutput = UT.Code.units(mInput, 10000, UT.Code.units(mEfficiency, 10000, mEfficiencyCH, F), F) * STEAM_PER_EU;
+
 		for (int i = 0; i < mTanks.length; i++) mTanks[i].readFromNBT(aNBT, NBT_TANK+"."+i);
 	}
 	
@@ -93,7 +103,9 @@ public class MultiTileEntityLargeBoiler extends TileEntityBase10MultiBlockBase i
 		super.writeToNBT2(aNBT);
 		UT.NBT.setNumber(aNBT, NBT_ENERGY, mEnergy);
 		if (mEfficiency != 10000) aNBT.setShort(NBT_EFFICIENCY, mEfficiency);
+		if (mOutputNow != 0) aNBT.setLong(NBT_OUTPUT_SU, mOutputNow);
 		for (int i = 0; i < mTanks.length; i++) mTanks[i].writeToNBT(aNBT, NBT_TANK+"."+i);
+		for (int i = 0; i < mTanks.length; i++) UT.NBT.setNumber(aNBT, NBT_TANK_CAPACITY+"."+i, mTanks[i].capacity());
 	}
 	
 	@Override
@@ -156,12 +168,13 @@ public class MultiTileEntityLargeBoiler extends TileEntityBase10MultiBlockBase i
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.largeboiler.2"));
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.largeboiler.3"));
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.largeboiler.4"));
-		aList.add(Chat.CYAN     + LH.get(LH.CONVERTS_FROM_X)        + " 1 L " + FL.name(FluidRegistry.WATER, T) + " " + LH.get(LH.CONVERTS_TO_Y) + " 160 L " + FL.name(FL.Steam.make(0), T) + " " + LH.get(LH.CONVERTS_USING_Z) + " 80 " + mEnergyTypeAccepted.getLocalisedNameShort());
-		aList.add(LH.getToolTipEfficiency(mEfficiency));
-		aList.add(Chat.GREEN    + LH.get(LH.ENERGY_INPUT)           + ": " + Chat.WHITE + (mOutput/STEAM_PER_EU)                        + " " + mEnergyTypeAccepted.getLocalisedChatNameShort() + Chat.WHITE + "/t (Heat Transmitters)");
-		aList.add(Chat.GREEN    + LH.get(LH.ENERGY_CAPACITY)        + ": " + Chat.WHITE + mCapacity                                     + " " + mEnergyTypeAccepted.getLocalisedChatNameShort() + Chat.WHITE);
-		aList.add(Chat.RED      + LH.get(LH.ENERGY_OUTPUT)          + ": " + Chat.WHITE + UT.Code.units(mOutput, 10000, mEfficiency, F) + " " + TD.Energy.STEAM.getLocalisedChatNameLong()      + Chat.WHITE + "/t (Pipe Holes)");
-		aList.add(Chat.RED      + LH.get(LH.ENERGY_CAPACITY)        + ": " + Chat.WHITE + mCapacity                                     + " " + TD.Energy.STEAM.getLocalisedChatNameLong()      + Chat.WHITE);
+		aList.add(Chat.CYAN     + LH.get(LH.CONVERTS_FROM_X)        + " 1 L " + FL.name(FluidRegistry.WATER, T) + " " + LH.get(LH.CONVERTS_TO_Y) + " " + STEAM_PER_WATER + " L " + FL.name(FL.Steam.make(0), T) + " " + LH.get(LH.CONVERTS_USING_Z) + " " + UT.Code.units(EU_PER_WATER, mEfficiencyCH, 10000, F) + " " + mEnergyTypeAccepted.getLocalisedNameShort());
+		aList.add(LH.getToolTipEfficiency(mEfficiencyCH));
+		aList.add(Chat.GREEN    + LH.get(LH.ENERGY_INPUT)           + ": " + Chat.WHITE + mInput 	+ " - " + (mInput*2)           		+ " " + mEnergyTypeAccepted.getLocalisedChatNameShort() + Chat.WHITE + "/t (" + LH_CH.get(LH_CH.FACE_HEAT_TRANS) + ")");
+//		aList.add(Chat.GREEN    + LH.get(LH.ENERGY_CAPACITY)        + ": " + Chat.WHITE + mCapacity                                     + " " + mEnergyTypeAccepted.getLocalisedChatNameShort() + Chat.WHITE);
+		aList.add(Chat.RED      + LH.get(LH.ENERGY_OUTPUT)          + ": " + Chat.WHITE + mOutput	+ " - " + (mOutput*2) 				+ " " + TD.Energy.STEAM.getLocalisedChatNameLong()      + Chat.WHITE + "/t (" + LH_CH.get(LH_CH.FACE_PIPE_HOLE) + ")");
+//		aList.add(Chat.RED      + LH.get(LH.ENERGY_CAPACITY)        + ": " + Chat.WHITE + mCapacity                                     + " " + TD.Energy.STEAM.getLocalisedChatNameLong()      + Chat.WHITE);
+		aList.add(Chat.GREEN    + LH_CH.get(LH_CH.TOOLTIP_PREHEAT));
 		aList.add(Chat.ORANGE   + LH.get(LH.REQUIREMENT_WATER_PURE));
 		aList.add(Chat.DRED     + LH.get(LH.HAZARD_EXPLOSION_STEAM));
 		aList.add(Chat.DRED     + LH.get(LH.HAZARD_MELTDOWN));
@@ -180,34 +193,42 @@ public class MultiTileEntityLargeBoiler extends TileEntityBase10MultiBlockBase i
 		super.onTick2(aTimer, aIsServerSide);
 		if (aIsServerSide) {
 			// Convert Water to Steam
-			long tConversions = Math.min(mTanks[1].capacity() / 2560, Math.min(mEnergy / 80, mTanks[0].amount()));
-			if (tConversions > 0) {
-				mTanks[0].remove(tConversions);
+			long tConversionsEnergy = Math.min(mTanks[1].capacity() / (16 * STEAM_PER_EU), mEnergy);
+			long tConversionsEnergyEff = Math.min(UT.Code.units(tConversionsEnergy, 10000, UT.Code.units(mEfficiency, 10000, mEfficiencyCH, F), F), mTanks[0].amount() * EU_PER_WATER);
+			long tConversionsEff = tConversionsEnergyEff / EU_PER_WATER;
+			tConversionsEnergyEff = tConversionsEff * EU_PER_WATER;
+			tConversionsEnergy = UT.Code.units(tConversionsEnergyEff, UT.Code.units(mEfficiency, 10000, mEfficiencyCH, F), 10000, T); // upround for consuming energy
+			if (tConversionsEff > 0) {
+				mTanks[0].remove(tConversionsEff);
 				if (rng(10) == 0 && mEfficiency > 5000 && mTanks[0].has() && !FL.distw(mTanks[0])) {
-					mEfficiency -= tConversions;
+					mEfficiency -= tConversionsEff;
 					if (mEfficiency < 5000) mEfficiency = 5000;
 				}
-				mTanks[1].setFluid(FL.Steam.make(mTanks[1].amount() + UT.Code.units(tConversions, 10000, mEfficiency * 160, F)));
-				mEnergy -= tConversions * 80;
+				mTanks[1].setFluid(FL.Steam.make(mTanks[1].amount() + tConversionsEff * STEAM_PER_WATER));
+				mEnergy -= tConversionsEnergy;
 				mCoolDownResetTimer = 128;
 			}
-			
+
 			// Remove Steam and Heat during the process of cooling down.
 			if (mCoolDownResetTimer-- <= 0) {
 				mCoolDownResetTimer = 0;
-				mEnergy -= (mOutput * 64) / STEAM_PER_EU;
+				mEnergy -= mInput * 64;
 				GarbageGT.trash(mTanks[1], mOutput * 64);
 				if (mEnergy <= 0) {
 					mEnergy = 0;
 					mCoolDownResetTimer = 128;
 				}
 			}
-			
+
 			long tAmount = mTanks[1].amount() - mTanks[1].capacity() / 2;
 			
 			// Emit Steam
 			if (tAmount > 0) {
-				FluidStack tDrainableSteam = mTanks[1].drain(UT.Code.bindInt(Math.min(tAmount > mTanks[1].capacity() / 4 ? mOutput * 2 : mOutput, tAmount)), F);
+				mOutputNow = Math.min(tAmount > mTanks[1].capacity() / 4 ?
+								mOutput * 2 :
+								mOutput + UT.Code.units(mOutput, mTanks[1].capacity() / 4, tAmount, F),
+						tAmount);
+				FluidStack tDrainableSteam = mTanks[1].drain((int)mOutputNow, F);
 				
 				if (tDrainableSteam != null) {
 					int tTargets = 0;
@@ -256,6 +277,8 @@ public class MultiTileEntityLargeBoiler extends TileEntityBase10MultiBlockBase i
 						}
 					}
 				}
+			} else {
+				mOutputNow = 0;
 			}
 			
 			// Set Barometer

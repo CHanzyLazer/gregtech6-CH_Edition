@@ -1,0 +1,30 @@
+# Configuration file
+
+enablelangfile {
+    B:UseThisFileAsLanguageFile=true
+}
+
+
+languagefile {
+    S:gtch.lang.energy.motor.length=当长度为
+    S:gtch.lang.energy.to=到
+    S:gtch.lang.energy.upto=最高到
+    S:gtch.lang.face.heattransmitter=热吸收装置
+    S:gtch.lang.face.pipehole=管道孔
+    S:gtch.lang.hazard.explosion.motor.length=机器运行时改变结构会发生爆炸!
+    S:gtch.lang.motor.length=增加长度以提升功率和效率
+    S:gtch.lang.preheat=这个机器需要预热
+    S:gtch.lang.use.sneak.magnifyingglass.to.detail=潜行使用放大镜观察更多细节
+    S:gtch.tooltip.multiblock.gasturbine.1=3x3xN 制造此方块的致密壁板
+    S:gtch.tooltip.multiblock.gasturbine.2=主方块在正面 3x3 的中心, 正面朝外
+    S:gtch.tooltip.multiblock.gasturbine.3=仅能在正面 3x3 处输入燃气
+    S:gtch.tooltip.multiblock.gasturbine.4=依旧能从底层泵出废气
+    S:gtch.tooltip.multiblock.gasturbine.5=N 可以从
+    S:gtch.tooltip.multiblock.steamturbine.1=3x3xN 制造此方块的致密壁板
+    S:gtch.tooltip.multiblock.steamturbine.2=主方块在正面 3x3 的中心, 正面朝外
+    S:gtch.tooltip.multiblock.steamturbine.3=仅能在正面 3x3 处输入蒸汽
+    S:gtch.tooltip.multiblock.steamturbine.4=依旧能从底层泵出蒸馏水
+    S:gtch.tooltip.multiblock.steamturbine.5=N 可以从
+}
+
+

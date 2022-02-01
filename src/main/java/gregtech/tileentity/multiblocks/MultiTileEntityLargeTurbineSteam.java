@@ -20,6 +20,7 @@
 package gregtech.tileentity.multiblocks;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.*;
 
 import java.util.List;
 
@@ -31,6 +32,7 @@ import gregapi.fluid.FluidTankGT;
 import gregapi.tileentity.multiblocks.ITileEntityMultiBlockController;
 import gregapi.tileentity.multiblocks.MultiTileEntityMultiBlockPart;
 import gregapi.util.UT;
+import gregtechCH.data.LH_CH;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -43,14 +45,18 @@ import net.minecraftforge.fluids.IFluidTank;
  */
 public class MultiTileEntityLargeTurbineSteam extends MultiTileEntityLargeTurbine {
 	public FluidTankGT[] mTanks = new FluidTankGT[] {new FluidTankGT(), new FluidTankGT()};
-	public long mSteamCounter = 0, mEnergyProducedNextTick = 0; 
-	public static final int STEAM_PER_WATER = 170;
+	public long mSteamCounter = 0, mOutputSU = 0;
+	protected int STEAM_PER_WATER_SELF = 170;
+	protected short mEfficiencyWater = 9500;
 	
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {
 		super.readFromNBT2(aNBT);
 		if (aNBT.hasKey(NBT_ENERGY_SU)) mSteamCounter = aNBT.getLong(NBT_ENERGY_SU);
-		if (aNBT.hasKey(NBT_OUTPUT_SU)) mEnergyProducedNextTick = aNBT.getLong(NBT_OUTPUT_SU);
+		if (aNBT.hasKey(NBT_OUTPUT_SU)) mOutputSU = aNBT.getLong(NBT_OUTPUT_SU);
+
+		if (aNBT.hasKey(NBT_EFFICIENCY_WATER)) mEfficiencyWater = (short)UT.Code.bind_(0, 10000, aNBT.getShort(NBT_EFFICIENCY_WATER));
+		STEAM_PER_WATER_SELF = mEfficiencyWater < 100 ? -1 : (int)UT.Code.units(STEAM_PER_WATER, mEfficiencyWater, 10000, T);
 
 		for (int i = 0; i < mTanks.length; i++) mTanks[i].readFromNBT(aNBT, NBT_TANK+"."+i);
 		mTanks[0].setCapacity(mEnergyIN.mMax*4);
@@ -61,7 +67,7 @@ public class MultiTileEntityLargeTurbineSteam extends MultiTileEntityLargeTurbin
 	public void writeToNBT2(NBTTagCompound aNBT) {
 		super.writeToNBT2(aNBT);
 		UT.NBT.setNumber(aNBT, NBT_ENERGY_SU, mSteamCounter);
-		UT.NBT.setNumber(aNBT, NBT_OUTPUT_SU, mEnergyProducedNextTick);
+		UT.NBT.setNumber(aNBT, NBT_OUTPUT_SU, mOutputSU);
 		for (int i = 0; i < mTanks.length; i++) mTanks[i].writeToNBT(aNBT, NBT_TANK+"."+i);
 	}
 	
@@ -119,7 +125,7 @@ public class MultiTileEntityLargeTurbineSteam extends MultiTileEntityLargeTurbin
 	@Override
 	public void addToolTipsEnergy(List<String> aList, ItemStack aStack, boolean aF3_H) {
 		super.addToolTipsEnergy(aList, aStack, aF3_H);
-		aList.add(Chat.ORANGE   + LH.get(LH.EMITS_USED_STEAM) + " ("+LH.get(LH.FACE_SIDES)+", 95%)");
+		aList.add(Chat.ORANGE + LH.get(LH.EMITS_USED_STEAM) + " ("+LH.get(LH.FACE_SIDES)+", " + LH_CH.getToolTipEfficiencySimple(mEfficiencyWater) + ")");
 	}
 	
 	@Override
@@ -139,18 +145,15 @@ public class MultiTileEntityLargeTurbineSteam extends MultiTileEntityLargeTurbin
 	
 	@Override
 	public void doConversion(long aTimer) {
-		if (mEnergyProducedNextTick > 0) {
-			mStorage.mEnergy += mEnergyProducedNextTick;
-			mEnergyProducedNextTick = 0;
-		} else if (!mStopped && mTanks[0].has(getEnergySizeInputMin(mEnergyIN.mType, SIDE_ANY) * 2)) {
+		if (!mStopped && mTanks[0].has(getEnergySizeInputMin(mEnergyIN.mType, SIDE_ANY))) {
 			long tSteam = mTanks[0].amount();
-			mSteamCounter += tSteam;
-			mStorage.mEnergy += tSteam / 2;
-			mEnergyProducedNextTick += tSteam / 2;
 			mTanks[0].setEmpty();
-			if (mSteamCounter >= STEAM_PER_WATER) {
-				mTanks[1].fillAll(FL.DistW.make(mSteamCounter / STEAM_PER_WATER));
-				mSteamCounter %= STEAM_PER_WATER;
+			if (STEAM_PER_WATER_SELF > 0) mSteamCounter += tSteam;
+			mStorage.mEnergy += tSteam;
+			mOutputSU = mStorage.mEnergy;
+			if (mSteamCounter >= STEAM_PER_WATER_SELF && STEAM_PER_WATER_SELF > 0) {
+				mTanks[1].fillAll(FL.DistW.make(mSteamCounter / STEAM_PER_WATER_SELF));
+				mSteamCounter %= STEAM_PER_WATER_SELF;
 			}
 		}
 		super.doConversion(aTimer);
@@ -161,4 +164,9 @@ public class MultiTileEntityLargeTurbineSteam extends MultiTileEntityLargeTurbin
 	@Override protected IFluidTank[] getFluidTanks2(byte aSide) {return mTanks;}
 	
 	@Override public String getTileEntityName() {return "gt.multitileentity.multiblock.turbine.steam";}
+
+	@Override
+	public boolean canFillExtra(FluidStack aFluid) {
+		return T;
+	}
 }

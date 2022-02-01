@@ -41,6 +41,31 @@ public interface ITileEntityMultiBlockController extends ITileEntityUnloadable, 
 	public long onToolClickMultiBlock(String aTool, long aRemainingDurability, long aQuality, Entity aPlayer, List<String> aChatReturn, IInventory aPlayerInventory, boolean aSneaking, ItemStack aStack, byte aSide, float aHitX, float aHitY, float aHitZ, ChunkCoordinates aFrom);
 	
 	public static class Util {
+		//由于长度可变，将检测和设置进行分开来提高效率
+		public static boolean checkStructurePart(ITileEntityMultiBlockController aController, int aX, int aY, int aZ, int aRegistryMeta, int aRegistryID) {
+			TileEntity tTileEntity = aController.getTileEntity(aX, aY, aZ);
+			if (tTileEntity == aController) return T;
+			if (tTileEntity instanceof MultiTileEntityMultiBlockPart && ((MultiTileEntityMultiBlockPart)tTileEntity).getMultiTileEntityID() == aRegistryMeta && ((MultiTileEntityMultiBlockPart)tTileEntity).getMultiTileEntityRegistryID() == aRegistryID) {
+				ITileEntityMultiBlockController tTarget = ((MultiTileEntityMultiBlockPart)tTileEntity).getTarget(F);
+				if (tTarget != aController && tTarget != null && tTarget.isInsideStructure(aX, aY, aZ)) return F;
+				return T;
+			}
+			return F;
+		}
+		public static void setTarget(ITileEntityMultiBlockController aController, int aX, int aY, int aZ, int aDesign, int aMode) {
+			TileEntity tTileEntity = aController.getTileEntity(aX, aY, aZ);
+			if (tTileEntity instanceof MultiTileEntityMultiBlockPart) ((MultiTileEntityMultiBlockPart)tTileEntity).setTarget(aController, aDesign, aMode);
+		}
+		public static void checkAndResetTarget(ITileEntityMultiBlockController aController, int aX, int aY, int aZ, int aRegistryMeta, int aRegistryID) {
+			TileEntity tTileEntity = aController.getTileEntity(aX, aY, aZ);
+			if (tTileEntity == aController) return;
+			if (tTileEntity instanceof MultiTileEntityMultiBlockPart && ((MultiTileEntityMultiBlockPart)tTileEntity).getMultiTileEntityID() == aRegistryMeta && ((MultiTileEntityMultiBlockPart)tTileEntity).getMultiTileEntityRegistryID() == aRegistryID) {
+				if (((MultiTileEntityMultiBlockPart)tTileEntity).getTarget(F) == aController) {
+					((MultiTileEntityMultiBlockPart)tTileEntity).setTarget(null, 0, MultiTileEntityMultiBlockPart.NOTHING);
+				};
+			}
+		}
+
 		public static boolean checkAndSetTarget(ITileEntityMultiBlockController aController, int aX, int aY, int aZ, int aRegistryMeta, int aRegistryID, int aDesign, int aMode) {
 			TileEntity tTileEntity = aController.getTileEntity(aX, aY, aZ);
 			if (tTileEntity == aController) return T;

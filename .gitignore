@@ -57,4 +57,14 @@
 # Some old scripts in resources...
 !/src/main/resources/**/*.bat
 
+# Backups
 !README-greg.md
+
+# Wiki
+!/wiki/*
+
+# OmniOcular
+!/.OmniOcular/*
+
+# Language
+!/.lang/*

@@ -49,6 +49,8 @@ public abstract class TileEntityBase10EnergyConverter extends TileEntityBase09Fa
 	public TE_Behavior_Energy_Capacitor mStorage = null;
 	public TE_Behavior_Energy_Converter mConverter = null;
 	public TE_Behavior_Active_Trinary mActivity = null;
+
+	public short mEfficiency = 10000;
 	
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {
@@ -78,17 +80,19 @@ public abstract class TileEntityBase10EnergyConverter extends TileEntityBase09Fa
 	
 	public void readEnergyConverter(NBTTagCompound aNBT) {
 		mConverter  = new TE_Behavior_Energy_Converter  (this, aNBT, mStorage, mEnergyIN, mEnergyOUT, aNBT.hasKey(NBT_MULTIPLIER) ? aNBT.getLong(NBT_MULTIPLIER) : 1, aNBT.getBoolean(NBT_WASTE_ENERGY), F, aNBT.hasKey(NBT_LIMIT_CONSUMPTION) ? aNBT.getBoolean(NBT_LIMIT_CONSUMPTION) : TD.Energy.ALL_COMSUMPTION_LIMITED.contains(mEnergyIN.mType));
+		mEfficiency = LH.getEfficiencyConverter(mConverter);
 	}
 	
 	public void writeEnergyBehavior(NBTTagCompound aNBT) {
 		mStorage.save(aNBT);
 		mConverter.save(aNBT);
+//		aNBT.setShort(NBT_EFFICIENCY, mEfficiency);
 	}
 	
 	@Override
 	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
-		addToolTipsEnergy(aList, aStack, aF3_H);
 		addToolTipsEfficiency(aList, aStack, aF3_H);
+		addToolTipsEnergy(aList, aStack, aF3_H);
 		super.addToolTips(aList, aStack, aF3_H);
 	}
 	
@@ -98,7 +102,7 @@ public abstract class TileEntityBase10EnergyConverter extends TileEntityBase09Fa
 	}
 	
 	public void addToolTipsEfficiency(List<String> aList, ItemStack aStack, boolean aF3_H) {
-		LH.addToolTipsEfficiency(aList, aStack, aF3_H, mConverter);
+		if (mEfficiency >= 0) aList.add(LH.getToolTipEfficiency(mEfficiency));
 	}
 	
 	@Override

@@ -29,6 +29,7 @@ import gregapi.code.TagData;
 import gregapi.data.LH;
 import gregapi.data.LH.Chat;
 import gregapi.data.TD;
+import gregapi.tileentity.behavior.TE_Behavior_Energy_Converter;
 import gregapi.tileentity.behavior.TE_Behavior_Energy_Stats;
 import gregapi.tileentity.machines.ITileEntityAdjacentOnOff;
 import net.minecraft.item.ItemStack;
@@ -36,11 +37,18 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public abstract class TileEntityBase11Twotypes extends TileEntityBase10EnergyConverter implements ITileEntityAdjacentOnOff {
 	public TE_Behavior_Energy_Stats mEnergyOUT2 = null;
+	public short mEfficiency2 = 10000;
 	
 	@Override
 	public void readEnergyBehavior(NBTTagCompound aNBT) {
 		super.readEnergyBehavior(aNBT);
 		mEnergyOUT2 = new TE_Behavior_Energy_Stats(this, aNBT, aNBT.hasKey(NBT_ENERGY_EMITTED_2) ? TagData.createTagData(aNBT.getString(NBT_ENERGY_EMITTED_2)) : TD.Energy.QU, mStorage, aNBT.getLong(NBT_OUTPUT) / 2, aNBT.getLong(NBT_OUTPUT), aNBT.getLong(NBT_OUTPUT) * 2);
+	}
+
+	@Override
+	public void readEnergyConverter(NBTTagCompound aNBT) {
+		super.readEnergyConverter(aNBT);
+		mEfficiency2 = LH.getEfficiencyIO(mConverter.mEnergyIN, mEnergyOUT2, mConverter.mMultiplier);
 	}
 	
 	@Override
@@ -57,7 +65,8 @@ public abstract class TileEntityBase11Twotypes extends TileEntityBase10EnergyCon
 	
 	@Override
 	public void addToolTipsEfficiency(List<String> aList, ItemStack aStack, boolean aF3_H) {
-		LH.addToolTipsEfficiency(aList, aStack, aF3_H, mConverter.mEnergyIN, mConverter.mEnergyOUT, mEnergyOUT2, mConverter.mMultiplier);
+		if (mEfficiency >= 0) aList.add(LH.getToolTipEfficiency(mEfficiency));
+		if (mEfficiency2 >= 0) aList.add(LH.getToolTipEfficiency(mEfficiency2));
 	}
 	
 	@Override

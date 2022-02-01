@@ -29,6 +29,8 @@ import gregapi.tileentity.behavior.TE_Behavior_Energy_Converter;
 import gregapi.tileentity.behavior.TE_Behavior_Energy_Stats;
 import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.util.UT;
+import gregtechCH.data.LH_CH;
+import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.ItemStack;
@@ -295,53 +297,54 @@ public class LH {
 	}
 	
 	public static final String getToolTipEfficiency(long aEfficiency) {aEfficiency = Math.abs(aEfficiency); return Chat.YELLOW + get(EFFICIENCY) + ": " + Chat.WHITE + percent(aEfficiency) + "%";}
-	public static final String getToolTipEfficiencySimple(long aEfficiency) {aEfficiency = Math.abs(aEfficiency); return percent(aEfficiency) + "%";}
 
+	//保留备份
 	public static final void addToolTipsEfficiency(List<String> aList, ItemStack aStack, boolean aF3_H, TE_Behavior_Energy_Converter aConverter) {
-		addToolTipsEfficiency(aList, aStack, aF3_H, aConverter.mEnergyIN, aConverter.mEnergyOUT, aConverter.mMultiplier);
+		short tEfficiency = getEfficiencyConverter(aConverter);
+		if (tEfficiency >= 0) aList.add(LH.getToolTipEfficiency(tEfficiency));
 	}
+	//保留备份
 	public static final void addToolTipsEfficiency(List<String> aList, ItemStack aStack, boolean aF3_H, TE_Behavior_Energy_Stats aEnergyIN, TE_Behavior_Energy_Stats aEnergyOUT, long aMultiplier) {
-		if (TD.Energy.ALL_EU.contains(aEnergyIN.mType)) {
-			if (TD.Energy.ALL_EU.contains(aEnergyOUT.mType)) {
-				aList.add(LH.getToolTipEfficiency(UT.Code.units(10000, aEnergyIN.mRec, aEnergyOUT.mRec*aMultiplier, F)));
-			} else {
-				if (aEnergyOUT.mType == TD.Energy.RF  ) aList.add(LH.getToolTipEfficiency(UT.Code.units(10000, aEnergyIN.mRec*RF_PER_EU, aEnergyOUT.mRec*aMultiplier, F)));
-			}
-		} else {
-			if (TD.Energy.ALL_EU.contains(aEnergyOUT.mType)) {
-				if (aEnergyIN.mType == TD.Energy.RF   ) aList.add(LH.getToolTipEfficiency(UT.Code.units(10000, aEnergyIN.mRec, aEnergyOUT.mRec*aMultiplier*RF_PER_EU, F)));
-				if (aEnergyIN.mType == TD.Energy.STEAM) aList.add(LH.getToolTipEfficiency(UT.Code.units(10000, aEnergyIN.mRec, aEnergyOUT.mRec*aMultiplier*STEAM_PER_EU, F)));
-			}
-		}
+		short tEfficiency = getEfficiencyIO(aEnergyIN, aEnergyOUT, aMultiplier);
+		if (tEfficiency >= 0) aList.add(LH.getToolTipEfficiency(tEfficiency));
 	}
-	
+	//保留备份
 	public static final void addToolTipsEfficiency(List<String> aList, ItemStack aStack, boolean aF3_H, TE_Behavior_Energy_Stats aEnergyIN, TE_Behavior_Energy_Stats aEnergyOUT, TE_Behavior_Energy_Stats aEnergyOUT2, long aMultiplier) {
+		short tEfficiency = getEfficiencyIO(aEnergyIN, aEnergyOUT, aMultiplier);
+		if (tEfficiency >= 0) aList.add(LH.getToolTipEfficiency(tEfficiency));
+		tEfficiency = getEfficiencyIO(aEnergyIN, aEnergyOUT2, aMultiplier);
+		if (tEfficiency >= 0) aList.add(LH.getToolTipEfficiency(tEfficiency));
+	}
+	public static final short getEfficiencyConverter(TE_Behavior_Energy_Converter aConverter) {
+		return getEfficiencyIO(aConverter.mEnergyIN, aConverter.mEnergyOUT, aConverter.mMultiplier);
+	}
+
+	public static final short getEfficiencyIO(TE_Behavior_Energy_Stats aEnergyIN, TE_Behavior_Energy_Stats aEnergyOUT, long aMultiplier) {
+		short tEfficiency = -1;
 		if (TD.Energy.ALL_EU.contains(aEnergyIN.mType)) {
 			if (TD.Energy.ALL_EU.contains(aEnergyOUT.mType)) {
-				aList.add(LH.getToolTipEfficiency(UT.Code.units(10000, aEnergyIN.mRec, aEnergyOUT.mRec, F)));
+				tEfficiency = (short) UT.Code.units(10000, aEnergyIN.mRec, aEnergyOUT.mRec*aMultiplier, F);
 			} else {
-				if (aEnergyOUT.mType == TD.Energy.RF) aList.add(LH.getToolTipEfficiency(UT.Code.units(10000, aEnergyIN.mRec*RF_PER_EU, aEnergyOUT.mRec, F)));
-			}
-			if (TD.Energy.ALL_EU.contains(aEnergyOUT2.mType)) {
-				aList.add(LH.getToolTipEfficiency(UT.Code.units(10000, aEnergyIN.mRec, aEnergyOUT.mRec, F)));
-			} else {
-				if (aEnergyOUT2.mType == TD.Energy.RF) aList.add(LH.getToolTipEfficiency(UT.Code.units(10000, aEnergyIN.mRec*RF_PER_EU, aEnergyOUT.mRec, F)));
+				if (aEnergyOUT.mType == TD.Energy.RF  ) tEfficiency = (short) UT.Code.units(10000, aEnergyIN.mRec*RF_PER_EU, aEnergyOUT.mRec*aMultiplier, F);
 			}
 		} else {
-			if (TD.Energy.ALL_EU.contains(aEnergyOUT.mType) && aEnergyIN.mType == TD.Energy.RF) aList.add(LH.getToolTipEfficiency(UT.Code.units(10000, aEnergyIN.mRec, aEnergyOUT.mRec*8, F)));
-			if (TD.Energy.ALL_EU.contains(aEnergyOUT2.mType) && aEnergyIN.mType == TD.Energy.RF) aList.add(LH.getToolTipEfficiency(UT.Code.units(10000, aEnergyIN.mRec, aEnergyOUT.mRec*8, F)));
+			if (TD.Energy.ALL_EU.contains(aEnergyOUT.mType)) {
+				if (aEnergyIN.mType == TD.Energy.RF   ) tEfficiency = (short) UT.Code.units(10000, aEnergyIN.mRec, aEnergyOUT.mRec*aMultiplier*RF_PER_EU, F);
+				if (aEnergyIN.mType == TD.Energy.STEAM) tEfficiency = (short) UT.Code.units(10000, aEnergyIN.mRec, aEnergyOUT.mRec*aMultiplier*STEAM_PER_EU, F);
+			}
 		}
+		return (tEfficiency >= 0) ? (short) UT_CH.Code.effNormalizeRound(tEfficiency) : tEfficiency;
 	}
 	
 	public static final void addEnergyToolTips(ITileEntityEnergy aTileEntity, List<String> aToolTips, TagData aEnergyTypeIN, TagData aEnergyTypeOUT, String aSidesIN, String aSidesOUT) {
 		if (aEnergyTypeIN != null) {
 			long tMin = aTileEntity.getEnergySizeInputMin(aEnergyTypeOUT, SIDE_ANY), tRec = aTileEntity.getEnergySizeInputRecommended(aEnergyTypeOUT, SIDE_ANY), tMax = aTileEntity.getEnergySizeInputMax(aEnergyTypeOUT, SIDE_ANY);
-			aToolTips.add(Chat.GREEN + LH.get(LH.ENERGY_INPUT ) + ": " + Chat.WHITE + tRec + " " + aEnergyTypeIN .getLocalisedChatNameShort() + Chat.WHITE + (tRec == tMin && tRec == tMax ? "/t" : (tMin <= 1 ? "/t (up to " : "/t ("+tMin+" to ")+tMax+(UT.Code.stringInvalid(aSidesIN )?"":", "+aSidesIN )+")"));
+			aToolTips.add(Chat.GREEN + LH.get(LH.ENERGY_INPUT ) + ": " + Chat.WHITE + tRec + " " + aEnergyTypeIN .getLocalisedChatNameShort() + Chat.WHITE + (tRec == tMin && tRec == tMax ? "/t" : ("/t ("+(tMin>1?tMin+ " " + LH_CH.get(LH_CH.ENERGY_TO):LH_CH.get(LH_CH.ENERGY_UPTO)) + " ")+tMax+(UT.Code.stringInvalid(aSidesIN )?"":", "+aSidesIN )+")"));
 			aToolTips.add(getToolTipRedstoneFluxAccept(aEnergyTypeIN));
 		}
 		if (aEnergyTypeOUT != null) {
 			long tMin = aTileEntity.getEnergySizeOutputMin(aEnergyTypeOUT, SIDE_ANY), tRec = aTileEntity.getEnergySizeOutputRecommended(aEnergyTypeOUT, SIDE_ANY), tMax = aTileEntity.getEnergySizeOutputMax(aEnergyTypeOUT, SIDE_ANY);
-			aToolTips.add(Chat.RED   + LH.get(LH.ENERGY_OUTPUT) + ": " + Chat.WHITE + tRec + " " + aEnergyTypeOUT.getLocalisedChatNameShort() + Chat.WHITE + (tRec == tMin && tRec == tMax ? "/t" : (tMin <= 1 ? "/t (up to " : "/t ("+tMin+" to ")+tMax+(UT.Code.stringInvalid(aSidesOUT)?"":", "+aSidesOUT)+")"));
+			aToolTips.add(Chat.RED   + LH.get(LH.ENERGY_OUTPUT) + ": " + Chat.WHITE + tRec + " " + aEnergyTypeOUT.getLocalisedChatNameShort() + Chat.WHITE + (tRec == tMin && tRec == tMax ? "/t" : ("/t ("+(tMin>1?tMin+ " " + LH_CH.get(LH_CH.ENERGY_TO):LH_CH.get(LH_CH.ENERGY_UPTO)) + " ")+tMax+(UT.Code.stringInvalid(aSidesOUT)?"":", "+aSidesOUT)+")"));
 			aToolTips.add(getToolTipRedstoneFluxEmit(aEnergyTypeOUT));
 		}
 	}

@@ -20,6 +20,8 @@
 package gregapi.tileentity.multiblocks;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.IconType.OVERLAY_ENERGY_RU;
+import static gregtechCH.data.CS_CH.IconType.OVERLAY_FLUID;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -32,6 +34,8 @@ import gregapi.block.multitileentity.IMultiTileEntity.IMTE_OnWalkOver;
 import gregapi.block.multitileentity.MultiTileEntityRegistry;
 import gregapi.code.TagData;
 import gregapi.data.FL;
+import gregapi.network.INetworkHandler;
+import gregapi.network.IPacket;
 import gregapi.old.Textures;
 import gregapi.render.BlockTextureDefault;
 import gregapi.render.BlockTextureMulti;
@@ -40,6 +44,8 @@ import gregapi.render.ITexture;
 import gregapi.tileentity.ITileEntityAdjacentInventoryUpdatable;
 import gregapi.tileentity.ITileEntityFunnelAccessible;
 import gregapi.tileentity.ITileEntityTapAccessible;
+import gregapi.tileentity.base.TileEntityBase07Paintable;
+import gregapi.tileentity.base.TileEntityBase09FacingSingle;
 import gregapi.tileentity.data.ITileEntityGibbl;
 import gregapi.tileentity.data.ITileEntityProgress;
 import gregapi.tileentity.data.ITileEntityTemperature;
@@ -59,6 +65,8 @@ import gregapi.tileentity.machines.ITileEntitySwitchableOnOff;
 import gregapi.tileentity.notick.TileEntityBase05Paintable;
 import gregapi.util.UT;
 import gregapi.util.WD;
+import gregtechCH.data.CS_CH;
+import gregtechCH.fluid.IFluidHandler_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -72,12 +80,11 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
 
 /**
  * @author Gregorius Techneticies
  */
-public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable implements ITileEntityEnergy, ITileEntityCrucible, ITileEntityLogistics, IMTE_OnWalkOver, ITileEntityTemperature, ITileEntityGibbl, ITileEntityProgress, ITileEntityWeight, ITileEntityTapAccessible, ITileEntityFunnelAccessible, ITileEntityEnergyDataCapacitor, ITileEntityAdjacentInventoryUpdatable, IFluidHandler, IMTE_OnBlockAdded, IMTE_BreakBlock, ITileEntityRunningSuccessfully, ITileEntitySwitchableMode, ITileEntitySwitchableOnOff {
+public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable implements ITileEntityEnergy, ITileEntityCrucible, ITileEntityLogistics, IMTE_OnWalkOver, ITileEntityTemperature, ITileEntityGibbl, ITileEntityProgress, ITileEntityWeight, ITileEntityTapAccessible, ITileEntityFunnelAccessible, ITileEntityEnergyDataCapacitor, ITileEntityAdjacentInventoryUpdatable, IFluidHandler_CH, IMTE_OnBlockAdded, IMTE_BreakBlock, ITileEntityRunningSuccessfully, ITileEntitySwitchableMode, ITileEntitySwitchableOnOff {
 	public ChunkCoordinates mTargetPos = null;
 	
 	public ITileEntityMultiBlockController mTarget = null;
@@ -134,7 +141,7 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 	public void readFromNBT2(NBTTagCompound aNBT) {
 		super.readFromNBT2(aNBT);
 		if (aNBT.hasKey(NBT_TARGET)) {mTargetPos = new ChunkCoordinates(UT.Code.bindInt(aNBT.getLong(NBT_TARGET_X)), UT.Code.bindInt(aNBT.getLong(NBT_TARGET_Y)), UT.Code.bindInt(aNBT.getLong(NBT_TARGET_Z)));}
-		if (aNBT.hasKey(NBT_DESIGN)) mDesign = UT.Code.unsignB(aNBT.getByte(NBT_DESIGN));
+		if (aNBT.hasKey(NBT_DESIGN)) mDesign = aNBT.getShort(NBT_DESIGN);
 		if (aNBT.hasKey(NBT_MODE)) mMode = aNBT.getInteger(NBT_MODE);
 		
 		if (CODE_CLIENT) {
@@ -161,7 +168,7 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 	@Override
 	public void writeToNBT2(NBTTagCompound aNBT) {
 		super.writeToNBT2(aNBT);
-		if (mDesign != 0) aNBT.setByte(NBT_DESIGN, (byte)mDesign);
+		if (mDesign != 0) aNBT.setShort(NBT_DESIGN, mDesign);
 		if (mMode   != 0) aNBT.setInteger(NBT_MODE, mMode);
 		if (mTargetPos != null) {
 		UT.NBT.setBoolean(aNBT, NBT_TARGET, T);
@@ -190,6 +197,12 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 			}
 		}
 	}
+
+	@Override
+	public void adjacentInventoryUpdated(byte aSide, IInventory aTileEntity) {
+		ITileEntityMultiBlockController tTileEntity = getTarget(T);
+		if (tTileEntity instanceof ITileEntityAdjacentInventoryUpdatable) ((ITileEntityAdjacentInventoryUpdatable)tTileEntity).adjacentInventoryUpdated(aSide, aTileEntity);
+	}
 	
 	public ITileEntityMultiBlockController getTarget(boolean aCheckValidity) {
 		if (mTargetPos == null) return null;
@@ -214,31 +227,107 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 		mMode = aMode;
 		setDesign(aDesign);
 	}
+
+	// 图像部分
+	// 技术原因所有图像情况还是只能都放在这里
+	public static final byte
+			  FLUID_EMITTER 		= -1	// 仅在主方块背面绘制的流体输出
+			, ENERGY_EMITTER_RU 	= -3	// 仅在主方块背面绘制的RU输出
+			;
 	
 	public boolean setDesign(int aDesign) {
-		aDesign = UT.Code.bind8(aDesign);
 		if (aDesign != mDesign) {
 			mDesign = (short)aDesign;
-			updateClientData();
+			refreshVisual();
 			return T;
 		}
 		return F;
 	}
-	
+
+	// 用来给主方块调用，材质改变刷新
+	// 是否改变检测和调用交给主方块，数据同步读取交给这里
+	public void refreshVisual() {
+		setVisualDataDesign();
+		sendClientData(F, null);
+	}
+
+	// 额外的数据
+	// 朝向
+	public byte mPartFacing = getDefaultSide();
+	public byte getDefaultSide() {return SIDE_UP;}
+	protected byte getTargetFacing() {
+		if (mTarget instanceof TileEntityBase09FacingSingle) {
+			return ((TileEntityBase09FacingSingle) mTarget).mFacing;
+		}
+		return getDefaultSide();
+	}
+	protected void setVisualDataDesign() {
+		switch (mDesign) {
+			case FLUID_EMITTER:
+			case ENERGY_EMITTER_RU: {
+				mPartFacing = OPOS[getTargetFacing()];
+				return;
+			}
+			default:
+				mPartFacing = getDefaultSide();
+		}
+	}
+
+	// 得到材质
 	@Override
 	public ITexture getTexture2(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
-		return aShouldSideBeRendered[aSide] ? BlockTextureMulti.get(BlockTextureDefault.get(mTextures[mDesign][FACES_TBS[aSide]], mRGBa), BlockTextureDefault.get(mTextures[mDesign][FACES_TBS[aSide]+3])) : null;
+		if (mDesign >= 0 && mDesign < mTextures.length) return aShouldSideBeRendered[aSide] ? BlockTextureMulti.get(BlockTextureDefault.get(mTextures[mDesign][FACES_TBS[aSide]], mRGBa), BlockTextureDefault.get(mTextures[mDesign][FACES_TBS[aSide]+3])) : null;
+		if (mDesign <= -1) {
+			return aShouldSideBeRendered[aSide] ? BlockTextureMulti.get(BlockTextureDefault.get(mTextures[0][FACES_TBS[aSide]], mRGBa), getStructurePartTexture(aBlock, aRenderPass, aSide, aShouldSideBeRendered)) : null;
+		}
+		return aShouldSideBeRendered[aSide] ? BlockTextureMulti.get(BlockTextureDefault.get(mTextures[0][FACES_TBS[aSide]], mRGBa), BlockTextureDefault.get(mTextures[0][FACES_TBS[aSide]+3])) : null;
 	}
-	
+	protected ITexture getStructurePartTexture(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
+		if (aShouldSideBeRendered[aSide]) {
+			switch (mDesign) {
+				case ENERGY_EMITTER_RU:
+					return (aSide == mPartFacing) ? BlockTextureDefault.get(getIIconContainer(OVERLAY_ENERGY_RU)) : null;
+				case FLUID_EMITTER :
+					return (aSide == mPartFacing) ? BlockTextureDefault.get(getIIconContainer(OVERLAY_FLUID)) : null;
+				default: return null;
+			}
+		}
+		return null;
+	}
+	protected IIconContainer getIIconContainer(CS_CH.IconType aIconType) {
+		switch (aIconType) {
+			case OVERLAY_ENERGY_RU: return mTextures[3][3];
+			case OVERLAY_FLUID: return mTextures[1][3];
+			default: return null;
+		}
+	}
+
+	// 更多显示数据的收发
 	@Override
-	public void adjacentInventoryUpdated(byte aSide, IInventory aTileEntity) {
-		ITileEntityMultiBlockController tTileEntity = getTarget(T);
-		if (tTileEntity instanceof ITileEntityAdjacentInventoryUpdatable) ((ITileEntityAdjacentInventoryUpdatable)tTileEntity).adjacentInventoryUpdated(aSide, aTileEntity);
+	public IPacket getClientDataPacket(boolean aSendAll) {
+		return aSendAll ? getClientDataPacketByteArray(aSendAll, (byte)UT.Code.getR(mRGBa), (byte)UT.Code.getG(mRGBa), (byte)UT.Code.getB(mRGBa), getVisualData(), getVisualData_CH()) : getClientDataPacketByteArray(aSendAll, getVisualData(), getVisualData_CH());
+	}
+	@Override
+	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
+		if(aData.length == 5){
+			mRGBa = UT.Code.getRGBInt(new short[] {UT.Code.unsignB(aData[0]), UT.Code.unsignB(aData[1]), UT.Code.unsignB(aData[2])});
+			setVisualData(aData[3]);
+			setVisualData_CH(aData[4]);
+		} else if (aData.length == 2) {
+			setVisualData(aData[0]);
+			setVisualData_CH(aData[1]);
+		}
+		return T;
 	}
 	
 	@Override public byte getVisualData() {return (byte)mDesign;}
-	@Override public void setVisualData(byte aData) {mDesign = UT.Code.unsignB(aData); if (mDesign >= mTextures.length) mDesign = 0;}
-	
+	@Override public void setVisualData(byte aData) {mDesign = aData;}
+
+	// 用于我的额外的图像信息，朝向，是否在运行，等等
+	public byte getVisualData_CH() {return (byte)(mPartFacing & 7);}
+	public void setVisualData_CH(byte aData) {
+		mPartFacing = (byte)(aData & 7);}
+
 	@Override public String getTileEntityName() {return "gt.multitileentity.multiblock.part";}
 	
 	// Relay Tool Uses
@@ -315,7 +404,7 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 		if (tTileEntity instanceof IMultiBlockInventory) return ((IMultiBlockInventory)tTileEntity).isItemValidForSlot(this, aSlot, aStack);
 		return F;
 	}
-	
+
 	@Override
 	public int[] getAccessibleSlotsFromSide2(byte aSide) {
 		if ((mMode & NO_ITEM) == NO_ITEM) return ZL_INTEGER;
@@ -339,6 +428,14 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 	}
 	
 	// Relay Tanks
+	@Override
+	public boolean canFillExtra(FluidStack aFluid) {
+		ITileEntityMultiBlockController tTileEntity = getTarget(T);
+		if (tTileEntity instanceof IMultiBlockFluidHandler) {
+			return (tTileEntity instanceof IFluidHandler_CH) ? ((IFluidHandler_CH)tTileEntity).canFillExtra(aFluid) : F;
+		}
+		return F;
+	}
 	
 	@Override
 	public int fill(ForgeDirection aDirection, FluidStack aFluid, boolean aDoFill) {

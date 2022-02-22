@@ -47,6 +47,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Gregorius Techneticies
@@ -265,12 +266,16 @@ public class MultiTileEntityReactorCore1x1 extends MultiTileEntityReactorCore {
 		return T;
 	}
 
+	// GTCH, 重写这个方法来扩展客户端数据
 	@Override
-	public IPacket getClientDataPacket(boolean aSendAll) {
-		if (aSendAll) return getClientDataPacketByteArray(aSendAll, (byte)UT.Code.getR(mRGBa), (byte)UT.Code.getG(mRGBa), (byte)UT.Code.getB(mRGBa), getVisualData(), getDirectionData(), UT.Code.toByteS(FL.id_(mTanks[0]), 0), UT.Code.toByteS(FL.id_(mTanks[0]), 1)
-		, UT.Code.toByteS(ST.id(slot(0)), 0), UT.Code.toByteS(ST.id(slot(0)), 1), UT.Code.toByteS(ST.meta(slot(0)), 0), UT.Code.toByteS(ST.meta(slot(0)), 1)
-		);
-		return getClientDataPacketByte(aSendAll, getVisualData());
+	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
+		super.writeToClientDataPacketByteList(rList);
+		rList.add(5, UT.Code.toByteS(FL.id_(mTanks[0]), 0));
+		rList.add(6, UT.Code.toByteS(FL.id_(mTanks[0]), 1));
+		rList.add(7, UT.Code.toByteS(ST.id(slot(0)), 0));
+		rList.add(8, UT.Code.toByteS(ST.id(slot(0)), 1));
+		rList.add(9, UT.Code.toByteS(ST.meta(slot(0)), 0));
+		rList.add(10, UT.Code.toByteS(ST.meta(slot(0)), 1));
 	}
 
 	@Override

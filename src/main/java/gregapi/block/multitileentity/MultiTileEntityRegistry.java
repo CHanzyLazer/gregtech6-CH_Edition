@@ -38,6 +38,7 @@ import gregapi.render.RendererBlockTextured;
 import gregapi.util.CR;
 import gregapi.util.ST;
 import gregapi.util.UT;
+import gregtechCH.data.LH_CH;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -144,9 +145,19 @@ public class MultiTileEntityRegistry {
 	public ItemStack add(String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
 		return add(aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
 	}
+
+	// GTCH, 为额外添加的机器添加特殊情况
+	public ItemStack add(Boolean aIsGTCH, String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
+		return add(aIsGTCH, aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
+	}
+
+	// 保留兼容
+	public ItemStack add(String aLocalised, String aCategoricalName, MultiTileEntityClassContainer aClassContainer, Object... aRecipe) {
+		return add(F, aLocalised, aCategoricalName, aClassContainer, aRecipe);
+	}
 	
 	/** Adds a new MultiTileEntity. It is highly recommended to do this in either the PreInit or the Init Phase. PostInit might not work well.*/
-	public ItemStack add(String aLocalised, String aCategoricalName, MultiTileEntityClassContainer aClassContainer, Object... aRecipe) {
+	public ItemStack add(Boolean aIsGTCH, String aLocalised, String aCategoricalName, MultiTileEntityClassContainer aClassContainer, Object... aRecipe) {
 		boolean tFailed = F;
 		if (UT.Code.stringInvalid(aLocalised)) {
 			ERR.println("MTE REGISTRY ERROR: Localisation Missing!");
@@ -180,7 +191,8 @@ public class MultiTileEntityRegistry {
 			return null;
 		}
 		assert aClassContainer != null;
-		LH.add(mNameInternal+"."+aClassContainer.mID+".name", aLocalised);
+		if (aIsGTCH) LH_CH.add(mNameInternal+"."+aClassContainer.mID+".name", aLocalised);
+		else LH.add(mNameInternal+"."+aClassContainer.mID+".name", aLocalised);
 		mRegistry.put(aClassContainer.mID, aClassContainer);
 		mLastRegisteredID = aClassContainer.mID;
 		mRegistrations.add(aClassContainer);
@@ -229,7 +241,8 @@ public class MultiTileEntityRegistry {
 		UT.NBT.set(rStack, aNBT);
 		return rStack;
 	}
-	
+
+	// get 由于是共用的一个语言 map 所以可以不用改
 	public String getLocal(int aID) {return LH.get(mNameInternal+"."+aID+".name");}
 	
 	public MultiTileEntityClassContainer getClassContainer(int aID) {return mRegistry.get((short)aID);}

@@ -1,18 +1,11 @@
 package gregtechCH.config.machine.multiblock;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import gregapi.data.IL;
 import gregapi.data.MD;
 import gregapi.data.OP;
 import gregapi.oredict.OreDictMaterial;
 import gregapi.util.ST;
-import gregapi.util.UT;
-import gregtechCH.config.machine.AttributesMachine_CH;
-import gregtechCH.config.machine.MaterialDeserializer_CH;
-import gregtechCH.config.machine.MaterialSerializer_CH;
-import gregtechCH.util.UT_CH;
 
-import static gregapi.data.CS.F;
 import static gregtechCH.config.ConfigJson_CH.*;
 
 public class AttributesLargeGasTurbine_CH extends AttributesLargeMotor_CH {

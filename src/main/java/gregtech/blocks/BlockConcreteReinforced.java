@@ -20,7 +20,10 @@
 package gregtech.blocks;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.DYES_INT_Concrete;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.block.metatype.BlockColored;
 import gregapi.block.metatype.BlockMetaType;
 import gregapi.block.metatype.ItemBlockMetaType;
@@ -33,8 +36,10 @@ import gregapi.oredict.OreDictMaterial;
 import gregapi.render.IIconContainer;
 import gregapi.util.OM;
 import gregapi.util.ST;
+import gregapi.util.UT;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.world.IBlockAccess;
 
 public class BlockConcreteReinforced extends BlockColored {
 	public BlockConcreteReinforced(String aUnlocalised) {
@@ -50,5 +55,18 @@ public class BlockConcreteReinforced extends BlockColored {
 	protected BlockConcreteReinforced(Class<? extends ItemBlock> aItemClass, Material aVanillaMaterial, SoundType aVanillaSoundType, String aName, String aDefaultLocalised, OreDictMaterial aMaterial, float aResistanceMultiplier, float aHardnessMultiplier, int aHarvestLevel, int aCount, IIconContainer[] aIcons, byte aSlabType, BlockMetaType aBlock) {
 		super(aItemClass, aVanillaMaterial, aVanillaSoundType, aName, aDefaultLocalised, aMaterial, aResistanceMultiplier, aHardnessMultiplier, aHarvestLevel, aCount, aIcons, aSlabType, aBlock);
 		OM.data(ST.make(this, 1, W), new OreDictItemData(MT.Concrete, U2, ANY.Iron, OP.stick.mAmount/2));
+	}
+
+	// GTCH, 在这里加入材料的颜色属性
+	@Override
+	@SideOnly(Side.CLIENT)
+	public int getRenderColor(int aMeta) {
+		return DYES_INT_Concrete[UT.Code.bind4(aMeta)];
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public int colorMultiplier(IBlockAccess aWorld, int aX, int aY, int aZ) {
+		return DYES_INT_Concrete[UT.Code.bind4(aWorld.getBlockMetadata(aX, aY, aZ))];
 	}
 }

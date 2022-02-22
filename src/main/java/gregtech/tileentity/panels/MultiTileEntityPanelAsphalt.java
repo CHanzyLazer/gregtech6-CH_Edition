@@ -19,7 +19,7 @@
 
 package gregtech.tileentity.panels;
 
-import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.DYES_INT_Asphalt;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ import net.minecraft.item.ItemStack;
 public class MultiTileEntityPanelAsphalt extends MultiTileEntityPanelColored implements IMTE_AddToolTips {
 	@Override
 	public ITexture getTexture(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
-		return BlockTextureDefault.get(Textures.BlockIcons.ASPHALT, DYES[mColor]);
+		return BlockTextureDefault.get(Textures.BlockIcons.ASPHALT, DYES_INT_Asphalt[mColor]);
 	}
 	
 	@Override

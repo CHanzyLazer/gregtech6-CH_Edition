@@ -199,7 +199,7 @@ public class MultiTileEntityFusionReactor extends TileEntityBase10MultiBlockMach
 	}
 	
 	@Override
-	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
+	protected void toolTipsMultiblock(List<String> aList) {
 		aList.add(Chat.CYAN  + LH.get(LH.STRUCTURE) + ":");
 		aList.add(Chat.WHITE + LH.get("gt.tooltip.multiblock.fusionreactor.1"));
 		aList.add(Chat.WHITE + LH.get("gt.tooltip.multiblock.fusionreactor.2"));
@@ -208,7 +208,6 @@ public class MultiTileEntityFusionReactor extends TileEntityBase10MultiBlockMach
 		aList.add(Chat.WHITE + LH.get("gt.tooltip.multiblock.fusionreactor.5"));
 		aList.add(Chat.WHITE + LH.get("gt.tooltip.multiblock.fusionreactor.6"));
 		aList.add(Chat.WHITE + LH.get("gt.tooltip.multiblock.fusionreactor.7"));
-		super.addToolTips(aList, aStack, aF3_H);
 	}
 	
 	@Override

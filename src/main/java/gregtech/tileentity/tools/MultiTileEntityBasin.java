@@ -36,6 +36,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Gregorius Techneticies
@@ -84,10 +85,12 @@ public class MultiTileEntityBasin extends MultiTileEntityMold {
 		}
 		return super.onToolClick2(aTool, aRemainingDurability, aQuality, aPlayer, aChatReturn, aPlayerInventory, aSneaking, aStack, aSide, aHitX, aHitY, aHitZ);
 	}
-	
+
+	// GTCH, 重写这个方法来扩展客户端数据
 	@Override
-	public IPacket getClientDataPacket(boolean aSendAll) {
-		return getClientDataPacketByteArray(T, UT.Code.toByteS(mDisplay, 0), UT.Code.toByteS(mDisplay, 1), (byte)UT.Code.getR(mRGBa), (byte)UT.Code.getG(mRGBa), (byte)UT.Code.getB(mRGBa));
+	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
+		rList.add(0, UT.Code.toByteS(mDisplay, 0));
+		rList.add(1, UT.Code.toByteS(mDisplay, 1));  // 保持原本一致的顺序
 	}
 	
 	@Override

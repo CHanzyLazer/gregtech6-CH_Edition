@@ -99,7 +99,7 @@ public class MultiTileEntityDistillationTower extends TileEntityBase10MultiBlock
 	}
 	
 	@Override
-	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
+	protected void toolTipsMultiblock(List<String> aList) {
 		aList.add(Chat.CYAN     + LH.get(LH.STRUCTURE) + ":");
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.distillationtower.1"));
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.distillationtower.2"));
@@ -107,9 +107,8 @@ public class MultiTileEntityDistillationTower extends TileEntityBase10MultiBlock
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.distillationtower.4"));
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.distillationtower.5"));
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.distillationtower.6"));
-		super.addToolTips(aList, aStack, aF3_H);
 	}
-	
+
 	@Override
 	public void addToolTipsSided(List<String> aList, ItemStack aStack, boolean aF3_H) {
 		String tSideNames = ""; boolean temp = F;

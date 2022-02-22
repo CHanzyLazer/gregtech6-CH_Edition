@@ -394,6 +394,17 @@ public class MultiTileEntityItemInternal extends ItemBlock implements squeek.app
 		}
 		return aStack;
 	}
+
+	// GTCH, 使用这个方法使得实体也能通过潜行右键交互方块
+	@Override
+	public boolean doesSneakBypassUse(World aWorld, int aX, int aY, int aZ, EntityPlayer aPlayer) {
+		if (aPlayer == null) return F;
+		MultiTileEntityContainer tTileEntityContainer = mBlock.mMultiTileEntityRegistry.getNewTileEntityContainer(aPlayer.getHeldItem());
+		if (tTileEntityContainer != null && tTileEntityContainer.mTileEntity instanceof IMTE_DoesSneakBypassUse) {
+			return ((IMTE_DoesSneakBypassUse)tTileEntityContainer.mTileEntity).doesSneakBypassUse(aWorld, aX, aY, aZ, aPlayer);
+		}
+		return F;
+	}
 	
 	@Override
 	public int getMaxItemUseDuration(ItemStack aStack) {

@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.primitives.Bytes;
 import gregapi.GT_API_Proxy;
 import gregapi.block.multitileentity.MultiTileEntityContainer;
 import gregapi.code.ArrayListNoNulls;
@@ -86,6 +87,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Gregorius Techneticies
@@ -591,18 +593,31 @@ public class MultiTileEntityCrucible extends TileEntityBase10MultiBlockBase impl
 		mTemperature = WD.envTemp(worldObj, xCoord, yCoord, zCoord);
 		return T;
 	}
-	
+
 	@Override
-	public IPacket getClientDataPacket(boolean aSendAll) {
-		return getClientDataPacketByteArray(T, (byte)UT.Code.getR(mRGBa), (byte)UT.Code.getG(mRGBa), (byte)UT.Code.getB(mRGBa), getVisualData(), getDirectionData(), mDisplayedHeight, UT.Code.toByteS(mDisplayedFluid, 0), UT.Code.toByteS(mDisplayedFluid, 1), (byte)(mMeltDown ? 1 : 0));
+	public boolean sendAny(boolean aSendAll) {return T;}
+	@Override
+	public IPacket getClientDataPacketSendAll(boolean aSendAll, List<Byte> rList) {
+		return super.getClientDataPacketSendAll(T, rList);
 	}
-	
+
+	// GTCH, 重写这个方法来扩展客户端数据
+	@Override
+	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
+		super.writeToClientDataPacketByteList(rList);
+		rList.add(5, mDisplayedHeight);
+		rList.add(6, UT.Code.toByteS(mDisplayedFluid, 0));
+		rList.add(7, UT.Code.toByteS(mDisplayedFluid, 1));
+		rList.add(8, (byte)(mMeltDown ? 1 : 0));
+	}
+
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
+		super.receiveDataByteArray(aData, aNetworkHandler);
 		mDisplayedHeight = aData[5];
 		mDisplayedFluid = UT.Code.combine(aData[6], aData[7]);
 		if (aData.length >= 9) mMeltDown = (aData[8] != 0);
-		return super.receiveDataByteArray(aData, aNetworkHandler);
+		return T;
 	}
 	
 	public int mRenderedRGBA = UNCOLORED;

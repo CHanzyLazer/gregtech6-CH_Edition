@@ -20,7 +20,10 @@
 package gregtech.blocks;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.DYES_INT_Asphalt;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.block.IBlockOnWalkOver;
 import gregapi.block.metatype.BlockColored;
 import gregapi.block.metatype.BlockMetaType;
@@ -33,10 +36,13 @@ import gregapi.render.BlockTextureCopied;
 import gregapi.render.IIconContainer;
 import gregapi.util.OM;
 import gregapi.util.ST;
+import gregapi.util.UT;
+import gregtechCH.util.UT_CH;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class BlockAsphalt extends BlockColored implements IBlockOnWalkOver {
@@ -67,4 +73,17 @@ public class BlockAsphalt extends BlockColored implements IBlockOnWalkOver {
 	}
 	
 	@Override public boolean doesWalkSpeed(byte aMeta) {return T;}
+
+	// GTCH, 在这里加入材料的颜色属性
+	@Override
+	@SideOnly(Side.CLIENT)
+	public int getRenderColor(int aMeta) {
+		return DYES_INT_Asphalt[UT.Code.bind4(aMeta)];
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public int colorMultiplier(IBlockAccess aWorld, int aX, int aY, int aZ) {
+		return DYES_INT_Asphalt[UT.Code.bind4(aWorld.getBlockMetadata(aX, aY, aZ))];
+	}
 }

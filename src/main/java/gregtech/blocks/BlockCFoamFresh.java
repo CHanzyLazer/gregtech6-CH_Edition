@@ -20,10 +20,13 @@
 package gregtech.blocks;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.DYES_INT_CFoam;
 
 import java.util.ArrayList;
 import java.util.Random;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.block.IBlockFoamable;
 import gregapi.block.metatype.BlockColored;
 import gregapi.block.metatype.BlockMetaType;
@@ -34,6 +37,7 @@ import gregapi.data.MT;
 import gregapi.old.Textures;
 import gregapi.oredict.OreDictMaterial;
 import gregapi.render.IIconContainer;
+import gregapi.util.UT;
 import gregapi.util.WD;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.ItemBlock;
@@ -124,5 +128,18 @@ public class BlockCFoamFresh extends BlockColored implements IBlockFoamable {
 	@Override
 	public boolean driedFoam(World aWorld, int aX, int aY, int aZ, byte aSide) {
 		return F;
+	}
+
+	// GTCH, 在这里加入材料的颜色属性
+	@Override
+	@SideOnly(Side.CLIENT)
+	public int getRenderColor(int aMeta) {
+		return DYES_INT_CFoam[UT.Code.bind4(aMeta)];
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public int colorMultiplier(IBlockAccess aWorld, int aX, int aY, int aZ) {
+		return DYES_INT_CFoam[UT.Code.bind4(aWorld.getBlockMetadata(aX, aY, aZ))];
 	}
 }

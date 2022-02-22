@@ -151,12 +151,11 @@ public class EnergyCompat {
 			if (FL_ENERGY) {
 				if (aReceiver instanceof com.rwtema.funkylocomotion.blocks.TilePusher ) return checkOverCharge(aSize, aReceiver) ? aAmount : UT.Code.divup(((com.rwtema.funkylocomotion.blocks.TilePusher )aReceiver).receiveEnergy(FORGE_DIR[aSide], UT.Code.bind31(aAmount * aSize * RF_PER_EU * 10), F), aSize * RF_PER_EU * 10);
 				if (aReceiver instanceof com.rwtema.funkylocomotion.blocks.TileBooster) return checkOverCharge(aSize, aReceiver) ? aAmount : UT.Code.divup(((com.rwtema.funkylocomotion.blocks.TileBooster)aReceiver).receiveEnergy(FORGE_DIR[aSide], UT.Code.bind31(aAmount * aSize * RF_PER_EU * 10), F), aSize * RF_PER_EU * 10);
-				return 0;
 			}
 			
 			// GalactiCraft and its Addons
 			if (GC_ENERGY && COMPAT_GC != null) {
-				if (aReceiver instanceof micdoodle8.mods.galacticraft.api.power.IEnergyHandlerGC) {
+				if (aReceiver instanceof micdoodle8.mods.galacticraft.api.power.IEnergyHandlerGC && !(RF_ENERGY && isElectricRFReceiver(aReceiver))) {
 					if (!(aReceiver instanceof micdoodle8.mods.galacticraft.api.transmission.tile.IConnector) || ((micdoodle8.mods.galacticraft.api.transmission.tile.IConnector)aReceiver).canConnect(FORGE_DIR[aSide], micdoodle8.mods.galacticraft.api.transmission.NetworkType.POWER)) {
 						if (checkOverCharge(aSize, aReceiver)) return aAmount;
 						float tSizeToReceive = aSize * micdoodle8.mods.galacticraft.core.energy.EnergyConfigHandler.IC2_RATIO, tStored = ((micdoodle8.mods.galacticraft.api.power.IEnergyHandlerGC)aReceiver).getEnergyStoredGC((micdoodle8.mods.galacticraft.api.power.EnergySource)COMPAT_GC.dir(aSide));

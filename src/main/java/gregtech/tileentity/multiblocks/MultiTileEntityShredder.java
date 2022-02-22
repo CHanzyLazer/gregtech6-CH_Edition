@@ -141,13 +141,12 @@ public class MultiTileEntityShredder extends TileEntityBase10MultiBlockMachine {
 	}
 	
 	@Override
-	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
+	protected void toolTipsMultiblock(List<String> aList) {
 		aList.add(Chat.CYAN     + LH.get(LH.STRUCTURE) + ":");
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.shredder.1"));
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.shredder.2"));
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.shredder.3"));
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.shredder.4"));
-		super.addToolTips(aList, aStack, aF3_H);
 	}
 	
 	@Override

@@ -135,21 +135,10 @@ public class MultiTileEntityPipeItem extends TileEntityBase10ConnectorRendered i
 				if (aChatReturn != null) aChatReturn.add("Will not work between two Item Pipes!");
 				return 0;
 			}
-			if (FACE_CONNECTED[aTargetSide][mDisabledInputs]) {
-				if (FACE_CONNECTED[aTargetSide][mDisabledOutputs]) {
-					mDisabledInputs  ^= B[aTargetSide];
-					mDisabledOutputs ^= B[aTargetSide];
-				} else {
-					mDisabledOutputs ^= B[aTargetSide];
-				}
-			} else {
-				if (FACE_CONNECTED[aTargetSide][mDisabledOutputs]) {
-					mDisabledInputs  ^= B[aTargetSide];
-					mDisabledOutputs ^= B[aTargetSide];
-				} else {
-					mDisabledOutputs ^= B[aTargetSide];
-				}
+			if (FACE_CONNECTED[aTargetSide][mDisabledOutputs]) {
+				mDisabledInputs  ^= B[aTargetSide];
 			}
+			mDisabledOutputs ^= B[aTargetSide];
 			if (aChatReturn != null) {
 				aChatReturn.add(FACE_CONNECTED[aTargetSide][mDisabledInputs ]?"Accepting from selected Side disabled":"Accepting from selected Side enabled");
 				aChatReturn.add(FACE_CONNECTED[aTargetSide][mDisabledOutputs]?"Emitting to selected Side disabled"   :"Emitting to selected Side enabled");
@@ -256,6 +245,7 @@ public class MultiTileEntityPipeItem extends TileEntityBase10ConnectorRendered i
 	
 	@Override
 	public void onConnectionChange(byte aPreviousConnections) {
+		super.onConnectionChange(aPreviousConnections);
 		for (byte tSide : ALL_SIDES_VALID) {
 			DelegatorTileEntity<TileEntity> tDelegator = getAdjacentTileEntity(tSide);
 			if (tDelegator.mTileEntity instanceof ITileEntityAdjacentInventoryUpdatable) {
@@ -282,7 +272,21 @@ public class MultiTileEntityPipeItem extends TileEntityBase10ConnectorRendered i
 	@Override public long getProgressMax                    (byte aSide) {return getMaxPipeCapacity()*64;}
 	
 	@Override public ITexture getTextureSide                (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {BlockTextureDefault tBase = BlockTextureDefault.get(mMaterial, getIconIndexSide      (aSide, aConnections, aDiameter, aRenderPass), mIsGlowing, mRGBa); switch(mRenderType) {case 1: return BlockTextureMulti.get(tBase, BlockTextureDefault.get(Textures.BlockIcons.PIPE_RESTRICTOR)); default: return tBase;}}
-	@Override public ITexture getTextureConnected           (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {BlockTextureDefault tBase = BlockTextureDefault.get(mMaterial, getIconIndexConnected (aSide, aConnections, aDiameter, aRenderPass), mIsGlowing, mRGBa); switch(mRenderType) {case 1: return BlockTextureMulti.get(tBase, BlockTextureDefault.get(Textures.BlockIcons.PIPE_RESTRICTOR)); default: return tBase;}}
+	@Override public ITexture getTextureConnected           (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {BlockTextureDefault tBase = BlockTextureDefault.get(mMaterial, getIconIndexConnected (aSide, aConnections, aDiameter, aRenderPass), mIsGlowing, mRGBa); switch(mRenderType) {case 1: return BlockTextureMulti.get(tBase, getTextureRestrictor(mDiameter)); default: return tBase;}}
+
+	protected ITexture getTextureRestrictor(float aDiameter) {
+		if (aDiameter < 0.37F) {
+			return BlockTextureDefault.get(Textures.BlockIcons.PIPE_RESTRICTOR_TINY);
+		} else if (aDiameter < 0.49F) {
+			return BlockTextureDefault.get(Textures.BlockIcons.PIPE_RESTRICTOR_SMALL);
+		} else if (aDiameter < 0.74F) {
+			return BlockTextureDefault.get(Textures.BlockIcons.PIPE_RESTRICTOR_MEDIUM);
+		} else if (aDiameter < 0.99F) {
+			return BlockTextureDefault.get(Textures.BlockIcons.PIPE_RESTRICTOR_LARGE);
+		} else {
+			return BlockTextureDefault.get(Textures.BlockIcons.PIPE_RESTRICTOR_HUGE);
+		}
+	}
 	
 	@Override public int getIconIndexSide                   (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {return IconsGT.INDEX_BLOCK_PIPE_SIDE;}
 	@Override public int getIconIndexConnected              (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {return aDiameter<0.37F?OP.pipeTiny.mIconIndexBlock:aDiameter<0.49F?OP.pipeSmall.mIconIndexBlock:aDiameter<0.74F?OP.pipeMedium.mIconIndexBlock:aDiameter<0.99F?OP.pipeLarge.mIconIndexBlock:OP.pipeHuge.mIconIndexBlock;}

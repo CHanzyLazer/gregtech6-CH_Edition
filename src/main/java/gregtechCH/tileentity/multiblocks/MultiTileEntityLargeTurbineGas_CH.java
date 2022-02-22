@@ -32,18 +32,22 @@ public class MultiTileEntityLargeTurbineGas_CH extends MultiTileEntityLargeMotor
     protected long mEnergyHU;
     protected long mPRate = 16384, mInPRate = 16384;
 
-    protected long[] mPRateArray;
+    protected long[] mPRateArray = new long[1];
+
+    protected static final byte COOLDOWN_NUM = 16;
+    protected byte mBurningCounter = 0;  // 注意默认是停止工作的
 
     protected Recipe.RecipeMap mRecipes = FM.Gas;
     protected Recipe mLastRecipe = null;
     protected FluidTankGT mInputTank = new FluidTankGT(1000);
-    public FluidTankGT[] mTanksOutput = new FluidTankGT[] {new FluidTankGT(), new FluidTankGT(), new FluidTankGT()};
+    public FluidTankGT[] mTanksOutput = new FluidTankGT[] {new FluidTankGT(0), new FluidTankGT(0), new FluidTankGT(0)};
     public FluidTankGT[] mTanks = new FluidTankGT[] {mInputTank, mTanksOutput[0], mTanksOutput[1], mTanksOutput[2]};
 
     // NBT读写
     @Override
     public void readFromNBT2(NBTTagCompound aNBT) {
         super.readFromNBT2(aNBT);
+        if (aNBT.hasKey(NBT_COOLDOWN_COUNTER)) mBurningCounter = aNBT.getByte(NBT_COOLDOWN_COUNTER);
         if (aNBT.hasKey(NBT_BURNING)) mBurning = aNBT.getBoolean(NBT_BURNING);
         if (aNBT.hasKey(NBT_ENERGY_HU)) mEnergyHU = aNBT.getLong(NBT_ENERGY_HU);
 
@@ -78,6 +82,7 @@ public class MultiTileEntityLargeTurbineGas_CH extends MultiTileEntityLargeMotor
     @Override
     public void writeToNBT2(NBTTagCompound aNBT) {
         super.writeToNBT2(aNBT);
+        UT.NBT.setNumber(aNBT, NBT_COOLDOWN_COUNTER, mBurningCounter);
         UT.NBT.setBoolean(aNBT, NBT_BURNING, mBurning);
         UT.NBT.setNumber(aNBT, NBT_ENERGY_HU, mEnergyHU);
 
@@ -103,14 +108,14 @@ public class MultiTileEntityLargeTurbineGas_CH extends MultiTileEntityLargeMotor
     @Override
     protected void toolTipsOther(List<String> aList, ItemStack aStack, boolean aF3_H) {
         aList.add(LH.Chat.DGRAY   + LH_CH.get("gtch.tooltip.multiblock.gasturbine.4"));
-        aList.add(LH.Chat.DGRAY    + LH_CH.get(LH_CH.TOOL_TO_DETAIL_MAGNIFYINGGLASS_SNEAK));
         super.toolTipsOther(aList, aStack, aF3_H);
+        aList.add(LH.Chat.DGRAY    + LH_CH.get(LH_CH.TOOL_TO_DETAIL_MAGNIFYINGGLASS_SNEAK));
     }
     @Override
     protected void toolTipsMultiblock(List<String> aList) {
         super.toolTipsMultiblock(aList);
         aList.add(LH.Chat.WHITE    + LH_CH.get("gtch.tooltip.multiblock.gasturbine.1"));
-        aList.add(LH.Chat.WHITE    + LH_CH.get("gtch.tooltip.multiblock.gasturbine.5") + " " + mMinLength + " " + LH_CH.get(LH_CH.ENERGY_TO) + " " + mMaxLength);
+        aList.add(LH.Chat.WHITE    + LH_CH.getNumber("gtch.tooltip.multiblock.gasturbine.5", mMinLength, mMaxLength));
         aList.add(LH.Chat.WHITE    + LH_CH.get("gtch.tooltip.multiblock.gasturbine.2"));
         aList.add(LH.Chat.WHITE    + LH_CH.get("gtch.tooltip.multiblock.gasturbine.3"));
     }
@@ -119,7 +124,7 @@ public class MultiTileEntityLargeTurbineGas_CH extends MultiTileEntityLargeMotor
         LH_CH.add("gtch.tooltip.multiblock.gasturbine.2", "Main centered on the 3x3 facing outwards");
         LH_CH.add("gtch.tooltip.multiblock.gasturbine.3", "Input only possible at frontal 3x3");
         LH_CH.add("gtch.tooltip.multiblock.gasturbine.4", "Exhaust Gas can still be pumped out at Bottom Layer");
-        LH_CH.add("gtch.tooltip.multiblock.gasturbine.5", "N can be from");
+        LH_CH.add("gtch.tooltip.multiblock.gasturbine.5", "N can be from %d to %d");
     }
 
     // 工具右键
@@ -127,10 +132,10 @@ public class MultiTileEntityLargeTurbineGas_CH extends MultiTileEntityLargeMotor
     public long onToolClick2(String aTool, long aRemainingDurability, long aQuality, Entity aPlayer, List<String> aChatReturn, IInventory aPlayerInventory, boolean aSneaking, ItemStack aStack, byte aSide, float aHitX, float aHitY, float aHitZ) {
         if (aTool.equals(TOOL_magnifyingglass) && aSneaking) {
             if (aChatReturn != null) {
-                aChatReturn.add(mInputTank.content());
-                if (mTanksOutput[0].has()) aChatReturn.add(mTanksOutput[0].content());
-                if (mTanksOutput[1].has()) aChatReturn.add(mTanksOutput[1].content());
-                if (mTanksOutput[2].has()) aChatReturn.add(mTanksOutput[2].content());
+                if (mInputTank.has()) aChatReturn.add("Tank input: " + mInputTank.content());
+                if (mTanksOutput[0].has()) aChatReturn.add("Tank output 1: " + mTanksOutput[0].content());
+                if (mTanksOutput[1].has()) aChatReturn.add("Tank output 2: " + mTanksOutput[1].content());
+                if (mTanksOutput[2].has()) aChatReturn.add("Tank output 3: " + mTanksOutput[2].content());
             }
             return 1;
         }
@@ -160,7 +165,7 @@ public class MultiTileEntityLargeTurbineGas_CH extends MultiTileEntityLargeMotor
         // 燃烧
         if (mBurning) {
             // Check if it needs to burn more Fuel, or if the buffered Energy is enough.
-            if (mEnergyHU < mInPRate * 8 + mCRate) {
+            if (mEnergyHU < mInPRate * 4 + mInPCost) {
                 // Find and apply fitting Recipe.
                 Recipe tRecipe = mRecipes.findRecipe(this, mLastRecipe, F, Long.MAX_VALUE, NI, mInputTank.AS_ARRAY, ZL_IS);
                 if (tRecipe != null) {
@@ -173,11 +178,12 @@ public class MultiTileEntityLargeTurbineGas_CH extends MultiTileEntityLargeMotor
                         for (int i = 0; i < tRecipe.mFluidOutputs.length && i < mTanksOutput.length; i++) {
                             // 填充废气，并且判断是否填充成功
                             if (!mTanksOutput[i].fillAll(tRecipe.mFluidOutputs[i], tParallel)) {
-                                // 废气清空速度不够，停止燃烧
+                                // 废气清空速度不够，停止燃烧（主要是种类检测）
                                 mBurning = F;
+                                // 因为可能会 VoidExceed，所以不放入垃圾桶里（防止刷物品）
                             }
                         }
-                    } else if (mEnergyHU < mInPRate * 4 + mCRate) {
+                    } else if (mEnergyHU < mInPCost) {
                         // 有剩余燃料，有熄火风险，清空容器来切换燃料
                         mInputTank.setEmpty();
                     }
@@ -187,13 +193,22 @@ public class MultiTileEntityLargeTurbineGas_CH extends MultiTileEntityLargeMotor
                 }
             }
             // 能量不够, 机器停止，废气填满则停止燃烧
-            if (mEnergyHU < mCRate || mStopped || isTankOutputFull()) mBurning = F;
+            if (mEnergyHU >= mInPCost) mBurningCounter = COOLDOWN_NUM;
+            else --mBurningCounter;
+            if (mBurningCounter <= 0 || mStopped || isTankOutputFull()) {
+                mBurning = F;
+                mBurningCounter = 0;
+            }
         }
         // 热量按照效率转换为旋转能
-        if (mPreheat){
-            convert(mInPRate, mPRate);
+        if (mEnergy < mPEnergy){
+            // 预热阶段
+            if (mEnergy < mPEnergy - mPRate) convert(mInPRate, mPRate);
+            else convert(mInRate, mRate);
         } else {
-            convert(mInRate, mRate);
+            // 运行阶段
+            mEnergy = mPEnergy; // 只是为了好看
+            convert(mInRate, mRate, T);
         }
         // 自动输出废气
         long tFluid;
@@ -208,17 +223,27 @@ public class MultiTileEntityLargeTurbineGas_CH extends MultiTileEntityLargeMotor
         }
     }
     protected void convert(long aInRate, long aOutRate) {
+        convert(aInRate, aOutRate, F);
+    }
+    protected void convert(long aInRate, long aOutRate, boolean aWasteEnergy) {
         if (mEnergyHU >= aInRate) {
             mEnergy += aOutRate;
             mEnergyHU -= aInRate;
-        } else
+            return;
+        }
+        if (aWasteEnergy && mEnergyHU > mInPCost) {
+            mEnergy += mPCost;
+            mEnergyHU = 0;
+            return;
+        }
         if (mEnergyHU > 0) {
             mEnergy += UT.Code.units(mEnergyHU, 10000, mEfficiency, F);
             mEnergyHU = 0;
-        } else {
-            mEnergyHU = 0;
+            return;
         }
+        mEnergyHU = 0;
     }
+
     @Override
     protected boolean checkOverload() {
         return F;
@@ -236,22 +261,38 @@ public class MultiTileEntityLargeTurbineGas_CH extends MultiTileEntityLargeMotor
         return super.checkCooldown() && !mBurning;
     }
     @Override
+    protected void doCooldown() {
+        super.doCooldown();
+        mBurningCounter = 0;
+        mBurning = F;
+        mEnergyHU = 0;
+    }
+    @Override
     protected void doElse() {
         // 能量耗尽，但是不熄火（因为熄火不在这里判断）
-        mActive = F;
-        mPreheat = F;
-        mCooldown = F;
-        mOutput = 0;
-        mEnergy = 0;
+        super.stop();
+        if (!mBurning) {
+            mBurningCounter = 0;
+            mBurning = F;
+            mEnergyHU = 0;
+        }
     }
     @Override
     protected void stop() {
         super.stop();
+        mBurningCounter = 0;
         mBurning = F;
         mEnergyHU = 0;
     }
 
     // 一些接口
+    @Override
+    public boolean breakBlock() {
+        if (isServerSide()) {
+            for (FluidTankGT tank : mTanks) GarbageGT.trash(tank);
+        }
+        return super.breakBlock();
+    }
     @Override protected IFluidTank getFluidTankFillable2(byte aSide, FluidStack aFluidToFill) {return !mStopped && mRecipes.containsInput(aFluidToFill, this, NI) ? mInputTank : null;}
     @Override protected IFluidTank[] getFluidTanks2(byte aSide) {return mTanks;}
     @Override
@@ -292,6 +333,6 @@ public class MultiTileEntityLargeTurbineGas_CH extends MultiTileEntityLargeMotor
         }
     }
 
-    @Override public String getTileEntityName() {return "gt.multitileentity.multiblock.turbine.gas";}
+    @Override public String getTileEntityName() {return "gtch.multitileentity.multiblock.turbine.gas";}
 }
 

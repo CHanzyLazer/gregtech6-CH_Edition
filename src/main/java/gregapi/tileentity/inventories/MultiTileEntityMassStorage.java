@@ -24,6 +24,7 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.util.List;
 
+import com.google.common.primitives.Bytes;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -65,6 +66,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.Explosion;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.fluids.Fluid;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Gregorius Techneticies
@@ -432,6 +434,23 @@ public abstract class MultiTileEntityMassStorage extends TileEntityBase09FacingS
 				for (ItemStack tStack : OreDictManager.getOres(OP.billet                , tData.mMaterial, F)) mLogisticsCache.add(tStack);
 				for (ItemStack tStack : OreDictManager.getOres(OP.chunkGt               , tData.mMaterial, F)) mLogisticsCache.add(tStack);
 				for (ItemStack tStack : OreDictManager.getOres(OP.nugget                , tData.mMaterial, F)) mLogisticsCache.add(tStack);
+			} else if (tData.mPrefix.contains(TD.Prefix.WIRE_BASED)) {
+				for (ItemStack tStack : OreDictManager.getOres(OP.wireGt01              , tData.mMaterial, F)) mLogisticsCache.add(tStack);
+				for (ItemStack tStack : OreDictManager.getOres(OP.wireGt02              , tData.mMaterial, F)) mLogisticsCache.add(tStack);
+				for (ItemStack tStack : OreDictManager.getOres(OP.wireGt03              , tData.mMaterial, F)) mLogisticsCache.add(tStack);
+				for (ItemStack tStack : OreDictManager.getOres(OP.wireGt04              , tData.mMaterial, F)) mLogisticsCache.add(tStack);
+				for (ItemStack tStack : OreDictManager.getOres(OP.wireGt05              , tData.mMaterial, F)) mLogisticsCache.add(tStack);
+				for (ItemStack tStack : OreDictManager.getOres(OP.wireGt06              , tData.mMaterial, F)) mLogisticsCache.add(tStack);
+				for (ItemStack tStack : OreDictManager.getOres(OP.wireGt07              , tData.mMaterial, F)) mLogisticsCache.add(tStack);
+				for (ItemStack tStack : OreDictManager.getOres(OP.wireGt08              , tData.mMaterial, F)) mLogisticsCache.add(tStack);
+				for (ItemStack tStack : OreDictManager.getOres(OP.wireGt09              , tData.mMaterial, F)) mLogisticsCache.add(tStack);
+				for (ItemStack tStack : OreDictManager.getOres(OP.wireGt10              , tData.mMaterial, F)) mLogisticsCache.add(tStack);
+				for (ItemStack tStack : OreDictManager.getOres(OP.wireGt11              , tData.mMaterial, F)) mLogisticsCache.add(tStack);
+				for (ItemStack tStack : OreDictManager.getOres(OP.wireGt12              , tData.mMaterial, F)) mLogisticsCache.add(tStack);
+				for (ItemStack tStack : OreDictManager.getOres(OP.wireGt13              , tData.mMaterial, F)) mLogisticsCache.add(tStack);
+				for (ItemStack tStack : OreDictManager.getOres(OP.wireGt14              , tData.mMaterial, F)) mLogisticsCache.add(tStack);
+				for (ItemStack tStack : OreDictManager.getOres(OP.wireGt15              , tData.mMaterial, F)) mLogisticsCache.add(tStack);
+				for (ItemStack tStack : OreDictManager.getOres(OP.wireGt16              , tData.mMaterial, F)) mLogisticsCache.add(tStack);
 			} else if (tData.mPrefix == OP.gem || tData.mPrefix == OP.blockGem) {
 				for (ItemStack tStack : OreDictManager.getOres(OP.gem                   , tData.mMaterial, F)) mLogisticsCache.add(tStack);
 				for (ItemStack tStack : OreDictManager.getOres(OP.blockGem              , tData.mMaterial, F)) mLogisticsCache.add(tStack);
@@ -468,17 +487,34 @@ public abstract class MultiTileEntityMassStorage extends TileEntityBase09FacingS
 	public boolean isFaceVisible() {
 		return SIDES_HORIZONTAL[mFacing] && (mMode & B[3]) == 0 && (!hasCovers()||mCovers.mBehaviours[mFacing]==null||!mCovers.mBehaviours[mFacing].isOpaque(mFacing, mCovers));
 	}
-	
+
+	// GTCH, 重写这个方法保证和原本的逻辑一致
 	@Override
-	public IPacket getClientDataPacket(boolean aSendAll) {
+	public IPacket getClientDataPacketNoSendAll(boolean aSendAll) {
+		int tStacksize = slotHas(1) ? slot(1).stackSize : -1;
+		if (tStacksize <= Short.MAX_VALUE) return getClientDataPacketShort(aSendAll, (short)tStacksize);
+		return getClientDataPacketInteger(aSendAll, tStacksize);
+	}
+	@Override
+	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
+		// 禁用 VisualData
 		int tStacksize = slotHas(1) ? slot(1).stackSize : -1;
 		short tMeta = slotHas(1) ? ST.meta_(slot(1)) : 0, tID = ST.id(slot(1));
-		return aSendAll ? getClientDataPacketByteArray(aSendAll, (byte)UT.Code.getR(mRGBa), (byte)UT.Code.getG(mRGBa), (byte)UT.Code.getB(mRGBa), getDirectionData(), mMode, UT.Code.toByteS(tID, 0), UT.Code.toByteS(tID, 1), UT.Code.toByteS(tMeta, 0), UT.Code.toByteS(tMeta, 1), UT.Code.toByteI(tStacksize, 0), UT.Code.toByteI(tStacksize, 1), UT.Code.toByteI(tStacksize, 2), UT.Code.toByteI(tStacksize, 3)) : tStacksize <= Short.MAX_VALUE ? getClientDataPacketShort(aSendAll, (short)tStacksize) : getClientDataPacketInteger(aSendAll, tStacksize);
+		rList.add(3, getDirectionData());
+		rList.add(4, mMode);
+		rList.add(5, UT.Code.toByteS(tID, 0));
+		rList.add(6, UT.Code.toByteS(tID, 1));
+		rList.add(7, UT.Code.toByteS(tMeta, 0));
+		rList.add(8, UT.Code.toByteS(tMeta, 1));
+		rList.add(9, UT.Code.toByteI(tStacksize, 0));
+		rList.add(10, UT.Code.toByteI(tStacksize, 1));
+		rList.add(11, UT.Code.toByteI(tStacksize, 2));
+		rList.add(12, UT.Code.toByteI(tStacksize, 3));
 	}
-	
+
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
-		mRGBa = UT.Code.getRGBInt(new short[] {UT.Code.unsignB(aData[0]), UT.Code.unsignB(aData[1]), UT.Code.unsignB(aData[2])});
+		setRGBData(aData[0], aData[1], aData[2], aData[aData.length-1]);
 		setDirectionData(aData[3]);
 		mMode = aData[4];
 		slot(1, ST.make(UT.Code.combine(aData[5], aData[6]), UT.Code.combine(aData[9], aData[10], aData[11], aData[12]), UT.Code.combine(aData[7], aData[8])));
@@ -557,6 +593,7 @@ public abstract class MultiTileEntityMassStorage extends TileEntityBase09FacingS
 		
 		if (mData.mPrefix.contains(TD.Prefix.DUST_BASED)) return OM.dust(mData.mMaterial.mMaterial, mPartialUnits);
 		if (mData.mPrefix.contains(TD.Prefix.INGOT_BASED)) return OM.ingot(mData.mMaterial.mMaterial, mPartialUnits);
+		if (mData.mPrefix.contains(TD.Prefix.WIRE_BASED)) return OP.wireGt01.mat(mData.mMaterial.mMaterial, mPartialUnits / OP.wireGt01.mAmount);
 		
 		if (mData.mPrefix == OP.gem || mData.mPrefix == OP.blockGem) {
 			return OP.gem.mat(mData.mMaterial.mMaterial, mPartialUnits / OP.gem.mAmount);
@@ -594,6 +631,9 @@ public abstract class MultiTileEntityMassStorage extends TileEntityBase09FacingS
 			}
 			if (mData.mPrefix.contains(TD.Prefix.INGOT_BASED)) {
 				return aData.mPrefix.contains(TD.Prefix.INGOT_BASED) ? aData.mPrefix.mAmount : 0;
+			}
+			if (mData.mPrefix.contains(TD.Prefix.WIRE_BASED)) {
+				return aData.mPrefix.contains(TD.Prefix.WIRE_BASED) ? aData.mPrefix.mAmount : 0;
 			}
 			if (mData.mPrefix == OP.gem || mData.mPrefix == OP.blockGem) {
 				return aData.mPrefix == OP.gem || aData.mPrefix == OP.blockGem ? aData.mPrefix.mAmount : 0;

@@ -23,6 +23,8 @@ import static gregapi.data.CS.*;
 
 import java.util.List;
 
+import com.google.common.collect.Lists;
+import com.google.common.primitives.Bytes;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetEnchantPowerBonus;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetSelectedBoundingBoxFromPool;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_SetBlockBoundsBasedOnState;
@@ -58,6 +60,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraftforge.common.ChestGenHooks;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Gregorius Techneticies
@@ -249,17 +252,22 @@ public class MultiTileEntityBookShelf extends TileEntityBase09FacingSingle imple
 	public byte isProvidingWeakPower2(byte aSide) {
 		return (byte)(mRedstoneDelay == 0 ? 0 : 15);
 	}
-	
+
+	// 保证和原本逻辑一样，无论怎样都全部 send
 	@Override
-	public IPacket getClientDataPacket(boolean aSendAll) {
-		return getClientDataPacketByteArray(aSendAll, (byte)UT.Code.getR(mRGBa), (byte)UT.Code.getG(mRGBa), (byte)UT.Code.getB(mRGBa), getDirectionData(), mDisplay[0], mDisplay[1], mDisplay[2], mDisplay[3], mDisplay[4], mDisplay[5], mDisplay[6], mDisplay[7], mDisplay[8], mDisplay[9], mDisplay[10], mDisplay[11], mDisplay[12], mDisplay[13], mDisplay[14], mDisplay[15], mDisplay[16], mDisplay[17], mDisplay[18], mDisplay[19], mDisplay[20], mDisplay[21], mDisplay[22], mDisplay[23], mDisplay[24], mDisplay[25], mDisplay[26], mDisplay[27]);
+	public boolean sendAny(boolean aSendAll) {return T;}
+	// GTCH, 重写这个方法来扩展客户端数据
+	@Override
+	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
+		rList.add(3, getDirectionData());
+		for (int i = 0; i < mDisplay.length; i++) rList.add(4+i, mDisplay[i]);
 	}
 	
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
-		mRGBa = UT.Code.getRGBInt(new short[] {UT.Code.unsignB(aData[0]), UT.Code.unsignB(aData[1]), UT.Code.unsignB(aData[2])});
+		setRGBData(aData[0], aData[1], aData[1], aData[aData.length-1]);
 		setDirectionData(aData[3]);
-		for (int i = 0; i < 28; i++) mDisplay[i] = aData[i+4];
+		System.arraycopy(aData, 4, mDisplay, 0, mDisplay.length);
 		return T;
 	}
 	

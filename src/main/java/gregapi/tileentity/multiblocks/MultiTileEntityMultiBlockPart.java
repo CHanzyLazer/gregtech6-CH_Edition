@@ -80,6 +80,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Gregorius Techneticies
@@ -302,18 +303,26 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 		}
 	}
 
+
 	// 更多显示数据的收发
+	// GTCH, 重写这个方法保证和原本的逻辑一致
 	@Override
-	public IPacket getClientDataPacket(boolean aSendAll) {
-		return aSendAll ? getClientDataPacketByteArray(aSendAll, (byte)UT.Code.getR(mRGBa), (byte)UT.Code.getG(mRGBa), (byte)UT.Code.getB(mRGBa), getVisualData(), getVisualData_CH()) : getClientDataPacketByteArray(aSendAll, getVisualData(), getVisualData_CH());
+	public IPacket getClientDataPacketNoSendAll(boolean aSendAll) {
+		return getClientDataPacketByteArray(aSendAll, getVisualData(), getVisualData_CH());
 	}
 	@Override
+	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
+		super.writeToClientDataPacketByteList(rList);
+		rList.add(4, getVisualData_CH());
+	}
+
+	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
-		if(aData.length == 5){
-			mRGBa = UT.Code.getRGBInt(new short[] {UT.Code.unsignB(aData[0]), UT.Code.unsignB(aData[1]), UT.Code.unsignB(aData[2])});
+		if(aData.length >= 5){
+			setRGBData(aData[0], aData[1], aData[2], aData[aData.length-1]);
 			setVisualData(aData[3]);
 			setVisualData_CH(aData[4]);
-		} else if (aData.length == 2) {
+		} else if (aData.length >= 2) {
 			setVisualData(aData[0]);
 			setVisualData_CH(aData[1]);
 		}

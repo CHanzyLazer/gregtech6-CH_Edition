@@ -4,8 +4,8 @@ import com.alibaba.fastjson.annotation.JSONField;
 import gregapi.oredict.OreDictMaterial;
 import gregapi.util.UT;
 import gregtechCH.config.machine.AttributesMachine_CH;
-import gregtechCH.config.machine.MaterialDeserializer_CH;
-import gregtechCH.config.machine.MaterialSerializer_CH;
+import gregtechCH.config.serializer.MaterialDeserializer_CH;
+import gregtechCH.config.serializer.MaterialSerializer_CH;
 import gregtechCH.util.UT_CH;
 
 import static gregapi.data.CS.*;
@@ -49,8 +49,8 @@ public abstract class AttributesLargeMotor_CH extends AttributesMachine_CH {
             nbtOutput[i] = UT.Code.units(aOutputMid, getLengthCurveOriginal(1, 3, 3, 2, tL-1, tLm-1, i), getLengthCurveTarget(1, 3, 3, 2, tL-1, tLm-1, i), F);
             nbtEfficiency[i] = (int) UT.Code.units(aEfficiencyMid, getLengthCurveOriginal(1, 2, 6, 5, tL-1, tLm-1, i), getLengthCurveTarget(1, 2, 6, 5, tL-1, tLm-1, i), F);
             nbtEfficiency[i] = (int) UT_CH.Code.effNormalizeRound(nbtEfficiency[i]);
-            nbtPreheatEnergy[i] = UT.Code.divup(aOutputMid * 8000 * (i + 1), tL);
-            nbtPreheatCost[i] = UT.Code.divup(aOutputMid * (i + 1), 128L * tL);
+            nbtPreheatEnergy[i] = UT.Code.divup(aOutputMid * 24000 * (i + 1), tL);
+            nbtPreheatCost[i] = UT.Code.divup(aOutputMid * (i + 1), 96L * tL);
             nbtCooldownRate[i] = UT.Code.divup(aOutputMid * (i + 1), tL);
         }
     }

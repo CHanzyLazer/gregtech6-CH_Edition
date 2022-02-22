@@ -37,6 +37,7 @@ import gregapi.render.IIconContainer;
 import gregapi.render.ITexture;
 import gregapi.tileentity.ITileEntityFunnelAccessible;
 import gregapi.tileentity.base.TileEntityBase07Paintable;
+import gregtechCH.fluid.IFluidHandler_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -48,7 +49,7 @@ import net.minecraftforge.fluids.IFluidTank;
 /**
  * @author Gregorius Techneticies
  */
-public class MultiTileEntityEnderGarbageBin extends TileEntityBase07Paintable implements IFluidHandler, ITileEntityFunnelAccessible, IMTE_AddToolTips {
+public class MultiTileEntityEnderGarbageBin extends TileEntityBase07Paintable implements IFluidHandler_CH, ITileEntityFunnelAccessible, IMTE_AddToolTips {
 	static {
 		LH.add("gt.multitileentity.ender.garbage.bin.tooltip.1", "Trash Bin deleting Items & Fluids, or moving them to the Servers Garbage Dump");
 		LH.add("gt.multitileentity.ender.garbage.bin.tooltip.2", "Items & Fluids entering this will be dumped inside the Garbage Dimension");
@@ -145,4 +146,9 @@ public class MultiTileEntityEnderGarbageBin extends TileEntityBase07Paintable im
 	
 	@Override public Object getGUIClient2(int aGUIID, EntityPlayer aPlayer) {return new ContainerClientDefault(aPlayer.inventory, this, aGUIID, RES_PATH_GUI + "machines/Trash.png");}
 	@Override public Object getGUIServer2(int aGUIID, EntityPlayer aPlayer) {return new ContainerCommonDefault(aPlayer.inventory, this, aGUIID);}
+
+	@Override
+	public boolean canFillExtra(FluidStack aFluid) {
+		return T;
+	}
 }

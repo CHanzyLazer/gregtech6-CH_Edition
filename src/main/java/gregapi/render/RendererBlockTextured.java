@@ -20,6 +20,8 @@
 package gregapi.render;
 
 import static gregapi.data.CS.*;
+import static java.lang.Math.ceil;
+import static java.lang.Math.floor;
 
 import org.lwjgl.opengl.GL11;
 
@@ -165,9 +167,18 @@ public class RendererBlockTextured implements ISimpleBlockRenderingHandler, IIte
 		int aBrightness = 240;
 		if (aWorld != null) {
 			if (aFullBlock && !aShouldSideBeRendered) return F;
-			aBrightness = aBlock.getMixedBrightnessForBlock(aWorld, aX, aFullBlock?aY-1:aY, aZ);
+			if (aFullBlock) {
+				aBrightness = aBlock.getMixedBrightnessForBlock(aWorld, aX, aY-1, aZ);
+			} else {
+				// GTCH, 对于超出边界的渲染另外讨论
+				aBrightness = 0;
+				for (int i = (int)floor(aRenderer.renderMinX); i<(int)ceil(aRenderer.renderMaxX); ++i) for (int j = (int)floor(aRenderer.renderMinZ); j<(int)ceil(aRenderer.renderMaxZ); ++j) {
+					aBrightness = Math.max(aBrightness, aBlock.getMixedBrightnessForBlock(aWorld, aX+i,  aY + (int)floor(aRenderer.renderMinY), aZ+j));
+				}
+			}
 			aRenderer.enableAO = T;
 		}
+		aRenderer.flipTexture = !aFullBlock;
 		aIcon.renderYNeg(aRenderer, aBlock, aX, aY, aZ, aBrightness, !aFullBlock);
 		aRenderer.flipTexture = F;
 		aRenderer.colorRedTopLeft = aRenderer.colorRedBottomLeft = aRenderer.colorRedBottomRight = aRenderer.colorRedTopRight = aRenderer.colorGreenTopLeft = aRenderer.colorGreenBottomLeft = aRenderer.colorGreenBottomRight = aRenderer.colorGreenTopRight = aRenderer.colorBlueTopLeft = aRenderer.colorBlueBottomLeft = aRenderer.colorBlueBottomRight = aRenderer.colorBlueTopRight = 0.5F;
@@ -179,7 +190,15 @@ public class RendererBlockTextured implements ISimpleBlockRenderingHandler, IIte
 		int aBrightness = 240;
 		if (aWorld != null) {
 			if (aFullBlock && !aShouldSideBeRendered) return F;
-			aBrightness = aBlock.getMixedBrightnessForBlock(aWorld, aX, aFullBlock?aY+1:aY, aZ);
+			if (aFullBlock) {
+				aBrightness = aBlock.getMixedBrightnessForBlock(aWorld, aX, aY+1, aZ);
+			} else {
+				// GTCH, 对于超出边界的渲染另外讨论
+				aBrightness = 0;
+				for (int i = (int)floor(aRenderer.renderMinX); i<(int)ceil(aRenderer.renderMaxX); ++i) for (int j = (int)floor(aRenderer.renderMinZ); j<(int)ceil(aRenderer.renderMaxZ); ++j) {
+					aBrightness = Math.max(aBrightness, aBlock.getMixedBrightnessForBlock(aWorld, aX+i,  aY + (int)ceil(aRenderer.renderMaxY) - 1, aZ+j));
+				}
+			}
 			aRenderer.enableAO = T;
 		}
 		aIcon.renderYPos(aRenderer, aBlock, aX, aY, aZ, aBrightness, !aFullBlock);
@@ -193,7 +212,15 @@ public class RendererBlockTextured implements ISimpleBlockRenderingHandler, IIte
 		int aBrightness = 240;
 		if (aWorld != null) {
 			if (aFullBlock && !aShouldSideBeRendered) return F;
-			aBrightness = aBlock.getMixedBrightnessForBlock(aWorld, aX, aY, aFullBlock?aZ-1:aZ);
+			if (aFullBlock) {
+				aBrightness = aBlock.getMixedBrightnessForBlock(aWorld, aX, aY, aZ-1);
+			} else {
+				// GTCH, 对于超出边界的渲染另外讨论
+				aBrightness = 0;
+				for (int i = (int)floor(aRenderer.renderMinX); i<(int)ceil(aRenderer.renderMaxX); ++i) for (int j = (int)floor(aRenderer.renderMinY); j<(int)ceil(aRenderer.renderMaxY); ++j) {
+					aBrightness = Math.max(aBrightness, aBlock.getMixedBrightnessForBlock(aWorld, aX+i,  aY+j, aZ + (int)floor(aRenderer.renderMinZ)));
+				}
+			}
 			aRenderer.enableAO = T;
 		}
 		aRenderer.flipTexture = !aFullBlock;
@@ -208,7 +235,15 @@ public class RendererBlockTextured implements ISimpleBlockRenderingHandler, IIte
 		int aBrightness = 240;
 		if (aWorld != null) {
 			if (aFullBlock && !aShouldSideBeRendered) return F;
-			aBrightness = aBlock.getMixedBrightnessForBlock(aWorld, aX, aY, aFullBlock?aZ+1:aZ);
+			if (aFullBlock) {
+				aBrightness = aBlock.getMixedBrightnessForBlock(aWorld, aX, aY, aZ+1);
+			} else {
+				// GTCH, 对于超出边界的渲染另外讨论
+				aBrightness = 0;
+				for (int i = (int)floor(aRenderer.renderMinX); i<(int)ceil(aRenderer.renderMaxX); ++i) for (int j = (int)floor(aRenderer.renderMinY); j<(int)ceil(aRenderer.renderMaxY); ++j) {
+					aBrightness = Math.max(aBrightness, aBlock.getMixedBrightnessForBlock(aWorld, aX+i,  aY+j, aZ + (int)ceil(aRenderer.renderMaxZ) - 1));
+				}
+			}
 			aRenderer.enableAO = T;
 		}
 		aIcon.renderZPos(aRenderer, aBlock, aX, aY, aZ, aBrightness, !aFullBlock);
@@ -222,7 +257,15 @@ public class RendererBlockTextured implements ISimpleBlockRenderingHandler, IIte
 		int aBrightness = 240;
 		if (aWorld != null) {
 			if (aFullBlock && !aShouldSideBeRendered) return F;
-			aBrightness = aBlock.getMixedBrightnessForBlock(aWorld, aFullBlock?aX-1:aX, aY, aZ);
+			if (aFullBlock) {
+				aBrightness = aBlock.getMixedBrightnessForBlock(aWorld, aX-1, aY, aZ);
+			} else {
+				// GTCH, 对于超出边界的渲染另外讨论
+				aBrightness = 0;
+				for (int i = (int)floor(aRenderer.renderMinZ); i<(int)ceil(aRenderer.renderMaxZ); ++i) for (int j = (int)floor(aRenderer.renderMinY); j<(int)ceil(aRenderer.renderMaxY); ++j) {
+					aBrightness = Math.max(aBrightness, aBlock.getMixedBrightnessForBlock(aWorld, aX + (int)floor(aRenderer.renderMinX),  aY+j, aZ+i));
+				}
+			}
 			aRenderer.enableAO = T;
 		}
 		aIcon.renderXNeg(aRenderer, aBlock, aX, aY, aZ, aBrightness, !aFullBlock);
@@ -236,7 +279,15 @@ public class RendererBlockTextured implements ISimpleBlockRenderingHandler, IIte
 		int aBrightness = 240;
 		if (aWorld != null) {
 			if (aFullBlock && !aShouldSideBeRendered) return F;
-			aBrightness = aBlock.getMixedBrightnessForBlock(aWorld, aFullBlock?aX+1:aX, aY, aZ);
+			if (aFullBlock) {
+				aBrightness = aBlock.getMixedBrightnessForBlock(aWorld, aX-1, aY, aZ);
+			} else {
+				// GTCH, 对于超出边界的渲染另外讨论
+				aBrightness = 0;
+				for (int i = (int)floor(aRenderer.renderMinZ); i<(int)ceil(aRenderer.renderMaxZ); ++i) for (int j = (int)floor(aRenderer.renderMinY); j<(int)ceil(aRenderer.renderMaxY); ++j) {
+					aBrightness = Math.max(aBrightness, aBlock.getMixedBrightnessForBlock(aWorld, aX + (int)ceil(aRenderer.renderMaxX) - 1,  aY+j, aZ+i));
+				}
+			}
 			aRenderer.enableAO = T;
 		}
 		aRenderer.flipTexture = !aFullBlock;

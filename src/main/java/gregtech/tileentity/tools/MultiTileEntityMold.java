@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.common.primitives.Bytes;
 import gregapi.GT_API_Proxy;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_AddToolTips;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetCollisionBoundingBoxFromPool;
@@ -78,6 +79,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Gregorius Techneticies
@@ -425,17 +427,26 @@ public class MultiTileEntityMold extends TileEntityBase07Paintable implements IT
 	
 	@Override
 	public void onTickResetChecks(long aTimer, boolean aIsServerSide) {/* Needed to be delayed. */}
-	
+
+	// GTCH, 重写这个方法保证和原本的逻辑一致
 	@Override
-	public IPacket getClientDataPacket(boolean aSendAll) {
-		return getClientDataPacketByteArray(T, UT.Code.toByteS(mDisplay, 0), UT.Code.toByteS(mDisplay, 1), (byte)UT.Code.getR(mRGBa), (byte)UT.Code.getG(mRGBa), (byte)UT.Code.getB(mRGBa), UT.Code.toByteI(mShape, 0), UT.Code.toByteI(mShape, 1), UT.Code.toByteI(mShape, 2), UT.Code.toByteI(mShape, 3));
+	public boolean sendAny(boolean aSendAll) {return T;}
+	// GTCH, 重写这个方法来扩展客户端数据
+	@Override
+	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
+		rList.add(0, UT.Code.toByteS(mDisplay, 0));
+		rList.add(1, UT.Code.toByteS(mDisplay, 1)); // 保持原本一致的顺序
+		rList.add(5, UT.Code.toByteI(mShape, 0));
+		rList.add(6, UT.Code.toByteI(mShape, 1));
+		rList.add(7, UT.Code.toByteI(mShape, 2));
+		rList.add(8, UT.Code.toByteI(mShape, 3));
 	}
-	
+
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		mDisplay = UT.Code.combine(aData[0], aData[1]);
-		mRGBa = UT.Code.getRGBInt(new short[] {UT.Code.unsignB(aData[2]), UT.Code.unsignB(aData[3]), UT.Code.unsignB(aData[4])});
-		if (aData.length > 5) mShape = UT.Code.combine(aData[5], aData[6], aData[7], aData[8]);
+		setRGBData(aData[2], aData[3], aData[4], aData[aData.length-1]);
+		if (aData.length > 8) mShape = UT.Code.combine(aData[5], aData[6], aData[7], aData[8]);
 		return T;
 	}
 	

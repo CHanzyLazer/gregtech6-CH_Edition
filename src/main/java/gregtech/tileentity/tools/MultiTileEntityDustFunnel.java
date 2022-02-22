@@ -23,13 +23,11 @@ import static gregapi.data.CS.*;
 
 import java.util.List;
 
+import com.google.common.primitives.Bytes;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_AddToolTips;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_SyncDataShort;
-import gregapi.data.LH;
+import gregapi.data.*;
 import gregapi.data.LH.Chat;
-import gregapi.data.MT;
-import gregapi.data.OP;
-import gregapi.data.TD;
 import gregapi.network.INetworkHandler;
 import gregapi.network.IPacket;
 import gregapi.old.Textures;
@@ -52,6 +50,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Gregorius Techneticies
@@ -163,18 +162,25 @@ public class MultiTileEntityDustFunnel extends TileEntityBase07Paintable impleme
 		super.onTickResetChecks(aTimer, aIsServerSide);
 		oDust = mDust;
 	}
-	
+
+	// GTCH, 重写这个方法保证和原本的逻辑一致
 	@Override
-	public IPacket getClientDataPacket(boolean aSendAll) {
-		if (aSendAll) return getClientDataPacketByteArray(aSendAll, UT.Code.toByteS(mDust, 0), UT.Code.toByteS(mDust, 1), mMode, (byte)UT.Code.getR(mRGBa), (byte)UT.Code.getG(mRGBa), (byte)UT.Code.getB(mRGBa));
+	public IPacket getClientDataPacketNoSendAll(boolean aSendAll) {
 		return getClientDataPacketShort(aSendAll, mDust);
 	}
-	
+	@Override
+	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
+		// 禁用 VisualData
+		rList.add(0, UT.Code.toByteS(mDust, 0));
+		rList.add(1, UT.Code.toByteS(mDust, 1)); // 保持原本一致的顺序
+		rList.add(2, mMode);
+	}
+
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		mDust = UT.Code.combine(aData[0], aData[1]);
 		mMode = aData[2];
-		mRGBa = UT.Code.getRGBInt(new short[] {UT.Code.unsignB(aData[3]), UT.Code.unsignB(aData[4]), UT.Code.unsignB(aData[5])});
+		setRGBData(aData[3], aData[4], aData[5], aData[aData.length-1]);
 		return T;
 	}
 	

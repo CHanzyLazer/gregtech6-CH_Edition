@@ -23,6 +23,7 @@ import static gregapi.data.CS.*;
 
 import java.util.List;
 
+import com.google.common.primitives.Bytes;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_AddToolTips;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetCollisionBoundingBoxFromPool;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetSelectedBoundingBoxFromPool;
@@ -63,6 +64,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fluids.IFluidTank;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Gregorius Techneticies
@@ -186,17 +188,23 @@ public class MultiTileEntityJuicer extends TileEntityBase07Paintable implements 
 		super.onTickResetChecks(aTimer, aIsServerSide);
 		oDisplay = mDisplay;
 	}
-	
+
+	// GTCH, 重写这个方法保证和原本的逻辑一致
 	@Override
-	public IPacket getClientDataPacket(boolean aSendAll) {
-		if (aSendAll) return getClientDataPacketByteArray(aSendAll, UT.Code.toByteS(mDisplay, 0), UT.Code.toByteS(mDisplay, 1), (byte)UT.Code.getR(mRGBa), (byte)UT.Code.getG(mRGBa), (byte)UT.Code.getB(mRGBa));
+	public IPacket getClientDataPacketNoSendAll(boolean aSendAll) {
 		return getClientDataPacketByteArray(aSendAll, UT.Code.toByteS(mDisplay, 0), UT.Code.toByteS(mDisplay, 1));
 	}
-	
+	@Override
+	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
+		// 禁用 VisualData
+		rList.add(0, UT.Code.toByteS(mDisplay, 0));
+		rList.add(1, UT.Code.toByteS(mDisplay, 1)); // 保持原本一致的顺序
+	}
+
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		if (aData.length > 1) mDisplay = UT.Code.combine(aData[0], aData[1]);
-		if (aData.length > 4) mRGBa = UT.Code.getRGBInt(new short[] {UT.Code.unsignB(aData[2]), UT.Code.unsignB(aData[3]), UT.Code.unsignB(aData[4])});
+		if (aData.length > 4) setRGBData(aData[2], aData[3], aData[4], aData[aData.length-1]);
 		return T;
 	}
 	

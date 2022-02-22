@@ -55,6 +55,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Gregorius Techneticies
@@ -159,17 +160,23 @@ public class MultiTileEntityMoldCoinage extends TileEntityBase07Paintable implem
 		super.onTickResetChecks(aTimer, aIsServerSide);
 		oDisplayedMetal = mDisplayedMetal;
 	}
-	
+
+	// GTCH, 重写这个方法保证和原本的逻辑一致
 	@Override
-	public IPacket getClientDataPacket(boolean aSendAll) {
-		if (aSendAll) return getClientDataPacketByteArray(T, UT.Code.toByteS(mDisplayedMetal, 0), UT.Code.toByteS(mDisplayedMetal, 1), (byte)UT.Code.getR(mRGBa), (byte)UT.Code.getG(mRGBa), (byte)UT.Code.getB(mRGBa));
+	public IPacket getClientDataPacketNoSendAll(boolean aSendAll) {
 		return getClientDataPacketShort(F, mDisplayedMetal);
 	}
-	
+	@Override
+	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
+		// 禁用 VisualData
+		rList.add(0, UT.Code.toByteS(mDisplayedMetal, 0));
+		rList.add(1, UT.Code.toByteS(mDisplayedMetal, 1)); // 保持原本一致的顺序
+	}
+
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		mDisplayedMetal = UT.Code.combine(aData[0], aData[1]);
-		if (aData.length >= 5) mRGBa = UT.Code.getRGBInt(new short[] {UT.Code.unsignB(aData[2]), UT.Code.unsignB(aData[3]), UT.Code.unsignB(aData[4])});
+		if (aData.length >= 5) setRGBData(aData[2], aData[3], aData[4], aData[aData.length-1]);
 		return T;
 	}
 	

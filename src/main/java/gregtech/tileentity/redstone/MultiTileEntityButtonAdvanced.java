@@ -48,6 +48,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Gregorius Techneticies
@@ -243,17 +244,18 @@ public class MultiTileEntityButtonAdvanced extends TileEntityBase09FacingSingle 
 	public byte isProvidingStrongPower2(byte aSide) {
 		return aSide == mFacing && mActive && !mLampMode ? mStrength : 0;
 	}
-	
+
+	// GTCH, 重写这个方法来扩展客户端数据
 	@Override
-	public IPacket getClientDataPacket(boolean aSendAll) {
-		return aSendAll ? getClientDataPacketByteArray(aSendAll, (byte)UT.Code.getR(mRGBa), (byte)UT.Code.getG(mRGBa), (byte)UT.Code.getB(mRGBa), getVisualData(), getDirectionData(), mType, mIndex) : getClientDataPacketByte(aSendAll, getVisualData());
+	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
+		super.writeToClientDataPacketByteList(rList);
+		rList.add(5, mType);
+		rList.add(6, mIndex);
 	}
-	
+
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
-		mRGBa = UT.Code.getRGBInt(new short[] {UT.Code.unsignB(aData[0]), UT.Code.unsignB(aData[1]), UT.Code.unsignB(aData[2])});
-		setVisualData(aData[3]);
-		setDirectionData(aData[4]);
+		super.receiveDataByteArray(aData, aNetworkHandler);
 		mType = aData[5];
 		mIndex = aData[6];
 		if (mType < 0 || mIndex < 0 || mType >= sTextures.length || mIndex >= sTextures[mType].length) mType = mIndex = 0;

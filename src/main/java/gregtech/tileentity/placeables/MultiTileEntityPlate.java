@@ -20,7 +20,9 @@
 package gregtech.tileentity.placeables;
 
 import static gregapi.data.CS.*;
+import static gregapi.block.multitileentity.IMultiTileEntity.*;
 
+import gregapi.cover.ITileEntityCoverable;
 import gregapi.data.OP;
 import gregapi.data.TD;
 import gregapi.old.Textures;
@@ -28,15 +30,20 @@ import gregapi.render.BlockTextureDefault;
 import gregapi.render.IIconContainer;
 import gregapi.tileentity.misc.MultiTileEntityPlaceable;
 import gregapi.util.UT;
+import gregapi.util.WD;
+import gregtechCH.config.ConfigForge_CH.DATA_GTCH;
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.World;
 
 /**
  * @author Gregorius Techneticies
  */
-public class MultiTileEntityPlate extends MultiTileEntityPlaceable {
+public class MultiTileEntityPlate extends MultiTileEntityPlaceable implements IMTE_CanPlace {
 	public static IIconContainer
 	sTextureSides       = new Textures.BlockIcons.CustomIcon("machines/placeables/plate/sides"),
 	sTextureTop         = new Textures.BlockIcons.CustomIcon("machines/placeables/plate/top");
@@ -67,4 +74,14 @@ public class MultiTileEntityPlate extends MultiTileEntityPlaceable {
 	@Override public ItemStack getStackFromBlock(byte aSide) {return OP.plate.mat(mMaterial, 1);}
 	
 	@Override public String getTileEntityName() {return "gt.multitileentity.plate";}
+
+	// GTCH, 用来在作为覆盖板时禁用放置
+	@Override public boolean canPlace(ItemStack aStack, EntityPlayer aPlayer, World aWorld, int aX, int aY, int aZ, byte aSide, float aHitX, float aHitY, float aHitZ) {
+		if (aPlayer == null) return T;
+		if (DATA_GTCH.sneakingMountCover && aPlayer.isSneaking()) {
+			TileEntity tTileEntity = WD.te(aWorld, aX-OFFX[aSide], aY-OFFY[aSide], aZ-OFFZ[aSide], F);
+			if ((tTileEntity instanceof ITileEntityCoverable) && ((ITileEntityCoverable) tTileEntity).getCoverItem(aSide) == null) return F;
+		}
+		return T;
+	}
 }

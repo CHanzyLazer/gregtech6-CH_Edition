@@ -63,8 +63,9 @@ public class CoverTextureCanvas extends AbstractCoverDefault {
 		}
 		super.addToolTips(aList, aStack, aF3_H);
 	}
-	
-	@Override public ITexture getCoverTextureSurface(byte aSide, CoverData aData) {return aData.mVisuals[aSide] == 0 ? null : BlockTextureCopied.get(Block.getBlockById((aData.mVisuals[aSide] >>> 4) & 4095), SIDE_ANY, aData.mVisuals[aSide] & 15);}
+
+	// GTCH, 在不拟态时显示帆布的颜色
+	@Override public ITexture getCoverTextureSurface(byte aSide, CoverData aData) {return aData.mVisuals[aSide] == 0 ? mTexture : BlockTextureCopied.get(Block.getBlockById((aData.mVisuals[aSide] >>> 4) & 4095), SIDE_ANY, aData.mVisuals[aSide] & 15);}
 	@Override public ITexture getCoverTextureAttachment(byte aSide, CoverData aData, byte aTextureSide) {return aSide != aTextureSide ? mTexture : BlockTextureMulti.get(mTexture, getCoverTextureSurface(aSide, aData));}
 	@Override public ITexture getCoverTextureHolder(byte aSide, CoverData aData, byte aTextureSide) {return mTexture;}
 	@Override public boolean isSealable(byte aCoverSide, CoverData aData) {return F;}

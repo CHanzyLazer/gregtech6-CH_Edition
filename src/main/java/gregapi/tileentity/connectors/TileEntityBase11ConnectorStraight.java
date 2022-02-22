@@ -33,29 +33,37 @@ import net.minecraft.util.AxisAlignedBB;
  */
 public abstract class TileEntityBase11ConnectorStraight extends TileEntityBase10ConnectorRendered {
 	@Override
-	public int getRenderPasses2(Block aBlock, boolean[] aShouldSideBeRendered) {
-		if (worldObj == null && !hasCovers()) mConnections = (byte)(SBIT_S|SBIT_N);
-		return mFoam && !mFoamDried ? 2 : 1;
+	protected int getRenderPasses3(Block aBlock, boolean[] aShouldSideBeRendered) {
+		return (mFoam || mFoamDried) ? 2 : 1;
 	}
 	
 	@Override
 	public ITexture getTexture2(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
-		if (aRenderPass == 1) return aShouldSideBeRendered[aSide] ? getTextureCFoam   (aSide, mConnections, mDiameter, aRenderPass) : null;
-		return mFoamDried ?          aShouldSideBeRendered[aSide] ? getTextureCFoamDry(aSide, mConnections, mDiameter, aRenderPass) : null : mConnections == 0 || (mDiameter >= 1.0F && connected(aSide)) ? getTextureConnected(aSide, mConnections, mDiameter, aRenderPass) : getTextureSide(aSide, mConnections, mDiameter, aRenderPass);
+		if (aRenderPass == 1) return (aShouldSideBeRendered[aSide] && (mFoam || mFoamDried)) ? (mFoamDried ? getTextureCFoamDry(aSide, mConnections, mDiameter, aRenderPass) : getTextureCFoam(aSide, mConnections, mDiameter, aRenderPass)) : null;
+		if (aRenderPass == 0) {
+			if (mDiameter >= 1.0F && !aShouldSideBeRendered[aSide]) return null;
+			if (mConnections == 0) return getTextureConnected(aSide, mConnections, mDiameter, aRenderPass);
+			if (!connected(aSide)) return getTextureSide(aSide, mConnections, mDiameter, aRenderPass);
+			if (!aShouldSideBeRendered[aSide]) return null;
+			return getTextureConnected(aSide, mConnections, mDiameter, aRenderPass);
+		}
+		return null;
 	}
 	
 	@Override
 	public boolean setBlockBounds2(Block aBlock, int aRenderPass, boolean[] aShouldSideBeRendered) {
-		return !mFoamDried && aRenderPass == 0 && mDiameter < 1.0F && box(aBlock
-		,    FACE_CONNECTED[SIDE_X_NEG][mConnections] ? -getConnectorLength(SIDE_X_NEG, getAdjacentTileEntity(SIDE_X_NEG, F, F)) : (1.0F-mDiameter)/2.0F
-		,    FACE_CONNECTED[SIDE_Y_NEG][mConnections] ? -getConnectorLength(SIDE_Y_NEG, getAdjacentTileEntity(SIDE_Y_NEG, F, F)) : (1.0F-mDiameter)/2.0F
-		,    FACE_CONNECTED[SIDE_Z_NEG][mConnections] ? -getConnectorLength(SIDE_Z_NEG, getAdjacentTileEntity(SIDE_Z_NEG, F, F)) : (1.0F-mDiameter)/2.0F
-		, 1-(FACE_CONNECTED[SIDE_X_POS][mConnections] ?  getConnectorLength(SIDE_X_POS, getAdjacentTileEntity(SIDE_X_POS, F, F)) : (1.0F-mDiameter)/2.0F)
-		, 1-(FACE_CONNECTED[SIDE_Y_POS][mConnections] ?  getConnectorLength(SIDE_Y_POS, getAdjacentTileEntity(SIDE_Y_POS, F, F)) : (1.0F-mDiameter)/2.0F)
-		, 1-(FACE_CONNECTED[SIDE_Z_POS][mConnections] ?  getConnectorLength(SIDE_Z_POS, getAdjacentTileEntity(SIDE_Z_POS, F, F)) : (1.0F-mDiameter)/2.0F)
-		);
+		return aRenderPass == 0 && mDiameter < 1.0F && setBlockBoundsStraight(aBlock);
 	}
-	
+
+	// 直接根据内部属性设置直线连接器的方块大小
+	protected boolean setBlockBoundsStraight(Block aBlock) {
+		if (mConnections == 0) return setBlockBoundsDefault(aBlock);
+		for(byte tSide : ALL_SIDES_VALID) {
+			if (connected(tSide))  return setBlockBoundsSide(aBlock, tSide, mDiameter, connected(OPOS[tSide])?(1.0F+mCRLengths[OPOS[tSide]]):(1.0F+mDiameter)/2.0F, mCRLengths[tSide]);
+		}
+		return F;
+	}
+
 	@Override public boolean usesRenderPass2(int aRenderPass, boolean[] aShouldSideBeRendered) {return T;}
 	@Override public void addCollisionBoxesToList2(AxisAlignedBB aAABB, List<AxisAlignedBB> aList, Entity aEntity) {if (!addDefaultCollisionBoxToList()) box(aAABB, aList, FACE_CONNECTED[SIDE_X_NEG][mConnections] ? 0 : (1.0F-mDiameter)/2.0F, FACE_CONNECTED[SIDE_Y_NEG][mConnections] ? 0 : (1.0F-mDiameter)/2.0F, FACE_CONNECTED[SIDE_Z_NEG][mConnections] ? 0 : (1.0F-mDiameter)/2.0F, FACE_CONNECTED[SIDE_X_POS][mConnections] ? 1 : 1-(1.0F-mDiameter)/2.0F, FACE_CONNECTED[SIDE_Y_POS][mConnections] ? 1 : 1-(1.0F-mDiameter)/2.0F, FACE_CONNECTED[SIDE_Z_POS][mConnections] ? 1 : 1-(1.0F-mDiameter)/2.0F);}
 	

@@ -6,6 +6,8 @@ import gregapi.oredict.OreDictMaterial;
 
 import java.util.HashMap;
 
+import static gregapi.data.CS.V;
+
 // MA: Material Attribute
 public class MA_MachineKinetic_CH extends HashMap<String, MA_MachineKinetic_CH.GeneralAttributes> {
     public static class GeneralAttributes {
@@ -28,13 +30,20 @@ public class MA_MachineKinetic_CH extends HashMap<String, MA_MachineKinetic_CH.G
 //    private static Map<String, GeneralAttributes> mData = new TreeMap<>();
 
     public MA_MachineKinetic_CH() {
-        put(ANY.Wood.mNameInternal,         new GeneralAttributes(0,     16,    4.0F,   4.0F,  0,   8,      8));
-        put(MT.Bronze.mNameInternal,        new GeneralAttributes(1,     16,    7.0F,   7.0F,  0,   32,     32));
-        put(ANY.Steel.mNameInternal,        new GeneralAttributes(2,     16,    6.0F,   6.0F,  0,   128,    128));
-        put(MT.Ti.mNameInternal,            new GeneralAttributes(3,     16,    9.0F,   9.0F,  0,   512,    512));
-        put(MT.TungstenSteel.mNameInternal, new GeneralAttributes(4,     16,    12.5F,  12.5F, 0,   2048,   2048));
-        put(MT.Ir.mNameInternal,            new GeneralAttributes(4,     16,    12.5F,  12.5F, 0,   8192,   8192));
-        put(MT.Os.mNameInternal,            new GeneralAttributes(5,     16,    12.5F,  12.5F, 0,   32768,  32768));
+        put(ANY.Wood.mNameInternal,         new GeneralAttributes(0,     16,    4.0F,   4.0F,  0,   V[0],  V[0]));
+        put(MT.Bronze.mNameInternal,        new GeneralAttributes(1,     16,    7.0F,   7.0F,  0,   V[1],  V[1]));
+        put(ANY.Steel.mNameInternal,        new GeneralAttributes(2,     16,    6.0F,   6.0F,  0,   V[2],  V[2]));
+        put(MT.Ti.mNameInternal,            new GeneralAttributes(3,     16,    9.0F,   9.0F,  0,   V[3],  V[3]));
+        put(MT.TungstenSteel.mNameInternal, new GeneralAttributes(4,     16,    12.5F,  12.5F, 0,   V[4],  V[4]));
+        put(MT.Ir.mNameInternal,            new GeneralAttributes(5,     16,    12.5F,  12.5F, 0,   V[5],  V[5]));
+        put(MT.Os.mNameInternal,            new GeneralAttributes(6,     16,    12.5F,  12.5F, 0,   V[6],  V[6]));
+
+        put(MT.WoodTreated.mNameInternal,   new GeneralAttributes(0,     16,    4.0F,   4.0F,  0,   V[0],  V[0]));
+        put(MT.Steel.mNameInternal,         new GeneralAttributes(2,     16,    6.0F,   6.0F,  0,   V[2],  V[2]));
+        put(MT.Iritanium.mNameInternal,     new GeneralAttributes(6,     16,    12.5F,  12.5F, 0,   V[6],  V[6]));
+        put(MT.Trinitanium.mNameInternal,   new GeneralAttributes(7,     16,    12.5F,  12.5F, 0,   V[7],  V[7]));
+        put(MT.Trinaquadalloy.mNameInternal,new GeneralAttributes(8,     16,    12.5F,  12.5F, 0,   V[8],  V[8]));
+        put(MT.Ad.mNameInternal,            new GeneralAttributes(9,     16,    12.5F,  12.5F, 0,   V[9],  V[9]));
     }
 
     public GeneralAttributes get(OreDictMaterial aMat) {

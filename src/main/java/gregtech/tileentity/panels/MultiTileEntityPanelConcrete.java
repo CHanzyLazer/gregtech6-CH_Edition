@@ -19,7 +19,7 @@
 
 package gregtech.tileentity.panels;
 
-import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.DYES_INT_Concrete;
 
 import gregapi.old.Textures;
 import gregapi.render.BlockTextureDefault;
@@ -32,7 +32,7 @@ import net.minecraft.block.Block;
 public class MultiTileEntityPanelConcrete extends MultiTileEntityPanelColored {
 	@Override
 	public ITexture getTexture(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
-		return BlockTextureDefault.get(Textures.BlockIcons.CONCRETE, DYES[mColor]);
+		return BlockTextureDefault.get(Textures.BlockIcons.CONCRETE, DYES_INT_Concrete[mColor]);
 	}
 	
 	@Override public String getTileEntityName() {return "gt.multitileentity.panel.concrete";}

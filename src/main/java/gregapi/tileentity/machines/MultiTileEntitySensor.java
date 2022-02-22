@@ -46,6 +46,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Gregorius Techneticies
@@ -115,11 +116,19 @@ public abstract class MultiTileEntitySensor extends TileEntityBase10FacingDouble
 		super.onTickChecked(aTimer);
 		oDisplayedNumber = mDisplayedNumber;
 	}
-	
+
+	// GTCH, 重写这个方法保证和原本的逻辑一致
 	@Override
-	public IPacket getClientDataPacket(boolean aSendAll) {
-		if (aSendAll) return getClientDataPacketByteArray(T, UT.Code.toByteS((short)mDisplayedNumber, 0), UT.Code.toByteS((short)mDisplayedNumber, 1), (byte)UT.Code.getR(mRGBa), (byte)UT.Code.getG(mRGBa), (byte)UT.Code.getB(mRGBa), getDirectionData(), mMode);
+	public IPacket getClientDataPacketNoSendAll(boolean aSendAll) {
 		return getClientDataPacketShort(F, (short)mDisplayedNumber);
+	}
+	@Override
+	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
+		// 禁用 VisualData
+		rList.add(0, UT.Code.toByteS((short)mDisplayedNumber, 0));
+		rList.add(1, UT.Code.toByteS((short)mDisplayedNumber, 1)); // 保持原本一致的顺序
+		rList.add(5, getDirectionData());
+		rList.add(6, mMode);
 	}
 	
 	@Override
@@ -132,7 +141,7 @@ public abstract class MultiTileEntitySensor extends TileEntityBase10FacingDouble
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		mDisplayedNumber = UT.Code.unsignS(UT.Code.combine(aData[0], aData[1]));
 		if (aData.length >= 7) {
-			mRGBa = UT.Code.getRGBInt(new short[] {UT.Code.unsignB(aData[2]), UT.Code.unsignB(aData[3]), UT.Code.unsignB(aData[4])});
+			setRGBData(aData[2], aData[3], aData[4], aData[aData.length-1]);
 			setDirectionData(aData[5]);
 			mMode = aData[6];
 		}

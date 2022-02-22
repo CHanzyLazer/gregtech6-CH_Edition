@@ -54,12 +54,12 @@ import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.tileentity.delegate.ITileEntityCanDelegate;
 import gregapi.tileentity.delegate.ITileEntityDelegating;
 import gregapi.tileentity.energy.ITileEntityEnergy;
-import gregapi.tileentity.multiblocks.IMultiBlockFluidHandler;
 import gregapi.tileentity.multiblocks.MultiTileEntityMultiBlockPart;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
 import gregtechCH.fluid.IFluidHandler_CH;
+import gregtechCH.vision.IAlternateOpacity_CH;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergyTile;
@@ -517,7 +517,14 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 	@SideOnly(Side.CLIENT) public final IRenderedBlockObject passRenderingToObject(ItemStack aStack) {return ERROR_MESSAGE == null ? passRenderingToObject2(aStack) : ErrorRenderer.INSTANCE;}
 	@SideOnly(Side.CLIENT) public final IRenderedBlockObject passRenderingToObject(IBlockAccess aWorld, int aX, int aY, int aZ) {return ERROR_MESSAGE == null ? passRenderingToObject2(aWorld, aX, aY, aZ) : ErrorRenderer.INSTANCE;}
 	@SideOnly(Side.CLIENT) public IRenderedBlockObject passRenderingToObject2(ItemStack aStack) {return (IRenderedBlockObject)this;}
-	@SideOnly(Side.CLIENT) public IRenderedBlockObject passRenderingToObject2(IBlockAccess aWorld, int aX, int aY, int aZ) {return (IRenderedBlockObject)this;}
+	@SideOnly(Side.CLIENT) public IRenderedBlockObject passRenderingToObject2(IBlockAccess aWorld, int aX, int aY, int aZ) {
+		// GTCH，用于使得自动调整不透光度的方块能即时调整
+		if((this instanceof IAlternateOpacity_CH) && ((IAlternateOpacity_CH) this).updateLightCheck()) {
+			worldObj.updateLightByType(EnumSkyBlock.Sky, xCoord, yCoord, zCoord);
+			((IAlternateOpacity_CH) this).updateLightReset();
+		}
+		return (IRenderedBlockObject)this;
+	}
 	
 	public void updateInventory() {/**/}
 	public void updateAdjacentInventories() {for (byte tSide : ALL_SIDES_VALID) {DelegatorTileEntity<TileEntity> tDelegator = getAdjacentTileEntity(tSide); if (tDelegator.mTileEntity instanceof ITileEntityAdjacentInventoryUpdatable) ((ITileEntityAdjacentInventoryUpdatable)tDelegator.mTileEntity).adjacentInventoryUpdated(tDelegator.mSideOfTileEntity, (IInventory)this);}}

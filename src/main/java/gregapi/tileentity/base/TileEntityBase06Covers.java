@@ -71,6 +71,7 @@ import gregapi.tileentity.data.ITileEntitySurface;
 import gregapi.tileentity.render.ITileEntityOnDrawBlockHighlight;
 import gregapi.util.ST;
 import gregapi.util.UT;
+import gregtechCH.config.ConfigForge_CH.DATA_GTCH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -167,6 +168,7 @@ public abstract class TileEntityBase06Covers extends TileEntityBase05Inventories
 	@Override
 	public final long onToolClick(String aTool, long aRemainingDurability, long aQuality, Entity aPlayer, List<String> aChatReturn, IInventory aPlayerInventory, boolean aSneaking, ItemStack aStack, byte aSide, float aHitX, float aHitY, float aHitZ) {
 		if (!allowInteraction(aPlayer)) return 0;
+		if (!isEnabledTool(aTool, aQuality, aSneaking, aSide, aHitX, aHitY, aHitZ)) return 0;
 		if (checkObstruction(aPlayer instanceof EntityPlayer ? (EntityPlayer)aPlayer : null, aSide, aHitX, aHitY, aHitZ)) return 0;
 		if (SIDES_VALID[aSide] && hasCovers()) {
 			byte tSide = usePipePlacementMode(aSide) && mCovers.mIDs[aSide] == 0 ? UT.Code.getSideWrenching(aSide, aHitX, aHitY, aHitZ) : aSide;
@@ -188,6 +190,10 @@ public abstract class TileEntityBase06Covers extends TileEntityBase05Inventories
 			}
 		}
 		return onToolClick2(aTool, aRemainingDurability, aQuality, aPlayer, aChatReturn, aPlayerInventory, aSneaking, aStack, aSide, aHitX, aHitY, aHitZ);
+	}
+
+	public boolean isEnabledTool(String aTool, long aQuality, boolean aSneaking, byte aSide, float aHitX, float aHitY, float aHitZ) {
+		return T;
 	}
 	
 	@Override
@@ -307,10 +313,13 @@ public abstract class TileEntityBase06Covers extends TileEntityBase05Inventories
 	@Override
 	public boolean setCoverItem(byte aSide, ItemStack aStack, Entity aPlayer, boolean aForce, boolean aBlockUpdate) {
 		if (SIDES_INVALID[aSide] || (!allowCovers(aSide) && aStack != null)) return F;
+		// GTCH, 潜行安装覆盖板
+		if (aStack != null && DATA_GTCH.sneakingMountCover && !aPlayer.isSneaking()) return F;
+
 		if (aStack == null && getCoverItem(aSide) == null) return F;
-		
+
 		if (mCovers == null) mCovers = CoverRegistry.coverdata(this, null);
-		
+
 		if (!aForce) {
 			if (aStack == null) {
 				if (mCovers.mBehaviours[aSide] != null && mCovers.mBehaviours[aSide].interceptCoverRemoval(aSide, mCovers, aPlayer)) return !checkIfCoversEmptyAndDeleteIfNeeded();
@@ -320,17 +329,17 @@ public abstract class TileEntityBase06Covers extends TileEntityBase05Inventories
 				if (tCover == null || tCover.interceptCoverPlacement(aSide, mCovers, aPlayer)) return !checkIfCoversEmptyAndDeleteIfNeeded();
 			}
 		}
-		
+
 		if (mCovers.mBehaviours[aSide] != null) mCovers.mBehaviours[aSide].onCoverRemove(aSide, mCovers, aPlayer);
-		
+
 		mCovers.set(aSide, aStack);
-		
+
 		if (mCovers.mBehaviours[aSide] != null) mCovers.mBehaviours[aSide].onCoverPlaced(aSide, mCovers, aPlayer, aStack);
-		
+
 		if (aBlockUpdate) causeBlockUpdate();
-		
+
 		updateClientData();
-		
+
 		return checkIfCoversEmptyAndDeleteIfNeeded();
 	}
 	

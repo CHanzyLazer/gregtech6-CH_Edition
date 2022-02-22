@@ -41,7 +41,7 @@ import net.minecraftforge.fluids.IFluidTank;
 public interface ICover {
 	/**
 	 * Called when the Cover got successfully loaded.
-	 * @param aPlayer CAN be null!
+	 * @param aData CAN be null!
 	 */
 	public void onCoverLoaded(byte aCoverSide, CoverData aData);
 	
@@ -71,13 +71,13 @@ public interface ICover {
 	public boolean interceptCoverRemoval(byte aCoverSide, CoverData aData, Entity aPlayer);
 	
 	/**
-	 * @param aPlayer CAN be null!
+	 * @param aData CAN be null!
 	 * @return true to prevent that a Connector can connect.
 	 */
 	public boolean interceptConnect(byte aCoverSide, CoverData aData);
 	
 	/**
-	 * @param aPlayer CAN be null!
+	 * @param aData CAN be null!
 	 * @return true to prevent that a Connector can disconnect.
 	 */
 	public boolean interceptDisconnect(byte aCoverSide, CoverData aData);

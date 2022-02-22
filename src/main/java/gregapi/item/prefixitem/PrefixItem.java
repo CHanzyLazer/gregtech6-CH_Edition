@@ -20,6 +20,7 @@
 package gregapi.item.prefixitem;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.ALL_COVER_PREFIX;
 
 import java.util.List;
 
@@ -27,6 +28,8 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.code.ModData;
+import gregapi.cover.CoverRegistry;
+import gregapi.cover.ICover;
 import gregapi.data.ANY;
 import gregapi.data.LH;
 import gregapi.data.MT;
@@ -231,5 +234,10 @@ public class PrefixItem extends Item implements Runnable, IItemUpdatable, IPrefi
 	/** @return the Local Name for this Item depending on Prefix and Material. */
 	public String getLocalName(OreDictPrefix aPrefix, OreDictMaterial aMaterial) {
 		return LanguageHandler.getLocalName(aPrefix, aMaterial);
+	}
+
+	// GTCH, 用来在作为覆盖板时潜行也能放置上
+	@Override public boolean doesSneakBypassUse(World aWorld, int aX, int aY, int aZ, EntityPlayer aPlayer) {
+		return ALL_COVER_PREFIX.contains(mPrefix);
 	}
 }

@@ -314,6 +314,11 @@ public interface IMultiTileEntity extends ITileEntitySpecificPlacementBehavior {
 	public static interface IMTE_OnItemRightClick extends IMultiTileEntity {
 		public ItemStack onItemRightClick(MultiTileEntityItemInternal aItem, ItemStack aStack, World aWorld, EntityPlayer aPlayer);
 	}
+
+	// GTCH, 使用这个方法使得实体也能通过潜行右键交互方块
+	public static interface IMTE_DoesSneakBypassUse extends IMultiTileEntity {
+		public boolean doesSneakBypassUse(World aWorld, int aX, int aY, int aZ, EntityPlayer aPlayer);
+	}
 	
 	public static interface IMTE_OnItemUseFirst extends IMultiTileEntity {
 		public boolean onItemUseFirst(MultiTileEntityItemInternal aItem, ItemStack aStack, EntityPlayer aPlayer, World aWorld, int aX, int aY, int aZ, byte aSide, float hitX, float hitY, float hitZ);

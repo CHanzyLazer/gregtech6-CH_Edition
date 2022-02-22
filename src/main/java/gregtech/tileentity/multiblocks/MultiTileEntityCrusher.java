@@ -141,15 +141,14 @@ public class MultiTileEntityCrusher extends TileEntityBase10MultiBlockMachine {
 	}
 	
 	@Override
-	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
+	protected void toolTipsMultiblock(List<String> aList) {
 		aList.add(Chat.CYAN     + LH.get(LH.STRUCTURE) + ":");
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.crusher.1"));
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.crusher.2"));
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.crusher.3"));
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.crusher.4"));
-		super.addToolTips(aList, aStack, aF3_H);
 	}
-	
+
 	@Override
 	public boolean isInsideStructure(int aX, int aY, int aZ) {
 		int tX = getOffsetXN(mFacing, 2), tY = yCoord, tZ = getOffsetZN(mFacing, 2);

@@ -3,7 +3,6 @@ package gregtechCH.tileentity.multiblocks;
 import gregapi.code.TagData;
 import gregapi.data.LH;
 import gregapi.data.TD;
-import gregapi.old.Textures;
 import gregapi.render.BlockTextureDefault;
 import gregapi.render.BlockTextureMulti;
 import gregapi.render.IIconContainer;
@@ -16,6 +15,7 @@ import gregapi.tileentity.multiblocks.*;
 import gregapi.util.UT;
 import gregtechCH.config.ConfigForge_CH.*;
 import gregtechCH.data.LH_CH;
+import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.IInventory;
@@ -59,8 +59,8 @@ public abstract class MultiTileEntityLargeMotor_CH extends TileEntityBase10Multi
     protected TagData mEnergyTypeEmitted = TD.Energy.RU;
 
     protected int mLength = 0, mPLength = 0, mMidLength = 1, mMinLength = 1, mMaxLength = 5;
-    protected short[] mEfficiencyArray;
-    protected long[] mRateArray, mPEnergyArray, mPCostArray, mCRateArray;
+    protected short[] mEfficiencyArray = new short[1];
+    protected long[] mRateArray = new long[1], mPEnergyArray = new long[1], mPCostArray = new long[1], mCRateArray = new long[1];
 
     // NBT读写
     @Override
@@ -177,10 +177,10 @@ public abstract class MultiTileEntityLargeMotor_CH extends TileEntityBase10Multi
             {mDirection[0] = T; mDirection[1] = T; mDirection[2] = T;}
         }
     }
-    protected void setCoorByOrder(int[] sXYZ, int[] aIJK) {
-        sXYZ[0] = xCoord + (mDirection[0]? aIJK[mOrder[0]] : (-aIJK[mOrder[0]]));
-        sXYZ[1] = yCoord + (mDirection[1]? aIJK[mOrder[1]] : (-aIJK[mOrder[1]]));
-        sXYZ[2] = zCoord + (mDirection[2]? aIJK[mOrder[2]] : (-aIJK[mOrder[2]]));
+    protected void setCoorByOrder(int[] rXYZ, int[] aIJK) {
+        rXYZ[0] = xCoord + (mDirection[0]? aIJK[mOrder[0]] : (-aIJK[mOrder[0]]));
+        rXYZ[1] = yCoord + (mDirection[1]? aIJK[mOrder[1]] : (-aIJK[mOrder[1]]));
+        rXYZ[2] = zCoord + (mDirection[2]? aIJK[mOrder[2]] : (-aIJK[mOrder[2]]));
     }
     protected int getStructureLength(int[] aStartIJK, int[] aEndIJK) {
         int[] tIJK = new int[3];
@@ -257,7 +257,7 @@ public abstract class MultiTileEntityLargeMotor_CH extends TileEntityBase10Multi
         }
     }
     @Override
-    public boolean checkStructure2() {
+    public final boolean checkStructure2() {
         setStructureParameter(mFacing); // 每次检测都进行更新以免出现意外的错误
         int[] tXYZ = new int[3];
         int[] tEndXYZ = new int[3];
@@ -335,7 +335,7 @@ public abstract class MultiTileEntityLargeMotor_CH extends TileEntityBase10Multi
 
     // tooltips
     @Override
-    public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
+    public final void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
         toolTipsMultiblock(aList);
         toolTipsEnergy(aList);
         toolTipsUseful(aList);
@@ -347,7 +347,7 @@ public abstract class MultiTileEntityLargeMotor_CH extends TileEntityBase10Multi
         aList.add(LH.Chat.CYAN     + LH.get(LH.STRUCTURE) + ":");
     }
     protected void toolTipsEnergy(List<String> aList) {
-        aList.add(LH.Chat.CYAN     + LH_CH.get(LH_CH.ENERGY_LENGTH) + ": " + mMidLength);
+        aList.add(LH.Chat.CYAN     + LH_CH.getNumber(LH_CH.ENERGY_LENGTH, mMidLength));
         aList.add(LH.getToolTipEfficiency(mEfficiencyArray[mMidLength-mMinLength]));
         aList.add(LH.Chat.RED      + LH.get(LH.ENERGY_OUTPUT) + ": " + LH.Chat.WHITE + mRateArray[mMidLength-mMinLength] + " " + mEnergyTypeEmitted.getLocalisedChatNameShort() + LH.Chat.WHITE + "/t");
     }
@@ -385,17 +385,26 @@ public abstract class MultiTileEntityLargeMotor_CH extends TileEntityBase10Multi
     public void onMagnifyingGlass2(List<String> aChatReturn) {
         aChatReturn.add(mCounterClockwise ? "Counterclockwise" : "Clockwise");
         onMagnifyingGlassEnergy(aChatReturn);
-        if (mPreheat) aChatReturn.add("Preheating: " + LH.percent(UT.Code.units(Math.min(mEnergy, mPEnergy), mPEnergy, 10000, F)) + "%");
     }
     public void onMagnifyingGlassEnergy(List<String> aChatReturn) {
-        aChatReturn.add("Length: " + mLength);
-        aChatReturn.add(LH.get(LH.EFFICIENCY) + ": " + LH.percent(mEfficiency) + "%");
-        aChatReturn.add(LH.get(LH.ENERGY_OUTPUT)  + ": " + getEnergySizeOutputRecommended(mEnergyTypeEmitted, SIDE_ANY) + " " + mEnergyTypeEmitted.getLocalisedChatNameShort() + LH.Chat.WHITE + "/t");
+        if (mPreheat) {
+            aChatReturn.add("Preheating: " + LH.percent(UT.Code.units(Math.min(mEnergy, mPEnergy), mPEnergy, 10000, F)) + "%");
+        }
+        if (mActive) {
+            aChatReturn.add("Active:");
+            aChatReturn.add(LH.get(LH.EFFICIENCY) + ": " + LH.percent(mEfficiency) + "%");
+            aChatReturn.add(LH.get(LH.ENERGY_OUTPUT)  + ": " + mOutput + " " + mEnergyTypeEmitted.getLocalisedChatNameShort()  + LH.Chat.WHITE + "/t");
+        }
+        if (mEnergy == 0) {
+            aChatReturn.add("Length: " + mLength);
+            aChatReturn.add(LH.get(LH.EFFICIENCY) + ": " + LH.percent(mEfficiency) + "%");
+            aChatReturn.add(LH.get(LH.ENERGY_OUTPUT)  + ": " + getEnergySizeOutputRecommended(mEnergyTypeEmitted, SIDE_ANY) + " " + mEnergyTypeEmitted.getLocalisedChatNameShort() + LH.Chat.WHITE + "/t");
+        }
     }
 
     // 每 tick 转换
     @Override
-    public void onTick2(long aTimer, boolean aIsServerSide) {
+    public final void onTick2(long aTimer, boolean aIsServerSide) {
         super.onTick2(aTimer, aIsServerSide);
         checkStructure(F);
         if (aIsServerSide && mStructureOkay) {
@@ -450,9 +459,12 @@ public abstract class MultiTileEntityLargeMotor_CH extends TileEntityBase10Multi
         mPreheat = F;
         mCooldown = F;
         mOutput = getOutput();
-        mEnergy -= mOutput;
+        energyReduce();
     }
     protected abstract long getOutput();
+    protected void energyReduce() {
+        mEnergy -= mOutput;
+    }
     protected boolean checkPreheat() {
         return mEnergy >= mPCost;
     }
@@ -579,22 +591,22 @@ public abstract class MultiTileEntityLargeMotor_CH extends TileEntityBase10Multi
 
     @Override
     public ITexture getTexture2(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
-        if (aShouldSideBeRendered[aSide]) {
-            if (aRenderPass == 0) {
-                if (isOutput(aSide) && mSelfOut) return BlockTextureMulti.get(super.getTexture2(aBlock, aRenderPass, aSide, aShouldSideBeRendered), BlockTextureDefault.get(getIIconContainer(OVERLAY_ENERGY_RU)));
-                return super.getTexture2(aBlock, aRenderPass, aSide, aShouldSideBeRendered);
+        if (aRenderPass == 0) {
+            if (!aShouldSideBeRendered[aSide]) return null;
+            if (isOutput(aSide) && mSelfOut) return BlockTextureMulti.get(super.getTexture2(aBlock, aRenderPass, aSide, aShouldSideBeRendered), BlockTextureDefault.get(getIIconContainer(OVERLAY_ENERGY_RU)));
+            return super.getTexture2(aBlock, aRenderPass, aSide, aShouldSideBeRendered);
+        }
+        // 超过了原本的方块，所以无论何时都要渲染，并且需要关闭环境光遮蔽来防止一些显示错误
+        if (isInput(aSide)) {
+            if (mPreheat || mCooldown) {
+                if (mCounterClockwise) return UT_CH.Texture.BlockTextureDefaultNoAO(getIIconContainer(OVERLAY_PREHEAT_L));
+                return UT_CH.Texture.BlockTextureDefaultNoAO(getIIconContainer(OVERLAY_PREHEAT_R));
             }
-            if (isInput(aSide)) {
-                if (mPreheat || mCooldown) {
-                    if (mCounterClockwise) return BlockTextureDefault.get(getIIconContainer(OVERLAY_PREHEAT_L));
-                    return BlockTextureDefault.get(getIIconContainer(OVERLAY_PREHEAT_R));
-                }
-                if (mActive) {
-                    if (mCounterClockwise) return BlockTextureDefault.get(getIIconContainer(OVERLAY_ACTIVE_L));
-                    return BlockTextureDefault.get(getIIconContainer(OVERLAY_ACTIVE_R));
-                }
-                return BlockTextureDefault.get(getIIconContainer(OVERLAY));
+            if (mActive) {
+                if (mCounterClockwise) return UT_CH.Texture.BlockTextureDefaultNoAO(getIIconContainer(OVERLAY_ACTIVE_L));
+                return UT_CH.Texture.BlockTextureDefaultNoAO(getIIconContainer(OVERLAY_ACTIVE_R));
             }
+            return UT_CH.Texture.BlockTextureDefaultNoAO(getIIconContainer(OVERLAY));
         }
         return null;
     }

@@ -60,6 +60,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChunkCoordinates;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Gregorius Techneticies
@@ -305,21 +306,30 @@ public class MultiTileEntitySiftingTable extends TileEntityBase07Paintable imple
 		oDisplayedInput  = mDisplayedInput;
 		oDisplayedOutput = mDisplayedOutput;
 	}
-	
+
+	// GTCH, 重写这个方法保证和原本的逻辑一致
 	@Override
-	public IPacket getClientDataPacket(boolean aSendAll) {
-		if (aSendAll)                             return getClientDataPacketByteArray(aSendAll, mState, UT.Code.toByteS(mDisplayedOutput, 0), UT.Code.toByteS(mDisplayedOutput, 1), UT.Code.toByteS(mDisplayedInput, 0), UT.Code.toByteS(mDisplayedInput, 1), (byte)UT.Code.getR(mRGBa), (byte)UT.Code.getG(mRGBa), (byte)UT.Code.getB(mRGBa));
+	public IPacket getClientDataPacketNoSendAll(boolean aSendAll) {
 		if (mDisplayedInput  != oDisplayedInput ) return getClientDataPacketByteArray(aSendAll, mState, UT.Code.toByteS(mDisplayedOutput, 0), UT.Code.toByteS(mDisplayedOutput, 1), UT.Code.toByteS(mDisplayedInput, 0), UT.Code.toByteS(mDisplayedInput, 1));
 		if (mDisplayedOutput != oDisplayedOutput) return getClientDataPacketByteArray(aSendAll, mState, UT.Code.toByteS(mDisplayedOutput, 0), UT.Code.toByteS(mDisplayedOutput, 1));
 		return getClientDataPacketByte(aSendAll, mState);
 	}
-	
+	@Override
+	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
+		// 禁用 VisualData
+		rList.add(0, mState);
+		rList.add(1, UT.Code.toByteS(mDisplayedOutput, 0)); // 保持原本一致的顺序
+		rList.add(2, UT.Code.toByteS(mDisplayedOutput, 1));
+		rList.add(3, UT.Code.toByteS(mDisplayedInput, 0));
+		rList.add(4, UT.Code.toByteS(mDisplayedInput, 1));
+	}
+
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		mState = aData[0];
 		if (aData.length > 2) mDisplayedOutput = UT.Code.combine(aData[1], aData[2]);
 		if (aData.length > 4) mDisplayedInput  = UT.Code.combine(aData[3], aData[4]);
-		if (aData.length > 7) mRGBa = UT.Code.getRGBInt(new short[] {UT.Code.unsignB(aData[5]), UT.Code.unsignB(aData[6]), UT.Code.unsignB(aData[7])});
+		if (aData.length > 7) setRGBData(aData[5], aData[6], aData[7], aData[aData.length-1]);
 		return T;
 	}
 	

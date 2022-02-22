@@ -19,7 +19,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fluids.IFluidTank;
 
 import java.util.Collection;
@@ -30,33 +29,33 @@ import static gregtechCH.data.CS_CH.*;
 
 public class MultiTileEntityTurbineSteam_CH extends MultiTileEntityMotor_CH implements IFluidHandler_CH {
 	public FluidTankGT mTank = new FluidTankGT();
-	public long mPSteam = 0, mOutputSU = 0, mSteamCounter = 0;
+	public long pSteam = 0, mOutputSU = 0, mSteamCounter = 0;
 	protected int STEAM_PER_WATER_SELF = 200;
 	protected short mEfficiencyWater = 8000;
+	protected short mEfficiencyOverclock = 5000;
 
-	protected static final byte OUT_SUM_MUL = 16;
+	protected long mOutputConvert = 0;
+
 	protected static final byte COOLDOWN_NUM = 16;
-	protected byte mCooldownCounter = COOLDOWN_NUM;
+	protected byte mCooldownCounter = 0; // 注意默认是停止工作的
 
 	public TagData mEnergyTypeAccepted = TD.Energy.STEAM;
 
 	protected boolean mFast = F, oFast = F;
 	protected boolean mOverload = F;
 
-	protected long mOutSum = 0;
-
 	// NBT读写
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {
 		super.readFromNBT2(aNBT);
 		if (aNBT.hasKey(NBT_COOLDOWN_COUNTER)) mCooldownCounter = aNBT.getByte(NBT_COOLDOWN_COUNTER);
-		if (aNBT.hasKey(NBT_OUTPUT_BUFFER)) mOutSum = aNBT.getLong(NBT_OUTPUT_BUFFER);
-		if (aNBT.hasKey(NBT_ENERGY_SU_PRE)) mPSteam = aNBT.getLong(NBT_ENERGY_SU_PRE);
+		if (aNBT.hasKey(NBT_ENERGY_SU_PRE)) pSteam = aNBT.getLong(NBT_ENERGY_SU_PRE);
 
 		if (aNBT.hasKey(NBT_ENERGY_SU)) mSteamCounter = aNBT.getLong(NBT_ENERGY_SU);
 		if (aNBT.hasKey(NBT_OUTPUT_SU)) mOutputSU = aNBT.getLong(NBT_OUTPUT_SU);
 		if (aNBT.hasKey(NBT_EFFICIENCY_WATER)) mEfficiencyWater = (short)UT.Code.bind_(0, 10000, aNBT.getShort(NBT_EFFICIENCY_WATER));
 		STEAM_PER_WATER_SELF = mEfficiencyWater < 100 ? -1 : (int)UT.Code.units(STEAM_PER_WATER, mEfficiencyWater, 10000, T);
+		if (aNBT.hasKey(NBT_EFFICIENCY_OC)) mEfficiencyOverclock = (short)UT.Code.bind_(0, 10000, aNBT.getShort(NBT_EFFICIENCY_OC));
 
 		if (aNBT.hasKey(NBT_ENERGY_ACCEPTED)) mEnergyTypeAccepted = TagData.createTagData(aNBT.getString(NBT_ENERGY_ACCEPTED));
 		if (aNBT.hasKey(NBT_VISUAL)) mFast = aNBT.getBoolean(NBT_VISUAL);
@@ -74,8 +73,7 @@ public class MultiTileEntityTurbineSteam_CH extends MultiTileEntityMotor_CH impl
 	public void writeToNBT2(NBTTagCompound aNBT) {
 		super.writeToNBT2(aNBT);
 		UT.NBT.setNumber(aNBT, NBT_COOLDOWN_COUNTER, mCooldownCounter);
-		UT.NBT.setNumber(aNBT, NBT_OUTPUT_BUFFER, mOutSum);
-		UT.NBT.setNumber(aNBT, NBT_ENERGY_SU_PRE, mPSteam);
+		UT.NBT.setNumber(aNBT, NBT_ENERGY_SU_PRE, pSteam);
 
 		UT.NBT.setNumber(aNBT, NBT_ENERGY_SU, mSteamCounter);
 		UT.NBT.setNumber(aNBT, NBT_OUTPUT_SU, mOutputSU); // 保留兼容
@@ -90,6 +88,11 @@ public class MultiTileEntityTurbineSteam_CH extends MultiTileEntityMotor_CH impl
 	protected void toolTipsEnergy(List<String> aList) {
 		aList.add(LH.getToolTipEfficiency(mEfficiency));
 		LH.addEnergyToolTips(this, aList, mEnergyTypeAccepted, mEnergyTypeEmitted, getLocalisedInputSide(), getLocalisedOutputSide());
+	}
+	@Override
+	protected void toolTipsUseful(List<String> aList) {
+		aList.add(Chat.YELLOW + LH_CH.get(LH_CH.OVERCLOCK_GENERATOR) + " (" + LH_CH.getToolTipEfficiencySimple(mEfficiencyOverclock) + ")");
+		super.toolTipsUseful(aList);
 	}
 	@Override
 	protected void toolTipsImportant(List<String> aList) {
@@ -108,11 +111,68 @@ public class MultiTileEntityTurbineSteam_CH extends MultiTileEntityMotor_CH impl
 		if (aTool.equals(TOOL_plunger)) return GarbageGT.trash(mTank);
 		return 0;
 	}
+	@Override
+	protected void onMagnifyingGlassEnergy(List<String> aChatReturn) {
+		if (mPreheat) {
+			aChatReturn.add("Preheating: " + LH.percent(UT.Code.units(Math.min(mEnergy, mPEnergy), mPEnergy, 10000, F)) + "%");
+		}
+		if (mActive) {
+			aChatReturn.add("Active:");
+			aChatReturn.add(LH.get(LH.EFFICIENCY) + ": " + LH.percent(UT.Code.units(mEfficiency, mOutputConvert, mOutput, F)) + "%");
+			aChatReturn.add(LH.get(LH.ENERGY_OUTPUT)  + ": " + mOutput + " " + mEnergyTypeEmitted.getLocalisedChatNameShort()  + LH.Chat.WHITE + "/t");
+		}
+	}
 
 	// 每 tick 转换
 	@Override
 	protected void convert() {
-		convert(getEnergySizeInputMax(mEnergyTypeAccepted, SIDE_ANY), getEnergySizeOutputMax(mEnergyTypeEmitted, SIDE_ANY));
+		long tSteam = mTank.amount();
+		mOutputSU = tSteam - pSteam;
+		if (mOutputSU > 0) mCooldownCounter = COOLDOWN_NUM;
+		if (mTank.has()) {
+			if (!mTank.isFull()) {
+				//没有超载
+				if (mEnergy < mPEnergy) {
+					// 预热时积攒蒸汽，减少运算，减少因效率计算造成的损失
+					if (mEnergy < mPEnergy - mInRate * 2) {
+						convert(mInRate * 2, mRate * 2);
+					} else {
+						convert_(tSteam);
+					}
+				} else {
+					// 运行状态也进行下不积攒蒸汽，回到原本的两种情况
+					if (tSteam >= mInRate * 2) {
+						// 最高输出
+						convert_(mInRate * 2, mRate * 2);
+					} else
+					if (tSteam >= mInRate / 2) {
+						// 一般输出
+						convert_(tSteam);
+					} else {
+						// 蒸汽不够完全不工作
+						if (STEAM_PER_WATER_SELF > 0) mSteamCounter += tSteam;
+						mTank.remove(tSteam);
+						if (tSteam >= mInPCost) mEnergy = mPEnergy + mPCost; // 超过一半的不够则不考虑效率，使用这个方式实现不工作
+					}
+				}
+			} else {
+				//超载
+				mTank.remove(tSteam/2);
+				mOverload = T;
+			}
+
+			//输出蒸馏水，和输出能量不相互干扰
+			if (mSteamCounter >= STEAM_PER_WATER_SELF && STEAM_PER_WATER_SELF > 0) {
+				FluidStack tDistilledWater = FL.DistW.make(mSteamCounter / STEAM_PER_WATER_SELF);
+				for (byte tDir : FACING_SIDES[mFacing]) {
+					tDistilledWater.amount -= FL.fill(getAdjacentTank(tDir), tDistilledWater.copy(), T);
+					if (tDistilledWater.amount <= 0) break;
+				}
+				GarbageGT.trash(tDistilledWater);
+				mSteamCounter %= STEAM_PER_WATER_SELF;
+			}
+		}
+		pSteam = mTank.amount();
 	}
 	@Override
 	protected boolean checkOverload() {
@@ -131,14 +191,14 @@ public class MultiTileEntityTurbineSteam_CH extends MultiTileEntityMotor_CH impl
 	}
 	@Override
 	protected long getOutput() {
-		//使用这个算法使输出平滑
-		long tOutput = (mEnergy - getEnergySizeOutputMin(mEnergyTypeEmitted, SIDE_ANY) - mPEnergy) / 16 + getEnergySizeOutputMin(mEnergyTypeEmitted, SIDE_ANY);
-		if (mOutSum == 0) {
-			mOutSum = tOutput * OUT_SUM_MUL;
-		} else {
-			mOutSum = mOutSum * (OUT_SUM_MUL - 1) / OUT_SUM_MUL + tOutput;
-		}
-		return UT.Code.bind_(getEnergySizeOutputMin(mEnergyTypeEmitted, SIDE_ANY), getEnergySizeOutputMax(mEnergyTypeEmitted, SIDE_ANY), mOutSum / OUT_SUM_MUL);
+		//根据 mOutputConvert，如果超过了标准输出则按照超频效率输出
+		//不再进行平滑，去除下限检测因为现在的算法都不会达到下限
+		mOutputConvert = mEnergy - mPEnergy;
+		return mOutputConvert <= mRate ? mOutputConvert :  Math.min(mRate + UT.Code.units(mOutputConvert - mRate, 10000, mEfficiencyOverclock, F), getEnergySizeOutputMax(mEnergyTypeEmitted, SIDE_ANY));
+	}
+	@Override
+	protected void energyReduce() {
+		mEnergy -= mOutputConvert;
 	}
 	@Override
 	protected boolean checkPreheat() {
@@ -160,45 +220,41 @@ public class MultiTileEntityTurbineSteam_CH extends MultiTileEntityMotor_CH impl
 	protected void doCooldown() {
 		super.doCooldown();
 		mCooldownCounter = 0;
-		mOutSum = 0;
+		pSteam = 0;
+		mOutputSU = 0;
+	}
+	@Override
+	protected void doElse() {
+		// 必须要冷却才能清空数据
+		super.stop();
+		if (mCooldownCounter <= 0) {
+			mTank.setEmpty();
+			pSteam = 0;
+			mOutputSU = 0;
+			mSteamCounter = 0;
+			mCooldownCounter = 0;
+		}
 	}
 	@Override
 	protected void stop() {
 		super.stop();
-		mOutSum = 0;
+		mTank.setEmpty();
+		pSteam = 0;
 		mOutputSU = 0;
 		mSteamCounter = 0;
-		mCooldownCounter = COOLDOWN_NUM;
+		mCooldownCounter = 0;
 	}
 
+	protected void convert_(long aInRate) {
+		convert_(aInRate, UT.Code.units(aInRate, 10000, mEfficiency, F));
+	}
+	protected void convert_(long aInRate, long aOutRate) {
+		if (STEAM_PER_WATER_SELF > 0) mSteamCounter += aInRate;
+		mTank.remove(aInRate);
+		mEnergy += aOutRate;
+	}
 	protected void convert(long aInRate, long aOutRate) {
-		long tSteam = mTank.amount();
-		mOutputSU = tSteam - mPSteam;
-		if (mOutputSU > 0) mCooldownCounter = COOLDOWN_NUM;
-		if (mTank.has(aInRate)) {
-			if (!mTank.isFull()) {
-				//达到输入，并且没有超载
-				if (STEAM_PER_WATER_SELF > 0) mSteamCounter += aInRate;
-				mTank.remove(aInRate);
-				mEnergy += aOutRate;
-			} else {
-				//超载
-				mTank.remove(tSteam/2);
-				mOverload = T;
-			}
-
-			//输出蒸馏水，和输出能量不相互干扰
-			if (mSteamCounter >= STEAM_PER_WATER_SELF && STEAM_PER_WATER_SELF > 0) {
-				FluidStack tDistilledWater = FL.DistW.make(mSteamCounter / STEAM_PER_WATER_SELF);
-				for (byte tDir : FACING_SIDES[mFacing]) {
-					tDistilledWater.amount -= FL.fill(getAdjacentTank(tDir), tDistilledWater.copy(), T);
-					if (tDistilledWater.amount <= 0) break;
-				}
-				GarbageGT.trash(tDistilledWater);
-				mSteamCounter %= STEAM_PER_WATER_SELF;
-			}
-		}
-		mPSteam = mTank.amount();
+		if (mTank.has(aInRate)) convert_(aInRate, aOutRate);
 	}
 
 	// 一些接口
@@ -214,10 +270,11 @@ public class MultiTileEntityTurbineSteam_CH extends MultiTileEntityMotor_CH impl
 	public String getLocalisedOutputSide() {return LH.get(LH.FACE_FRONT);}
 
 	@Override public boolean isEnergyType(TagData aEnergyType, byte aSide, boolean aEmitting) {return (aEmitting?mEnergyTypeEmitted:mEnergyTypeAccepted)==aEnergyType;}
+	@Override public long getEnergySizeOutputMax(TagData aEnergyType, byte aSide) {return mRate+UT.Code.units(mRate, 10000, mEfficiencyOverclock, F);}
 	@Override public Collection<TagData> getEnergyTypes(byte aSide) {return new ArrayListNoNulls<>(F, mEnergyTypeAccepted, mEnergyTypeEmitted);}
 
 	// Icons，图像动画
-	public static IIconContainer[] sColoreds = new IIconContainer[] {
+	public final static IIconContainer[] sColoreds = new IIconContainer[] {
 		new Textures.BlockIcons.CustomIcon("machines/turbines/rotation_steam/colored/front"),
 		new Textures.BlockIcons.CustomIcon("machines/turbines/rotation_steam/colored/back"),
 		new Textures.BlockIcons.CustomIcon("machines/turbines/rotation_steam/colored/side"),
@@ -285,7 +342,7 @@ public class MultiTileEntityTurbineSteam_CH extends MultiTileEntityMotor_CH impl
 
 	@Override public void onWalkOver2(EntityLivingBase aEntity) {if (SIDES_TOP[mFacing] && mActive) {aEntity.rotationYaw=aEntity.rotationYaw+(mCounterClockwise?-5:+5)*(mFast?2:1); aEntity.rotationYawHead=aEntity.rotationYawHead+(mCounterClockwise?-5:+5)*(mFast?2:1);}}
 
-	@Override public String getTileEntityName() {return "gt.multitileentity.turbines.rotation_steam";}
+	@Override public String getTileEntityName() {return "gtch.multitileentity.turbines.rotation_steam";}
 
 	@Override
 	public boolean canFillExtra(FluidStack aFluid) {

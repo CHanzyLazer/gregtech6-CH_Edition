@@ -33,6 +33,7 @@ import gregapi.block.multitileentity.MultiTileEntityRegistry;
 import gregapi.data.CS.BlocksGT;
 import gregapi.data.LH;
 import gregapi.data.LH.Chat;
+import gregapi.data.MT;
 import gregapi.old.Textures;
 import gregapi.render.BlockTextureDefault;
 import gregapi.render.ITexture;

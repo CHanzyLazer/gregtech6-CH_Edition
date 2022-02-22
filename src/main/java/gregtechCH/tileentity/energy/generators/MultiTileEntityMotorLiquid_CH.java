@@ -41,6 +41,9 @@ public class MultiTileEntityMotorLiquid_CH extends MultiTileEntityMotor_CH imple
     protected long mEnergyHU = 0;
     protected long mPRate = 64, mInPRate = 64;
 
+    protected static final byte COOLDOWN_NUM = 16;
+    protected byte mBurningCounter = 0;  // 注意默认是停止工作的
+
     public Recipe.RecipeMap mRecipes = FM.Engine;
     public Recipe mLastRecipe = null;
     public FluidTankGT[] mTanks = {new FluidTankGT(1000), new FluidTankGT(1000)};
@@ -49,6 +52,7 @@ public class MultiTileEntityMotorLiquid_CH extends MultiTileEntityMotor_CH imple
     @Override
     public void readFromNBT2(NBTTagCompound aNBT) {
         super.readFromNBT2(aNBT);
+        if (aNBT.hasKey(NBT_COOLDOWN_COUNTER)) mBurningCounter = aNBT.getByte(NBT_COOLDOWN_COUNTER);
         if (aNBT.hasKey(NBT_BURNING)) mBurning = aNBT.getBoolean(NBT_BURNING);
         if (aNBT.hasKey(NBT_ENERGY_HU)) mEnergyHU = aNBT.getLong(NBT_ENERGY_HU);
 
@@ -70,6 +74,7 @@ public class MultiTileEntityMotorLiquid_CH extends MultiTileEntityMotor_CH imple
     @Override
     public void writeToNBT2(NBTTagCompound aNBT) {
         super.writeToNBT2(aNBT);
+        UT.NBT.setNumber(aNBT, NBT_COOLDOWN_COUNTER, mBurningCounter);
         UT.NBT.setBoolean(aNBT, NBT_BURNING, mBurning);
         UT.NBT.setNumber(aNBT, NBT_ENERGY_HU, mEnergyHU);
 
@@ -91,8 +96,8 @@ public class MultiTileEntityMotorLiquid_CH extends MultiTileEntityMotor_CH imple
     }
     @Override
     protected void toolTipsOther(List<String> aList, ItemStack aStack, boolean aF3_H) {
-        aList.add(LH.Chat.DGRAY    + LH_CH.get(LH_CH.TOOL_TO_DETAIL_MAGNIFYINGGLASS_SNEAK));
         super.toolTipsOther(aList, aStack, aF3_H);
+        aList.add(LH.Chat.DGRAY    + LH_CH.get(LH_CH.TOOL_TO_DETAIL_MAGNIFYINGGLASS_SNEAK));
     }
 
     // 工具右键
@@ -100,8 +105,8 @@ public class MultiTileEntityMotorLiquid_CH extends MultiTileEntityMotor_CH imple
     public long onToolClick2(String aTool, long aRemainingDurability, long aQuality, Entity aPlayer, List<String> aChatReturn, IInventory aPlayerInventory, boolean aSneaking, ItemStack aStack, byte aSide, float aHitX, float aHitY, float aHitZ) {
         if (aTool.equals(TOOL_magnifyingglass) && aSneaking) {
             if (aChatReturn != null) {
-                aChatReturn.add("Input: "  + mTanks[0].content());
-                aChatReturn.add("Output: " + mTanks[1].content());
+                if (mTanks[0].has()) aChatReturn.add("Tank input: "  + mTanks[0].content());
+                if (mTanks[1].has()) aChatReturn.add("Tank output: " + mTanks[1].content());
             }
             return 1;
         }
@@ -126,9 +131,10 @@ public class MultiTileEntityMotorLiquid_CH extends MultiTileEntityMotor_CH imple
     protected void convert() {
         // 燃烧
         if (mBurning) {
-            if (mEnergyHU < mInPRate * 8 + mInPCost) {
+            if (mEnergyHU < mInPRate * 4 + mInPCost) {
                 Recipe tRecipe = mRecipes.findRecipe(this, mLastRecipe, T, Long.MAX_VALUE, NI, mTanks[0].AS_ARRAY, ZL_IS);
                 if (tRecipe != null) {
+                    // 这里就检测了输出是否填满的情况了（主要是种类问题）
                     if (tRecipe.mFluidOutputs.length <= 0 || mTanks[1].canFillAll(tRecipe.mFluidOutputs[0])) {
                         if (tRecipe.isRecipeInputEqual(T, F, mTanks[0].AS_ARRAY, ZL_IS)) {
                             mLastRecipe = tRecipe;
@@ -139,7 +145,7 @@ public class MultiTileEntityMotorLiquid_CH extends MultiTileEntityMotor_CH imple
                                 if (tRecipe.mFluidOutputs.length > 0) mTanks[1].fill(tRecipe.mFluidOutputs[0]);
                                 if (mTanks[0].isEmpty()) break;
                             }
-                        } else if (mEnergyHU < mInPRate * 4 + mInPCost) {
+                        } else if (mEnergyHU < mInPCost) {
                             // 有剩余燃料，有熄火风险，清空容器来切换燃料
                             mTanks[0].setEmpty();
                         }
@@ -149,14 +155,23 @@ public class MultiTileEntityMotorLiquid_CH extends MultiTileEntityMotor_CH imple
                     mTanks[0].setEmpty();
                 }
             }
-            // 能量不够, 机器停止, 则停止燃烧
-            if (mEnergyHU < mInPCost || mStopped) mBurning = F;
+            // 能量不够, 机器停止，则停止燃烧
+            if (mEnergyHU >= mInPCost) mBurningCounter = COOLDOWN_NUM;
+            else --mBurningCounter;
+            if (mBurningCounter <= 0 || mStopped) {
+                mBurning = F;
+                mBurningCounter = 0;
+            }
         }
         // 热量按照效率转换为旋转能
-        if (mPreheat){
-            convert(mInPRate, mPRate);
+        if (mEnergy < mPEnergy){
+            // 预热阶段
+            if (mEnergy < mPEnergy - mPRate) convert(mInPRate, mPRate);
+            else convert(mInRate, mRate);
         } else {
-            convert(mInRate, mRate);
+            // 运行阶段
+            mEnergy = mPEnergy; // 只是为了好看
+            convert(mInRate, mRate, T);
         }
         // 自动输出废气
         if (mTanks[1].has()) {
@@ -167,17 +182,27 @@ public class MultiTileEntityMotorLiquid_CH extends MultiTileEntityMotor_CH imple
         }
     }
     protected void convert(long aInRate, long aOutRate) {
+        convert(aInRate, aOutRate, F);
+    }
+    protected void convert(long aInRate, long aOutRate, boolean aWasteEnergy) {
         if (mEnergyHU >= aInRate) {
             mEnergy += aOutRate;
             mEnergyHU -= aInRate;
-        } else
+            return;
+        }
+        if (aWasteEnergy && mEnergyHU > mInPCost) {
+            mEnergy += mPCost;
+            mEnergyHU = 0;
+            return;
+        }
         if (mEnergyHU > 0) {
             mEnergy += UT.Code.units(mEnergyHU, 10000, mEfficiency, F);
             mEnergyHU = 0;
-        } else {
-            mEnergyHU = 0;
+            return;
         }
+        mEnergyHU = 0;
     }
+
     @Override
     protected boolean checkOverload() {
         return F;
@@ -195,22 +220,38 @@ public class MultiTileEntityMotorLiquid_CH extends MultiTileEntityMotor_CH imple
         return super.checkCooldown() && !mBurning;
     }
     @Override
+    protected void doCooldown() {
+        super.doCooldown();
+        mBurningCounter = 0;
+        mBurning = F;
+        mEnergyHU = 0;
+    }
+    @Override
     protected void doElse() {
         // 能量耗尽，但是不熄火（因为熄火不在这里判断）
-        mActive = F;
-        mPreheat = F;
-        mCooldown = F;
-        mOutput = 0;
-        mEnergy = 0;
+        super.stop();
+        if (!mBurning) {
+            mBurningCounter = 0;
+            mBurning = F;
+            mEnergyHU = 0;
+        }
     }
     @Override
     protected void stop() {
         super.stop();
+        mBurningCounter = 0;
         mBurning = F;
         mEnergyHU = 0;
     }
 
     // 一些接口
+    @Override
+    public boolean breakBlock() {
+        if (isServerSide()) {
+            for (FluidTankGT tank : mTanks) GarbageGT.trash(tank);
+        }
+        return super.breakBlock();
+    }
     @Override
     protected IFluidTank getFluidTankFillable2(byte aSide, FluidStack aFluidToFill) {
         return mRecipes.containsInput(aFluidToFill, this, NI) ? mTanks[0] : null;
@@ -246,7 +287,7 @@ public class MultiTileEntityMotorLiquid_CH extends MultiTileEntityMotor_CH imple
     @Override public boolean getStateRunningPossible() {return mActive || (mTanks[0].has() && !mTanks[1].isFull());}
 
     // Icons，图像动画
-    public static IIconContainer[] sColoreds = new IIconContainer[] {
+    public final static IIconContainer[] sColoreds = new IIconContainer[] {
             new Textures.BlockIcons.CustomIcon("machines/generators/motor_liquid/colored/front"),
             new Textures.BlockIcons.CustomIcon("machines/generators/motor_liquid/colored/back"),
             new Textures.BlockIcons.CustomIcon("machines/generators/motor_liquid/colored/sides"),
@@ -287,5 +328,5 @@ public class MultiTileEntityMotorLiquid_CH extends MultiTileEntityMotor_CH imple
     @Override public boolean[] getValidSides() {return SIDES_VALID;}
 
 
-    @Override public String getTileEntityName() {return "gt.multitileentity.generator.motor_liquid";}
+    @Override public String getTileEntityName() {return "gtch.multitileentity.generator.motor_liquid";}
 }

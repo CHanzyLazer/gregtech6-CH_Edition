@@ -20,9 +20,12 @@
 package gregtech.blocks;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.DYES_INT_Concrete;
 
 import java.util.List;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.block.IBlockToolable;
 import gregapi.block.ToolCompat;
 import gregapi.block.metatype.BlockColored;
@@ -37,6 +40,7 @@ import gregapi.render.BlockTextureCopied;
 import gregapi.render.IIconContainer;
 import gregapi.util.OM;
 import gregapi.util.ST;
+import gregapi.util.UT;
 import gregapi.util.WD;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -44,6 +48,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class BlockConcrete extends BlockColored implements IBlockToolable {
@@ -80,5 +85,18 @@ public class BlockConcrete extends BlockColored implements IBlockToolable {
 			}
 		}
 		return ToolCompat.onToolClick(this, aTool, aRemainingDurability, aQuality, aPlayer, aChatReturn, aPlayerInventory, aSneaking, aStack, aWorld, aSide, aX, aY, aZ, aHitX, aHitY, aHitZ);
+	}
+
+	// GTCH, 在这里加入材料的颜色属性
+	@Override
+	@SideOnly(Side.CLIENT)
+	public int getRenderColor(int aMeta) {
+		return DYES_INT_Concrete[UT.Code.bind4(aMeta)];
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public int colorMultiplier(IBlockAccess aWorld, int aX, int aY, int aZ) {
+		return DYES_INT_Concrete[UT.Code.bind4(aWorld.getBlockMetadata(aX, aY, aZ))];
 	}
 }

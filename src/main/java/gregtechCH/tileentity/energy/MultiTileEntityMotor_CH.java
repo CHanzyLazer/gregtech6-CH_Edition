@@ -95,7 +95,7 @@ public abstract class MultiTileEntityMotor_CH extends TileEntityBase09FacingSing
 
 	// tooltips
 	@Override
-	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
+	public final void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
 		toolTipsEnergy(aList);
 		toolTipsUseful(aList);
 		toolTipsImportant(aList);
@@ -132,18 +132,31 @@ public abstract class MultiTileEntityMotor_CH extends TileEntityBase09FacingSing
 		}
 		if (aTool.equals(TOOL_magnifyingglass)) {
 			if (aChatReturn != null) {
-				aChatReturn.add(mCounterClockwise ? "Counterclockwise" : "Clockwise");
-				if (mPreheat) aChatReturn.add("Preheating: " + LH.percent(UT.Code.units(Math.min(mEnergy, mPEnergy), mPEnergy, 10000, F)) + "%");
+				onMagnifyingGlass(aChatReturn);
 			}
 			return 1;
 		}
 
 		return 0;
 	}
+	protected void onMagnifyingGlass(List<String> aChatReturn) {
+		aChatReturn.add(mCounterClockwise ? "Counterclockwise" : "Clockwise");
+		onMagnifyingGlassEnergy(aChatReturn);
+	}
+	protected void onMagnifyingGlassEnergy(List<String> aChatReturn) {
+		if (mPreheat) {
+			aChatReturn.add("Preheating: " + LH.percent(UT.Code.units(Math.min(mEnergy, mPEnergy), mPEnergy, 10000, F)) + "%");
+		}
+		if (mActive) {
+			aChatReturn.add("Active:");
+			aChatReturn.add(LH.get(LH.EFFICIENCY) + ": " + LH.percent(mEfficiency) + "%");
+			aChatReturn.add(LH.get(LH.ENERGY_OUTPUT)  + ": " + mOutput + " " + mEnergyTypeEmitted.getLocalisedChatNameShort()  + LH.Chat.WHITE + "/t");
+		}
+	}
 
 	// 每 tick 转换
 	@Override
-	public void onTick2(long aTimer, boolean aIsServerSide) {
+	public final void onTick2(long aTimer, boolean aIsServerSide) {
 		if (aIsServerSide) {
 			// 转换能量
 			convert();
@@ -193,9 +206,12 @@ public abstract class MultiTileEntityMotor_CH extends TileEntityBase09FacingSing
 		mPreheat = F;
 		mCooldown = F;
 		mOutput = getOutput();
-		mEnergy -= mOutput;
+		energyReduce();
 	}
 	protected abstract long getOutput();
+	protected void energyReduce() {
+		mEnergy -= mOutput;
+	}
 	protected boolean checkPreheat() {
 		return mEnergy >= mPCost;
 	}

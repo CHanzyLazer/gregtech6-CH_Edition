@@ -21,10 +21,14 @@ package gregapi.tileentity.tank;
 
 import static gregapi.data.CS.*;
 
+import com.google.common.primitives.Bytes;
 import gregapi.data.FL;
 import gregapi.network.INetworkHandler;
 import gregapi.network.IPacket;
 import gregapi.util.UT;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  * @author Gregorius Techneticies
@@ -42,18 +46,25 @@ public abstract class TileEntityBase09FluidContainerSync extends TileEntityBase0
 		super.onTickResetChecks(aTimer, aIsServerSide);
 		oDisplay = FL.id_(mTank);
 	}
-	
+
+	// GTCH, 重写这个方法保证和原本的逻辑一致
 	@Override
-	public IPacket getClientDataPacket(boolean aSendAll) {
+	public IPacket getClientDataPacketNoSendAll(boolean aSendAll) {
 		short tDisplay = FL.id_(mTank);
-		if (aSendAll) return getClientDataPacketByteArray(aSendAll, UT.Code.toByteS(tDisplay, 0), UT.Code.toByteS(tDisplay, 1), (byte)UT.Code.getR(mRGBa), (byte)UT.Code.getG(mRGBa), (byte)UT.Code.getB(mRGBa));
 		return getClientDataPacketByteArray(aSendAll, UT.Code.toByteS(tDisplay, 0), UT.Code.toByteS(tDisplay, 1));
 	}
-	
+	@Override
+	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
+		// 禁用 VisualData
+		short tDisplay = FL.id_(mTank);
+		rList.add(0, UT.Code.toByteS(tDisplay, 0));
+		rList.add(1, UT.Code.toByteS(tDisplay, 1)); // 保持原本一致的顺序
+	}
+
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		if (aData.length > 1) mTank.setFluid(FL.make(UT.Code.combine(aData[0], aData[1]), mTank.getCapacity()));
-		if (aData.length > 4) mRGBa = UT.Code.getRGBInt(new short[] {UT.Code.unsignB(aData[2]), UT.Code.unsignB(aData[3]), UT.Code.unsignB(aData[4])});
+		if (aData.length > 4) setRGBData(aData[2], aData[3], aData[4], aData[aData.length-1]);
 		return T;
 	}
 }

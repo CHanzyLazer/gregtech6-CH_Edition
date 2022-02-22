@@ -42,6 +42,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Gregorius Techneticies
@@ -99,15 +100,17 @@ public class MultiTileEntitySafeKeyLocked extends MultiTileEntitySafe implements
 	public long getKeyID() {
 		return mID;
 	}
-	
+
+	// GTCH, 大致检查了一下，只要删除原本的就可以了，不过还是保持一致重写了一下
 	@Override
-	public IPacket getClientDataPacket(boolean aSendAll) {
-		return aSendAll ? getClientDataPacketByteArray(aSendAll, (byte)UT.Code.getR(mRGBa), (byte)UT.Code.getG(mRGBa), (byte)UT.Code.getB(mRGBa), getDirectionData(), getVisualData()) : getClientDataPacketByte(aSendAll, getVisualData());
+	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
+		rList.add(3, getDirectionData());
+		rList.add(4, getVisualData());
 	}
-	
+
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
-		mRGBa = UT.Code.getRGBInt(new short[] {UT.Code.unsignB(aData[0]), UT.Code.unsignB(aData[1]), UT.Code.unsignB(aData[2])});
+		setRGBData(aData[0], aData[1], aData[1], aData[aData.length-1]);
 		setDirectionData(aData[3]);
 		setVisualData(aData[4]);
 		return T;

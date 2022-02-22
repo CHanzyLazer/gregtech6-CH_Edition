@@ -94,9 +94,12 @@ public abstract class MultiTileEntityTreeHole extends TileEntityBase09FacingSing
 		}
 		return T;
 	}
-	
+
+	// 由于没有 RGB，使用这个方法使其跳过 List 阶段
 	@Override
-	public IPacket getClientDataPacket(boolean aSendAll) {
+	public boolean sendAny(boolean aSendAll) {return F;}
+	@Override
+	public IPacket getClientDataPacketNoSendAll(boolean aSendAll) {
 		return getClientDataPacketByte(aSendAll, (byte)((mFacing&7) | (mHasResin?8:0)));
 	}
 	

@@ -66,11 +66,10 @@ public class MultiTileEntityImplosionCompressor extends TileEntityBase10MultiBlo
 	}
 	
 	@Override
-	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
+	protected void toolTipsMultiblock(List<String> aList) {
 		aList.add(Chat.CYAN     + LH.get(LH.STRUCTURE) + ":");
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.implosioncompressor.1"));
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.implosioncompressor.2"));
-		super.addToolTips(aList, aStack, aF3_H);
 	}
 	
 	@Override

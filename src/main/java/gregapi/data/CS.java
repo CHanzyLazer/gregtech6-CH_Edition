@@ -408,7 +408,7 @@ public class CS {
 	
 	public static final short[]
 	  DYE_None              = {255, 255, 255, 255}
-	, DYE_Black             = { 32,  32,  32, 255}
+	, DYE_Black             = {  0,   0,   0, 255}
 	, DYE_Red               = {255,   0,   0, 255}
 	, DYE_Green             = {  0, 255,   0, 255}
 	, DYE_Brown             = { 96,  64,   0, 255}
@@ -417,7 +417,7 @@ public class CS {
 	, DYE_Cyan              = {  0, 255, 255, 255}
 	, DYE_LightGray         = {192, 192, 192, 255}
 	, DYE_Gray              = {128, 128, 128, 255}
-	, DYE_Pink              = {255, 192, 192, 255}
+	, DYE_Pink              = {255, 128, 128, 255}
 	, DYE_Lime              = {128, 255, 128, 255}
 	, DYE_Yellow            = {255, 255,   0, 255}
 	, DYE_LightBlue         = {128, 128, 255, 255}
@@ -798,7 +798,7 @@ public class CS {
 	/** Zero-Length Array to save on Memory. */ public static final byte                    [] ZL_BYTE              = new byte[0];
 	/** Zero-Length Array to save on Memory. */ public static final short                   [] ZL_SHORT             = new short[0];
 	/** Zero-Length Array to save on Memory. */ public static final int                     [] ZL_INTEGER           = new int[0];
-	/** Zero-Length Array to save on Memory. */ public static final long                    [] ZL_LONG              = new long[0];
+	/** Zero-Length Array to save on Memory. */ public static final long                    [] ZL_LONG              = new long[0], L12_LONG_1 = new  long[] {1,1,1,1,1,1,1,1,1,1,1,1};
 	/** Zero-Length Array to save on Memory. */ public static final float                   [] ZL_FLOAT             = new float[0];
 	/** Zero-Length Array to save on Memory. */ public static final double                  [] ZL_DOUBLE            = new double[0];
 	/** Zero-Length Array to save on Memory. */ public static final String                  [] ZL_STRING            = new String[0];
@@ -1155,8 +1155,9 @@ public class CS {
 	, NBT_NUCLEAR_SELF              = "gt.nuclear.self"             // Number
 	, NBT_NUCLEAR_OTHER             = "gt.nuclear.other"            // Number
 	, NBT_NUCLEAR_DIV               = "gt.nuclear.div"              // Number
-	, NBT_NUCLEAR_MAX               = "gt.nuclear.max"             // Number
-	, NBT_NUCLEAR_MOD               = "gt.nuclear.mod"             // Number
+	, NBT_NUCLEAR_MAX               = "gt.nuclear.max"              // Number
+	, NBT_NUCLEAR_MOD               = "gt.nuclear.mod"              // Number
+	, NBT_NUCLEAR_LOSS              = "gt.nuclear.loss"             // Number
 	, NBT_DURABILITY                = "gt.durability"               // Number
 	, NBT_MAXDURABILITY             = "gt.maxdurability"            // Number
 	, NBT_QUALITY                   = "gt.quality"                  // Byte

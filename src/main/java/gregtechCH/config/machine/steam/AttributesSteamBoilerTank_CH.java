@@ -21,8 +21,8 @@ public class AttributesSteamBoilerTank_CH extends AttributesMachine_CH {
         stackSize = MA_MACHINE_GENERATOR.get(aMat).mStackSize;
         nbtHardness = MA_MACHINE_GENERATOR.get(aMat).mNbtHardness;
         nbtResistance = MA_MACHINE_GENERATOR.get(aMat).mNbtResistance;
-        nbtCapacity = MA_MACHINE_GENERATOR.get(aMat).mNbtInput * 10000;
-        nbtCapacity_SU = nbtCapacity;
+        nbtCapacity = MA_MACHINE_GENERATOR.get(aMat).mNbtInput * 1000;
+        nbtCapacity_SU = nbtCapacity * 10;
         nbtInput = MA_MACHINE_GENERATOR.get(aMat).mNbtInput * 2;
         nbtEfficiency_CH = 10000 - Math.max(MA_MACHINE_GENERATOR.get(aMat).mNbtEfficiencyLoss / 5 + 4000, 0);
         nbtEfficiency_CH = (int) UT_CH.Code.effNormalize(nbtEfficiency_CH);

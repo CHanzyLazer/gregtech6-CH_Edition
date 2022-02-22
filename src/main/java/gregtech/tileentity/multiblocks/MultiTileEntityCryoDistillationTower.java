@@ -99,7 +99,7 @@ public class MultiTileEntityCryoDistillationTower extends TileEntityBase10MultiB
 	}
 	
 	@Override
-	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
+	protected void toolTipsMultiblock(List<String> aList) {
 		aList.add(Chat.CYAN     + LH.get(LH.STRUCTURE) + ":");
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.cryodistillationtower.1"));
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.cryodistillationtower.2"));
@@ -107,7 +107,6 @@ public class MultiTileEntityCryoDistillationTower extends TileEntityBase10MultiB
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.cryodistillationtower.4"));
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.cryodistillationtower.5"));
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.cryodistillationtower.6"));
-		super.addToolTips(aList, aStack, aF3_H);
 	}
 	
 	@Override

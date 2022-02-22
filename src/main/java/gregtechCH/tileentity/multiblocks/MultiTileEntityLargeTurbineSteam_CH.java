@@ -44,39 +44,39 @@ import java.util.List;
 
 import static gregapi.data.CS.*;
 import static gregtechCH.data.CS_CH.*;
-import static gregtechCH.data.CS_CH.NBT_OUTPUT_BUFFER;
 
 /**
  * @author Gregorius Techneticies
  */
 public class MultiTileEntityLargeTurbineSteam_CH extends MultiTileEntityLargeMotor_CH implements IMultiBlockFluidHandler, IFluidHandler_CH {
-	public FluidTankGT[] mTanks = new FluidTankGT[] {new FluidTankGT(), new FluidTankGT()};
-	public long mPSteam = 0, mOutputSU = 0, mSteamCounter = 0;
+	public FluidTankGT[] mTanks = new FluidTankGT[] {new FluidTankGT(0), new FluidTankGT(0)};
+	public long pSteam = 0, mOutputSU = 0, mSteamCounter = 0;
 	protected int STEAM_PER_WATER_SELF = 170;
 	protected short mEfficiencyWater = 9500;
+	protected short mEfficiencyOverclock = 5000;
 
-	protected static final byte OUT_SUM_MUL = 16;
+	protected long mOutputConvert = 0;
+
 	protected static final byte COOLDOWN_NUM = 16;
-	protected byte mCooldownCounter = COOLDOWN_NUM;
+	protected byte mCooldownCounter = 0;  // 注意默认是停止工作的
 
 	public TagData mEnergyTypeAccepted = TD.Energy.STEAM;
 
 	protected boolean mOverload = F;
-
-	protected long mOutSum = 0;
 
 	// NBT读写
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {
 		super.readFromNBT2(aNBT);
 		if (aNBT.hasKey(NBT_COOLDOWN_COUNTER)) mCooldownCounter = aNBT.getByte(NBT_COOLDOWN_COUNTER);
-		if (aNBT.hasKey(NBT_OUTPUT_BUFFER)) mOutSum = aNBT.getLong(NBT_OUTPUT_BUFFER);
-		if (aNBT.hasKey(NBT_ENERGY_SU_PRE)) mPSteam = aNBT.getLong(NBT_ENERGY_SU_PRE);
+		if (aNBT.hasKey(NBT_ENERGY_SU_PRE)) pSteam = aNBT.getLong(NBT_ENERGY_SU_PRE);
 
 		if (aNBT.hasKey(NBT_ENERGY_SU)) mSteamCounter = aNBT.getLong(NBT_ENERGY_SU);
 		if (aNBT.hasKey(NBT_OUTPUT_SU)) mOutputSU = aNBT.getLong(NBT_OUTPUT_SU);
 		if (aNBT.hasKey(NBT_EFFICIENCY_WATER)) mEfficiencyWater = (short)UT.Code.bind_(0, 10000, aNBT.getShort(NBT_EFFICIENCY_WATER));
 		STEAM_PER_WATER_SELF = mEfficiencyWater < 100 ? -1 : (int)UT.Code.units(STEAM_PER_WATER, mEfficiencyWater, 10000, T);
+		if (aNBT.hasKey(NBT_EFFICIENCY_OC)) mEfficiencyOverclock = (short)UT.Code.bind_(0, 10000, aNBT.getShort(NBT_EFFICIENCY_OC));
+
 
 		if (aNBT.hasKey(NBT_ENERGY_ACCEPTED)) mEnergyTypeAccepted = TagData.createTagData(aNBT.getString(NBT_ENERGY_ACCEPTED));
 
@@ -86,7 +86,7 @@ public class MultiTileEntityLargeTurbineSteam_CH extends MultiTileEntityLargeMot
 	protected void setEnergyByLength2(int aI) {
 		super.setEnergyByLength2(aI);
 		mTanks[0].setCapacity(mInRate*16);
-		mTanks[1].setCapacity(mInRate*16).setVoidExcess();
+		mTanks[1].setCapacity(mInRate*16); // 不需要 voidExceed
 	}
 	@Override
 	protected void setInRateByLength(int aI) {
@@ -97,8 +97,7 @@ public class MultiTileEntityLargeTurbineSteam_CH extends MultiTileEntityLargeMot
 	public void writeToNBT2(NBTTagCompound aNBT) {
 		super.writeToNBT2(aNBT);
 		UT.NBT.setNumber(aNBT, NBT_COOLDOWN_COUNTER, mCooldownCounter);
-		UT.NBT.setNumber(aNBT, NBT_OUTPUT_BUFFER, mOutSum);
-		UT.NBT.setNumber(aNBT, NBT_ENERGY_SU_PRE, mPSteam);
+		UT.NBT.setNumber(aNBT, NBT_ENERGY_SU_PRE, pSteam);
 
 		UT.NBT.setNumber(aNBT, NBT_ENERGY_SU, mSteamCounter);
 		UT.NBT.setNumber(aNBT, NBT_OUTPUT_SU, mOutputSU); // 保留兼容
@@ -111,11 +110,16 @@ public class MultiTileEntityLargeTurbineSteam_CH extends MultiTileEntityLargeMot
 	// tooltips
 	@Override
 	protected void toolTipsEnergy(List<String> aList) {
-		aList.add(LH.Chat.CYAN     + LH_CH.get(LH_CH.ENERGY_LENGTH) + ": " + mMidLength);
+		aList.add(LH.Chat.CYAN     + LH_CH.getNumber(LH_CH.ENERGY_LENGTH, mMidLength));
 		aList.add(LH.getToolTipEfficiency(mEfficiencyArray[mMidLength-mMinLength]));
 		long tInput = UT.Code.units(mRateArray[mMidLength-mMinLength], mEfficiencyArray[mMidLength-mMinLength], 10000, T) * STEAM_PER_EU, tOutput = mRateArray[mMidLength-mMinLength];
-		aList.add(LH.Chat.GREEN    + LH.get(LH.ENERGY_INPUT ) + ": " + LH.Chat.WHITE 	+ tInput  + " " + mEnergyTypeAccepted.getLocalisedChatNameShort() + LH.Chat.WHITE + "/t (" + tInput/2  + " " + LH_CH.get(LH_CH.ENERGY_TO) + " " + tInput*2  + ")");
-		aList.add(LH.Chat.RED      + LH.get(LH.ENERGY_OUTPUT) + ": " + LH.Chat.WHITE 	+ tOutput + " " + mEnergyTypeEmitted.getLocalisedChatNameShort()  + LH.Chat.WHITE + "/t (" + tOutput/2 + " " + LH_CH.get(LH_CH.ENERGY_TO) + " " + tOutput*2 + ")");
+		aList.add(LH.Chat.GREEN    + LH.get(LH.ENERGY_INPUT ) + ": " + LH.Chat.WHITE 	+ tInput  + " " + mEnergyTypeAccepted.getLocalisedChatNameShort() + LH.Chat.WHITE + "/t (" + LH_CH.getNumber(LH_CH.ENERGY_TO, tInput/2,  tInput*2)  + ")");
+		aList.add(LH.Chat.RED      + LH.get(LH.ENERGY_OUTPUT) + ": " + LH.Chat.WHITE 	+ tOutput + " " + mEnergyTypeEmitted.getLocalisedChatNameShort()  + LH.Chat.WHITE + "/t (" + LH_CH.getNumber(LH_CH.ENERGY_TO, tOutput/2, tOutput + UT.Code.units(tOutput, 10000, mEfficiencyOverclock, F)) + ")");
+	}
+	@Override
+	protected void toolTipsUseful(List<String> aList) {
+		aList.add(Chat.YELLOW + LH_CH.get(LH_CH.OVERCLOCK_GENERATOR) + " (" + LH_CH.getToolTipEfficiencySimple(mEfficiencyOverclock) + ")");
+		super.toolTipsUseful(aList);
 	}
 	@Override
 	protected void toolTipsImportant(List<String> aList) {
@@ -131,7 +135,7 @@ public class MultiTileEntityLargeTurbineSteam_CH extends MultiTileEntityLargeMot
 	protected void toolTipsMultiblock(List<String> aList) {
 		super.toolTipsMultiblock(aList);
 		aList.add(Chat.WHITE    + LH_CH.get("gtch.tooltip.multiblock.steamturbine.1"));
-		aList.add(Chat.WHITE    + LH_CH.get("gtch.tooltip.multiblock.steamturbine.5") + " " + mMinLength + " " + LH_CH.get(LH_CH.ENERGY_TO) + " " + mMaxLength);
+		aList.add(Chat.WHITE    + LH_CH.getNumber("gtch.tooltip.multiblock.steamturbine.5", mMinLength, mMaxLength));
 		aList.add(Chat.WHITE    + LH_CH.get("gtch.tooltip.multiblock.steamturbine.2"));
 		aList.add(Chat.WHITE    + LH_CH.get("gtch.tooltip.multiblock.steamturbine.3"));
 	}
@@ -140,7 +144,7 @@ public class MultiTileEntityLargeTurbineSteam_CH extends MultiTileEntityLargeMot
 		LH_CH.add("gtch.tooltip.multiblock.steamturbine.2", "Main centered on the 3x3 facing outwards");
 		LH_CH.add("gtch.tooltip.multiblock.steamturbine.3", "Input only possible at frontal 3x3");
 		LH_CH.add("gtch.tooltip.multiblock.steamturbine.4", "Distilled Water can still be pumped out at Bottom Layer");
-		LH_CH.add("gtch.tooltip.multiblock.steamturbine.5", "N can be from");
+		LH_CH.add("gtch.tooltip.multiblock.steamturbine.5", "N can be from %d to %d");
 	}
 
 	// 工具右键
@@ -159,16 +163,67 @@ public class MultiTileEntityLargeTurbineSteam_CH extends MultiTileEntityLargeMot
 	}
 	@Override
 	public void onMagnifyingGlassEnergy(List<String> aChatReturn) {
-		aChatReturn.add("Length: " + mLength);
-		aChatReturn.add(LH.get(LH.EFFICIENCY) + ": " + LH.percent(mEfficiency) + "%");
-		aChatReturn.add(LH.get(LH.ENERGY_INPUT)   + ": " + getEnergySizeInputMin(mEnergyTypeAccepted, SIDE_ANY) + " - " + getEnergySizeInputMax(mEnergyTypeAccepted, SIDE_ANY) + " " + mEnergyTypeAccepted.getLocalisedChatNameShort() + LH.Chat.WHITE + "/t");
-		aChatReturn.add(LH.get(LH.ENERGY_OUTPUT)  + ": " + getEnergySizeOutputMin(mEnergyTypeEmitted, SIDE_ANY) + " - " + getEnergySizeOutputMax(mEnergyTypeEmitted, SIDE_ANY) + " " + mEnergyTypeEmitted.getLocalisedChatNameShort()  + LH.Chat.WHITE + "/t");
+		if (mPreheat) {
+			aChatReturn.add("Preheating: " + LH.percent(UT.Code.units(Math.min(mEnergy, mPEnergy), mPEnergy, 10000, F)) + "%");
+		}
+		if (mActive) {
+			aChatReturn.add("Active:");
+			aChatReturn.add(LH.get(LH.EFFICIENCY) + ": " + LH.percent(UT.Code.units(mEfficiency, mOutputConvert, mOutput, F)) + "%");
+			aChatReturn.add(LH.get(LH.ENERGY_OUTPUT)  + ": " + mOutput + " " + mEnergyTypeEmitted.getLocalisedChatNameShort()  + LH.Chat.WHITE + "/t");
+		}
+		if (mEnergy == 0) {
+			aChatReturn.add("Length: " + mLength);
+			aChatReturn.add(LH.get(LH.EFFICIENCY) + ": " + LH.percent(mEfficiency) + "%");
+			aChatReturn.add(LH.get(LH.ENERGY_INPUT)   + ": " + getEnergySizeInputMin(mEnergyTypeAccepted, SIDE_ANY) + " - " + getEnergySizeInputMax(mEnergyTypeAccepted, SIDE_ANY) + " " + mEnergyTypeAccepted.getLocalisedChatNameShort() + LH.Chat.WHITE + "/t");
+			aChatReturn.add(LH.get(LH.ENERGY_OUTPUT)  + ": " + getEnergySizeOutputMin(mEnergyTypeEmitted, SIDE_ANY) + " - " + getEnergySizeOutputMax(mEnergyTypeEmitted, SIDE_ANY) + " " + mEnergyTypeEmitted.getLocalisedChatNameShort()  + LH.Chat.WHITE + "/t");
+		}
 	}
 
 	// 每 tick 转换
 	@Override
 	protected void convert() {
-		convert(getEnergySizeInputMax(mEnergyTypeAccepted, SIDE_ANY), getEnergySizeOutputMax(mEnergyTypeEmitted, SIDE_ANY));
+		long tSteam = mTanks[0].amount();
+		mOutputSU = tSteam - pSteam;
+		if (mOutputSU > 0) mCooldownCounter = COOLDOWN_NUM;
+		if (mTanks[0].has()) {
+			if (!mTanks[0].isFull()) {
+				//没有超载
+				if (mEnergy < mPEnergy) {
+					// 预热时积攒蒸汽，减少运算，减少因效率计算造成的损失
+					if (mEnergy < mPEnergy - mRate * 2) {
+						convert(mInRate * 2, mRate * 2);
+					} else {
+						convert_(tSteam);
+					}
+				} else {
+					// 运行状态也进行下不积攒蒸汽，回到原本的两种情况
+					if (tSteam >= mInRate * 2) {
+						// 最高输出
+						convert_(mInRate * 2, mRate * 2);
+					} else
+					if (tSteam >= mInRate / 2) {
+						// 一般输出
+						convert_(tSteam);
+					} else {
+						// 蒸汽不够完全不工作
+						if (STEAM_PER_WATER_SELF > 0) mSteamCounter += tSteam;
+						mTanks[0].remove(tSteam);
+						if (tSteam >= mInPCost) mEnergy = mPEnergy + mPCost; // 超过一半的不够则不考虑效率，使用这个方式实现不工作
+					}
+				}
+			} else {
+				//超载
+				mTanks[0].remove(tSteam/2);
+				mOverload = T;
+			}
+
+			//输出蒸馏水，和输出能量不相互干扰
+			if (mSteamCounter >= STEAM_PER_WATER_SELF && STEAM_PER_WATER_SELF > 0) {
+				mTanks[1].fillAll(FL.DistW.make(mSteamCounter / STEAM_PER_WATER_SELF));
+				mSteamCounter %= STEAM_PER_WATER_SELF;
+			}
+		}
+		pSteam = mTanks[0].amount();
 		// 自动输出蒸馏水
 		long tFluid;
 		if (mTanks[1].has()) {
@@ -189,14 +244,14 @@ public class MultiTileEntityLargeTurbineSteam_CH extends MultiTileEntityLargeMot
 	}
 	@Override
 	protected long getOutput() {
-		//使用这个算法使输出平滑
-		long tOutput = (mEnergy - getEnergySizeOutputMin(mEnergyTypeEmitted, SIDE_ANY) - mPEnergy) / 16 + getEnergySizeOutputMin(mEnergyTypeEmitted, SIDE_ANY);
-		if (mOutSum == 0) {
-			mOutSum = tOutput * OUT_SUM_MUL;
-		} else {
-			mOutSum = mOutSum * (OUT_SUM_MUL - 1) / OUT_SUM_MUL + tOutput;
-		}
-		return UT.Code.bind_(getEnergySizeOutputMin(mEnergyTypeEmitted, SIDE_ANY), getEnergySizeOutputMax(mEnergyTypeEmitted, SIDE_ANY), mOutSum / OUT_SUM_MUL);
+		//根据 mOutputConvert，如果超过了标准输出则按照超频效率输出
+		//不再进行平滑，去除下限检测因为现在的算法都不会达到下限
+		mOutputConvert = mEnergy - mPEnergy;
+		return mOutputConvert <= mRate ? mOutputConvert :  Math.min(mRate + UT.Code.units(mOutputConvert - mRate, 10000, mEfficiencyOverclock, F), getEnergySizeOutputMax(mEnergyTypeEmitted, SIDE_ANY));
+	}
+	@Override
+	protected void energyReduce() {
+		mEnergy -= mOutputConvert;
 	}
 	@Override
 	protected boolean checkPreheat() {
@@ -218,49 +273,57 @@ public class MultiTileEntityLargeTurbineSteam_CH extends MultiTileEntityLargeMot
 	protected void doCooldown() {
 		super.doCooldown();
 		mCooldownCounter = 0;
-		mOutSum = 0;
+		pSteam = 0;
+		mOutputSU = 0;
+	}
+	@Override
+	protected void doElse() {
+		// 必须要冷却才能清空数据
+		super.stop();
+		if (mCooldownCounter <= 0) {
+			mTanks[0].setEmpty();
+			pSteam = 0;
+			mOutputSU = 0;
+			mSteamCounter = 0;
+			mCooldownCounter = 0;
+		}
 	}
 	@Override
 	protected void stop() {
 		super.stop();
 		mTanks[0].setEmpty();
-		mOutSum = 0;
+		pSteam = 0;
 		mOutputSU = 0;
 		mSteamCounter = 0;
-		mCooldownCounter = COOLDOWN_NUM;
+		mCooldownCounter = 0;
 	}
 
+	protected void convert_(long aInRate) {
+		convert_(aInRate, UT.Code.units(aInRate, 10000, mEfficiency, F));
+	}
+	protected void convert_(long aInRate, long aOutRate) {
+		if (STEAM_PER_WATER_SELF > 0) mSteamCounter += aInRate;
+		mTanks[0].remove(aInRate);
+		mEnergy += aOutRate;
+	}
 	protected void convert(long aInRate, long aOutRate) {
-		long tSteam = mTanks[0].amount();
-		mOutputSU = tSteam - mPSteam;
-		if (mOutputSU > 0) mCooldownCounter = COOLDOWN_NUM;
-		if (mTanks[0].has(aInRate)) {
-			if (!mTanks[0].isFull()) {
-				//达到输入，并且没有超载
-				if (STEAM_PER_WATER_SELF > 0) mSteamCounter += aInRate;
-				mTanks[0].remove(aInRate);
-				mEnergy += aOutRate;
-			} else {
-				//超载
-				mTanks[0].remove(tSteam/2);
-				mOverload = T;
-			}
-
-			//输出蒸馏水，和输出能量不相互干扰
-			if (mSteamCounter >= STEAM_PER_WATER_SELF && STEAM_PER_WATER_SELF > 0) {
-				mTanks[1].fillAll(FL.DistW.make(mSteamCounter / STEAM_PER_WATER_SELF));
-				mSteamCounter %= STEAM_PER_WATER_SELF;
-			}
-		}
-		mPSteam = mTanks[0].amount();
+		if (mTanks[0].has(aInRate)) convert_(aInRate, aOutRate);
 	}
 
 	// 一些接口
+	@Override
+	public boolean breakBlock() {
+		if (isServerSide()) {
+			GarbageGT.trash(mTanks[1]);
+		}
+		return super.breakBlock();
+	}
 	@Override protected IFluidTank getFluidTankFillable2(byte aSide, FluidStack aFluidToFill) {return !mStopped && FL.steam(aFluidToFill) ? mTanks[0] : null;}
 	@Override protected IFluidTank getFluidTankDrainable2(byte aSide, FluidStack aFluidToDrain) {return mTanks[1];}
 	@Override protected IFluidTank[] getFluidTanks2(byte aSide) {return mTanks;}
 
 	@Override public boolean isEnergyType(TagData aEnergyType, byte aSide, boolean aEmitting) {return (aEmitting?mEnergyTypeEmitted:mEnergyTypeAccepted)==aEnergyType;}
+	@Override public long getEnergySizeOutputMax(TagData aEnergyType, byte aSide) {return mRate+UT.Code.units(mRate, 10000, mEfficiencyOverclock, F);}
 	@Override public Collection<TagData> getEnergyTypes(byte aSide) {return new ArrayListNoNulls<>(F, mEnergyTypeAccepted, mEnergyTypeEmitted);}
 
 	// Icons，图像动画
@@ -269,6 +332,7 @@ public class MultiTileEntityLargeTurbineSteam_CH extends MultiTileEntityLargeMot
 	public static final IIconContainer mTexturePreheat  = new Textures.BlockIcons.CustomIcon("machines/multiblockmains/turbine_preheat");
 	public static final IIconContainer mTextureActiveL   = new Textures.BlockIcons.CustomIcon("machines/multiblockmains/turbine_active_l");
 	public static final IIconContainer mTexturePreheatL  = new Textures.BlockIcons.CustomIcon("machines/multiblockmains/turbine_preheat_l");
+	public static final IIconContainer mTextureOutput  = new Textures.BlockIcons.CustomIcon("machines/multiblockparts/metalwalldense/3/overlay/top");
 	@Override
 	public IIconContainer getIIconContainer(IconType aIconType) {
 		switch (aIconType) {
@@ -276,12 +340,13 @@ public class MultiTileEntityLargeTurbineSteam_CH extends MultiTileEntityLargeMot
 			case OVERLAY_ACTIVE_R: return mTextureActive;
 			case OVERLAY_PREHEAT_L: return mTexturePreheatL;
 			case OVERLAY_PREHEAT_R: return mTexturePreheat;
+			case OVERLAY_ENERGY_RU: return mTextureOutput;
 			case OVERLAY:
 			default: return mTextureInactive;
 		}
 	}
 
-	@Override public String getTileEntityName() {return "gt.multitileentity.multiblock.turbine.steam";}
+	@Override public String getTileEntityName() {return "gtch.multitileentity.multiblock.turbine.steam";}
 
 	@Override
 	public boolean canFillExtra(FluidStack aFluid) {

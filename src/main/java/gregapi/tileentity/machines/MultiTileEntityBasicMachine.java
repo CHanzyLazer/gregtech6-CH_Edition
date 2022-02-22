@@ -20,6 +20,7 @@
 package gregapi.tileentity.machines;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.NBT_CANFILL_STEAM;
 
 import java.util.Collection;
 import java.util.List;
@@ -59,6 +60,8 @@ import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.util.ST;
 import gregapi.util.UT;
+import gregtechCH.data.LH_CH;
+import gregtechCH.fluid.IFluidHandler_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -99,7 +102,9 @@ import net.minecraftforge.fluids.IFluidTank;
 @Optional.InterfaceList(value = {
 	@Optional.Interface(iface = "buildcraft.api.tiles.IHasWork", modid = ModIDs.BC)
 })
-public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle implements IHasWork, ITileEntityFunnelAccessible, ITileEntityTapAccessible, ITileEntitySwitchableOnOff, ITileEntityRunningSuccessfully, ITileEntityAdjacentInventoryUpdatable, ITileEntityEnergy, ITileEntityProgress, ITileEntityGibbl, IFluidHandler {
+public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle implements IHasWork, ITileEntityFunnelAccessible, ITileEntityTapAccessible, ITileEntitySwitchableOnOff, ITileEntityRunningSuccessfully, ITileEntityAdjacentInventoryUpdatable, ITileEntityEnergy, ITileEntityProgress, ITileEntityGibbl, IFluidHandler_CH {
+	public boolean mCanFillSteam = F;
+
 	public boolean mSpecialIsStartEnergy = F, mNoConstantEnergy = F, mCheapOverclocking = F, mCouldUseRecipe = F, mStopped = F, oActive = F, oRunning = F, mStateNew = F, mStateOld = F, mDisabledItemInput = F, mDisabledItemOutput = F, mDisabledFluidInput = F, mDisabledFluidOutput = F, mRequiresIgnition = F, mParallelDuration = F, mCanUseOutputTanks = F;
 	public byte mEnergyInputs = 127, mEnergyOutput = SIDE_UNDEFINED, mOutputBlocked = 0, mMode = 0, mIgnited = 0;
 	public byte mItemInputs   = 127, mItemOutputs  = 127, mItemAutoInput  = SIDE_UNDEFINED, mItemAutoOutput  = SIDE_UNDEFINED;
@@ -122,6 +127,9 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {
 		super.readFromNBT2(aNBT);
+		//GTCH
+		if (aNBT.hasKey(NBT_CANFILL_STEAM)) mCanFillSteam = aNBT.getBoolean(NBT_CANFILL_STEAM);
+
 		mGUITexture = mRecipes.mGUIPath;
 		mEnergy = aNBT.getLong(NBT_ENERGY);
 		if (aNBT.hasKey(NBT_ACTIVE)) mCouldUseRecipe = mActive = aNBT.getBoolean(NBT_ACTIVE);
@@ -266,29 +274,38 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 		UT.NBT.setBoolean(aNBT, NBT_TANK_DISABLED_OUT, mDisabledFluidOutput);
 		return super.writeItemNBT2(aNBT);
 	}
-	
+	// tooltips
 	@Override
-	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
-		aList.add(Chat.CYAN + LH.get(LH.RECIPES) + ": " + Chat.WHITE + LH.get(mRecipes.mNameInternal) + (mParallel > 1 ? " (up to "+mParallel+"x processed per run)" : ""));
-		
-		if (mCheapOverclocking)
-		aList.add(Chat.YELLOW + LH.get(LH.CHEAP_OVERCLOCKING));
-		if (mEfficiency != 10000)
-		aList.add(LH.getToolTipEfficiency(mEfficiency));
-		
+	public final void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
+		toolTipsMultiblock(aList);
+		toolTipsEnergy(aList);
 		addToolTipsSided(aList, aStack, aF3_H);
-		
-		if (mRequiresIgnition)
-		aList.add(Chat.ORANGE   + LH.get(LH.REQUIREMENT_IGNITE_FIRE));
-		
+		toolTipsUseful(aList);
+		toolTipsImportant(aList);
+		toolTipsHazard(aList);
+		toolTipsOther(aList, aStack, aF3_H);
+	}
+	protected void toolTipsMultiblock(List<String> aList) {/**/}
+	protected void toolTipsEnergy(List<String> aList) {
+		aList.add(Chat.CYAN + LH.get(LH.RECIPES) + ": " + Chat.WHITE + LH.get(mRecipes.mNameInternal) + (mParallel > 1 ? " (up to "+mParallel+"x processed per run)" : ""));
+		if (mCheapOverclocking)
+			aList.add(Chat.YELLOW + LH.get(LH.CHEAP_OVERCLOCKING));
+		if (mEfficiency != 10000)
+			aList.add(LH.getToolTipEfficiency(mEfficiency));
+	}
+	protected void toolTipsUseful(List<String> aList) {/**/}
+	protected void toolTipsImportant(List<String> aList) {
+		if (mRequiresIgnition) aList.add(Chat.ORANGE   + LH.get(LH.REQUIREMENT_IGNITE_FIRE));
+	}
+	protected void toolTipsHazard(List<String> aList) {/**/}
+	protected void toolTipsOther(List<String> aList, ItemStack aStack, boolean aF3_H) {
 		aList.add(Chat.DGRAY    + LH.get(LH.TOOL_TO_TOGGLE_SCREWDRIVER));
 		if (SIDES_VALID[mFluidAutoInput] || SIDES_VALID[mItemAutoInput])
-		aList.add(Chat.DGRAY    + LH.get(LH.TOOL_TO_TOGGLE_AUTO_INPUTS_MONKEY_WRENCH));
+			aList.add(Chat.DGRAY    + LH.get(LH.TOOL_TO_TOGGLE_AUTO_INPUTS_MONKEY_WRENCH));
 		if (SIDES_VALID[mFluidAutoOutput] || SIDES_VALID[mItemAutoOutput])
-		aList.add(Chat.DGRAY    + LH.get(LH.TOOL_TO_TOGGLE_AUTO_OUTPUTS_MONKEY_WRENCH));
+			aList.add(Chat.DGRAY    + LH.get(LH.TOOL_TO_TOGGLE_AUTO_OUTPUTS_MONKEY_WRENCH));
 		aList.add(Chat.DGRAY    + LH.get(LH.TOOL_TO_RESET_SOFT_HAMMER));
 		aList.add(Chat.DGRAY    + LH.get(LH.TOOL_TO_DETAIL_MAGNIFYINGGLASS));
-		
 		super.addToolTips(aList, aStack, aF3_H);
 	}
 	
@@ -625,15 +642,9 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 	}
 	
 	// Stuff to Override
-	
-	public int canOutput(Recipe aRecipe) {
-		int rMaxTimes = mParallel;
-		
-		// Don't do more than 30 to 120 Seconds worth of Input at a time, when doing Chain Processing.
-		if (mParallelDuration) {
-			// Ugh, I do not feel like Maths right now, but the previous incarnation of this seemed a tiny bit wrong, so I will make sure it works properly.
-			while (rMaxTimes > 1 && aRecipe.getAbsoluteTotalPower() * rMaxTimes > mInputMax * 600) rMaxTimes--;
-		}
+	// 你不会希望重写这么复杂的函数的，将其中的一些过程改成独立的函数单独重写
+	public final int canOutput(Recipe aRecipe) {
+		int rMaxTimes = calMaxProcessCountFirst(aRecipe);
 		
 		for (int i = 0, j = mRecipes.mInputItemsCount; i < mRecipes.mOutputItemsCount && i < aRecipe.mOutputs.length; i++, j++) if (ST.valid(aRecipe.mOutputs[i])) {
 			if (slotHas(j)) {
@@ -673,6 +684,18 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 		}
 		return rMaxTimes;
 	}
+
+	// 根据配方类型计算初步的最大并行数，是并行数的下界，用于重写
+	protected int calMaxProcessCountFirst(Recipe aRecipe) {
+		// Don't do more than 30 to 120 Seconds worth of Input at a time, when doing Chain Processing.
+		if (mParallelDuration) {
+			// Ugh, I do not feel like Maths right now, but the previous incarnation of this seemed a tiny bit wrong, so I will make sure it works properly.
+//			while (rMaxTimes > 1 && aRecipe.getAbsoluteTotalPower() * rMaxTimes > mInputMax * 600) rMaxTimes--;
+			// 重写原本的算法，并行不影响最低功率，保留原本结果
+			return (int) UT.Code.bind(1, mParallel, mInputMax * 600 / aRecipe.getAbsoluteTotalPower());
+		}
+		return mParallel;
+	}
 	
 	/** return codes for checkRecipe() */
 	public static final int
@@ -687,7 +710,8 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 	 * Funny how Eclipse marks the word Enum as not correctly spelled.
 	 * @return see constants above
 	 */
-	public int checkRecipe(boolean aApplyRecipe, boolean aUseAutoInputs) {
+	// 你不会希望重写这么复杂的函数的，将其中的一些过程改成独立的函数单独重写
+	public final int checkRecipe(boolean aApplyRecipe, boolean aUseAutoInputs) {
 		mCouldUseRecipe = F;
 		if (mRecipes == null) return DID_NOT_FIND_RECIPE;
 		
@@ -738,7 +762,7 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 			if (!aApplyRecipe) return FOUND_AND_COULD_HAVE_USED_RECIPE;
 			
 			if (tMaxProcessCount > 1) {
-				if (!mParallelDuration && mEnergyTypeAccepted != TD.Energy.TU) tMaxProcessCount = (int)UT.Code.bind(1, tMaxProcessCount, mInput / Math.max(1, (mEnergyTypeAccepted == TD.Energy.RF ? tRecipe.mEUt * RF_PER_EU : tRecipe.mEUt)));
+				if (!mParallelDuration && mEnergyTypeAccepted != TD.Energy.TU) tMaxProcessCount = (int)UT.Code.bind(1, tMaxProcessCount, getBoundInput() / Math.max(1, (mEnergyTypeAccepted == TD.Energy.RF ? tRecipe.mEUt * RF_PER_EU : tRecipe.mEUt)));
 				tMaxProcessCount = 1+tRecipe.isRecipeInputEqual(tMaxProcessCount-1, mTanksOutput, tInputs);
 			}
 		} else {
@@ -751,7 +775,7 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 			if (!aApplyRecipe) return FOUND_AND_COULD_HAVE_USED_RECIPE;
 			
 			if (tMaxProcessCount > 1) {
-				if (!mParallelDuration && mEnergyTypeAccepted != TD.Energy.TU) tMaxProcessCount = (int)UT.Code.bind(1, tMaxProcessCount, mInput / Math.max(1, (mEnergyTypeAccepted == TD.Energy.RF ? tRecipe.mEUt * RF_PER_EU : tRecipe.mEUt)));
+				if (!mParallelDuration && mEnergyTypeAccepted != TD.Energy.TU) tMaxProcessCount = (int)UT.Code.bind(1, tMaxProcessCount, getBoundInput() / Math.max(1, (mEnergyTypeAccepted == TD.Energy.RF ? tRecipe.mEUt * RF_PER_EU : tRecipe.mEUt)));
 				tMaxProcessCount = 1+tRecipe.isRecipeInputEqual(tMaxProcessCount-1, mTanksInput, tInputs);
 			}
 		}
@@ -774,18 +798,28 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 			mMaxProgress = tRecipe.mDuration;
 			mMinEnergy = 0;
 		} else {
-			if (mParallelDuration) {
-				mMinEnergy = Math.max(1, (mEnergyTypeAccepted == TD.Energy.RF ? tRecipe.mEUt * RF_PER_EU : mEnergyTypeAccepted == TD.Energy.TU ? tRecipe.mEUt : tRecipe.mEUt));
-				mMaxProgress = Math.max(1, UT.Code.units(mMinEnergy * Math.max(1, tRecipe.mDuration) * tMaxProcessCount, mEfficiency, 10000, T));
-			} else {
-				mMinEnergy = Math.max(1, (mEnergyTypeAccepted == TD.Energy.RF ? tRecipe.mEUt * RF_PER_EU * tMaxProcessCount : mEnergyTypeAccepted == TD.Energy.TU ? tRecipe.mEUt : tRecipe.mEUt * tMaxProcessCount));
-				mMaxProgress = Math.max(1, UT.Code.units(mMinEnergy * Math.max(1, tRecipe.mDuration), mEfficiency, 10000, T));
-			}
-			if (mMinEnergy > 0 && !mCheapOverclocking) while (mMinEnergy < mInputMin && mMinEnergy * 4 <= mInputMax) {mMinEnergy *= 4; mMaxProgress *= 2;}
+			calMaxProgress(tMaxProcessCount, tRecipe);
 		}
 		
 		removeAllDroppableNullStacks();
 		return FOUND_AND_SUCCESSFULLY_USED_RECIPE;
+	}
+
+	// 返回限制并行达到的最低功率 ，用于重写来实现自适应并行数
+	protected long getBoundInput() {
+		return mInput;
+	}
+
+	// 根据并行数，配方类型等计算处理需要的能量和最低能量，用于重写
+	protected void calMaxProgress(int aProcessCount, Recipe aRecipe) {
+		if (mParallelDuration) {
+			mMinEnergy = Math.max(1, (mEnergyTypeAccepted == TD.Energy.RF ? aRecipe.mEUt * RF_PER_EU : mEnergyTypeAccepted == TD.Energy.TU ? aRecipe.mEUt : aRecipe.mEUt));
+			mMaxProgress = Math.max(1, UT.Code.units(mMinEnergy * Math.max(1, aRecipe.mDuration) * aProcessCount, mEfficiency, 10000, T));
+		} else {
+			mMinEnergy = Math.max(1, (mEnergyTypeAccepted == TD.Energy.RF ? aRecipe.mEUt * RF_PER_EU * aProcessCount : mEnergyTypeAccepted == TD.Energy.TU ? aRecipe.mEUt : aRecipe.mEUt * aProcessCount));
+			mMaxProgress = Math.max(1, UT.Code.units(mMinEnergy * Math.max(1, aRecipe.mDuration), mEfficiency, 10000, T));
+		}
+		if (mMinEnergy > 0 && !mCheapOverclocking) while (mMinEnergy < mInputMin && mMinEnergy * 4 <= mInputMax) {mMinEnergy *= 4; mMaxProgress *= 2;}
 	}
 	
 	public void doWork(long aTimer) {
@@ -802,8 +836,9 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 		mEnergy -= mInputMax; if (mEnergy < 0) mEnergy = 0;
 		if (mIgnited > 0) mIgnited--;
 	}
-	
-	public boolean doActive(long aTimer, long aEnergy) {
+
+	// 你不会希望重写这么复杂的函数的，将其中的一些过程改成独立的函数单独重写
+	public final boolean doActive(long aTimer, long aEnergy) {
 		boolean rActive = F;
 		
 		if (mMaxProgress <= 0) {
@@ -824,7 +859,14 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 				mProgress += aEnergy;
 			}
 			if (mProgress >= mMaxProgress && (mStateOld&&!mStateNew || !TD.Energy.ALL_ALTERNATING.contains(mEnergyTypeAccepted))) {
-				for (int i = 0; i < mOutputItems .length; i++) if (mOutputItems [i] != null && addStackToSlot(mRecipes.mInputItemsCount+(i % mRecipes.mOutputItemsCount), mOutputItems[i])) {mSuccessful = T; mIgnited = 40; mOutputItems[i] = null; continue;}
+				for (int i = 0; i < mOutputItems .length; i++) {
+					if (mOutputItems [i] != null && addStackToSlot(mRecipes.mInputItemsCount+(i % mRecipes.mOutputItemsCount), mOutputItems[i])) {
+						mSuccessful = T;
+						mIgnited = 40;
+						mOutputItems[i] = null;
+						continue;
+					}
+				}
 				for (int i = 0; i < mOutputFluids.length; i++) if (mOutputFluids[i] != null) for (int j = 0; j < mTanksOutput.length; j++) {
 					if (mTanksOutput[j].contains(mOutputFluids[i])) {
 						updateInventory();
@@ -1036,5 +1078,12 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 	@Override
 	public void adjacentInventoryUpdated(byte aSide, IInventory aTileEntity) {
 		if (FACE_CONNECTED[FACING_ROTATIONS[mFacing][aSide]][mItemInputs|mItemOutputs]) updateInventory();
+	}
+
+	// 虽然机器都只接受能合成的流体，但是还是以防万一进行白名单写法
+	@Override
+	public boolean canFillExtra(FluidStack aFluid) {
+		if (mCanFillSteam) return FL.anysteam(aFluid);
+		return F;
 	}
 }

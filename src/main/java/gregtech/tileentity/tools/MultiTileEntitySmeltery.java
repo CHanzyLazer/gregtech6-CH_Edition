@@ -84,6 +84,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Gregorius Techneticies
@@ -558,19 +559,27 @@ public class MultiTileEntitySmeltery extends TileEntityBase07Paintable implement
 		oDisplayedFluid = mDisplayedFluid;
 		oDisplayedHeight = mDisplayedHeight;
 	}
-	
+
+	// GTCH, 重写这个方法保证和原本的逻辑一致
 	@Override
-	public IPacket getClientDataPacket(boolean aSendAll) {
-		if (aSendAll) return getClientDataPacketByteArray(T, mDisplayedHeight, UT.Code.toByteS(mDisplayedFluid, 0), UT.Code.toByteS(mDisplayedFluid, 1), (byte)UT.Code.getR(mRGBa), (byte)UT.Code.getG(mRGBa), (byte)UT.Code.getB(mRGBa), (byte)(mMeltDown ? 1 : 0));
+	public IPacket getClientDataPacketNoSendAll(boolean aSendAll) {
 		if (mDisplayedFluid != oDisplayedFluid) return getClientDataPacketByteArray(F, mDisplayedHeight, UT.Code.toByteS(mDisplayedFluid, 0), UT.Code.toByteS(mDisplayedFluid, 1));
 		return getClientDataPacketByteArray(F, mDisplayedHeight);
+	}
+	@Override
+	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
+		// 禁用 VisualData
+		rList.add(0, mDisplayedHeight);
+		rList.add(1, UT.Code.toByteS(mDisplayedFluid, 0)); // 保持原本一致的顺序
+		rList.add(2, UT.Code.toByteS(mDisplayedFluid, 1));
+		rList.add(6, (byte)(mMeltDown ? 1 : 0));
 	}
 	
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		mDisplayedHeight = aData[0];
 		if (aData.length >= 3) mDisplayedFluid = UT.Code.combine(aData[1], aData[2]);
-		if (aData.length >= 6) mRGBa = UT.Code.getRGBInt(new short[] {UT.Code.unsignB(aData[3]), UT.Code.unsignB(aData[4]), UT.Code.unsignB(aData[5])});
+		if (aData.length >= 6) setRGBData(aData[3], aData[4], aData[5], aData[aData.length-1]);
 		if (aData.length >= 7) mMeltDown = (aData[6] != 0);
 		return T;
 	}

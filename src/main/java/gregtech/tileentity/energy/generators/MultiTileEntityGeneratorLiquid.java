@@ -229,6 +229,14 @@ public class MultiTileEntityGeneratorLiquid extends TileEntityBase09FacingSingle
 		updateInventory();
 		return mTank.drain(aMaxDrain, aDoDrain);
 	}
+
+	@Override
+	public boolean breakBlock() {
+		if (isServerSide()) {
+			GarbageGT.trash(mTank);
+		}
+		return super.breakBlock();
+	}
 	
 	@Override public ITexture getTexture2(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {return aShouldSideBeRendered[aSide] ? BlockTextureMulti.get(BlockTextureDefault.get(sColoreds[FACING_ROTATIONS[mFacing][aSide]], mRGBa), BlockTextureDefault.get((mBurning?sOverlaysActive:sOverlays)[FACING_ROTATIONS[mFacing][aSide]])): null;}
 	

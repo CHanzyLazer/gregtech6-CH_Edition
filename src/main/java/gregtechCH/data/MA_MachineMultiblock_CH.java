@@ -30,11 +30,11 @@ public class MA_MachineMultiblock_CH extends HashMap<String, MA_MachineMultibloc
 //    private static Map<String, GeneralAttributes> mData = new TreeMap<>();
 
     public MA_MachineMultiblock_CH() {
-        put(MT.StainlessSteel.mNameInternal,    new GeneralAttributes(1,     16,    6.0F,   6.0F,  0,   4096,  4096,   (short)18022, MT.Invar));
+        put(MT.StainlessSteel.mNameInternal,    new GeneralAttributes(1,     16,    6.0F,   6.0F,  0,   4096,   4096,   (short)18022, MT.Invar));
         put(MT.Ti.mNameInternal,                new GeneralAttributes(2,     16,    9.0F,   9.0F,  0,   8192,   8192,   (short)18026, MT.TungstenSteel));
         put(MT.TungstenSteel.mNameInternal,     new GeneralAttributes(3,     16,    12.5F,  12.5F, 0,   16384,  16384,  (short)18023, MT.W));
         put(MT.Ad.mNameInternal,                new GeneralAttributes(4,     16,    100.0F, 100.0F,0,   131072, 131072, (short)18025, MT.Ad));
-        put(MT.Invar.mNameInternal,             new GeneralAttributes(5,     16,    9.0F,   9.0F,  0,   4096,   4096,   (short)18027, MT.Invar));
+        put(MT.Invar.mNameInternal,             new GeneralAttributes(5,     16,    6.0F,   6.0F,  0,   4096,   4096,   (short)18027, MT.Invar));
     }
 
     public GeneralAttributes get(OreDictMaterial aMat) {

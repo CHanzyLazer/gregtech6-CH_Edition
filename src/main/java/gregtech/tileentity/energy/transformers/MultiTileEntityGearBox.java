@@ -41,18 +41,21 @@ import gregapi.render.BlockTextureDefault;
 import gregapi.render.BlockTextureMulti;
 import gregapi.render.ITexture;
 import gregapi.tileentity.base.TileEntityBase07Paintable;
+import gregapi.tileentity.connectors.ITileEntityItemPipe;
 import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.tileentity.machines.ITileEntityRunningActively;
 import gregapi.tileentity.machines.ITileEntitySwitchableOnOff;
 import gregapi.util.OM;
 import gregapi.util.ST;
 import gregapi.util.UT;
+import gregtechCH.data.LH_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Gregorius Techneticies
@@ -62,12 +65,18 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 	public long mMaxThroughPut = 64, mCurrentSpeed = 0, mCurrentPower = 0, mTransferredLast = 0;
 	public short mAxleGear = 0;
 	public byte mInputtedSides = 0, mOrder = 0, mRotationData = 0, oRotationData = 0, mIgnorePower = 0;
+
+	// GTCH，用来限制齿轮箱的输入输出
+	public byte mDisabledOutputs = 0, mDisabledInputs = 0;
+	public long mPowerLast = 0, mSpeedLast = 0;
 	
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {
 		super.readFromNBT2(aNBT);
 		if (aNBT.hasKey(NBT_STOPPED)) mJammed = aNBT.getBoolean(NBT_STOPPED);
 		if (aNBT.hasKey(NBT_CONNECTION)) mAxleGear = UT.Code.unsignB(aNBT.getByte(NBT_CONNECTION));
+		if (aNBT.hasKey(NBT_ENERGY_ACCEPTED_SIDES)) mDisabledInputs = aNBT.getByte(NBT_ENERGY_ACCEPTED_SIDES);
+		if (aNBT.hasKey(NBT_ENERGY_EMITTED_SIDES)) mDisabledOutputs = aNBT.getByte(NBT_ENERGY_EMITTED_SIDES);
 		if (aNBT.hasKey(NBT_INPUT)) mMaxThroughPut = aNBT.getLong(NBT_INPUT);
 		mGearsWork = checkGears();
 	}
@@ -77,6 +86,8 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 		super.writeToNBT2(aNBT);
 		UT.NBT.setBoolean(aNBT, NBT_STOPPED, mJammed);
 		aNBT.setByte(NBT_CONNECTION, (byte)mAxleGear);
+		aNBT.setByte(NBT_ENERGY_ACCEPTED_SIDES, mDisabledInputs);
+		aNBT.setByte(NBT_ENERGY_EMITTED_SIDES, mDisabledOutputs);
 	}
 	
 	@Override
@@ -86,25 +97,38 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 	}
 	
 	static {
-		LH.add("gt.tooltip.gearbox.custom.1", "Gears are interlocked wrongly!");
-		LH.add("gt.tooltip.gearbox.custom.2", "Use Wrench to mount Gears from your Inventory");
-		LH.add("gt.tooltip.gearbox.custom.3", "Use Monkeywrench to change Axle Direction");
+		LH_CH.add("gtch.tooltip.gearbox.custom.1", "Gears are interlocked wrongly!");
+		LH_CH.add("gtch.tooltip.gearbox.custom.2", "Use Wrench to mount Gears from your Inventory");
+		LH_CH.add("gtch.tooltip.gearbox.custom.3", "Use Wrench in sneaking to change Axle Direction");
 	}
 	
 	@Override
 	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
-		if (!mGearsWork)
-		aList.add(Chat.BLINKING_RED + LH.get("gt.tooltip.gearbox.custom.1"));
-		aList.add(Chat.CYAN + LH.get(LH.AXLE_STATS_SPEED) + mMaxThroughPut + " " + TD.Energy.RU.getLocalisedNameShort());
-		aList.add(Chat.DGRAY + LH.get("gt.tooltip.gearbox.custom.2"));
-		aList.add(Chat.DGRAY + LH.get("gt.tooltip.gearbox.custom.3"));
+		if (!mGearsWork) aList.add(Chat.BLINKING_RED + LH_CH.get("gtch.tooltip.gearbox.custom.1"));
+		aList.add(Chat.CYAN + LH_CH.get(LH_CH.AXLE_STATS_SPEED) + " " + mMaxThroughPut + " " + TD.Energy.RU.getLocalisedNameShort());
+		aList.add(Chat.DGRAY + LH_CH.get("gtch.tooltip.gearbox.custom.2"));
+		aList.add(Chat.DGRAY + LH_CH.get("gtch.tooltip.gearbox.custom.3"));
+		aList.add(Chat.DGRAY + LH_CH.get(LH_CH.TOOL_TO_SET_IO_MONKEY_WRENCH));
 		aList.add(Chat.DGRAY + LH.get(LH.TOOL_TO_TOGGLE_SOFT_HAMMER));
 		aList.add(Chat.DGRAY + LH.get(LH.TOOL_TO_DETAIL_MAGNIFYINGGLASS));
+		aList.add(LH.Chat.DGRAY + LH_CH.get(LH_CH.TOOL_TO_DETAIL_MAGNIFYINGGLASS_SNEAK));
 	}
 	
 	@Override
 	public long onToolClick2(String aTool, long aRemainingDurability, long aQuality, Entity aPlayer, List<String> aChatReturn, IInventory aPlayerInventory, boolean aSneaking, ItemStack aStack, byte aSide, float aHitX, float aHitY, float aHitZ) {
 		if (isClientSide()) return 0;
+		if (aTool.equals(TOOL_wrench) && aSneaking) {
+			if (SIDES_INVALID[aSide]) return 0;
+			byte tSide = UT.Code.getSideWrenching(aSide, aHitX, aHitY, aHitZ);
+			if (SIDES_AXIS_X[tSide]) if (((mAxleGear >>> 6) & 3) != 1) mAxleGear = (byte)((mAxleGear & 63) | (1 << 6)); else mAxleGear &= 63;
+			if (SIDES_AXIS_Y[tSide]) if (((mAxleGear >>> 6) & 3) != 2) mAxleGear = (byte)((mAxleGear & 63) | (2 << 6)); else mAxleGear &= 63;
+			if (SIDES_AXIS_Z[tSide]) if (((mAxleGear >>> 6) & 3) != 3) mAxleGear = (byte)((mAxleGear & 63) | (3 << 6)); else mAxleGear &= 63;
+			mJammed = F;
+			mGearsWork = checkGears();
+			updateClientData();
+			causeBlockUpdate();
+			return 10000;
+		}
 		if (aTool.equals(TOOL_wrench)) {
 			if (SIDES_INVALID[aSide]) return 0;
 			byte tSide = UT.Code.getSideWrenching(aSide, aHitX, aHitY, aHitZ);
@@ -142,16 +166,26 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 			return 0;
 		}
 		if (aTool.equals(TOOL_monkeywrench)) {
-			if (SIDES_INVALID[aSide]) return 0;
-			byte tSide = UT.Code.getSideWrenching(aSide, aHitX, aHitY, aHitZ);
-			if (SIDES_AXIS_X[tSide]) if (((mAxleGear >>> 6) & 3) != 1) mAxleGear = (byte)((mAxleGear & 63) | (1 << 6)); else mAxleGear &= 63;
-			if (SIDES_AXIS_Y[tSide]) if (((mAxleGear >>> 6) & 3) != 2) mAxleGear = (byte)((mAxleGear & 63) | (2 << 6)); else mAxleGear &= 63;
-			if (SIDES_AXIS_Z[tSide]) if (((mAxleGear >>> 6) & 3) != 3) mAxleGear = (byte)((mAxleGear & 63) | (3 << 6)); else mAxleGear &= 63;
-			mJammed = F;
-			mGearsWork = checkGears();
-			updateClientData();
-			causeBlockUpdate();
-			return 10000;
+			byte aTargetSide = UT.Code.getSideWrenching(aSide, aHitX, aHitY, aHitZ);
+			if (FACE_CONNECTED[aTargetSide][mDisabledInputs]) {
+				// 转为限制只能输入
+				mDisabledOutputs |= B[aTargetSide];
+				mDisabledInputs  &= ~B[aTargetSide];
+				if (aChatReturn != null) aChatReturn.add("Only Accept energy from Selected Side");
+				return 2500;
+			}
+			if (FACE_CONNECTED[aTargetSide][mDisabledOutputs]) {
+				// 复位输入输出限制
+				mDisabledOutputs &= ~B[aTargetSide];
+				mDisabledInputs  &= ~B[aTargetSide];
+				if (aChatReturn != null) aChatReturn.add("Accept and Emit energy from Selected Side");
+				return 2500;
+			}
+			// 转为限制只能输出
+			mDisabledOutputs &= ~B[aTargetSide];
+			mDisabledInputs  |= B[aTargetSide];
+			if (aChatReturn != null) aChatReturn.add("Only Emit energy from Selected Side");
+			return 2500;
 		}
 		if (aTool.equals(TOOL_softhammer)) {
 			mJammed = !mJammed;
@@ -160,9 +194,37 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 			causeBlockUpdate();
 			return 10000;
 		}
+
+		if (aTool.equals(TOOL_magnifyingglass) && aSneaking) {
+			mGearsWork = checkGears();
+			if (mGearsWork  && !mJammed) {
+				if (aChatReturn != null) {
+					aChatReturn.add("Speed: " + Math.abs(mSpeedLast));
+					aChatReturn.add("Power: " + mPowerLast);
+				}
+			} else {
+				if (aChatReturn != null) aChatReturn.add("Inactive");
+			}
+			return 1;
+		}
 		if (aTool.equals(TOOL_magnifyingglass)) {
 			mGearsWork = checkGears();
-			if (aChatReturn != null) aChatReturn.add(mGearsWork ? mJammed ? "Gears interlocked properly, but they are jammed!" : "Gears interlocked properly." : "Gears interlocked improperly!");
+			if (aChatReturn != null) {
+				aChatReturn.add(mGearsWork ? mJammed ? "Gears interlocked properly, but they are jammed!" : "Gears interlocked properly." : "Gears interlocked improperly!");
+			}
+			byte aTargetSide = UT.Code.getSideWrenching(aSide, aHitX, aHitY, aHitZ);
+			if (!isCovered(aTargetSide)) {
+				if (aChatReturn != null) {
+					if (FACE_CONNECTED[aTargetSide][mDisabledInputs]) {
+						aChatReturn.add("Only Emit energy from Selected Side");
+					} else
+					if (FACE_CONNECTED[aTargetSide][mDisabledOutputs]) {
+						aChatReturn.add("Only Accept energy from Selected Side");
+					} else {
+						aChatReturn.add("Accept and Emit energy from Selected Side");
+					}
+				}
+			}
 			return 1;
 		}
 		return 0;
@@ -174,7 +236,11 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 			if (mJammed || !mGearsWork) mCurrentPower = 0;
 			
 			mTransferredLast = Math.abs(mCurrentPower * mCurrentSpeed);
-			
+
+			// GTCH，用于放大镜显示
+			mSpeedLast = mCurrentSpeed;
+			mPowerLast = mCurrentPower;
+
 			if (mUsedGear && mCurrentPower > 0) {
 				boolean temp = T;
 				while (temp) {
@@ -183,7 +249,8 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 					long tUsable = Math.max(1, mCurrentPower/3);
 					for (byte i = 0; i < 6; i++) {
 						byte tSide = (byte)((mOrder+i)%6);
-						if (!FACE_CONNECTED[tSide][mInputtedSides]) {
+						// GTCH，限制输出
+						if (!FACE_CONNECTED[tSide][mInputtedSides] && !FACE_CONNECTED[tSide][mDisabledOutputs]) {
 							if (FACE_CONNECTED[tSide][mAxleGear & 63]) {
 								long tUsed = ITileEntityEnergy.Util.insertEnergyInto(TD.Energy.RU, (mRotationData & B[          tSide ]) != 0 ? +mCurrentSpeed : -mCurrentSpeed, tUsable, this, getAdjacentTileEntity(tSide));
 								if (tUsed > 0) {
@@ -300,16 +367,19 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 	@Override public void onTickResetChecks(long aTimer, boolean aIsServerSide) {super.onTickResetChecks(aTimer, aIsServerSide); oRotationData = mRotationData;}
 	@Override public void setVisualData(byte aData) {mRotationData = aData;}
 	@Override public byte getVisualData() {return mRotationData;}
-	
+
+	// GTCH, 重写这个方法来扩展客户端数据
 	@Override
-	public IPacket getClientDataPacket(boolean aSendAll) {
-		return aSendAll ? getClientDataPacketByteArray(aSendAll, (byte)UT.Code.getR(mRGBa), (byte)UT.Code.getG(mRGBa), (byte)UT.Code.getB(mRGBa), getVisualData(), (byte)mAxleGear) : getClientDataPacketByte(aSendAll, getVisualData());
+	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
+		super.writeToClientDataPacketByteList(rList);
+		rList.add(4, (byte)mAxleGear);
 	}
-	
+
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
+		super.receiveDataByteArray(aData, aNetworkHandler);
 		mAxleGear = UT.Code.unsignB(aData[4]);
-		return super.receiveDataByteArray(aData, aNetworkHandler);
+		return T;
 	}
 	
 	public ITexture mTextureGearA, mTextureAxleGearA, mTextureGearB, mTextureAxleGearB, mTexture, mTextureAxle;
@@ -333,6 +403,9 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 	@Override
 	public long doInject(TagData aEnergyType, byte aSide, long aSpeed, long aPower, boolean aDoInject) {
 		if (!isEnergyType(aEnergyType, aSide, F)) return 0;
+		// GTCH，限制输入
+		if (FACE_CONNECTED[aSide][mDisabledInputs]) return 0;
+
 		if (!AXIS_XYZ[(mAxleGear >>> 6) & 3][aSide] && !FACE_CONNECTED[aSide][mAxleGear & 63]) return 0;
 		if (!aDoInject) return mIgnorePower == 0 ? aPower : 0;
 		
@@ -377,7 +450,7 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 			// If ignoring further Inputs, keep the old values.
 			if (mIgnorePower != 0) return 0;
 			// Just take the lowest Speed available. Gives a different Type of Loss Mechanic that somewhat makes sense.
-			mCurrentSpeed = Math.min(tSpeed, mCurrentSpeed);
+			mCurrentSpeed = (mCurrentSpeed==0) ? tSpeed : Math.min(tSpeed, mCurrentSpeed);
 			mCurrentPower += aPower;
 			return aPower;
 		}

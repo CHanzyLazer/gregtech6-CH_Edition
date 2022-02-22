@@ -19,10 +19,6 @@
 
 package gregapi.render;
 
-import static gregapi.data.CS.*;
-
-import org.lwjgl.opengl.GL11;
-
 import gregapi.util.UT;
 import gregapi.util.WD;
 import net.minecraft.block.Block;
@@ -30,6 +26,9 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
+import org.lwjgl.opengl.GL11;
+
+import static gregapi.data.CS.*;
 
 /**
  * @author Gregorius Techneticies
@@ -208,11 +207,11 @@ public interface ITexture {
 			if (aBlock.getRenderBlockPass() > 0) {
 				double tOldValue = aRenderer.renderMaxX;
 				aRenderer.renderMaxX += (aRenderer.renderFromInside?-1:+1)*OFFSET_X_POS;
-				aRenderer.renderFaceXPos(aBlock, aX, aY, aZ, aIcon);
+				renderFixedPositiveXFacing(aIcon, aRenderer, aBlock, aX, aY, aZ);
 				aRenderer.renderMaxX = tOldValue;
 				OFFSET_X_POS += OFFSET_ADD;
 			} else {
-				aRenderer.renderFaceXPos(aBlock, aX, aY, aZ, aIcon);
+				renderFixedPositiveXFacing(aIcon, aRenderer, aBlock, aX, aY, aZ);
 			}
 			if (aChangedBlockBounds) {aRenderer.flipTexture = !aRenderer.flipTexture; aRenderer.field_152631_f = F;}
 			return T;
@@ -222,11 +221,13 @@ public interface ITexture {
 			if (aBlock.getRenderBlockPass() > 0) {
 				double tOldValue = aRenderer.renderMinX;
 				aRenderer.renderMinX -= (aRenderer.renderFromInside?-1:+1)*OFFSET_X_NEG;
-				aRenderer.renderFaceXNeg(aBlock, aX, aY, aZ, aIcon);
+//				aRenderer.renderFaceXNeg(aBlock, aX, aY, aZ, aIcon);
+				renderFixedNegativeXFacing(aIcon, aRenderer, aBlock, aX, aY, aZ);
 				aRenderer.renderMinX = tOldValue;
 				OFFSET_X_NEG += OFFSET_ADD;
 			} else {
-				aRenderer.renderFaceXNeg(aBlock, aX, aY, aZ, aIcon);
+//				aRenderer.renderFaceXNeg(aBlock, aX, aY, aZ, aIcon);
+				renderFixedNegativeXFacing(aIcon, aRenderer, aBlock, aX, aY, aZ);
 			}
 			return T;
 		}
@@ -235,16 +236,17 @@ public interface ITexture {
 			if (aBlock.getRenderBlockPass() > 0) {
 				double tOldValue = aRenderer.renderMaxY;
 				aRenderer.renderMaxY += (aRenderer.renderFromInside?-1:+1)*OFFSET_Y_POS;
-				aRenderer.renderFaceYPos(aBlock, aX, aY, aZ, aIcon);
+				renderFixedPositiveYFacing(aIcon, aRenderer, aBlock, aX, aY, aZ);
 				aRenderer.renderMaxY = tOldValue;
 				OFFSET_Y_POS += OFFSET_ADD;
 			} else {
-				aRenderer.renderFaceYPos(aBlock, aX, aY, aZ, aIcon);
+				renderFixedPositiveYFacing(aIcon, aRenderer, aBlock, aX, aY, aZ);
 			}
 			return T;
 		}
 		/** Side = 0 */
 		public static boolean doRenderYNeg(IIcon aIcon, RenderBlocks aRenderer, Block aBlock, int aX, int aY, int aZ, boolean aChangedBlockBounds) {
+			if (aChangedBlockBounds) {aRenderer.flipTexture = !aRenderer.flipTexture; aRenderer.field_152631_f = T;}
 			if (aBlock.getRenderBlockPass() > 0) {
 				double tOldValue = aRenderer.renderMinY;
 				aRenderer.renderMinY -= (aRenderer.renderFromInside?-1:+1)*OFFSET_Y_NEG;
@@ -254,6 +256,7 @@ public interface ITexture {
 			} else {
 				renderFixedNegativeYFacing(aIcon, aRenderer, aBlock, aX, aY, aZ);
 			}
+			if (aChangedBlockBounds) {aRenderer.flipTexture = !aRenderer.flipTexture; aRenderer.field_152631_f = F;}
 			return T;
 		}
 		/** Side = 3 */
@@ -261,11 +264,11 @@ public interface ITexture {
 			if (aBlock.getRenderBlockPass() > 0) {
 				double tOldValue = aRenderer.renderMaxZ;
 				aRenderer.renderMaxZ += (aRenderer.renderFromInside?-1:+1)*OFFSET_Z_POS;
-				aRenderer.renderFaceZPos(aBlock, aX, aY, aZ, aIcon);
+				renderFixedPositiveZFacing(aIcon, aRenderer, aBlock, aX, aY, aZ);
 				aRenderer.renderMaxZ = tOldValue;
 				OFFSET_Z_POS += OFFSET_ADD;
 			} else {
-				aRenderer.renderFaceZPos(aBlock, aX, aY, aZ, aIcon);
+				renderFixedPositiveZFacing(aIcon, aRenderer, aBlock, aX, aY, aZ);
 			}
 			return T;
 		}
@@ -275,104 +278,726 @@ public interface ITexture {
 			if (aBlock.getRenderBlockPass() > 0) {
 				double tOldValue = aRenderer.renderMinZ;
 				aRenderer.renderMinZ -= (aRenderer.renderFromInside?-1:+1)*OFFSET_Z_NEG;
-				aRenderer.renderFaceZNeg(aBlock, aX, aY, aZ, aIcon);
+				renderFixedNegativeZFacing(aIcon, aRenderer, aBlock, aX, aY, aZ);
 				aRenderer.renderMinZ = tOldValue;
 				OFFSET_Z_NEG += OFFSET_ADD;
 			} else {
-				aRenderer.renderFaceZNeg(aBlock, aX, aY, aZ, aIcon);
+				renderFixedNegativeZFacing(aIcon, aRenderer, aBlock, aX, aY, aZ);
 			}
 			if (aChangedBlockBounds) {aRenderer.flipTexture = !aRenderer.flipTexture; aRenderer.field_152631_f = F;}
 			return T;
 		}
-		
+
+		// GTCH，重写所有面的渲染方法
 		public static void renderFixedNegativeYFacing(IIcon aIcon, RenderBlocks aRenderer, Block aBlock, int aX, int aY, int aZ) {
 			if (aRenderer.hasOverrideBlockTexture()) aIcon = aRenderer.overrideBlockTexture;
-		//  double tMaxX1 = aIcon.getInterpolatedU(aRenderer.renderMaxX * 16.0);
-		//  double tMinX1 = aIcon.getInterpolatedU(aRenderer.renderMinX * 16.0);
-		//  double tMaxZ1 = aIcon.getInterpolatedV(aRenderer.renderMinZ * 16.0);
-		//  double tMinZ1 = aIcon.getInterpolatedV(aRenderer.renderMaxZ * 16.0);
-			
-			double tMaxX1 = aIcon.getInterpolatedU(aRenderer.renderMaxX * 16.0);
-			double tMinX1 = aIcon.getInterpolatedU(aRenderer.renderMinX * 16.0);
-			double tMaxZ1 = aIcon.getInterpolatedV(aRenderer.renderMaxZ * 16.0);
-			double tMinZ1 = aIcon.getInterpolatedV(aRenderer.renderMinZ * 16.0);
-			
-			if (aRenderer.renderMinX < 0.0 || aRenderer.renderMaxX > 1.0) {
-				tMinX1 = aIcon.getMinU();
-				tMaxX1 = aIcon.getMaxU();
+
+			// 重写这个部分，超过边界的进行平移（永远是拉伸中心，也就是底端材质不变）
+			double tRenderMinX = aRenderer.renderMinX;
+			double tRenderMaxX = aRenderer.renderMaxX;
+			double tRenderMinZ = aRenderer.renderMinZ;
+			double tRenderMaxZ = aRenderer.renderMaxZ;
+			if (tRenderMaxX - tRenderMinX > 1.0) {
+				tRenderMinX = 0.0;
+				tRenderMaxX = 1.0;
 			}
-			if (aRenderer.renderMinZ < 0.0 || aRenderer.renderMaxZ > 1.0) {
-				tMaxZ1 = aIcon.getMinV();
-				tMinZ1 = aIcon.getMaxV();
+			if (tRenderMaxZ - tRenderMinZ > 1.0) {
+				tRenderMinZ = 0.0;
+				tRenderMaxZ = 1.0;
 			}
-			
-			double tMaxX2 = tMaxX1;
-			double tMinX2 = tMinX1;
-			double tMaxZ2 = tMaxZ1;
-			double tMinZ2 = tMinZ1;
-			
+			if (tRenderMaxX > 1.0) {
+				tRenderMinX -= tRenderMaxX - 1.0;
+				tRenderMaxX = 1.0;
+			} else
+			if (tRenderMinX < 0.0) {
+				tRenderMaxX -= tRenderMinX;
+				tRenderMinX = 0.0;
+			}
+			if (tRenderMaxZ > 1.0) {
+				tRenderMinZ -= tRenderMaxZ - 1.0;
+				tRenderMaxZ = 1.0;
+			} else
+			if (tRenderMinZ < 0.0) {
+				tRenderMaxZ -= tRenderMinZ;
+				tRenderMinZ = 0.0;
+			}
+
+			double d3 = aIcon.getInterpolatedU(tRenderMinX * 16.0);
+			double d4 = aIcon.getInterpolatedU(tRenderMaxX * 16.0);
+			if (aRenderer.field_152631_f) {
+				d4 = aIcon.getInterpolatedU((1.0 - tRenderMinX) * 16.0);
+				d3 = aIcon.getInterpolatedU((1.0 - tRenderMaxX) * 16.0);
+			}
+			double d5 = aIcon.getInterpolatedV(tRenderMinZ * 16.0);
+			double d6 = aIcon.getInterpolatedV(tRenderMaxZ * 16.0);
+			double d7;
+
+			if (aRenderer.flipTexture) {
+				d7 = d3;
+				d3 = d4;
+				d4 = d7;
+			}
+
+			d7 = d4;
+			double d8 = d3;
+			double d9 = d5;
+			double d10 = d6;
+
 			if (aRenderer.uvRotateBottom == 2) {
-				tMinX1 = aIcon.getInterpolatedU(aRenderer.renderMinZ * 16.0);
-				tMaxZ1 = aIcon.getInterpolatedV(16.0 - aRenderer.renderMaxX * 16.0);
-				tMaxX1 = aIcon.getInterpolatedU(aRenderer.renderMaxZ * 16.0);
-				tMinZ1 = aIcon.getInterpolatedV(16.0 - aRenderer.renderMinX * 16.0);
-				tMaxZ2 = tMaxZ1;
-				tMinZ2 = tMinZ1;
-				tMaxX2 = tMinX1;
-				tMinX2 = tMaxX1;
-				tMaxZ1 = tMinZ1;
-				tMinZ1 = tMaxZ2;
-			} else if (aRenderer.uvRotateBottom == 1) {
-				tMinX1 = aIcon.getInterpolatedU(16.0 - aRenderer.renderMaxZ * 16.0);
-				tMaxZ1 = aIcon.getInterpolatedV(aRenderer.renderMinX * 16.0);
-				tMaxX1 = aIcon.getInterpolatedU(16.0 - aRenderer.renderMinZ * 16.0);
-				tMinZ1 = aIcon.getInterpolatedV(aRenderer.renderMaxX * 16.0);
-				tMaxX2 = tMaxX1;
-				tMinX2 = tMinX1;
-				tMinX1 = tMaxX1;
-				tMaxX1 = tMinX2;
-				tMaxZ2 = tMinZ1;
-				tMinZ2 = tMaxZ1;
-			} else if (aRenderer.uvRotateBottom == 3) {
-				tMinX1 = aIcon.getInterpolatedU(16.0 - aRenderer.renderMinX * 16.0);
-				tMaxX1 = aIcon.getInterpolatedU(16.0 - aRenderer.renderMaxX * 16.0);
-				tMaxZ1 = aIcon.getInterpolatedV(16.0 - aRenderer.renderMinZ * 16.0);
-				tMinZ1 = aIcon.getInterpolatedV(16.0 - aRenderer.renderMaxZ * 16.0);
-				tMaxX2 = tMaxX1;
-				tMinX2 = tMinX1;
-				tMaxZ2 = tMaxZ1;
-				tMinZ2 = tMinZ1;
+				d3 = aIcon.getInterpolatedU(tRenderMinZ * 16.0);
+				d6 = aIcon.getInterpolatedV(16.0 - tRenderMaxX * 16.0);
+				d4 = aIcon.getInterpolatedU(tRenderMaxZ * 16.0);
+				d5 = aIcon.getInterpolatedV(16.0 - tRenderMinX * 16.0);
+				d9 = d5;
+				d10 = d6;
+				d7 = d3;
+				d8 = d4;
+				d5 = d6;
+				d6 = d9;
 			}
-			
-			double tMinX3 = aX + aRenderer.renderMinX;
-			double tMaxX3 = aX + aRenderer.renderMaxX;
-			double tMinY3 = aY + aRenderer.renderMinY;
-			double tMinZ3 = aZ + aRenderer.renderMinZ;
-			double tMaxZ3 = aZ + aRenderer.renderMaxZ;
+			else if (aRenderer.uvRotateBottom == 1) {
+				d3 = aIcon.getInterpolatedU(16.0 - tRenderMaxZ * 16.0);
+				d6 = aIcon.getInterpolatedV(tRenderMinX * 16.0);
+				d4 = aIcon.getInterpolatedU(16.0 - tRenderMinZ * 16.0);
+				d5 = aIcon.getInterpolatedV(tRenderMaxX * 16.0);
+				d7 = d4;
+				d8 = d3;
+				d3 = d4;
+				d4 = d8;
+				d9 = d6;
+				d10 = d5;
+			}
+			else if (aRenderer.uvRotateBottom == 3) {
+				d3 = aIcon.getInterpolatedU(16.0 - tRenderMinX * 16.0);
+				d4 = aIcon.getInterpolatedU(16.0 - tRenderMaxX * 16.0);
+				d5 = aIcon.getInterpolatedV(16.0 - tRenderMinZ * 16.0);
+				d6 = aIcon.getInterpolatedV(16.0 - tRenderMaxZ * 16.0);
+				d7 = d4;
+				d8 = d3;
+				d9 = d5;
+				d10 = d6;
+			}
+
+			double d11 = aX + aRenderer.renderMinX;
+			double d12 = aX + aRenderer.renderMaxX;
+			double d13 = aY + aRenderer.renderMinY;
+			double d14 = aZ + aRenderer.renderMinZ;
+			double d15 = aZ + aRenderer.renderMaxZ;
 			
 			if (aRenderer.renderFromInside) {
-				tMinX3 = aX + aRenderer.renderMaxX;
-				tMaxX3 = aX + aRenderer.renderMinX;
+				d11 = aX + aRenderer.renderMaxX;
+				d12 = aX + aRenderer.renderMinX;
 			}
 			
 			if (aRenderer.enableAO) {
 				Tessellator.instance.setColorOpaque_F(aRenderer.colorRedTopLeft, aRenderer.colorGreenTopLeft, aRenderer.colorBlueTopLeft);
 				Tessellator.instance.setBrightness(aRenderer.brightnessTopLeft);
-				Tessellator.instance.addVertexWithUV(tMinX3, tMinY3, tMaxZ3, tMinX2, tMinZ2);
+				Tessellator.instance.addVertexWithUV(d11, d13, d15, d4, d6);
 				Tessellator.instance.setColorOpaque_F(aRenderer.colorRedBottomLeft, aRenderer.colorGreenBottomLeft, aRenderer.colorBlueBottomLeft);
 				Tessellator.instance.setBrightness(aRenderer.brightnessBottomLeft);
-				Tessellator.instance.addVertexWithUV(tMinX3, tMinY3, tMinZ3, tMinX1, tMaxZ1);
+				Tessellator.instance.addVertexWithUV(d11, d13, d14, d7, d9);
 				Tessellator.instance.setColorOpaque_F(aRenderer.colorRedBottomRight, aRenderer.colorGreenBottomRight, aRenderer.colorBlueBottomRight);
 				Tessellator.instance.setBrightness(aRenderer.brightnessBottomRight);
-				Tessellator.instance.addVertexWithUV(tMaxX3, tMinY3, tMinZ3, tMaxX2, tMaxZ2);
+				Tessellator.instance.addVertexWithUV(d12, d13, d14, d3, d5);
 				Tessellator.instance.setColorOpaque_F(aRenderer.colorRedTopRight, aRenderer.colorGreenTopRight, aRenderer.colorBlueTopRight);
 				Tessellator.instance.setBrightness(aRenderer.brightnessTopRight);
-				Tessellator.instance.addVertexWithUV(tMaxX3, tMinY3, tMaxZ3, tMaxX1, tMinZ1);
+				Tessellator.instance.addVertexWithUV(d12, d13, d15, d8, d10);
 			} else {
-				Tessellator.instance.addVertexWithUV(tMinX3, tMinY3, tMaxZ3, tMinX2, tMinZ2);
-				Tessellator.instance.addVertexWithUV(tMinX3, tMinY3, tMinZ3, tMinX1, tMaxZ1);
-				Tessellator.instance.addVertexWithUV(tMaxX3, tMinY3, tMinZ3, tMaxX2, tMaxZ2);
-				Tessellator.instance.addVertexWithUV(tMaxX3, tMinY3, tMaxZ3, tMaxX1, tMinZ1);
+				Tessellator.instance.addVertexWithUV(d11, d13, d15, d4, d6);
+				Tessellator.instance.addVertexWithUV(d11, d13, d14, d7, d9);
+				Tessellator.instance.addVertexWithUV(d12, d13, d14, d3, d5);
+				Tessellator.instance.addVertexWithUV(d12, d13, d15, d8, d10);
+			}
+		}
+
+		public static void renderFixedPositiveYFacing(IIcon aIcon, RenderBlocks aRenderer, Block aBlock, int aX, int aY, int aZ) {
+			if (aRenderer.hasOverrideBlockTexture()) aIcon = aRenderer.overrideBlockTexture;
+
+			// 重写这个部分，超过边界的进行平移（永远是拉伸中心，也就是底端材质不变）
+			double tRenderMinX = aRenderer.renderMinX;
+			double tRenderMaxX = aRenderer.renderMaxX;
+			double tRenderMinZ = aRenderer.renderMinZ;
+			double tRenderMaxZ = aRenderer.renderMaxZ;
+			if (tRenderMaxX - tRenderMinX > 1.0) {
+				tRenderMinX = 0.0;
+				tRenderMaxX = 1.0;
+			}
+			if (tRenderMaxZ - tRenderMinZ > 1.0) {
+				tRenderMinZ = 0.0;
+				tRenderMaxZ = 1.0;
+			}
+			if (tRenderMaxX > 1.0) {
+				tRenderMinX -= tRenderMaxX - 1.0;
+				tRenderMaxX = 1.0;
+			} else
+			if (tRenderMinX < 0.0) {
+				tRenderMaxX -= tRenderMinX;
+				tRenderMinX = 0.0;
+			}
+			if (tRenderMaxZ > 1.0) {
+				tRenderMinZ -= tRenderMaxZ - 1.0;
+				tRenderMaxZ = 1.0;
+			} else
+			if (tRenderMinZ < 0.0) {
+				tRenderMaxZ -= tRenderMinZ;
+				tRenderMinZ = 0.0;
+			}
+
+			double d3 = aIcon.getInterpolatedU(tRenderMinX * 16.0D);
+			double d4 = aIcon.getInterpolatedU(tRenderMaxX * 16.0D);
+			double d5 = aIcon.getInterpolatedV(tRenderMinZ * 16.0D);
+			double d6 = aIcon.getInterpolatedV(tRenderMaxZ * 16.0D);
+
+			double d7 = d4;
+			double d8 = d3;
+			double d9 = d5;
+			double d10 = d6;
+
+			if (aRenderer.uvRotateTop == 1) {
+				d3 = aIcon.getInterpolatedU(tRenderMinZ * 16.0D);
+				d5 = aIcon.getInterpolatedV(16.0D - tRenderMaxX * 16.0D);
+				d4 = aIcon.getInterpolatedU(tRenderMaxZ * 16.0D);
+				d6 = aIcon.getInterpolatedV(16.0D - tRenderMinX * 16.0D);
+				d9 = d5;
+				d10 = d6;
+				d7 = d3;
+				d8 = d4;
+				d5 = d6;
+				d6 = d9;
+			}
+			else if (aRenderer.uvRotateTop == 2) {
+				d3 = aIcon.getInterpolatedU(16.0D - tRenderMaxZ * 16.0D);
+				d5 = aIcon.getInterpolatedV(tRenderMinX * 16.0D);
+				d4 = aIcon.getInterpolatedU(16.0D - tRenderMinZ * 16.0D);
+				d6 = aIcon.getInterpolatedV(tRenderMaxX * 16.0D);
+				d7 = d4;
+				d8 = d3;
+				d3 = d4;
+				d4 = d8;
+				d9 = d6;
+				d10 = d5;
+			}
+			else if (aRenderer.uvRotateTop == 3) {
+				d3 = aIcon.getInterpolatedU(16.0D - tRenderMinX * 16.0D);
+				d4 = aIcon.getInterpolatedU(16.0D - tRenderMaxX * 16.0D);
+				d5 = aIcon.getInterpolatedV(16.0D - tRenderMinZ * 16.0D);
+				d6 = aIcon.getInterpolatedV(16.0D - tRenderMaxZ * 16.0D);
+				d7 = d4;
+				d8 = d3;
+				d9 = d5;
+				d10 = d6;
+			}
+
+			double d11 = aX + aRenderer.renderMinX;
+			double d12 = aX + aRenderer.renderMaxX;
+			double d13 = aY + aRenderer.renderMaxY;
+			double d14 = aZ + aRenderer.renderMinZ;
+			double d15 = aZ + aRenderer.renderMaxZ;
+
+			if (aRenderer.renderFromInside) {
+				d11 = aX + aRenderer.renderMaxX;
+				d12 = aX + aRenderer.renderMinX;
+			}
+
+			if (aRenderer.enableAO) {
+				Tessellator.instance.setColorOpaque_F(aRenderer.colorRedTopLeft, aRenderer.colorGreenTopLeft, aRenderer.colorBlueTopLeft);
+				Tessellator.instance.setBrightness(aRenderer.brightnessTopLeft);
+				Tessellator.instance.addVertexWithUV(d12, d13, d15, d4, d6);
+				Tessellator.instance.setColorOpaque_F(aRenderer.colorRedBottomLeft, aRenderer.colorGreenBottomLeft, aRenderer.colorBlueBottomLeft);
+				Tessellator.instance.setBrightness(aRenderer.brightnessBottomLeft);
+				Tessellator.instance.addVertexWithUV(d12, d13, d14, d7, d9);
+				Tessellator.instance.setColorOpaque_F(aRenderer.colorRedBottomRight, aRenderer.colorGreenBottomRight, aRenderer.colorBlueBottomRight);
+				Tessellator.instance.setBrightness(aRenderer.brightnessBottomRight);
+				Tessellator.instance.addVertexWithUV(d11, d13, d14, d3, d5);
+				Tessellator.instance.setColorOpaque_F(aRenderer.colorRedTopRight, aRenderer.colorGreenTopRight, aRenderer.colorBlueTopRight);
+				Tessellator.instance.setBrightness(aRenderer.brightnessTopRight);
+				Tessellator.instance.addVertexWithUV(d11, d13, d15, d8, d10);
+			} else {
+				Tessellator.instance.addVertexWithUV(d12, d13, d15, d4, d6);
+				Tessellator.instance.addVertexWithUV(d12, d13, d14, d7, d9);
+				Tessellator.instance.addVertexWithUV(d11, d13, d14, d3, d5);
+				Tessellator.instance.addVertexWithUV(d11, d13, d15, d8, d10);
+			}
+		}
+		
+		public static void renderFixedNegativeZFacing(IIcon aIcon, RenderBlocks aRenderer, Block aBlock, int aX, int aY, int aZ) {
+			if (aRenderer.hasOverrideBlockTexture()) aIcon = aRenderer.overrideBlockTexture;
+
+			// 重写这个部分，超过边界的进行平移（永远是拉伸中心，也就是底端材质不变）
+			double tRenderMinX = aRenderer.renderMinX;
+			double tRenderMaxX = aRenderer.renderMaxX;
+			double tRenderMinY = aRenderer.renderMinY;
+			double tRenderMaxY = aRenderer.renderMaxY;
+			if (tRenderMaxX - tRenderMinX > 1.0) {
+				tRenderMinX = 0.0;
+				tRenderMaxX = 1.0;
+			}
+			if (tRenderMaxY - tRenderMinY > 1.0) {
+				tRenderMinY = 0.0;
+				tRenderMaxY = 1.0;
+			}
+			if (tRenderMaxX > 1.0) {
+				tRenderMinX -= tRenderMaxX - 1.0;
+				tRenderMaxX = 1.0;
+			} else
+			if (tRenderMinX < 0.0) {
+				tRenderMaxX -= tRenderMinX;
+				tRenderMinX = 0.0;
+			}
+			if (tRenderMaxY > 1.0) {
+				tRenderMinY -= tRenderMaxY - 1.0;
+				tRenderMaxY = 1.0;
+			} else
+			if (tRenderMinY < 0.0) {
+				tRenderMaxY -= tRenderMinY;
+				tRenderMinY = 0.0;
+			}
+
+			double d3 = aIcon.getInterpolatedU(tRenderMinX * 16.0D);
+			double d4 = aIcon.getInterpolatedU(tRenderMaxX * 16.0D);
+
+			if (aRenderer.field_152631_f) {
+				d4 = aIcon.getInterpolatedU((1.0D - tRenderMinX) * 16.0D);
+				d3 = aIcon.getInterpolatedU((1.0D - tRenderMaxX) * 16.0D);
+			}
+
+			double d5 = aIcon.getInterpolatedV(16.0D - tRenderMaxY * 16.0D);
+			double d6 = aIcon.getInterpolatedV(16.0D - tRenderMinY * 16.0D);
+			double d7;
+
+			if (aRenderer.flipTexture) {
+				d7 = d3;
+				d3 = d4;
+				d4 = d7;
+			}
+
+			d7 = d4;
+			double d8 = d3;
+			double d9 = d5;
+			double d10 = d6;
+
+			if (aRenderer.uvRotateEast == 2) {
+				d3 = aIcon.getInterpolatedU(tRenderMinY * 16.0D);
+				d4 = aIcon.getInterpolatedU(tRenderMaxY * 16.0D);
+				d5 = aIcon.getInterpolatedV(16.0D - tRenderMinX * 16.0D);
+				d6 = aIcon.getInterpolatedV(16.0D - tRenderMaxX * 16.0D);
+				d9 = d5;
+				d10 = d6;
+				d7 = d3;
+				d8 = d4;
+				d5 = d6;
+				d6 = d9;
+			}
+			else if (aRenderer.uvRotateEast == 1) {
+				d3 = aIcon.getInterpolatedU(16.0D - tRenderMaxY * 16.0D);
+				d4 = aIcon.getInterpolatedU(16.0D - tRenderMinY * 16.0D);
+				d5 = aIcon.getInterpolatedV(tRenderMaxX * 16.0D);
+				d6 = aIcon.getInterpolatedV(tRenderMinX * 16.0D);
+				d7 = d4;
+				d8 = d3;
+				d3 = d4;
+				d4 = d8;
+				d9 = d6;
+				d10 = d5;
+			}
+			else if (aRenderer.uvRotateEast == 3) {
+				d3 = aIcon.getInterpolatedU(16.0D - tRenderMinX * 16.0D);
+				d4 = aIcon.getInterpolatedU(16.0D - tRenderMaxX * 16.0D);
+				d5 = aIcon.getInterpolatedV(tRenderMaxY * 16.0D);
+				d6 = aIcon.getInterpolatedV(tRenderMinY * 16.0D);
+				d7 = d4;
+				d8 = d3;
+				d9 = d5;
+				d10 = d6;
+			}
+
+			double d11 = aX + aRenderer.renderMinX;
+			double d12 = aX + aRenderer.renderMaxX;
+			double d13 = aY + aRenderer.renderMinY;
+			double d14 = aY + aRenderer.renderMaxY;
+			double d15 = aZ + aRenderer.renderMinZ;
+
+			if (aRenderer.renderFromInside) {
+				d11 = aX + aRenderer.renderMaxX;
+				d12 = aX + aRenderer.renderMinX;
+			}
+
+			if (aRenderer.enableAO) {
+				Tessellator.instance.setColorOpaque_F(aRenderer.colorRedTopLeft, aRenderer.colorGreenTopLeft, aRenderer.colorBlueTopLeft);
+				Tessellator.instance.setBrightness(aRenderer.brightnessTopLeft);
+				Tessellator.instance.addVertexWithUV(d11, d14, d15, d7, d9);
+				Tessellator.instance.setColorOpaque_F(aRenderer.colorRedBottomLeft, aRenderer.colorGreenBottomLeft, aRenderer.colorBlueBottomLeft);
+				Tessellator.instance.setBrightness(aRenderer.brightnessBottomLeft);
+				Tessellator.instance.addVertexWithUV(d12, d14, d15, d3, d5);
+				Tessellator.instance.setColorOpaque_F(aRenderer.colorRedBottomRight, aRenderer.colorGreenBottomRight, aRenderer.colorBlueBottomRight);
+				Tessellator.instance.setBrightness(aRenderer.brightnessBottomRight);
+				Tessellator.instance.addVertexWithUV(d12, d13, d15, d8, d10);
+				Tessellator.instance.setColorOpaque_F(aRenderer.colorRedTopRight, aRenderer.colorGreenTopRight, aRenderer.colorBlueTopRight);
+				Tessellator.instance.setBrightness(aRenderer.brightnessTopRight);
+				Tessellator.instance.addVertexWithUV(d11, d13, d15, d4, d6);
+			} else {
+				Tessellator.instance.addVertexWithUV(d11, d14, d15, d7, d9);
+				Tessellator.instance.addVertexWithUV(d12, d14, d15, d3, d5);
+				Tessellator.instance.addVertexWithUV(d12, d13, d15, d8, d10);
+				Tessellator.instance.addVertexWithUV(d11, d13, d15, d4, d6);
+			}
+		}
+		
+		public static void renderFixedPositiveZFacing(IIcon aIcon, RenderBlocks aRenderer, Block aBlock, int aX, int aY, int aZ) {
+			if (aRenderer.hasOverrideBlockTexture()) aIcon = aRenderer.overrideBlockTexture;
+
+			// 重写这个部分，超过边界的进行平移（永远是拉伸中心，也就是底端材质不变）
+			double tRenderMinX = aRenderer.renderMinX;
+			double tRenderMaxX = aRenderer.renderMaxX;
+			double tRenderMinY = aRenderer.renderMinY;
+			double tRenderMaxY = aRenderer.renderMaxY;
+			if (tRenderMaxX - tRenderMinX > 1.0) {
+				tRenderMinX = 0.0;
+				tRenderMaxX = 1.0;
+			}
+			if (tRenderMaxY - tRenderMinY > 1.0) {
+				tRenderMinY = 0.0;
+				tRenderMaxY = 1.0;
+			}
+			if (tRenderMaxX > 1.0) {
+				tRenderMinX -= tRenderMaxX - 1.0;
+				tRenderMaxX = 1.0;
+			} else
+			if (tRenderMinX < 0.0) {
+				tRenderMaxX -= tRenderMinX;
+				tRenderMinX = 0.0;
+			}
+			if (tRenderMaxY > 1.0) {
+				tRenderMinY -= tRenderMaxY - 1.0;
+				tRenderMaxY = 1.0;
+			} else
+			if (tRenderMinY < 0.0) {
+				tRenderMaxY -= tRenderMinY;
+				tRenderMinY = 0.0;
+			}
+
+			double d3 = aIcon.getInterpolatedU(tRenderMinX * 16.0D);
+			double d4 = aIcon.getInterpolatedU(tRenderMaxX * 16.0D);
+			double d5 = aIcon.getInterpolatedV(16.0D - tRenderMaxY * 16.0D);
+			double d6 = aIcon.getInterpolatedV(16.0D - tRenderMinY * 16.0D);
+			double d7;
+
+			if (aRenderer.flipTexture) {
+				d7 = d3;
+				d3 = d4;
+				d4 = d7;
+			}
+
+			d7 = d4;
+			double d8 = d3;
+			double d9 = d5;
+			double d10 = d6;
+
+			if (aRenderer.uvRotateWest == 1) {
+				d3 = aIcon.getInterpolatedU(tRenderMinY * 16.0D);
+				d6 = aIcon.getInterpolatedV(16.0D - tRenderMinX * 16.0D);
+				d4 = aIcon.getInterpolatedU(tRenderMaxY * 16.0D);
+				d5 = aIcon.getInterpolatedV(16.0D - tRenderMaxX * 16.0D);
+				d9 = d5;
+				d10 = d6;
+				d7 = d3;
+				d8 = d4;
+				d5 = d6;
+				d6 = d9;
+			}
+			else if (aRenderer.uvRotateWest == 2) {
+				d3 = aIcon.getInterpolatedU(16.0D - tRenderMaxY * 16.0D);
+				d5 = aIcon.getInterpolatedV(tRenderMinX * 16.0D);
+				d4 = aIcon.getInterpolatedU(16.0D - tRenderMinY * 16.0D);
+				d6 = aIcon.getInterpolatedV(tRenderMaxX * 16.0D);
+				d7 = d4;
+				d8 = d3;
+				d3 = d4;
+				d4 = d8;
+				d9 = d6;
+				d10 = d5;
+			}
+			else if (aRenderer.uvRotateWest == 3) {
+				d3 = aIcon.getInterpolatedU(16.0D - tRenderMinX * 16.0D);
+				d4 = aIcon.getInterpolatedU(16.0D - tRenderMaxX * 16.0D);
+				d5 = aIcon.getInterpolatedV(tRenderMaxY * 16.0D);
+				d6 = aIcon.getInterpolatedV(tRenderMinY * 16.0D);
+				d7 = d4;
+				d8 = d3;
+				d9 = d5;
+				d10 = d6;
+			}
+
+			double d11 = aX + aRenderer.renderMinX;
+			double d12 = aX + aRenderer.renderMaxX;
+			double d13 = aY + aRenderer.renderMinY;
+			double d14 = aY + aRenderer.renderMaxY;
+			double d15 = aZ + aRenderer.renderMaxZ;
+
+			if (aRenderer.renderFromInside) {
+				d11 = aX + aRenderer.renderMaxX;
+				d12 = aX + aRenderer.renderMinX;
+			}
+
+			if (aRenderer.enableAO) {
+				Tessellator.instance.setColorOpaque_F(aRenderer.colorRedTopLeft, aRenderer.colorGreenTopLeft, aRenderer.colorBlueTopLeft);
+				Tessellator.instance.setBrightness(aRenderer.brightnessTopLeft);
+				Tessellator.instance.addVertexWithUV(d11, d14, d15, d3, d5);
+				Tessellator.instance.setColorOpaque_F(aRenderer.colorRedBottomLeft, aRenderer.colorGreenBottomLeft, aRenderer.colorBlueBottomLeft);
+				Tessellator.instance.setBrightness(aRenderer.brightnessBottomLeft);
+				Tessellator.instance.addVertexWithUV(d11, d13, d15, d8, d10);
+				Tessellator.instance.setColorOpaque_F(aRenderer.colorRedBottomRight, aRenderer.colorGreenBottomRight, aRenderer.colorBlueBottomRight);
+				Tessellator.instance.setBrightness(aRenderer.brightnessBottomRight);
+				Tessellator.instance.addVertexWithUV(d12, d13, d15, d4, d6);
+				Tessellator.instance.setColorOpaque_F(aRenderer.colorRedTopRight, aRenderer.colorGreenTopRight, aRenderer.colorBlueTopRight);
+				Tessellator.instance.setBrightness(aRenderer.brightnessTopRight);
+				Tessellator.instance.addVertexWithUV(d12, d14, d15, d7, d9);
+			} else {
+				Tessellator.instance.addVertexWithUV(d11, d14, d15, d3, d5);
+				Tessellator.instance.addVertexWithUV(d11, d13, d15, d8, d10);
+				Tessellator.instance.addVertexWithUV(d12, d13, d15, d4, d6);
+				Tessellator.instance.addVertexWithUV(d12, d14, d15, d7, d9);
+			}
+		}
+		
+		public static void renderFixedNegativeXFacing(IIcon aIcon, RenderBlocks aRenderer, Block aBlock, int aX, int aY, int aZ) {
+			if (aRenderer.hasOverrideBlockTexture()) aIcon = aRenderer.overrideBlockTexture;
+
+			// 重写这个部分，超过边界的进行平移（永远是拉伸中心，也就是底端材质不变）
+			double tRenderMinZ = aRenderer.renderMinZ;
+			double tRenderMaxZ = aRenderer.renderMaxZ;
+			double tRenderMinY = aRenderer.renderMinY;
+			double tRenderMaxY = aRenderer.renderMaxY;
+			if (tRenderMaxZ - tRenderMinZ > 1.0) {
+				tRenderMinZ = 0.0;
+				tRenderMaxZ = 1.0;
+			}
+			if (tRenderMaxY - tRenderMinY > 1.0) {
+				tRenderMinY = 0.0;
+				tRenderMaxY = 1.0;
+			}
+			if (tRenderMaxZ > 1.0) {
+				tRenderMinZ -= tRenderMaxZ - 1.0;
+				tRenderMaxZ = 1.0;
+			} else
+			if (tRenderMinZ < 0.0) {
+				tRenderMaxZ -= tRenderMinZ;
+				tRenderMinZ = 0.0;
+			}
+			if (tRenderMaxY > 1.0) {
+				tRenderMinY -= tRenderMaxY - 1.0;
+				tRenderMaxY = 1.0;
+			} else
+			if (tRenderMinY < 0.0) {
+				tRenderMaxY -= tRenderMinY;
+				tRenderMinY = 0.0;
+			}
+
+			double d3 = aIcon.getInterpolatedU(tRenderMinZ * 16.0D);
+			double d4 = aIcon.getInterpolatedU(tRenderMaxZ * 16.0D);
+			double d5 = aIcon.getInterpolatedV(16.0D - tRenderMaxY * 16.0D);
+			double d6 = aIcon.getInterpolatedV(16.0D - tRenderMinY * 16.0D);
+			double d7;
+
+			if (aRenderer.flipTexture) {
+				d7 = d3;
+				d3 = d4;
+				d4 = d7;
+			}
+
+			d7 = d4;
+			double d8 = d3;
+			double d9 = d5;
+			double d10 = d6;
+
+			if (aRenderer.uvRotateNorth == 1)
+			{
+				d3 = aIcon.getInterpolatedU(tRenderMinY * 16.0D);
+				d5 = aIcon.getInterpolatedV(16.0D - tRenderMaxZ * 16.0D);
+				d4 = aIcon.getInterpolatedU(tRenderMaxY * 16.0D);
+				d6 = aIcon.getInterpolatedV(16.0D - tRenderMinZ * 16.0D);
+				d9 = d5;
+				d10 = d6;
+				d7 = d3;
+				d8 = d4;
+				d5 = d6;
+				d6 = d9;
+			}
+			else if (aRenderer.uvRotateNorth == 2) {
+				d3 = aIcon.getInterpolatedU(16.0D - tRenderMaxY * 16.0D);
+				d5 = aIcon.getInterpolatedV(tRenderMinZ * 16.0D);
+				d4 = aIcon.getInterpolatedU(16.0D - tRenderMinY * 16.0D);
+				d6 = aIcon.getInterpolatedV(tRenderMaxZ * 16.0D);
+				d7 = d4;
+				d8 = d3;
+				d3 = d4;
+				d4 = d8;
+				d9 = d6;
+				d10 = d5;
+			}
+			else if (aRenderer.uvRotateNorth == 3) {
+				d3 = aIcon.getInterpolatedU(16.0D - tRenderMinZ * 16.0D);
+				d4 = aIcon.getInterpolatedU(16.0D - tRenderMaxZ * 16.0D);
+				d5 = aIcon.getInterpolatedV(tRenderMaxY * 16.0D);
+				d6 = aIcon.getInterpolatedV(tRenderMinY * 16.0D);
+				d7 = d4;
+				d8 = d3;
+				d9 = d5;
+				d10 = d6;
+			}
+
+			double d11 = aX + aRenderer.renderMinX;
+			double d12 = aY + aRenderer.renderMinY;
+			double d13 = aY + aRenderer.renderMaxY;
+			double d14 = aZ + aRenderer.renderMinZ;
+			double d15 = aZ + aRenderer.renderMaxZ;
+
+			if (aRenderer.renderFromInside) {
+				d14 = aZ + aRenderer.renderMaxZ;
+				d15 = aZ + aRenderer.renderMinZ;
+			}
+
+			if (aRenderer.enableAO) {
+				Tessellator.instance.setColorOpaque_F(aRenderer.colorRedTopLeft, aRenderer.colorGreenTopLeft, aRenderer.colorBlueTopLeft);
+				Tessellator.instance.setBrightness(aRenderer.brightnessTopLeft);
+				Tessellator.instance.addVertexWithUV(d11, d13, d15, d7, d9);
+				Tessellator.instance.setColorOpaque_F(aRenderer.colorRedBottomLeft, aRenderer.colorGreenBottomLeft, aRenderer.colorBlueBottomLeft);
+				Tessellator.instance.setBrightness(aRenderer.brightnessBottomLeft);
+				Tessellator.instance.addVertexWithUV(d11, d13, d14, d3, d5);
+				Tessellator.instance.setColorOpaque_F(aRenderer.colorRedBottomRight, aRenderer.colorGreenBottomRight, aRenderer.colorBlueBottomRight);
+				Tessellator.instance.setBrightness(aRenderer.brightnessBottomRight);
+				Tessellator.instance.addVertexWithUV(d11, d12, d14, d8, d10);
+				Tessellator.instance.setColorOpaque_F(aRenderer.colorRedTopRight, aRenderer.colorGreenTopRight, aRenderer.colorBlueTopRight);
+				Tessellator.instance.setBrightness(aRenderer.brightnessTopRight);
+				Tessellator.instance.addVertexWithUV(d11, d12, d15, d4, d6);
+			} else {
+				Tessellator.instance.addVertexWithUV(d11, d13, d15, d7, d9);
+				Tessellator.instance.addVertexWithUV(d11, d13, d14, d3, d5);
+				Tessellator.instance.addVertexWithUV(d11, d12, d14, d8, d10);
+				Tessellator.instance.addVertexWithUV(d11, d12, d15, d4, d6);
+			}
+		}
+		
+		public static void renderFixedPositiveXFacing(IIcon aIcon, RenderBlocks aRenderer, Block aBlock, int aX, int aY, int aZ) {
+			if (aRenderer.hasOverrideBlockTexture()) aIcon = aRenderer.overrideBlockTexture;
+
+			// 重写这个部分，超过边界的进行平移（永远是拉伸中心，也就是底端材质不变）
+			double tRenderMinZ = aRenderer.renderMinZ;
+			double tRenderMaxZ = aRenderer.renderMaxZ;
+			double tRenderMinY = aRenderer.renderMinY;
+			double tRenderMaxY = aRenderer.renderMaxY;
+			if (tRenderMaxZ - tRenderMinZ > 1.0) {
+				tRenderMinZ = 0.0;
+				tRenderMaxZ = 1.0;
+			}
+			if (tRenderMaxY - tRenderMinY > 1.0) {
+				tRenderMinY = 0.0;
+				tRenderMaxY = 1.0;
+			}
+			if (tRenderMaxZ > 1.0) {
+				tRenderMinZ -= tRenderMaxZ - 1.0;
+				tRenderMaxZ = 1.0;
+			} else
+			if (tRenderMinZ < 0.0) {
+				tRenderMaxZ -= tRenderMinZ;
+				tRenderMinZ = 0.0;
+			}
+			if (tRenderMaxY > 1.0) {
+				tRenderMinY -= tRenderMaxY - 1.0;
+				tRenderMaxY = 1.0;
+			} else
+			if (tRenderMinY < 0.0) {
+				tRenderMaxY -= tRenderMinY;
+				tRenderMinY = 0.0;
+			}
+
+			double d3 = aIcon.getInterpolatedU(tRenderMinZ * 16.0D);
+			double d4 = aIcon.getInterpolatedU(tRenderMaxZ * 16.0D);
+
+			if (aRenderer.field_152631_f) {
+				d4 = aIcon.getInterpolatedU((1.0D - tRenderMinZ) * 16.0D);
+				d3 = aIcon.getInterpolatedU((1.0D - tRenderMaxZ) * 16.0D);
+			}
+
+			double d5 = aIcon.getInterpolatedV(16.0D - tRenderMaxY * 16.0D);
+			double d6 = aIcon.getInterpolatedV(16.0D - tRenderMinY * 16.0D);
+			double d7;
+
+			if (aRenderer.flipTexture) {
+				d7 = d3;
+				d3 = d4;
+				d4 = d7;
+			}
+
+			d7 = d4;
+			double d8 = d3;
+			double d9 = d5;
+			double d10 = d6;
+
+			if (aRenderer.uvRotateSouth == 2) {
+				d3 = aIcon.getInterpolatedU(tRenderMinY * 16.0D);
+				d5 = aIcon.getInterpolatedV(16.0D - tRenderMinZ * 16.0D);
+				d4 = aIcon.getInterpolatedU(tRenderMaxY * 16.0D);
+				d6 = aIcon.getInterpolatedV(16.0D - tRenderMaxZ * 16.0D);
+				d9 = d5;
+				d10 = d6;
+				d7 = d3;
+				d8 = d4;
+				d5 = d6;
+				d6 = d9;
+			}
+			else if (aRenderer.uvRotateSouth == 1) {
+				d3 = aIcon.getInterpolatedU(16.0D - tRenderMaxY * 16.0D);
+				d5 = aIcon.getInterpolatedV(tRenderMaxZ * 16.0D);
+				d4 = aIcon.getInterpolatedU(16.0D - tRenderMinY * 16.0D);
+				d6 = aIcon.getInterpolatedV(tRenderMinZ * 16.0D);
+				d7 = d4;
+				d8 = d3;
+				d3 = d4;
+				d4 = d8;
+				d9 = d6;
+				d10 = d5;
+			}
+			else if (aRenderer.uvRotateSouth == 3) {
+				d3 = aIcon.getInterpolatedU(16.0D - tRenderMinZ * 16.0D);
+				d4 = aIcon.getInterpolatedU(16.0D - tRenderMaxZ * 16.0D);
+				d5 = aIcon.getInterpolatedV(tRenderMaxY * 16.0D);
+				d6 = aIcon.getInterpolatedV(tRenderMinY * 16.0D);
+				d7 = d4;
+				d8 = d3;
+				d9 = d5;
+				d10 = d6;
+			}
+
+			double d11 = aX + aRenderer.renderMaxX;
+			double d12 = aY + aRenderer.renderMinY;
+			double d13 = aY + aRenderer.renderMaxY;
+			double d14 = aZ + aRenderer.renderMinZ;
+			double d15 = aZ + aRenderer.renderMaxZ;
+
+			if (aRenderer.renderFromInside) {
+				d14 = aZ + aRenderer.renderMaxZ;
+				d15 = aZ + aRenderer.renderMinZ;
+			}
+
+			if (aRenderer.enableAO) {
+				Tessellator.instance.setColorOpaque_F(aRenderer.colorRedTopLeft, aRenderer.colorGreenTopLeft, aRenderer.colorBlueTopLeft);
+				Tessellator.instance.setBrightness(aRenderer.brightnessTopLeft);
+				Tessellator.instance.addVertexWithUV(d11, d12, d15, d8, d10);
+				Tessellator.instance.setColorOpaque_F(aRenderer.colorRedBottomLeft, aRenderer.colorGreenBottomLeft, aRenderer.colorBlueBottomLeft);
+				Tessellator.instance.setBrightness(aRenderer.brightnessBottomLeft);
+				Tessellator.instance.addVertexWithUV(d11, d12, d14, d4, d6);
+				Tessellator.instance.setColorOpaque_F(aRenderer.colorRedBottomRight, aRenderer.colorGreenBottomRight, aRenderer.colorBlueBottomRight);
+				Tessellator.instance.setBrightness(aRenderer.brightnessBottomRight);
+				Tessellator.instance.addVertexWithUV(d11, d13, d14, d7, d9);
+				Tessellator.instance.setColorOpaque_F(aRenderer.colorRedTopRight, aRenderer.colorGreenTopRight, aRenderer.colorBlueTopRight);
+				Tessellator.instance.setBrightness(aRenderer.brightnessTopRight);
+				Tessellator.instance.addVertexWithUV(d11, d13, d15, d3, d5);
+			} else {
+				Tessellator.instance.addVertexWithUV(d11, d12, d15, d8, d10);
+				Tessellator.instance.addVertexWithUV(d11, d12, d14, d4, d6);
+				Tessellator.instance.addVertexWithUV(d11, d13, d14, d7, d9);
+				Tessellator.instance.addVertexWithUV(d11, d13, d15, d3, d5);
 			}
 		}
 		

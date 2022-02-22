@@ -62,6 +62,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Gregorius Techneticies
@@ -286,17 +287,23 @@ public class MultiTileEntityAnvil extends TileEntityBase09FacingSingle implement
 		aWorld.playSoundEffect(aX+0.5, aY+0.5, aZ+0.5, Blocks.anvil.stepSound.func_150496_b(), (Blocks.anvil.stepSound.getVolume()+1)/2, Blocks.anvil.stepSound.getPitch()*0.8F);
 		return F;
 	}
-	
+
+	// GTCH, 重写这个方法来扩展客户端数据
 	@Override
-	public IPacket getClientDataPacket(boolean aSendAll) {
-		if (aSendAll) return getClientDataPacketByteArray(aSendAll, (byte)UT.Code.getR(mRGBa), (byte)UT.Code.getG(mRGBa), (byte)UT.Code.getB(mRGBa), getVisualData(), getDirectionData(), mShapeA, mShapeB, UT.Code.toByteS(mMaterialA, 0), UT.Code.toByteS(mMaterialA, 1), UT.Code.toByteS(mMaterialB, 0), UT.Code.toByteS(mMaterialB, 1));
-		return super.getClientDataPacket(aSendAll);
+	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
+		super.writeToClientDataPacketByteList(rList);
+		rList.add(5, mShapeA);
+		rList.add(6, mShapeB);
+		rList.add(7, UT.Code.toByteS(mMaterialA, 0));
+		rList.add(8, UT.Code.toByteS(mMaterialA, 1));
+		rList.add(9, UT.Code.toByteS(mMaterialB, 0));
+		rList.add(10, UT.Code.toByteS(mMaterialB, 1));
 	}
 	
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		super.receiveDataByteArray(aData, aNetworkHandler);
-		if (aData.length > 4) {
+		if (aData.length > 10) {
 			mShapeA = aData[5];
 			mShapeB = aData[6];
 			mMaterialA = UT.Code.combine(aData[7], aData[ 8]);

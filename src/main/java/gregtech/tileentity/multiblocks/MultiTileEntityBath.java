@@ -107,14 +107,13 @@ public class MultiTileEntityBath extends TileEntityBase10MultiBlockMachine {
 		LH.add("gt.tooltip.multiblock.bath.2", "Main Block centered on Side-Bottom and facing outwards");
 		LH.add("gt.tooltip.multiblock.bath.3", "Input and Output at any Blocks");
 	}
-	
+
 	@Override
-	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
+	protected void toolTipsMultiblock(List<String> aList) {
 		aList.add(Chat.CYAN     + LH.get(LH.STRUCTURE) + ":");
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.bath.1"));
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.bath.2"));
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.bath.3"));
-		super.addToolTips(aList, aStack, aF3_H);
 	}
 	
 	@Override

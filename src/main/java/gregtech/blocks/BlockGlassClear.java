@@ -20,6 +20,7 @@
 package gregtech.blocks;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.DYES_INT_Glass;
 
 import java.util.ArrayList;
 
@@ -38,6 +39,7 @@ import gregapi.oredict.OreDictMaterial;
 import gregapi.render.IIconContainer;
 import gregapi.util.OM;
 import gregapi.util.ST;
+import gregapi.util.UT;
 import gregapi.util.WD;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -78,5 +80,18 @@ public class BlockGlassClear extends BlockColored {
 		if (aSide == OPOS[mSide]) return T;
 		Block aBlock = aWorld.getBlock(aX, aY, aZ);
 		return aBlock instanceof BlockMetaType && ((BlockMetaType)aBlock).mBlock == mBlock ? WD.meta(aWorld, aX, aY, aZ) != aWorld.getBlockMetadata(aX - OFFX[aSide], aY - OFFY[aSide], aZ - OFFZ[aSide]) || ((((BlockMetaType)aBlock).mSide != mSide || aSide == mSide) && ((BlockMetaType)aBlock).mSide != OPOS[aSide] && ((BlockMetaType)aBlock).mSide != SIDE_ANY) : super.shouldSideBeRendered(aWorld, aX, aY, aZ, aSide);
+	}
+
+	// GTCH, 在这里加入材料的颜色属性
+	@Override
+	@SideOnly(Side.CLIENT)
+	public int getRenderColor(int aMeta) {
+		return DYES_INT_Glass[UT.Code.bind4(aMeta)];
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public int colorMultiplier(IBlockAccess aWorld, int aX, int aY, int aZ) {
+		return DYES_INT_Glass[UT.Code.bind4(aWorld.getBlockMetadata(aX, aY, aZ))];
 	}
 }

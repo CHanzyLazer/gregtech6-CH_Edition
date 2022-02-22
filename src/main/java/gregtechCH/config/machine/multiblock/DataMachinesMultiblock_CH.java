@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataMachinesMultiblock_CH extends DataJson_CH {
+    // Boilers
+    @JSONField(ordinal = 3)
+    public List<AttributesLargeBoilerTank_CH> LargeBoilerTank = new ArrayList<>();
     // Turbines
     @JSONField(ordinal = 4)
     public List<AttributesLargeSteamTurbine_CH> LargeSteamTurbine = new ArrayList<>();
@@ -20,6 +23,13 @@ public class DataMachinesMultiblock_CH extends DataJson_CH {
     @Override
     public void initDefault() {
         OreDictMaterial[] availableMaterials;
+        // Boilers
+        availableMaterials = new OreDictMaterial[] {
+                MT.StainlessSteel, MT.Invar, MT.Ti, MT.TungstenSteel, MT.Ad};
+        LargeBoilerTank.clear();
+        for (OreDictMaterial aMat : availableMaterials){
+            LargeBoilerTank.add(new AttributesLargeBoilerTank_CH(aMat));
+        }
         // Turbines
         availableMaterials = new OreDictMaterial[] {
                 MT.StainlessSteel, MT.Ti, MT.TungstenSteel, MT.Ad};
@@ -41,6 +51,7 @@ public class DataMachinesMultiblock_CH extends DataJson_CH {
     }
 
     protected void setMember(DataMachinesMultiblock_CH aData) {
+        this.LargeBoilerTank = aData.LargeBoilerTank;
         this.LargeSteamTurbine = aData.LargeSteamTurbine;
         this.LargeGasTurbine = aData.LargeGasTurbine;
     }

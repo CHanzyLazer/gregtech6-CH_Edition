@@ -2,8 +2,9 @@ package gregtechCH.config.machine;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import gregapi.oredict.OreDictMaterial;
-import gregtechCH.config.recipeManager.AttributesRecipe_CH;
-import gregtechCH.config.recipeManager.RecipeObjectDeserializer_CH;
+import gregtechCH.config.AttributesRecipe_CH;
+import gregtechCH.config.serializer.MaterialDeserializer_CH;
+import gregtechCH.config.serializer.MaterialSerializer_CH;
 
 public abstract class AttributesMachine_CH extends AttributesRecipe_CH {
     @JSONField(serializeUsing = MaterialSerializer_CH.class, deserializeUsing = MaterialDeserializer_CH.class)

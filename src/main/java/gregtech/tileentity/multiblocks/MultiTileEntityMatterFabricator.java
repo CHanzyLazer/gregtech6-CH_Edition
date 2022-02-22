@@ -233,7 +233,7 @@ public class MultiTileEntityMatterFabricator extends TileEntityBase10MultiBlockM
 	}
 	
 	@Override
-	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
+	protected void toolTipsMultiblock(List<String> aList) {
 		aList.add(Chat.CYAN  + LH.get(LH.STRUCTURE) + ":");
 		aList.add(Chat.WHITE + LH.get("gt.tooltip.multiblock.matterfabricator.1"));
 		aList.add(Chat.WHITE + LH.get("gt.tooltip.multiblock.matterfabricator.2"));
@@ -243,7 +243,6 @@ public class MultiTileEntityMatterFabricator extends TileEntityBase10MultiBlockM
 		aList.add(Chat.WHITE + LH.get("gt.tooltip.multiblock.matterfabricator.6"));
 		aList.add(Chat.WHITE + LH.get("gt.tooltip.multiblock.matterfabricator.7"));
 		aList.add(Chat.WHITE + LH.get("gt.tooltip.multiblock.matterfabricator.8"));
-		super.addToolTips(aList, aStack, aF3_H);
 	}
 	
 	@Override

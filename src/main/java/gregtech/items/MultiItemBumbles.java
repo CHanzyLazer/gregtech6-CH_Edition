@@ -512,7 +512,7 @@ public class MultiItemBumbles extends MultiItemRandom implements IItemBumbleBee 
 			if (ST.meta_(aStack) % 10 < 5) {
 				aList.add(LH.Chat.RED + "Not scanned yet!");
 			} else {
-				aList.add(LH.Chat.CYAN + "Humidity: " + LH.Chat.WHITE + Util.getHumidityMin(aBumbleTag) + " " + LH_CH.get(LH_CH.ENERGY_TO) + " " + Util.getHumidityMax(aBumbleTag) + LH.Chat.RED + "   Temp: " + LH.Chat.WHITE + Util.getTemperatureMin(aBumbleTag) + "K" + " " + LH_CH.get(LH_CH.ENERGY_TO) + " " + Util.getTemperatureMax(aBumbleTag) + "K");
+				aList.add(LH.Chat.CYAN + "Humidity: " + LH.Chat.WHITE + Util.getHumidityMin(aBumbleTag) + " to " + Util.getHumidityMax(aBumbleTag) + LH.Chat.RED + "   Temp: " + LH.Chat.WHITE + Util.getTemperatureMin(aBumbleTag) + "K" + " to " + Util.getTemperatureMax(aBumbleTag) + "K");
 				aList.add(LH.Chat.GREEN + "Offspring: " + LH.Chat.WHITE + Util.getOffspring(aBumbleTag) + LH.Chat.ORANGE + "   Life: " + LH.Chat.WHITE + Util.getLifeSpan(aBumbleTag) + " ticks");
 				aList.add(LH.Chat.YELLOW + "Eff: " + LH.Chat.WHITE + LH.percent(Util.getWorkForce(aBumbleTag)) + "%" + LH.Chat.RED + "   Aggro: " + LH.Chat.WHITE + LH.percent(Util.getAggressiveness(aBumbleTag)) + "%");
 				if (Util.getDayActive(aBumbleTag)) {

@@ -23,6 +23,7 @@ import static gregapi.data.CS.*;
 
 import java.util.List;
 
+import com.google.common.primitives.Bytes;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_CanPlace;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetSelectedBoundingBoxFromPool;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_OnOxygenRemoved;
@@ -57,6 +58,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Gregorius Techneticies
@@ -270,9 +272,12 @@ public class MultiTileEntityBush extends TileEntityBase09FacingSingle implements
 	public ITexture getTexture2(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
 		return aShouldSideBeRendered[aSide] || SIDES_VALID[mFacing] ? mTexture : null;
 	}
-	
+
+	// 由于没有 RGB，使用这个方法使其跳过 List 阶段
 	@Override
-	public IPacket getClientDataPacket(boolean aSendAll) {
+	public boolean sendAny(boolean aSendAll) {return F;}
+	@Override
+	public IPacket getClientDataPacketNoSendAll(boolean aSendAll) {
 		short tID = ST.id(mBerry), tMeta = tID>0?ST.meta_(mBerry):0;
 		return aSendAll ? getClientDataPacketByteArray(aSendAll, getDirectionData(), getVisualData(), UT.Code.toByteS(tID, 0), UT.Code.toByteS(tID, 1), UT.Code.toByteS(tMeta, 0), UT.Code.toByteS(tMeta, 1)) : getClientDataPacketByte(aSendAll, getVisualData());
 	}

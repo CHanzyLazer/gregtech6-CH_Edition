@@ -183,7 +183,7 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 	// GTCH, 用于重写
 	protected int getRenderPasses3(Block aBlock, boolean[] aShouldSideBeRendered) {
 		if (mCROut) return 14;
-		if (mFoam) return 8;
+		if (mFoam && !mFoamDried) return 8;
 		if (mConnections != 0 && mDiameter < 1.0F) return 7;
 		return 1;
 	}

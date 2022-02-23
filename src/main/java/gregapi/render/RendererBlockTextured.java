@@ -20,6 +20,8 @@
 package gregapi.render;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.util.UT_CH.Code.renderCeil;
+import static gregtechCH.util.UT_CH.Code.renderFloor;
 import static java.lang.Math.ceil;
 import static java.lang.Math.floor;
 
@@ -172,7 +174,7 @@ public class RendererBlockTextured implements ISimpleBlockRenderingHandler, IIte
 			} else {
 				// GTCH, 对于超出边界的渲染另外讨论
 				aBrightness = 0;
-				for (int i = (int)floor(aRenderer.renderMinX); i<(int)ceil(aRenderer.renderMaxX); ++i) for (int j = (int)floor(aRenderer.renderMinZ); j<(int)ceil(aRenderer.renderMaxZ); ++j) {
+				for (int i = renderFloor(aRenderer.renderMinX); i<renderCeil(aRenderer.renderMaxX); ++i) for (int j = renderFloor(aRenderer.renderMinZ); j<renderCeil(aRenderer.renderMaxZ); ++j) {
 					aBrightness = Math.max(aBrightness, aBlock.getMixedBrightnessForBlock(aWorld, aX+i,  aY + (int)floor(aRenderer.renderMinY), aZ+j));
 				}
 			}
@@ -195,7 +197,7 @@ public class RendererBlockTextured implements ISimpleBlockRenderingHandler, IIte
 			} else {
 				// GTCH, 对于超出边界的渲染另外讨论
 				aBrightness = 0;
-				for (int i = (int)floor(aRenderer.renderMinX); i<(int)ceil(aRenderer.renderMaxX); ++i) for (int j = (int)floor(aRenderer.renderMinZ); j<(int)ceil(aRenderer.renderMaxZ); ++j) {
+				for (int i = renderFloor(aRenderer.renderMinX); i<renderCeil(aRenderer.renderMaxX); ++i) for (int j = renderFloor(aRenderer.renderMinZ); j<renderCeil(aRenderer.renderMaxZ); ++j) {
 					aBrightness = Math.max(aBrightness, aBlock.getMixedBrightnessForBlock(aWorld, aX+i,  aY + (int)ceil(aRenderer.renderMaxY) - 1, aZ+j));
 				}
 			}
@@ -217,7 +219,7 @@ public class RendererBlockTextured implements ISimpleBlockRenderingHandler, IIte
 			} else {
 				// GTCH, 对于超出边界的渲染另外讨论
 				aBrightness = 0;
-				for (int i = (int)floor(aRenderer.renderMinX); i<(int)ceil(aRenderer.renderMaxX); ++i) for (int j = (int)floor(aRenderer.renderMinY); j<(int)ceil(aRenderer.renderMaxY); ++j) {
+				for (int i = renderFloor(aRenderer.renderMinX); i<renderCeil(aRenderer.renderMaxX); ++i) for (int j = renderFloor(aRenderer.renderMinY); j<renderCeil(aRenderer.renderMaxY); ++j) {
 					aBrightness = Math.max(aBrightness, aBlock.getMixedBrightnessForBlock(aWorld, aX+i,  aY+j, aZ + (int)floor(aRenderer.renderMinZ)));
 				}
 			}
@@ -240,7 +242,7 @@ public class RendererBlockTextured implements ISimpleBlockRenderingHandler, IIte
 			} else {
 				// GTCH, 对于超出边界的渲染另外讨论
 				aBrightness = 0;
-				for (int i = (int)floor(aRenderer.renderMinX); i<(int)ceil(aRenderer.renderMaxX); ++i) for (int j = (int)floor(aRenderer.renderMinY); j<(int)ceil(aRenderer.renderMaxY); ++j) {
+				for (int i = renderFloor(aRenderer.renderMinX); i<renderCeil(aRenderer.renderMaxX); ++i) for (int j = renderFloor(aRenderer.renderMinY); j<renderCeil(aRenderer.renderMaxY); ++j) {
 					aBrightness = Math.max(aBrightness, aBlock.getMixedBrightnessForBlock(aWorld, aX+i,  aY+j, aZ + (int)ceil(aRenderer.renderMaxZ) - 1));
 				}
 			}
@@ -262,7 +264,7 @@ public class RendererBlockTextured implements ISimpleBlockRenderingHandler, IIte
 			} else {
 				// GTCH, 对于超出边界的渲染另外讨论
 				aBrightness = 0;
-				for (int i = (int)floor(aRenderer.renderMinZ); i<(int)ceil(aRenderer.renderMaxZ); ++i) for (int j = (int)floor(aRenderer.renderMinY); j<(int)ceil(aRenderer.renderMaxY); ++j) {
+				for (int i = renderFloor(aRenderer.renderMinZ); i<renderCeil(aRenderer.renderMaxZ); ++i) for (int j = renderFloor(aRenderer.renderMinY); j<renderCeil(aRenderer.renderMaxY); ++j) {
 					aBrightness = Math.max(aBrightness, aBlock.getMixedBrightnessForBlock(aWorld, aX + (int)floor(aRenderer.renderMinX),  aY+j, aZ+i));
 				}
 			}
@@ -284,7 +286,7 @@ public class RendererBlockTextured implements ISimpleBlockRenderingHandler, IIte
 			} else {
 				// GTCH, 对于超出边界的渲染另外讨论
 				aBrightness = 0;
-				for (int i = (int)floor(aRenderer.renderMinZ); i<(int)ceil(aRenderer.renderMaxZ); ++i) for (int j = (int)floor(aRenderer.renderMinY); j<(int)ceil(aRenderer.renderMaxY); ++j) {
+				for (int i = renderFloor(aRenderer.renderMinZ); i<renderCeil(aRenderer.renderMaxZ); ++i) for (int j = renderFloor(aRenderer.renderMinY); j<renderCeil(aRenderer.renderMaxY); ++j) {
 					aBrightness = Math.max(aBrightness, aBlock.getMixedBrightnessForBlock(aWorld, aX + (int)ceil(aRenderer.renderMaxX) - 1,  aY+j, aZ+i));
 				}
 			}

@@ -77,7 +77,7 @@ public class CoverPressureValve extends AbstractCoverAttachment {
 	@Override public float[] getCoverBounds (byte aCoverSide, CoverData aData) {return BOXES_VALVES[aCoverSide];}
 	@Override public float[] getHolderBounds(byte aCoverSide, CoverData aData) {return BOXES_VALVES[aCoverSide];}
 	
-	public static final float[][] BOXES_VALVES = new float[][] {{PX_P[ 6], PX_P[ 0], PX_P[ 6], PX_N[ 6], PX_N[ 8], PX_N[ 6]}, {PX_P[ 6], PX_P[ 8], PX_P[ 6], PX_N[ 6], PX_N[ 0], PX_N[ 6]}, {PX_P[ 6], PX_P[ 6], PX_P[ 0], PX_N[ 6], PX_N[ 6], PX_N[ 8]}, {PX_P[ 6], PX_P[ 6], PX_P[ 8], PX_N[ 6], PX_N[ 6], PX_N[ 0]}, {PX_P[ 0], PX_P[ 6], PX_P[ 6], PX_N[ 8], PX_N[ 6], PX_N[ 6]}, {PX_P[ 8], PX_P[ 6], PX_P[ 6], PX_N[ 0], PX_N[ 6], PX_N[ 6]}};
+	public static final float[][] BOXES_VALVES = new float[][] {{PX_P[ 6], PX_P[ 0], PX_P[ 6], PX_N[ 6], PX_N[10], PX_N[ 6]}, {PX_P[ 6], PX_P[10], PX_P[ 6], PX_N[ 6], PX_N[ 0], PX_N[ 6]}, {PX_P[ 6], PX_P[ 6], PX_P[ 0], PX_N[ 6], PX_N[ 6], PX_N[10]}, {PX_P[ 6], PX_P[ 6], PX_P[10], PX_N[ 6], PX_N[ 6], PX_N[ 0]}, {PX_P[ 0], PX_P[ 6], PX_P[ 6], PX_N[10], PX_N[ 6], PX_N[ 6]}, {PX_P[10], PX_P[ 6], PX_P[ 6], PX_N[ 0], PX_N[ 6], PX_N[ 6]}};
 	
 	@Override public ITexture getCoverTextureSurface   (byte aSide, CoverData aData) {return sTextureFront;}
 	@Override public ITexture getCoverTextureAttachment(byte aSide, CoverData aData, byte aTextureSide) {return aSide == aTextureSide ? sTextureFront : null;}

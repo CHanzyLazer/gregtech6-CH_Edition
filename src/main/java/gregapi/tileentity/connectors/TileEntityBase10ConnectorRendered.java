@@ -20,6 +20,7 @@
 package gregapi.tileentity.connectors;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.util.UT_CH.Code.RENDER_LENGTH;
 
 import java.util.List;
 import java.util.UUID;
@@ -69,7 +70,7 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 	// GTCH, 用于额外长度连接的渲染，仅客户端有用
 	protected float[] mCRLengths = new float[6], mCRDiameters = new float[6];
 	protected boolean mCROut = F;
-	protected final static float MARK_LENGTH = 0.002F, RENDER_LENGTH = 0.01F;
+	protected final static float MARK_LENGTH = 0.002F;
 	protected boolean mCRDataUpdated = F;
 	protected long oTimer = 0;
 	
@@ -103,7 +104,7 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 		UT.NBT.setBoolean(aNBT, NBT_FOAMED, mFoam);
 		UT.NBT.setBoolean(aNBT, NBT_FOAMDRIED, mFoamDried);
 		UT.NBT.setBoolean(aNBT, NBT_OWNABLE, mOwnable);
-		if (mFoamDried) UT.NBT.setNumber(aNBT, NBT_CONNECTION, mConnections);
+		if (driedFoam(SIDE_ANY)) UT.NBT.setNumber(aNBT, NBT_CONNECTION, mConnections);
 		return super.writeItemNBT2(aNBT);
 	}
 
@@ -117,12 +118,10 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 			if (connected(tSide)) {
 				mCRLengths[tSide] = getConnectorLength(tSide, tDelegator);
 				mCRDiameters[tSide] = getConnectorDiameter(tSide, tDelegator);
-				// 不满足要求的长度归零
-				if (tDelegator.mTileEntity instanceof TileEntityBase10ConnectorRendered) mCRLengths[tSide] = 0.0F;
 				// 让建筑泡沫后管道会露出一部分
-				if (mDiameter < 1.0F && (mFoam || mFoamDried)) mCRLengths[tSide] = Math.max(mCRLengths[tSide], 0.001F);
+				if (mDiameter < 1.0F && (mFoam || mFoamDried) && mCRLengths[tSide] >= 0.0F) mCRLengths[tSide] = Math.max(mCRLengths[tSide], 0.001F);
 				// 让巨型管道和干建筑泡沫接小管道时连接面能正确渲染
-				if ((mDiameter >= 1.0F || mFoamDried) && mCRDiameters[tSide] < mDiameter) mCRLengths[tSide] = Math.max(mCRLengths[tSide], MARK_LENGTH+0.001F);
+				if ((mDiameter >= 1.0F || driedFoam(tSide)) && mCRDiameters[tSide] < mDiameter && mCRLengths[tSide] >= 0.0F) mCRLengths[tSide] = Math.max(mCRLengths[tSide], MARK_LENGTH+0.001F);
 				// 让巨型管道的加长部分不易出现渲染 bug
 				if (mDiameter >= 1.0F && mCRLengths[tSide] > RENDER_LENGTH && mCRDiameters[tSide] >= 1.0F) mCRDiameters[tSide] = 0.999F;
 				mCROut |= mCRLengths[tSide] > MARK_LENGTH;
@@ -162,12 +161,13 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 	@Override
 	public final int getRenderPasses2(Block aBlock, boolean[] aShouldSideBeRendered) {
 		if (worldObj == null) {
-			if (!hasCovers() && !mFoamDried) {
+			if (!hasCovers() && !hasFoam(SIDE_ANY)) {
 				mConnections = (byte)(SBIT_S|SBIT_N);
 				mCRDiameters[SIDE_SOUTH] = mCRDiameters[SIDE_NORTH] = mDiameter;
 				if (mDiameter < 1.0F && mFoam) mCRLengths[SIDE_SOUTH] = mCRLengths[SIDE_NORTH] = 0.001F;
 			} else {
 				for (byte tSide : ALL_SIDES_VALID) mCRDiameters[tSide] = mDiameter;
+				if (driedFoam(SIDE_ANY)) for (byte tSide : ALL_SIDES_VALID) if (connected(tSide)) mCRLengths[tSide] = 0.001F;
 			}
 		} else
 		// 在 render 的部分进行数据更新，放弃了原本的优化思路（其实这些优化都没什么用）
@@ -182,17 +182,16 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 	}
 	// GTCH, 用于重写
 	protected int getRenderPasses3(Block aBlock, boolean[] aShouldSideBeRendered) {
-		if (mConnections == 0) return 1;
 		if (mCROut) return 14;
 		if (mFoam) return 8;
-		if (mDiameter >= 1.0F) return 1;
-		return 7;
+		if (mConnections != 0 && mDiameter < 1.0F) return 7;
+		return 1;
 	}
 	
 	@Override
 	public boolean setBlockBounds2(Block aBlock, int aRenderPass, boolean[] aShouldSideBeRendered) {
 		if (aRenderPass == 0) {
-			if (mFoamDried || mDiameter >= 1.0F) return F;
+			if (driedFoam(SIDE_ANY) || mDiameter >= 1.0F) return F;
 			return setBlockBoundsDefault(aBlock);
 		}
 		// TODO: I need to add the old optimizations back somehow.
@@ -200,8 +199,8 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 		// GTCH, 管道的内部的额外部分，有 mark 和 rubber
 		if (aRenderPass <= 6 && aRenderPass >= 1) {
 			// 干掉的建筑泡沫专门讨论
-			if (mFoamDried) return setBlockBoundsSide(aBlock, (byte)(aRenderPass-1), mDiameter, 0.0F, 0.001F);
-			return setBlockBoundsSide(aBlock, (byte)(aRenderPass-1), mCRDiameters[aRenderPass-1], (1.0F- mCRDiameters[aRenderPass-1])/2.0F, mCRLengths[aRenderPass-1]<=MARK_LENGTH? mCRLengths[aRenderPass-1]:0.0F);
+			if (driedFoam((byte)(aRenderPass-1))) return setBlockBoundsSide(aBlock, (byte)(aRenderPass-1), mDiameter, 0.0F, 0.001F);
+			return setBlockBoundsSide(aBlock, (byte)(aRenderPass-1), mCRDiameters[aRenderPass-1], (1.0F- mCRDiameters[aRenderPass-1])/2.0F, mCRLengths[aRenderPass-1]<=MARK_LENGTH?mCRLengths[aRenderPass-1]:0.0F);
 		}
 		// GTCH, 处理超出方块的材质
 		if (aRenderPass >= 8 && aRenderPass <= 13) {
@@ -235,7 +234,7 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 		}
 		boolean tSideShrink = mDiameter > mCRDiameters[aSide];
 		if (aRenderPass == 0) {
-			if (mFoamDried) {
+			if (driedFoam(aSide)) {
 				// 不能使用 multi 实现，因为涉及了材质的剪切
 				if (!aShouldSideBeRendered[aSide]) return null;
 				return getTextureCFoamDry(aSide, mConnections, mDiameter, aRenderPass);
@@ -264,12 +263,12 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 			if (mDiameter >= 1.0F && !aShouldSideBeRendered[aSide]) return null; // 巨型管道没有这个 RenderPass，但是依旧保留兼容
 			if (aSide == OPOS[aRenderPass - 1]) return null;
 			if (aSide != aRenderPass - 1) {
-				if (mFoamDried && mCRLengths[aRenderPass-1] <= RENDER_LENGTH) return null; // 建筑泡沫干掉后不需要渲染侧边
+				if (driedFoam((byte)(aRenderPass-1)) && mCRLengths[aRenderPass-1] <= RENDER_LENGTH) return null; // 建筑泡沫干掉后不需要渲染侧边
 				return getTextureSide(aSide, mConnections, mCRDiameters[aRenderPass-1], aRenderPass);
 			}
 			if (!aShouldSideBeRendered[aSide]) return null;
 			// 这里专门处理干掉的情况
-			if (mFoamDried && tSideShrink) return getTexturePFoamDry(aSide, mConnections, mDiameter, aRenderPass);
+			if (driedFoam((byte)(aRenderPass-1)) && tSideShrink) return getTexturePFoamDry(aSide, mConnections, mDiameter, aRenderPass);
 			// 大于的会有外套层，只需渲染外套层即可
 			if (mCRLengths[aRenderPass-1]<=MARK_LENGTH) return getTextureConnected(aSide, mConnections, mCRDiameters[aRenderPass-1], aRenderPass);
 			return null;
@@ -295,6 +294,20 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 		if (aRenderPass >= 8 && aRenderPass <= 13) if(connected((byte)(aRenderPass - 8))) return mCRLengths[aRenderPass - 8] > MARK_LENGTH;
 		return F;
 	}
+	// 重写这个方法使得在有建筑泡沫时时只在建筑泡沫上渲染覆盖板
+	@Override
+	public boolean isCoverSurface(byte aSide, int aRenderpass) {
+		boolean tCSurface = super.isCoverSurface(aSide);
+		if (tCSurface) {
+			if (mFoam && !mFoamDried) return aRenderpass == 7;
+			if (driedFoam(aSide)) {
+				// 遮住管道的覆盖板要渲染遮住面
+				if (mCRLengths[aSide]<0.0F && aRenderpass-1==aSide) return T;
+				return aRenderpass == 0;
+			}
+		}
+		return tCSurface;
+	}
 	
 	@Override public int getLightOpacity() {return mFoamDried ? LIGHT_OPACITY_MAX : mTransparent ? mDiameter >= 1.0F ? LIGHT_OPACITY_WATER : mDiameter > 0.5F ? LIGHT_OPACITY_LEAVES : LIGHT_OPACITY_NONE : mDiameter >= 1.0F ? LIGHT_OPACITY_MAX : mDiameter > 0.5F ? LIGHT_OPACITY_WATER : LIGHT_OPACITY_LEAVES;}
 	@Override public boolean ignorePlayerCollisionWhenPlacing(ItemStack aStack, EntityPlayer aPlayer, World aWorld, int aX, int aY, int aZ, byte aSide, float aHitX, float aHitY, float aHitZ) {return !mFoam && mDiameter < 1.0F;}
@@ -309,11 +322,20 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 	public boolean allowInteraction(Entity aEntity) {
 		return !mOwnable || super.allowInteraction(aEntity);
 	}
-	// GTCH, 使用这种方式在有建筑泡沫时禁用一些工具，目前只允许温度计和放大镜
+	// GTCH, 使用这种方式在有建筑泡沫时禁用一些工具，目前只允许温度计，放大镜，撬棍
 	@Override
 	public boolean isEnabledTool(String aTool, long aQuality, boolean aSneaking, byte aSide, float aHitX, float aHitY, float aHitZ) {
-		if (mFoamDried) return aTool.equals(TOOL_thermometer) || aTool.equals(TOOL_magnifyingglass);
+		if (driedFoam(aSide)) return aTool.equals(TOOL_thermometer) || aTool.equals(TOOL_magnifyingglass) || aTool.equals(TOOL_crowbar) ;
 		return T;
+	}
+	// GTCH, 直接重写这两个方法来让建筑泡沫干掉时禁用重新连接和断开
+	@Override public boolean connect(byte aSide, boolean aNotify) {
+		if (driedFoam(aSide)) return F;
+		return super.connect(aSide, aNotify);
+	}
+	@Override public boolean disconnect(byte aSide, boolean aNotify) {
+		if (driedFoam(aSide)) return F;
+		return super.disconnect(aSide, aNotify);
 	}
 
 	// GTCH, 建筑泡沫颜色和管道颜色分开
@@ -425,9 +447,9 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 		mCRDataUpdated = F;
 	}
 
-	@Override public float getSurfaceSize           (byte aSide) {return mFoamDried ? 1.0F : mDiameter;}
+	@Override public float getSurfaceSize           (byte aSide) {return (mFoam || mFoamDried) ? 1.0F : mDiameter;}
 	@Override public float getSurfaceSizeAttachable (byte aSide) {return mDiameter;}
-	@Override public float getSurfaceDistance       (byte aSide) {return mFoamDried || connected(aSide)?0.0F:(1.0F-mDiameter)/2.0F;}
+	@Override public float getSurfaceDistance       (byte aSide) {return (mFoam || mFoamDried || connected(aSide))?0.0F:(1.0F-mDiameter)/2.0F;}
 	@Override public boolean isSurfaceSolid         (byte aSide) {return mFoamDried ||  mDiameter == 1.0F;}
 	@Override public boolean isSurfaceOpaque2       (byte aSide) {return mFoamDried || (mDiameter == 1.0F && !mTransparent);}
 	@Override public boolean isSideSolid2           (byte aSide) {return mFoamDried ||  mDiameter == 1.0F;}
@@ -465,9 +487,10 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 			if (mCovers.mBehaviours[aConnectorSide].showsConnectorFront(aConnectorSide, mCovers)) rLength = +0.001F;
 			else rLength = -0.001F;
 		}
-		if (aDelegator.mTileEntity instanceof ITileEntitySurface) {
+		// 不考虑管道之间相互连接
+		if ((aDelegator.mTileEntity instanceof ITileEntitySurface) && !(aDelegator.mTileEntity instanceof TileEntityBase10ConnectorRendered)) {
 			float tDistance = ((ITileEntitySurface)aDelegator.mTileEntity).getSurfaceDistance(aDelegator.mSideOfTileEntity);
-			if (tDistance > 0) return Math.max(rLength, tDistance);
+			if (tDistance > 0.0F) return Math.max(rLength, tDistance);
 		}
 		// TODO check for regular Collision Box.
 		return rLength;

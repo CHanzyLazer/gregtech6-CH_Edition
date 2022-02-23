@@ -10,6 +10,16 @@ import static gregapi.data.CS.*;
 
 public class UT_CH {
     public static class Code {
+        public final static float RENDER_LENGTH = 0.01F;
+        // 抹去 RENDER_LENGTH 的向下取整
+        public static int renderFloor(double afloat) {
+            return (int)Math.floor(afloat + RENDER_LENGTH);
+        }
+        // 抹去 RENDER_LENGTH 的向上取整
+        public static int renderCeil(double afloat) {
+            return (int)Math.ceil(afloat - RENDER_LENGTH);
+        }
+
         public static long effNormalize(int aEff) {
             int tEff40 = (aEff / 250) * 10000 / 40;
             int tEff30 = (aEff / 333) * 10000 / 30;

@@ -55,6 +55,21 @@ public abstract class TileEntityBase11ConnectorStraight extends TileEntityBase10
 		return aRenderPass == 0 && mDiameter < 1.0F && setBlockBoundsStraight(aBlock);
 	}
 
+	// 重写这个方法使得在有建筑泡沫时时只在建筑泡沫上渲染覆盖板，因为 renderpass 改变了
+	@Override
+	public boolean isCoverSurface(byte aSide, int aRenderpass) {
+		boolean tCSurface = super.isCoverSurface(aSide);
+		if (tCSurface) {
+			if (mFoam && !mFoamDried) return aRenderpass==1;
+			if (mFoamDried) {
+				// 遮住管道的覆盖板要渲染遮住面
+				if (mCRLengths[aSide]<0.0F && aRenderpass==0) return T;
+				return aRenderpass==1;
+			}
+		}
+		return tCSurface;
+	}
+
 	// 直接根据内部属性设置直线连接器的方块大小
 	protected boolean setBlockBoundsStraight(Block aBlock) {
 		if (mConnections == 0) return setBlockBoundsDefault(aBlock);

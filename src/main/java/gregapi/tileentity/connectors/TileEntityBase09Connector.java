@@ -30,6 +30,7 @@ import gregapi.cover.ITileEntityCoverable;
 import gregapi.data.LH;
 import gregapi.data.LH.Chat;
 import gregapi.tileentity.ITileEntity;
+import gregapi.tileentity.ITileEntityFoamable;
 import gregapi.tileentity.ITileEntityMachineBlockUpdateable;
 import gregapi.tileentity.base.TileEntityBase08Directional;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
@@ -115,6 +116,9 @@ public abstract class TileEntityBase09Connector extends TileEntityBase08Directio
 		DelegatorTileEntity<TileEntity> tDelegator = getAdjacentTileEntity(aSide);
 		if (tDelegator.mTileEntity instanceof ITileEntityConnector) {
 			if (tDelegator.mTileEntity instanceof ITileEntityCoverable && ((ITileEntityCoverable)tDelegator.mTileEntity).getCoverData() != null && ((ITileEntityCoverable)tDelegator.mTileEntity).getCoverData().mBehaviours[tDelegator.mSideOfTileEntity] != null && ((ITileEntityCoverable)tDelegator.mTileEntity).getCoverData().mBehaviours[tDelegator.mSideOfTileEntity].interceptConnect(tDelegator.mSideOfTileEntity, mCovers)) return F;
+			// GTCH, 补充条件让有建筑泡沫的管道只有连接面能连接
+			if (tDelegator.mTileEntity instanceof ITileEntityFoamable && ((ITileEntityFoamable) tDelegator.mTileEntity).driedFoam(OPOS[aSide]) && !((ITileEntityConnector) tDelegator.mTileEntity).connected(OPOS[aSide])) return F;
+
 			if (SIDES_VALID[tDelegator.mSideOfTileEntity] && UT.Code.haveOneCommonElement(((ITileEntityConnector)tDelegator.mTileEntity).getConnectorTypes(tDelegator.mSideOfTileEntity), getConnectorTypes(aSide))) {
 				byte oConnections = mConnections;
 				mConnections |= SBIT[aSide];

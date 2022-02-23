@@ -19,10 +19,6 @@
 
 package gregtech.tileentity.placeables;
 
-import static gregapi.data.CS.*;
-import static gregapi.block.multitileentity.IMultiTileEntity.*;
-
-import gregapi.cover.ITileEntityCoverable;
 import gregapi.data.OP;
 import gregapi.data.TD;
 import gregapi.old.Textures;
@@ -30,15 +26,15 @@ import gregapi.render.BlockTextureDefault;
 import gregapi.render.IIconContainer;
 import gregapi.tileentity.misc.MultiTileEntityPlaceable;
 import gregapi.util.UT;
-import gregapi.util.WD;
-import gregtechCH.config.ConfigForge_CH.DATA_GTCH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+
+import static gregapi.block.multitileentity.IMultiTileEntity.IMTE_CanPlace;
+import static gregapi.data.CS.*;
 
 /**
  * @author Gregorius Techneticies
@@ -75,13 +71,13 @@ public class MultiTileEntityPlate extends MultiTileEntityPlaceable implements IM
 	
 	@Override public String getTileEntityName() {return "gt.multitileentity.plate";}
 
-	// GTCH, 用来在作为覆盖板时禁用放置
+	// GTCH, 用来在作为覆盖板时禁用放置，现已经在 greg 的放置方法中更加灵活的禁用了放置，所以不需要这个方法了
 	@Override public boolean canPlace(ItemStack aStack, EntityPlayer aPlayer, World aWorld, int aX, int aY, int aZ, byte aSide, float aHitX, float aHitY, float aHitZ) {
-		if (aPlayer == null) return T;
-		if (DATA_GTCH.sneakingMountCover && aPlayer.isSneaking()) {
-			TileEntity tTileEntity = WD.te(aWorld, aX-OFFX[aSide], aY-OFFY[aSide], aZ-OFFZ[aSide], F);
-			if ((tTileEntity instanceof ITileEntityCoverable) && ((ITileEntityCoverable) tTileEntity).getCoverItem(aSide) == null) return F;
-		}
+//		if (aPlayer == null) return T;
+//		if (DATA_GTCH.sneakingMountCover && aPlayer.isSneaking()) {
+//			TileEntity tTileEntity = WD.te(aWorld, aX-OFFX[aSide], aY-OFFY[aSide], aZ-OFFZ[aSide], F);
+//			if ((tTileEntity instanceof ITileEntityCoverable) && ((ITileEntityCoverable) tTileEntity).getCoverItem(aSide) == null) return F;
+//		}
 		return T;
 	}
 }

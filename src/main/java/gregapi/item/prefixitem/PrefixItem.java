@@ -19,27 +19,13 @@
 
 package gregapi.item.prefixitem;
 
-import static gregapi.data.CS.*;
-import static gregtechCH.data.CS_CH.ALL_COVER_PREFIX;
-
-import java.util.List;
-
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.code.ModData;
-import gregapi.cover.CoverRegistry;
-import gregapi.cover.ICover;
-import gregapi.data.ANY;
-import gregapi.data.LH;
-import gregapi.data.MT;
-import gregapi.data.OP;
-import gregapi.data.TD;
-import gregapi.item.CreativeTab;
-import gregapi.item.IItemGT;
-import gregapi.item.IItemNoGTOverride;
-import gregapi.item.IItemUpdatable;
-import gregapi.item.IPrefixItem;
+import gregapi.cover.ITileEntityCoverable;
+import gregapi.data.*;
+import gregapi.item.*;
 import gregapi.lang.LanguageHandler;
 import gregapi.oredict.OreDictItemData;
 import gregapi.oredict.OreDictManager;
@@ -48,13 +34,21 @@ import gregapi.oredict.OreDictPrefix;
 import gregapi.util.OM;
 import gregapi.util.ST;
 import gregapi.util.UT;
+import gregapi.util.WD;
+import gregtechCH.config.ConfigForge_CH.DATA_GTCH;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+
+import java.util.List;
+
+import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.ALL_COVER_PREFIX;
 
 /**
  * @author Gregorius Techneticies
@@ -236,8 +230,12 @@ public class PrefixItem extends Item implements Runnable, IItemUpdatable, IPrefi
 		return LanguageHandler.getLocalName(aPrefix, aMaterial);
 	}
 
-	// GTCH, 用来在作为覆盖板时潜行也能放置上
+	// GTCH, 用来在作为覆盖板时潜行也能放置上，检测是否可能不是作为覆盖板
 	@Override public boolean doesSneakBypassUse(World aWorld, int aX, int aY, int aZ, EntityPlayer aPlayer) {
-		return ALL_COVER_PREFIX.contains(mPrefix);
+		if (DATA_GTCH.sneakingMountCover && ALL_COVER_PREFIX.contains(mPrefix)) {
+			TileEntity tTileEntity = WD.te(aWorld, aX, aY, aZ, F);
+			if (tTileEntity instanceof ITileEntityCoverable) return T;
+		}
+		return F;
 	}
 }

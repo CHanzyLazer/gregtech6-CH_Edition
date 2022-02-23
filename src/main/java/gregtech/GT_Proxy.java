@@ -342,19 +342,20 @@ public abstract class GT_Proxy extends Abstract_Proxy {
 					}
 				} else if (IL.Food_Toast_Sliced.equal(aStack, F, T) || IL.Food_Toasted_Sliced.equal(aStack, F, T)) {
 					int tUsed = Math.min(16, aStack.stackSize);
-					if (!aEvent.world.isRemote && aEvent.entityPlayer.isSneaking() && MultiTileEntityRegistry.getRegistry("gt.multitileentity").getItem(32105, ST.save("sandwich.0", ST.amount(tUsed, aStack))).tryPlaceItemIntoWorld(aEvent.entityPlayer, aEvent.world, aEvent.x, aEvent.y, aEvent.z, (byte)aEvent.face, 0.5F, 0.5F, 0.5F)) {
+					// GTCH, 增加判断 doesSneakBypassUse 来确保要放置方块放置刷物品
+					if (!aEvent.world.isRemote && (aEvent.entityPlayer.isSneaking() && !aStack.getItem().doesSneakBypassUse(aEvent.world, aEvent.x, aEvent.y, aEvent.z, aEvent.entityPlayer)) && MultiTileEntityRegistry.getRegistry("gt.multitileentity").getItem(32105, ST.save("sandwich.0", ST.amount(tUsed, aStack))).tryPlaceItemIntoWorld(aEvent.entityPlayer, aEvent.world, aEvent.x, aEvent.y, aEvent.z, (byte)aEvent.face, 0.5F, 0.5F, 0.5F)) {
 						ST.use(aEvent.entityPlayer, aStack, tUsed); aEvent.setCanceled(T);
 					}
 				} else if (aStack.getItem() == Items.stick || IL.Stick.equal(aStack) || OM.is("stickAnyNormalWood", aStack)) {
-					if (!aEvent.world.isRemote && aEvent.entityPlayer.isSneaking() && MultiTileEntityRegistry.getRegistry("gt.multitileentity").getItem(32073).tryPlaceItemIntoWorld(aEvent.entityPlayer, aEvent.world, aEvent.x, aEvent.y, aEvent.z, (byte)aEvent.face, 0.5F, 0.5F, 0.5F)) {
+					if (!aEvent.world.isRemote && (aEvent.entityPlayer.isSneaking() && !aStack.getItem().doesSneakBypassUse(aEvent.world, aEvent.x, aEvent.y, aEvent.z, aEvent.entityPlayer)) && MultiTileEntityRegistry.getRegistry("gt.multitileentity").getItem(32073).tryPlaceItemIntoWorld(aEvent.entityPlayer, aEvent.world, aEvent.x, aEvent.y, aEvent.z, (byte)aEvent.face, 0.5F, 0.5F, 0.5F)) {
 						ST.use(aEvent.entityPlayer, aStack); aEvent.setCanceled(T);
 					}
 				} else if (aStack.getItem() == Items.flint) {
-					if (!aEvent.world.isRemote && aEvent.entityPlayer.isSneaking() && MultiTileEntityRegistry.getRegistry("gt.multitileentity").getItem(32074, ST.save(NBT_VALUE, ST.amount(1, aStack))).tryPlaceItemIntoWorld(aEvent.entityPlayer, aEvent.world, aEvent.x, aEvent.y, aEvent.z, (byte)aEvent.face, 0.5F, 0.5F, 0.5F)) {
+					if (!aEvent.world.isRemote && (aEvent.entityPlayer.isSneaking() && !aStack.getItem().doesSneakBypassUse(aEvent.world, aEvent.x, aEvent.y, aEvent.z, aEvent.entityPlayer)) && MultiTileEntityRegistry.getRegistry("gt.multitileentity").getItem(32074, ST.save(NBT_VALUE, ST.amount(1, aStack))).tryPlaceItemIntoWorld(aEvent.entityPlayer, aEvent.world, aEvent.x, aEvent.y, aEvent.z, (byte)aEvent.face, 0.5F, 0.5F, 0.5F)) {
 						ST.use(aEvent.entityPlayer, aStack); aEvent.setCanceled(T);
 					}
 				} else {
-					if (!aEvent.world.isRemote && aEvent.entityPlayer.isSneaking() && ST.block(aStack) == NB) {
+					if (!aEvent.world.isRemote && (aEvent.entityPlayer.isSneaking() && !aStack.getItem().doesSneakBypassUse(aEvent.world, aEvent.x, aEvent.y, aEvent.z, aEvent.entityPlayer)) && ST.block(aStack) == NB) {
 						OreDictItemData tData = OM.anyassociation_(aStack);
 						if (tData != null) {
 							if (tData.mPrefix == OP.rockGt || tData.mPrefix == OP.oreRaw) {

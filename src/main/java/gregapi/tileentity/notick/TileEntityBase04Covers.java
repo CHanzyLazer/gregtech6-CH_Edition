@@ -195,6 +195,7 @@ public abstract class TileEntityBase04Covers extends TileEntityBase03MultiTileEn
 	@Override
 	public final long onToolClick(String aTool, long aRemainingDurability, long aQuality, Entity aPlayer, List<String> aChatReturn, IInventory aPlayerInventory, boolean aSneaking, ItemStack aStack, byte aSide, float aHitX, float aHitY, float aHitZ) {
 		if (!allowInteraction(aPlayer)) return 0;
+		if (!isEnabledTool(aTool, aQuality, aSneaking, aSide, aHitX, aHitY, aHitZ)) return 0;
 		if (checkObstruction(aPlayer instanceof EntityPlayer ? (EntityPlayer)aPlayer : null, aSide, aHitX, aHitY, aHitZ)) return 0;
 		worldObj.markTileEntityChunkModified(xCoord, yCoord, zCoord, this);
 		if (SIDES_VALID[aSide] && hasCovers()) {
@@ -229,6 +230,10 @@ public abstract class TileEntityBase04Covers extends TileEntityBase03MultiTileEn
 			}
 		}
 		return onToolClick2(aTool, aRemainingDurability, aQuality, aPlayer, aChatReturn, aPlayerInventory, aSneaking, aStack, aSide, aHitX, aHitY, aHitZ);
+	}
+
+	public boolean isEnabledTool(String aTool, long aQuality, boolean aSneaking, byte aSide, float aHitX, float aHitY, float aHitZ) {
+		return T;
 	}
 	
 	@Override

@@ -20,8 +20,10 @@
 package gregapi.tileentity.connectors;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.CONNECTED_SIDE_AXIS;
 import static gregtechCH.util.UT_CH.Code.RENDER_LENGTH;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,7 +51,6 @@ import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.util.UT;
 import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -58,7 +59,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.input.Keyboard;
 
 /**
  * @author Gregorius Techneticies
@@ -68,11 +68,17 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 	public boolean mTransparent = F, mIsGlowing = F, mContactDamage = F, mFoam = F, mFoamDried = F, mOwnable = F;
 
 	// GTCH, 用于额外长度连接的渲染，仅客户端有用
-	protected float[] mCRLengths = new float[6], mCRDiameters = new float[6];
+	protected float[] mCRLengths = new float[7], mCRDiameters = new float[7];
 	protected boolean mCROut = F;
 	protected final static float MARK_LENGTH = 0.002F;
 	protected boolean mCRDataUpdated = F;
 	protected long oTimer = 0;
+	// 用于表示需要合并渲染的边（前一个或两个），顺序为 x z y 轴，并且 Diameter 等于自身的优先
+	byte[] mCSides = {SIDE_INVALID, SIDE_INVALID, SIDE_INVALID, SIDE_INVALID, SIDE_INVALID, SIDE_INVALID};
+	byte mConnectionsNoShrink = 0;
+	// 表示需要合并渲染的边 0 1 2
+	byte mMergeCount = 0;
+
 	
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {
@@ -111,23 +117,69 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 	// GTCH, 更新所有连接渲染数据
 	@SideOnly(Side.CLIENT)
 	protected void updateCRData() {
+		// 先统一更新 （除了 mCROut）
 		DelegatorTileEntity<TileEntity> tDelegator;
-		mCROut = F;
 		for (byte tSide : ALL_SIDES_VALID) {
 			tDelegator = getAdjacentTileEntity(tSide, F, F);
 			if (connected(tSide)) {
 				mCRLengths[tSide] = getConnectorLength(tSide, tDelegator);
 				mCRDiameters[tSide] = getConnectorDiameter(tSide, tDelegator);
-				// 让建筑泡沫后管道会露出一部分
-				if (mDiameter < 1.0F && (mFoam || mFoamDried) && mCRLengths[tSide] >= 0.0F) mCRLengths[tSide] = Math.max(mCRLengths[tSide], 0.001F);
-				// 让巨型管道和干建筑泡沫接小管道时连接面能正确渲染
-				if ((mDiameter >= 1.0F || driedFoam(tSide)) && mCRDiameters[tSide] < mDiameter && mCRLengths[tSide] >= 0.0F) mCRLengths[tSide] = Math.max(mCRLengths[tSide], MARK_LENGTH+0.001F);
-				// 让巨型管道的加长部分不易出现渲染 bug
-				if (mDiameter >= 1.0F && mCRLengths[tSide] > RENDER_LENGTH && mCRDiameters[tSide] >= 1.0F) mCRDiameters[tSide] = 0.999F;
-				mCROut |= mCRLengths[tSide] > MARK_LENGTH;
 			} else {
 				mCRDiameters[tSide] = mDiameter;
 				mCRLengths[tSide] = 0.0F;
+			}
+		}
+		// 巨型管道的情况
+		if (mDiameter >= 1.0F) {
+			mCROut = F;
+			for (byte tSide : ALL_SIDES_VALID) if (connected(tSide)) {
+				// 接小管道时连接面能正确渲染
+				if (mCRDiameters[tSide] < mDiameter && mCRLengths[tSide] >= 0.0F) mCRLengths[tSide] = Math.max(mCRLengths[tSide], MARK_LENGTH + 0.001F);
+				// 让巨型管道的加长部分不易出现渲染 bug
+				if (mCRLengths[tSide] > RENDER_LENGTH && mCRDiameters[tSide] >= 1.0F) mCRDiameters[tSide] = 0.999F;
+				mCROut |= mCRLengths[tSide] > MARK_LENGTH;
+			}
+		} else
+		// 建筑泡沫的情况
+		if (mFoam || mFoamDried) {
+			mCROut = F;
+			for (byte tSide : ALL_SIDES_VALID) if (connected(tSide)) {
+				// 让上建筑泡沫后管道会露出一部分
+				if (mCRLengths[tSide] >= 0.0F) mCRLengths[tSide] = Math.max(mCRLengths[tSide], 0.001F);
+				// 让干建筑泡沫接小管道时连接面能正确渲染
+				if (driedFoam(tSide) && mCRDiameters[tSide] < mDiameter && mCRLengths[tSide] >= 0.0F) mCRLengths[tSide] = Math.max(mCRLengths[tSide], MARK_LENGTH + 0.001F);
+				mCROut |= mCRLengths[tSide] > MARK_LENGTH;
+			}
+		} else
+		// 一般管道的情况
+		if (mDiameter < 1.0F) {
+			mCROut = F;
+			for (byte tSide : ALL_SIDES_VALID) if (connected(tSide)) {
+				mCROut |= mCRLengths[tSide] > MARK_LENGTH;
+			}
+		}
+		// 处理合并渲染
+		mergeUpdate();
+	}
+
+	// 用于子类重写简化合并渲染
+	protected void mergeUpdate() {
+		if (mDiameter < 1.0F && !driedFoam(SIDE_ANY)) {
+			// 统计没有 shrink 的连接
+			mConnectionsNoShrink = 0;
+			for (byte tSide : ALL_SIDES_VALID) if (connected(tSide) && mCRDiameters[tSide] >= mDiameter) mConnectionsNoShrink |= SBIT[tSide];
+			System.arraycopy(CONNECTED_SIDE_AXIS[mConnectionsNoShrink], 0, mCSides, 0, 6);
+			// 统计合并数
+			mMergeCount = 0;
+			if (SIDES_VALID[mCSides[0]]) {
+				++mMergeCount;
+				if (ALONG_AXIS[mCSides[0]][mCSides[1]]) ++mMergeCount;
+			}
+			// 将 shrink 的边从后面加入 mCSides
+			byte i = 5;
+			for (byte tSide : ALL_SIDES_VALID) if (connected(tSide) && mCRDiameters[tSide] < mDiameter) {
+				mCSides[i] = tSide;
+				--i;
 			}
 		}
 	}
@@ -162,12 +214,13 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 	public final int getRenderPasses2(Block aBlock, boolean[] aShouldSideBeRendered) {
 		if (worldObj == null) {
 			if (!hasCovers() && !hasFoam(SIDE_ANY)) {
-				mConnections = (byte)(SBIT_S|SBIT_N);
+				mConnectionsNoShrink = mConnections = (byte)(SBIT_S|SBIT_N);
 				mCRDiameters[SIDE_SOUTH] = mCRDiameters[SIDE_NORTH] = mDiameter;
-				if (mDiameter < 1.0F && mFoam) mCRLengths[SIDE_SOUTH] = mCRLengths[SIDE_NORTH] = 0.001F;
+				mCSides[0] = SIDE_SOUTH; mCSides[1] = SIDE_NORTH; mCSides[2] = mCSides[3] = mCSides[4] = mCSides[5] = 6;
+				mMergeCount = 2;
 			} else {
 				for (byte tSide : ALL_SIDES_VALID) mCRDiameters[tSide] = mDiameter;
-				if (driedFoam(SIDE_ANY)) for (byte tSide : ALL_SIDES_VALID) if (connected(tSide)) mCRLengths[tSide] = 0.001F;
+				if (mDiameter < 1.0F && driedFoam(SIDE_ANY)) for (byte tSide : ALL_SIDES_VALID) if (connected(tSide)) mCRLengths[tSide] = 0.001F;
 			}
 		} else
 		// 在 render 的部分进行数据更新，放弃了原本的优化思路（其实这些优化都没什么用）
@@ -183,34 +236,63 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 	// GTCH, 用于重写
 	protected int getRenderPasses3(Block aBlock, boolean[] aShouldSideBeRendered) {
 		if (mCROut) return 14;
-		if (mFoam) return 8;
+		if (mFoam && !mFoamDried) return 8;
 		if (mConnections != 0 && mDiameter < 1.0F) return 7;
 		return 1;
 	}
 	
 	@Override
 	public boolean setBlockBounds2(Block aBlock, int aRenderPass, boolean[] aShouldSideBeRendered) {
-		if (aRenderPass == 0) {
-			if (driedFoam(SIDE_ANY) || mDiameter >= 1.0F) return F;
-			return setBlockBoundsDefault(aBlock);
-		}
-		// TODO: I need to add the old optimizations back somehow.
-		// Even though this Version is way more modular and can adjust to stuff much easier, it does also look bad when rendered with ambient occlusion.
-		// GTCH, 管道的内部的额外部分，有 mark 和 rubber
-		if (aRenderPass <= 6 && aRenderPass >= 1) {
-			// 干掉的建筑泡沫专门讨论
-			if (driedFoam((byte)(aRenderPass-1))) return setBlockBoundsSide(aBlock, (byte)(aRenderPass-1), mDiameter, 0.0F, 0.001F);
-			return setBlockBoundsSide(aBlock, (byte)(aRenderPass-1), mCRDiameters[aRenderPass-1], (1.0F- mCRDiameters[aRenderPass-1])/2.0F, mCRLengths[aRenderPass-1]<=MARK_LENGTH?mCRLengths[aRenderPass-1]:0.0F);
-		}
+		// 没干建筑泡沫的情况
+		if (aRenderPass == 7) return F;
 		// GTCH, 处理超出方块的材质
 		if (aRenderPass >= 8 && aRenderPass <= 13) {
 			return setBlockBoundsSide(aBlock, (byte)(aRenderPass-8), mCRDiameters[aRenderPass-8], 0.0F, mCRLengths[aRenderPass-8]);
+		}
+		// 巨型管道的情况
+		if (mDiameter >= 1.0F) return F;
+		// 建筑泡沫干掉的情况，注意 mCSides 此时没有意义
+		if (driedFoam(SIDE_ANY)) {
+			if (aRenderPass == 0) return F;
+			if (aRenderPass <= 6 && aRenderPass >= 1) {
+				return setBlockBoundsSide(aBlock, (byte)(aRenderPass-1), mDiameter, 0.0F, 0.001F);
+			}
+			return F;
+		}
+		// 一般管道的情况
+		if (mDiameter < 1.0F) {
+			if (aRenderPass == 0) {
+				// 不使用方法为了防止超出数组的调用
+				switch (mMergeCount) {
+					case 0 : return setBlockBoundsDefault(aBlock, mDiameter);
+					case 1 : return setBlockBoundsSide(aBlock, mCSides[0], mDiameter, (1.0F+mDiameter)/2.0F, mCRLengths[mCSides[0]]<=MARK_LENGTH?mCRLengths[mCSides[0]]:0.0F);
+					case 2 : return setBlockBoundsSide(aBlock, mCSides[0], mDiameter, 1.0F+(mCRLengths[mCSides[1]]<=MARK_LENGTH?mCRLengths[mCSides[1]]:0.0F), mCRLengths[mCSides[0]]<=MARK_LENGTH?mCRLengths[mCSides[0]]:0.0F);
+					default: return F;
+				}
+			}
+			if (aRenderPass <= 6 && aRenderPass >= 1) {
+				return setBlockBoundsSide(aBlock, mCSides[aRenderPass-1], mCRDiameters[mCSides[aRenderPass-1]], (1.0F- mCRDiameters[mCSides[aRenderPass-1]])/2.0F, mCRLengths[mCSides[aRenderPass-1]]<=MARK_LENGTH?mCRLengths[mCSides[aRenderPass-1]]:0.0F);
+			}
+			return F;
 		}
 		return F;
 	}
 	/* 使用属性设置管道默认的方块 */
 	protected boolean setBlockBoundsDefault(Block aBlock) {
-		return box(aBlock, (1.0F-mDiameter)/2.0F, (1.0F-mDiameter)/2.0F, (1.0F-mDiameter)/2.0F, 1.0F-(1.0F-mDiameter)/2.0F, 1.0F-(1.0F-mDiameter)/2.0F, 1.0F-(1.0F-mDiameter)/2.0F);
+		return setBlockBoundsDefault(aBlock, mDiameter);
+	}
+	/* 使用直径设置管道默认的方块 */
+	protected boolean setBlockBoundsDefault(Block aBlock, float aDiameter) {
+		return box(aBlock, (1.0F-aDiameter)/2.0F, (1.0F-aDiameter)/2.0F, (1.0F-aDiameter)/2.0F, 1.0F-(1.0F-aDiameter)/2.0F, 1.0F-(1.0F-aDiameter)/2.0F, 1.0F-(1.0F-aDiameter)/2.0F);
+	}
+	/* 直接根据内部属性设置直线连接器的方块大小，使用 mMergeCount 判断如何连接 */
+	protected boolean setBlockBoundsStraight(Block aBlock) {
+		switch (mMergeCount) {
+			case 0 : return setBlockBoundsDefault(aBlock, mDiameter);
+			case 1 : return setBlockBoundsSide(aBlock, mCSides[0], mDiameter, (1.0F+mDiameter)/2.0F, mCRLengths[mCSides[0]]);
+			case 2 : return setBlockBoundsSide(aBlock, mCSides[0], mDiameter, 1.0F+mCRLengths[mCSides[1]], mCRLengths[mCSides[0]]);
+			default: return F;
+		}
 	}
 	/* 使用直径和两个长度设置管道某个朝向的方块，两个长度分别为起始位置和终止位置，aLength1向内延申，aLength2向外延申 */
 	protected boolean setBlockBoundsSide(Block aBlock, byte aSide, float aDiameter, float aLength1, float aLength2) {
@@ -228,19 +310,26 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 	@Override
 	public ITexture getTexture2(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
 		if (SIDES_INVALID[aSide]) return null;
+		// 没干建筑泡沫的情况
 		if (aRenderPass == 7) {
-			if (!aShouldSideBeRendered[aSide]) return null;
+//			if (!aShouldSideBeRendered[aSide]) return null; // 因为没干的建筑泡沫是透明的，所以还是要渲染
 			return getTextureCFoam(aSide, mConnections, mDiameter, aRenderPass);
 		}
-		boolean tSideShrink = mDiameter > mCRDiameters[aSide];
-		if (aRenderPass == 0) {
-			if (driedFoam(aSide)) {
-				// 不能使用 multi 实现，因为涉及了材质的剪切
-				if (!aShouldSideBeRendered[aSide]) return null;
-				return getTextureCFoamDry(aSide, mConnections, mDiameter, aRenderPass);
+		// 延长层的情况
+		if (aRenderPass >= 8 && aRenderPass <= 13) {
+			if (aSide == OPOS[aRenderPass-8]) return null;
+			if (aSide != aRenderPass - 8) {
+				if (mCRLengths[aRenderPass-8] <= RENDER_LENGTH) return null; // 延长层过短不用渲染侧边
+				return getTextureSide(aSide, mConnections, mCRDiameters[aRenderPass-8], aRenderPass);
 			}
-			// renderPass==0 时 side 和 connected 相反
-			if (mDiameter >= 1.0F) {
+			if (!aShouldSideBeRendered[aRenderPass-8]) return null;
+			return getTextureConnected(aSide, mConnections, mCRDiameters[aRenderPass-8], aRenderPass);
+		}
+		boolean tSideShrink = mDiameter > mCRDiameters[aSide];
+		// 巨型管道情况（巨型管道不会有建筑泡沫）
+		if (mDiameter >= 1.0F) {
+			// 没有内部延长的情况
+			if (aRenderPass == 0) {
 				if (!aShouldSideBeRendered[aSide]) return null;
 				if (connected(aSide)) {
 					if (mCRLengths[aSide]>MARK_LENGTH) { // 拥有外套层
@@ -252,36 +341,47 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 				if (mConnections == 0) return getTextureConnected(aSide, mConnections, mDiameter, aRenderPass);
 				return getTextureSide(aSide, mConnections, mDiameter, aRenderPass);
 			}
-			if (connected(aSide)) {
-				if (tSideShrink) return getTextureSide(aSide, mConnections, mDiameter, aRenderPass);
-				return null; // 小管道永远有外套层，不需要渲染
-			}
-			if (mConnections == 0) return getTextureConnected(aSide, mConnections, mDiameter, aRenderPass);
-			return getTextureSide(aSide, mConnections, mDiameter, aRenderPass);
-		}
-		if (aRenderPass <= 6 && aRenderPass >= 1) {
-			if (mDiameter >= 1.0F && !aShouldSideBeRendered[aSide]) return null; // 巨型管道没有这个 RenderPass，但是依旧保留兼容
-			if (aSide == OPOS[aRenderPass - 1]) return null;
-			if (aSide != aRenderPass - 1) {
-				if (driedFoam((byte)(aRenderPass-1)) && mCRLengths[aRenderPass-1] <= RENDER_LENGTH) return null; // 建筑泡沫干掉后不需要渲染侧边
-				return getTextureSide(aSide, mConnections, mCRDiameters[aRenderPass-1], aRenderPass);
-			}
-			if (!aShouldSideBeRendered[aSide]) return null;
-			// 这里专门处理干掉的情况
-			if (driedFoam((byte)(aRenderPass-1)) && tSideShrink) return getTexturePFoamDry(aSide, mConnections, mDiameter, aRenderPass);
-			// 大于的会有外套层，只需渲染外套层即可
-			if (mCRLengths[aRenderPass-1]<=MARK_LENGTH) return getTextureConnected(aSide, mConnections, mCRDiameters[aRenderPass-1], aRenderPass);
 			return null;
 		}
-		if (aRenderPass >= 8 && aRenderPass <= 13) {
-//			if (mDiameter >= 1.0F && !aShouldSideBeRendered[aSide]) return null; // 穿出方块的外套层不能根据主方块的遮挡来判断不进行渲染
-			if (aSide == OPOS[aRenderPass-8]) return null;
-			if (aSide != aRenderPass - 8) {
-				if (mCRLengths[aRenderPass-8] <= RENDER_LENGTH) return null; // 延长层过短不用渲染侧边
-				return getTextureSide(aSide, mConnections, mCRDiameters[aRenderPass-8], aRenderPass);
+		// 建筑泡沫干掉的情况
+		if (driedFoam(aSide)) {
+			if (aRenderPass == 0) {
+				// 不能使用 multi 实现，因为涉及了材质的剪切
+				if (!aShouldSideBeRendered[aSide]) return null;
+				return getTextureCFoamDry(aSide, mConnections, mDiameter, aRenderPass);
 			}
-			if (!aShouldSideBeRendered[aSide]) return null;
-			return getTextureConnected(aSide, mConnections, mCRDiameters[aRenderPass-8], aRenderPass);
+			// 干掉的情况下不会进行连接合并，所以 mCSides 此时没有意义
+			if (aRenderPass <= 6 && aRenderPass >= 1) {
+				// 干掉的情况下这个 renderPass 只是作为裁剪材质 multi 的用途
+				if (!aShouldSideBeRendered[aRenderPass-1]) return null;
+				if (aSide != aRenderPass-1) return null;
+				if (tSideShrink) return getTexturePFoamDry(aSide, mConnections, mDiameter, aRenderPass);
+				return getTextureConnected(aSide, mConnections, mDiameter, aRenderPass);
+			}
+			return null;
+		}
+		// 一般管道的情况
+		if (mDiameter < 1.0F) {
+			if (aRenderPass == 0) {
+				if (connected(aSide)) {
+					if (tSideShrink) return getTextureSide(aSide, mConnections, mDiameter, aRenderPass);
+					// 由于有合并，所以连接面可能可以不用渲染
+					if (!aShouldSideBeRendered[aSide]) return null;
+					return getTextureConnected(aSide, mConnections, mDiameter, aRenderPass); // 优化后小管道连接处没有外套层，需要渲染
+				}
+				if (mConnections == 0) return getTextureConnected(aSide, mConnections, mDiameter, aRenderPass);
+				return getTextureSide(aSide, mConnections, mDiameter, aRenderPass);
+			}
+			if (aRenderPass <= 6 && aRenderPass >= 1) {
+				byte tSide = mCSides[aRenderPass-1]; if (SIDES_INVALID[tSide]) return null;
+				if (aSide == OPOS[tSide]) return null;
+				if (aSide != tSide) return getTextureSide(aSide, mConnections, mCRDiameters[tSide], aRenderPass);
+				if (!aShouldSideBeRendered[tSide]) return null;
+				// 大于的会有外套层，只需渲染外套层即可
+				if (mCRLengths[tSide]<=MARK_LENGTH) return getTextureConnected(aSide, mConnections, mCRDiameters[tSide], aRenderPass);
+				return null;
+			}
+			return null;
 		}
 		return null;
 	}
@@ -290,8 +390,14 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 		// 将不用渲染的直接不提供 RenderPass
 		if (aRenderPass == 0) return T;
 		if (aRenderPass == 7) return mFoam && !mFoamDried;
-		if (aRenderPass <= 6 && aRenderPass >= 1) if(mDiameter < 1.0F) if(connected((byte)(aRenderPass - 1))) return T;
-		if (aRenderPass >= 8 && aRenderPass <= 13) if(connected((byte)(aRenderPass - 8))) return mCRLengths[aRenderPass - 8] > MARK_LENGTH;
+		if (aRenderPass <= 6 && aRenderPass >= 1) {
+			// 建筑泡沫干掉的情况
+			if (driedFoam((byte)(aRenderPass-1))) return connected((byte)(aRenderPass-1));
+			// 一般管道的情况
+			if(mDiameter < 1.0F) if (aRenderPass >= 1+mMergeCount) return SIDES_VALID[mCSides[aRenderPass-1]];
+			return F;
+		}
+		if (aRenderPass >= 8 && aRenderPass <= 13) if(connected((byte)(aRenderPass - 8))) return mCRLengths[aRenderPass-8] > MARK_LENGTH;
 		return F;
 	}
 	// 重写这个方法使得在有建筑泡沫时时只在建筑泡沫上渲染覆盖板
@@ -430,7 +536,7 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 	public byte getDirectionData() {
 		return (byte)(((byte)(mConnections & 63)) | ((byte)((mFoamDried ? mOwnable : mFoam) ? 64 : 0)) | ((byte)(mFoamDried ? 128 : 0)));
 	}
-	
+
 	@Override
 	public void setDirectionData(byte aData) {
 		mConnections = (byte)(aData & 63);

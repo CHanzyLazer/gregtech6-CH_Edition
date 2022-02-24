@@ -20,6 +20,7 @@
 package gregapi.tileentity.connectors;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.CONNECTED_SIDE_AXIS;
 
 import java.util.List;
 
@@ -32,6 +33,20 @@ import net.minecraft.util.AxisAlignedBB;
  * @author Gregorius Techneticies
  */
 public abstract class TileEntityBase11ConnectorStraight extends TileEntityBase10ConnectorRendered {
+	@Override
+	protected void mergeUpdate() {
+		if (mDiameter < 1.0F) {
+			// 直接套用不需要考虑 shrink 的情况
+			System.arraycopy(CONNECTED_SIDE_AXIS[mConnections], 0, mCSides, 0, 6);
+			// 统计合并数
+			mMergeCount = 0;
+			if (SIDES_VALID[mCSides[0]]) {
+				++mMergeCount;
+				if (ALONG_AXIS[mCSides[0]][mCSides[1]]) ++mMergeCount;
+			}
+		}
+	}
+
 	@Override
 	protected int getRenderPasses3(Block aBlock, boolean[] aShouldSideBeRendered) {
 		return (mFoam || mFoamDried) ? 2 : 1;
@@ -68,15 +83,6 @@ public abstract class TileEntityBase11ConnectorStraight extends TileEntityBase10
 			}
 		}
 		return tCSurface;
-	}
-
-	// 直接根据内部属性设置直线连接器的方块大小
-	protected boolean setBlockBoundsStraight(Block aBlock) {
-		if (mConnections == 0) return setBlockBoundsDefault(aBlock);
-		for(byte tSide : ALL_SIDES_VALID) {
-			if (connected(tSide))  return setBlockBoundsSide(aBlock, tSide, mDiameter, connected(OPOS[tSide])?(1.0F+mCRLengths[OPOS[tSide]]):(1.0F+mDiameter)/2.0F, mCRLengths[tSide]);
-		}
-		return F;
 	}
 
 	@Override public boolean usesRenderPass2(int aRenderPass, boolean[] aShouldSideBeRendered) {return T;}

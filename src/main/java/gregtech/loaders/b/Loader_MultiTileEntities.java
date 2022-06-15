@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,9 +19,6 @@
 
 package gregtech.loaders.b;
 
-import static gregapi.data.CS.*;
-import static gregtechCH.data.CS_CH.*;
-
 import gregapi.block.MaterialMachines;
 import gregapi.block.MaterialScoopable;
 import gregapi.block.multitileentity.MultiTileEntityBlock;
@@ -31,26 +28,13 @@ import gregapi.cover.CoverRegistry;
 import gregapi.cover.covers.CoverAsphalt;
 import gregapi.cover.covers.CoverTextureSimple;
 import gregapi.data.*;
-import gregapi.data.CS.BlocksGT;
-import gregapi.data.CS.GarbageGT;
-import gregapi.data.CS.ItemsGT;
-import gregapi.data.CS.PlankData;
-import gregapi.data.CS.SFX;
 import gregapi.old.Textures;
 import gregapi.oredict.OreDictItemData;
 import gregapi.oredict.OreDictManager;
 import gregapi.oredict.OreDictMaterial;
 import gregapi.render.BlockTextureCopied;
 import gregapi.render.BlockTextureDefault;
-import gregapi.tileentity.connectors.ITileEntityRedstoneWire;
-import gregapi.tileentity.connectors.MultiTileEntityAxle;
-import gregapi.tileentity.connectors.MultiTileEntityPipeFluid;
-import gregapi.tileentity.connectors.MultiTileEntityPipeItem;
-import gregapi.tileentity.connectors.MultiTileEntityWireElectric;
-import gregapi.tileentity.connectors.MultiTileEntityWireLaser;
-import gregapi.tileentity.connectors.MultiTileEntityWireLogistics;
-import gregapi.tileentity.connectors.MultiTileEntityWireRedstone;
-import gregapi.tileentity.connectors.MultiTileEntityWireRedstoneInsulated;
+import gregapi.tileentity.connectors.*;
 import gregapi.tileentity.inventories.MultiTileEntityBookShelf;
 import gregapi.tileentity.machines.MultiTileEntityBasicMachine;
 import gregapi.tileentity.machines.MultiTileEntityBasicMachineElectric;
@@ -64,31 +48,14 @@ import gregapi.util.UT;
 import gregtech.tileentity.autotools.MultiTileEntityAutoToolHammer;
 import gregtech.tileentity.autotools.MultiTileEntityAutoToolIgniter;
 import gregtech.tileentity.batteries.eu.*;
-import gregtech.tileentity.batteries.lu.MultiTileEntityBatteryLU128;
-import gregtech.tileentity.batteries.lu.MultiTileEntityBatteryLU2048;
-import gregtech.tileentity.batteries.lu.MultiTileEntityBatteryLU32;
-import gregtech.tileentity.batteries.lu.MultiTileEntityBatteryLU512;
-import gregtech.tileentity.batteries.lu.MultiTileEntityBatteryLU8;
-import gregtech.tileentity.batteries.lu.MultiTileEntityBatteryLU8192;
+import gregtech.tileentity.batteries.lu.*;
 import gregtech.tileentity.batteries.qu.MultiTileEntityZPM;
 import gregtech.tileentity.computer.MultiTileEntityHDDSwitch;
 import gregtech.tileentity.computer.MultiTileEntityUSBSwitch;
 import gregtech.tileentity.energy.converters.*;
-import gregtech.tileentity.energy.generators.MultiTileEntityGeneratorBrick;
-import gregtech.tileentity.energy.generators.MultiTileEntityGeneratorFluidBed;
-import gregtech.tileentity.energy.generators.MultiTileEntityGeneratorGas;
-import gregtech.tileentity.energy.generators.MultiTileEntityGeneratorHotFluid;
-import gregtech.tileentity.energy.generators.MultiTileEntityGeneratorLiquid;
-import gregtech.tileentity.energy.generators.MultiTileEntityGeneratorMetal;
-import gregtech.tileentity.energy.generators.MultiTileEntityMotorLiquid;
-import gregtech.tileentity.energy.generators.MultiTileEntitySolarPanelElectric;
+import gregtech.tileentity.energy.generators.*;
 import gregtech.tileentity.energy.reactors.*;
-import gregtech.tileentity.energy.storage.MultiTileEntityBatteryBox;
-import gregtech.tileentity.energy.storage.MultiTileEntityBatteryBoxLarge;
-import gregtech.tileentity.energy.storage.MultiTileEntityCrystalCharger;
-import gregtech.tileentity.energy.storage.MultiTileEntityCrystalChargerLarge;
-import gregtech.tileentity.energy.storage.MultiTileEntityZPMDechargerEU;
-import gregtech.tileentity.energy.storage.MultiTileEntityZPMDechargerQU;
+import gregtech.tileentity.energy.storage.*;
 import gregtech.tileentity.energy.transformers.MultiTileEntityGearBox;
 import gregtech.tileentity.energy.transformers.MultiTileEntityLongDistanceTransformer;
 import gregtech.tileentity.energy.transformers.MultiTileEntityTransformerElectric;
@@ -99,25 +66,13 @@ import gregtech.tileentity.extenders.MultiTileEntityFilter;
 import gregtech.tileentity.extenders.MultiTileEntityFilterPrefix;
 import gregtech.tileentity.food.MultiTileEntitySandwich;
 import gregtech.tileentity.inventories.*;
-import gregtech.tileentity.misc.MultiTileEntityBumbleHive;
-import gregtech.tileentity.misc.MultiTileEntityCFoam;
-import gregtech.tileentity.misc.MultiTileEntityCertificate;
-import gregtech.tileentity.misc.MultiTileEntityFluidSpring;
-import gregtech.tileentity.misc.MultiTileEntityGregOLantern;
+import gregtech.tileentity.misc.*;
 import gregtech.tileentity.multiblocks.*;
 import gregtech.tileentity.panels.MultiTileEntityPanelAsphalt;
 import gregtech.tileentity.panels.MultiTileEntityPanelCFoam;
 import gregtech.tileentity.panels.MultiTileEntityPanelConcrete;
 import gregtech.tileentity.panels.MultiTileEntityPanelWood;
-import gregtech.tileentity.placeables.MultiTileEntityCoin;
-import gregtech.tileentity.placeables.MultiTileEntityIngot;
-import gregtech.tileentity.placeables.MultiTileEntityPlate;
-import gregtech.tileentity.placeables.MultiTileEntityPlateGem;
-import gregtech.tileentity.placeables.MultiTileEntityRock;
-import gregtech.tileentity.placeables.MultiTileEntityRockPlaced;
-import gregtech.tileentity.placeables.MultiTileEntityScrap;
-import gregtech.tileentity.placeables.MultiTileEntityStick;
-import gregtech.tileentity.placeables.MultiTileEntityStickPlaced;
+import gregtech.tileentity.placeables.*;
 import gregtech.tileentity.plants.MultiTileEntityBush;
 import gregtech.tileentity.plants.MultiTileEntityResinHoleRubber;
 import gregtech.tileentity.plants.MultiTileEntitySapHoleMaple;
@@ -134,6 +89,9 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.FluidStack;
+
+import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.*;
 
 public class Loader_MultiTileEntities implements Runnable {
 	@Override
@@ -742,7 +700,11 @@ public class Loader_MultiTileEntities implements Runnable {
 		
 		
 		// Reactor Stuffs
-		aMat = MT.Pb;                   aRegistry.add("Nuclear Reactor Core (1x1)"                    , "Reactors",  9300,  9200, MultiTileEntityReactorCore1x1.class     , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F), "CP" , "wM"        , 'M', OP.casingMachineDense.dat(aMat), 'C', IL.Processor_Crystal_Ruby, 'P', IL.PISTONS[4]); ItemsGT.addNEIRedirects(aRegistry.getItem(), FL.Coolant_IC2.display(), FL.Coolant_IC2_Hot.display());
+		if (ConfigsGT.GREGTECH.get("general", "Enable1x1ReactorCore", F)) {
+			aMat = MT.Pb;               aRegistry.add("Nuclear Reactor Core (1x1)"                    , "Reactors",  9300,  9200, MultiTileEntityReactorCore1x1.class     , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F), "CP" , "wM"        , 'M', OP.casingMachineDense.dat(aMat), 'C', IL.Processor_Crystal_Ruby, 'P', IL.PISTONS[4]); ItemsGT.addNEIRedirects(aRegistry.getItem(), FL.Coolant_IC2.display(), FL.Coolant_IC2_Hot.display());
+		} else {
+			aMat = MT.Pb;               aRegistry.add("Nuclear Reactor Core (1x1)"                    , "Reactors",  9300,  9200, MultiTileEntityReactorCore1x1.class     , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F));
+		}
 		aMat = MT.Pb;                   aRegistry.add("Nuclear Reactor Core (2x2)"                    , "Reactors",  9200,  9200, MultiTileEntityReactorCore2x2.class     , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F), "PCP", "CMC", "PCP", 'M', OP.casingMachineDense.dat(aMat), 'C', IL.Processor_Crystal_Ruby, 'P', IL.PISTONS[4]); ItemsGT.addNEIRedirects(aRegistry.getItem(), FL.Coolant_IC2.display(), FL.Coolant_IC2_Hot.display());
 		
 		
@@ -765,36 +727,36 @@ public class Loader_MultiTileEntities implements Runnable {
 		aMat = MT.Am;                   aRegistry.add("Americium-245 Fuel Rod"                        , "Reactors",  9240,  9200, MultiTileEntityReactorRodNuclear.class  , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F, NBT_MAXDURABILITY,  1200000000L, NBT_NUCLEAR_SELF,  64, NBT_NUCLEAR_OTHER,  64, NBT_NUCLEAR_DIV,  4, NBT_NUCLEAR_MAX,     4096, NBT_VALUE, 9340)); RM.Canner.addRecipe2(F, 16, 16, OP.stick.mat(aMat, 1), IL.Reactor_Rod_Empty.get(1), aRegistry.getItem());
 		aMat = MT.Am_241;               aRegistry.add("Americium-241 Fuel Rod"                        , "Reactors",  9241,  9200, MultiTileEntityReactorRodNuclear.class  , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F, NBT_MAXDURABILITY,  1200000000L, NBT_NUCLEAR_SELF, 128, NBT_NUCLEAR_OTHER, 128, NBT_NUCLEAR_DIV,  3, NBT_NUCLEAR_MAX,     4096, NBT_VALUE, 9341)); RM.Canner.addRecipe2(F, 16, 16, OP.stick.mat(aMat, 1), IL.Reactor_Rod_Empty.get(1), aRegistry.getItem());
 		aMat = MT.Ludicrite;            aRegistry.add("Ludicrite Fuel Rod"                            , "Reactors",  9249,  9200, MultiTileEntityReactorRodNuclear.class  , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F, NBT_MAXDURABILITY,  1200000000L, NBT_NUCLEAR_SELF, 128, NBT_NUCLEAR_OTHER, 128, NBT_NUCLEAR_DIV,  3, NBT_NUCLEAR_MAX,     3072, NBT_VALUE, 9349)); RM.Canner.addRecipe2(F, 16, 16, OP.stick.mat(aMat, 1), IL.Reactor_Rod_Empty.get(1), aRegistry.getItem());
-		aMat = MT.Co_60;                aRegistry.add("Cobalt-60 Fuel Rod"                            , "Reactors",  9250,  9200, MultiTileEntityReactorRodNuclear.class  , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F, NBT_MAXDURABILITY,  6000000000L, NBT_NUCLEAR_SELF,   2, NBT_NUCLEAR_OTHER,   2, NBT_NUCLEAR_DIV, 16, NBT_NUCLEAR_MAX,      256, NBT_VALUE, 9350)); RM.Canner.addRecipe2(F, 16, 16, OP.stick.mat(aMat, 1), IL.Reactor_Rod_Empty.get(1), aRegistry.getItem());
+		aMat = MT.Co_60;                aRegistry.add("Cobalt-60 Fuel Rod"                            , "Reactors",  9250,  9200, MultiTileEntityReactorRodNuclear.class  , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F, NBT_MAXDURABILITY,   120000000L, NBT_NUCLEAR_SELF,   8, NBT_NUCLEAR_OTHER,   0, NBT_NUCLEAR_DIV, 16, NBT_NUCLEAR_MAX,      256, NBT_VALUE, 9350)); RM.Canner.addRecipe2(F, 16, 16, OP.stick.mat(aMat, 1), IL.Reactor_Rod_Empty.get(1), aRegistry.getItem());
 		aMat = MT.Nq_528;               aRegistry.add("Enriched Naquadah Fuel Rod"                    , "Reactors",  9260,  9200, MultiTileEntityReactorRodNuclear.class  , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F, NBT_MAXDURABILITY, 12000000000L, NBT_NUCLEAR_SELF, 128, NBT_NUCLEAR_OTHER, 128, NBT_NUCLEAR_DIV,  4, NBT_NUCLEAR_MAX,     8192, NBT_VALUE, 9360)); RM.Canner.addRecipe2(F, 16, 16, OP.stick.mat(aMat, 1), IL.Reactor_Rod_Empty.get(1), aRegistry.getItem());
 		aMat = MT.Nq_522;               aRegistry.add("Naquadria Fuel Rod"                            , "Reactors",  9261,  9200, MultiTileEntityReactorRodNuclear.class  , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F, NBT_MAXDURABILITY, 12000000000L, NBT_NUCLEAR_SELF, 512, NBT_NUCLEAR_OTHER, 512, NBT_NUCLEAR_DIV,  3, NBT_NUCLEAR_MAX,    16384, NBT_VALUE, 9361)); RM.Canner.addRecipe2(F, 16, 16, OP.stick.mat(aMat, 1), IL.Reactor_Rod_Empty.get(1), aRegistry.getItem());
-		
-		aMat = MT.Th;                   aRegistry.add("Depleted Thorium-232 Fuel Rod"                 , "Reactors",  9310,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.U_238    , 4));
-		aMat = MT.Cyanite;              aRegistry.add("Depleted Cyanite Fuel Rod"                     , "Reactors",  9319,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.Blutonium, 4));
-		aMat = MT.U_238;                aRegistry.add("Depleted Uranium-238 Fuel Rod"                 , "Reactors",  9320,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.U_235    , 4));
-		aMat = MT.U_235;                aRegistry.add("Depleted Uranium-235 Fuel Rod"                 , "Reactors",  9321,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.Pu       , 4));
-		aMat = MT.U_233;                aRegistry.add("Depleted Uranium-233 Fuel Rod"                 , "Reactors",  9322,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.Pu_243   , 4));
-		aMat = MT.Yellorium;            aRegistry.add("Depleted Yellorium Fuel Rod"                   , "Reactors",  9329,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.Cyanite  , 4));
-		aMat = MT.Pu;                   aRegistry.add("Depleted Plutonium-244 Fuel Rod"               , "Reactors",  9330,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.Pu_241   , 4));
-		aMat = MT.Pu_241;               aRegistry.add("Depleted Plutonium-241 Fuel Rod"               , "Reactors",  9331,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.Pu_243   , 4));
-		aMat = MT.Pu_243;               aRegistry.add("Depleted Plutonium-243 Fuel Rod"               , "Reactors",  9332,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.Am       , 4));
-		aMat = MT.Pu_239;               aRegistry.add("Depleted Plutonium-239 Fuel Rod"               , "Reactors",  9333,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.Am_241   , 4));
-		aMat = MT.Blutonium;            aRegistry.add("Depleted Blutonium Fuel Rod"                   , "Reactors",  9339,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.Ludicrite, 4));
-		aMat = MT.Am;                   aRegistry.add("Depleted Americium-245 Fuel Rod"               , "Reactors",  9340,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.Am_241   , 4));
-		aMat = MT.Am_241;               aRegistry.add("Depleted Americium-241 Fuel Rod"               , "Reactors",  9341,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.Nq_528   , 4));
-		aMat = MT.Ludicrite;            aRegistry.add("Depleted Ludicrite Fuel Rod"                   , "Reactors",  9349,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.Yellorium, 4));
-		aMat = MT.Co_60;                aRegistry.add("Depleted Cobalt-60 Fuel Rod"                   , "Reactors",  9350,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.U_238    , 4));
-		aMat = MT.Nq_528;               aRegistry.add("Depleted Enriched Naquadah Fuel Rod"           , "Reactors",  9360,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.Nq_522   , 4));
-		aMat = MT.Nq_522;               aRegistry.add("Depleted Naquadria Fuel Rod"                   , "Reactors",  9361,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.Th       , 4));
-		
-		aMat = MT.Th;                   aRegistry.add("Thorium-232 Breeder Rod"                       , "Reactors",  9410,  9200, MultiTileEntityReactorRodBreeder.class  , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F, NBT_MAXDURABILITY, 16000000L, NBT_NUCLEAR_LOSS, 1000, NBT_VALUE, 9411)); RM.Canner.addRecipe2(F, 16, 16, OP.bolt.mat(aMat, 4), IL.Reactor_Rod_Empty.get(1), aRegistry.getItem());
-		aMat = MT.U_238;                aRegistry.add("Uranium-238 Breeder Rod"                       , "Reactors",  9420,  9200, MultiTileEntityReactorRodBreeder.class  , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F, NBT_MAXDURABILITY, 64000000L, NBT_NUCLEAR_LOSS, 2500, NBT_VALUE, 9421)); RM.Canner.addRecipe2(F, 16, 16, OP.bolt.mat(aMat, 4), IL.Reactor_Rod_Empty.get(1), aRegistry.getItem());
-		aMat = MT.Li_6;                 aRegistry.add("Lithium-6 Breeder Rod"                         , "Reactors",  9430,  9200, MultiTileEntityReactorRodBreeder.class  , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F, NBT_MAXDURABILITY,   500000L, NBT_NUCLEAR_LOSS,   50, NBT_VALUE, 9431)); RM.Canner.addRecipe2(F, 16, 16, OP.bolt.mat(aMat, 4), IL.Reactor_Rod_Empty.get(1), aRegistry.getItem());
-		
+
+		aMat = MT.Th;                   aRegistry.add("Depleted Thorium-232 Fuel Rod"                 , "Reactors",  9310,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.U_238    , 6));
+		aMat = MT.Cyanite;              aRegistry.add("Depleted Cyanite Fuel Rod"                     , "Reactors",  9319,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.Blutonium, 6));
+		aMat = MT.U_238;                aRegistry.add("Depleted Uranium-238 Fuel Rod"                 , "Reactors",  9320,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.U_235    , 6));
+		aMat = MT.U_235;                aRegistry.add("Depleted Uranium-235 Fuel Rod"                 , "Reactors",  9321,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.Pu       , 6));
+		aMat = MT.U_233;                aRegistry.add("Depleted Uranium-233 Fuel Rod"                 , "Reactors",  9322,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.Pu_243   , 6));
+		aMat = MT.Yellorium;            aRegistry.add("Depleted Yellorium Fuel Rod"                   , "Reactors",  9329,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.Cyanite  , 6));
+		aMat = MT.Pu;                   aRegistry.add("Depleted Plutonium-244 Fuel Rod"               , "Reactors",  9330,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.Pu_241   , 6));
+		aMat = MT.Pu_241;               aRegistry.add("Depleted Plutonium-241 Fuel Rod"               , "Reactors",  9331,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.Pu_243   , 6));
+		aMat = MT.Pu_243;               aRegistry.add("Depleted Plutonium-243 Fuel Rod"               , "Reactors",  9332,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.Am       , 6));
+		aMat = MT.Pu_239;               aRegistry.add("Depleted Plutonium-239 Fuel Rod"               , "Reactors",  9333,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.Am_241   , 6));
+		aMat = MT.Blutonium;            aRegistry.add("Depleted Blutonium Fuel Rod"                   , "Reactors",  9339,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.Ludicrite, 6));
+		aMat = MT.Am;                   aRegistry.add("Depleted Americium-245 Fuel Rod"               , "Reactors",  9340,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.Am_241   , 6));
+		aMat = MT.Am_241;               aRegistry.add("Depleted Americium-241 Fuel Rod"               , "Reactors",  9341,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.Nq_528   , 6));
+		aMat = MT.Ludicrite;            aRegistry.add("Depleted Ludicrite Fuel Rod"                   , "Reactors",  9349,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.Yellorium, 6));
+		aMat = MT.Co_60;                aRegistry.add("Depleted Cobalt-60 Fuel Rod"                   , "Reactors",  9350,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.Th       , 6));
+		aMat = MT.Nq_528;               aRegistry.add("Depleted Enriched Naquadah Fuel Rod"           , "Reactors",  9360,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.Nq_522   , 6));
+		aMat = MT.Nq_522;               aRegistry.add("Depleted Naquadria Fuel Rod"                   , "Reactors",  9361,  9200, MultiTileEntityReactorRodDepleted.class , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 1), OP.dustDiv72.mat(MT.Co_60    , 6));
+
+		aMat = MT.Th;                   aRegistry.add("Thorium-232 Breeder Rod"                       , "Reactors",  9410,  9200, MultiTileEntityReactorRodBreeder.class  , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F, NBT_MAXDURABILITY,  64000000L, NBT_NUCLEAR_LOSS, 1000, NBT_VALUE, 9411)); RM.Canner.addRecipe2(F, 16, 16, OP.bolt.mat(aMat, 4), IL.Reactor_Rod_Empty.get(1), aRegistry.getItem());
+		aMat = MT.U_238;                aRegistry.add("Uranium-238 Breeder Rod"                       , "Reactors",  9420,  9200, MultiTileEntityReactorRodBreeder.class  , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F, NBT_MAXDURABILITY, 256000000L, NBT_NUCLEAR_LOSS, 2500, NBT_VALUE, 9421)); RM.Canner.addRecipe2(F, 16, 16, OP.bolt.mat(aMat, 4), IL.Reactor_Rod_Empty.get(1), aRegistry.getItem());
+		aMat = MT.Li;                   aRegistry.add("Lithium Breeder Rod"                           , "Reactors",  9430,  9200, MultiTileEntityReactorRodBreeder.class  , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F, NBT_MAXDURABILITY,    640000L, NBT_NUCLEAR_LOSS,  250, NBT_VALUE, 9431)); RM.Canner.addRecipe2(F, 16, 16, OP.bolt.mat(aMat, 4), IL.Reactor_Rod_Empty.get(1), aRegistry.getItem());
+
 		aMat = MT.U_233;                aRegistry.add("Uranium-233 Enriched Rod"                      , "Reactors",  9411,  9200, MultiTileEntityReactorRodProduct.class  , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F, NBT_VALUE, 9410)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 4), OP.dustDiv72.mat(MT.Th, 4));
 		aMat = MT.Pu_239;               aRegistry.add("Plutonium-239 Enriched Rod"                    , "Reactors",  9421,  9200, MultiTileEntityReactorRodProduct.class  , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F, NBT_VALUE, 9420)); RM.Centrifuge.addRecipe1(F, 64, 256, aRegistry.getItem(), ZL_FS, ZL_FS, OP.scrapGt.mat(MT.Zr, 9), OP.dustTiny.mat(aMat, 4), OP.dustDiv72.mat(MT.U_238, 4));
-		aMat = MT.T;                    aRegistry.add("Tritium Enriched Rod"                          , "Reactors",  9431,  9200, MultiTileEntityReactorRodProduct.class  , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F, NBT_VALUE, 9430)); RM.Canner    .addRecipe1(F, 16,  16, aRegistry.getItem(), new FluidStack[] {}, FL.amount(aMat.mGas, 500L), IL.Reactor_Rod_Empty.get(1));
-		
+		aMat = MT.T;                    aRegistry.add("Tritium Enriched Rod"                          , "Reactors",  9431,  9200, MultiTileEntityReactorRodProduct.class  , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F, NBT_VALUE, 9430)); RM.Canner.addRecipe1(F, 16, 16, aRegistry.getItem(), new FluidStack[] {}, FL.amount(aMat.mGas, 500L), IL.Reactor_Rod_Empty.get(1));
+
 		// Steam Turbines
 		aClass = MultiTileEntityTurbineSteam.class;
 		aMat = MT.DATA.Kinetic_T[1];    aRegistry.add("Steam Turbine ("+MT.Bronze       .getLocal()+")" , "Turbines"                            ,  1512,  1538, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   4.0F, NBT_RESISTANCE,   4.0F, NBT_INPUT,   24*STEAM_PER_EU, NBT_OUTPUT,   16, NBT_WASTE_ENERGY, T, NBT_ENERGY_ACCEPTED, TD.Energy.STEAM, NBT_ENERGY_EMITTED, TD.Energy.RU), "TwT", "GSG", "TMT", 'S', OP.stickLong.dat(aMat), 'M', OP.casingMachineDouble.dat(aMat), 'G', OP.gearGt.dat(aMat), 'T', OP.rotor.dat(MT.Bronze           ));
@@ -904,7 +866,8 @@ public class Loader_MultiTileEntities implements Runnable {
 		
 		// Solar Panels
 		aClass = MultiTileEntitySolarPanelElectric.class;
-		aMat = MT.DATA.Electric_T[0];   aRegistry.add("Solar Panel"                                         , "Solar Panels"                        , 10050, 10050, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   4.0F, NBT_RESISTANCE,   4.0F, NBT_OUTPUT, 8, NBT_ENERGY_EMITTED, TD.Energy.EU), "SWS", "CMC", "SWS", 'M', OP.casingMachine.dat(aMat), 'W', OP.cableGt01.dat(ANY.Cu), 'C', OD_CIRCUITS[1], 'S', OP.plateGem.dat(ANY.Si));
+		aMat = MT.DATA.Electric_T[0];   aRegistry.add("Solar Panel (Silicon)"                               , "Solar Panels"                        , 10050, 10050, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   4.0F, NBT_RESISTANCE,   4.0F, NBT_OUTPUT,  8, NBT_ENERGY_EMITTED, TD.Energy.EU), "SWS", "CMC", "SWS", 'M', OP.casingMachine.dat(aMat), 'W', OP.cableGt01.dat(ANY.Cu           ), 'C', OD_CIRCUITS[1], 'S', OP.plateGem.dat(ANY.Si));
+		aMat = MT.DATA.Electric_T[2];   aRegistry.add("Solar Panel (Germanium)"                             , "Solar Panels"                        , 10051, 10050, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   4.0F, NBT_RESISTANCE,   4.0F, NBT_OUTPUT, 16, NBT_ENERGY_EMITTED, TD.Energy.EU), "SWS", "CMC", "SWS", 'M', OP.casingMachine.dat(aMat), 'W', OP.cableGt01.dat(MT.AnnealedCopper), 'C', OD_CIRCUITS[6], 'S', OP.plateGem.dat(MT.Ge));
 		
 		
 		
@@ -1112,8 +1075,16 @@ public class Loader_MultiTileEntities implements Runnable {
 		OreDictManager.INSTANCE.setTarget(OP.gemExquisite   , MT.EnergiumCyan, IL.Crystal_Energium_Cyan_EV.get(1));
 		OreDictManager.INSTANCE.setTarget(OP.gemLegendary   , MT.EnergiumCyan, IL.Crystal_Energium_Cyan_IV.get(1));
 		
-		IL.ZPM                          .set(aRegistry.add("Zero-Point-Module (ZPM)"                        , "ZPM"                                 , 14999, 14999, MultiTileEntityZPM.class, 0, 16, aUtilMetal, UT.NBT.make(NBT_HARDNESS, 0.5F, NBT_RESISTANCE, 1.0F, NBT_COLOR, 0xffdd00, NBT_INPUT_MIN, 1, NBT_INPUT, V[7], NBT_INPUT_MAX, VMAX[7], NBT_CAPACITY, 2000000000000L, NBT_ENERGY_ACCEPTED, TD.Energy.QU)), null, "gt:zpm"); if (COMPAT_TC != null) COMPAT_TC.registerThaumcraftAspectsToItem(aRegistry.getItem(), F, TC.stack(TC.ALIENIS, 10), TC.stack(TC.MACHINA, 10), TC.stack(TC.VACUOS, 10), TC.stack(TC.POTENTIA, 10), TC.stack(TC.LUX, 10), TC.stack(TC.LUCRUM, 10));
 		
+		IL.Power_Cell_Empty             .set(aRegistry.add("Power Cell (Empty)"                             , "Portable Power Cells"                , 14700, 14700, MultiTileEntityPowerCell       .class, 0, 16, aUtilMetal, UT.NBT.make(NBT_HARDNESS, 0.5F, NBT_RESISTANCE, 1.0F, NBT_ENERGY_ACCEPTED, TD.Energy.EU                                                                                                                                            ), "ACA", "FPF", "ACA", 'C', OD_CIRCUITS[4], 'P', OP.foil.dat(MT.Pt), 'F', OP.foil.dat(MT.Plastic), 'A', OP.casingSmall.dat(MT.Al)));
+		IL.Power_Cell_H                 .set(aRegistry.add("Power Cell (Hydrogen)"                          , "Portable Power Cells"                , 14701, 14700, MultiTileEntityPowerCell       .class, 0, 16, aUtilMetal, UT.NBT.make(NBT_HARDNESS, 0.5F, NBT_RESISTANCE, 1.0F, NBT_ENERGY_ACCEPTED, TD.Energy.EU, NBT_COLOR, UT.Code.getRGBInt(MT.H  .fRGBaGas), NBT_INPUT_MIN, 1, NBT_INPUT, V[3], NBT_INPUT_MAX, V   [3], NBT_CAPACITY,         3_200_000L))); RM.Canner.addRecipe1(F, 16, 256, IL.Power_Cell_Empty       .get(1), MT.H   .gas(U*200, T), NF, aRegistry.getItem(UT.NBT.make(NBT_ACTIVE_ENERGY, T))); RM.Canner.addRecipe1(F, 16, 256, aRegistry.getItem(), NF, NF, IL.Power_Cell_Empty.get(1));
+		
+		
+		IL.Aneutronic_Fusion_Empty      .set(aRegistry.add("Aneutronic Fusion Power Cell (Empty)"           , "Portable Power Cells"                , 14600, 14700, MultiTileEntityAneutronicFusion.class, 0, 16, aUtilMetal, UT.NBT.make(NBT_HARDNESS, 0.5F, NBT_RESISTANCE, 1.0F, NBT_ENERGY_ACCEPTED, TD.Energy.EU                                                                                                                                            ), "VPV", "GFG", "VGV", 'P', IL.Processor_Crystal_Ruby, 'V', OP.plateGemTiny.dat(MT.Vb), 'F', IL.FIELD_GENERATORS[5], 'G', OP.foil.dat(MT.Graphene)));
+		IL.Aneutronic_Fusion_He3        .set(aRegistry.add("Aneutronic Fusion Power Cell (Helium-3)"        , "Portable Power Cells"                , 14601, 14700, MultiTileEntityAneutronicFusion.class, 0, 16, aUtilMetal, UT.NBT.make(NBT_HARDNESS, 0.5F, NBT_RESISTANCE, 1.0F, NBT_ENERGY_ACCEPTED, TD.Energy.EU                                               , NBT_INPUT_MIN, 1, NBT_INPUT, V[5], NBT_INPUT_MAX, V   [5], NBT_CAPACITY,     1_024_000_000L))); RM.Canner.addRecipe1(F, 16, 256, IL.Aneutronic_Fusion_Empty.get(1), MT.He_3.gas(U*200, T), NF, aRegistry.getItem(UT.NBT.make(NBT_ACTIVE_ENERGY, T))); RM.Canner.addRecipe1(F, 16, 256, aRegistry.getItem(), NF, NF, IL.Aneutronic_Fusion_Empty.get(1));
+		
+		
+		IL.ZPM                          .set(aRegistry.add("Zero-Point-Module (ZPM)"                        , "ZPM"                                 , 14999, 14999, MultiTileEntityZPM             .class, 0, 16, aUtilMetal, UT.NBT.make(NBT_HARDNESS, 0.5F, NBT_RESISTANCE, 1.0F, NBT_ENERGY_ACCEPTED, TD.Energy.QU, NBT_COLOR,                           0xffdd00, NBT_INPUT_MIN, 1, NBT_INPUT, V[7], NBT_INPUT_MAX, VMAX[7], NBT_CAPACITY, 2_000_000_000_000L)), null, "gt:zpm"); if (COMPAT_TC != null) COMPAT_TC.registerThaumcraftAspectsToItem(aRegistry.getItem(), F, TC.stack(TC.ALIENIS, 10), TC.stack(TC.MACHINA, 10), TC.stack(TC.VACUOS, 10), TC.stack(TC.POTENTIA, 10), TC.stack(TC.LUX, 10), TC.stack(TC.LUCRUM, 10));
 		
 		
 		// Auto-Tools
@@ -2001,7 +1972,7 @@ public class Loader_MultiTileEntities implements Runnable {
 		aRegistry.add("Berry Bush"                                          , "Untyped"                             , 32759, 32764, MultiTileEntityBush.class                               ,                 0, 64, aBush          , UT.NBT.make(NBT_HARDNESS, 0.5F, NBT_RESISTANCE, 0.3F));
 		aRegistry.add("Greg o'Lantern"                                      , "Untyped"                             , 32758, 32764, MultiTileEntityGregOLantern.class                       ,                 0, 64, aUtilWood      , null, "Pk", "T ", 'P', Blocks.pumpkin, 'T', OD.blockTorch);
 		aRegistry.add("Sandwich"                                            , "Untyped"                             , 32105, 32764, MultiTileEntitySandwich.class                           ,                 0, 64, aUtilWool      , null);
-		aRegistry.add("Rock"                                                , "Untyped"                             , 32757, 32764, MultiTileEntityRock.class                               ,                 0, 64, aUtilStone     , null);
+		aRegistry.add("Rock"                                                , "Untyped"                             , 32757, 32764, gregtech.tileentity.misc.MultiTileEntityRock.class      ,                 0, 64, aUtilStone     , null); // yes I have to pass the "gregtech.tileentity.misc.MultiTileEntityRock" Version!
 		aRegistry.add("Rock"                                                , "Untyped"                             , 32074, 32764, MultiTileEntityRockPlaced.class                         ,                 0, 64, aUtilStone     , null);
 		aRegistry.add("Stick"                                               , "Untyped"                             , 32756, 32764, MultiTileEntityStick.class                              ,                 0, 64, aUtilWood      , null);
 		aRegistry.add("Stick"                                               , "Untyped"                             , 32073, 32764, MultiTileEntityStickPlaced.class                        ,                 0, 64, aUtilWood      , null);

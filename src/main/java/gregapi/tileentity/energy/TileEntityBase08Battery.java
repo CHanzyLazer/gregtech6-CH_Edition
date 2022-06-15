@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,17 +19,7 @@
 
 package gregapi.tileentity.energy;
 
-import static gregapi.data.CS.*;
-
-import java.util.Collection;
-import java.util.List;
-
-import gregapi.block.multitileentity.IMultiTileEntity.IMTE_AddToolTips;
-import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetCollisionBoundingBoxFromPool;
-import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetMaxStackSize;
-import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetSelectedBoundingBoxFromPool;
-import gregapi.block.multitileentity.IMultiTileEntity.IMTE_OnlyPlaceableWhenSneaking;
-import gregapi.block.multitileentity.IMultiTileEntity.IMTE_SetBlockBoundsBasedOnState;
+import gregapi.block.multitileentity.IMultiTileEntity.*;
 import gregapi.block.multitileentity.MultiTileEntityBlockInternal;
 import gregapi.block.multitileentity.MultiTileEntityRegistry;
 import gregapi.code.HashSetNoNulls;
@@ -53,11 +43,16 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
+import java.util.Collection;
+import java.util.List;
+
+import static gregapi.data.CS.*;
+
 /**
  * @author Gregorius Techneticies
  */
 public abstract class TileEntityBase08Battery extends TileEntityBase07Paintable implements ITileEntityQuickObstructionCheck, IMTE_SetBlockBoundsBasedOnState, IMTE_GetCollisionBoundingBoxFromPool, IMTE_GetSelectedBoundingBoxFromPool, IItemEnergy, IMTE_GetMaxStackSize, IMTE_OnlyPlaceableWhenSneaking, IMTE_AddToolTips {
-	public long mEnergy = 0, mSizeMin = 16, mSizeRec = 32, mSizeMax = 64, mCapacity = 32000;
+	public long mEnergy = 0, mSizeMin = 0, mSizeRec = 0, mSizeMax = 0, mCapacity = 0;
 	public byte mDisplayedEnergy = 0;
 	public TagData mType = TD.Energy.EU;
 	
@@ -85,12 +80,14 @@ public abstract class TileEntityBase08Battery extends TileEntityBase07Paintable 
 	@Override
 	public void writeToNBT2(NBTTagCompound aNBT) {
 		UT.NBT.setNumber(aNBT, NBT_ENERGY, mEnergy);
+		UT.NBT.setBoolean(aNBT, NBT_ACTIVE_ENERGY, F);
 		super.writeToNBT2(aNBT);
 	}
 	
 	@Override
 	public NBTTagCompound writeItemNBT2(NBTTagCompound aNBT) {
 		UT.NBT.setNumber(aNBT, NBT_ENERGY, mEnergy);
+		UT.NBT.setBoolean(aNBT, NBT_ACTIVE_ENERGY, F);
 		return super.writeItemNBT2(aNBT);
 	}
 	
@@ -107,12 +104,13 @@ public abstract class TileEntityBase08Battery extends TileEntityBase07Paintable 
 	
 	@Override
 	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
-		aList.add(LH.Chat.WHITE + UT.Code.makeString(Math.min(mCapacity, mEnergy)) + " / " + UT.Code.makeString(mCapacity) + " " + mType.getLocalisedChatNameShort() + LH.Chat.WHITE + " - Size: " + mSizeRec);
+		if (mCapacity > 0) aList.add(LH.Chat.WHITE + UT.Code.makeString(Math.min(mCapacity, mEnergy)) + " / " + UT.Code.makeString(mCapacity) + " " + mType.getLocalisedChatNameShort() + LH.Chat.WHITE + " - Size: " + mSizeRec);
 	}
 	
 	@Override
 	public boolean getSubItems(MultiTileEntityBlockInternal aBlock, Item aItem, CreativeTabs aTab, List<ItemStack> aList, short aID) {
 		aList.add(aBlock.mMultiTileEntityRegistry.getItem(aID));
+		if (mCapacity > 0)
 		aList.add(setEnergyStored(mType, aBlock.mMultiTileEntityRegistry.getItem(aID), mCapacity));
 		return F;
 	}

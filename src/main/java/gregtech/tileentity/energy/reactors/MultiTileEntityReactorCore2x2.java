@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -197,7 +197,7 @@ public class MultiTileEntityReactorCore2x2 extends MultiTileEntityReactorCore im
 						mEnergy -= EU_PER_THORIUM_SALT * mTanks[0].remove(tEnergy);
 					} else tIsExploding = T;
 				} else if (mTanks[0].isEmpty()) {
-					if (mEnergy > EU_PER_THORIUM_SALT) tIsExploding = T;
+					if (oEnergy > 0) tIsExploding = T;
 				}
 
 				if (tIsExploding && !invempty()) {

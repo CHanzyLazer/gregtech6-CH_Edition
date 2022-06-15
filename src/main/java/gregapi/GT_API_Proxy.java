@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -18,18 +18,6 @@
  */
 
 package gregapi;
-
-import static gregapi.data.CS.*;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import cofh.lib.util.ComparableItem;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -53,11 +41,7 @@ import ganymedes01.etfuturum.recipes.BlastFurnaceRecipes;
 import ganymedes01.etfuturum.recipes.SmokerRecipes;
 import gregapi.api.Abstract_Mod;
 import gregapi.api.Abstract_Proxy;
-import gregapi.block.IBlockOnHeadInside;
-import gregapi.block.IBlockOnWalkOver;
-import gregapi.block.IBlockPlacable;
-import gregapi.block.IBlockToolable;
-import gregapi.block.IPrefixBlock;
+import gregapi.block.*;
 import gregapi.block.metatype.BlockBasePlanks;
 import gregapi.block.misc.BlockBaseBale;
 import gregapi.block.multitileentity.MultiTileEntityItemInternal;
@@ -70,13 +54,6 @@ import gregapi.code.ArrayListNoNulls;
 import gregapi.code.HashSetNoNulls;
 import gregapi.code.ItemStackContainer;
 import gregapi.data.*;
-import gregapi.data.CS.BlocksGT;
-import gregapi.data.CS.BooksGT;
-import gregapi.data.CS.FluidsGT;
-import gregapi.data.CS.FoodsGT;
-import gregapi.data.CS.GarbageGT;
-import gregapi.data.CS.ItemsGT;
-import gregapi.data.CS.SFX;
 import gregapi.enchants.Enchantment_WerewolfDamage;
 import gregapi.item.IItemNoGTOverride;
 import gregapi.item.IItemProjectile;
@@ -95,20 +72,9 @@ import gregapi.oredict.OreDictPrefix;
 import gregapi.oredict.listeners.IOreDictListenerItem;
 import gregapi.player.EntityFoodTracker;
 import gregapi.random.IHasWorldAndCoords;
-import gregapi.tileentity.ITileEntityErrorable;
-import gregapi.tileentity.ITileEntityGUI;
-import gregapi.tileentity.ITileEntityNeedsSaving;
-import gregapi.tileentity.ITileEntityScheduledUpdate;
-import gregapi.tileentity.ITileEntityServerTickPost;
-import gregapi.tileentity.ITileEntityServerTickPre;
-import gregapi.tileentity.ITileEntitySpecificPlacementBehavior;
-import gregapi.tileentity.ITileEntitySynchronising;
+import gregapi.tileentity.*;
 import gregapi.tileentity.inventories.ITileEntityBookShelf;
-import gregapi.util.CR;
-import gregapi.util.OM;
-import gregapi.util.ST;
-import gregapi.util.UT;
-import gregapi.util.WD;
+import gregapi.util.*;
 import gregapi.worldgen.GT6WorldGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHugeMushroom;
@@ -121,22 +87,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
-import net.minecraft.entity.monster.EntityCreeper;
-import net.minecraft.entity.monster.EntityEnderman;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.EntitySpider;
-import net.minecraft.entity.monster.EntityWitch;
-import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.monster.*;
 import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.EnumAction;
-import net.minecraft.item.ItemBow;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
-import net.minecraft.item.ItemTool;
+import net.minecraft.item.*;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
@@ -161,13 +118,7 @@ import net.minecraftforge.event.entity.item.ItemExpireEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
-import net.minecraftforge.event.entity.player.ArrowLooseEvent;
-import net.minecraftforge.event.entity.player.ArrowNockEvent;
-import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
-import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
+import net.minecraftforge.event.entity.player.*;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ChunkWatchEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -176,6 +127,12 @@ import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import thaumcraft.common.entities.monster.EntityBrainyZombie;
+
+import java.io.File;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+
+import static gregapi.data.CS.*;
 
 /**
  * @author Gregorius Techneticies
@@ -1146,27 +1103,28 @@ public abstract class GT_API_Proxy extends Abstract_Proxy implements IGuiHandler
 	@SubscribeEvent
 	public void onBlockHarvestingEvent(BlockEvent.HarvestDropsEvent aEvent) {
 		Iterator<ItemStack> aDrops = aEvent.drops.iterator();
+		Block aBlock = (aEvent.block == Blocks.lit_redstone_ore ? Blocks.redstone_ore : aEvent.block);
 		while (aDrops.hasNext()) {
 			ItemStack aDrop = aDrops.next();
 			if (ST.invalid(aDrop) || ItemsGT.ILLEGAL_DROPS.contains(aDrop, T)) {aDrops.remove(); continue;}
 			if (ST.item_(aDrop) == Items.gold_nugget) ST.meta_(aDrop, 0);
-			if (FORCE_GRAVEL_NO_FLINT && aEvent.block == Blocks.gravel && ST.item_(aDrop) == Items.flint) ST.set(aDrop, ST.make(Blocks.gravel, 1, 0), T, F);
+			if (FORCE_GRAVEL_NO_FLINT && aBlock == Blocks.gravel && ST.item_(aDrop) == Items.flint) ST.set(aDrop, ST.make(Blocks.gravel, 1, 0), T, F);
 		}
 		
-		if (aEvent.block == Blocks.dirt && aEvent.blockMetadata == 1) for (int i = 0, j = aEvent.drops.size(); i < j; i++) if (ST.block(aEvent.drops.get(0)) == Blocks.dirt) {
+		if (aBlock == Blocks.dirt && aEvent.blockMetadata == 1) for (int i = 0, j = aEvent.drops.size(); i < j; i++) if (ST.block(aEvent.drops.get(0)) == Blocks.dirt) {
 			aEvent.drops.set(i, ST.make(Blocks.dirt, aEvent.drops.get(i).stackSize, 1));
 		}
 		
 		if (aEvent.harvester != null) {
-			if (FAST_LEAF_DECAY) WD.leafdecay(aEvent.world, aEvent.x, aEvent.y, aEvent.z, aEvent.block, F, F);
+			if (FAST_LEAF_DECAY) WD.leafdecay(aEvent.world, aEvent.x, aEvent.y, aEvent.z, aBlock, F, F);
 			ItemStack aTool = aEvent.harvester.getCurrentEquippedItem();
 			if (aTool != null) {
 				boolean
 				tFireAspect = (EnchantmentHelper.getEnchantmentLevel(Enchantment.fireAspect.effectId, aTool) >= 3),
-				tCanCollect = (aTool.getItem() instanceof MultiItemTool && ((MultiItemTool)aTool.getItem()).canCollectDropsDirectly(aTool, aEvent.block, (byte)aEvent.blockMetadata));
+				tCanCollect = (aTool.getItem() instanceof MultiItemTool && ((MultiItemTool)aTool.getItem()).canCollectDropsDirectly(aTool, aBlock, (byte)aEvent.blockMetadata));
 				
 				if (aTool.getItem() instanceof MultiItemTool) {
-					((MultiItemTool)aTool.getItem()).onHarvestBlockEvent(aEvent.drops, aTool, aEvent.harvester, aEvent.block, aEvent.x, aEvent.y, aEvent.z, (byte)aEvent.blockMetadata, aEvent.fortuneLevel, aEvent.isSilkTouching, aEvent);
+					((MultiItemTool)aTool.getItem()).onHarvestBlockEvent(aEvent.drops, aTool, aEvent.harvester, aBlock, aEvent.x, aEvent.y, aEvent.z, (byte)aEvent.blockMetadata, aEvent.fortuneLevel, aEvent.isSilkTouching, aEvent);
 				}
 				
 				for (ItemStack tDrop : aEvent.drops) {
@@ -1269,11 +1227,11 @@ public abstract class GT_API_Proxy extends Abstract_Proxy implements IGuiHandler
 			if (tRegistry != null) {
 				OreDictItemData tData = OM.anydata(aStack);
 				if (tData != null) {
-					if (tData.mPrefix == OP.rockGt || tData.mPrefix == OP.oreRaw) for (byte tSide : ALL_SIDES_MIDDLE_DOWN) if (WD.air(aEvent.entity.worldObj, aX+OFFX[tSide], aY+OFFY[tSide], aZ+OFFZ[tSide]) && tRegistry.mBlock.placeBlock(aEvent.entity.worldObj, aX+OFFX[tSide], aY+OFFY[tSide], aZ+OFFZ[tSide], SIDE_TOP, (short)32074, ST.save(NBT_VALUE, aStack), T, F)) {aStack.stackSize = 0; aEvent.extraLife = 0; aEvent.entityItem.setDead(); aEvent.setCanceled(T); return;}
-					if (tData.mPrefix == OP.ingot                               ) for (byte tSide : ALL_SIDES_MIDDLE_DOWN) if (WD.air(aEvent.entity.worldObj, aX+OFFX[tSide], aY+OFFY[tSide], aZ+OFFZ[tSide]) && tRegistry.mBlock.placeBlock(aEvent.entity.worldObj, aX+OFFX[tSide], aY+OFFY[tSide], aZ+OFFZ[tSide], SIDE_TOP, (short)32084, ST.save(NBT_VALUE, aStack), T, F)) {aStack.stackSize = 0; aEvent.extraLife = 0; aEvent.entityItem.setDead(); aEvent.setCanceled(T); return;}
-					if (tData.mPrefix == OP.plate                               ) for (byte tSide : ALL_SIDES_MIDDLE_DOWN) if (WD.air(aEvent.entity.worldObj, aX+OFFX[tSide], aY+OFFY[tSide], aZ+OFFZ[tSide]) && tRegistry.mBlock.placeBlock(aEvent.entity.worldObj, aX+OFFX[tSide], aY+OFFY[tSide], aZ+OFFZ[tSide], SIDE_TOP, (short)32085, ST.save(NBT_VALUE, aStack), T, F)) {aStack.stackSize = 0; aEvent.extraLife = 0; aEvent.entityItem.setDead(); aEvent.setCanceled(T); return;}
-					if (tData.mPrefix == OP.plateGem                            ) for (byte tSide : ALL_SIDES_MIDDLE_DOWN) if (WD.air(aEvent.entity.worldObj, aX+OFFX[tSide], aY+OFFY[tSide], aZ+OFFZ[tSide]) && tRegistry.mBlock.placeBlock(aEvent.entity.worldObj, aX+OFFX[tSide], aY+OFFY[tSide], aZ+OFFZ[tSide], SIDE_TOP, (short)32086, ST.save(NBT_VALUE, aStack), T, F)) {aStack.stackSize = 0; aEvent.extraLife = 0; aEvent.entityItem.setDead(); aEvent.setCanceled(T); return;}
-					if (tData.mPrefix == OP.scrapGt                             ) for (byte tSide : ALL_SIDES_MIDDLE_DOWN) if (WD.air(aEvent.entity.worldObj, aX+OFFX[tSide], aY+OFFY[tSide], aZ+OFFZ[tSide]) && tRegistry.mBlock.placeBlock(aEvent.entity.worldObj, aX+OFFX[tSide], aY+OFFY[tSide], aZ+OFFZ[tSide], SIDE_TOP, (short)32103, ST.save(NBT_VALUE, aStack), T, F)) {aStack.stackSize = 0; aEvent.extraLife = 0; aEvent.entityItem.setDead(); aEvent.setCanceled(T); return;}
+					if (tData.mPrefix == OP.rockGt || tData.mPrefix == OP.oreRaw) for (byte[] tOff : CUBE_3) if (WD.irrelevant(aEvent.entity.worldObj, aX+tOff[0], aY+tOff[1], aZ+tOff[2]) && tRegistry.mBlock.placeBlock(aEvent.entity.worldObj, aX+tOff[0], aY+tOff[1], aZ+tOff[2], SIDE_TOP, (short)32074, ST.save(NBT_VALUE, aStack), T, F)) {aStack.stackSize = 0; aEvent.extraLife = 0; aEvent.entityItem.setDead(); aEvent.setCanceled(T); return;}
+					if (tData.mPrefix == OP.ingot                               ) for (byte[] tOff : CUBE_3) if (WD.irrelevant(aEvent.entity.worldObj, aX+tOff[0], aY+tOff[1], aZ+tOff[2]) && tRegistry.mBlock.placeBlock(aEvent.entity.worldObj, aX+tOff[0], aY+tOff[1], aZ+tOff[2], SIDE_TOP, (short)32084, ST.save(NBT_VALUE, aStack), T, F)) {aStack.stackSize = 0; aEvent.extraLife = 0; aEvent.entityItem.setDead(); aEvent.setCanceled(T); return;}
+					if (tData.mPrefix == OP.plate                               ) for (byte[] tOff : CUBE_3) if (WD.irrelevant(aEvent.entity.worldObj, aX+tOff[0], aY+tOff[1], aZ+tOff[2]) && tRegistry.mBlock.placeBlock(aEvent.entity.worldObj, aX+tOff[0], aY+tOff[1], aZ+tOff[2], SIDE_TOP, (short)32085, ST.save(NBT_VALUE, aStack), T, F)) {aStack.stackSize = 0; aEvent.extraLife = 0; aEvent.entityItem.setDead(); aEvent.setCanceled(T); return;}
+					if (tData.mPrefix == OP.plateGem                            ) for (byte[] tOff : CUBE_3) if (WD.irrelevant(aEvent.entity.worldObj, aX+tOff[0], aY+tOff[1], aZ+tOff[2]) && tRegistry.mBlock.placeBlock(aEvent.entity.worldObj, aX+tOff[0], aY+tOff[1], aZ+tOff[2], SIDE_TOP, (short)32086, ST.save(NBT_VALUE, aStack), T, F)) {aStack.stackSize = 0; aEvent.extraLife = 0; aEvent.entityItem.setDead(); aEvent.setCanceled(T); return;}
+					if (tData.mPrefix == OP.scrapGt                             ) for (byte[] tOff : CUBE_3) if (WD.irrelevant(aEvent.entity.worldObj, aX+tOff[0], aY+tOff[1], aZ+tOff[2]) && tRegistry.mBlock.placeBlock(aEvent.entity.worldObj, aX+tOff[0], aY+tOff[1], aZ+tOff[2], SIDE_TOP, (short)32103, ST.save(NBT_VALUE, aStack), T, F)) {aStack.stackSize = 0; aEvent.extraLife = 0; aEvent.entityItem.setDead(); aEvent.setCanceled(T); return;}
 				}
 			}
 			GarbageGT.trash(aStack);

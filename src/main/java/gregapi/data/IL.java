@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,8 +19,6 @@
 
 package gregapi.data;
 
-import static gregapi.data.CS.*;
-
 import gregapi.api.Abstract_Mod;
 import gregapi.code.IItemContainer;
 import gregapi.code.TagData;
@@ -33,6 +31,8 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
+import static gregapi.data.CS.*;
 
 /**
  * @author Gregorius Techneticies
@@ -170,6 +170,7 @@ public enum IL implements IItemContainer {
 	GrC_Starter_Culture,
 	GrC_Bamboo, GrC_Bamboo_Charcoal,
 	GrC_Paddy,
+	TiC_Stonetorch,
 	MaCu_Dye_White, MaCu_Dye_Blue, MaCu_Dye_Green, MaCu_Dye_Yellow, MaCu_Dye_Red, MaCu_Dye_Brown, MaCu_Bait_Worm, MaCu_Bait_Ant, MaCu_Bait_Maggot, MaCu_Bait_Grasshopper, MaCu_Bait_Bee, MaCu_Polished_Planks, MaCu_Polished_Logs,
 	MoCr_Crab_Raw, MoCr_Crab_Cooked, MoCr_Turkey_Raw, MoCr_Turkey_Cooked, MoCr_Rat_Raw, MoCr_Rat_Cooked, MoCr_Ostrich_Raw, MoCr_Ostrich_Cooked, MoCr_Turtle_Raw,
 	AA_Dye_Black, AA_Fertilizer, AA_Dough_Rice, AA_Bread_Rice, AA_XP,
@@ -183,8 +184,9 @@ public enum IL implements IItemContainer {
 	IE_Creosote_Bottle, IE_Creosote_Bucket, IE_Hammer, IE_Slag, IE_Blueprint_Projectiles_Common, IE_Blueprint_Projectiles_Specialized, IE_Blueprint_Projectiles_Electrodes, IE_Crate, IE_Treated_Planks, IE_Treated_Slab, IE_Treated_Stairs,
 	SC2_Wrench, SC2_Hammer, SC2_Hammer_Gilded, SC2_Teapot_Empty, SC2_Teapot_Water, SC2_Teapot_Boiling, SC2_Teapot_Full, SC2_Teacup_Empty, SC2_Teacup_Full,
 	FZ_Sludge,
-	HBM_Mercury_Bottle, HBM_Mercury_Drop, HBM_Poison_Powder, HBM_Biomass, HBM_Biomass_Compressed,
+	HBM_Mercury_Bottle, HBM_Mercury_Drop, HBM_Mercury_Drop_Tiny, HBM_Poison_Powder, HBM_Biomass, HBM_Biomass_Compressed,
 	HBM_Bedrock_Coltan, HBM_Bedrock_Oil,
+	HBM_Crushed_Obsidian,
 	ICBM_Concrete,
 	IC2_Debug,
 	IC2_Fertilizer, IC2_Grin_Powder, IC2_Spray_WeedEx,
@@ -257,7 +259,7 @@ public enum IL implements IItemContainer {
 	ThermosCan_Dark_Coffee, ThermosCan_Dark_Cafe_au_lait, ThermosCan_Coffee, ThermosCan_Cafe_au_lait, ThermosCan_Lait_au_cafe, ThermosCan_Dark_Chocolate_Milk,
 	ThermosCan_Chocolate_Milk,
 	ThermosCan_Tea, ThermosCan_Sweet_Tea, ThermosCan_Ice_Tea,
-	Bottle_Empty, Bottle_Milk, Bottle_Milk_Spoiled, Bottle_Rotten_Drink, Bottle_Glue, Bottle_Lubricant, Bottle_Mercury, Bottle_Holy_Water, Bottle_Beer, Bottle_Purple_Drink,
+	Bottle_Empty, Bottle_Milk, Bottle_Milk_Spoiled, Bottle_Blood, Bottle_Rotten_Drink, Bottle_Glue, Bottle_Lubricant, Bottle_Mercury, Bottle_Holy_Water, Bottle_Beer, Bottle_Purple_Drink,
 	Pill_Empty,
 	Pill_Mint, Pill_Red, Pill_Blue,
 	Pill_Iodine,
@@ -406,6 +408,8 @@ public enum IL implements IItemContainer {
 	Sensor_ULV, Sensor_LV, Sensor_MV, Sensor_HV, Sensor_EV, Sensor_IV, Sensor_LuV, Sensor_ZPM, Sensor_UV, Sensor_PUV1, Sensor_PUV2, Sensor_PUV3, Sensor_PUV4, Sensor_PUV5, Sensor_OMEGA,
 	Robot_Tip_Wrench, Robot_Tip_Screwdriver, Robot_Tip_Saw, Robot_Tip_Hammer, Robot_Tip_Cutter, Robot_Tip_Chisel, Robot_Tip_Rubber, Robot_Tip_Blade, Robot_Tip_Drill, Robot_Tip_File,
 	Battery_RE_ULV_Tantalum, ZPM,
+	Power_Cell_Empty, Power_Cell_H,
+	Aneutronic_Fusion_Empty, Aneutronic_Fusion_He3,
 	Comp_Laser_Gas_Empty, Comp_Laser_Gas_He, Comp_Laser_Gas_Ne, Comp_Laser_Gas_Ar, Comp_Laser_Gas_Kr, Comp_Laser_Gas_Xe, Comp_Laser_Gas_HeNe, Comp_Laser_Gas_CO, Comp_Laser_Gas_CO2,
 	Battery_Lead_Acid_Cell_Empty, Battery_Lead_Acid_Cell_Filled, Battery_Lead_Acid_ULV, Battery_Lead_Acid_LV, Battery_Lead_Acid_MV, Battery_Lead_Acid_HV, Battery_Lead_Acid_EV,
 	Battery_Alkaline_Cell_Empty, Battery_Alkaline_Cell_Filled, Battery_Alkaline_ULV, Battery_Alkaline_LV, Battery_Alkaline_MV, Battery_Alkaline_HV, Battery_Alkaline_EV,
@@ -452,7 +456,7 @@ public enum IL implements IItemContainer {
 	Tool_Lighter_Platinum_Empty, Tool_Lighter_Platinum_Used, Tool_Lighter_Platinum_Full,
 	Tool_Lighter_Plastic_Empty, Tool_Lighter_Plastic_Used, Tool_Lighter_Plastic_Full, Tool_Lighter_Plastic_Broken,
 	Tool_Fire_Starter, Tool_Fire_Starter_Bark,
-	Tool_Cheat, Tool_Worldgen_Debugger, Tool_Scanner, Tool_Cropnalyzer,
+	Tool_Cheat, Tool_Worldgen_Debugger, Tool_Chunk_Remover, Tool_Scanner, Tool_Cropnalyzer,
 	Tool_Sword_Bronze, Tool_Pickaxe_Bronze, Tool_Shovel_Bronze, Tool_Axe_Bronze, Tool_Hoe_Bronze, // IC2
 	Tool_Sword_Steel, Tool_Pickaxe_Steel, Tool_Shovel_Steel, Tool_Axe_Steel, Tool_Hoe_Steel, // RC
 	

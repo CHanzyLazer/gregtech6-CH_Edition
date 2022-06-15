@@ -1,23 +1,85 @@
 This is the most recent Changelog. It also contains some of the changes inside the >>>UPCOMING<<< Versions (most of the time). This is for 1.7.10 btw.
 
 
-6.14.26: (Not released yet, released whenever it needs to be)
+6.15.04: (Not released yet, released whenever it needs to be)
 Nothing (I tend to only add finished Stuff to the Changelog).
 
 
-6.14.25: (Not released yet, released whenever it needs to be)
+6.15.03: (Not released yet, released whenever it needs to be)
 Nothing (I tend to only add finished Stuff to the Changelog).
 
 
-6.14.24: (Not released yet, released whenever it needs to be)
-[NOTE] Erik3003 changed how durability loss of Reactor Rods works, and how Breeder Rods work. Nothing should be able to explode from this already tested change.
+6.15.02: (Not released yet, released whenever it needs to be)
+[NOTE] Be sure to update your Geiger Counter Sensors if using the %-mode for controlling your Thorium Salt or Lithium Chloride reactors.
+[FIXED] Basic Machines and their Multiblock Counterparts will no longer accept Fluid Input from the Side that they are Auto-Outputting to.
+[CHANGED] The old Supporter Lists and Update Checker Functionality are now removed, so GT6 is now using the internal Supporter Lists inside the Jar always. The Lists themselves are still on the Server for older Versions to download them. This also means that the GT6 Update Notification you might have gotten is the last one you will ever receive.
+[CHANGED] Crucibles now have a Thermal Mass Tooltip, that way inconsistencies with how to interpret the F3+H Tooltip are avoided.
+[ADDED] Power Cell, which can be filled with Hydrogen to directly produce electric Power in a Battery Box of up to HV Tier (1 EU/t to 512 EU/t). This is the most efficient way to turn 200_000L of Hydrogen into 3_200_000EU Electricity, even if a little bit cumbersome.
+[ADDED] Portable Aneutronic Fusion Reactor, which acts like a Power Cell of sorts, and can output anything from 1 EU/t to 8192 EU/t in a regular Battery Box. You have to fill it with 200_000L of Helium-3 to get 1_024_000_000EU total from it. It can only be made after you get Vibranium from a regular Fusion Reactor though.
+[ADDED] Higher Tier Germanium Solar Panel that produces 16 EU/t instead of 8 EU/t.
+[ADDED] Dilithium can now be used to make Molten Ender. Also added a way to process Dolamide Dust, should you have made the mistake of turning your crushed Ore into that.
+[FIXED] Some small errors in the reactor guide book.
+[FIXED] Geiger Counter Sensor now takes coolant into account for %-modes and not just use the base maximum of the fuel rods.
+
+
+6.15.01:
+[FIXED] An exploit with AlF3 due to a copypaste accident.
+[FIXED] GT6 Prospecting Journal Addon was crashing due to one of my refactors.
+[CHANGED] River Black Sand now generates 2 times less often, but has two Layers again. This should avoid an edge case Bug that resulted in an infinite Worldgen Loop.
+[CHANGED] Most Immersive Engineering Crusher and Arc Furnace Recipes, because pretty much all of them were bad. And their Recipe System is as laggy as vanilla Crafting so I sure as heck wont add my own giant set of Recipes to it. But I will add a FEW Recipes so they are not completely dead.
+[CHANGED] Adamantium Production is now slightly more difficult.
+[CHANGED] The Prefix Filter Block will use the "ore" Prefix to include all regular "Ore Blocks" regardless of the Stone they are inside of.
+[ADDED] You can now dye written Books and empty Books if you dont like their Color. Though there are only 11 Colors available. I did add Brown to the List, so you can get rid of the enchantment glint that vanilla written Books have too. It is a Crafting Recipe not a Bathinng Pot one.
+[ADDED] A DidYouKnow Page for Bookshelves.
+
+
+6.15.00:
+[WARNING] Helium, Molten Tin and Molten Sodium as a reactor coolant has been buffed, your old reactor designs using these coolants might be able to "explode" (reactor explosions are still disabled, they will just delete their inventory) when running. Shut those reactors down before updating and evaluate that they will explode before turning them back on. Reactors running other coolants are not in danger of exploding, but might not produce as many neutrons as before.
+[NOTE] Neutrons needed for breeder rods got reduced, but this change is not retroactive, already crafted breeder rods might take a good bit longer to breed.
 [FIXED] OpenComputers did not accept Electric GT6 Power even though it should, but ONLY if Galacticraft or Funky Locomotion were installed. But now it works.
 [FIXED] Tools of other Mods being single use on NON-GT6 Stuff too, instead of only being single use on GT6 Stuff.
 [FIXED] A Bug with Bedrock Fluid Springs also spawning in Void Worlds.
 [FIXED] Some weird Bug with GT6 Items and Creative Tabs.
+[FIXED] Grass Path conversion from Et Futurum to GT6 was a little bit iffy.
+[FIXED] An internal Item mover Function duplicating Items when Stuff with a Stacksize greater than its normal Maximum Size is inserted. Typically happened with 19+ sized Stacks of Scrap in a Queue Hopper, but there was other ways too.
+[FIXED] Unstable Ingots will now explode in the Advanced Crafting Table.
+[CHANGED] Cups, Jugs and Measuring Pots along a few other but not all Fluid Containers can now be filled by a Tap placed above them.
+[CHANGED] AlF3 will now exit the Mixer in MOLTEN State, which might end up melting or corroding your current Water Output Pipes! Also that one AlF3 Recipe wont void SiO2 anymore, since I now got space for that Output.
+[CHANGED] If you click a Dust in NEI to look at Recipes producing it, it will also show Crushed/purified/Refined Ores.
+[CHANGED] Waterlike Non-Source Blocks will now only spread 2 instead of 7 Blocks. This should reduce Cave Flooding in Non-Ocean Biomes.
 [CHANGED] Shredder now has better Output Management for certain things.
-[CHANGED] You can get Niobium from smelting Coltan or Columbite now.
+[CHANGED] Mariculture Diving and Scuba Gear counts as Chemical/Gas Protection.
+[CHANGED] Niobium and Tantalum now have a Chemical Processing Path after Aluminium Tier. Niobium may require you picking up molten Aluminium from a Crucible, if you dont have Tungsten for a Smelter yet.
+[CHANGED] MFR Laser Drill now requires Adamantium, so you cant just use it to super easily get that Stuff before you have a Bedrock Drill anymore.
 [ADDED] Mass Storages and Item Barrels can now bundle and unbundle bare GT6 Wires. (Wires does NOT mean Cables!)
+[ADDED] Firestone, Pyrotheum and Octine can now be used similar to Sodium Persulfate to process Refractory Metals.
+All the Reactor Stuff Erik did:
+[CHANGED] Fuel rod maximum stat now relates to the number of neutrons on a fuel rod rather than its neutron output.
+[NOTE] Because of changes to the fission breeding system, old fully automatic breeder reactor designs might not work anymore. There is however no risk of "explosions" from this change.
+[CHANGED] Breeder rods now have a new stat, the neutron loss, which gets subtracted from any amount of neutrons put onto the rod from any side.
+[CHANGED] Removed exponentially scaling bonus neutrons on breeder rods completely. The number of neutrons needed for any breeder rod got rebalanced for these system changes.
+[CHANGED] Breeding now produces "enriched" rods rather than fuel rods directly. This allows for slightly easier and less tedious automation. Enriched rods will like breeder rods output only half the heat, but have no neutron loss, which allows detecting that a breeder rod turned into an enriched rod.
+[ADDED] Lithium breeder rod, breeding into Tritium.
+[NOTE] Reactor designs with coolants other than Industrial Coolant, Distilled Water, Semiheavy Water, Molten LiCl or Molten Thorium Salt may require changes to accommodate the following stat changes. 
+[CHANGED] Cobalt-60 fuel rod now has an emission of zero, making it useless for power production. It also lasts a much lower duration, making it more useful in burner reactors.
+[CHANGED] Output of better nuclear fuel from processing depleted fuel rods slightly halved, now six depleted rods will allow you to get a new better one.
+[CHANGED] Depleted Co-60 rods now processes into Thorium (instead of U-238), Depleted Naquadria now processes into Co-60 (instead of Thorium). 
+[CHANGED] Heavy Water/Tritiated Water as a reactor coolant will now reduce the neutron maximum of fuel rods in it by 8/16 times. This allows for building much faster burner reactors.
+[CHANGED] Carbon Dioxide as a reactor coolant now doesn't increase the factor of fuel rods inside anymore, now just offering an increase to the self stat.
+[CHANGED] Helium as a reactor coolant now doesn't decrease the factor of fuel rods inside as well as not increasing the self stat anymore, now just offering a lower emission stat.
+[CHANGED] Molten Tin/Molten Sodium as a reactor coolant will now increase the neutron maximum of fuel rods in it in addition to their previous effects.
+[CHANGED] Molten Thorium Salt is now slightly cheaper to produce and lasts much longer and able to be produced with all sizes of dust.
+[ADDED] A config option (EasyU235Extraction) to enable centrifuging U-235 from refined uranium ore. Disabled by default.
+[ADDED] A config option (Enable1x1ReactorCore) to enable the crafting recipe for the 1x1 reactor core. Disabled by default.
+[FIXED] Neutron Sensor previously behaving differently in maximum related modes on reactors using industrial coolant.
+[ADDED] Guide Book for designing and operating the fission reactors.
+[CHANGED] Setting the Secondary Facing of a Reactor Core to the same side as the Primary Facing will now disable the Secondary Facing.
+[ADDED] Tritium can now be turned into Tritiated Water, useful as a reactor coolant when obtaining Tritium from Lithium breeder rods.
+[FIXED] Fuel rods with neutron counts at the exact neutron maximum now won't have their duration effected. 
+[FIXED] First second of neutron output of fuel rods being potentially lower than emission stat (in some cases even negative)
+
+
+//=== Version Number Jump due to changes in the way Reactors work, and because Greg had to re-setup a lot of Dev Stuff due to new Computer. ===//
 
 
 6.14.23:
@@ -103,7 +165,7 @@ Fake Osmium based Item Pipes turn into the (newly added) Germanium Item Pipes th
 Germanium is now attributed to Mekanism, even though it technically did not add it.
 Any mention of "Osmium" inside Mekanism Material Item Names is now turned into "Germanium". (I did the same thing to "Teslatite" and "Electrotine" in an earlier Release, to make them "Nikolite")
 Germanium now has the Byproducts and Tool Stats, that Fake Osmium had before.
-[FIXED] Burning Box were not being ignitable by Fire Blocks for some reason anymore.
+[FIXED] Burning Boxes were not being ignitable by Fire Blocks for some reason anymore.
 [FIXED] Large Turbines were allowing Output of Stuff on Blocks that are not at the Bottom Layer.
 [FIXED] Cauldrons were crashing the Game, when used with Ores that did not have any Byproducts.
 [FIXED] Higher Speed Rails of GT6 did not work on vertically sloped areas because the Minecart would somehow bonk into the wall the track is laid on. This means sloped Rails will cap out at 1x Speed.
@@ -867,7 +929,7 @@ Hint: It is possible to use Universal Extenders and Mini Portals to do all sorts
 [FIXED] GT6 Bar Placement Code for the Catwalk/Cage Bars Block.
 [FIXED] The Activity Detector for "Running Possible" did not work on Rotational Pumps.
 [CHANGED] Tungsten Burning Boxes and Heat Exchangers now have 100% instead of 95% Efficiency.
-[CHANGED] Note: Later nerfed back again! - Newly generated ZPMs now have 500 times more Energy (10^15 QU), due to me realising just how ridiculous Nuclear Energy is going to be in regards of Power with 36_000_000_000 HU per Unit of U-235 at Max Efficiency.
+[CHANGED] Note: Later nerfed back again! - Newly generated ZPMs now have 500 times more Energy (10^15 QU), due to me realising just how ridiculous Nuclear Energy is going to be in regards of Power with 36_000_000_000HU per Unit of U-235 at Max Efficiency.
 [CHANGED] I decided to give Lead a darker Color.
 [ADDED] Diamond and Sapphire Mortars. Gating them behind Iron doesn't make that much sense.
 [WIP] Nuclear Reactor Core. Not gonna be done this week... Took a bit too long to do, and I want to setup random new irl hardware first. XD
@@ -1029,7 +1091,7 @@ You will need Small Lasers in the Crafting Recipe and Electricity for this to wo
 
 6.10.25:
 [NOTE] Soul Forest is not going to get Compat, it's just too bad of a Mod... Putting Titanium Gems on Sticks to make Titanium Rods just overdid it for me, along with giving each item its own ID and not registering literally anything to the OreDict, not that I would want it considering all the exploits that would cause...
-[COMPAT] Funky Locomotion should now accept GT6 Electricity just like it does RF. Don't be scared about wasting Power, those Motors just have a huge Storage of 64_000 EU (= 256_000 RF).
+[COMPAT] Funky Locomotion should now accept GT6 Electricity just like it does RF. Don't be scared about wasting Power, those Motors just have a huge Storage of 64_000EU (= 256_000 RF).
 [COMPAT] Abyssalcraft Material Data has been added. And some similar standard Greg Compat Stuff such as using Spades on its Grass Types.
 [FIXED] Fluid Densities did not match up with the Material Densities, but now they do.
 [FIXED] Electrolyzation of Eudialite is now possible.
@@ -1049,7 +1111,7 @@ Explosives Supported are Vanilla TNT (8), IC2 ITNT (4), GT6 Dynamite (2) and GT6
 [ADDED] The Generifier can now turn IC2 Steam and IC2 Superheated Steam into regular Steam. It will go by the Power Value instead of the Water Amount, so no Power is lost, but it might lead to an infinite Water Recipe Loop or at least a "Turn Power into Water" Loop.
 [ADDED]
 Heat Exchangers
-Turns Lava into "Pahoehoe Lava" and generates 80 HU/L or 80_000 HU/Block from it. Same goes for IC2 Hot Coolant to Coolant (20HU/L).
+Turns Lava into "Pahoehoe Lava" and generates 80HU/L or 80_000HU/Block from it. Same goes for IC2 Hot Coolant to Coolant (20HU/L).
 Be aware that IC2 Hot Coolant cannot be stored in GT6 Tanks, as it is a power conducting Fluid just like Steam!
 
 
@@ -4833,7 +4895,7 @@ Use distilled Water if possible or you risk calcification and therefore decrease
 Multiple different "Burning Boxes" and "Dense Burning Boxes" (Lead and Bismuth Versions being the most early Game variants), which convert Furnace Fuel into Heat Energy.
 Their Efficiency depends on the Material used to contain the Heat (Invar being the only 100% one but on a low Rate, Tungsten 95% with a very high Rate)
 The Dense ones cost about 4-5 times the Material but also have a 4 times the Output Rate, without >>ANY<< change in overall Efficiency. In order to make them you need a Dense Copper Plate, and therefore a way to compress them, meaning it is higher Tech.
-At 100% one Furnace Smelting equals 5_000 Heat Units, so Coal/Charcoal would be 40_000 HU, Coal Coke 80_000 HU and Alumentum 160_000 HU for example, it also accepts Wooden things (7_500 HU), Saplings (2_500 HU) and all the other Furnace Fuels.
+At 100% one Furnace Smelting equals 5_000 Heat Units, so Coal/Charcoal would be 40_000HU, Coal Coke 80_000HU and Alumentum 160_000HU for example, it also accepts Wooden things (7_500HU), Saplings (2_500HU) and all the other Furnace Fuels.
 Many Fuel Materials have some kind of Ashes, which are left behind when burning them. These Ashes has to be removed regularly from the Burning Box in order for it to work. Coal Coke and Alumentum don't have those Ashes for example.
 The Burning Box is very primitive, meaning it has no GUI and won't receive any GUI. Anything you insert for burning by rightclicking the front of the Box with it will get burnt without mercy (if it is a valid Fuel, and if you don't happen to wrench the Box right afterwards, and only when the Box is actually active).
 In order to work, it also needs a Block without Collision Box in front of it (Air is such a Block without Collision Box).

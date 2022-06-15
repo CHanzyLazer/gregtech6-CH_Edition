@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,35 +19,11 @@
 
 package gregtech.items;
 
-import static gregapi.data.CS.*;
-
-import gregapi.data.ANY;
-import gregapi.data.CS.BlocksGT;
-import gregapi.data.CS.BushesGT;
-import gregapi.data.CS.FluidsGT;
-import gregapi.data.CS.FoodsGT;
-import gregapi.data.CS.ItemsGT;
-import gregapi.data.CS.OreDictToolNames;
-import gregapi.data.CS.PotionsGT;
-import gregapi.data.CS.Sandwiches;
-import gregapi.data.CS.ToolsGT;
-import gregapi.data.FL;
-import gregapi.data.IL;
-import gregapi.data.MT;
-import gregapi.data.OD;
-import gregapi.data.OP;
-import gregapi.data.RM;
-import gregapi.data.TC;
-import gregapi.data.TD;
+import gregapi.data.*;
 import gregapi.item.CreativeTab;
 import gregapi.item.IItemRottable;
 import gregapi.item.multiitem.MultiItemRandom;
-import gregapi.item.multiitem.behaviors.Behavior_CureZombie;
-import gregapi.item.multiitem.behaviors.Behavior_FeedChocolate;
-import gregapi.item.multiitem.behaviors.Behavior_FeedDog;
-import gregapi.item.multiitem.behaviors.Behavior_FeedGrass;
-import gregapi.item.multiitem.behaviors.Behavior_FeedPig;
-import gregapi.item.multiitem.behaviors.Behavior_Turn_Into;
+import gregapi.item.multiitem.behaviors.*;
 import gregapi.item.multiitem.food.FoodStat;
 import gregapi.oredict.OreDictItemData;
 import gregapi.oredict.OreDictManager;
@@ -63,6 +39,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
+
+import static gregapi.data.CS.*;
 
 public class MultiItemFood extends MultiItemRandom implements IItemRottable {
 	public MultiItemFood(String aModID, String aUnlocalized) {
@@ -113,8 +91,8 @@ public class MultiItemFood extends MultiItemRandom implements IItemRottable {
 		ItemsGT.addNEIRedirects(IL.Bale_Oats  .get(1), IL.Crop_Oats   .get(1));
 		ItemsGT.addNEIRedirects(IL.Bale_Barley.get(1), IL.Crop_Barley .get(1));
 		ItemsGT.addNEIRedirects(IL.Bale_Rice  .get(1), IL.Crop_Rice   .get(1));
-		RM.Other.addFakeRecipe(F, ST.array(ST.make(ToolsGT.sMetaTool, 1, ToolsGT.KNIFE, "Just cut Tall Grass with this"), ST.make(ToolsGT.sMetaTool, 1, ToolsGT.SENSE, "Or cut Tall Grass with this"), ST.make(Blocks.tallgrass, 1, 1)), ST.array(IL.Grass.get(1), IL.Bale.get(1)), null, ZL_LONG, ZL_FS, ZL_FS, 0, 0, 0);
-		RM.Other.addFakeRecipe(F, ST.array(IL.Bale.getWithName(1, "Put the Bale Outside")), ST.array(IL.Bale_Dry.getWithName(1, "When its dry Outside"), IL.Bale_Moldy.getWithName(1, "When its wet Outside"), IL.Bale_Rotten.getWithName(1, "When its wet Outside and more time passed"), IL.Grass_Dry.getWithName(1, "When its dry Outside"), IL.Grass_Moldy.getWithName(1, "When its wet Outside"), IL.Grass_Rotten.getWithName(1, "When its wet Outside and more time passed")), null, ZL_LONG, ZL_FS, ZL_FS, 0, 0, 0);
+		RM.DidYouKnow.addFakeRecipe(F, ST.array(ST.make(ToolsGT.sMetaTool, 1, ToolsGT.KNIFE, "Just cut Tall Grass with this"), ST.make(ToolsGT.sMetaTool, 1, ToolsGT.SENSE, "Or cut Tall Grass with this"), ST.make(Blocks.tallgrass, 1, 1)), ST.array(IL.Grass.get(1), IL.Bale.get(1)), null, ZL_LONG, ZL_FS, ZL_FS, 0, 0, 0);
+		RM.DidYouKnow.addFakeRecipe(F, ST.array(IL.Bale.getWithName(1, "Put the Bale Outside")), ST.array(IL.Bale_Dry.getWithName(1, "When its dry Outside"), IL.Bale_Moldy.getWithName(1, "When its wet Outside"), IL.Bale_Rotten.getWithName(1, "When its wet Outside and more time passed"), IL.Grass_Dry.getWithName(1, "When its dry Outside"), IL.Grass_Moldy.getWithName(1, "When its wet Outside"), IL.Grass_Rotten.getWithName(1, "When its wet Outside and more time passed")), null, ZL_LONG, ZL_FS, ZL_FS, 0, 0, 0);
 		
 		
 		
@@ -356,8 +334,8 @@ public class MultiItemFood extends MultiItemRandom implements IItemRottable {
 		RM.Boxinator.addRecipe2(T, 16, 16, IL.Food_Potato_Baked.get(1), tStick, IL.Food_Potato_On_Stick_Roasted.get(1));
 		}
 		
-		IL.Food_Fries_Raw                      .set(addItem(tLastID =  8000, "Potato Strips"                            , "It's Potato in Stripe Form"                                  , new FoodStat( 1, 1.200F,   0, C+37,  0.10F,   0,   0,   0,   5,   0, EnumAction.eat, null                                 , F, T, F, T), TC.stack(TC.FAMES, 1), TC.stack(TC.MESSIS, 1), TC.stack(TC.HERBA, 1), new OreDictItemData(MT.Potato, U))); setFluidContainerStats(tLastID, 0, 8);
-		IL.Food_Fries                          .set(addItem(tLastID =  8010, "Fries"                                    , "Not to confuse with Fry the Delivery Boy", "foodFries"       , new FoodStat( 7, 1.200F,   0, C+38,  0.50F,   0,   0,  10,  10,   0, EnumAction.eat, null                                 , F, T, F, T), TC.stack(TC.FAMES, 1), TC.stack(TC.MESSIS, 1), TC.stack(TC.HERBA, 1), TC.stack(TC.IGNIS, 1)));             setFluidContainerStats(tLastID, 0, 8);
+		IL.Food_Fries_Raw                      .set(addItem(tLastID =  8000, "Potato Strips"                            , "Long Potatoes"                                               , new FoodStat( 1, 1.200F,   0, C+37,  0.10F,   0,   0,   0,   5,   0, EnumAction.eat, null                                 , F, T, F, T), TC.stack(TC.FAMES, 1), TC.stack(TC.MESSIS, 1), TC.stack(TC.HERBA, 1), new OreDictItemData(MT.Potato, U))); setFluidContainerStats(tLastID, 0, 8);
+		IL.Food_Fries                          .set(addItem(tLastID =  8010, "Fries"                                    , "Not to be confused with that Futurama Guy", "foodFries"      , new FoodStat( 7, 1.200F,   0, C+38,  0.50F,   0,   0,  10,  10,   0, EnumAction.eat, null                                 , F, T, F, T), TC.stack(TC.FAMES, 1), TC.stack(TC.MESSIS, 1), TC.stack(TC.HERBA, 1), TC.stack(TC.IGNIS, 1)));             setFluidContainerStats(tLastID, 0, 8);
 		IL.Food_Fries_Packaged                 .set(addItem(tLastID =  8011, "Fries"                                    , "Ketchup not included"                                        , new FoodStat( 7, 1.200F,   0, C+38,  0.50F,   0,   0,  10,  10,   0, EnumAction.eat, OP.scrapGt.mat(MT.Paper, 16)         , F, T, F, T), TC.stack(TC.FAMES, 1), TC.stack(TC.MESSIS, 1), TC.stack(TC.HERBA, 1), TC.stack(TC.IGNIS, 1)));
 		RM.Bath.addRecipe1(T,  0,   16, IL.Food_Fries_Raw.get(1), MT.FryingOilHot.liquid(U/100, T), NF, IL.Food_Fries.get(1));
 		CR.shaped(IL.Food_Fries_Raw.get(1), CR.DEF_NCC, "k", "X", 'X', "cropPotato");

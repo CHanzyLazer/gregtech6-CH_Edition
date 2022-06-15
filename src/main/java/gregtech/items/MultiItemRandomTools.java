@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,28 +19,15 @@
 
 package gregtech.items;
 
-import static gregapi.data.CS.*;
-import static gregapi.data.OP.*;
-
 import gregapi.GT_API;
 import gregapi.code.IItemContainer;
 import gregapi.cover.covers.CoverTextureCanvas;
 import gregapi.data.*;
-import gregapi.data.CS.BlocksGT;
-import gregapi.data.CS.BooksGT;
-import gregapi.data.CS.GarbageGT;
-import gregapi.data.CS.ItemsGT;
-import gregapi.data.CS.OreDictToolNames;
-import gregapi.data.CS.ToolsGT;
 import gregapi.item.CreativeTab;
 import gregapi.item.IItemRottable;
 import gregapi.item.multiitem.MultiItem;
 import gregapi.item.multiitem.MultiItemRandom;
-import gregapi.item.multiitem.behaviors.Behavior_Bucket_Simple;
-import gregapi.item.multiitem.behaviors.Behavior_PrintedPages;
-import gregapi.item.multiitem.behaviors.Behavior_Switch_Metadata;
-import gregapi.item.multiitem.behaviors.Behavior_Tool;
-import gregapi.item.multiitem.behaviors.IBehavior;
+import gregapi.item.multiitem.behaviors.*;
 import gregapi.item.multiitem.energy.EnergyStat;
 import gregapi.item.multiitem.energy.EnergyStatDebug;
 import gregapi.old.Textures;
@@ -60,6 +47,9 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
+
+import static gregapi.data.CS.*;
+import static gregapi.data.OP.chunkGt;
 
 public class MultiItemRandomTools extends MultiItemRandom implements IItemRottable {
 	public MultiItemRandomTools(String aModID, String aUnlocalized) {
@@ -133,6 +123,7 @@ public class MultiItemRandomTools extends MultiItemRandom implements IItemRottab
 		CR.shaped(IL.Ceramic_Mold_Raw    .get(1), CR.DEF_NCC, "C C", "CCC", "k R", 'C', OD.itemClay, 'R', OreDictToolNames.rollingpin);
 		CR.shaped(IL.Ceramic_Faucet_Raw  .get(1), CR.DEF_NCC, "C C", "kCR"       , 'C', OD.itemClay, 'R', OreDictToolNames.rollingpin);
 		CR.shaped(IL.Ceramic_Crossing_Raw.get(1), CR.DEF_NCC, "kCR", "CCC", " C ", 'C', OD.itemClay, 'R', OreDictToolNames.rollingpin);
+		CR.shaped(IL.Ceramic_Crossing_Raw.get(1), CR.DEF_NCC, " C ", "CCC", "kCR", 'C', OD.itemClay, 'R', OreDictToolNames.rollingpin);
 		CR.shaped(IL.Juicer_Raw          .get(1), CR.DEF_NCC, "kCR", "CCC"       , 'C', OD.itemClay, 'R', OreDictToolNames.rollingpin);
 		CR.shaped(IL.Ceramic_Bowl_Raw    .get(1), CR.DEF_NCC, "k R", "C C", "CCC", 'C', OD.itemClay, 'R', OreDictToolNames.rollingpin);
 		CR.shaped(IL.Ceramic_Jug_Raw     .get(1), CR.DEF_NCC, "kCR", "C C", "CCC", 'C', OD.itemClay, 'R', OreDictToolNames.rollingpin);
@@ -237,7 +228,7 @@ public class MultiItemRandomTools extends MultiItemRandom implements IItemRottab
 		addItemBehavior(mLastID, tBehaviour); addItemBehavior(mLastID-1, tBehaviour);
 		RM.Canner.addRecipe1(T, 16, 256, IL.Spray_Empty.get(1), FL.mul(DYE_FLUIDS_CHEMICAL[i], 16), NF, IL.SPRAY_CAN_DYES[i].get(1));
 		ItemsGT.addNEIRedirects(IL.SPRAY_CAN_DYES_USED[i].get(1), IL.SPRAY_CAN_DYES[i].get(1));
-		RM.Other.addFakeRecipe(F, ST.array(IL.SPRAY_CAN_DYES[i].get(1), IL.SPRAY_CAN_DYES_USED[i].get(1), ST.make(Blocks.wool, 1, 0), ST.make(Blocks.glass_pane, 1, 0), ST.make(Blocks.glass, 1, 0), ST.make(Blocks.hardened_clay, 1, 0)), ST.array(NI, NI, ST.make(Blocks.wool, 1, 15-i), ST.make(Blocks.stained_glass_pane, 1, 15-i), ST.make(Blocks.stained_glass, 1, 15-i), ST.make(Blocks.stained_hardened_clay, 1, 15-i)), null, ZL_LONG, ZL_FS, ZL_FS, 0, 0, 0);
+		RM.DidYouKnow.addFakeRecipe(F, ST.array(IL.SPRAY_CAN_DYES[i].get(1), IL.SPRAY_CAN_DYES_USED[i].get(1), ST.make(Blocks.wool, 1, 0), ST.make(Blocks.glass_pane, 1, 0), ST.make(Blocks.glass, 1, 0), ST.make(Blocks.hardened_clay, 1, 0)), ST.array(NI, NI, ST.make(Blocks.wool, 1, 15-i), ST.make(Blocks.stained_glass_pane, 1, 15-i), ST.make(Blocks.stained_glass, 1, 15-i), ST.make(Blocks.stained_hardened_clay, 1, 15-i)), null, ZL_LONG, ZL_FS, ZL_FS, 0, 0, 0);
 		
 		
 		IL.SPRAY_CAN_FOAM[i]               .set(addItem( 1100+2*i, "C-Foam Spray ("+DYE_NAMES[i]+")", "Full", TC.stack(TC.TERRA, 2), TC.stack(TC.FABRICO, 2)));
@@ -246,7 +237,7 @@ public class MultiItemRandomTools extends MultiItemRandom implements IItemRottab
 		addItemBehavior(mLastID, tBehaviour); addItemBehavior(mLastID-1, tBehaviour);
 		RM.Canner.addRecipe1(T, 16, 256, IL.Spray_Empty.get(1), FL.mul(DYED_C_FOAMS[i], 256), NF, IL.SPRAY_CAN_FOAM[i].get(1));
 		ItemsGT.addNEIRedirects(IL.SPRAY_CAN_FOAM_USED[i].get(1), IL.SPRAY_CAN_FOAM[i].get(1), ST.make(BlocksGT.CFoamFresh, 1, i), ST.make(BlocksGT.CFoam, 1, i));
-		RM.Other.addFakeRecipe(F, ST.array(IL.SPRAY_CAN_FOAM[i].get(1), IL.SPRAY_CAN_FOAM_USED[i].get(1)), ST.array(ST.make(BlocksGT.CFoamFresh, 1, i), ST.make(BlocksGT.CFoam, 1, i)), null, ZL_LONG, ZL_FS, ZL_FS, 0, 0, 0);
+		RM.DidYouKnow.addFakeRecipe(F, ST.array(IL.SPRAY_CAN_FOAM[i].get(1), IL.SPRAY_CAN_FOAM_USED[i].get(1)), ST.array(ST.make(BlocksGT.CFoamFresh, 1, i), ST.make(BlocksGT.CFoam, 1, i)), null, ZL_LONG, ZL_FS, ZL_FS, 0, 0, 0);
 		
 		
 		IL.SPRAY_CAN_FOAM_OWNED[i]         .set(addItem( 1132+2*i, "Advanced C-Foam Spray ("+DYE_NAMES[i]+")", "Full (C-Foam only breakable by Owner once dry)", TC.stack(TC.TERRA, 2), TC.stack(TC.FABRICO, 2), TC.stack(TC.SPIRITUS, 2)));
@@ -255,7 +246,7 @@ public class MultiItemRandomTools extends MultiItemRandom implements IItemRottab
 		addItemBehavior(mLastID, tBehaviour); addItemBehavior(mLastID-1, tBehaviour);
 		RM.Canner.addRecipe1(T, 16, 256, IL.Spray_Empty.get(1), FL.mul(DYED_C_FOAMS_OWNED[i], 256), NF, IL.SPRAY_CAN_FOAM_OWNED[i].get(1));
 		ItemsGT.addNEIRedirects(IL.SPRAY_CAN_FOAM_OWNED_USED[i].get(1), IL.SPRAY_CAN_FOAM_OWNED[i].get(1));
-		RM.Other.addFakeRecipe(F, ST.array(IL.SPRAY_CAN_FOAM_OWNED[i].get(1), IL.SPRAY_CAN_FOAM_OWNED_USED[i].get(1)), ST.array(ST.make(BlocksGT.CFoamFresh, 1, i, "Player-Owned C-Foam"), ST.make(BlocksGT.CFoam, 1, i, "Player-Owned C-Foam")), null, ZL_LONG, ZL_FS, ZL_FS, 0, 0, 0);
+		RM.DidYouKnow.addFakeRecipe(F, ST.array(IL.SPRAY_CAN_FOAM_OWNED[i].get(1), IL.SPRAY_CAN_FOAM_OWNED_USED[i].get(1)), ST.array(ST.make(BlocksGT.CFoamFresh, 1, i, "Player-Owned C-Foam"), ST.make(BlocksGT.CFoam, 1, i, "Player-Owned C-Foam")), null, ZL_LONG, ZL_FS, ZL_FS, 0, 0, 0);
 		}
 		
 		
@@ -400,21 +391,21 @@ public class MultiItemRandomTools extends MultiItemRandom implements IItemRottab
 		
 		
 		IL.Pellet_Wood                     .set(addItem(5999, "Wood Pellet"                      , ""                                            , new OreDictItemData(ANY.Wood, U), TICKS_PER_SMELT, TC.stack(TC.POTENTIA, 1)));
-		RM.Mixer.addRecipe1(T, 16, 16, OM.dust(MT.LiveRoot   , U2), FL.Glue.make(125), NF, IL.Pellet_Wood.get(1));
-		RM.Mixer.addRecipe1(T, 16, 32, OM.dust(MT.LiveRoot       ), FL.Glue.make(250), NF, IL.Pellet_Wood.get(2));
-		RM.Mixer.addRecipe1(T, 16, 16, OM.dust(MT.Livingwood , U2), FL.Glue.make(125), NF, IL.Pellet_Wood.get(1));
-		RM.Mixer.addRecipe1(T, 16, 32, OM.dust(MT.Livingwood     ), FL.Glue.make(250), NF, IL.Pellet_Wood.get(2));
-		RM.Mixer.addRecipe1(T, 16, 16, OM.dust(MT.Greatwood  , U2), FL.Glue.make(125), NF, IL.Pellet_Wood.get(1));
-		RM.Mixer.addRecipe1(T, 16, 32, OM.dust(MT.Greatwood      ), FL.Glue.make(250), NF, IL.Pellet_Wood.get(2));
-		RM.Mixer.addRecipe1(T, 16, 16, OM.dust(MT.Dreamwood  , U4), FL.Glue.make(125), NF, IL.Pellet_Wood.get(1));
-		RM.Mixer.addRecipe1(T, 16, 64, OM.dust(MT.Dreamwood      ), FL.Glue.make(500), NF, IL.Pellet_Wood.get(4));
-		RM.Mixer.addRecipe1(T, 16, 16, OM.dust(MT.Shimmerwood, U4), FL.Glue.make(125), NF, IL.Pellet_Wood.get(1));
-		RM.Mixer.addRecipe1(T, 16, 64, OM.dust(MT.Shimmerwood    ), FL.Glue.make(500), NF, IL.Pellet_Wood.get(4));
-		RM.Mixer.addRecipe1(T, 16, 16, OM.dust(MT.Silverwood , U4), FL.Glue.make(125), NF, IL.Pellet_Wood.get(1));
-		RM.Mixer.addRecipe1(T, 16, 64, OM.dust(MT.Silverwood     ), FL.Glue.make(500), NF, IL.Pellet_Wood.get(4));
+		RM.Mixer.addRecipe1(T, 16, 16, OM.dust(MT.LiveRoot   , U2), FL.Glue.make( 25), NF, IL.Pellet_Wood.get(1));
+		RM.Mixer.addRecipe1(T, 16, 32, OM.dust(MT.LiveRoot       ), FL.Glue.make( 50), NF, IL.Pellet_Wood.get(2));
+		RM.Mixer.addRecipe1(T, 16, 16, OM.dust(MT.Livingwood , U2), FL.Glue.make( 25), NF, IL.Pellet_Wood.get(1));
+		RM.Mixer.addRecipe1(T, 16, 32, OM.dust(MT.Livingwood     ), FL.Glue.make( 50), NF, IL.Pellet_Wood.get(2));
+		RM.Mixer.addRecipe1(T, 16, 16, OM.dust(MT.Greatwood  , U2), FL.Glue.make( 25), NF, IL.Pellet_Wood.get(1));
+		RM.Mixer.addRecipe1(T, 16, 32, OM.dust(MT.Greatwood      ), FL.Glue.make( 50), NF, IL.Pellet_Wood.get(2));
+		RM.Mixer.addRecipe1(T, 16, 16, OM.dust(MT.Dreamwood  , U4), FL.Glue.make( 25), NF, IL.Pellet_Wood.get(1));
+		RM.Mixer.addRecipe1(T, 16, 64, OM.dust(MT.Dreamwood      ), FL.Glue.make(100), NF, IL.Pellet_Wood.get(4));
+		RM.Mixer.addRecipe1(T, 16, 16, OM.dust(MT.Shimmerwood, U4), FL.Glue.make( 25), NF, IL.Pellet_Wood.get(1));
+		RM.Mixer.addRecipe1(T, 16, 64, OM.dust(MT.Shimmerwood    ), FL.Glue.make(100), NF, IL.Pellet_Wood.get(4));
+		RM.Mixer.addRecipe1(T, 16, 16, OM.dust(MT.Silverwood , U4), FL.Glue.make( 25), NF, IL.Pellet_Wood.get(1));
+		RM.Mixer.addRecipe1(T, 16, 64, OM.dust(MT.Silverwood     ), FL.Glue.make(100), NF, IL.Pellet_Wood.get(4));
 		for (OreDictMaterial tWood : ANY.Wood.mToThis)
-		RM.Mixer.addRecipe1(T, 16, 16, OM.dust(tWood             ), FL.Glue.make(125), NF, IL.Pellet_Wood.get(1));
-		RM.Mixer.addRecipe1(T, 16, 16, OM.dust(MT.Bark           ), FL.Glue.make(125), NF, IL.Pellet_Wood.get(1));
+		RM.Mixer.addRecipe1(T, 16, 16, OM.dust(tWood             ), FL.Glue.make( 25), NF, IL.Pellet_Wood.get(1));
+		RM.Mixer.addRecipe1(T, 16, 16, OM.dust(MT.Bark           ), FL.Glue.make( 25), NF, IL.Pellet_Wood.get(1));
 		RM.Compressor.addRecipe1(T, 16, 16, IL.Pellet_Wood.get(2), ST.make(BlocksGT.Planks, 1, 8));
 		RM.CokeOven.addRecipe1(T, 0, 900, IL.Pellet_Wood.get(1), NF, FL.Oil_Creosote.make(25), chunkGt.mat(MT.Charcoal, 1));
 		
@@ -494,6 +485,7 @@ public class MultiItemRandomTools extends MultiItemRandom implements IItemRottab
 		IL.Tool_Cheat                      .set(addItem(9001, "Debug Scanner"            , "", Behavior_Cropnalyzer.INSTANCE, ItemsGT.DEBUG_ITEMS, ItemsGT.ILLEGAL_DROPS, GarbageGT.BLACKLIST, new Behavior_Scanner(Integer.MAX_VALUE), EnergyStatDebug.INSTANCE, TC.stack(TC.SENSUS,10), TC.stack(TC.INSTRUMENTUM,10)));
 		IL.Tool_Scanner                    .set(addItem(9002, "Portable Scanner"         , "", Behavior_Cropnalyzer.INSTANCE, new Behavior_Scanner(2), EnergyStat.makeTool(TD.Energy.EU, V[3]*8000, V[3], 64, next()), TC.stack(TC.SENSUS,10), TC.stack(TC.INSTRUMENTUM,10)));
 		IL.Tool_Cropnalyzer                .set(addItem(9003, "Portable Cropnalyzer"     , "", Behavior_Cropnalyzer.INSTANCE, EnergyStat.makeTool(TD.Energy.EU, V[2]*8000, V[2], 64, next()), TC.stack(TC.SENSUS, 5), TC.stack(TC.INSTRUMENTUM, 5), TC.stack(TC.HERBA, 5)));
+		IL.Tool_Chunk_Remover              .set(addItem(9998, "Chunk Eraser"             , "", Behavior_Chunk_Remover.INSTANCE, ItemsGT.DEBUG_ITEMS, ItemsGT.ILLEGAL_DROPS, GarbageGT.BLACKLIST, TC.stack(TC.TERRA,10), TC.stack(TC.VACUOS,10), TC.stack(TC.INSTRUMENTUM,10)));
 		IL.Tool_Worldgen_Debugger          .set(addItem(9999, "Worldgen Debug Wand"      , "", Behavior_Worldgen_Debugger.INSTANCE, ItemsGT.DEBUG_ITEMS, ItemsGT.ILLEGAL_DROPS, GarbageGT.BLACKLIST, TC.stack(TC.TERRA,10), TC.stack(TC.PRAECANTIO,10), TC.stack(TC.INSTRUMENTUM,10)));
 		
 		CR.shaped(IL.Tool_Remote_Activator      .get(1), CR.DEF_REV, "TPE", "BCd", "xPT", 'P', OP.plate.dat(MT.Cr), 'T', OP.screw.dat(MT.Cr), 'C', OD_CIRCUITS[4], 'E', IL.EMITTERS[4], 'B', OD.button);

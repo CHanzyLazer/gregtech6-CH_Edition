@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,31 +19,12 @@
 
 package gregtech;
 
-import static gregapi.data.CS.*;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map.Entry;
-
 import appeng.api.AEApi;
-import cpw.mods.fml.common.LoadController;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLInterModComms;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartedEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppedEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import cpw.mods.fml.common.*;
+import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import gregapi.api.Abstract_Mod;
 import gregapi.api.Abstract_Proxy;
-import gregapi.block.multitileentity.MultiTileEntityRegistry;
 import gregapi.block.prefixblock.PrefixBlockItem;
 import gregapi.code.ArrayListNoNulls;
 import gregapi.code.IItemContainer;
@@ -51,12 +32,6 @@ import gregapi.code.ItemStackContainer;
 import gregapi.code.TagData;
 import gregapi.compat.CompatMods;
 import gregapi.data.*;
-import gregapi.data.CS.BlocksGT;
-import gregapi.data.CS.ConfigsGT;
-import gregapi.data.CS.FluidsGT;
-import gregapi.data.CS.ItemsGT;
-import gregapi.data.CS.ModIDs;
-import gregapi.data.CS.ToolsGT;
 import gregapi.item.multiitem.MultiItem;
 import gregapi.item.multiitem.MultiItemRandom;
 import gregapi.item.multiitem.behaviors.Behavior_Turn_Into;
@@ -74,18 +49,14 @@ import gregapi.util.OM;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregtech.blocks.fluids.BlockOcean;
+import gregtech.blocks.fluids.BlockRiver;
+import gregtech.blocks.fluids.BlockSwamp;
 import gregtech.compat.*;
 import gregtech.entities.projectiles.EntityArrow_Material;
 import gregtech.entities.projectiles.EntityArrow_Potion;
 import gregtech.items.tools.early.GT_Tool_Scoop;
 import gregtech.loaders.a.*;
-import gregtech.loaders.b.Loader_Books;
-import gregtech.loaders.b.Loader_Fuels;
-import gregtech.loaders.b.Loader_ItemIterator;
-import gregtech.loaders.b.Loader_Late_Items_And_Blocks;
-import gregtech.loaders.b.Loader_MultiTileEntities;
-import gregtech.loaders.b.Loader_OreProcessing;
-import gregtech.loaders.b.Loader_Worldgen;
+import gregtech.loaders.b.*;
 import gregtech.loaders.c.*;
 import gregtechCH.config.ConfigJson_CH;
 import gregtechCH.loaders.b.Loader_MultiTileEntities_CH;
@@ -102,6 +73,13 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.oredict.OreDictionary;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map.Entry;
+
+import static gregapi.data.CS.*;
 
 /**
  * @author Gregorius Techneticies
@@ -141,6 +119,9 @@ public class GT6_Main extends Abstract_Mod {
 		gt_proxy.mDisableVanillaLakes    = ConfigsGT.GREGTECH.get("general", "DisableVanillaLakes"   , T);
 		mDisableIC2Ores                  = ConfigsGT.GREGTECH.get("general", "DisableIC2Ores"        , T);
 		BlockOcean.SPREAD_TO_AIR         = ConfigsGT.GREGTECH.get("general", "OceanBlocksSpreadToAir", T);
+		BlockOcean.FLOWS_OUT             = ConfigsGT.GREGTECH.get("general", "OceanBlocksFlowOutFar" , F);
+		BlockSwamp.FLOWS_OUT             = ConfigsGT.GREGTECH.get("general", "SwampBlocksFlowOutFar" , F);
+		BlockRiver.FLOWS_OUT             = ConfigsGT.GREGTECH.get("general", "RiverBlocksFlowOutFar" , F);
 		
 		if (ConfigsGT.GREGTECH.get("general", "IncreaseDungeonLoot", T)) {
 			ChestGenHooks tChest;
@@ -195,20 +176,26 @@ public class GT6_Main extends Abstract_Mod {
 			OUT.println(getModNameForLog() + ": Adding Scrap with a Weight of 200.0F to the Scrapbox Drops.");
 			COMPAT_IC2.scrapbox(200.0F, IL.IC2_Scrap.get(1));
 		}
-
+		
 		EntityRegistry.registerModEntity(EntityArrow_Material.class, "GT_Entity_Arrow"       , 1, GT, 160, 1, T);
 		EntityRegistry.registerModEntity(EntityArrow_Potion.class  , "GT_Entity_Arrow_Potion", 2, GT, 160, 1, T);
-
-		for (OreDictMaterial tWood : ANY.Wood.mToThis) OP.plate.disableItemGeneration(tWood);
-		OP.blockDust   .disableItemGeneration(MT.OREMATS.Magnetite, MT.OREMATS.GraniticMineralSand, MT.OREMATS.BasalticMineralSand);
-		OP.ingot       .disableItemGeneration(MT.Butter, MT.ButterSalted, MT.Chocolate, MT.Cheese, MT.MeatRaw, MT.MeatCooked, MT.FishRaw, MT.FishCooked, MT.Tofu, MT.SoylentGreen);
-		OP.gemChipped  .disableItemGeneration(MT.EnergiumRed, MT.EnergiumCyan);
-		OP.gemFlawed   .disableItemGeneration(MT.EnergiumRed, MT.EnergiumCyan);
-		OP.gem         .disableItemGeneration(MT.EnergiumRed, MT.EnergiumCyan);
-		OP.gemFlawless .disableItemGeneration(MT.EnergiumRed, MT.EnergiumCyan);
-		OP.gemExquisite.disableItemGeneration(MT.EnergiumRed, MT.EnergiumCyan);
-		OP.gemLegendary.disableItemGeneration(MT.EnergiumRed, MT.EnergiumCyan);
 		
+		for (OreDictMaterial tWood : ANY.Wood.mToThis) OP.plate.disableItemGeneration(tWood);
+		OP.blockDust             .disableItemGeneration(MT.OREMATS.Magnetite, MT.OREMATS.GraniticMineralSand, MT.OREMATS.BasalticMineralSand);
+		OP.ingot                 .disableItemGeneration(MT.Butter, MT.ButterSalted, MT.Chocolate, MT.Cheese, MT.MeatRaw, MT.MeatCooked, MT.FishRaw, MT.FishCooked, MT.Tofu, MT.SoylentGreen);
+		OP.gemChipped            .disableItemGeneration(MT.EnergiumRed, MT.EnergiumCyan);
+		OP.gemFlawed             .disableItemGeneration(MT.EnergiumRed, MT.EnergiumCyan);
+		OP.gem                   .disableItemGeneration(MT.EnergiumRed, MT.EnergiumCyan);
+		OP.gemFlawless           .disableItemGeneration(MT.EnergiumRed, MT.EnergiumCyan);
+		OP.gemExquisite          .disableItemGeneration(MT.EnergiumRed, MT.EnergiumCyan);
+		OP.gemLegendary          .disableItemGeneration(MT.EnergiumRed, MT.EnergiumCyan);
+		
+		OP.crushed               .disableItemGeneration(MT.Ad, MT.Fe, MT.Si, MT.Al, MT.Ti, MT.W, MT.F, MT.Ta, MT.Nb, MT.Dilithium);
+		OP.crushedTiny           .disableItemGeneration(MT.Ad, MT.Fe, MT.Si, MT.Al, MT.Ti, MT.W, MT.F, MT.Ta, MT.Nb, MT.Dilithium);
+		OP.crushedPurified       .disableItemGeneration(MT.Ad, MT.Fe, MT.Si, MT.Al, MT.Ti, MT.W, MT.F, MT.Ta, MT.Nb, MT.Dilithium);
+		OP.crushedPurifiedTiny   .disableItemGeneration(MT.Ad, MT.Fe, MT.Si, MT.Al, MT.Ti, MT.W, MT.F, MT.Ta, MT.Nb, MT.Dilithium);
+		OP.crushedCentrifuged    .disableItemGeneration(MT.Ad, MT.Fe, MT.Si, MT.Al, MT.Ti, MT.W, MT.F, MT.Ta, MT.Nb, MT.Dilithium);
+		OP.crushedCentrifugedTiny.disableItemGeneration(MT.Ad, MT.Fe, MT.Si, MT.Al, MT.Ti, MT.W, MT.F, MT.Ta, MT.Nb, MT.Dilithium);
 		
 		RM.pulverizing(ST.make(Blocks.cobblestone, 1, W), ST.make(Blocks.sand, 1, 0), null, 0, F);
 		RM.pulverizing(ST.make(Blocks.stone      , 1, W), ST.make(Blocks.cobblestone, 1, 0), null, 0, F);
@@ -259,7 +246,9 @@ public class GT6_Main extends Abstract_Mod {
 				new Loader_Recipes_Alloys(),
 				new Loader_Recipes_Other(),
 				
-				new Loader_Recipes_Extruder()
+				new Loader_Recipes_Extruder(),
+				
+				new Loader_Recipes_Hints()
 			);
 			
 			for (Runnable tRunnable : tList) try {tRunnable.run();} catch(Throwable e) {e.printStackTrace(ERR);}
@@ -326,7 +315,7 @@ public class GT6_Main extends Abstract_Mod {
 		new CompatMods(MD.GT, this) {@Override public void onPostLoad(FMLPostInitializationEvent aInitEvent) {
 			ArrayListNoNulls<Runnable> tList = new ArrayListNoNulls<>(F,
 				new Loader_Recipes_Replace(),
-				new Loader_Recipes_Copy(),
+				new Loader_Recipes_Foreign(),
 				new Loader_Recipes_Decomp(),
 				new Loader_Recipes_Handlers()
 			);
@@ -446,116 +435,6 @@ public class GT6_Main extends Abstract_Mod {
 		RM.ByProductList.mRecipeMachineList.add(ST.make(Items .cauldron, 1, 0));
 		RM.ByProductList.mRecipeMachineList.add(ST.make(Blocks.cauldron, 1, 0));
 		
-		MultiTileEntityRegistry aRegistry = MultiTileEntityRegistry.getRegistry("gt.multitileentity");
-		
-		RM.Other.addFakeRecipe(F, ST.array(
-		  ST.make(OP.dust.mat(MT.OREMATS.Cinnabar, 3), "Throw three Units of Cinnabar into Crucible")
-		, IL.Ceramic_Crucible.getWithName(1, "Wait until it melts into Mercury")
-		, IL.Bottle_Empty.getWithName(1, "Rightclick the Crucible with an Empty Bottle")
-		, IL.TC_Shimmerleaf.getWithName(1, "Or just throw a Shimmerleaf into it")
-		, ST.make(aRegistry.getItem(1199), "Heat up the Crucible using a Burning Box")
-		, NI
-		), ST.array(IL.Bottle_Mercury.get(1), ST.make(OP.ingot.mat(MT.Hg, 1), "Pouring this into Molds only works with additional Cooling!"), ST.make(OP.nugget.mat(MT.Hg, 1), "Pouring this into Molds only works with additional Cooling!")), null, ZL_LONG, FL.array(MT.Hg.liquid(1, T)), FL.array(MT.Hg.liquid(1, T)), 0, 0, 0);
-		
-		RM.Other.addFakeRecipe(F, ST.array(
-		  IL.Ceramic_Mold.getWithName(1, "Don't forget to shape the Mold to pour it")
-		, IL.Ceramic_Crucible.getWithName(1, "Wait until it all turns into Steel")
-		, ST.make(aRegistry.getItem(1302), "Point a running Engine into the Crucible to blow Air")
-		, ST.make(OP.ingot.mat(MT.Fe, 1), "Throw some Iron into Crucible. Do not forget to leave space for Air!")
-		, ST.make(aRegistry.getItem(1199), "Heat up the Crucible using a Burning Box")
-		, ST.make(OP.ingot.mat(MT.WroughtIron, 1), "Or throw Wrought Iron into the Crucible, either works")
-		), ST.array(OP.dust.mat(MT.Steel, 1), OP.ingot.mat(MT.Steel, 1), OP.plate.mat(MT.Steel, 1), OP.scrapGt.mat(MT.Steel, 1), OP.stick.mat(MT.Steel, 1), OP.gearGt.mat(MT.Steel, 1)), null, ZL_LONG, ZL_FS, ZL_FS, 0, 0, 0);
-		
-		RM.Other.addFakeRecipe(F, ST.array(
-		  ST.make(OP.ingot.mat(MT.Zn, 1), "Dump some Zinc into the Crucible")
-		, IL.Ceramic_Faucet.getWithName(1, "Pour Zinc using a Faucet attached to the Crucible")
-		, IL.Ceramic_Crucible.getWithName(1, "Wait until the Zinc is molten")
-		, ST.make(OP.plate.mat(MT.Steel, 1), "Put your Steel Object into the Bathing Pot")
-		, ST.make(aRegistry.getItem(32707), "Place the Bathing Pot (Table) below the Faucet")
-		, ST.make(aRegistry.getItem(1199), "Heat up the Crucible using a Burning Box")
-		), ST.array(OP.plate.mat(MT.SteelGalvanized, 1), OP.plateCurved.mat(MT.SteelGalvanized, 1), OP.stick.mat(MT.SteelGalvanized, 1), OP.casingSmall.mat(MT.SteelGalvanized, 1), OP.gearGt.mat(MT.SteelGalvanized, 1), OP.screw.mat(MT.SteelGalvanized, 1)), null, ZL_LONG, FL.array(MT.Zn.liquid(1, T)), FL.array(MT.Zn.liquid(1, T)), 0, 0, 0);
-		
-		RM.Other.addFakeRecipe(F, ST.array(
-		  ST.make(BlocksGT.Saplings_AB, 1, 0, "Find a Rubber Tree in a Taiga Biome or similar")
-		, ST.make(BlocksGT.Leaves_AB, 1, 0, "Make sure its natural Leaves stay intact!")
-		, ST.make(BlocksGT.LogA, 1, 0, "Look for a possible Resin Hole at the Tree")
-		, NI
-		, NI
-		, IL.Bag_Sap_Resin.getWithName(1, "Place Resin Bag at the Hole")
-		), ST.array(IL.Resin.get(1), IL.IC2_Resin.get(1)), null, ZL_LONG, ZL_FS, FL.array(FL.Resin_Rubber.make(250)), 0, 0, 0);
-		
-		RM.Other.addFakeRecipe(F, ST.array(
-		  ST.make(BlocksGT.Saplings_AB, 1, 1, "Find a Maple Tree in a Forest")
-		, ST.make(BlocksGT.Leaves_AB, 1, 1, "Make sure its natural Leaves stay intact!")
-		, ST.make(BlocksGT.LogA, 1, 1, "Choose one of the Log Segments at the Base of the Tree")
-		, ST.make(ToolsGT.sMetaTool, 1, ToolsGT.HAND_DRILL, "Drill only one Hole into the Tree")
-		, ST.make(ToolsGT.sMetaTool, 1, ToolsGT.DRILL_LV  , "Drill only one Hole into the Tree")
-		, IL.Bag_Sap_Resin.getWithName(1, "Place Sap Bag at the drilled Hole")
-		), ZL_IS, null, ZL_LONG, ZL_FS, FL.array(FL.Sap_Maple.make(250)), 0, 0, 0);
-		
-		RM.Other.addFakeRecipe(F, ST.array(
-		  ST.make(BlocksGT.Saplings_AB, 1, 2, "Find a Willow Tree in the Swamp")
-		, ST.make(BlocksGT.Leaves_AB, 1, 2, "Harvest its Leaves for Sticks")
-		, ST.make(BlocksGT.LogA, 1, 2, "Use its Logs in a Coke Oven for double the Charcoal")
-		, NI
-		, NI
-		, NI
-		), ST.array(OP.stick.mat(MT.WOODS.Willow, 1), OP.gem.mat(MT.Charcoal, 2), OP.ingot.mat(MT.Charcoal, 2)), null, ZL_LONG, ZL_FS, ZL_FS, 0, 0, 0);
-		
-		RM.Other.addFakeRecipe(F, ST.array(
-		  ST.make(BlocksGT.Saplings_AB, 1, 3, "Find a Blue Mahoe Tree in the Jungle")
-		, ST.make(BlocksGT.Leaves_AB, 1, 3, "Harvest its Leaves for Sticks")
-		, ST.make(BlocksGT.LogA, 1, 3, "Nothing special about its Logs")
-		, NI
-		, NI
-		, NI
-		), ST.array(OP.stick.mat(MT.WOODS.BlueMahoe, 1)), null, ZL_LONG, ZL_FS, ZL_FS, 0, 0, 0);
-		
-		RM.Other.addFakeRecipe(F, ST.array(
-		  ST.make(BlocksGT.Saplings_AB, 1, 4, "Find a Hazel Tree in the Plains")
-		, ST.make(BlocksGT.Leaves_AB, 1, 4, "Harvest its Leaves for Hazelnuts and Sticks")
-		, ST.make(BlocksGT.LogB, 1, 0, "Nothing special about its Logs")
-		, NI
-		, NI
-		, NI
-		), ST.array(IL.Food_Hazelnut.get(1), OP.stick.mat(MT.WOODS.Hazel, 1)), null, ZL_LONG, ZL_FS, ZL_FS, 0, 0, 0);
-		
-		RM.Other.addFakeRecipe(F, ST.array(
-		  ST.make(BlocksGT.Saplings_AB, 1, 5, "Find a Cinnamon Tree in the Jungle")
-		, ST.make(BlocksGT.Leaves_AB, 1, 5, "Nothing special about its Leaves")
-		, ST.make(BlocksGT.LogB, 1, 1, "The Bark does not regrow! Plant a new Tree for more")
-		, ST.make(ToolsGT.sMetaTool, 1, ToolsGT.KNIFE, "Remove its edible Bark")
-		, ST.make(ToolsGT.sMetaTool, 1, ToolsGT.AXE  , "Remove its edible Bark")
-		, ST.make(ToolsGT.sMetaTool, 1, ToolsGT.SAW  , "Remove its edible Bark")
-		), ST.array(OM.dust(MT.Cinnamon), IL.Food_Cinnamon.get(1), IL.HaC_Cinnamon.get(1)), null, ZL_LONG, ZL_FS, ZL_FS, 0, 0, 0);
-		
-		RM.Other.addFakeRecipe(F, ST.array(
-		  ST.make(BlocksGT.Saplings_AB, 1, 6, "Find a Coconut Tree near the Ocean")
-		, ST.make(BlocksGT.Leaves_AB, 1, 6, "Harvest its Leaves for Coconuts")
-		, ST.make(BlocksGT.LogB, 1, 2, "Nothing special about its Logs")
-		, NI
-		, NI
-		, NI
-		), ST.array(IL.Food_Coconut.get(1)), null, ZL_LONG, ZL_FS, ZL_FS, 0, 0, 0);
-		
-		RM.Other.addFakeRecipe(F, ST.array(
-		  ST.make(BlocksGT.Saplings_AB, 1, 7, "Find a super rare Rainbow Tree")
-		, ST.make(BlocksGT.Leaves_AB, 1, 7, "Make sure its natural Leaves stay intact!")
-		, ST.make(BlocksGT.LogB, 1, 3, "Choose one of the Log Segments at the Base of the Tree")
-		, ST.make(ToolsGT.sMetaTool, 1, ToolsGT.HAND_DRILL, "Drill only one Hole into the Tree")
-		, ST.make(ToolsGT.sMetaTool, 1, ToolsGT.DRILL_LV  , "Drill only one Hole into the Tree")
-		, IL.Bag_Sap_Resin.getWithName(1, "Place Sap Bag at the drilled Hole")
-		), ZL_IS, null, ZL_LONG, ZL_FS, FL.array(FL.Sap_Rainbow.make(250)), 0, 0, 0);
-		
-		RM.Other.addFakeRecipe(F, ST.array(
-		  ST.make(BlocksGT.Saplings_CD, 1, 0, "Find a Blue Spruce Tree in the Mountains")
-		, ST.make(BlocksGT.Leaves_CD, 1, 0, "Nothing special about its Leaves")
-		, ST.make(BlocksGT.LogC, 1, 0, "Nothing special about its Logs")
-		, NI
-		, NI
-		, NI
-		), ZL_IS, null, ZL_LONG, ZL_FS, ZL_FS, 0, 0, 0);
-		
 		
 		if (CODE_CLIENT) {
 			for (OreDictMaterial aMaterial : OreDictMaterial.ALLOYS) {
@@ -611,7 +490,7 @@ public class GT6_Main extends Abstract_Mod {
 		ORD.println("============================");
 		for (String tUnknown : OreDictManager.INSTANCE.getUnknownMaterials()) ORD.println(tUnknown);
 		ORD.println("============================");
-
+		
 		if (CODE_CLIENT) {try {
 		ORD.println("============================");
 		ORD.println("Outputting Colors of unknown Materials");
@@ -627,13 +506,13 @@ public class GT6_Main extends Abstract_Mod {
 		}
 		ORD.println("============================");
 		} catch(Throwable e) {e.printStackTrace(ERR);}}
-
+		
 		ORD.println("================================");
 		ORD.println("Outputting Unknown OreDict Names");
 		ORD.println("================================");
 		for (String tUnknown : OreDictManager.INSTANCE.getUnknownNames()) ORD.println(tUnknown);
 		ORD.println("================================");
-
+		
 		/*
 		try {((CommandHandler)aEvent.getServer().getCommandManager()).registerCommand(new CommandBase() {
 			@Override public String getCommandName() {return "xyzd";}
@@ -647,7 +526,7 @@ public class GT6_Main extends Abstract_Mod {
 						try {
 							if (aPlayer.ridingEntity != null) aPlayer.mountEntity(null);
 							if (aPlayer.riddenByEntity != null) aPlayer.riddenByEntity.mountEntity(null);
-
+							
 							if (aParameters.length >= 4) {
 								GT_Utility.moveEntityToDimensionAtCoords(aPlayer, Integer.parseInt(aParameters[3]), Integer.parseInt(aParameters[0])+0.5, Integer.parseInt(aParameters[1])+0.5, Integer.parseInt(aParameters[2])+0.5);
 							} else {
@@ -748,7 +627,7 @@ public class GT6_Main extends Abstract_Mod {
 		}
 		} catch(Throwable e) {e.printStackTrace(ERR);}
 	}
-
+	
 	@Override public void onModServerStarted2(FMLServerStartedEvent aEvent) {/**/}
 	@Override public void onModServerStopped2(FMLServerStoppedEvent aEvent) {/**/}
 

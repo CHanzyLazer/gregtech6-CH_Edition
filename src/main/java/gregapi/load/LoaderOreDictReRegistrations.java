@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,16 +19,11 @@
 
 package gregapi.load;
 
-import static gregapi.data.CS.*;
-
-import gregapi.data.ANY;
-import gregapi.data.CS.OreDictToolNames;
-import gregapi.data.MD;
-import gregapi.data.MT;
-import gregapi.data.OD;
-import gregapi.data.OP;
+import gregapi.data.*;
 import gregapi.oredict.OreDictItemData;
 import gregapi.oredict.OreDictManager;
+
+import static gregapi.data.CS.*;
 
 /**
  * @author Gregorius Techneticies
@@ -599,6 +594,12 @@ public class LoaderOreDictReRegistrations implements Runnable {
 		OreDictManager.INSTANCE.addReRegistration("cableGt01AnyCopper"              , OD.craftingWireCopper);
 		OreDictManager.INSTANCE.addReRegistration("cableGt01Gold"                   , OD.craftingWireGold);
 		OreDictManager.INSTANCE.addReRegistration("cableGt01AnyIron"                , OD.craftingWireIron);
+		OreDictManager.INSTANCE.addReRegistration(OD.bookEmptyBig                   , OD.bookEmpty);
+		OreDictManager.INSTANCE.addReRegistration(OD.bookWrittenBig                 , OD.bookWritten);
+		OreDictManager.INSTANCE.addReRegistration(OD.bookWritableBig                , OD.bookWritable);
+		OreDictManager.INSTANCE.addReRegistration(OD.bookEmptySmall                 , OD.bookEmpty);
+		OreDictManager.INSTANCE.addReRegistration(OD.bookWrittenSmall               , OD.bookWritten);
+		OreDictManager.INSTANCE.addReRegistration(OD.bookWritableSmall              , OD.bookWritable);
 		OreDictManager.INSTANCE.addReRegistration(OD.itemLeather                    , OD.craftingLeather);
 		OreDictManager.INSTANCE.addReRegistration(OD.itemLeatherTreated             , OD.craftingLeather);
 		OreDictManager.INSTANCE.addReRegistration(OD.itemLeatherHardened            , OD.craftingLeather);
@@ -926,6 +927,14 @@ public class LoaderOreDictReRegistrations implements Runnable {
 		OreDictManager.INSTANCE.addReRegistration("cellSeedoil"                     , OD.container1000seedoil);
 		OreDictManager.INSTANCE.addReRegistration("cellCreosote"                    , OD.container1000creosote);
 		OreDictManager.INSTANCE.addReRegistration("cellLubricant"                   , OD.container1000lubricant);
+		OreDictManager.INSTANCE.addReRegistration(OD.container250slimeblue          , OD.container250slime);
+		OreDictManager.INSTANCE.addReRegistration(OD.container250slimepink          , OD.container250slime);
+		OreDictManager.INSTANCE.addReRegistration(OD.container250slimegreen         , OD.container250slime);
+		OreDictManager.INSTANCE.addReRegistration(OD.container1000slimeblue         , OD.container1000slime);
+		OreDictManager.INSTANCE.addReRegistration(OD.container1000slimepink         , OD.container1000slime);
+		OreDictManager.INSTANCE.addReRegistration(OD.container1000slimegreen        , OD.container1000slime);
+		OreDictManager.INSTANCE.addReRegistration(OD.container250slime              , OD.itemGlue);
+		OreDictManager.INSTANCE.addReRegistration(OD.container1000slime             , OD.itemGlue);
 		OreDictManager.INSTANCE.addReRegistration(OD.container250glue               , OD.itemGlue);
 		OreDictManager.INSTANCE.addReRegistration(OD.container1000glue              , OD.itemGlue);
 		OreDictManager.INSTANCE.addReRegistration(OD.container250poison             , OD.itemPoison);
@@ -1453,7 +1462,7 @@ public class LoaderOreDictReRegistrations implements Runnable {
 		OreDictManager.INSTANCE.setAutomaticItemData(OP.stone.dat(MT.RedSand         ), new OreDictItemData(MT.RedSand         , U*9));
 		OreDictManager.INSTANCE.setAutomaticItemData(OP.stone.dat(MT.SoulSand        ), new OreDictItemData(MT.SoulSand        , U*9));
 		OreDictManager.INSTANCE.setAutomaticItemData(OP.stone.dat(MT.EndSand         ), new OreDictItemData(MT.EndSand         , U*9));
-		OreDictManager.INSTANCE.setAutomaticItemData(OP.stone.dat(MT.Bedrock         ), new OreDictItemData(MT.Bedrock         , U*9));
+		OreDictManager.INSTANCE.setAutomaticItemData(OP.stone.dat(MT.Bedrock         ), new OreDictItemData(MT.Bedrock         , U*1));
 		OreDictManager.INSTANCE.setAutomaticItemData(OP.stone.dat(MT.Flint           ), new OreDictItemData(MT.Flint           , U*9));
 		OreDictManager.INSTANCE.setAutomaticItemData(OP.stone.dat(MT.CaCO3           ), new OreDictItemData(MT.CaCO3           , U*9));
 		OreDictManager.INSTANCE.setAutomaticItemData(OP.stone.dat(MT.Talc            ), new OreDictItemData(MT.Talc            , U*9));

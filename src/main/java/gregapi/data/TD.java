@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,13 +19,13 @@
 
 package gregapi.data;
 
-import static gregapi.data.CS.*;
+import gregapi.code.ArrayListNoNulls;
+import gregapi.code.TagData;
 
 import java.util.Arrays;
 import java.util.List;
 
-import gregapi.code.ArrayListNoNulls;
-import gregapi.code.TagData;
+import static gregapi.data.CS.F;
 
 /**
  * @author Gregorius Techneticies
@@ -446,6 +446,8 @@ public class TD {
 		public static final TagData HAS_COLOR                               = TagData.createTagData("PROPERTIES.HAS_COLOR", "Has Color");
 		/** If this Material is typically used by Mods or Vanilla Minecraft, and where the "ore" Prefix is important. */
 		public static final TagData COMMON_ORE                              = TagData.createTagData("PROPERTIES.COMMON_ORE", "Common Ore");
+		/** If this Material is something like Unstable Ingots */
+		public static final TagData EXPLODES_IN_NONVANILLA_CRAFTING_GRID    = TagData.createTagData("PROPERTIES.EXPLODES_IN_NONVANILLA_CRAFTING_GRID", "Explodes in Non-Vanilla Crafting Tables!");
 		/** If this Material is generated among the random small Gem Ores. */
 		public static final TagData RANDOM_SMALL_GEM_ORE                    = TagData.createTagData("PROPERTIES.RANDOM_SMALL_GEM_ORE", "Random Small Gem Ore");
 		/** If this Material is only Unificatable in Recipes (for example Wood, which has many variations depending on from which Tree it comes from) */
@@ -460,9 +462,9 @@ public class TD {
 		public static final TagData DONT_SHOW_THIS_COMPONENT                = TagData.createTagData("PROPERTIES.DONT_SHOW_THIS_COMPONENT", "Not shown as Component");
 		
 		/** Contains all known Property Tags. */
-		public static final List<TagData> ALL                               = new ArrayListNoNulls<>(Arrays.asList(ACID, WOOD, FOOD, MEAT, ROTTEN, COAL, STONE, PEARL, QUARTZ, CRYSTAL, MAGICAL, VALUABLE, BURNING, FLAMMABLE, UNBURNABLE, EXPLOSIVE, BOUNCY, GLOWING, BETWEENLANDS, LIGHTING, BRITTLE, STRETCHY, INVISIBLE, TRANSPARENT, ENDER_DRAGON_PROOF, WITHER_PROOF, HAS_COLOR, AUTO_BLACKLIST, AUTO_MATERIAL, INVALID_MATERIAL, IGNORE_IN_COLOR_LOG, UNUSED_MATERIAL, DONT_SHOW_THIS_COMPONENT));
+		public static final List<TagData> ALL                               = new ArrayListNoNulls<>(Arrays.asList(ACID, WOOD, FOOD, MEAT, ROTTEN, COAL, STONE, PEARL, QUARTZ, CRYSTAL, MAGICAL, VALUABLE, BURNING, FLAMMABLE, UNBURNABLE, EXPLOSIVE, BOUNCY, GLOWING, BETWEENLANDS, LIGHTING, BRITTLE, STRETCHY, INVISIBLE, TRANSPARENT, ENDER_DRAGON_PROOF, WITHER_PROOF, EXPLODES_IN_NONVANILLA_CRAFTING_GRID, HAS_COLOR, AUTO_BLACKLIST, AUTO_MATERIAL, INVALID_MATERIAL, IGNORE_IN_COLOR_LOG, UNUSED_MATERIAL, DONT_SHOW_THIS_COMPONENT));
 		/** Contains all relevant Property Tags. */
-		public static final List<TagData> ALL_RELEVANTS                     = new ArrayListNoNulls<>(Arrays.asList(ACID, WOOD, FOOD, MEAT, ROTTEN, COAL, STONE, PEARL, QUARTZ, CRYSTAL, MAGICAL, VALUABLE, BURNING, FLAMMABLE, UNBURNABLE, EXPLOSIVE, BOUNCY, GLOWING, BETWEENLANDS, BRITTLE, STRETCHY, INVISIBLE, TRANSPARENT, ENDER_DRAGON_PROOF, WITHER_PROOF));
+		public static final List<TagData> ALL_RELEVANTS                     = new ArrayListNoNulls<>(Arrays.asList(ACID, WOOD, FOOD, MEAT, ROTTEN, COAL, STONE, PEARL, QUARTZ, CRYSTAL, MAGICAL, VALUABLE, BURNING, FLAMMABLE, UNBURNABLE, EXPLOSIVE, BOUNCY, GLOWING, BETWEENLANDS, BRITTLE, STRETCHY, INVISIBLE, TRANSPARENT, ENDER_DRAGON_PROOF, WITHER_PROOF, EXPLODES_IN_NONVANILLA_CRAFTING_GRID));
 	}
 	
 	/** Describing the kind of binding the Compound Material is having */
@@ -520,12 +522,14 @@ public class TD {
 		public static final TagData SOLDERING_MATERIAL_BAD                  = TagData.createTagData("PROCESSING.SOLDERING_MATERIAL_BAD", "Bad Soldering Metal");
 		public static final TagData SOLDERING_MATERIAL_GOOD                 = TagData.createTagData("PROCESSING.SOLDERING_MATERIAL_GOOD", "Good Soldering Metal");
 		
+		public static final TagData WASHING_FIRESTONE                       = TagData.createTagData("PROCESSING.WASHING_FIRESTONE", "Firestone Washable");
 		public static final TagData WASHING_PERSULFATE                      = TagData.createTagData("PROCESSING.WASHING_PERSULFATE", "Persulfate Washable"), WASHING_SODIUMPERSULFATE = WASHING_PERSULFATE;
 		public static final TagData WASHING_MERCURY                         = TagData.createTagData("PROCESSING.WASHING_MERCURY", "Mercury Washable");
+		
 		public static final TagData PULVERIZING_CINNABAR                    = TagData.createTagData("PROCESSING.PULVERIZING_CINNABAR", "Cinnabar Crystal from Pulverisation");
 		
 		public static final List<TagData> ALL_MACHINES                      = new ArrayListNoNulls<>(Arrays.asList(CRYSTALLISABLE, CRUCIBLE_ALLOY, FURNACE, SMITHABLE, MELTING, MORTAR, FUSION, UUM, ELECTROLYSER, CENTRIFUGE, UNRECYCLABLE, SOLDERING_MATERIAL));
-		public static final List<TagData> ALL_ORES                          = new ArrayListNoNulls<>(Arrays.asList(CRYSTALLISABLE, WASHING_PERSULFATE, WASHING_MERCURY, PULVERIZING_CINNABAR));
+		public static final List<TagData> ALL_ORES                          = new ArrayListNoNulls<>(Arrays.asList(CRYSTALLISABLE, WASHING_FIRESTONE, WASHING_PERSULFATE, WASHING_MERCURY, PULVERIZING_CINNABAR));
 	}
 	
 	/** For Materials and the Item Generator */

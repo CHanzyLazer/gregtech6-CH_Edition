@@ -37,6 +37,7 @@ import gregapi.render.BlockTextureMulti;
 import gregapi.render.ITexture;
 import gregapi.tileentity.ITileEntityQuickObstructionCheck;
 import gregapi.tileentity.data.ITileEntityProgress;
+import gregapi.tileentity.data.ITileEntitySurface;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.tileentity.machines.ITileEntitySwitchableMode;
 import gregapi.util.UT;
@@ -155,6 +156,13 @@ public class MultiTileEntityWireRedstoneInsulated extends TileEntityBase10Connec
 	public int getComparatorInputOverride(byte aSide) {
 		return UT.Code.bind4(mRedstone / MAX_RANGE);
 	}
+
+	@Override
+	public float getConnectorDiameter(byte aConnectorSide, DelegatorTileEntity<TileEntity> aDelegator) {
+		// 绝缘线缆连接非绝缘线缆时不会收缩
+		if (aDelegator.mTileEntity instanceof MultiTileEntityWireRedstone) return mDiameter;
+		return super.getConnectorDiameter(aConnectorSide, aDelegator);
+	}
 	
 	@Override public boolean canDrop(int aInventorySlot) {return F;}
 	// GTCH, 现在红石线缆不会阻挡后面的方块了，这个太烦人了
@@ -186,7 +194,7 @@ public class MultiTileEntityWireRedstoneInsulated extends TileEntityBase10Connec
 	@Override public int getBottomRGB() {return UT.Code.getRGBInt(96, 64, 64);}
 
 	@Override public ITexture getTextureSide                (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {return BlockTextureDefault.get(Textures.BlockIcons.INSULATION_FULL, isPainted()?mRGBa: getBottomRGB());}
-	@Override public ITexture getTextureConnected           (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {return BlockTextureMulti.get(BlockTextureDefault.get(mMaterial, getIconIndexConnected(aSide, aConnections, aDiameter, aRenderPass), mIsGlowing), BlockTextureDefault.get(aDiameter<0.37F?Textures.BlockIcons.INSULATION_TINY:aDiameter<0.49F?Textures.BlockIcons.INSULATION_SMALL:aDiameter<0.74F?Textures.BlockIcons.INSULATION_MEDIUM:aDiameter<0.99F?Textures.BlockIcons.INSULATION_LARGE:Textures.BlockIcons.INSULATION_HUGE, isPainted()?mRGBa: getBottomRGB()));}
+	@Override public ITexture getTextureConnected           (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {return BlockTextureMulti.get(BlockTextureDefault.get(mMaterial, getIconIndexConnected(aSide, aConnections, aDiameter, aRenderPass), F), BlockTextureDefault.get(aDiameter<0.37F?Textures.BlockIcons.INSULATION_TINY:aDiameter<0.49F?Textures.BlockIcons.INSULATION_SMALL:aDiameter<0.74F?Textures.BlockIcons.INSULATION_MEDIUM:aDiameter<0.99F?Textures.BlockIcons.INSULATION_LARGE:Textures.BlockIcons.INSULATION_HUGE, isPainted()?mRGBa: getBottomRGB()));}
 	
 	@Override public int getIconIndexSide                   (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {return OP.wire.mIconIndexBlock;}
 	@Override public int getIconIndexConnected              (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {return OP.wire.mIconIndexBlock;}

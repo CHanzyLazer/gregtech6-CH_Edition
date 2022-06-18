@@ -51,14 +51,27 @@ import net.minecraftforge.fluids.IFluidTank;
  * Some Defaults for MultiBlock Machines.
  */
 public abstract class TileEntityBase10MultiBlockBase extends TileEntityBase09FacingSingle implements ITileEntityMultiBlockController {
-	public boolean mStructureChanged = F, mStructureOkay = F;
+	public boolean mStructureChanged = F;
+
+	// 用 private 封装防止意料外的修改
+	private boolean mStructureOkay = F;
+	public final boolean isStructureOkay() {return mStructureOkay;}
+	// GTCH, 用于子类重写实现在结构改变时更新不透明度
+	private void setStructureOkay(boolean aStructureOkay) {
+		if (aStructureOkay == mStructureOkay) return;
+		int tOldOpacity = getLightOpacity();
+		mStructureOkay = aStructureOkay;
+		setStructureOkay2(tOldOpacity);
+	}
+	// 与原本的 on... 不同，一定是结构完整度发生了改变才会调用
+	protected void setStructureOkay2(int aOldOpacity) {/**/}
 	
 	public IIconContainer[] mTextures = L6_IICONCONTAINER, mTexturesFront = L6_IICONCONTAINER;
 	
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {
 		super.readFromNBT2(aNBT);
-		if (aNBT.hasKey(NBT_STATE+".str")) mStructureOkay = aNBT.getBoolean(NBT_STATE+".str");
+		if (aNBT.hasKey(NBT_STATE+".str")) mStructureOkay = aNBT.getBoolean(NBT_STATE+".str"); // NBT 修改会有统一的更新和优化，不需要在这里再次调用
 		
 		if (CODE_CLIENT) {
 			if (GT_API.sBlockIcons == null && aNBT.hasKey(NBT_TEXTURE)) {
@@ -163,7 +176,7 @@ public abstract class TileEntityBase10MultiBlockBase extends TileEntityBase09Fac
 	public boolean checkStructure(boolean aForceReset) {
 		if (isClientSide()) return mStructureOkay;
 		if ((mStructureChanged || aForceReset) && mStructureOkay != checkStructure2()) {
-			mStructureOkay = !mStructureOkay;
+			setStructureOkay(!mStructureOkay);
 			updateClientData();
 		}
 		mStructureChanged = F;
@@ -172,7 +185,7 @@ public abstract class TileEntityBase10MultiBlockBase extends TileEntityBase09Fac
 	
 	@Override public void onFacingChange(byte aPreviousFacing) {onStructureChange();}
 	@Override public final byte getDirectionData() {return (byte)((mFacing & 7) | (mStructureOkay ? 8 : 0));}
-	@Override public final void setDirectionData(byte aData) {mFacing = (byte)(aData & 7); mStructureOkay = ((aData & 8) != 0);}
+	@Override public final void setDirectionData(byte aData) {mFacing = (byte)(aData & 7); setStructureOkay((aData & 8) != 0);}
 	
 	@Override
 	public ITexture getTexture2(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {

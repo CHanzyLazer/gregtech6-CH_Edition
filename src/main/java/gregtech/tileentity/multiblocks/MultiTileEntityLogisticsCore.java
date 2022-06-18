@@ -148,7 +148,7 @@ public class MultiTileEntityLogisticsCore extends TileEntityBase10MultiBlockBase
 			if (mCPU_Storage > MAX_STORAGE_CPU_COUNT) mCPU_Storage = MAX_STORAGE_CPU_COUNT;
 			return tSuccess && mCPU_Logic > 0 && mCPU_Control > 0 && mCPU_Storage > 0 && mCPU_Conversion > 0;
 		}
-		return mStructureOkay;
+		return isStructureOkay();
 	}
 	
 	static {

@@ -84,7 +84,7 @@ public abstract class MultiTileEntityLargeTurbine extends TileEntityBase11MultiB
 			}
 			return tSuccess;
 		}
-		return mStructureOkay;
+		return isStructureOkay();
 	}
 	
 	@Override
@@ -105,7 +105,7 @@ public abstract class MultiTileEntityLargeTurbine extends TileEntityBase11MultiB
 	
 	@Override
 	public int getRenderPasses2(Block aBlock, boolean[] aShouldSideBeRendered) {
-		return mStructureOkay ? 2 : 1;
+		return isStructureOkay() ? 2 : 1;
 	}
 	
 	@Override

@@ -25,7 +25,6 @@ import gregapi.block.IBlockSyncData.IBlockSyncDataAndCoversAndIDs;
 import gregapi.block.multitileentity.IMultiTileEntity.*;
 import gregapi.code.ArrayListNoNulls;
 import gregapi.compat.galacticraft.IBlockSealable;
-import gregapi.data.CS.*;
 import gregapi.data.IL;
 import gregapi.data.MD;
 import gregapi.item.IItemGT;

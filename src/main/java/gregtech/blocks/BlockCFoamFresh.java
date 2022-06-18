@@ -59,6 +59,11 @@ public class BlockCFoamFresh extends BlockColored implements IBlockFoamable {
 	protected BlockCFoamFresh(Class<? extends ItemBlock> aItemClass, Material aVanillaMaterial, SoundType aVanillaSoundType, String aName, String aDefaultLocalised, OreDictMaterial aMaterial, float aResistanceMultiplier, float aHardnessMultiplier, int aHarvestLevel, int aCount, IIconContainer[] aIcons, byte aSlabType, BlockMetaType aBlock) {
 		super(aItemClass, aVanillaMaterial, aVanillaSoundType, aName, aDefaultLocalised, aMaterial, aResistanceMultiplier, aHardnessMultiplier, aHarvestLevel, aCount, aIcons, aSlabType, aBlock);
 	}
+
+	@Override
+	public int getLightOpacity() {
+		return LIGHT_OPACITY_WATER;
+	}
 	
 	@Override
 	public void onBlockAdded2(World aWorld, int aX, int aY, int aZ) {

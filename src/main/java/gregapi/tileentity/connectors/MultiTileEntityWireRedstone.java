@@ -34,7 +34,17 @@ import net.minecraft.nbt.NBTTagCompound;
  * @author Gregorius Techneticies
  */
 public class MultiTileEntityWireRedstone extends MultiTileEntityWireRedstoneInsulated implements IMTE_GetLightValue {
-	public byte mState = 0;
+	// 用 private 封装防止意料外的修改
+	private byte mState = 0;
+	// GTCH, 用于在状态切换后添加不透明度和亮度更新
+	private void setState(byte aState) {
+		if (aState == mState) return;
+		int tOldOpacity = getLightOpacity();
+		mState = aState;
+		updateLightValue();
+		updateLightOpacity(tOldOpacity);
+	}
+
 	public int mRGBaRedstoneON = UNCOLORED;
 	public int mRGBaRedstoneOFF = UNCOLORED;
 	public final static float ON_RATIO = 0.12F, OFF_RATIO = -0.16F;
@@ -42,7 +52,7 @@ public class MultiTileEntityWireRedstone extends MultiTileEntityWireRedstoneInsu
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {
 		super.readFromNBT2(aNBT);
-		if (aNBT.hasKey(NBT_STATE)) mState = aNBT.getByte(NBT_STATE);
+		if (aNBT.hasKey(NBT_STATE)) mState = aNBT.getByte(NBT_STATE); // NBT 修改会有统一的更新和优化，不需要在这里再次调用
 		mRGBaRedstoneON = UT_CH.Code.getBrighterRGB(mRGBa, ON_RATIO);
 		mRGBaRedstoneOFF = UT_CH.Code.getBrighterRGB(mRGBa, OFF_RATIO);
 	}
@@ -56,11 +66,8 @@ public class MultiTileEntityWireRedstone extends MultiTileEntityWireRedstoneInsu
 	@Override
 	public boolean onTickCheck(long aTimer) {
 		byte tOldState = mState;
-		mState = UT.Code.bind4(UT.Code.divup(mRedstone, MAX_RANGE));
-		if (tOldState != mState) {
-			if (mIsGlowing) updateLightValue();
-			return T;
-		}
+		setState(UT.Code.bind4(UT.Code.divup(mRedstone, MAX_RANGE)));
+		if (tOldState != mState) return T;
 		return super.onTickCheck(aTimer);
 	}
 
@@ -74,23 +81,15 @@ public class MultiTileEntityWireRedstone extends MultiTileEntityWireRedstoneInsu
 	
 	@Override
 	public void setVisualData(byte aData) {
-		if (aData != mState) {
-			mState = aData;
-			if (mIsGlowing) updateLightValue();
-		}
+		if (aData != mState) setState(aData);
 	}
 	
 	@Override
-	public byte getVisualData() {
-		return mState;
-	}
-	
-	@Override
-	public int getLightOpacity() {
-		return mIsGlowing ? LIGHT_OPACITY_NONE : super.getLightOpacity();
-	}
-	
-	@Override public int getLightValue                      () {return mIsGlowing ? mState : 0;}
+	public byte getVisualData() {return mState;}
+
+	// 激活时会发光，为了不让亮度显示奇怪将其透光度设为零
+	@Override public int getLightOpacity() {return mState>0 ? LIGHT_OPACITY_NONE : super.getLightOpacity();}
+	@Override public int getLightValue() {return (mIsGlowing & mState>0) ? 15 : 0;}
 
 	// GTCH, 还原为原本材料的颜色
 	@Override public int getBottomRGB() {return UT.Code.getRGBInt(mMaterial.fRGBaSolid);}

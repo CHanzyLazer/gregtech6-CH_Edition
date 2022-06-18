@@ -33,7 +33,6 @@ import gregapi.block.multitileentity.MultiTileEntityRegistry;
 import gregapi.data.CS.BlocksGT;
 import gregapi.data.LH;
 import gregapi.data.LH.Chat;
-import gregapi.data.MT;
 import gregapi.old.Textures;
 import gregapi.render.BlockTextureDefault;
 import gregapi.render.ITexture;
@@ -51,12 +50,21 @@ import net.minecraft.world.World;
  * @author Gregorius Techneticies
  */
 public class MultiTileEntityCFoam extends TileEntityBase07Paintable implements ITileEntityFoamable, IMTE_GetPlayerRelativeBlockHardness, IMTE_AddToolTips, IMTE_OnPlaced, IMTE_OnRegistration {
-	public boolean mFoamDried = F, mOwnable = F;
+	public boolean mOwnable = F;
+	// 用 private 封装防止意料外的修改
+	private boolean mFoamDried = F;
+	// GTCH, 用于在干掉后添加不透明度更新
+	private void setFoamDried(boolean aFoamDried) {
+		if (aFoamDried == mFoamDried) return;
+		int tOldOpacity = getLightOpacity();
+		mFoamDried = aFoamDried;
+		updateLightOpacity(tOldOpacity);
+	}
 	
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {
 		super.readFromNBT2(aNBT);
-		if (aNBT.hasKey(NBT_FOAMDRIED)) mFoamDried = aNBT.getBoolean(NBT_FOAMDRIED);
+		if (aNBT.hasKey(NBT_FOAMDRIED)) mFoamDried = aNBT.getBoolean(NBT_FOAMDRIED); // NBT 修改会有统一的更新和优化，不需要在这里再次调用
 		if (aNBT.hasKey(NBT_OWNABLE)) mOwnable = aNBT.getBoolean(NBT_OWNABLE);
 		if (aNBT.hasKey(NBT_OWNER) && !OWNERSHIP_RESET) mOwner = UUID.fromString(aNBT.getString(NBT_OWNER));
 	}
@@ -99,7 +107,7 @@ public class MultiTileEntityCFoam extends TileEntityBase07Paintable implements I
 		super.onTick2(aTimer, aIsServerSide);
 		
 		if (aIsServerSide && aTimer >= 100 && !mFoamDried && rng(5900) == 0) {
-			mFoamDried = T;
+			setFoamDried(T);
 			updateClientData();
 		}
 	}
@@ -118,10 +126,11 @@ public class MultiTileEntityCFoam extends TileEntityBase07Paintable implements I
 	@Override
 	public boolean dryFoam(byte aSide, Entity aPlayer) {
 		if (mFoamDried || isClientSide()) return F;
-		mFoamDried = T;
+		setFoamDried(T);
 		updateClientData();
 		return T;
 	}
+
 	
 	@Override
 	public boolean removeFoam(byte aSide, Entity aPlayer) {
@@ -138,7 +147,7 @@ public class MultiTileEntityCFoam extends TileEntityBase07Paintable implements I
 	@Override public float getExplosionResistance2() {return (mFoamDried?BlocksGT.CFoam:BlocksGT.CFoamFresh).getExplosionResistance(null);}
 	
 	@Override public byte getVisualData() {return (byte)((mFoamDried ? 1 : 0)|(mOwnable ? 2 : 0));}
-	@Override public void setVisualData(byte aData) {mFoamDried = ((aData & 1) != 0); mOwnable = ((aData & 2) != 0);}
+	@Override public void setVisualData(byte aData) {setFoamDried((aData & 1) != 0); mOwnable = ((aData & 2) != 0);}
 	
 	@Override public boolean isSurfaceSolid         (byte aSide) {return mFoamDried;}
 	@Override public boolean isSurfaceOpaque2       (byte aSide) {return mFoamDried;}

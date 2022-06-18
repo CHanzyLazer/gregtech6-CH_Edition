@@ -327,12 +327,12 @@ public class MultiTileEntityLargeTurbineSteam_CH extends MultiTileEntityLargeMot
 	@Override public Collection<TagData> getEnergyTypes(byte aSide) {return new ArrayListNoNulls<>(F, mEnergyTypeAccepted, mEnergyTypeEmitted);}
 
 	// Icons，图像动画
-	public static final IIconContainer mTextureInactive = new Textures.BlockIcons.CustomIcon("machines/multiblockmains/turbine");
+	public static final IIconContainer mTextureInactive	= new Textures.BlockIcons.CustomIcon("machines/multiblockmains/turbine");
 	public static final IIconContainer mTextureActive   = new Textures.BlockIcons.CustomIcon("machines/multiblockmains/turbine_active");
 	public static final IIconContainer mTexturePreheat  = new Textures.BlockIcons.CustomIcon("machines/multiblockmains/turbine_preheat");
-	public static final IIconContainer mTextureActiveL   = new Textures.BlockIcons.CustomIcon("machines/multiblockmains/turbine_active_l");
-	public static final IIconContainer mTexturePreheatL  = new Textures.BlockIcons.CustomIcon("machines/multiblockmains/turbine_preheat_l");
-	public static final IIconContainer mTextureOutput  = new Textures.BlockIcons.CustomIcon("machines/multiblockparts/metalwalldense/3/overlay/top");
+	public static final IIconContainer mTextureActiveL	= new Textures.BlockIcons.CustomIcon("machines/multiblockmains/turbine_active_l");
+	public static final IIconContainer mTexturePreheatL	= new Textures.BlockIcons.CustomIcon("machines/multiblockmains/turbine_preheat_l");
+	public static final IIconContainer mTextureOutput  	= new Textures.BlockIcons.CustomIcon("machines/multiblockparts/metalwalldense/3/overlay/top");
 	@Override
 	public IIconContainer getIIconContainer(IconType aIconType) {
 		switch (aIconType) {

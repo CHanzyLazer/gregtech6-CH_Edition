@@ -23,7 +23,6 @@ import appeng.api.movable.IMovableTile;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetLightValue;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_IsProvidingStrongPower;
 import gregapi.code.ArrayListNoNulls;
 import gregapi.code.TagData;
@@ -49,8 +48,9 @@ import gregapi.tileentity.multiblocks.MultiTileEntityMultiBlockPart;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
+import gregtechCH.data.CS_CH;
 import gregtechCH.fluid.IFluidHandler_CH;
-import gregtechCH.vision.IAlternateOpacity_CH;
+import gregtechCH.util.UT_CH;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergyTile;
@@ -68,7 +68,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -77,9 +76,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static gregapi.data.CS.*;
 
@@ -400,18 +397,93 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 			setDead();
 			return;
 		}
-		
+
+		// GTCH, 将 mark 的计划进行加入计划，用来避免初始化未完成的情况
+		if (mMarkedSchedule && !mHadSchedule) {
+			mHadSchedule = T;
+			mMarkedSchedule = F;
+		}
+		if (mHadSchedule) {
+			doSchedule();
+		}
+
 		if (mDoesBlockUpdate) doBlockUpdate();
 	}
+
+	protected void doSchedule() {
+		if (!mHadSchedule) return;
+		// 在这里执行计划任务，检测是否能够继续提交任务，不能则顺延到下一个 tick
+		if (CS_CH.canPushHandle()) {
+			CS_CH.pushHandle();
+			for (Updater tUpdater : ScheduleList) {
+				tUpdater.doUpdate(worldObj, xCoord, yCoord, zCoord);
+			}
+			ScheduleList.clear();
+			mScheduleOldOpacity = -1;
+			mHadSchedule = F;
+		}
+	}
+
+	// GTCH, 用于执行计划任务，这里用来实现光照更新的伪协程实现
+	private abstract static class Updater {
+		public abstract void doUpdate(World aWorld, int aX, int aY, int aZ);
+		protected abstract int updaterID();
+		public boolean equals(Updater aRHS) {return updaterID() == aRHS.updaterID();}
+	}
+	private static class UpdaterLightValue extends Updater {
+		@Override public void doUpdate(World aWorld, int aX, int aY, int aZ) {
+			UT_CH.Light.updateLightValue(aWorld, aX, aY, aZ);
+		}
+		@Override protected int updaterID() {return 0;}
+	}
+	private static class UpdaterLightOpacity extends Updater {
+		private final int mOldOpacity;
+		public UpdaterLightOpacity(int aOldOpacity) {mOldOpacity = aOldOpacity;}
+		@Override public void doUpdate(World aWorld, int aX, int aY, int aZ) {
+			UT_CH.Light.updateLightOpacity(mOldOpacity, aWorld, aX, aY, aZ);
+		}
+		@Override protected int updaterID() {return 1;}
+	}
+	private final Set<Updater> ScheduleList = new HashSet<>(); // 用来自动将新的更新来替换旧的更新
+	private boolean mMarkedSchedule = F; // 是否已经标记了计划等待下次 updateEntity 时加入计划更新
+	private boolean mHadSchedule = F; // 是否已经存在了计划更新调用
+
+	private void pushAndMarkSchedule(Updater aUpdater) {
+		ScheduleList.add(aUpdater);
+		if (!mHadSchedule && !mMarkedSchedule) {
+			mMarkedSchedule = T;
+		}
+	}
+	private void pushAndUpdateSchedule(Updater aUpdater) {
+		ScheduleList.add(aUpdater);
+		if (!mHadSchedule) {
+			mHadSchedule = T;
+			doSchedule();
+		}
+	}
+
+	private int mScheduleOldOpacity = -1; // 用来记录计划任务的旧不透明度，新的旧不透明度取最大值
+
+	// GTCH, 还是使用子类调用更新的方式来实现
+	// 标记式更新，在下次调用 updateEntity 时加入计划。用于在 NBT 读取阶段进行更新
+	public void updateLightValueMark() 					{pushAndMarkSchedule(new UpdaterLightValue());}
+	public void updateLightOpacityMark(int aOldOpacity) {mScheduleOldOpacity = Math.max(aOldOpacity, mScheduleOldOpacity);pushAndMarkSchedule(new UpdaterLightOpacity(mScheduleOldOpacity));}
+	public void updateLightOpacityMark() 				{updateLightOpacityMark(LIGHT_OPACITY_MAX);}
+	// 一般的加入计划式更新
+	public void updateLightValue() 						{pushAndUpdateSchedule(new UpdaterLightValue());}
+	public void updateLightOpacity(int aOldOpacity) 	{mScheduleOldOpacity = Math.max(aOldOpacity, mScheduleOldOpacity);pushAndUpdateSchedule(new UpdaterLightOpacity(mScheduleOldOpacity));}
+	public void updateLightOpacity() 					{updateLightOpacity(LIGHT_OPACITY_MAX);}
 	
 	@Override
 	public long getTimer() {
 		return 0;
 	}
-	
+
+	// GTCH, 标记 final 防止意料外的重写
 	@Override
-	public boolean canUpdate() {
-		return mIsTicking && mShouldRefresh;
+	public final boolean canUpdate() {
+		// 被标记或者有计划的一定需要进行更新
+		return mHadSchedule || mMarkedSchedule || (mIsTicking && mShouldRefresh);
 	}
 	
 	@Override
@@ -510,27 +582,16 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 	@SideOnly(Side.CLIENT) public final IRenderedBlockObject passRenderingToObject(ItemStack aStack) {return ERROR_MESSAGE == null ? passRenderingToObject2(aStack) : ErrorRenderer.INSTANCE;}
 	@SideOnly(Side.CLIENT) public final IRenderedBlockObject passRenderingToObject(IBlockAccess aWorld, int aX, int aY, int aZ) {return ERROR_MESSAGE == null ? passRenderingToObject2(aWorld, aX, aY, aZ) : ErrorRenderer.INSTANCE;}
 	@SideOnly(Side.CLIENT) public IRenderedBlockObject passRenderingToObject2(ItemStack aStack) {return (IRenderedBlockObject)this;}
-	@SideOnly(Side.CLIENT) public IRenderedBlockObject passRenderingToObject2(IBlockAccess aWorld, int aX, int aY, int aZ) {
-		// GTCH，用于使得自动调整不透光度的方块能即时调整
-		if((this instanceof IAlternateOpacity_CH) && ((IAlternateOpacity_CH) this).updateLightCheck()) {
-			worldObj.updateLightByType(EnumSkyBlock.Sky, xCoord, yCoord, zCoord);
-			((IAlternateOpacity_CH) this).updateLightReset();
-		}
-		return (IRenderedBlockObject)this;
-	}
-	
+	@SideOnly(Side.CLIENT) public IRenderedBlockObject passRenderingToObject2(IBlockAccess aWorld, int aX, int aY, int aZ) {return (IRenderedBlockObject)this;}
+
 	public void updateInventory() {/**/}
 	public void updateAdjacentInventories() {for (byte tSide : ALL_SIDES_VALID) {DelegatorTileEntity<TileEntity> tDelegator = getAdjacentTileEntity(tSide); if (tDelegator.mTileEntity instanceof ITileEntityAdjacentInventoryUpdatable) ((ITileEntityAdjacentInventoryUpdatable)tDelegator.mTileEntity).adjacentInventoryUpdated(tDelegator.mSideOfTileEntity, (IInventory)this);}}
 	
 	public void playClick() {UT.Sounds.send(worldObj, SFX.MC_CLICK, 1, 1, getCoords());}
 	public void playCollect() {UT.Sounds.send(worldObj, SFX.MC_COLLECT, 0.2F, ((RNGSUS.nextFloat() - RNGSUS.nextFloat()) * 0.7F + 1) * 2, getCoords());}
-	
-	public void updateLightValue() {
-		if (this instanceof IMTE_GetLightValue) {
-			worldObj.setLightValue(EnumSkyBlock.Block, xCoord, yCoord, zCoord, ((IMTE_GetLightValue)this).getLightValue());
-			for (byte tSide : ALL_SIDES_MIDDLE) worldObj.updateLightByType(EnumSkyBlock.Block, xCoord+OFFX[tSide], yCoord+OFFY[tSide], zCoord+OFFZ[tSide]);
-		}
-	}
+
+	// 注释掉避免后续更新意外调用
+//	public void updateLightValue() {/* REMOVED */}
 	
 	public boolean shouldCheckWeakPower(byte aSide) {
 		return F;

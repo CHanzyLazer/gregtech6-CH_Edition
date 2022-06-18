@@ -76,6 +76,7 @@ import gregapi.tileentity.*;
 import gregapi.tileentity.inventories.ITileEntityBookShelf;
 import gregapi.util.*;
 import gregapi.worldgen.GT6WorldGenerator;
+import gregtechCH.data.CS_CH;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHugeMushroom;
 import net.minecraft.block.BlockJukebox.TileEntityJukebox;
@@ -202,7 +203,7 @@ public abstract class GT_API_Proxy extends Abstract_Proxy implements IGuiHandler
 	
 	@Override
 	public void onProxyBeforeServerStarted(Abstract_Mod aMod, FMLServerStartedEvent aEvent) {
-		SERVER_TIME = 0;
+		CS_CH.RESET_SERVER_TIME();
 		MultiTileEntityRegistry.onServerStart();
 	}
 	
@@ -235,8 +236,10 @@ public abstract class GT_API_Proxy extends Abstract_Proxy implements IGuiHandler
 			
 			if (aEvent.phase == Phase.START) {
 				SYNC_SECOND = (SERVER_TIME % 20 == 0);
-				
-				if (SERVER_TIME++ == 0) {
+
+				long pSERVER_TIME = SERVER_TIME;
+				CS_CH.UPDATE_SERVER_TIME();
+				if (pSERVER_TIME == 0) {
 					// Unification Stuff
 					HashSetNoNulls<ItemStack> tStacks = new HashSetNoNulls<>(10000);
 					

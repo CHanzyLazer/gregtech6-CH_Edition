@@ -44,7 +44,6 @@ import gregapi.render.ITexture;
 import gregapi.tileentity.ITileEntityAdjacentInventoryUpdatable;
 import gregapi.tileentity.ITileEntityFunnelAccessible;
 import gregapi.tileentity.ITileEntityTapAccessible;
-import gregapi.tileentity.base.TileEntityBase07Paintable;
 import gregapi.tileentity.base.TileEntityBase09FacingSingle;
 import gregapi.tileentity.data.ITileEntityGibbl;
 import gregapi.tileentity.data.ITileEntityProgress;
@@ -91,8 +90,18 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 	public ITileEntityMultiBlockController mTarget = null;
 	
 	protected IIconContainer[][] mTextures = L1L6_IICONCONTAINER;
-	
-	public short mDesign = 0;
+
+	// 用 private 封装防止意料外的修改
+	private short mDesign = 0;
+	// GTCH, 用于子类重写实现在结构改变时更新不透明度
+	private void setDesignInternal(short aDesign) {
+		if (aDesign == mDesign) return;
+		int tOldOpacity = getLightOpacity();
+		mDesign = aDesign;
+		if (tOldOpacity == getLightOpacity()) return;
+		updateLightOpacity(tOldOpacity); // 改为强制更新的版本来避免更新失效
+	}
+
 	public int mMode = 0;
 	
 	public static final int
@@ -142,7 +151,7 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 	public void readFromNBT2(NBTTagCompound aNBT) {
 		super.readFromNBT2(aNBT);
 		if (aNBT.hasKey(NBT_TARGET)) {mTargetPos = new ChunkCoordinates(UT.Code.bindInt(aNBT.getLong(NBT_TARGET_X)), UT.Code.bindInt(aNBT.getLong(NBT_TARGET_Y)), UT.Code.bindInt(aNBT.getLong(NBT_TARGET_Z)));}
-		if (aNBT.hasKey(NBT_DESIGN)) mDesign = aNBT.getShort(NBT_DESIGN);
+		if (aNBT.hasKey(NBT_DESIGN)) mDesign = aNBT.getShort(NBT_DESIGN); // NBT 修改会有统一的更新和优化，不需要在这里再次调用
 		if (aNBT.hasKey(NBT_MODE)) mMode = aNBT.getInteger(NBT_MODE);
 		
 		if (CODE_CLIENT) {
@@ -232,13 +241,17 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 	// 图像部分
 	// 技术原因所有图像情况还是只能都放在这里
 	public static final byte
-			  FLUID_EMITTER 		= -1	// 仅在主方块背面绘制的流体输出
-			, ENERGY_EMITTER_RU 	= -3	// 仅在主方块背面绘制的RU输出
+			  TRANSPARENT 			= -1	// 透明多方快部件，这里方便起见不考虑方向
+			, FLUID_EMITTER 		= -2	// 仅在主方块背面绘制的流体输出
+			, ENERGY_EMITTER_RU 	= -4	// 仅在主方块背面绘制的RU输出
 			;
+
+	// GTCH, 需要在其是透明部件时设置透光
+	@Override public int getLightOpacity() {return mDesign == TRANSPARENT ? LIGHT_OPACITY_WATER : super.getLightOpacity();}
 	
 	public boolean setDesign(int aDesign) {
 		if (aDesign != mDesign) {
-			mDesign = (short)aDesign;
+			setDesignInternal((short)aDesign);
 			refreshVisual();
 			return T;
 		}
@@ -278,6 +291,7 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 	@Override
 	public ITexture getTexture2(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
 		if (mDesign >= 0 && mDesign < mTextures.length) return aShouldSideBeRendered[aSide] ? BlockTextureMulti.get(BlockTextureDefault.get(mTextures[mDesign][FACES_TBS[aSide]], mRGBa), BlockTextureDefault.get(mTextures[mDesign][FACES_TBS[aSide]+3])) : null;
+		if (mDesign == TRANSPARENT) return null;
 		if (mDesign <= -1) {
 			return aShouldSideBeRendered[aSide] ? BlockTextureMulti.get(BlockTextureDefault.get(mTextures[0][FACES_TBS[aSide]], mRGBa), getStructurePartTexture(aBlock, aRenderPass, aSide, aShouldSideBeRendered)) : null;
 		}
@@ -330,7 +344,7 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 	}
 	
 	@Override public byte getVisualData() {return (byte)mDesign;}
-	@Override public void setVisualData(byte aData) {mDesign = aData;}
+	@Override public void setVisualData(byte aData) {setDesignInternal(aData);}
 
 	// 用于我的额外的图像信息，朝向，是否在运行，等等
 	public byte getVisualData_CH() {return (byte)(mPartFacing & 7);}

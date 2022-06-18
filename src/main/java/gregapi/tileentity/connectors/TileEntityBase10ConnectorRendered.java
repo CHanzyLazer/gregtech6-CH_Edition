@@ -49,7 +49,6 @@ import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.util.UT;
 import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -58,19 +57,28 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.input.Keyboard;
 
 /**
  * @author Gregorius Techneticies
  */
 public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09Connector implements ITileEntityFoamable, IMTE_GetPlayerRelativeBlockHardness, IMTE_IgnorePlayerCollisionWhenPlacing, IMTE_GetSelectedBoundingBoxFromPool, IMTE_SetBlockBoundsBasedOnState {
 	public float mDiameter = 1.0F;
-	public boolean mTransparent = F, mIsGlowing = F, mContactDamage = F, mFoam = F, mFoamDried = F, mOwnable = F;
+	public boolean mTransparent = F, mIsGlowing = F, mContactDamage = F, mFoam = F, mOwnable = F;
+	// 用 private 封装防止意料外的修改
+	private boolean mFoamDried = F;
+	public boolean isFoamDried() {return mFoamDried;}
+	// GTCH, 用于在干掉后添加不透明度更新
+	private void setFoamDried(boolean aFoamDried) {
+		if (aFoamDried == mFoamDried) return;
+		int tOldOpacity = getLightOpacity();
+		mFoamDried = aFoamDried;
+		updateLightOpacity(tOldOpacity);
+	}
 
 	// GTCH, 用于额外长度连接的渲染，仅客户端有用
 	protected float[] mCRLengths = new float[6], mCRDiameters = new float[6];
 	protected boolean mCROut = F;
-	protected final static float MARK_LENGTH = 0.002F;
+	protected final static float MARK_LENGTH = UT_CH.Code.RENDER_EPS * 2.0F;
 	protected boolean mCRDataUpdated = F;
 	protected long oTimer = 0;
 	
@@ -78,10 +86,10 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 	public void readFromNBT2(NBTTagCompound aNBT) {
 		super.readFromNBT2(aNBT);
 		if (aNBT.hasKey(NBT_COLOR+".foam")) mRGBaFoam = aNBT.getInteger(NBT_COLOR+".foam");
-		if (aNBT.hasKey(NBT_DIAMETER)) mDiameter = Math.max(PX_P[2], Math.min(PX_N[0], (float)aNBT.getDouble(NBT_DIAMETER)));
-		if (aNBT.hasKey(NBT_TRANSPARENT)) mTransparent = aNBT.getBoolean(NBT_TRANSPARENT);
+		if (aNBT.hasKey(NBT_DIAMETER)) mDiameter = Math.max(PX_P[2], Math.min(PX_N[0], (float)aNBT.getDouble(NBT_DIAMETER))); // NBT 修改会有统一的更新和优化，不需要在这里再次调用
+		if (aNBT.hasKey(NBT_TRANSPARENT)) mTransparent = aNBT.getBoolean(NBT_TRANSPARENT); // NBT 修改会有统一的更新和优化，不需要在这里再次调用
 		if (aNBT.hasKey(NBT_CONTACTDAMAGE)) mContactDamage = aNBT.getBoolean(NBT_CONTACTDAMAGE);
-		if (aNBT.hasKey(NBT_FOAMDRIED)) mFoamDried = aNBT.getBoolean(NBT_FOAMDRIED);
+		if (aNBT.hasKey(NBT_FOAMDRIED)) mFoamDried = aNBT.getBoolean(NBT_FOAMDRIED); // NBT 修改会有统一的更新和优化，不需要在这里再次调用
 		if (aNBT.hasKey(NBT_FOAMED)) mFoam = aNBT.getBoolean(NBT_FOAMED);
 		if (aNBT.hasKey(NBT_OWNABLE)) mOwnable = aNBT.getBoolean(NBT_OWNABLE);
 		if (aNBT.hasKey(NBT_OWNER) && !OWNERSHIP_RESET) mOwner = UUID.fromString(aNBT.getString(NBT_OWNER));
@@ -119,11 +127,11 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 				mCRLengths[tSide] = getConnectorLength(tSide, tDelegator);
 				mCRDiameters[tSide] = getConnectorDiameter(tSide, tDelegator);
 				// 让建筑泡沫后管道会露出一部分
-				if (mDiameter < 1.0F && (mFoam || mFoamDried) && mCRLengths[tSide] >= 0.0F) mCRLengths[tSide] = Math.max(mCRLengths[tSide], 0.001F);
+				if (mDiameter < 1.0F && (mFoam || mFoamDried) && mCRLengths[tSide] >= 0.0F) mCRLengths[tSide] = Math.max(mCRLengths[tSide], UT_CH.Code.RENDER_EPS);
 				// 让巨型管道和干建筑泡沫接小管道时连接面能正确渲染
-				if ((mDiameter >= 1.0F || driedFoam(tSide)) && mCRDiameters[tSide] < mDiameter && mCRLengths[tSide] >= 0.0F) mCRLengths[tSide] = Math.max(mCRLengths[tSide], MARK_LENGTH+0.001F);
+				if ((mDiameter >= 1.0F || driedFoam(tSide)) && mCRDiameters[tSide] < mDiameter && mCRLengths[tSide] >= 0.0F) mCRLengths[tSide] = Math.max(mCRLengths[tSide], MARK_LENGTH+UT_CH.Code.RENDER_EPS);
 				// 让巨型管道的加长部分不易出现渲染 bug
-				if (mDiameter >= 1.0F && mCRLengths[tSide] > RENDER_LENGTH && mCRDiameters[tSide] >= 1.0F) mCRDiameters[tSide] = 0.999F;
+				if (mDiameter >= 1.0F && mCRLengths[tSide] > RENDER_LENGTH && mCRDiameters[tSide] >= 1.0F) mCRDiameters[tSide] = 1.0F - UT_CH.Code.RENDER_EPS;
 				mCROut |= mCRLengths[tSide] > MARK_LENGTH;
 			} else {
 				mCRDiameters[tSide] = mDiameter;
@@ -153,7 +161,7 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 		super.onTick2(aTimer, aIsServerSide);
 		
 		if (aIsServerSide && aTimer >= 100 && mFoam && !mFoamDried && rng(5900) == 0) {
-			mFoamDried = T;
+			setFoamDried(T);
 			updateClientData();
 		}
 	}
@@ -164,10 +172,10 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 			if (!hasCovers() && !hasFoam(SIDE_ANY)) {
 				mConnections = (byte)(SBIT_S|SBIT_N);
 				mCRDiameters[SIDE_SOUTH] = mCRDiameters[SIDE_NORTH] = mDiameter;
-				if (mDiameter < 1.0F && mFoam) mCRLengths[SIDE_SOUTH] = mCRLengths[SIDE_NORTH] = 0.001F;
+				if (mDiameter < 1.0F && mFoam) mCRLengths[SIDE_SOUTH] = mCRLengths[SIDE_NORTH] = UT_CH.Code.RENDER_EPS;
 			} else {
 				for (byte tSide : ALL_SIDES_VALID) mCRDiameters[tSide] = mDiameter;
-				if (driedFoam(SIDE_ANY)) for (byte tSide : ALL_SIDES_VALID) if (connected(tSide)) mCRLengths[tSide] = 0.001F;
+				if (driedFoam(SIDE_ANY)) for (byte tSide : ALL_SIDES_VALID) if (connected(tSide)) mCRLengths[tSide] = UT_CH.Code.RENDER_EPS;
 			}
 		} else
 		// 在 render 的部分进行数据更新，放弃了原本的优化思路（其实这些优化都没什么用）
@@ -199,7 +207,7 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 		// GTCH, 管道的内部的额外部分，有 mark 和 rubber
 		if (aRenderPass <= 6 && aRenderPass >= 1) {
 			// 干掉的建筑泡沫专门讨论
-			if (driedFoam((byte)(aRenderPass-1))) return setBlockBoundsSide(aBlock, (byte)(aRenderPass-1), mDiameter, 0.0F, 0.001F);
+			if (driedFoam((byte)(aRenderPass-1))) return setBlockBoundsSide(aBlock, (byte)(aRenderPass-1), mDiameter, 0.0F, UT_CH.Code.RENDER_EPS);
 			return setBlockBoundsSide(aBlock, (byte)(aRenderPass-1), mCRDiameters[aRenderPass-1], (1.0F- mCRDiameters[aRenderPass-1])/2.0F, mCRLengths[aRenderPass-1]<=MARK_LENGTH?mCRLengths[aRenderPass-1]:0.0F);
 		}
 		// GTCH, 处理超出方块的材质
@@ -309,7 +317,18 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 		return tCSurface;
 	}
 	
-	@Override public int getLightOpacity() {return mFoamDried ? LIGHT_OPACITY_MAX : mTransparent ? mDiameter >= 1.0F ? LIGHT_OPACITY_WATER : mDiameter > 0.5F ? LIGHT_OPACITY_LEAVES : LIGHT_OPACITY_NONE : mDiameter >= 1.0F ? LIGHT_OPACITY_MAX : mDiameter > 0.5F ? LIGHT_OPACITY_WATER : LIGHT_OPACITY_LEAVES;}
+	@Override public int getLightOpacity() {
+		if (mFoamDried) return LIGHT_OPACITY_MAX;
+		if (mTransparent) {
+			if (mDiameter >= 1.0F) return LIGHT_OPACITY_WATER;
+			if (mDiameter > 0.5F) return LIGHT_OPACITY_LEAVES;
+			return LIGHT_OPACITY_NONE;
+		}
+		if (mDiameter >= 1.0F) return LIGHT_OPACITY_MAX;
+		if (mDiameter > 0.5F) return LIGHT_OPACITY_WATER;
+		return LIGHT_OPACITY_LEAVES;
+	}
+
 	@Override public boolean ignorePlayerCollisionWhenPlacing(ItemStack aStack, EntityPlayer aPlayer, World aWorld, int aX, int aY, int aZ, byte aSide, float aHitX, float aHitY, float aHitZ) {return !mFoam && mDiameter < 1.0F;}
 	
 	@Override
@@ -384,7 +403,7 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 	@Override
 	public boolean applyFoam(byte aSide, Entity aPlayer, short[] aCFoamRGB, byte aVanillaColor, boolean aOwned) {
 		if (mDiameter >= 1.0F || mFoam || mFoamDried || isClientSide() || !allowInteraction(aPlayer)) return F;
-		mFoam = T; mFoamDried = F; mOwnable = aOwned;
+		mFoam = T; setFoamDried(F); mOwnable = aOwned;
 		if (mOwnable && aPlayer != null && !OWNERSHIP_RESET) mOwner = aPlayer.getUniqueID();
 		mRGBaFoam = UT_CH.Code.getPaintRGB(UT.Code.getRGBInt(MT.ConstructionFoam.fRGBaSolid), UT.Code.getRGBInt(aCFoamRGB));
 		updateClientData();
@@ -394,7 +413,7 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 	@Override
 	public boolean dryFoam(byte aSide, Entity aPlayer) {
 		if (!mFoam || mFoamDried || isClientSide()) return F;
-		mFoam = T; mFoamDried = T;
+		mFoam = T; setFoamDried(T);
 		updateClientData();
 		return T;
 	}
@@ -402,7 +421,7 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 	@Override
 	public boolean removeFoam(byte aSide, Entity aPlayer) {
 		if (!mFoam || !mFoamDried || isClientSide() || !allowInteraction(aPlayer)) return F;
-		mFoam = F; mFoamDried = F; mOwnable = F; mOwner = null;
+		mFoam = F; setFoamDried(F); mOwnable = F; mOwner = null;
 		mRGBaFoam = UNCOLORED;
 		updateClientData();
 		return T;
@@ -434,7 +453,7 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 	@Override
 	public void setDirectionData(byte aData) {
 		mConnections = (byte)(aData & 63);
-		mFoamDried = ((aData & (byte)128) != 0);
+		setFoamDried((aData & (byte)128) != 0);
 		if (mFoamDried) {
 			mOwnable = ((aData & 64) != 0);
 			mFoam = T;
@@ -484,8 +503,8 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 	public float getConnectorLength(byte aConnectorSide, DelegatorTileEntity<TileEntity> aDelegator) {
 		float rLength = 0;
 		if (mDiameter < 1.0F && hasCovers() && mCovers.mBehaviours[aConnectorSide] != null) {
-			if (mCovers.mBehaviours[aConnectorSide].showsConnectorFront(aConnectorSide, mCovers)) rLength = +0.001F;
-			else rLength = -0.001F;
+			if (mCovers.mBehaviours[aConnectorSide].showsConnectorFront(aConnectorSide, mCovers)) rLength = +UT_CH.Code.RENDER_EPS;
+			else rLength = -UT_CH.Code.RENDER_EPS;
 		}
 		// 不考虑管道之间相互连接
 		if ((aDelegator.mTileEntity instanceof ITileEntitySurface) && !(aDelegator.mTileEntity instanceof TileEntityBase10ConnectorRendered)) {

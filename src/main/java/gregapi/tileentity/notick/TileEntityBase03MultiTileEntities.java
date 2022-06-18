@@ -100,9 +100,12 @@ public abstract class TileEntityBase03MultiTileEntities extends TileEntityBase02
 		// Read the Default Parameters from NBT.
 		if (aNBT != null) readFromNBT(aNBT);
 	}
-	
+
 	@Override
 	public final void readFromNBT(NBTTagCompound aNBT) {
+		int tOldLight = (this instanceof IMTE_GetLightValue) ? ((IMTE_GetLightValue)this).getLightValue() : 0;
+		int tOldOpacity = (this instanceof IMTE_GetLightOpacity) ? ((IMTE_GetLightOpacity)this).getLightOpacity() : LIGHT_OPACITY_NONE;
+
 		// Check if this is a World/Chunk Loading Process calling readFromNBT.
 		if (mMTEID == W || mMTERegistry == W) {
 			// Yes it is, so read the ID Tags first.
@@ -127,6 +130,19 @@ public abstract class TileEntityBase03MultiTileEntities extends TileEntityBase02
 		if (aNBT.hasKey("display")) mCustomName = aNBT.getCompoundTag("display").getString("Name");
 		// And now your custom readFromNBT.
 		try {readFromNBT2(aNBT);} catch(Throwable e) {e.printStackTrace(ERR);}
+
+		if (this instanceof IMTE_GetLightValue) {
+			// 加载 NBT 后亮度发生变化统一更新
+			if (((IMTE_GetLightValue)this).getLightValue() != tOldLight) {
+				updateLightValueMark();
+			}
+		}
+		if (this instanceof IMTE_GetLightOpacity) {
+			// 加载 NBT 后透光度发生变化统一更新
+			if (((IMTE_GetLightOpacity)this).getLightOpacity() != tOldOpacity) {
+				updateLightOpacityMark(tOldOpacity);
+			}
+		}
 	}
 	
 	public void readFromNBT2(NBTTagCompound aNBT) {/**/}

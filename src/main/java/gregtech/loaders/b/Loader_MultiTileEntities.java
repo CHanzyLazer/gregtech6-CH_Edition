@@ -1843,7 +1843,7 @@ public class Loader_MultiTileEntities implements Runnable {
 		CR.shaped(OP.pipeLarge  .mat(MT.Wood, 1), CR.DEF_REV_NCC, "WWs", "W W", "rWW", 'W', OD.plankAnyWood);
 		CR.shaped(OP.pipeHuge   .mat(MT.Wood, 1), CR.DEF_REV_NCC, "  s", "W W", "r  ", 'W', OD.beamWood);
 		
-		aClass = MultiTileEntityWireRedstone.class;
+//		aClass = MultiTileEntityWireRedstone.class;
 		aMat = MT.RedAlloy;
 		OreDictManager.INSTANCE.setTarget_(OP.wireGt01 , aMat, aRegistry.add(aMat.getLocal() + " Wire"    , "Redstone Wires", 27000, 27050, MultiTileEntityWireRedstone         .class, aMat.mToolQuality, 64, aMetalWires, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[2], NBT_PIPELOSS, ITileEntityRedstoneWire.MAX_RANGE / 16)), T, F, T);
 		OreDictManager.INSTANCE.setTarget_(OP.cableGt01, aMat, aRegistry.add(aMat.getLocal() + " Cable"   , "Redstone Wires", 27006, 27050, MultiTileEntityWireRedstoneInsulated.class, aMat.mToolQuality, 64, aMetalWires, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[4], NBT_PIPELOSS, ITileEntityRedstoneWire.MAX_RANGE / 16)), T, F, T);

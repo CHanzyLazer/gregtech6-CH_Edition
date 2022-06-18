@@ -203,7 +203,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	public NBTTagCompound writeItemNBT2(NBTTagCompound aNBT) {
 		// 用于在拆下后保留橡胶圈
 		UT.NBT.setBoolean(aNBT, NBT_ADD_BOOL + ".fc", mFlowControl);
-		if (mFoamDried){
+		if (isFoamDried()){
 			UT.NBT.setNumber(aNBT, NBT_ADD_BYTE + ".dir", mFluidDir);
 			UT.NBT.setNumber(aNBT, NBT_ADD_BYTE + ".mode", mFluidMode.ordinal());
 			UT.NBT.setNumber(aNBT, NBT_ADD_BYTE + ".limit", mCapacityLimit);
@@ -344,7 +344,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		// GTCH, 直接扳手改为显示状态
 		if (aTool.equals(TOOL_magnifyingglass)) {
 			checkConnection();
-			if (mFoamDried) {
+			if (isFoamDried()) {
 				mMarkBuffer = 128;
 				mOutMark = T;
 			}
@@ -489,7 +489,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 			mHasToAddTimer = F;
 		}
 		if (aIsServerSide) {
-			if (mFoamDried && mOutMark) {
+			if (isFoamDried() && mOutMark) {
 				--mMarkBuffer;
 				if (mMarkBuffer < 0) {
 					mOutMark = F;
@@ -1132,7 +1132,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	@Override public boolean canDrop(int aInventorySlot) {return F;}
 	@Override public boolean isObstructingBlockAt(byte aSide) {return mBlocking;} // Btw, Wires have this but Pipes don't. This is because Wires are flexible, while Pipes aren't.
 	
-	@Override public void onEntityCollidedWithBlock(Entity aEntity) {if (mContactDamage && !mFoamDried) UT.Entities.applyTemperatureDamage(aEntity, mTemperature, 1, 5.0F);}
+	@Override public void onEntityCollidedWithBlock(Entity aEntity) {if (mContactDamage && !isFoamDried()) UT.Entities.applyTemperatureDamage(aEntity, mTemperature, 1, 5.0F);}
 	
 	@Override
 	protected IFluidTank getFluidTankFillable2(byte aSide, FluidStack aFluidToFill) {
@@ -1212,7 +1212,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 			tMark = BlockTextureDefault.get(Textures.BlockIcons.ARROWS[mFluidMode.ordinal()][aSide][mFluidDir], mRGBaMark, mIsGlowing);
 			if (mFlowControl && mAllowSwitchFC) {
 				// 专门处理干掉的情况，干掉时不再需要侧边的橡胶材质
-				if (mFoamDried) tRubber = getTextureRubber(aDiameter);
+				if (isFoamDried()) tRubber = getTextureRubber(aDiameter);
 				else tRubber = BlockTextureDefault.get(Textures.BlockIcons.PIPE_RESTRICTOR, mRGBaRubber, mIsGlowing);
 			}
 		}
@@ -1257,7 +1257,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	// GTCH，图像动画数据
 	@Override
 	protected int getRenderPasses3(Block aBlock, boolean[] aShouldSideBeRendered) {
-		if (worldObj == null && mFoamDried) mRGBaMark = UT_CH.Code.getMarkRGB(mRGBa);
+		if (worldObj == null && isFoamDried()) mRGBaMark = UT_CH.Code.getMarkRGB(mRGBa);
 		return super.getRenderPasses3(aBlock, aShouldSideBeRendered);
 	}
 	@Override public boolean onTickCheck(long aTimer) {return mFluidDir != oFluidDir || mFluidMode != oFluidMode || mFlowControl != oFlowControl || mOutMark != oOutMark || super.onTickCheck(aTimer);}

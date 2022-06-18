@@ -287,7 +287,7 @@ public abstract class MultiTileEntityLargeMotor_CH extends TileEntityBase10Multi
             }
             return tSuccess;
         }
-        return mStructureOkay;
+        return isStructureOkay();
     }
 
     protected void doLengthChange() {
@@ -313,15 +313,15 @@ public abstract class MultiTileEntityLargeMotor_CH extends TileEntityBase10Multi
     public boolean isInsideStructure(int aX, int aY, int aZ) {
         return
                 aX >= xCoord-(SIDE_X_NEG==mFacing?0:SIDE_X_POS==mFacing?(mLength-1):1) &&
-                        aY >= yCoord-(SIDE_Y_NEG==mFacing?0:SIDE_Y_POS==mFacing?(mLength-1):1) &&
-                        aZ >= zCoord-(SIDE_Z_NEG==mFacing?0:SIDE_Z_POS==mFacing?(mLength-1):1) &&
-                        aX <= xCoord+(SIDE_X_POS==mFacing?0:SIDE_X_NEG==mFacing?(mLength-1):1) &&
-                        aY <= yCoord+(SIDE_Y_POS==mFacing?0:SIDE_Y_NEG==mFacing?(mLength-1):1) &&
-                        aZ <= zCoord+(SIDE_Z_POS==mFacing?0:SIDE_Z_NEG==mFacing?(mLength-1):1);
+                aY >= yCoord-(SIDE_Y_NEG==mFacing?0:SIDE_Y_POS==mFacing?(mLength-1):1) &&
+                aZ >= zCoord-(SIDE_Z_NEG==mFacing?0:SIDE_Z_POS==mFacing?(mLength-1):1) &&
+                aX <= xCoord+(SIDE_X_POS==mFacing?0:SIDE_X_NEG==mFacing?(mLength-1):1) &&
+                aY <= yCoord+(SIDE_Y_POS==mFacing?0:SIDE_Y_NEG==mFacing?(mLength-1):1) &&
+                aZ <= zCoord+(SIDE_Z_POS==mFacing?0:SIDE_Z_NEG==mFacing?(mLength-1):1);
     }
     @Override
     public int getRenderPasses2(Block aBlock, boolean[] aShouldSideBeRendered) {
-        return mStructureOkay ? 2 : 1;
+        return isStructureOkay() ? 2 : 1;
     }
     @Override
     public boolean setBlockBounds2(Block aBlock, int aRenderPass, boolean[] aShouldSideBeRendered) {
@@ -407,7 +407,7 @@ public abstract class MultiTileEntityLargeMotor_CH extends TileEntityBase10Multi
     public final void onTick2(long aTimer, boolean aIsServerSide) {
         super.onTick2(aTimer, aIsServerSide);
         checkStructure(F);
-        if (aIsServerSide && mStructureOkay) {
+        if (aIsServerSide && isStructureOkay()) {
             // 转换能量
             convert();
             // 状态判断
@@ -434,7 +434,7 @@ public abstract class MultiTileEntityLargeMotor_CH extends TileEntityBase10Multi
             emitEnergy();
             // 多方快不会淋雨损坏
         }
-        if (!mStructureOkay) {
+        if (!isStructureOkay()) {
             // 结构破坏，停止机器
             stop();
         }

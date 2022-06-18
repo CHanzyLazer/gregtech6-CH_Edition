@@ -90,7 +90,7 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 
 	@Override
 	public NBTTagCompound writeItemNBT2(NBTTagCompound aNBT) {
-		if (mFoamDried){
+		if (isFoamDried()){
 			aNBT.setByte(NBT_ENERGY_EMITTED_SIDES, mEnergyDir);
 		}
 		return super.writeItemNBT2(aNBT);
@@ -137,7 +137,7 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 		}
 		if (aTool.equals(TOOL_magnifyingglass)) {
 			checkConnection();
-			if (mFoamDried) {
+			if (isFoamDried()) {
 				mMarkBuffer = 128;
 				mOutMark = T;
 			}
@@ -168,7 +168,7 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 			mPowerLast = mTransferredPower;
 			mStateSpeed = mTransferredPower = 0;
 
-			if (mFoamDried && mOutMark) {
+			if (isFoamDried() && mOutMark) {
 				--mMarkBuffer;
 				if (mMarkBuffer < 0) {
 					mOutMark = F;
@@ -180,7 +180,7 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 
 	@Override
 	protected int getRenderPasses3(Block aBlock, boolean[] aShouldSideBeRendered) {
-		if (worldObj == null && mFoamDried) mRGBaMark = UT_CH.Code.getMarkRGB(mRGBa);
+		if (worldObj == null && isFoamDried()) mRGBaMark = UT_CH.Code.getMarkRGB(mRGBa);
 		return super.getRenderPasses3(aBlock, aShouldSideBeRendered);
 	}
 	

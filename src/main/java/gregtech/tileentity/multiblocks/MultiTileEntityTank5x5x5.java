@@ -69,7 +69,7 @@ public abstract class MultiTileEntityTank5x5x5 extends MultiTileEntityTank {
 			}
 			return tSuccess;
 		}
-		return mStructureOkay;
+		return isStructureOkay();
 	}
 	
 	@Override

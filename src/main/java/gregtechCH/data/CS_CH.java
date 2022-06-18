@@ -14,6 +14,39 @@ import static gregapi.data.CS.*;
 import static gregapi.data.OP.*;
 
 public class CS_CH {
+    // 用于实现限制每 tick 的函数运行次数
+    private static long LAST_TIME = 0; // ms 记录上一 tick 的时间，用于统计本 tick 已经花费了多少时间
+    private static final int MIN_HANDLES = 1;
+    private static final long MAX_HANDLE_TIME = 10; // ms 最多处理的时间
+    private static int sCurrentHandles = 0;
+
+    public static void pushHandle() {
+        ++sCurrentHandles;
+    }
+    // 如果本 tick 花费过多时间并且已经达到了最低需要的任务数则不能继续提交任务
+    public static boolean canPushHandle() {
+        if (sCurrentHandles < MIN_HANDLES) return T;
+        long tTickTime = System.currentTimeMillis() - LAST_TIME;
+        if (tTickTime < MAX_HANDLE_TIME) return T;
+        return F;
+    }
+    // 重写了原本的更新 tick，可以实现一些伪协程。全大写代表不能随便调用
+    public static void RESET_SERVER_TIME() {
+        LAST_TIME = System.currentTimeMillis();
+        SERVER_TIME = 0;
+        sCurrentHandles = 0;
+    }
+    public static void UPDATE_SERVER_TIME() {
+        LAST_TIME = System.currentTimeMillis();
+        ++SERVER_TIME;
+        sCurrentHandles = 0;
+    }
+    public static void UPDATE_CLIENT_TIME() {
+        LAST_TIME = System.currentTimeMillis();
+        ++CLIENT_TIME;
+        sCurrentHandles = 0;
+    }
+
     // 只有 RGB 值的转为 RGBa 加上此值可以比较保险
     public static final int ALPHA_COLOR = 0xff000000;
     // 事先计算的一些方块的颜色，可以避免调用时频繁计算颜色值
@@ -71,7 +104,10 @@ public class CS_CH {
             , NBT_LENGTH_PRE                = "gtch.length.pre"             // Integer, The previous length of turbines. CHanzy
 
             , NBT_ADD_BYTE                  = "gtch.add.byte"               // Byte, The additional byte information that have random name, CHanzy
-            , NBT_ADD_BOOL                  = "gtch.add.bool"            // Boolean, The additional boolean information that have random name, CHanzy
+            , NBT_ADD_BOOL                  = "gtch.add.bool"               // Boolean, The additional boolean information that have random name, CHanzy
+
+            , NBT_LIGHT_VALUE               = "gtch.light.value"            // Byte, The light value of block. CHanzy
+            , NBT_LIGHT_OPACITY             = "gtch.light.opacity"          // Short, The light opacity of block. CHanzy
             ;
 
     public static class DirectoriesGTCH {

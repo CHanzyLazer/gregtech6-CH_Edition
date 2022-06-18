@@ -79,6 +79,7 @@ import gregapi.util.OM;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
+import gregtechCH.data.CS_CH;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderFallingBlock;
@@ -577,8 +578,8 @@ public class GT_API_Proxy_Client extends GT_API_Proxy {
 			if (tNG) tArray[1] = UT.Code.bind8(tArray[1] - 10);
 			if (tNB) tArray[2] = UT.Code.bind8(tArray[2] - 10);
 			}
-			
-			CLIENT_TIME++;
+
+			CS_CH.UPDATE_CLIENT_TIME();
 		}
 	}
 	

@@ -13,12 +13,42 @@ import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import static gregapi.data.CS.*;
 import static gregtechCH.config.ConfigForge_CH.DATA_GTCH;
 
 public class UT_CH {
+    // 提供一些 STL 常用的或者我需要用到的而 java 未提供的接口
+
+    public static class STL {
+        public static <Entry> void resize(List<Entry> rList, int aNewSize, Class<? extends Entry> aDefaultEntryClass){
+            if (aNewSize < 0)
+                throw new ArrayIndexOutOfBoundsException(aNewSize);
+            int oSize = rList.size();
+            if (oSize == aNewSize) return;
+            if (aNewSize < oSize) {
+                rList.subList(aNewSize, oSize).clear();
+            } else {
+                try {
+                    for (int tSize = oSize; tSize != aNewSize; ++tSize) {
+                        rList.add(aDefaultEntryClass.newInstance());
+                    }
+                } catch (InstantiationException | IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+        public static <Entry> Entry adaptive_get(List<Entry> rList, int aIdx, Class<? extends Entry> aDefaultEntryClass) {
+            if (aIdx >= rList.size()) resize(rList, aIdx+1, aDefaultEntryClass);
+            return rList.get(aIdx);
+        }
+
+    }
+
     public static class Code {
         public final static float RENDER_LENGTH = 0.01F;
         public final static float RENDER_EPS = 0.001F;

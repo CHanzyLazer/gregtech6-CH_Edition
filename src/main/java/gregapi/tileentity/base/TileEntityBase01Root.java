@@ -48,8 +48,9 @@ import gregapi.tileentity.multiblocks.MultiTileEntityMultiBlockPart;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
-import gregtechCH.data.CS_CH;
+import gregtechCH.GTCH_Main;
 import gregtechCH.fluid.IFluidHandler_CH;
+import gregtechCH.tileentity.ITEScheduledUpdate_CH;
 import gregtechCH.util.UT_CH;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
@@ -88,7 +89,7 @@ import static gregapi.data.CS.*;
 @Optional.InterfaceList(value = {
   @Optional.Interface(iface = "appeng.api.movable.IMovableTile", modid = ModIDs.AE)
 })
-public abstract class TileEntityBase01Root extends TileEntity implements ITileEntity, ITileEntityGUI, IMovableTile {
+public abstract class TileEntityBase01Root extends TileEntity implements ITEScheduledUpdate_CH, ITileEntity, ITileEntityGUI, IMovableTile {
 	/** If this TileEntity checks for the Chunk to be loaded before returning World based values. If this is set to T, this TileEntity will not cause worfin' Chunks, uhh I mean orphan Chunks. */
 	public boolean mIgnoreUnloadedChunks = T;
 	
@@ -384,9 +385,9 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 	public void updateEntity() {
 		// Well, if the TileEntity gets ticked, it is alive.
 		if (isDead()) setAlive();
-		
+
 		if (isServerSide() && !mIsAddedToEnet && mDoEnetCheck) try {loadIntoEnet();} catch(Throwable e) {mDoEnetCheck = F;}
-		
+
 		if (mExplosionStrength > 0) {
 			setToAir();
 			if (mExplosionStrength < 1) {
@@ -400,27 +401,29 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 
 		// GTCH, 将 mark 的计划进行加入计划，用来避免初始化未完成的情况
 		if (mMarkedSchedule && !mHadSchedule) {
+			GTCH_Main.pushScheduled(this);
 			mHadSchedule = T;
 			mMarkedSchedule = F;
 		}
-		if (mHadSchedule) {
-			doSchedule();
-		}
 
-		if (mDoesBlockUpdate) doBlockUpdate();
+		if (mDoesBlockUpdate) doBlockUpdate(); // 暂时保留任何时候都会调用
 	}
 
-	protected void doSchedule() {
+	// 在这里执行计划任务，检测是否能够继续提交任务，不能则继续提交计划任务
+	@Override
+	public void onScheduledUpdate(boolean aIsServerSide) {
 		if (!mHadSchedule) return;
-		// 在这里执行计划任务，检测是否能够继续提交任务，不能则顺延到下一个 tick
-		if (CS_CH.canPushHandle()) {
-			CS_CH.pushHandle();
+		// 对于服务端不进行顺延
+		if (aIsServerSide || GTCH_Main.canPushHandle()) {
+			GTCH_Main.pushHandle();
 			for (Updater tUpdater : ScheduleList) {
 				tUpdater.doUpdate(worldObj, xCoord, yCoord, zCoord);
 			}
 			ScheduleList.clear();
 			mScheduleOldOpacity = -1;
 			mHadSchedule = F;
+		} else {
+			GTCH_Main.pushScheduled(this, 2); // 失败则延迟 2 tick
 		}
 	}
 
@@ -458,7 +461,7 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 		ScheduleList.add(aUpdater);
 		if (!mHadSchedule) {
 			mHadSchedule = T;
-			doSchedule();
+			GTCH_Main.pushScheduled(this);
 		}
 	}
 
@@ -479,11 +482,9 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 		return 0;
 	}
 
-	// GTCH, 标记 final 防止意料外的重写
 	@Override
 	public final boolean canUpdate() {
-		// 被标记或者有计划的一定需要进行更新
-		return mHadSchedule || mMarkedSchedule || (mIsTicking && mShouldRefresh);
+		return mIsTicking && mShouldRefresh;
 	}
 	
 	@Override

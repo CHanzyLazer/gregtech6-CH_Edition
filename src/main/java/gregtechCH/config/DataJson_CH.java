@@ -13,7 +13,7 @@ import java.nio.file.StandardOpenOption;
 
 import static gregapi.data.CS.OUT;
 import static gregapi.data.CS.T;
-import static gregtechCH.config.ConfigJson_CH.getModNameForLog;
+import static gregtechCH.GTCH_Main.getModNameForLog;
 
 public abstract class DataJson_CH {
     public abstract void initDefault();

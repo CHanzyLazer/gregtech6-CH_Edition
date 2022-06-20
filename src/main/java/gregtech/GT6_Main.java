@@ -58,7 +58,7 @@ import gregtech.items.tools.early.GT_Tool_Scoop;
 import gregtech.loaders.a.*;
 import gregtech.loaders.b.*;
 import gregtech.loaders.c.*;
-import gregtechCH.config.ConfigJson_CH;
+import gregtechCH.GTCH_Main;
 import gregtechCH.loaders.b.Loader_MultiTileEntities_CH;
 import ic2.core.Ic2Items;
 import net.minecraft.block.Block;
@@ -97,7 +97,7 @@ public class GT6_Main extends Abstract_Mod {
 	@Override
 	public void onModPreInit2(FMLPreInitializationEvent aEvent) {
 		//CH config pre init
-		ConfigJson_CH.preInit();
+		GTCH_Main.preInit();
 
 		try {
 			LoadController tLoadController = ((LoadController)UT.Reflection.getFieldContent(Loader.instance(), "modController", T, T));
@@ -326,7 +326,7 @@ public class GT6_Main extends Abstract_Mod {
 	@Override
 	public void onModInit2(FMLInitializationEvent aEvent) {
 		//CH config init config
-		ConfigJson_CH.init();
+		GTCH_Main.init();
 
 		for (FluidContainerData tData : FluidContainerRegistry.getRegisteredFluidContainerData()) if (tData.filledContainer.getItem() == Items.potionitem && ST.meta_(tData.filledContainer) == 0) {tData.fluid.amount = 0; break;}
 		
@@ -351,7 +351,7 @@ public class GT6_Main extends Abstract_Mod {
 	@Override
 	public void onModPostInit2(FMLPostInitializationEvent aEvent) {
 		//CH config post init config
-		ConfigJson_CH.postInit();
+		GTCH_Main.postInit();
 
 		ItemStack tLignite = ST.make(MD.UB, "ligniteCoal", 1, 0);
 		if (ST.valid(tLignite)) CR.remove(tLignite, tLignite, tLignite, tLignite, tLignite, tLignite, tLignite, tLignite, tLignite);

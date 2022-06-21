@@ -401,7 +401,7 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITESche
 
 		// GTCH, 将 mark 的计划进行加入计划，用来避免初始化未完成的情况
 		if (mMarkedSchedule && !mHadSchedule) {
-			GTCH_Main.pushScheduled(this);
+			GTCH_Main.pushScheduled(isServerSide(), this);
 			mHadSchedule = T;
 			mMarkedSchedule = F;
 		}
@@ -413,9 +413,8 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITESche
 	@Override
 	public void onScheduledUpdate(boolean aIsServerSide) {
 		if (!mHadSchedule) return;
-		// 对于服务端不进行顺延
-		if (aIsServerSide || GTCH_Main.canPushHandle()) {
-			GTCH_Main.pushHandle();
+		if (GTCH_Main.canPushHandle(aIsServerSide)) {
+			GTCH_Main.pushHandle(aIsServerSide);
 			for (Updater tUpdater : ScheduleList) {
 				tUpdater.doUpdate(worldObj, xCoord, yCoord, zCoord);
 			}
@@ -423,7 +422,7 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITESche
 			mScheduleOldOpacity = -1;
 			mHadSchedule = F;
 		} else {
-			GTCH_Main.pushScheduled(this, 2); // 失败则延迟 2 tick
+			GTCH_Main.pushScheduled(aIsServerSide, this, aIsServerSide?0:rng(8)); // 客户端失败则随机延迟 0-8 tick
 		}
 	}
 
@@ -461,7 +460,7 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITESche
 		ScheduleList.add(aUpdater);
 		if (!mHadSchedule) {
 			mHadSchedule = T;
-			GTCH_Main.pushScheduled(this);
+			GTCH_Main.pushScheduled(isServerSide(), this);
 		}
 	}
 

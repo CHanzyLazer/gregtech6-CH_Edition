@@ -247,7 +247,7 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 			;
 
 	// GTCH, 需要在其是透明部件时设置透光
-	@Override public int getLightOpacity() {return mDesign == TRANSPARENT ? LIGHT_OPACITY_WATER : super.getLightOpacity();}
+	@Override public int getLightOpacity() {return mDesign == TRANSPARENT ? LIGHT_OPACITY_NONE : super.getLightOpacity();}
 	
 	public boolean setDesign(int aDesign) {
 		if (aDesign != mDesign) {

@@ -99,6 +99,7 @@ public abstract class TileEntityBase03MultiTileEntities extends TileEntityBase02
 		mMTERegistry = aMTERegistry;
 		// Read the Default Parameters from NBT.
 		if (aNBT != null) readFromNBT(aNBT);
+		initNBTFinish();
 	}
 
 	@Override

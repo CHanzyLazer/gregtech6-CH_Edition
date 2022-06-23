@@ -42,6 +42,8 @@ import gregapi.tileentity.inventories.ITileEntityBookShelf;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
+import gregtechCH.block.IBlockTELightOpacity_CH;
+import gregtechCH.block.IBlockTELightValue_CH;
 import mekanism.api.MekanismAPI;
 import micdoodle8.mods.galacticraft.api.block.IOxygenReliantBlock;
 import net.minecraft.block.Block;
@@ -70,6 +72,7 @@ import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.ForgeEventFactory;
 import openblocks.api.IPaintableBlock;
+import org.jetbrains.annotations.NotNull;
 import vazkii.botania.api.mana.IManaTrigger;
 
 import java.util.*;
@@ -85,7 +88,7 @@ import static gregapi.data.CS.*;
 , @Optional.Interface(iface = "vazkii.botania.api.mana.IManaTrigger", modid = ModIDs.BOTA)
 })
 @SuppressWarnings("deprecation")
-public class MultiTileEntityBlock extends Block implements IBlock, IItemGT, IBlockDebugable, IBlockErrorable, IBlockOnWalkOver, IBlockSealable, IOxygenReliantBlock, IPaintableBlock, IBlockSyncDataAndCoversAndIDs, IRenderedBlock, ITileEntityProvider, IBlockToolable, IBlockRetrievable, IBlockMaterial, IManaTrigger {
+public class MultiTileEntityBlock extends Block implements IBlockTELightOpacity_CH, IBlockTELightValue_CH, IBlock, IItemGT, IBlockDebugable, IBlockErrorable, IBlockOnWalkOver, IBlockSealable, IOxygenReliantBlock, IPaintableBlock, IBlockSyncDataAndCoversAndIDs, IRenderedBlock, ITileEntityProvider, IBlockToolable, IBlockRetrievable, IBlockMaterial, IManaTrigger {
 	private static final Map<String, MultiTileEntityBlock> MULTITILEENTITYBLOCKMAP = new HashMap<>();
 	
 	private final int mHarvestLevelOffset, mHarvestLevelMinimum, mHarvestLevelMaximum;
@@ -324,6 +327,7 @@ public class MultiTileEntityBlock extends Block implements IBlock, IItemGT, IBlo
 
 	// GTCH, 使用专门的成员变量暂存不透光度和亮度的方法来防止实体被卸载的情况
 	private int mTELightOpacity = -1; // -1 表示没有初始化
+	@Override public final void setTELightOpacity(@NotNull IMTE_GetLightOpacity aTE) {mTELightOpacity = UT.Code.bind8(aTE.getLightOpacity());}
 	@Override public final int getLightOpacity(IBlockAccess aWorld, int aX, int aY, int aZ) {
 		TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ);
 		if (aTileEntity instanceof IMTE_GetLightOpacity)
@@ -331,6 +335,7 @@ public class MultiTileEntityBlock extends Block implements IBlock, IItemGT, IBlo
 		return mTELightOpacity>=0?mTELightOpacity:(mOpaque?LIGHT_OPACITY_MAX:LIGHT_OPACITY_NONE); // 目前是没有初始化时使用默认的输出，未来考虑从服务端读取？
 	}
 	private int mTELightValue = -1; // -1 表示没有初始化
+	@Override public final void setTELightValue(@NotNull IMTE_GetLightValue aTE) {mTELightValue = UT.Code.bind4(aTE.getLightValue());}
 	@Override public final int getLightValue(IBlockAccess aWorld, int aX, int aY, int aZ) {
 		TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ);
 		if (aTileEntity instanceof IMTE_GetLightValue)

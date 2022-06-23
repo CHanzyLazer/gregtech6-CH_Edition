@@ -23,6 +23,8 @@ import appeng.api.movable.IMovableTile;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetLightOpacity;
+import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetLightValue;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_IsProvidingStrongPower;
 import gregapi.code.ArrayListNoNulls;
 import gregapi.code.TagData;
@@ -49,6 +51,8 @@ import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
 import gregtechCH.GTCH_Main;
+import gregtechCH.block.IBlockTELightOpacity_CH;
+import gregtechCH.block.IBlockTELightValue_CH;
 import gregtechCH.fluid.IFluidHandler_CH;
 import gregtechCH.threads.ThreadPools;
 import gregtechCH.tileentity.ITEScheduledUpdate_CH;
@@ -475,6 +479,11 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITESche
 	public void updateLightValue() 						{pushAndUpdateSchedule(new UpdaterLightValue());}
 	public void updateLightOpacity(int aOldOpacity) 	{mScheduleOldOpacity = Math.max(aOldOpacity, mScheduleOldOpacity);pushAndUpdateSchedule(new UpdaterLightOpacity(mScheduleOldOpacity));}
 	public void updateLightOpacity() 					{updateLightOpacity(LIGHT_OPACITY_MAX);}
+	// 初始化 NBT 时调用，用于初始化方块不透光度和亮度
+	public final void initNBTFinish() {
+		if (this instanceof IMTE_GetLightValue) 		{Block tBlock = getBlock(getCoords()); if (tBlock instanceof IBlockTELightValue_CH) 	((IBlockTELightValue_CH)tBlock).setTELightValue((IMTE_GetLightValue)this);}
+		if (this instanceof IMTE_GetLightOpacity) 		{Block tBlock = getBlock(getCoords()); if (tBlock instanceof IBlockTELightOpacity_CH) 	((IBlockTELightOpacity_CH)tBlock).setTELightOpacity((IMTE_GetLightOpacity)this);}
+	}
 	
 	@Override
 	public long getTimer() {

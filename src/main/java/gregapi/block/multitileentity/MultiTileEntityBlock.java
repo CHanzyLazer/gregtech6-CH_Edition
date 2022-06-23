@@ -219,7 +219,7 @@ public class MultiTileEntityBlock extends Block implements IBlock, IItemGT, IBlo
 	@Override public final void fillWithRain(World aWorld, int aX, int aY, int aZ) {TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ); if (aTileEntity instanceof IMTE_FillWithRain) ((IMTE_FillWithRain)aTileEntity).fillWithRain(); else super.fillWithRain(aWorld, aX, aY, aZ);}
 	@Override public final boolean hasComparatorInputOverride() {return T;}
 	@Override public final int getComparatorInputOverride(World aWorld, int aX, int aY, int aZ, int aSide) {TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ); return aTileEntity instanceof IMTE_GetComparatorInputOverride ? ((IMTE_GetComparatorInputOverride)aTileEntity).getComparatorInputOverride(UT.Code.side(aSide)) : aTileEntity instanceof IMTE_IsProvidingWeakPower ? ((IMTE_IsProvidingWeakPower)aTileEntity).isProvidingWeakPower(OPOS[aSide]) : super.getComparatorInputOverride(aWorld, aX, aY, aZ, aSide);}
-	@Override public final int getLightValue(IBlockAccess aWorld, int aX, int aY, int aZ) {TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ); return aTileEntity instanceof IMTE_GetLightValue ? UT.Code.bind4(((IMTE_GetLightValue)aTileEntity).getLightValue()) : super.getLightValue(aWorld, aX, aY, aZ);}
+//	@Override public final int getLightValue(IBlockAccess aWorld, int aX, int aY, int aZ) {TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ); return aTileEntity instanceof IMTE_GetLightValue ? UT.Code.bind4(((IMTE_GetLightValue)aTileEntity).getLightValue()) : super.getLightValue(aWorld, aX, aY, aZ);}
 	@Override public final boolean isLadder(IBlockAccess aWorld, int aX, int aY, int aZ, EntityLivingBase aEntity) {TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ); return aTileEntity instanceof IMTE_IsLadder && ((IMTE_IsLadder)aTileEntity).isLadder(aEntity);}
 	@Override public final boolean isNormalCube(IBlockAccess aWorld, int aX, int aY, int aZ) {TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ); return aTileEntity instanceof IMTE_IsNormalCube ? ((IMTE_IsNormalCube)aTileEntity).isNormalCube() : mNormalCube;}
 	@Override public final boolean isReplaceable(IBlockAccess aWorld, int aX, int aY, int aZ) {TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ); return aTileEntity instanceof IMTE_IsReplaceable ? ((IMTE_IsReplaceable)aTileEntity).isReplaceable() : blockMaterial.isReplaceable();}
@@ -273,7 +273,7 @@ public class MultiTileEntityBlock extends Block implements IBlock, IItemGT, IBlo
 	@Override public final ArrayList<String> getDebugInfo(EntityPlayer aPlayer, int aX, int aY, int aZ, int aScanLevel) {TileEntity aTileEntity = aPlayer.worldObj.getTileEntity(aX, aY, aZ); return aTileEntity instanceof IMTE_GetDebugInfo ? ((IMTE_GetDebugInfo)aTileEntity).getDebugInfo(aScanLevel) : null;}
 	@Override public final boolean isSideSolid(IBlockAccess aWorld, int aX, int aY, int aZ, ForgeDirection aSide) {TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ); return aTileEntity instanceof IMTE_IsSideSolid?((IMTE_IsSideSolid)aTileEntity).isSideSolid(UT.Code.side(aSide)):mOpaque;}
 	@Override public final boolean isBeaconBase(IBlockAccess aWorld, int aX, int aY, int aZ, int aBeaconX, int aBeaconY, int aBeaconZ) {TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ); return aTileEntity instanceof IMTE_IsBeaconBase && ((IMTE_IsBeaconBase)aTileEntity).isBeaconBase(aBeaconX, aBeaconY, aBeaconZ);}
-	@Override public final int getLightOpacity(IBlockAccess aWorld, int aX, int aY, int aZ) {TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ); return aTileEntity instanceof IMTE_GetLightOpacity?((IMTE_GetLightOpacity)aTileEntity).getLightOpacity():mOpaque?LIGHT_OPACITY_MAX:LIGHT_OPACITY_NONE;}
+//	@Override public final int getLightOpacity(IBlockAccess aWorld, int aX, int aY, int aZ) {TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ); return aTileEntity instanceof IMTE_GetLightOpacity?((IMTE_GetLightOpacity)aTileEntity).getLightOpacity():mOpaque?LIGHT_OPACITY_MAX:LIGHT_OPACITY_NONE;}
 	@Override public final boolean isOpaqueCube() {return mOpaque;}
 	@Override public final boolean func_149730_j() {return mOpaque;}
 	@Override public final boolean renderAsNormalBlock() {return mOpaque || mNormalCube;}
@@ -319,4 +319,22 @@ public class MultiTileEntityBlock extends Block implements IBlock, IItemGT, IBlo
 	@Override public final void onOxygenAdded  (World aWorld, int aX, int aY, int aZ) {TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ); if (aTileEntity instanceof IMTE_OnOxygenAdded  ) ((IMTE_OnOxygenAdded  )aTileEntity).onOxygenAdded  ();}
 	@Override public final void onOxygenRemoved(World aWorld, int aX, int aY, int aZ) {TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ); if (aTileEntity instanceof IMTE_OnOxygenRemoved) ((IMTE_OnOxygenRemoved)aTileEntity).onOxygenRemoved();}
 	@Override @Optional.Method(modid = ModIDs.BOTA) public final void onBurstCollision(vazkii.botania.api.internal.IManaBurst aMana, World aWorld, int aX, int aY, int aZ) {if (aWorld.isRemote) return; if (aMana.isFake() || !IL.BOTA_Paintslinger.equal(aMana.getSourceLens(), F, T) || !aMana.getSourceLens().hasTagCompound() || !aMana.getSourceLens().getTagCompound().hasKey("color") || aMana.getSourceLens().getTagCompound().getInteger("color") == -1) return; TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ); if (aTileEntity instanceof IMTE_OnPainting) ((IMTE_OnPainting)aTileEntity).onPainting(SIDE_UNKNOWN, (aMana.getColor() & 0x00ffffff));}
+
+
+
+	// GTCH, 使用专门的成员变量暂存不透光度和亮度的方法来防止实体被卸载的情况
+	private int mTELightOpacity = -1; // -1 表示没有初始化
+	@Override public final int getLightOpacity(IBlockAccess aWorld, int aX, int aY, int aZ) {
+		TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ);
+		if (aTileEntity instanceof IMTE_GetLightOpacity)
+			mTELightOpacity = UT.Code.bind8(((IMTE_GetLightOpacity)aTileEntity).getLightOpacity());
+		return mTELightOpacity>=0?mTELightOpacity:(mOpaque?LIGHT_OPACITY_MAX:LIGHT_OPACITY_NONE); // 目前是没有初始化时使用默认的输出，未来考虑从服务端读取？
+	}
+	private int mTELightValue = -1; // -1 表示没有初始化
+	@Override public final int getLightValue(IBlockAccess aWorld, int aX, int aY, int aZ) {
+		TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ);
+		if (aTileEntity instanceof IMTE_GetLightValue)
+			mTELightValue = UT.Code.bind4(((IMTE_GetLightValue)aTileEntity).getLightValue());
+		return mTELightValue>=0?mTELightValue:super.getLightValue(aWorld, aX, aY, aZ); // 目前是没有初始化时使用默认的输出，未来考虑从服务端读取？
+	}
 }

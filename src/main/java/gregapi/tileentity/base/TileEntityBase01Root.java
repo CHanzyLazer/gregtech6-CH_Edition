@@ -50,6 +50,7 @@ import gregapi.util.UT;
 import gregapi.util.WD;
 import gregtechCH.GTCH_Main;
 import gregtechCH.fluid.IFluidHandler_CH;
+import gregtechCH.threads.ThreadPools;
 import gregtechCH.tileentity.ITEScheduledUpdate_CH;
 import gregtechCH.util.UT_CH;
 import ic2.api.energy.event.EnergyTileLoadEvent;
@@ -401,9 +402,9 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITESche
 
 		// GTCH, 将 mark 的计划进行加入计划，用来避免初始化未完成的情况
 		if (mMarkedSchedule && !mHadSchedule) {
-			GTCH_Main.pushScheduled(isServerSide(), this);
 			mHadSchedule = T;
 			mMarkedSchedule = F;
+			onScheduledUpdate(isServerSide()); // 直接调用避免挤塞计划队列
 		}
 
 		if (mDoesBlockUpdate) doBlockUpdate(); // 暂时保留任何时候都会调用
@@ -413,32 +414,31 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITESche
 	@Override
 	public void onScheduledUpdate(boolean aIsServerSide) {
 		if (!mHadSchedule) return;
-		if (GTCH_Main.canPushHandle(aIsServerSide)) {
-			GTCH_Main.pushHandle(aIsServerSide);
-			for (Updater tUpdater : ScheduleList) {
-				tUpdater.doUpdate(worldObj, xCoord, yCoord, zCoord);
-			}
+		if (GTCH_Main.canPushHandle(aIsServerSide, ThreadPools.NONE_THREAD)) {
+			for (Updater tUpdater : ScheduleList)
+				GTCH_Main.pushHandle(aIsServerSide, ThreadPools.NONE_THREAD, tUpdater); // TODO (无限延期) 改为并行计算光照
 			ScheduleList.clear();
 			mScheduleOldOpacity = -1;
 			mHadSchedule = F;
 		} else {
-			GTCH_Main.pushScheduled(aIsServerSide, this, aIsServerSide?0:rng(8)); // 客户端失败则随机延迟 0-8 tick
+			GTCH_Main.pushScheduled(aIsServerSide, this);
 		}
 	}
 
-	// GTCH, 用于执行计划任务，这里用来实现光照更新的伪协程实现
-	private abstract static class Updater {
+	// GTCH, 用于执行计划任务，这里用来实现光照更新的协程或者并行实现
+	private abstract class Updater implements Runnable {
+		@Override public final void run() {doUpdate(getWorld(), getX(), getY(), getZ());}
 		public abstract void doUpdate(World aWorld, int aX, int aY, int aZ);
 		protected abstract int updaterID();
 		public boolean equals(Updater aRHS) {return updaterID() == aRHS.updaterID();}
 	}
-	private static class UpdaterLightValue extends Updater {
+	private class UpdaterLightValue extends Updater {
 		@Override public void doUpdate(World aWorld, int aX, int aY, int aZ) {
 			UT_CH.Light.updateLightValue(aWorld, aX, aY, aZ);
 		}
 		@Override protected int updaterID() {return 0;}
 	}
-	private static class UpdaterLightOpacity extends Updater {
+	private class UpdaterLightOpacity extends Updater {
 		private final int mOldOpacity;
 		public UpdaterLightOpacity(int aOldOpacity) {mOldOpacity = aOldOpacity;}
 		@Override public void doUpdate(World aWorld, int aX, int aY, int aZ) {
@@ -460,7 +460,7 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITESche
 		ScheduleList.add(aUpdater);
 		if (!mHadSchedule) {
 			mHadSchedule = T;
-			GTCH_Main.pushScheduled(isServerSide(), this);
+			onScheduledUpdate(isServerSide()); // 直接调用避免挤塞计划队列
 		}
 	}
 

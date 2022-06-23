@@ -90,27 +90,7 @@ public class PrefixBlockTileEntity extends TileEntityBase01Root implements IRend
 	@Override public boolean renderBlock(Block aBlock, RenderBlocks aRenderer, IBlockAccess aWorld, int aX, int aY, int aZ) {return F;}
 	@Override public boolean setBlockBounds(Block aBlock, int aRenderPass, boolean[] aShouldSideBeRendered) {return F;}
 	@Override public int getRenderPasses(Block aBlock, boolean[] aShouldSideBeRendered) {return 1;}
-	@Override public void readFromNBT(NBTTagCompound aNBT) {
-		int tOldLight = (this instanceof IMTE_GetLightValue) ? ((IMTE_GetLightValue)this).getLightValue() : 0;
-		int tOldOpacity = (this instanceof IMTE_GetLightOpacity) ? ((IMTE_GetLightOpacity)this).getLightOpacity() : LIGHT_OPACITY_NONE;
-
-		super.readFromNBT(aNBT); mMetaData = aNBT.getShort("m");
-		if (aNBT.hasKey("gt.nbt.drop")) mItemNBT = aNBT.getCompoundTag("gt.nbt.drop");
-
-		// GTCH, 加载 NBT 的统一更新透光度和亮度
-		if (this instanceof IMTE_GetLightValue) {
-			// 加载 NBT 后亮度发生变化统一更新
-			if (((IMTE_GetLightValue)this).getLightValue() != tOldLight) {
-				updateLightValueMark();
-			}
-		}
-		if (this instanceof IMTE_GetLightOpacity) {
-			// 加载 NBT 后透光度发生变化统一更新
-			if (((IMTE_GetLightOpacity)this).getLightOpacity() != tOldOpacity) {
-				updateLightOpacityMark(tOldOpacity);
-			}
-		}
-	}
+	@Override public void readFromNBT(NBTTagCompound aNBT) {super.readFromNBT(aNBT); mMetaData = aNBT.getShort("m"); if (aNBT.hasKey("gt.nbt.drop")) mItemNBT = aNBT.getCompoundTag("gt.nbt.drop");}
 	@Override public void writeToNBT(NBTTagCompound aNBT) {super.writeToNBT(aNBT); aNBT.setShort("m", mMetaData); if (mItemNBT != null && !mItemNBT.hasNoTags()) aNBT.setTag("gt.nbt.drop", mItemNBT);}
 	@Override public void processPacket(INetworkHandler aNetworkHandler) {/**/}
 	@Override public Packet getDescriptionPacket() {return null;}

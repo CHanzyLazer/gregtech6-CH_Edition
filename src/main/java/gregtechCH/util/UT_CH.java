@@ -1,19 +1,16 @@
 package gregtechCH.util;
 
 import cpw.mods.fml.relauncher.ReflectionHelper;
-import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetLightValue;
 import gregapi.oredict.OreDictMaterial;
 import gregapi.oredict.OreDictPrefix;
 import gregapi.render.BlockTextureDefault;
 import gregapi.render.IIconContainer;
 import gregapi.util.UT;
 import net.minecraft.block.Block;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -257,11 +254,12 @@ public class UT_CH {
     // 用于调用原版 private 的函数，使用和 builtbroken:VoltzEngine 中 BlockUtility 一样的方法但是拷贝代码来避免包含过多第三方库
     public static class Hack {
         public static final String[] CHUNK_RELIGHT_BLOCK = new String[]{"relightBlock", "func_76615_h"};
-        public static final String[] CHUNK_PROPOGATE_SKY_LIGHT_OCCLUSION = new String[]{"propagateSkylightOcclusion", "func_76595_e"};
+        public static final String[] CHUNK_PROPAGATE_SKY_LIGHT_OCCLUSION = new String[]{"propagateSkylightOcclusion", "func_76595_e"};
+        public static final String[] WORLD_COMPUTE_LIGHT_VALUE = new String[]{"computeLightValue"};
 
         public static void relightBlock(Chunk aChunk, int aX, int aY, int aZ) {
             try {
-                Method m = ReflectionHelper.findMethod(Chunk.class, (Chunk) null, CHUNK_RELIGHT_BLOCK, new Class[]{Integer.TYPE, Integer.TYPE, Integer.TYPE});
+                Method m = ReflectionHelper.findMethod(Chunk.class, null, CHUNK_RELIGHT_BLOCK, new Class[]{Integer.TYPE, Integer.TYPE, Integer.TYPE});
                 m.invoke(aChunk, aX, aY, aZ);
             } catch (Exception var3) {
                 var3.printStackTrace();
@@ -271,38 +269,39 @@ public class UT_CH {
 
         public static void propagateSkylightOcclusion(Chunk aChunk, int aX, int aZ) {
             try {
-                Method m = ReflectionHelper.findMethod(Chunk.class, (Chunk) null, CHUNK_PROPOGATE_SKY_LIGHT_OCCLUSION, new Class[]{Integer.TYPE, Integer.TYPE});
+                Method m = ReflectionHelper.findMethod(Chunk.class, null, CHUNK_PROPAGATE_SKY_LIGHT_OCCLUSION, new Class[]{Integer.TYPE, Integer.TYPE});
                 m.invoke(aChunk, aX, aZ);
             } catch (Exception var3) {
                 var3.printStackTrace();
+            }
+        }
+
+        public static int computeLightValue(World aWorld, int aX, int aY, int aZ, EnumSkyBlock aEnumSkyBlock) {
+            try {
+                Method m = ReflectionHelper.findMethod(World.class, null, WORLD_COMPUTE_LIGHT_VALUE, new Class[]{Integer.TYPE, Integer.TYPE});
+                return (int)m.invoke(aWorld, aX, aY, aZ, aEnumSkyBlock);
+            } catch (Exception var3) {
+                var3.printStackTrace();
+                return 0;
             }
         }
     }
 
     // 用于亮度更新的通用方法，只进行亮度更新但是不破坏方块
     public static class Light {
+        // 尝试优化成能使用 CopyOnWrite 的形式
         // 世界某点的光源亮度发生变化后进行更新（和原版同样逻辑但是不考虑透光度的改变，如果透光度改变则需要再次调用透光度更新函数）
         public static void updateLightValue(World aWorld, int aX, int aY, int aZ) {
             // 非法输入检测
             if (aX < -30000000 || aZ < -30000000 || aX >= 30000000 || aZ >= 30000000 || aY < 0 || aY >= 256) return;
 
-            // 入侵式代码，取消也能正常工作，主要避免一些共用同一个方块的实体
-//            // 先更新 block 内部的 lightValue 避免意料外的问题
-//            Block tBlock = aWorld.getBlock(aX, aY, aZ);
-//            TileEntity tTE = aWorld.getTileEntity(aX, aY, aZ);
-//            if (tTE instanceof IMTE_GetLightValue) tBlock.setLightLevel(((float)((IMTE_GetLightValue)tTE).getLightValue())/15.0F);
-
             Chunk tChunk = aWorld.getChunkFromBlockCoords(aX, aZ);
 
-            // 采用 setBlock 相同的方式来更新亮度来避免意料外的问题
-            aWorld.theProfiler.startSection("checkLight");
-            aWorld.func_147451_t(aX, aY, aZ);
-            aWorld.theProfiler.endSection();
+            // 改变亮度不会影响 sky 所以只用更新 block
+            aWorld.updateLightByType(EnumSkyBlock.Block, aX, aY, aZ);
 
             // 和原版一样保持这个判断来进行优化
-            if (tChunk.func_150802_k()) {
-                aWorld.markBlockForUpdate(aX, aY, aZ);
-            }
+            if (tChunk.func_150802_k()) aWorld.markBlockRangeForRenderUpdate(aX, aY, aZ, aX, aY, aZ);
 
             tChunk.isModified = true;
         }
@@ -316,33 +315,20 @@ public class UT_CH {
             int tXChunk = aX & 15;
             int tZChunk = aZ & 15;
             // 由于不添加或删除方块，原则上不需要修改 precipitationHeightMap，heightMap，generateSkylightMap
-            int tHeight = tChunk.getHeightValue(tXChunk, tZChunk);
             Block tBlock = aWorld.getBlock(aX, aY, aZ);
             int tOpacity = tBlock.getLightOpacity(aWorld, aX, aY, aZ);
 
-            // 应该是更新天空光照，为了避免问题照搬原版逻辑
-            if (tOpacity > 0) {
-                if (aY >= tHeight) {
-                    Hack.relightBlock(tChunk, tXChunk, aY + 1, tZChunk);
-                }
-            } else
-            if (aY == tHeight - 1) {
-                Hack.relightBlock(tChunk, tXChunk, aY, tZChunk);
-            }
+            // 由于不破坏方块，因此不需要 relight
             // 调用此函数代表了透光度一定不同
-            if (tOpacity < aOldOpacity || tChunk.getSavedLightValue(EnumSkyBlock.Sky, tXChunk, aY, tZChunk) > 0 || tChunk.getSavedLightValue(EnumSkyBlock.Block, tXChunk, aY, tZChunk) > 0) {
+            if (tOpacity < aOldOpacity || tChunk.getSavedLightValue(EnumSkyBlock.Sky, tXChunk, aY, tZChunk) > 0) {
                 Hack.propagateSkylightOcclusion(tChunk, tXChunk, tZChunk);
             }
 
-            // 采用 setBlock 相同的方式来更新亮度来避免意料外的问题
-            aWorld.theProfiler.startSection("checkLight");
-            aWorld.func_147451_t(aX, aY, aZ);
-            aWorld.theProfiler.endSection();
+            // 上面更新了 sky 所以只需要更新 block 即可
+            aWorld.updateLightByType(EnumSkyBlock.Block, aX, aY, aZ);
 
             // 和原版一样保持这个判断来进行优化
-            if (tChunk.func_150802_k()) {
-                aWorld.markBlockForUpdate(aX, aY, aZ);
-            }
+            if (tChunk.func_150802_k()) aWorld.markBlockRangeForRenderUpdate(aX, aY, aZ, aX, aY, aZ);
 
             tChunk.isModified = true;
         }

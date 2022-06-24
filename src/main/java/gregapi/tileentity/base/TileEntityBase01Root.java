@@ -404,6 +404,10 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITESche
 			return;
 		}
 
+		if (mMarkNBTFinished) {
+			mMarkNBTFinished = F;
+			initNBTFinish();
+		}
 		// GTCH, 将 mark 的计划进行加入计划，用来避免初始化未完成的情况
 		if (mMarkedSchedule && !mHadSchedule) {
 			mHadSchedule = T;
@@ -480,10 +484,13 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITESche
 	public void updateLightOpacity(int aOldOpacity) 	{mScheduleOldOpacity = Math.max(aOldOpacity, mScheduleOldOpacity);pushAndUpdateSchedule(new UpdaterLightOpacity(mScheduleOldOpacity));}
 	public void updateLightOpacity() 					{updateLightOpacity(LIGHT_OPACITY_MAX);}
 	// 初始化 NBT 时调用，用于初始化方块不透光度和亮度
-	public final void initNBTFinish() {
-		if (this instanceof IMTE_GetLightValue) 		{Block tBlock = getBlock(getCoords()); if (tBlock instanceof IBlockTELightValue_CH) 	((IBlockTELightValue_CH)tBlock).setTELightValue((IMTE_GetLightValue)this);}
-		if (this instanceof IMTE_GetLightOpacity) 		{Block tBlock = getBlock(getCoords()); if (tBlock instanceof IBlockTELightOpacity_CH) 	((IBlockTELightOpacity_CH)tBlock).setTELightOpacity((IMTE_GetLightOpacity)this);}
+	private void initNBTFinish() {
+		if (this instanceof IMTE_GetLightValue) 		{Block tBlock = getBlock(getCoords()); if (tBlock instanceof IBlockTELightValue_CH) 	((IBlockTELightValue_CH)tBlock).setTELightValue(getMetaData(getCoords()), (IMTE_GetLightValue)this);}
+		if (this instanceof IMTE_GetLightOpacity) 		{Block tBlock = getBlock(getCoords()); if (tBlock instanceof IBlockTELightOpacity_CH) 	((IBlockTELightOpacity_CH)tBlock).setTELightOpacity(getMetaData(getCoords()), (IMTE_GetLightOpacity)this);}
 	}
+	// 用来标记 NBT 设置完成，然后在初始化方块完全结束后再去调用
+	private boolean mMarkNBTFinished = F;
+	public final void markNBTFinish() {mMarkNBTFinished = T;}
 	
 	@Override
 	public long getTimer() {
@@ -1062,6 +1069,11 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITESche
 	}
 	
 	public boolean onDrawBlockHighlight2(DrawBlockHighlightEvent aEvent) {return F;}
+
+	// GTCH, 更多种类的 Overlay
+	public boolean isUsingFullBlockOverlay(ItemStack aStack, byte aSide) {
+		return F;
+	}
 	
 	public final boolean onDrawBlockHighlight(DrawBlockHighlightEvent aEvent) {
 		FORCE_FULL_SELECTION_BOXES = F;
@@ -1070,6 +1082,11 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITESche
 			FORCE_FULL_SELECTION_BOXES = T;
 			byte tConnections = 0; for (byte i = 0; i < 6; i++) if (isConnectedWrenchingOverlay(aEvent.currentItem, i)) tConnections |= (1 << i);
 			RenderHelper.drawWrenchOverlay(aEvent.player, aEvent.target.blockX, aEvent.target.blockY, aEvent.target.blockZ, tConnections, (byte)aEvent.target.sideHit, aEvent.partialTicks);
+			return T;
+		}
+		// 自定义的优先级较低
+		if (ST.valid(aEvent.currentItem) && isUsingFullBlockOverlay(aEvent.currentItem, (byte)aEvent.target.sideHit)) {
+			FORCE_FULL_SELECTION_BOXES = T;
 			return T;
 		}
 		return T;

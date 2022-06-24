@@ -1,6 +1,6 @@
 package gregtechCH.data;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import gregapi.config.Config;
 import gregapi.data.MT;
 import gregapi.oredict.OreDictPrefix;
@@ -8,7 +8,7 @@ import gregapi.util.UT;
 import gregtechCH.util.UT_CH;
 
 import java.io.File;
-import java.util.List;
+import java.util.Set;
 
 import static gregapi.data.CS.*;
 import static gregapi.data.OP.*;
@@ -31,8 +31,11 @@ public class CS_CH {
     }
 
     // 用于统计哪些 prefix 是可以做覆盖板的
-    public static final List<OreDictPrefix> ALL_COVER_PREFIX = Lists.newArrayList(plate, plateDouble, plateTriple, plateQuadruple, plateQuintuple, plateDense, plateCurved, plateGem, sheetGt, foil);
-
+    public static final Set<OreDictPrefix> ALL_COVER_PREFIX = Sets.newHashSet(plate, plateDouble, plateTriple, plateQuadruple, plateQuintuple, plateDense, plateCurved, plateGem, sheetGt, foil);
+    // 用于统计哪些 prefix 是属于管道或者线缆或者是连接器
+    public static final Set<OreDictPrefix> ALL_PIPE_PREFIX  = Sets.newHashSet(pipeTiny, pipeSmall, pipeMedium, pipeLarge, pipeHuge, pipeQuadruple, pipeNonuple, pipeRestrictiveTiny, pipeRestrictiveSmall, pipeRestrictiveMedium, pipeRestrictiveLarge, pipeRestrictiveHuge, pipe);
+    public static final Set<OreDictPrefix> ALL_WIRE_PREFIX  = Sets.newHashSet(wireGt01, wireGt02, wireGt03, wireGt04, wireGt05, wireGt06, wireGt07, wireGt08, wireGt09, wireGt10, wireGt11, wireGt12, wireGt13, wireGt14, wireGt15, wireGt16);
+    public static final Set<OreDictPrefix> ALL_CABLE_PREFIX = Sets.newHashSet(cableGt01, cableGt02, cableGt04, cableGt08, cableGt12);
 
     public static final String
               NBT_CANFILL_STEAM             = "gtch.canfill.steam"          // Boolean, Is this machine can fill steam. CHanzy

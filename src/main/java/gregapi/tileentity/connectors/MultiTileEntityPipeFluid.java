@@ -45,6 +45,7 @@ import gregapi.old.Textures;
 import gregapi.oredict.OreDictItemData;
 import gregapi.oredict.OreDictManager;
 import gregapi.oredict.OreDictMaterial;
+import gregapi.oredict.OreDictPrefix;
 import gregapi.render.BlockTextureDefault;
 import gregapi.render.BlockTextureMulti;
 import gregapi.render.ITexture;
@@ -1130,7 +1131,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	}
 	
 	@Override public boolean canDrop(int aInventorySlot) {return F;}
-	@Override public boolean isObstructingBlockAt(byte aSide) {return mBlocking;} // Btw, Wires have this but Pipes don't. This is because Wires are flexible, while Pipes aren't.
+	@Override public boolean isObstructingBlockAt2(byte aSide) {return mBlocking;} // Btw, Wires have this but Pipes don't. This is because Wires are flexible, while Pipes aren't.
 	
 	@Override public void onEntityCollidedWithBlock(Entity aEntity) {if (mContactDamage && !isFoamDried()) UT.Entities.applyTemperatureDamage(aEntity, mTemperature, 1, 5.0F);}
 	
@@ -1281,6 +1282,8 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	
 	@Override public String getFacingTool() {return TOOL_wrench;}
 	@Override public boolean isUsingWrenchingOverlay(ItemStack aStack, byte aSide) {return super.isUsingWrenchingOverlay(aStack, aSide) || ToolsGT.contains(TOOL_monkeywrench, aStack);}
+	//GTCH
+	@Override public boolean isFullBlockPrefix(OreDictPrefix aPrefix) {return ALL_PIPE_PREFIX.contains(aPrefix);}
 
 	public int getRubberCount() {
 		if (mTanks.length>=9) {

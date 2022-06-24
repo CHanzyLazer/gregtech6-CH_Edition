@@ -20,6 +20,9 @@
 package gregapi.tileentity.connectors;
 
 import static gregapi.data.CS.*;
+import static gregapi.data.OP.cableGt01;
+import static gregapi.data.OP.wireGt01;
+import static gregtechCH.data.CS_CH.ALL_WIRE_PREFIX;
 
 import java.util.Collection;
 import java.util.List;
@@ -32,6 +35,7 @@ import gregapi.data.MD;
 import gregapi.data.OP;
 import gregapi.data.TD;
 import gregapi.old.Textures;
+import gregapi.oredict.OreDictPrefix;
 import gregapi.render.BlockTextureDefault;
 import gregapi.render.BlockTextureMulti;
 import gregapi.render.ITexture;
@@ -166,7 +170,7 @@ public class MultiTileEntityWireRedstoneInsulated extends TileEntityBase10Connec
 	
 	@Override public boolean canDrop(int aInventorySlot) {return F;}
 	// GTCH, 现在红石线缆不会阻挡后面的方块了，这个太烦人了
-	@Override public boolean isObstructingBlockAt(byte aSide) {return T;} // Btw, Wires have this but Pipes don't. This is because Wires are flexible, while Pipes aren't.
+	@Override public boolean isObstructingBlockAt2(byte aSide) {return F;} // Btw, Wires have this but Pipes don't. This is because Wires are flexible, while Pipes aren't.
 	
 	public boolean canEmitRedstoneToVanilla                 (byte aSide) {return aSide != mReceived && connected(aSide) && !(getAdjacentTileEntity(aSide).mTileEntity instanceof ITileEntityRedstoneWire);}
 	public boolean canAcceptRedstoneFromVanilla             (byte aSide) {return connected(aSide);}
@@ -189,6 +193,8 @@ public class MultiTileEntityWireRedstoneInsulated extends TileEntityBase10Connec
 	@Override public Collection<TagData> getConnectorTypes  (byte aSide) {return TD.Connectors.WIRE_REDSTONE.AS_LIST;}
 	
 	@Override public String getFacingTool                   () {return TOOL_cutter;}
+	//GTCH
+	@Override public boolean isFullBlockPrefix(OreDictPrefix aPrefix) {return aPrefix == wireGt01 || aPrefix == cableGt01;}
 
 	// GTCH, 返回绝缘层的颜色为原本颜色
 	@Override public int getBottomRGB() {return UT.Code.getRGBInt(96, 64, 64);}

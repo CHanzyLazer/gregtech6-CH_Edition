@@ -25,11 +25,14 @@ import gregapi.block.multitileentity.MultiTileEntityContainer;
 import gregapi.cover.ITileEntityCoverable;
 import gregapi.data.LH;
 import gregapi.data.LH.Chat;
+import gregapi.oredict.OreDictItemData;
+import gregapi.oredict.OreDictPrefix;
 import gregapi.tileentity.ITileEntity;
 import gregapi.tileentity.ITileEntityFoamable;
 import gregapi.tileentity.ITileEntityMachineBlockUpdateable;
 import gregapi.tileentity.base.TileEntityBase08Directional;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
+import gregapi.util.OM;
 import gregapi.util.UT;
 import gregapi.util.WD;
 import net.minecraft.entity.Entity;
@@ -102,7 +105,16 @@ public abstract class TileEntityBase09Connector extends TileEntityBase08Directio
 	@Override public void setFacing(short aSide) {/**/}
 	@Override public boolean wrenchCanSetFacing(EntityPlayer aPlayer, int aSide) {return F;}
 	@Override public boolean isConnectedWrenchingOverlay(ItemStack aStack, byte aSide) {return connected(aSide);}
-	
+	// GTCH, 用于实现检测玩家手上的物品是否使用完整方块 overlay
+	@Override public final boolean isUsingFullBlockOverlay(ItemStack aStack, byte aSide) {
+		if (super.isUsingFullBlockOverlay(aStack, aSide)) return T;
+		OreDictItemData tODItem = OM.data(aStack);
+		return tODItem!=null?isFullBlockPrefix(tODItem.mPrefix):F;
+	}
+
+	// GTCH, Stuff to Override
+	public boolean isFullBlockPrefix(OreDictPrefix aPrefix) {return F;}
+
 	@Override
 	public boolean connected(byte aSide) {
 		return FACE_CONNECTED[aSide][mConnections];

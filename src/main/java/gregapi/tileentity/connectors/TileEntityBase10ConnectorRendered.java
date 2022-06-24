@@ -44,6 +44,7 @@ import gregapi.old.Textures;
 import gregapi.render.BlockTextureDefault;
 import gregapi.render.ITexture;
 import gregapi.tileentity.ITileEntityFoamable;
+import gregapi.tileentity.ITileEntityQuickObstructionCheck;
 import gregapi.tileentity.data.ITileEntitySurface;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.util.UT;
@@ -61,7 +62,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author Gregorius Techneticies
  */
-public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09Connector implements ITileEntityFoamable, IMTE_GetPlayerRelativeBlockHardness, IMTE_IgnorePlayerCollisionWhenPlacing, IMTE_GetSelectedBoundingBoxFromPool, IMTE_SetBlockBoundsBasedOnState {
+public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09Connector implements ITileEntityQuickObstructionCheck, ITileEntityFoamable, IMTE_GetPlayerRelativeBlockHardness, IMTE_IgnorePlayerCollisionWhenPlacing, IMTE_GetSelectedBoundingBoxFromPool, IMTE_SetBlockBoundsBasedOnState {
 	public float mDiameter = 1.0F;
 	public boolean mTransparent = F, mIsGlowing = F, mContactDamage = F, mFoam = F, mOwnable = F;
 	// 用 private 封装防止意料外的修改
@@ -522,6 +523,11 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 		if (rDiameter <= 0.0F || rDiameter > mDiameter) rDiameter = mDiameter; else if (rDiameter < PX_P[2]) rDiameter = PX_P[2];
 		return rDiameter;
 	}
+
+	// GTCH, 只有足够粗的管道或者已经连接才会阻挡
+	@Override public final boolean isObstructingBlockAt(byte aSide) {return isObstructingBlockAt2(aSide) && (connected(aSide)||mDiameter>0.5F);}
+	public boolean isObstructingBlockAt2(byte aSide) {return T;}
+
 	// 关闭环境光遮蔽：UT.Code.getRGBaArray(mRGBa), mIsGlowing, F
 
 	// GTCH, P为pipe，用于干掉后的管道材质（由于需要重新绘制，还有各种材质的，这样就不如直接multi了，所以略）

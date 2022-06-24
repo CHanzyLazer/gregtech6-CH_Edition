@@ -47,7 +47,7 @@ public class MultiTileEntityWireLogistics extends TileEntityBase10ConnectorRende
 	@Override public boolean canLogistics(byte aSide) {return connected(aSide) || SIDES_INVALID[aSide];}
 	
 	@Override public boolean canDrop(int aInventorySlot) {return F;}
-	@Override public boolean isObstructingBlockAt(byte aSide) {return F;} // Btw, Wires have this but Pipes don't. This is because Wires are flexible, while Pipes aren't.
+	@Override public boolean isObstructingBlockAt2(byte aSide) {return F;} // Btw, Wires have this but Pipes don't. This is because Wires are flexible, while Pipes aren't.
 	
 	@Override public ITexture getTextureSide                (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {return BlockTextureMulti.get(BlockTextureDefault.get(Textures.BlockIcons.LOGISTICS_WIRE, mRGBa), BlockTextureDefault.get(Textures.BlockIcons.LOGISTICS_WIRE_OVERLAY));}
 	@Override public ITexture getTextureConnected           (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {return BlockTextureMulti.get(BlockTextureDefault.get(Textures.BlockIcons.LOGISTICS_WIRE, mRGBa), BlockTextureDefault.get(Textures.BlockIcons.LOGISTICS_WIRE_OVERLAY));}

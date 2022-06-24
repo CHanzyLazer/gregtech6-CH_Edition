@@ -99,7 +99,7 @@ public abstract class TileEntityBase03MultiTileEntities extends TileEntityBase02
 		mMTERegistry = aMTERegistry;
 		// Read the Default Parameters from NBT.
 		if (aNBT != null) readFromNBT(aNBT);
-		initNBTFinish();
+		else markNBTFinish();
 	}
 
 	@Override
@@ -128,6 +128,8 @@ public abstract class TileEntityBase03MultiTileEntities extends TileEntityBase02
 		if (aNBT.hasKey("display")) mCustomName = aNBT.getCompoundTag("display").getString("Name");
 		// And now your custom readFromNBT.
 		try {readFromNBT2(aNBT);} catch(Throwable e) {e.printStackTrace(ERR);}
+
+		markNBTFinish();
 	}
 	
 	public void readFromNBT2(NBTTagCompound aNBT) {/**/}

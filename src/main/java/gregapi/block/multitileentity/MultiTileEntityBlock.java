@@ -20,6 +20,8 @@
 package gregapi.block.multitileentity;
 
 import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.block.*;
 import gregapi.block.IBlockSyncData.IBlockSyncDataAndCoversAndIDs;
 import gregapi.block.multitileentity.IMultiTileEntity.*;
@@ -29,6 +31,9 @@ import gregapi.data.IL;
 import gregapi.data.MD;
 import gregapi.item.IItemGT;
 import gregapi.network.INetworkHandler;
+import gregapi.network.IPacket;
+import gregapi.network.packets.PacketBlockEvent;
+import gregapi.network.packets.data.PacketSyncDataByte;
 import gregapi.old.Textures;
 import gregapi.oredict.OreDictMaterialStack;
 import gregapi.render.IRenderedBlock;
@@ -58,6 +63,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -325,21 +331,27 @@ public class MultiTileEntityBlock extends Block implements IBlockTELightOpacity_
 
 
 
-	// GTCH, 使用专门的成员变量暂存不透光度和亮度的方法来防止实体被卸载的情况
-	private int mTELightOpacity = -1; // -1 表示没有初始化
-	@Override public final void setTELightOpacity(@NotNull IMTE_GetLightOpacity aTE) {mTELightOpacity = UT.Code.bind8(aTE.getLightOpacity());}
+	// GTCH, 使用扩展 Metadata 的方式来实现存储可变不透明度
+	private final Map<Integer, Short> mMetaTELightOpacity = new HashMap<>();
+	// 由于是 hashmap，加锁防止并行写入出现问题
+	@Override public final synchronized void setTELightOpacity(int aMeta, @NotNull IMTE_GetLightOpacity aTE) {mMetaTELightOpacity.put(aMeta, UT.Code.bind8(aTE.getLightOpacity()));}
 	@Override public final int getLightOpacity(IBlockAccess aWorld, int aX, int aY, int aZ) {
+		int tMate = aWorld.getBlockMetadata(aX, aY, aZ);
+		Short tTELightOpacity = mMetaTELightOpacity.get(tMate);
 		TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ);
 		if (aTileEntity instanceof IMTE_GetLightOpacity)
-			mTELightOpacity = UT.Code.bind8(((IMTE_GetLightOpacity)aTileEntity).getLightOpacity());
-		return mTELightOpacity>=0?mTELightOpacity:(mOpaque?LIGHT_OPACITY_MAX:LIGHT_OPACITY_NONE); // 目前是没有初始化时使用默认的输出，未来考虑从服务端读取？
+			tTELightOpacity = UT.Code.bind8(((IMTE_GetLightOpacity)aTileEntity).getLightOpacity());
+		return (tTELightOpacity!=null)?tTELightOpacity:(mOpaque?LIGHT_OPACITY_MAX:LIGHT_OPACITY_NONE);
 	}
-	private int mTELightValue = -1; // -1 表示没有初始化
-	@Override public final void setTELightValue(@NotNull IMTE_GetLightValue aTE) {mTELightValue = UT.Code.bind4(aTE.getLightValue());}
+	private final Map<Integer, Byte> mMetaTELightValue = new HashMap<>();
+	@Override public final synchronized void setTELightValue(int aMeta, @NotNull IMTE_GetLightValue aTE) {mMetaTELightValue.put(aMeta, UT.Code.bind4(aTE.getLightValue()));}
 	@Override public final int getLightValue(IBlockAccess aWorld, int aX, int aY, int aZ) {
+		int tMate = aWorld.getBlockMetadata(aX, aY, aZ);
+		Byte tTELightValue = mMetaTELightValue.get(tMate);
 		TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ);
 		if (aTileEntity instanceof IMTE_GetLightValue)
-			mTELightValue = UT.Code.bind4(((IMTE_GetLightValue)aTileEntity).getLightValue());
-		return mTELightValue>=0?mTELightValue:super.getLightValue(aWorld, aX, aY, aZ); // 目前是没有初始化时使用默认的输出，未来考虑从服务端读取？
+			tTELightValue = UT.Code.bind4(((IMTE_GetLightValue)aTileEntity).getLightValue());
+		return (tTELightValue!=null)?tTELightValue:super.getLightValue(aWorld, aX, aY, aZ);
 	}
 }
+

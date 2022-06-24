@@ -264,7 +264,6 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 	@Override public long getEnergySizeInputMax(TagData aEnergyType, byte aSide) {return mSpeed;}
 	
 	@Override public boolean canDrop(int aInventorySlot) {return F;}
-	@Override public boolean isObstructingBlockAt(byte aSide) {return T;}
 	
 	@Override public boolean isEnergyConducting(TagData aEnergyType) {return aEnergyType == TD.Energy.RU;}
 	@Override public long getEnergyMaxSize(TagData aEnergyType) {return aEnergyType == TD.Energy.RU ? mSpeed : 0;}

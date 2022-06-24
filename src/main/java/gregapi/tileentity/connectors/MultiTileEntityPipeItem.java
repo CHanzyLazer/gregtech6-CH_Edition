@@ -20,6 +20,7 @@
 package gregapi.tileentity.connectors;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.ALL_PIPE_PREFIX;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,6 +45,7 @@ import gregapi.data.TD;
 import gregapi.old.Textures;
 import gregapi.oredict.OreDictManager;
 import gregapi.oredict.OreDictMaterial;
+import gregapi.oredict.OreDictPrefix;
 import gregapi.render.BlockTextureDefault;
 import gregapi.render.BlockTextureMulti;
 import gregapi.render.ITexture;
@@ -258,7 +260,7 @@ public class MultiTileEntityPipeItem extends TileEntityBase10ConnectorRendered i
 	@Override public int[] getAccessibleSlotsFromSide2(byte aSide) {return ACCESSIBLE_SLOTS;}
 	@Override public int getMinimumInventorySize() {return 1;}
 	@Override public boolean canDrop(int aInventorySlot) {return T;}
-	@Override public boolean isObstructingBlockAt(byte aSide) {return mBlocking;} // Btw, Wires have this but Pipes don't. This is because Wires are flexible, while Pipes aren't.
+	@Override public boolean isObstructingBlockAt2(byte aSide) {return mBlocking;} // Btw, Wires have this but Pipes don't. This is because Wires are flexible, while Pipes aren't.
 	@Override public boolean canInsertItem2(int aSlot, ItemStack aStack, byte aSide) {if (!connected(aSide) || FACE_CONNECTED[aSide][mDisabledInputs]) return F; if (!UT.Code.containsSomething(getInventory())) mLastReceivedFrom = aSide; return mLastReceivedFrom == aSide && !slotHas(aSlot);}
 	@Override public boolean canExtractItem2(int aSlot, ItemStack aStack, byte aSide) {return SIDES_INVALID[aSide] || connected(aSide);}
 	@Override public ItemStack[] getDefaultInventory(NBTTagCompound aNBT) {ItemStack[] rStack = super.getDefaultInventory(aNBT); ACCESSIBLE_SLOTS = new int[rStack.length]; for (int i = 0; i < ACCESSIBLE_SLOTS.length; i++) ACCESSIBLE_SLOTS[i] = i; return rStack;}
@@ -295,6 +297,8 @@ public class MultiTileEntityPipeItem extends TileEntityBase10ConnectorRendered i
 	
 	@Override public String getFacingTool() {return TOOL_wrench;}
 	@Override public boolean isUsingWrenchingOverlay(ItemStack aStack, byte aSide) {return super.isUsingWrenchingOverlay(aStack, aSide) || ToolsGT.contains(TOOL_monkeywrench, aStack);}
-	
+	//GTCH
+	@Override public boolean isFullBlockPrefix(OreDictPrefix aPrefix) {return ALL_PIPE_PREFIX.contains(aPrefix);}
+
 	@Override public String getTileEntityName() {return "gt.multitileentity.connector.pipe.item";}
 }

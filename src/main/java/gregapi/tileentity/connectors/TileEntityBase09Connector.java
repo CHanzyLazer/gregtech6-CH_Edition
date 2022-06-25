@@ -35,6 +35,7 @@ import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.util.OM;
 import gregapi.util.UT;
 import gregapi.util.WD;
+import gregtechCH.tileentity.ITEPaintable_CH;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -86,13 +87,32 @@ public abstract class TileEntityBase09Connector extends TileEntityBase08Directio
 	public boolean onPlaced(ItemStack aStack, EntityPlayer aPlayer, MultiTileEntityContainer aMTEContainer, World aWorld, int aX, int aY, int aZ, byte aSide, float aHitX, float aHitY, float aHitZ) {
 		if (isServerSide()) {
 			aSide = OPOS[aSide];
-			DelegatorTileEntity<TileEntity> tDelegator = getAdjacentTileEntity(aSide);
-			if (tDelegator.mTileEntity instanceof ITileEntity && !((ITileEntity)tDelegator.mTileEntity).allowInteraction(aPlayer)) return T;
-			connect(aSide, T);
-			for (byte tSide : ALL_SIDES_VALID) {
-				tDelegator = getAdjacentTileEntity(tSide);
-				if (tDelegator.mTileEntity instanceof ITileEntityConnector && SIDES_VALID[tDelegator.mSideOfTileEntity] && UT.Code.haveOneCommonElement(((ITileEntityConnector)tDelegator.mTileEntity).getConnectorTypes(tDelegator.mSideOfTileEntity), getConnectorTypes(tSide))) {
-					if (((ITileEntityConnector)tDelegator.mTileEntity).connected(tDelegator.mSideOfTileEntity)) connect(tSide, T);
+			DelegatorTileEntity<TileEntity> tDelegator;
+			// GTCH, 对于是否染色采用不同的策略
+			if (!isPainted()) {
+				// 对于没有染色的，采用默认的逻辑
+				tDelegator = getAdjacentTileEntity(aSide);
+				if (tDelegator.mTileEntity instanceof ITileEntity && !((ITileEntity)tDelegator.mTileEntity).allowInteraction(aPlayer)) return T;
+				connect(aSide, T);
+				for (byte tSide : ALL_SIDES_VALID) {
+					tDelegator = getAdjacentTileEntity(tSide);
+					if (tDelegator.mTileEntity instanceof ITileEntityConnector && SIDES_VALID[tDelegator.mSideOfTileEntity] && UT.Code.haveOneCommonElement(((ITileEntityConnector)tDelegator.mTileEntity).getConnectorTypes(tDelegator.mSideOfTileEntity), getConnectorTypes(tSide))) {
+						if (((ITileEntityConnector)tDelegator.mTileEntity).connected(tDelegator.mSideOfTileEntity)) connect(tSide, T);
+					}
+				}
+			}
+			else {
+				// 对于有染色的，特地判断周围是否是管道并且是否是相同颜色，如果不是则不进行连接，其他的自动进行连接
+				for (byte tSide : ALL_SIDES_VALID) {
+					tDelegator = getAdjacentTileEntity(tSide);
+					if (tDelegator.mTileEntity instanceof ITileEntity && !((ITileEntity)tDelegator.mTileEntity).allowInteraction(aPlayer)) continue;
+					if (tDelegator.mTileEntity instanceof ITileEntityConnector && SIDES_VALID[tDelegator.mSideOfTileEntity] && UT.Code.haveOneCommonElement(((ITileEntityConnector)tDelegator.mTileEntity).getConnectorTypes(tDelegator.mSideOfTileEntity), getConnectorTypes(tSide))) {
+						if (tDelegator.mTileEntity instanceof ITEPaintable_CH && ((ITEPaintable_CH)tDelegator.mTileEntity).isPainted() && ((ITEPaintable_CH)tDelegator.mTileEntity).getPaint()==getPaint()) connect(tSide, T);
+					} else
+					if (canAutoConnect(tSide,tDelegator)) {
+						// 需要避免自动连接空气和液体
+						connect(tSide, T);
+					}
 				}
 			}
 		}
@@ -132,40 +152,33 @@ public abstract class TileEntityBase09Connector extends TileEntityBase08Directio
 			if (tDelegator.mTileEntity instanceof ITileEntityFoamable && ((ITileEntityFoamable) tDelegator.mTileEntity).driedFoam(OPOS[aSide]) && !((ITileEntityConnector) tDelegator.mTileEntity).connected(OPOS[aSide])) return F;
 
 			if (SIDES_VALID[tDelegator.mSideOfTileEntity] && UT.Code.haveOneCommonElement(((ITileEntityConnector)tDelegator.mTileEntity).getConnectorTypes(tDelegator.mSideOfTileEntity), getConnectorTypes(aSide))) {
-				byte oConnections = mConnections;
-				mConnections |= SBIT[aSide];
-				updateClientData();
-				causeBlockUpdate();
-				onConnectionChange(oConnections);
-				checkCoverValidity();
-				doEnetUpdate();
+				doConnect_(aSide);
 				if (aNotify) ((ITileEntityConnector)tDelegator.mTileEntity).connect(tDelegator.mSideOfTileEntity, F);
 				if (hasMultiBlockMachineRelevantData()) ITileEntityMachineBlockUpdateable.Util.causeMachineUpdate(this, F);
 				return T;
 			}
 			if (this instanceof ITileEntityRedstoneWire) {
-				byte oConnections = mConnections;
-				mConnections |= SBIT[aSide];
-				updateClientData();
-				causeBlockUpdate();
-				onConnectionChange(oConnections);
-				checkCoverValidity();
-				doEnetUpdate();
+				doConnect_(aSide);
 				if (hasMultiBlockMachineRelevantData()) ITileEntityMachineBlockUpdateable.Util.causeMachineUpdate(this, F);
 				return T;
 			}
 		} else if (WD.air(tDelegator.mWorld, tDelegator.mX, tDelegator.mY, tDelegator.mZ) || WD.liquid(tDelegator.mWorld, tDelegator.mX, tDelegator.mY, tDelegator.mZ) || canConnect(aSide, tDelegator)) {
-			byte oConnections = mConnections;
-			mConnections |= SBIT[aSide];
-			updateClientData();
-			causeBlockUpdate();
-			onConnectionChange(oConnections);
-			checkCoverValidity();
-			doEnetUpdate();
+			doConnect_(aSide);
 			if (hasMultiBlockMachineRelevantData()) ITileEntityMachineBlockUpdateable.Util.causeMachineUpdate(this, F);
 			return T;
 		}
 		return connected(aSide);
+	}
+
+	// GTCH, 用于减少重复代码
+	private void doConnect_(byte aSide) {
+		byte oConnections = mConnections;
+		mConnections |= SBIT[aSide];
+		updateClientData();
+		causeBlockUpdate();
+		onConnectionChange(oConnections);
+		checkCoverValidity();
+		doEnetUpdate();
 	}
 	
 	@Override
@@ -190,4 +203,5 @@ public abstract class TileEntityBase09Connector extends TileEntityBase08Directio
 	// Stuff to Override
 	public void onConnectionChange(byte aPreviousConnections) {/**/}
 	public boolean canConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator) {return F;}
+	protected boolean canAutoConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator) {return canConnect(aSide, aDelegator);}
 }

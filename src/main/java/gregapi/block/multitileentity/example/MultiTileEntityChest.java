@@ -50,6 +50,7 @@ import gregapi.tileentity.base.TileEntityBase05Inventories;
 import gregapi.tileentity.data.ITileEntitySurface;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.util.UT;
+import gregtechCH.tileentity.ITEPaintable_CH;
 import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
 import net.minecraft.client.model.ModelBase;
@@ -79,7 +80,7 @@ import net.minecraftforge.common.ChestGenHooks;
  * 
  * An example implementation of a Chest with my MultiTileEntity System.
  */
-public class MultiTileEntityChest extends TileEntityBase05Inventories implements IMTE_GetLightOpacity, IItemColorableRGB, ITileEntityDecolorable, ITileEntitySurface, IMTE_OnRegistrationClient, IMTE_OnRegistrationFirstClient, IMTE_SyncDataByte, IMTE_AddToolTips, IMTE_SetBlockBoundsBasedOnState, IMTE_GetSubItems, IMTE_SyncDataByteArray, IMTE_GetExplosionResistance, IMTE_GetBlockHardness, IMTE_GetComparatorInputOverride, IMTE_GetSelectedBoundingBoxFromPool, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnPlaced, IMTE_OnToolClick {
+public class MultiTileEntityChest extends TileEntityBase05Inventories implements ITEPaintable_CH, IMTE_GetLightOpacity, IItemColorableRGB, ITileEntityDecolorable, ITileEntitySurface, IMTE_OnRegistrationClient, IMTE_OnRegistrationFirstClient, IMTE_SyncDataByte, IMTE_AddToolTips, IMTE_SetBlockBoundsBasedOnState, IMTE_GetSubItems, IMTE_SyncDataByteArray, IMTE_GetExplosionResistance, IMTE_GetBlockHardness, IMTE_GetComparatorInputOverride, IMTE_GetSelectedBoundingBoxFromPool, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnPlaced, IMTE_OnToolClick {
 	protected boolean mIsPainted = F;
 	// GTCH, 用于在染色后保留一定原本颜色
 	protected int mRGBaPaint = UNCOLORED;
@@ -261,9 +262,9 @@ public class MultiTileEntityChest extends TileEntityBase05Inventories implements
 	public byte getPaintData() {return (byte) (mIsPainted?1:0);}
 	public void setPaintData(byte aData) {mIsPainted = ((aData & 1) != 0);}
 	// GTCH, 返回染色中用于叠底的颜色，用于给有外套层的机器重写，也用于客户端判断是否有染色
-	public int getBottomRGB() {return UT.Code.getRGBInt(mMaterial.fRGBaSolid);}
+	@Override public int getBottomRGB() {return UT.Code.getRGBInt(mMaterial.fRGBaSolid);}
 	// GTCH, 返回机器原本的颜色，用于客户端判断是否有染色，由于原本的默认 RGB 都是材料颜色，所以不允许重写
-	private int getOriginalRGB() {return UT.Code.getRGBInt(mMaterial.fRGBaSolid);}
+	@Override public final int getOriginalRGB() {return UT.Code.getRGBInt(mMaterial.fRGBaSolid);}
 
 	@Override public boolean unpaint() {if (mIsPainted) {mIsPainted=F; mRGBaPaint=getBottomRGB(); updateClientData(); return T;} return F;}
 	// GTCH, 原本逻辑过于麻烦，直接把是否已经染色也同步到客户端好了，这样还可以多出来一些数据用于专门处理颜色动画，可能可以方便后续的温度变色之类的开发（因为温度并没有传到客户端，不过实际用时需要优化把这个放一份到 NoSendAll里）

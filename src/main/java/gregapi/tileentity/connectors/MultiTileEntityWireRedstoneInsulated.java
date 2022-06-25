@@ -43,8 +43,10 @@ import gregapi.tileentity.ITileEntityQuickObstructionCheck;
 import gregapi.tileentity.data.ITileEntityProgress;
 import gregapi.tileentity.data.ITileEntitySurface;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
+import gregapi.tileentity.logistics.ITileEntityLogistics;
 import gregapi.tileentity.machines.ITileEntitySwitchableMode;
 import gregapi.util.UT;
+import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRedstoneWire;
 import net.minecraft.item.ItemStack;
@@ -60,10 +62,28 @@ public class MultiTileEntityWireRedstoneInsulated extends TileEntityBase10Connec
 	public long mRedstone = 0, mLoss = 1;
 	public byte mRenderType = 0, mReceived = SIDE_UNDEFINED, mMode = 0, mVanillaSides[] = {-1,-1,-1,-1,-1,-1,-1};
 	public boolean mConnectedToNonWire = T;
-	
+	public int mRGBaRedstoneON = UNCOLORED;
+	public int mRGBaRedstoneOFF = UNCOLORED;
+	// 用 private 封装防止意料外的修改
+	public final static float ON_RATIO = 0.12F, OFF_RATIO = -0.16F;
+	private byte mState = 0;
+	public byte getState() {return mState;}
+
+	// GTCH, 用于在状态切换后添加不透明度和亮度更新
+	protected void setState(byte aState) {
+		if (aState == mState) return;
+		int tOldOpacity = getLightOpacity();
+		mState = aState;
+		updateLightValue();
+		updateLightOpacity(tOldOpacity);
+	}
+
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {
 		super.readFromNBT2(aNBT);
+		if (aNBT.hasKey(NBT_STATE)) mState = aNBT.getByte(NBT_STATE); // NBT 修改会有统一的更新和优化，不需要在这里再次调用
+		mRGBaRedstoneON = UT_CH.Code.getBrighterRGB(getRedstoneRGB(), ON_RATIO);
+		mRGBaRedstoneOFF = UT_CH.Code.getBrighterRGB(getRedstoneRGB(), OFF_RATIO);
 		if (aNBT.hasKey("gt.mreceived")) mReceived = aNBT.getByte("gt.mreceived");
 		if (aNBT.hasKey("gt.mredstone")) mRedstone = aNBT.getByte("gt.mredstone");
 		if (aNBT.hasKey(NBT_MODE)) mMode = aNBT.getByte(NBT_MODE);
@@ -74,6 +94,7 @@ public class MultiTileEntityWireRedstoneInsulated extends TileEntityBase10Connec
 	@Override
 	public void writeToNBT2(NBTTagCompound aNBT) {
 		super.writeToNBT2(aNBT);
+		if (mState != 0) aNBT.setByte(NBT_STATE, mState);
 		if (mMode != 0) aNBT.setByte(NBT_MODE, mMode);
 		aNBT.setByte("gt.mreceived", mReceived);
 		UT.NBT.setNumber(aNBT, "gt.mredstone", mRedstone);
@@ -183,6 +204,8 @@ public class MultiTileEntityWireRedstoneInsulated extends TileEntityBase10Connec
 	@Override public long getRedstoneMinusLoss              (byte aSide, int aRedstoneID) {return aRedstoneID == REDSTONE_ID ? mRedstone - mLoss : 0;}
 	
 	@Override public boolean canConnect                     (byte aSide, DelegatorTileEntity<TileEntity> aDelegator) {return T;}
+	// GTCH, 红石线缆只自动连接自身
+	@Override protected boolean canAutoConnect				(byte aSide, DelegatorTileEntity<TileEntity> aDelegator) {if (aDelegator.mTileEntity instanceof ITileEntityRedstoneWire) return T; return F;}
 	
 	@Override public long getProgressValue                  (byte aSide) {return (1000*mRedstone)/MAX_RANGE;}
 	@Override public long getProgressMax                    (byte aSide) {return 16000;}
@@ -196,11 +219,36 @@ public class MultiTileEntityWireRedstoneInsulated extends TileEntityBase10Connec
 	//GTCH
 	@Override public boolean isFullBlockPrefix(OreDictPrefix aPrefix) {return aPrefix == wireGt01 || aPrefix == cableGt01;}
 
+	@Override
+	public void setVisualData(byte aData) {
+		if (aData != mState) setState(aData);
+	}
+
+	@Override
+	public byte getVisualData() {return mState;}
+
+	@Override
+	public boolean onTickCheck(long aTimer) {
+		byte tOldState = mState;
+		setState(UT.Code.bind4(UT.Code.divup(mRedstone, MAX_RANGE)));
+		if (tOldState != mState) return T;
+		return super.onTickCheck(aTimer);
+	}
+
+	// 在这里进行更新颜色
+	@Override
+	public void onPaintChangeClient(int aPreviousRGBaPaint) {
+		super.onPaintChangeClient(aPreviousRGBaPaint);
+		mRGBaRedstoneON = UT_CH.Code.getBrighterRGB(getRedstoneRGB(), ON_RATIO);
+		mRGBaRedstoneOFF = UT_CH.Code.getBrighterRGB(getRedstoneRGB(), OFF_RATIO);
+	}
+	public int getRedstoneRGB() {return UT.Code.getRGBInt(mMaterial.fRGBaSolid);}
+
 	// GTCH, 返回绝缘层的颜色为原本颜色
 	@Override public int getBottomRGB() {return UT.Code.getRGBInt(96, 64, 64);}
 
 	@Override public ITexture getTextureSide                (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {return BlockTextureDefault.get(Textures.BlockIcons.INSULATION_FULL, isPainted()?mRGBa: getBottomRGB());}
-	@Override public ITexture getTextureConnected           (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {return BlockTextureMulti.get(BlockTextureDefault.get(mMaterial, getIconIndexConnected(aSide, aConnections, aDiameter, aRenderPass), F), BlockTextureDefault.get(aDiameter<0.37F?Textures.BlockIcons.INSULATION_TINY:aDiameter<0.49F?Textures.BlockIcons.INSULATION_SMALL:aDiameter<0.74F?Textures.BlockIcons.INSULATION_MEDIUM:aDiameter<0.99F?Textures.BlockIcons.INSULATION_LARGE:Textures.BlockIcons.INSULATION_HUGE, isPainted()?mRGBa: getBottomRGB()));}
+	@Override public ITexture getTextureConnected           (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {return BlockTextureMulti.get(BlockTextureDefault.get(mMaterial, getIconIndexConnected(aSide, aConnections, aDiameter, aRenderPass), getState()>0, worldObj==null?getRedstoneRGB():(getState()>0?mRGBaRedstoneON:mRGBaRedstoneOFF)), BlockTextureDefault.get(aDiameter<0.37F?Textures.BlockIcons.INSULATION_TINY:aDiameter<0.49F?Textures.BlockIcons.INSULATION_SMALL:aDiameter<0.74F?Textures.BlockIcons.INSULATION_MEDIUM:aDiameter<0.99F?Textures.BlockIcons.INSULATION_LARGE:Textures.BlockIcons.INSULATION_HUGE, isPainted()?mRGBa: getBottomRGB()));}
 	
 	@Override public int getIconIndexSide                   (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {return OP.wire.mIconIndexBlock;}
 	@Override public int getIconIndexConnected              (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {return OP.wire.mIconIndexBlock;}

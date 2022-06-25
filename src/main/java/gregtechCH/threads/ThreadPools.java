@@ -8,8 +8,10 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class ThreadPools {
-    public static final ITaskNumberExecutor NONE_THREAD = newSingleNoneExecutor();
-    public static final ITaskNumberExecutor LIGHT_THREAD = newSingleThreadExecutor();
+    public static final ITaskNumberExecutor NONE_THREAD     = newSingleNoneExecutor();
+    public static final ITaskNumberExecutor LIGHT_THREAD    = newSingleThreadExecutor();
+    public static final ITaskNumberExecutor SOUND_THREAD    = newSingleThreadExecutor();
+    public static final ITaskNumberExecutor MACHINE_THREAD  = newSingleThreadExecutor();
 
     // 直接照搬 Executor 的方法实现自定义的线程池
     public static ITaskNumberExecutor newSingleThreadExecutor() {return new TaskNumberExecutor (new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>()));}

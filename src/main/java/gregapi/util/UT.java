@@ -89,6 +89,7 @@ import java.util.*;
 import java.util.Map.Entry;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.threads.ThreadPools.SOUND_THREAD;
 
 /**
  * @author Gregorius Techneticies
@@ -2889,7 +2890,7 @@ public class UT {
 			EntityPlayer aPlayer = GT_API.api_proxy.getThePlayer();
 			if (aPlayer == null || !aPlayer.worldObj.isRemote || Code.stringInvalid(aSoundName)) return F;
 			if (MULTITHREADED)
-				new Thread(new ThreadedSound(aPlayer.worldObj, UT.Code.roundDown(aCoords.posX), UT.Code.roundDown(aCoords.posY), UT.Code.roundDown(aCoords.posZ), aTimeUntilNextSound, aSoundName, aSoundStrength, aSoundModulation), "Sound Effect").start();
+				SOUND_THREAD.execute(new ThreadedSound(aPlayer.worldObj, UT.Code.roundDown(aCoords.posX), UT.Code.roundDown(aCoords.posY), UT.Code.roundDown(aCoords.posZ), aTimeUntilNextSound, aSoundName, aSoundStrength, aSoundModulation));
 			else
 				new ThreadedSound(aPlayer.worldObj, UT.Code.roundDown(aCoords.posX), UT.Code.roundDown(aCoords.posY), UT.Code.roundDown(aCoords.posZ), aTimeUntilNextSound, aSoundName, aSoundStrength, aSoundModulation).run();
 			return T;

@@ -59,8 +59,8 @@ public abstract class MultiTileEntityLargeMotor_CH extends TileEntityBase10Multi
     protected TagData mEnergyTypeEmitted = TD.Energy.RU;
 
     protected int mLength = 0, mPLength = 0, mMidLength = 1, mMinLength = 1, mMaxLength = 5;
-    protected short[] mEfficiencyArray = new short[1];
-    protected long[] mRateArray = new long[1], mPEnergyArray = new long[1], mPCostArray = new long[1], mCRateArray = new long[1];
+    protected short[] mEfficiencyArray = new short[]{0};
+    protected long[] mRateArray = new long[]{0}, mPEnergyArray = new long[]{0}, mPCostArray = new long[]{0}, mCRateArray = new long[]{0};
 
     // NBT读写
     @Override

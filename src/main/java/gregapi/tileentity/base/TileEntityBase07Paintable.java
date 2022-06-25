@@ -39,6 +39,7 @@ import gregapi.network.IPacket;
 import gregapi.oredict.OreDictMaterial;
 import gregapi.tileentity.ITileEntityDecolorable;
 import gregapi.util.UT;
+import gregtechCH.tileentity.ITEPaintable_CH;
 import gregtechCH.util.UT_CH;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -49,7 +50,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author Gregorius Techneticies
  */
-public abstract class TileEntityBase07Paintable extends TileEntityBase06Covers implements IItemColorableRGB, ITileEntityDecolorable, IMTE_GetSubItems, IMTE_GetExplosionResistance, IMTE_GetBlockHardness, IMTE_GetLightOpacity, IMTE_SyncDataByte, IMTE_SyncDataByteArray {
+public abstract class TileEntityBase07Paintable extends TileEntityBase06Covers implements ITEPaintable_CH, IItemColorableRGB, ITileEntityDecolorable, IMTE_GetSubItems, IMTE_GetExplosionResistance, IMTE_GetBlockHardness, IMTE_GetLightOpacity, IMTE_SyncDataByte, IMTE_SyncDataByteArray {
 	protected boolean mIsPainted = F;
 	protected int mFlammability = 0;
 	protected float mHardness = 1.0F, mResistance = 3.0F;
@@ -138,9 +139,9 @@ public abstract class TileEntityBase07Paintable extends TileEntityBase06Covers i
 	public void setPaintData(byte aData) {mIsPainted = ((aData & 1) != 0);}
 
 	// GTCH, 返回染色中用于叠底的颜色，用于给有外套层的机器重写，也用于客户端判断是否有染色
-	public int getBottomRGB() {return UT.Code.getRGBInt(mMaterial.fRGBaSolid);}
+	@Override public int getBottomRGB() {return UT.Code.getRGBInt(mMaterial.fRGBaSolid);}
 	// GTCH, 返回机器原本的颜色，用于客户端判断是否有染色，由于原本的默认 RGB 都是材料颜色，所以不允许重写
-	private int getOriginalRGB() {return UT.Code.getRGBInt(mMaterial.fRGBaSolid);}
+	@Override public final int getOriginalRGB() {return UT.Code.getRGBInt(mMaterial.fRGBaSolid);}
 	
 	@Override public boolean unpaint() {if (mIsPainted) {mIsPainted=F; mRGBaPaint=getBottomRGB(); updateClientData(); return T;} return F;}
 	// GTCH, 原本逻辑过于麻烦，直接把是否已经染色也同步到客户端好了，这样还可以多出来一些数据用于专门处理颜色动画，可能可以方便后续的温度变色之类的开发（因为温度并没有传到客户端，不过实际用时需要优化把这个放一份到 NoSendAll里）

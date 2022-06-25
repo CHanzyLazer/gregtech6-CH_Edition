@@ -20,6 +20,7 @@
 package gregapi.tileentity.connectors;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.NBT_ADD_BYTE;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -85,13 +86,15 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 	public void writeToNBT2(NBTTagCompound aNBT) {
 		super.writeToNBT2(aNBT);
 		aNBT.setByte(NBT_ACTIVE_DATA, mRotationDir);
-		aNBT.setByte(NBT_ENERGY_EMITTED_SIDES, mEnergyDir);
+		// 默认值不为零（或者可能不为零）的需要专门设置
+		if (SIDES_VALID[mEnergyDir]) aNBT.setByte(NBT_ENERGY_EMITTED_SIDES, mEnergyDir);
 	}
 
 	@Override
 	public NBTTagCompound writeItemNBT2(NBTTagCompound aNBT) {
 		if (isFoamDried()){
-			aNBT.setByte(NBT_ENERGY_EMITTED_SIDES, mEnergyDir);
+			// 默认值不为零（或者可能不为零）的需要专门设置
+			if (SIDES_VALID[mEnergyDir]) aNBT.setByte(NBT_ENERGY_EMITTED_SIDES, mEnergyDir);
 		}
 		return super.writeItemNBT2(aNBT);
 	}

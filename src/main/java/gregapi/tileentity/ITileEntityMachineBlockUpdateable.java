@@ -20,6 +20,7 @@
 package gregapi.tileentity;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.threads.ThreadPools.MACHINE_THREAD;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,7 +52,7 @@ public interface ITileEntityMachineBlockUpdateable {
 		 * You should call this Function in @Block.breakBlock and in @Block.onBlockAdded of your Machine.
 		 */
 		public static boolean causeMachineUpdate(IHasWorldAndCoords aTileEntity, boolean aRemoved) {
-			if (aTileEntity.isServerSide()) new Thread(new MachineBlockUpdateRunnable(aTileEntity.getWorld(), aTileEntity.getCoords(), aTileEntity.getBlockOffset(0, 0, 0), aTileEntity.getMetaDataOffset(0, 0, 0), aRemoved), "Machine Block Updating").start();
+			if (aTileEntity.isServerSide()) MACHINE_THREAD.execute(new MachineBlockUpdateRunnable(aTileEntity.getWorld(), aTileEntity.getCoords(), aTileEntity.getBlockOffset(0, 0, 0), aTileEntity.getMetaDataOffset(0, 0, 0), aRemoved));
 			return T;
 		}
 		/**
@@ -60,7 +61,7 @@ public interface ITileEntityMachineBlockUpdateable {
 		 * You should call this Function in @Block.breakBlock and in @Block.onBlockAdded of your Machine.
 		 */
 		public static boolean causeMachineUpdate(World aWorld, int aX, int aY, int aZ, Block aBlock, byte aMeta, boolean aRemoved) {
-			if (!aWorld.isRemote) new Thread(new MachineBlockUpdateRunnable(aWorld, new ChunkCoordinates(aX, aY, aZ), aBlock, aMeta, aRemoved), "Machine Block Updating").start();
+			if (!aWorld.isRemote) MACHINE_THREAD.execute(new MachineBlockUpdateRunnable(aWorld, new ChunkCoordinates(aX, aY, aZ), aBlock, aMeta, aRemoved));
 			return T;
 		}
 		/**
@@ -69,7 +70,7 @@ public interface ITileEntityMachineBlockUpdateable {
 		 * You should call this Function in @Block.breakBlock and in @Block.onBlockAdded of your Machine.
 		 */
 		public static boolean causeMachineUpdate(World aWorld, ChunkCoordinates aCoords, Block aBlock, byte aMeta, boolean aRemoved) {
-			if (!aWorld.isRemote) new Thread(new MachineBlockUpdateRunnable(aWorld, aCoords, aBlock, aMeta, aRemoved), "Machine Block Updating").start();
+			if (!aWorld.isRemote) MACHINE_THREAD.execute(new MachineBlockUpdateRunnable(aWorld, aCoords, aBlock, aMeta, aRemoved));
 			return T;
 		}
 		

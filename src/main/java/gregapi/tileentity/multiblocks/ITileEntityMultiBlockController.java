@@ -37,7 +37,7 @@ import net.minecraft.util.ChunkCoordinates;
 public interface ITileEntityMultiBlockController extends ITileEntityUnloadable, IHasWorldAndCoords {
 	public boolean isInsideStructure(int aX, int aY, int aZ);
 	public boolean checkStructure(boolean aForceReset);
-	public boolean checkStructureOnly(boolean aForceReset); // GTCH, 仅检测结构但是不改变结构改变变量的方法
+	public boolean checkStructureOnly(boolean aForceReset);
 	public void onStructureChange();
 	public long onToolClickMultiBlock(String aTool, long aRemainingDurability, long aQuality, Entity aPlayer, List<String> aChatReturn, IInventory aPlayerInventory, boolean aSneaking, ItemStack aStack, byte aSide, float aHitX, float aHitY, float aHitZ, ChunkCoordinates aFrom);
 	

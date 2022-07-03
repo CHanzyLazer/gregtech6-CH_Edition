@@ -333,25 +333,39 @@ public class MultiTileEntityBlock extends Block implements IBlockTELightOpacity_
 
 	// GTCH, 使用扩展 Metadata 的方式来实现存储可变不透明度
 	private final Map<Integer, Short> mMetaTELightOpacity = new HashMap<>();
+	private short mLastTELightOpacity = -1; // 用于没有找到 Metadata 时临时顶替
 	// 由于是 hashmap，加锁防止并行写入出现问题
-	@Override public final synchronized void setTELightOpacity(int aMeta, @NotNull IMTE_GetLightOpacity aTE) {mMetaTELightOpacity.put(aMeta, UT.Code.bind8(aTE.getLightOpacity()));}
+	@Override public final synchronized void setTELightOpacity(int aMeta, @NotNull IMTE_GetLightOpacity aTE) {
+		mLastTELightOpacity = UT.Code.bind8(aTE.getLightOpacity());
+		mMetaTELightOpacity.put(aMeta, mLastTELightOpacity);
+	}
 	@Override public final int getLightOpacity(IBlockAccess aWorld, int aX, int aY, int aZ) {
 		int tMate = aWorld.getBlockMetadata(aX, aY, aZ);
 		Short tTELightOpacity = mMetaTELightOpacity.get(tMate);
 		TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ);
 		if (aTileEntity instanceof IMTE_GetLightOpacity)
 			tTELightOpacity = UT.Code.bind8(((IMTE_GetLightOpacity)aTileEntity).getLightOpacity());
-		return (tTELightOpacity!=null)?tTELightOpacity:(mOpaque?LIGHT_OPACITY_MAX:LIGHT_OPACITY_NONE);
+		if (tTELightOpacity==null)
+			return (mLastTELightOpacity>=0)?mLastTELightOpacity:(mOpaque?LIGHT_OPACITY_MAX:LIGHT_OPACITY_NONE);
+		mLastTELightOpacity = tTELightOpacity;
+		return mLastTELightOpacity;
 	}
 	private final Map<Integer, Byte> mMetaTELightValue = new HashMap<>();
-	@Override public final synchronized void setTELightValue(int aMeta, @NotNull IMTE_GetLightValue aTE) {mMetaTELightValue.put(aMeta, UT.Code.bind4(aTE.getLightValue()));}
+	private byte mLastTELightValue = -1; // 用于没有找到 Metadata 时临时顶替
+	@Override public final synchronized void setTELightValue(int aMeta, @NotNull IMTE_GetLightValue aTE) {
+		mLastTELightValue = UT.Code.bind4(aTE.getLightValue());
+		mMetaTELightValue.put(aMeta, mLastTELightValue);
+	}
 	@Override public final int getLightValue(IBlockAccess aWorld, int aX, int aY, int aZ) {
 		int tMate = aWorld.getBlockMetadata(aX, aY, aZ);
 		Byte tTELightValue = mMetaTELightValue.get(tMate);
 		TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ);
 		if (aTileEntity instanceof IMTE_GetLightValue)
 			tTELightValue = UT.Code.bind4(((IMTE_GetLightValue)aTileEntity).getLightValue());
-		return (tTELightValue!=null)?tTELightValue:super.getLightValue(aWorld, aX, aY, aZ);
+		if (tTELightValue==null)
+			return (mLastTELightValue>=0)?mLastTELightValue:super.getLightValue(aWorld, aX, aY, aZ);
+		mLastTELightValue = tTELightValue;
+		return mLastTELightValue;
 	}
 }
 

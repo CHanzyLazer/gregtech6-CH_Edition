@@ -37,6 +37,7 @@ import net.minecraft.util.ChunkCoordinates;
 public interface ITileEntityMultiBlockController extends ITileEntityUnloadable, IHasWorldAndCoords {
 	public boolean isInsideStructure(int aX, int aY, int aZ);
 	public boolean checkStructure(boolean aForceReset);
+	public boolean checkStructureOnly(boolean aForceReset); // GTCH, 仅检测结构但是不改变结构改变变量的方法
 	public void onStructureChange();
 	public long onToolClickMultiBlock(String aTool, long aRemainingDurability, long aQuality, Entity aPlayer, List<String> aChatReturn, IInventory aPlayerInventory, boolean aSneaking, ItemStack aStack, byte aSide, float aHitX, float aHitY, float aHitZ, ChunkCoordinates aFrom);
 	
@@ -61,8 +62,8 @@ public interface ITileEntityMultiBlockController extends ITileEntityUnloadable, 
 			if (tTileEntity == aController) return;
 			if (tTileEntity instanceof MultiTileEntityMultiBlockPart && ((MultiTileEntityMultiBlockPart)tTileEntity).getMultiTileEntityID() == aRegistryMeta && ((MultiTileEntityMultiBlockPart)tTileEntity).getMultiTileEntityRegistryID() == aRegistryID) {
 				if (((MultiTileEntityMultiBlockPart)tTileEntity).getTarget(F) == aController) {
-					((MultiTileEntityMultiBlockPart)tTileEntity).setTarget(null, 0, MultiTileEntityMultiBlockPart.NOTHING);
-				};
+					((MultiTileEntityMultiBlockPart)tTileEntity).setTarget(aController, 0, MultiTileEntityMultiBlockPart.NOTHING); // 保留内部的 target 可以在放置多方快时更快的识别
+				}
 			}
 		}
 
@@ -77,7 +78,18 @@ public interface ITileEntityMultiBlockController extends ITileEntityUnloadable, 
 			}
 			return F;
 		}
-		
+
+		// 将检测和设置进行分开来提高效率
+		public static boolean checkStructurePartOffset(ITileEntityMultiBlockController aController, int aX, int aY, int aZ, int aRegistryMeta, int aRegistryID) {
+			return checkStructurePart(aController, aX+aController.getX(), aY+aController.getY(), aZ+aController.getZ(), aRegistryMeta, aRegistryID);
+		}
+		public static void setTargetOffset(ITileEntityMultiBlockController aController, int aX, int aY, int aZ, int aDesign, int aMode) {
+			setTarget(aController, aX+aController.getX(), aY+aController.getY(), aZ+aController.getZ(), aDesign, aMode);
+		}
+		public static void checkAndResetTargetOffset(ITileEntityMultiBlockController aController, int aX, int aY, int aZ, int aRegistryMeta, int aRegistryID) {
+			checkAndResetTarget(aController, aX+aController.getX(), aY+aController.getY(), aZ+aController.getZ(), aRegistryMeta, aRegistryID);
+		}
+
 		public static boolean checkAndSetTargetOffset(ITileEntityMultiBlockController aController, int aX, int aY, int aZ, int aRegistryMeta, int aRegistryID, int aDesign, int aMode) {
 			return checkAndSetTarget(aController, aX+aController.getX(), aY+aController.getY(), aZ+aController.getZ(), aRegistryMeta, aRegistryID, aDesign, aMode);
 		}

@@ -64,6 +64,7 @@ import gregapi.tileentity.machines.ITileEntitySwitchableOnOff;
 import gregapi.tileentity.notick.TileEntityBase05Paintable;
 import gregapi.util.UT;
 import gregapi.util.WD;
+import gregtechCH.GTCH_Main;
 import gregtechCH.data.CS_CH;
 import gregtechCH.fluid.IFluidHandler_CH;
 import net.minecraft.block.Block;
@@ -201,7 +202,7 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 			DelegatorTileEntity<TileEntity> tDelegator = getAdjacentTileEntity(tSide);
 			if (tDelegator.mTileEntity instanceof MultiTileEntityMultiBlockPart) {
 				ITileEntityMultiBlockController tController = ((MultiTileEntityMultiBlockPart)tDelegator.mTileEntity).getTarget(F);
-				if (tController != null) tController.onStructureChange();;
+				if (tController != null) tController.onStructureChange();
 			} else if (tDelegator.mTileEntity instanceof ITileEntityMultiBlockController) {
 				((ITileEntityMultiBlockController)tDelegator.mTileEntity).onStructureChange();
 			}
@@ -228,7 +229,7 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 				}
 			}
 		}
-		return aCheckValidity ? mTarget != null && mTarget.checkStructure(F) ? mTarget : null : mTarget;
+		return aCheckValidity ? mTarget != null && mTarget.checkStructureOnly(F) ? mTarget : null : mTarget;
 	}
 	
 	public void setTarget(ITileEntityMultiBlockController aTarget, int aDesign, int aMode) {

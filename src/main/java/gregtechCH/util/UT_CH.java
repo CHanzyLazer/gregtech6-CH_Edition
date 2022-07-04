@@ -164,8 +164,17 @@ public class UT_CH {
             // 放弃复杂的算法，直接 RGB 混合效果较好
             return getMixRGBInt(aRGBOrigin, aRGBPaint, DATA_GTCH.mixRatio);
         }
-
-        // 直接将 RGB 混合，相比原本可以指定后一个 RGB 的占比权重
+        // 使用向上整除来保证一定能够达到后一个颜色
+        public static int mixRGBInt(int aRGB1, int aRGB2) {
+            short[] tFrom = getRGBArray(aRGB1);
+            short[] tTo = getRGBArray(aRGB2);
+            tTo[0] -= tFrom[0]; tTo[1] -= tFrom[1]; tTo[2] -= tFrom[2];
+            tFrom[0] += (short)((tTo[0]>=0)?UT.Code.divup(tTo[0], 2):-UT.Code.divup(Math.abs(tTo[0]), 2));
+            tFrom[1] += (short)((tTo[1]>=0)?UT.Code.divup(tTo[1], 2):-UT.Code.divup(Math.abs(tTo[1]), 2));
+            tFrom[2] += (short)((tTo[2]>=0)?UT.Code.divup(tTo[2], 2):-UT.Code.divup(Math.abs(tTo[2]), 2));
+            return UT.Code.getRGBInt(tFrom);
+        }
+        // 直接将 RGB 混合，相比原本可以指定后一个 RGB 的占比权重，并且使用向上整除来保证一定能够达到后一个颜色
         public static int getMixRGBInt(int aRGB1, int aRGB2, float aWeight) {
             short[] tRGBArray = getRGBArray(aRGB1);
             float[] tRGB1 = {tRGBArray[0]/255F, tRGBArray[1]/255F, tRGBArray[2]/255F};

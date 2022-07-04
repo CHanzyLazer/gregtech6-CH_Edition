@@ -393,7 +393,7 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 		if (!mFoam && !mFoamDried) return super.recolourBlock(aSide, aColor);
 		if (isClientSide()) return F;
 		if (UT.Code.exists(aColor, DYES_INVERTED)) {
-			int aRGBFoam = (mIsPaintedFoam ? UT.Code.mixRGBInt(DYES_INT_INVERTED[aColor], mRGBaPaintFoam) : DYES_INT_INVERTED[aColor]) & ALL_NON_ALPHA_COLOR;
+			int aRGBFoam = (mIsPaintedFoam ? UT_CH.Code.mixRGBInt(mRGBaPaintFoam, DYES_INT_INVERTED[aColor]) : DYES_INT_INVERTED[aColor]) & ALL_NON_ALPHA_COLOR;
 			if (paintFoam(aRGBFoam)) {causeBlockUpdate(); return T;}
 		}
 		return F;
@@ -417,7 +417,7 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 	}
 	@Override public boolean recolorItem(ItemStack aStack, int aRGB) {
 		if (!mFoam && !mFoamDried) return super.recolorItem(aStack, aRGB);
-		if (paintFoam((mIsPaintedFoam ? UT.Code.mixRGBInt(aRGB, mRGBaPaintFoam) : aRGB) & ALL_NON_ALPHA_COLOR)) {UT.NBT.set(aStack, writeItemNBT(aStack.hasTagCompound() ? aStack.getTagCompound() : UT.NBT.make())); return T;} return F;
+		if (paintFoam((mIsPaintedFoam ? UT_CH.Code.mixRGBInt(mRGBaPaintFoam, aRGB) : aRGB) & ALL_NON_ALPHA_COLOR)) {UT.NBT.set(aStack, writeItemNBT(aStack.hasTagCompound() ? aStack.getTagCompound() : UT.NBT.make())); return T;} return F;
 	}
 
 	@Override

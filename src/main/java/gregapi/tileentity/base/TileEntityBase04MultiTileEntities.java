@@ -44,6 +44,7 @@ import gregapi.render.IRenderedBlockObjectSideCheck;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
+import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -235,7 +236,7 @@ public abstract class TileEntityBase04MultiTileEntities extends TileEntityBase03
 	@Override
 	public boolean recolourBlock(byte aSide, byte aColor) {
 		if (UT.Code.exists(aColor, DYES_INVERTED)) {
-			int aRGB = (isPainted() ? UT.Code.mixRGBInt(DYES_INT_INVERTED[aColor], getPaint()) : DYES_INT_INVERTED[aColor]) & ALL_NON_ALPHA_COLOR;
+			int aRGB = (isPainted() ? UT_CH.Code.mixRGBInt(getPaint(), DYES_INT_INVERTED[aColor]) : DYES_INT_INVERTED[aColor]) & ALL_NON_ALPHA_COLOR;
 			if (paint(aRGB)) {updateClientData(); causeBlockUpdate(); return T;}
 			return F;
 		}

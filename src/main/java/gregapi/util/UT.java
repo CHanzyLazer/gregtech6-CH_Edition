@@ -1545,8 +1545,8 @@ public class UT {
 			for (int i = 0; i < aColors.length; i++) aColors[i] = bind8(aColors[i]);
 			return aColors;
 		}
-		
-		public static int mixRGBInt(int aRGB1, int aRGB2) {
+		// GTCH, 标记 private 防止后续更新调用
+		private static int mixRGBInt(int aRGB1, int aRGB2) {
 			return getRGBInt(new short[] {(short)((getR(aRGB1) + getR(aRGB2)) >> 1), (short)((getG(aRGB1) + getG(aRGB2)) >> 1), (short)((getB(aRGB1) + getB(aRGB2)) >> 1)});
 		}
 		

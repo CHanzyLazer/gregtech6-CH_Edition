@@ -20,7 +20,6 @@
 package gregapi.tileentity.connectors;
 
 import static gregapi.data.CS.*;
-import static gregtechCH.data.CS_CH.NBT_ADD_BYTE;
 
 import java.util.ArrayList;
 import java.util.Collection;

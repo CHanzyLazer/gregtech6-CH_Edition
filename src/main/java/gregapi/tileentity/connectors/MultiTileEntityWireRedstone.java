@@ -27,8 +27,6 @@ import gregapi.old.Textures;
 import gregapi.render.BlockTextureDefault;
 import gregapi.render.ITexture;
 import gregapi.util.UT;
-import gregtechCH.util.UT_CH;
-import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * @author Gregorius Techneticies

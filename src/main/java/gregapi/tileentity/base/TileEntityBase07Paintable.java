@@ -25,6 +25,8 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Bytes;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetBlockHardness;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetExplosionResistance;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetLightOpacity;
@@ -121,15 +123,17 @@ public abstract class TileEntityBase07Paintable extends TileEntityBase06Covers i
 	}
 	// 用于在重写接受数据代码时调用简单的设置颜色
 	protected final void setRGBData(byte aR, byte aG, byte aB, byte aPaintData) {
+		boolean oIsPainted = mIsPainted;
+		int oRGBPaint = mRGBaPaint;
 		setPaintData(aPaintData);
-		int oRGB = UT.Code.getRGBInt(new short[] {UT.Code.unsignB(aR), UT.Code.unsignB(aG), UT.Code.unsignB(aB)});
-		if (oRGB != mRGBaPaint) {
-			mRGBaPaint = oRGB;
-			onPaintChangeClient(oRGB); // 仅客户端，用于在染色改变时客户端更改对应的显示颜色
+		mRGBaPaint = UT.Code.getRGBInt(new short[] {UT.Code.unsignB(aR), UT.Code.unsignB(aG), UT.Code.unsignB(aB)});
+		if (oIsPainted!=mIsPainted || oRGBPaint!=mRGBaPaint) {
+			onPaintChangeClient(oRGBPaint); // 仅客户端，用于在染色改变时客户端更改对应的显示颜色
 		}
 	}
 
 	/* 仅客户端，用于在染色改变时客户端更改对应的显示颜色 */
+	@SideOnly(Side.CLIENT)
 	public void onPaintChangeClient(int aPreviousRGBaPaint) {
 		mRGBa = isPainted() ? UT_CH.Code.getPaintRGB(getBottomRGB(), mRGBaPaint) : getOriginalRGB();
 	}

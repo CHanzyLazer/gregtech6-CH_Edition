@@ -34,12 +34,12 @@ import net.minecraft.util.AxisAlignedBB;
 public abstract class TileEntityBase11ConnectorStraight extends TileEntityBase10ConnectorRendered {
 	@Override
 	protected int getRenderPasses3(Block aBlock, boolean[] aShouldSideBeRendered) {
-		return (mFoam || isFoamDried()) ? 2 : 1;
+		return (isFoam() || isFoamDried()) ? 2 : 1;
 	}
 
 	@Override
 	public ITexture getTexture2(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
-		if (aRenderPass == 1) return (aShouldSideBeRendered[aSide] && (mFoam || isFoamDried())) ? (isFoamDried() ? getTextureCFoamDry(aSide, mConnections, mDiameter, aRenderPass) : getTextureCFoam(aSide, mConnections, mDiameter, aRenderPass)) : null;
+		if (aRenderPass == 1) return (aShouldSideBeRendered[aSide] && (isFoam() || isFoamDried())) ? (isFoamDried() ? getTextureCFoamDry(aSide, mConnections, mDiameter, aRenderPass) : getTextureCFoam(aSide, mConnections, mDiameter, aRenderPass)) : null;
 		if (aRenderPass == 0) {
 			if (mDiameter >= 1.0F && !aShouldSideBeRendered[aSide]) return null;
 			if (mConnections == 0) return getTextureConnected(aSide, mConnections, mDiameter, aRenderPass);
@@ -60,7 +60,7 @@ public abstract class TileEntityBase11ConnectorStraight extends TileEntityBase10
 	public boolean isCoverSurface(byte aSide, int aRenderpass) {
 		boolean tCSurface = super.isCoverSurface(aSide);
 		if (tCSurface) {
-			if (mFoam && !isFoamDried()) return aRenderpass==1;
+			if (isFoam() && !isFoamDried()) return aRenderpass==1;
 			if (isFoamDried()) {
 				// 遮住管道的覆盖板要渲染遮住面
 				if (mCRLengths[aSide]<0.0F && aRenderpass==0) return T;

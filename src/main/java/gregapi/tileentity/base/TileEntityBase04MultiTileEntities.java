@@ -20,6 +20,7 @@
 package gregapi.tileentity.base;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.NBT_LIGHT_OPACITY;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregapi.block.multitileentity.IMultiTileEntity.*;
@@ -90,6 +91,7 @@ public abstract class TileEntityBase04MultiTileEntities extends TileEntityBase03
 	
 	@Override
 	public final void readFromNBT(NBTTagCompound aNBT) {
+		super.readFromNBT(aNBT);
 		// Check if this is a World/Chunk Loading Process calling readFromNBT.
 		if (mMTEID == W || mMTERegistry == W) {
 			// Yes it is, so read the ID Tags first.
@@ -105,16 +107,10 @@ public abstract class TileEntityBase04MultiTileEntities extends TileEntityBase03
 				}
 			}
 		}
-		// read the Coords if it has them.
-		if (aNBT.hasKey("x")) xCoord = aNBT.getInteger("x");
-		if (aNBT.hasKey("y")) yCoord = aNBT.getInteger("y");
-		if (aNBT.hasKey("z")) zCoord = aNBT.getInteger("z");
 		// read the custom Name.
 		if (aNBT.hasKey("display")) mCustomName = aNBT.getCompoundTag("display").getString("Name");
 		// And now your custom readFromNBT.
 		try {readFromNBT2(aNBT);} catch(Throwable e) {e.printStackTrace(ERR);}
-
-		markNBTFinish();
 	}
 	
 	public void readFromNBT2(NBTTagCompound aNBT) {/**/}

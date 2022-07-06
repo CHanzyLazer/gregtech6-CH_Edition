@@ -324,11 +324,23 @@ public class UT_CH {
             int tXChunk = aX & 15;
             int tZChunk = aZ & 15;
             // 由于不添加或删除方块，原则上不需要修改 precipitationHeightMap，heightMap，generateSkylightMap
+            int tHeight = tChunk.getHeightValue(tXChunk, tZChunk);
             Block tBlock = aWorld.getBlock(aX, aY, aZ);
             int tOpacity = tBlock.getLightOpacity(aWorld, aX, aY, aZ);
 
-            // 由于不破坏方块，因此不需要 relight
-            // 调用此函数代表了透光度一定不同
+            // 为了方便调用这里还是判断一下相同不透光度的情况
+            if (tOpacity == aOldOpacity && (aOldOpacity != LIGHT_OPACITY_MAX)) return;
+
+            // 还是需要 relight
+            if (tOpacity > 0) {
+                if (aY >= tHeight) {
+                    Hack.relightBlock(tChunk, tXChunk, aY + 1, tZChunk);
+                }
+            } else
+            if (aY == tHeight - 1) {
+                Hack.relightBlock(tChunk, tXChunk, aY, tZChunk);
+            }
+            // 天空亮度会影响整个纵列
             if (tOpacity < aOldOpacity || tChunk.getSavedLightValue(EnumSkyBlock.Sky, tXChunk, aY, tZChunk) > 0) {
                 Hack.propagateSkylightOcclusion(tChunk, tXChunk, tZChunk);
             }

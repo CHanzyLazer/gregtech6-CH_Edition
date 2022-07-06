@@ -53,22 +53,17 @@ public class GTCH_Main {
 
     // 重写了原本的更新 tick，用于实现在每 tick 更新时进行调用内部函数。全大写代表不能随便调用
     public static void RESET_SERVER_TIME() {
-        LAST_TIME_SERVER = System.currentTimeMillis();
         sCurrentHandlesServer = 0;
         SERVER_TIME = 0;
     }
     public static void UPDATE_SERVER_TIME() {
         if (SERVER_TIME > 10) doScheduled(T);
-
         ++SERVER_TIME;
-        LAST_TIME_SERVER = System.currentTimeMillis();
         sCurrentHandlesServer = 0;
     }
     public static void UPDATE_CLIENT_TIME() {
         if (CLIENT_TIME > 10) doScheduled(F);
-
         ++CLIENT_TIME;
-        LAST_TIME_CLIENT = System.currentTimeMillis();
         sCurrentHandlesClient = 0;
     }
 
@@ -79,8 +74,6 @@ public class GTCH_Main {
     private final static int MAX_TICK_SCHEDULED_UPDATER = 16; // 每 tick 最多的计划数
     private final static LinkedList<Set<ITEScheduledUpdate_CH>> TE_SCHEDULED_UPDATERS_LIST_SERVER = new LinkedList<>();
     private final static LinkedList<Set<ITEScheduledUpdate_CH>> TE_SCHEDULED_UPDATERS_LIST_CLIENT = new LinkedList<>();
-//    @SuppressWarnings({"unchecked", "InstantiatingObjectToGetClassObject"})
-//    private final static Class<HashSet<ITEScheduledUpdate_CH>> SET_CLASS = (Class<HashSet<ITEScheduledUpdate_CH>>)(new HashSet<ITEScheduledUpdate_CH>()).getClass();
     public static synchronized void pushScheduled(boolean aIsServerSide, ITEScheduledUpdate_CH aScheduleUpdater) {
         LinkedList<Set<ITEScheduledUpdate_CH>> tUpdatersList = aIsServerSide?TE_SCHEDULED_UPDATERS_LIST_SERVER:TE_SCHEDULED_UPDATERS_LIST_CLIENT;
         if (tUpdatersList.isEmpty() || tUpdatersList.getLast().size() >= MAX_TICK_SCHEDULED_UPDATER)
@@ -109,10 +102,6 @@ public class GTCH_Main {
     private static final int MIN_HANDLES_CLIENT = 1;
     private static final int MAX_HANDLES_SERVER = 32;
     private static final int MAX_HANDLES_CLIENT = 32;
-    private static final long MAX_HANDLE_TIME_SERVER = 100; // ms 最多处理的时间
-    private static final long MAX_HANDLE_TIME_CLIENT = 60;  // ms 最多处理的时间
-    private static long LAST_TIME_SERVER = 0; // ms 记录上一 tick 的时间，用于统计本 tick 已经花费了多少时间
-    private static long LAST_TIME_CLIENT = 0;
     private static int sCurrentHandlesServer = 0;
     private static int sCurrentHandlesClient = 0;
     private static final int MAX_TASK_SERVER = 16; // 并行 Executor 最多拥有的队列任务数目，优先级最高，避免队列过长
@@ -127,14 +116,10 @@ public class GTCH_Main {
             if (aExecutor.getTaskNumber() >= MAX_TASK_SERVER) return F;
             if (sCurrentHandlesServer < MIN_HANDLES_SERVER) return T;
             if (sCurrentHandlesServer >= MAX_HANDLES_SERVER) return F;
-            long tTickTime = System.currentTimeMillis() - LAST_TIME_SERVER;
-            if (tTickTime < MAX_HANDLE_TIME_SERVER) return T;
         } else {
             if (aExecutor.getTaskNumber() >= MAX_TASK_CLIENT) return F;
             if (sCurrentHandlesClient < MIN_HANDLES_CLIENT) return T;
             if (sCurrentHandlesServer >= MAX_HANDLES_CLIENT) return F;
-            long tTickTime = System.currentTimeMillis() - LAST_TIME_CLIENT;
-            if (tTickTime < MAX_HANDLE_TIME_CLIENT) return T;
         }
         return F;
     }

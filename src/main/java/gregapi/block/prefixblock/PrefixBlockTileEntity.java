@@ -20,6 +20,7 @@
 package gregapi.block.prefixblock;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.NBT_LIGHT_OPACITY;
 
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetLightValue;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetLightOpacity;
@@ -90,7 +91,7 @@ public class PrefixBlockTileEntity extends TileEntityBase01Root implements IRend
 	@Override public boolean renderBlock(Block aBlock, RenderBlocks aRenderer, IBlockAccess aWorld, int aX, int aY, int aZ) {return F;}
 	@Override public boolean setBlockBounds(Block aBlock, int aRenderPass, boolean[] aShouldSideBeRendered) {return F;}
 	@Override public int getRenderPasses(Block aBlock, boolean[] aShouldSideBeRendered) {return 1;}
-	@Override public void readFromNBT(NBTTagCompound aNBT) {super.readFromNBT(aNBT); mMetaData = aNBT.getShort("m"); if (aNBT.hasKey("gt.nbt.drop")) mItemNBT = aNBT.getCompoundTag("gt.nbt.drop"); markNBTFinish();}
+	@Override public void readFromNBT(NBTTagCompound aNBT) {super.readFromNBT(aNBT); mMetaData = aNBT.getShort("m"); if (aNBT.hasKey("gt.nbt.drop")) mItemNBT = aNBT.getCompoundTag("gt.nbt.drop");}
 	@Override public void writeToNBT(NBTTagCompound aNBT) {super.writeToNBT(aNBT); aNBT.setShort("m", mMetaData); if (mItemNBT != null && !mItemNBT.hasNoTags()) aNBT.setTag("gt.nbt.drop", mItemNBT);}
 	@Override public void processPacket(INetworkHandler aNetworkHandler) {/**/}
 	@Override public Packet getDescriptionPacket() {return null;}

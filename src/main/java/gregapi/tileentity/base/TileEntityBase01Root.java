@@ -85,6 +85,7 @@ import net.minecraftforge.fluids.*;
 import java.util.*;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.NBT_LIGHT_OPACITY;
 
 /**
  * @author Gregorius Techneticies
@@ -94,7 +95,7 @@ import static gregapi.data.CS.*;
 @Optional.InterfaceList(value = {
   @Optional.Interface(iface = "appeng.api.movable.IMovableTile", modid = ModIDs.AE)
 })
-public abstract class TileEntityBase01Root extends TileEntity implements ITEScheduledUpdate_CH, ITileEntity, ITileEntityGUI, IMovableTile {
+public abstract class TileEntityBase01Root extends TileEntity implements ITileEntity, ITileEntityGUI, IMovableTile {
 	/** If this TileEntity checks for the Chunk to be loaded before returning World based values. If this is set to T, this TileEntity will not cause worfin' Chunks, uhh I mean orphan Chunks. */
 	public boolean mIgnoreUnloadedChunks = T;
 	
@@ -404,85 +405,37 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITESche
 			return;
 		}
 
+		// GTCH, 执行 mark 的任务
 		if (mMarkNBTFinished) {
 			mMarkNBTFinished = F;
 			initNBTFinish();
 		}
-		// GTCH, 将 mark 的计划进行加入计划，用来避免初始化未完成的情况
-		if (mMarkedSchedule && !mHadSchedule) {
-			mHadSchedule = T;
-			mMarkedSchedule = F;
-			onScheduledUpdate(isServerSide()); // 直接调用避免挤塞计划队列
+		if (mMarkedLightValueUpdate) {
+			updateLightValue();
+			mMarkedLightValueUpdate = F;
 		}
-
-		if (mDoesBlockUpdate) doBlockUpdate(); // 暂时保留任何时候都会调用
-	}
-
-	// 在这里执行计划任务，检测是否能够继续提交任务，不能则继续提交计划任务
-	@Override
-	public void onScheduledUpdate(boolean aIsServerSide) {
-		if (!mHadSchedule) return;
-		if (GTCH_Main.canPushHandle(aIsServerSide, ThreadPools.NONE_THREAD)) {
-			for (Updater tUpdater : ScheduleList)
-				GTCH_Main.pushHandle(aIsServerSide, ThreadPools.NONE_THREAD, tUpdater); // TODO (无限延期) 改为并行计算光照
-			ScheduleList.clear();
+		if (mMarkedLightOpacityUpdate) {
+			updateLightOpacity(mScheduleOldOpacity);
+			mMarkedLightOpacityUpdate = F;
 			mScheduleOldOpacity = -1;
-			mHadSchedule = F;
-		} else {
-			GTCH_Main.pushScheduled(aIsServerSide, this);
 		}
+
+		if (mDoesBlockUpdate) doBlockUpdate();
 	}
 
-	// GTCH, 用于执行计划任务，这里用来实现光照更新的协程或者并行实现
-	private abstract class Updater implements Runnable {
-		@Override public final void run() {doUpdate(getWorld(), getX(), getY(), getZ());}
-		public abstract void doUpdate(World aWorld, int aX, int aY, int aZ);
-		protected abstract int updaterID();
-		public boolean equals(Updater aRHS) {return updaterID() == aRHS.updaterID();}
-	}
-	private class UpdaterLightValue extends Updater {
-		@Override public void doUpdate(World aWorld, int aX, int aY, int aZ) {
-			UT_CH.Light.updateLightValue(aWorld, aX, aY, aZ);
-		}
-		@Override protected int updaterID() {return 0;}
-	}
-	private class UpdaterLightOpacity extends Updater {
-		private final int mOldOpacity;
-		public UpdaterLightOpacity(int aOldOpacity) {mOldOpacity = aOldOpacity;}
-		@Override public void doUpdate(World aWorld, int aX, int aY, int aZ) {
-			UT_CH.Light.updateLightOpacity(mOldOpacity, aWorld, aX, aY, aZ);
-		}
-		@Override protected int updaterID() {return 1;}
-	}
-	private final Set<Updater> ScheduleList = new HashSet<>(); // 用来自动将新的更新来替换旧的更新
-	private boolean mMarkedSchedule = F; // 是否已经标记了计划等待下次 updateEntity 时加入计划更新
-	private boolean mHadSchedule = F; // 是否已经存在了计划更新调用
-
-	private void pushAndMarkSchedule(Updater aUpdater) {
-		ScheduleList.add(aUpdater);
-		if (!mHadSchedule && !mMarkedSchedule) {
-			mMarkedSchedule = T;
-		}
-	}
-	private void pushAndUpdateSchedule(Updater aUpdater) {
-		ScheduleList.add(aUpdater);
-		if (!mHadSchedule) {
-			mHadSchedule = T;
-			onScheduledUpdate(isServerSide()); // 直接调用避免挤塞计划队列
-		}
-	}
-
-	private int mScheduleOldOpacity = -1; // 用来记录计划任务的旧不透明度，新的旧不透明度取最大值
+	private boolean mMarkedLightValueUpdate = F;
+	private boolean mMarkedLightOpacityUpdate = F;
+	private int mScheduleOldOpacity = -1; // 用来记录的旧不透明度，新的旧不透明度取最大值
 
 	// GTCH, 还是使用子类调用更新的方式来实现
-	// 标记式更新，在下次调用 updateEntity 时加入计划。用于在 NBT 读取阶段进行更新
-	public void updateLightValueMark() 					{pushAndMarkSchedule(new UpdaterLightValue());}
-	public void updateLightOpacityMark(int aOldOpacity) {mScheduleOldOpacity = Math.max(aOldOpacity, mScheduleOldOpacity);pushAndMarkSchedule(new UpdaterLightOpacity(mScheduleOldOpacity));}
-	public void updateLightOpacityMark() 				{updateLightOpacityMark(LIGHT_OPACITY_MAX);}
-	// 一般的加入计划式更新
-	public void updateLightValue() 						{pushAndUpdateSchedule(new UpdaterLightValue());}
-	public void updateLightOpacity(int aOldOpacity) 	{mScheduleOldOpacity = Math.max(aOldOpacity, mScheduleOldOpacity);pushAndUpdateSchedule(new UpdaterLightOpacity(mScheduleOldOpacity));}
-	public void updateLightOpacity() 					{updateLightOpacity(LIGHT_OPACITY_MAX);}
+	// 标记式更新，在下次调用 updateEntity 时调用。用于在 NBT 读取阶段进行更新
+	public void updateLightValueMark() 					{mMarkedLightValueUpdate = T;}
+	public void updateLightOpacityMark(int aOldOpacity) {mScheduleOldOpacity = Math.max(aOldOpacity, mScheduleOldOpacity); mMarkedLightOpacityUpdate = T;}
+	public void updateLightOpacityMark() 				{mScheduleOldOpacity = LIGHT_OPACITY_MAX; mMarkedLightOpacityUpdate = T;}
+	// 一般的调用更新
+	public void updateLightValue() 						{UT_CH.Light.updateLightValue(getWorld(), getX(), getY(), getZ());}
+	public void updateLightOpacity(int aOldOpacity) 	{UT_CH.Light.updateLightOpacity(aOldOpacity, getWorld(), getX(), getY(), getZ());}
+	public void updateLightOpacity() 					{UT_CH.Light.updateLightOpacity(getWorld(), getX(), getY(), getZ());}
 	// 初始化 NBT 时调用，用于初始化方块不透光度和亮度
 	private void initNBTFinish() {
 		if (this instanceof IMTE_GetLightValue) 		{Block tBlock = getBlock(getCoords()); if (tBlock instanceof IBlockTELightValue_CH) 	((IBlockTELightValue_CH)tBlock).setTELightValue(getMetaData(getCoords()), (IMTE_GetLightValue)this);}
@@ -490,7 +443,14 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITESche
 	}
 	// 用来标记 NBT 设置完成，然后在初始化方块完全结束后再去调用
 	private boolean mMarkNBTFinished = F;
-	public final void markNBTFinish() {mMarkNBTFinished = T;}
+	// GTCH, 添加这个方法来统一执行，避免重复代码
+	@Override
+	public void readFromNBT(NBTTagCompound aNBT) {
+		super.readFromNBT(aNBT);
+		// 保证服务端的初始不透明度一定是正确的
+		if (isServerSide() && this instanceof IMTE_GetLightOpacity) updateLightOpacityMark();
+		mMarkNBTFinished = T;
+	}
 	
 	@Override
 	public long getTimer() {

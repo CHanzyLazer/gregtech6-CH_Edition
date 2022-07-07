@@ -138,8 +138,8 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {
 		super.readFromNBT2(aNBT);
-		if (aNBT.hasKey(NBT_ADD_BYTE + ".dir")) mFluidDir = aNBT.getByte(NBT_ADD_BYTE + ".dir");
-		if (aNBT.hasKey(NBT_ADD_BYTE + ".mode")) mFluidMode = Mode.values()[aNBT.getByte(NBT_ADD_BYTE + ".mode")];
+		if (aNBT.hasKey(NBT_ADD_BYTE + ".dir")) mFluidDir = (byte)UT_CH.Code.getItemNumber(aNBT.getByte(NBT_ADD_BYTE + ".dir"));
+		if (aNBT.hasKey(NBT_ADD_BYTE + ".mode")) mFluidMode = Mode.values()[(byte)UT_CH.Code.getItemNumber(aNBT.getByte(NBT_ADD_BYTE + ".mode"))];
 		if (aNBT.hasKey(NBT_ADD_BYTE + ".limit")) mCapacityLimit = aNBT.getByte(NBT_ADD_BYTE + ".limit");
 		if (aNBT.hasKey(NBT_ADD_BOOL + ".fc")) mFlowControl = aNBT.getBoolean(NBT_ADD_BOOL + ".fc");
 
@@ -218,8 +218,8 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		if (isFoamDried()){
 			UT.NBT.setNumber(aNBT, NBT_ADD_BYTE + ".dir", mFluidDir);
 			// 默认值不为零（或者可能不为零）的需要专门设置
-			if (SIDES_VALID[mFluidDir]) aNBT.setByte(NBT_ADD_BYTE + ".dir", mFluidDir);
-			if (mFluidMode != Mode.DEFAULT) aNBT.setByte(NBT_ADD_BYTE + ".mode", (byte)mFluidMode.ordinal());
+			if (SIDES_VALID[mFluidDir]) aNBT.setByte(NBT_ADD_BYTE + ".dir", (byte)UT_CH.Code.toItemNumber(mFluidDir));
+			if (mFluidMode != Mode.DEFAULT) aNBT.setByte(NBT_ADD_BYTE + ".mode", (byte)UT_CH.Code.toItemNumber(mFluidMode.ordinal()));
 		}
 		return super.writeItemNBT2(aNBT);
 	}

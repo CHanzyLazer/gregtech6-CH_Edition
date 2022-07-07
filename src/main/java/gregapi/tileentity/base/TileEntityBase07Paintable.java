@@ -59,7 +59,7 @@ public abstract class TileEntityBase07Paintable extends TileEntityBase06Covers i
 	protected OreDictMaterial mMaterial = MT.NULL;
 
 	// GTCH, 用于在染色后保留一定原本颜色
-	protected int mRGBaPaint = UNCOLORED;
+	protected int mRGBPaint = UNCOLORED;
 	// 仅客户端有效
 	protected int mRGBa = UNCOLORED;
 
@@ -75,10 +75,10 @@ public abstract class TileEntityBase07Paintable extends TileEntityBase06Covers i
 
 		// 需要分情况讨论，考虑有不允许染色的，带有默认颜色的，并且不是材料颜色的方块
 		if (isPainted()) {
-			if (aNBT.hasKey(NBT_COLOR)) mRGBaPaint = aNBT.getInteger(NBT_COLOR); // mRGBaPaint 替代原本的 NBT_COLOR
-			mRGBa = UT_CH.Code.getPaintRGB(getBottomRGB(), mRGBaPaint);
+			if (aNBT.hasKey(NBT_COLOR)) mRGBPaint = (int)UT_CH.Code.getItemNumber(aNBT.getInteger(NBT_COLOR)); // mRGBaPaint 替代原本的 NBT_COLOR
+			mRGBa = UT_CH.Code.getPaintRGB(getBottomRGB(), mRGBPaint) & ALL_NON_ALPHA_COLOR;
 		} else {
-			mRGBaPaint = getBottomRGB();
+			mRGBPaint = getBottomRGB();
 			if (aNBT.hasKey(NBT_COLOR)) mRGBa = aNBT.getInteger(NBT_COLOR);
 			else mRGBa = getOriginalRGB(); // 可以防止一些问题
 		}
@@ -89,7 +89,7 @@ public abstract class TileEntityBase07Paintable extends TileEntityBase06Covers i
 	public final IPacket getClientDataPacket(boolean aSendAll) {
 		// GTCH, 使用 list 的方式来实现动态数组扩容，减少后续代码中的 mRGBa 重复代码，希望不会严重影响效率
 		if (sendAny(aSendAll)) {
-			List<Byte> rList = Lists.newArrayList((byte)UT.Code.getR(mRGBaPaint), (byte)UT.Code.getG(mRGBaPaint), (byte)UT.Code.getB(mRGBaPaint));
+			List<Byte> rList = Lists.newArrayList((byte)UT.Code.getR(mRGBPaint), (byte)UT.Code.getG(mRGBPaint), (byte)UT.Code.getB(mRGBPaint));
 			writeToClientDataPacketByteList(rList);
 			rList.add(getPaintData()); // 放到最后避免下标变化
 			return getClientDataPacketSendAll(T, rList);
@@ -124,10 +124,10 @@ public abstract class TileEntityBase07Paintable extends TileEntityBase06Covers i
 	// 用于在重写接受数据代码时调用简单的设置颜色
 	protected final void setRGBData(byte aR, byte aG, byte aB, byte aPaintData) {
 		boolean oIsPainted = mIsPainted;
-		int oRGBPaint = mRGBaPaint;
+		int oRGBPaint = mRGBPaint;
 		setPaintData(aPaintData);
-		mRGBaPaint = UT.Code.getRGBInt(new short[] {UT.Code.unsignB(aR), UT.Code.unsignB(aG), UT.Code.unsignB(aB)});
-		if (oIsPainted!=mIsPainted || oRGBPaint!=mRGBaPaint) {
+		mRGBPaint = UT.Code.getRGBInt(new short[] {UT.Code.unsignB(aR), UT.Code.unsignB(aG), UT.Code.unsignB(aB)});
+		if (oIsPainted!=mIsPainted || oRGBPaint!= mRGBPaint) {
 			onPaintChangeClient(oRGBPaint); // 仅客户端，用于在染色改变时客户端更改对应的显示颜色
 		}
 	}
@@ -135,7 +135,7 @@ public abstract class TileEntityBase07Paintable extends TileEntityBase06Covers i
 	/* 仅客户端，用于在染色改变时客户端更改对应的显示颜色 */
 	@SideOnly(Side.CLIENT)
 	public void onPaintChangeClient(int aPreviousRGBaPaint) {
-		mRGBa = isPainted() ? UT_CH.Code.getPaintRGB(getBottomRGB(), mRGBaPaint) : getOriginalRGB();
+		mRGBa = isPainted() ? UT_CH.Code.getPaintRGB(getBottomRGB(), mRGBPaint) : getOriginalRGB();
 	}
 
 	// GTCH, 原本逻辑过于麻烦，直接把是否已经染色也同步到客户端好了，这样还可以多出来一些数据用于专门处理颜色动画，可能可以方便后续的温度变色之类的开发（因为温度并没有传到客户端）
@@ -147,11 +147,11 @@ public abstract class TileEntityBase07Paintable extends TileEntityBase06Covers i
 	// GTCH, 返回机器原本的颜色，用于客户端判断是否有染色，由于原本的默认 RGB 都是材料颜色，所以不允许重写
 	@Override public final int getOriginalRGB() {return UT.Code.getRGBInt(mMaterial.fRGBaSolid);}
 	
-	@Override public boolean unpaint() {if (mIsPainted) {mIsPainted=F; mRGBaPaint=getBottomRGB(); updateClientData(); return T;} return F;}
+	@Override public boolean unpaint() {if (mIsPainted) {mIsPainted=F; mRGBPaint =getBottomRGB(); updateClientData(); return T;} return F;}
 	// GTCH, 原本逻辑过于麻烦，直接把是否已经染色也同步到客户端好了，这样还可以多出来一些数据用于专门处理颜色动画，可能可以方便后续的温度变色之类的开发（因为温度并没有传到客户端，不过实际用时需要优化把这个放一份到 NoSendAll里）
 	@Override public boolean isPainted() {return mIsPainted;}
-	@Override public boolean paint(int aRGB) {if (aRGB!=mRGBaPaint) {mRGBaPaint=aRGB; mIsPainted=T; return T;} return F;}
-	@Override public int getPaint() {return mRGBaPaint;}
+	@Override public boolean paint(int aRGB) {if (aRGB!= mRGBPaint) {mRGBPaint =aRGB; mIsPainted=T; return T;} return F;}
+	@Override public int getPaint() {return mRGBPaint;}
 	@Override public boolean canRecolorItem(ItemStack aStack) {return T;}
 	@Override public boolean canDecolorItem(ItemStack aStack) {return mIsPainted;}
 	@Override public boolean recolorItem(ItemStack aStack, int aRGB) {if (paint((isPainted() ? UT_CH.Code.mixRGBInt(getPaint(), aRGB) : aRGB) & ALL_NON_ALPHA_COLOR)) {UT.NBT.set(aStack, writeItemNBT(aStack.hasTagCompound() ? aStack.getTagCompound() : UT.NBT.make())); return T;} return F;}

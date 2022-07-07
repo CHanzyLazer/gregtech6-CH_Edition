@@ -148,7 +148,7 @@ public abstract class TileEntityBase03MultiTileEntities extends TileEntityBase02
 	public NBTTagCompound writeItemNBT(NBTTagCompound aNBT) {
 		if (UT.Code.stringValid(mCustomName)) aNBT.setTag("display", UT.NBT.makeString(aNBT.getCompoundTag("display"), "Name", mCustomName));
 		if (UT.Code.stringValid(ERROR_MESSAGE) && isClientSide()) aNBT.setTag("display", UT.NBT.makeString(aNBT.getCompoundTag("display"), "Name", ERROR_MESSAGE));
-		if (isPainted()) {aNBT.setInteger(NBT_COLOR, getPaint()); aNBT.setBoolean(NBT_PAINTED, T);}
+		if (isPainted()) {aNBT.setInteger(NBT_COLOR, (int)UT_CH.Code.toItemNumber(getPaint())); aNBT.setBoolean(NBT_PAINTED, T);}
 		return aNBT;
 	}
 	

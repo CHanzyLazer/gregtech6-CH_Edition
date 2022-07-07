@@ -110,7 +110,7 @@ public class MultiTileEntityChest extends TileEntityBase05Inventories implements
 
 		// 需要分情况讨论，考虑有不允许染色的，带有默认颜色的，并且不是材料颜色的方块
 		if (isPainted()) {
-			if (aNBT.hasKey(NBT_COLOR)) mRGBaPaint = aNBT.getInteger(NBT_COLOR); // mRGBaPaint 替代原本的 NBT_COLOR
+			if (aNBT.hasKey(NBT_COLOR)) mRGBaPaint = (int)UT_CH.Code.getItemNumber(aNBT.getInteger(NBT_COLOR)); // mRGBaPaint 替代原本的 NBT_COLOR
 			mRGBa = UT_CH.Code.getPaintRGB(getBottomRGB(), mRGBaPaint);
 		} else {
 			mRGBaPaint = getBottomRGB();

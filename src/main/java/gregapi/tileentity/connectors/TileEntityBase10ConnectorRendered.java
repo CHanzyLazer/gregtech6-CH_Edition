@@ -105,10 +105,10 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 
 		if (mFoam||mFoamDried) {
 			if (aNBT.hasKey(NBT_PAINTED+".foam")) mIsPaintedFoam = aNBT.getBoolean(NBT_PAINTED+".foam");
-			if (mIsPaintedFoam && aNBT.hasKey(NBT_COLOR+".foam")) mRGBaPaintFoam = aNBT.getInteger(NBT_COLOR+".foam");
-			else if (isPainted() && aNBT.hasKey(NBT_COLOR)) mRGBaPaintFoam=aNBT.getInteger(NBT_COLOR); mIsPaintedFoam=T; // 兼容旧版染色
+			if (mIsPaintedFoam && aNBT.hasKey(NBT_COLOR+".foam")) mRGBPaintFoam = (int)UT_CH.Code.getItemNumber(aNBT.getInteger(NBT_COLOR+".foam")); // 由于 0 值在 item 中还是会莫名丢失，因此默认值设为此值
+			else if (isPainted() && aNBT.hasKey(NBT_COLOR)) mRGBPaintFoam=(int)UT_CH.Code.getItemNumber(aNBT.getInteger(NBT_COLOR)); mIsPaintedFoam=T; // 兼容旧版染色
 			// 应用染色
-			if (mIsPaintedFoam) mRGBaFoam = UT_CH.Code.getPaintRGB(getBottomRGBFoam(), mRGBaPaintFoam);
+			if (mIsPaintedFoam) mRGBaFoam = UT_CH.Code.getPaintRGB(getBottomRGBFoam(), mRGBPaintFoam) & ALL_NON_ALPHA_COLOR;
 			else mRGBaFoam = getBottomRGBFoam(); // 可以防止一些问题
 		}
 	}
@@ -116,8 +116,8 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 	@Override
 	public void writeToNBT2(NBTTagCompound aNBT) {
 		super.writeToNBT2(aNBT);
-		UT.NBT.setBoolean(aNBT, NBT_PAINTED+".foam", mIsPaintedFoam);
-		if (mIsPaintedFoam && (mFoam||mFoamDried)) aNBT.setInteger(NBT_COLOR+".foam", mRGBaPaintFoam);
+		if (mFoam||mFoamDried) UT.NBT.setBoolean(aNBT, NBT_PAINTED+".foam", mIsPaintedFoam);
+		if (mIsPaintedFoam && (mFoam||mFoamDried)) aNBT.setInteger(NBT_COLOR+".foam", mRGBPaintFoam);
 
 		UT.NBT.setBoolean(aNBT, NBT_FOAMED, mFoam);
 		UT.NBT.setBoolean(aNBT, NBT_FOAMDRIED, mFoamDried);
@@ -128,7 +128,7 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 	@Override
 	public NBTTagCompound writeItemNBT2(NBTTagCompound aNBT) {
 		UT.NBT.setBoolean(aNBT, NBT_PAINTED+".foam", mIsPaintedFoam);
-		if (mIsPaintedFoam && (mFoam||mFoamDried)) aNBT.setInteger(NBT_COLOR+".foam", mRGBaPaintFoam);
+		if (mIsPaintedFoam && (mFoam||mFoamDried)) aNBT.setInteger(NBT_COLOR+".foam", (int)UT_CH.Code.toItemNumber(mRGBPaintFoam));
 
 		UT.NBT.setBoolean(aNBT, NBT_FOAMED, mFoam);
 		UT.NBT.setBoolean(aNBT, NBT_FOAMDRIED, mFoamDried);
@@ -380,20 +380,17 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 
 	// GTCH, 建筑泡沫颜色和管道颜色分开
 	protected boolean mIsPaintedFoam = F;
-	protected int mRGBaPaintFoam = UNCOLORED;
+	protected int mRGBPaintFoam = UNCOLORED;
 	protected int mRGBaFoam = UNCOLORED; // 仅客户端有效
 	protected int getBottomRGBFoam() {return UT.Code.getRGBInt(MT.ConstructionFoam.fRGBaSolid);}
-	protected boolean paintFoam(int aRGB) {
-		if (aRGB!= mRGBaPaintFoam) {mRGBaPaintFoam=aRGB; mIsPaintedFoam=T; updateClientData(); return T;} return F;}
-	protected boolean unpaintFoam() {
-		if (mIsPaintedFoam) {mRGBaPaintFoam=getBottomRGBFoam(); mIsPaintedFoam=F; updateClientData(); return T;} return F;
-	}
+	protected boolean paintFoam(int aRGB) {if (aRGB!= mRGBPaintFoam) {mRGBPaintFoam =aRGB; mIsPaintedFoam=T; updateClientData(); return T;} return F;}
+	protected boolean unpaintFoam() {if (mIsPaintedFoam) {mRGBPaintFoam=getBottomRGBFoam(); mIsPaintedFoam=F; updateClientData(); return T;} return F;}
 	// GTCH, 直接重写 recolourBlock 和 onPainting 方法来让有建筑泡沫时染色变成给建筑泡沫染色
 	@Override public boolean recolourBlock(byte aSide, byte aColor) {
 		if (!mFoam && !mFoamDried) return super.recolourBlock(aSide, aColor);
 		if (isClientSide()) return F;
 		if (UT.Code.exists(aColor, DYES_INVERTED)) {
-			int aRGBFoam = (mIsPaintedFoam ? UT_CH.Code.mixRGBInt(mRGBaPaintFoam, DYES_INT_INVERTED[aColor]) : DYES_INT_INVERTED[aColor]) & ALL_NON_ALPHA_COLOR;
+			int aRGBFoam = (mIsPaintedFoam ? UT_CH.Code.mixRGBInt(mRGBPaintFoam, DYES_INT_INVERTED[aColor]) : DYES_INT_INVERTED[aColor]) & ALL_NON_ALPHA_COLOR;
 			if (paintFoam(aRGBFoam)) {causeBlockUpdate(); return T;}
 		}
 		return F;
@@ -417,7 +414,7 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 	}
 	@Override public boolean recolorItem(ItemStack aStack, int aRGB) {
 		if (!mFoam && !mFoamDried) return super.recolorItem(aStack, aRGB);
-		if (paintFoam((mIsPaintedFoam ? UT_CH.Code.mixRGBInt(mRGBaPaintFoam, aRGB) : aRGB) & ALL_NON_ALPHA_COLOR)) {UT.NBT.set(aStack, writeItemNBT(aStack.hasTagCompound() ? aStack.getTagCompound() : UT.NBT.make())); return T;} return F;
+		if (paintFoam((mIsPaintedFoam ? UT_CH.Code.mixRGBInt(mRGBPaintFoam, aRGB) : aRGB) & ALL_NON_ALPHA_COLOR)) {UT.NBT.set(aStack, writeItemNBT(aStack.hasTagCompound() ? aStack.getTagCompound() : UT.NBT.make())); return T;} return F;
 	}
 
 	@Override
@@ -469,18 +466,18 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 	@Override
 	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
 		super.writeToClientDataPacketByteList(rList);
-		rList.add(5, (byte)UT.Code.getR(mRGBaPaintFoam));
-		rList.add(6, (byte)UT.Code.getG(mRGBaPaintFoam));
-		rList.add(7, (byte)UT.Code.getB(mRGBaPaintFoam));
+		rList.add(5, (byte)UT.Code.getR(mRGBPaintFoam));
+		rList.add(6, (byte)UT.Code.getG(mRGBPaintFoam));
+		rList.add(7, (byte)UT.Code.getB(mRGBPaintFoam));
 	}
 
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		boolean oIsPaintedFoam = mIsPaintedFoam;
-		int oRGBaPaintFoam = mRGBaPaintFoam;
+		int oRGBaPaintFoam = mRGBPaintFoam;
 		super.receiveDataByteArray(aData, aNetworkHandler);
-		mRGBaPaintFoam = UT.Code.getRGBInt(new short[] {UT.Code.unsignB(aData[5]), UT.Code.unsignB(aData[6]), UT.Code.unsignB(aData[7])});
-		if (oIsPaintedFoam!=mIsPaintedFoam || oRGBaPaintFoam!=mRGBaPaintFoam) {
+		mRGBPaintFoam = UT.Code.getRGBInt(new short[] {UT.Code.unsignB(aData[5]), UT.Code.unsignB(aData[6]), UT.Code.unsignB(aData[7])});
+		if (oIsPaintedFoam!=mIsPaintedFoam || oRGBaPaintFoam!= mRGBPaintFoam) {
 			onPaintFoamChangeClient(oRGBaPaintFoam); // 仅客户端，用于在染色改变时客户端更改对应的显示颜色
 		}
 		return T;
@@ -488,7 +485,7 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 	/* 仅客户端，用于在染色改变时客户端更改对应的显示颜色 */
 	@SideOnly(Side.CLIENT)
 	public void onPaintFoamChangeClient(int aPreviousRGBaPaintFoam) {
-		mRGBaFoam = mIsPaintedFoam ? UT_CH.Code.getPaintRGB(getBottomRGBFoam(), mRGBaPaintFoam) : getBottomRGBFoam();
+		mRGBaFoam = mIsPaintedFoam ? UT_CH.Code.getPaintRGB(getBottomRGBFoam(), mRGBPaintFoam) : getBottomRGBFoam();
 	}
 	@Override public byte getPaintData() {return (byte)(super.getPaintData() | (byte)(mIsPaintedFoam?2:0));}
 	@Override public void setPaintData(byte aData) {super.setPaintData(aData); mIsPaintedFoam = ((aData&2)!=0);}

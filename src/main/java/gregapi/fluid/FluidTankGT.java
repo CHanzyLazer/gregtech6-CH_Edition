@@ -295,7 +295,7 @@ public class FluidTankGT implements IFluidTank {
 	public boolean changed() {return mChangedFluids;}
 	
 	public long amount() {return isEmpty() ? 0 : mAmount;}
-	public long amount(long aMax) {return isEmpty() || aMax <= 0 ? 0 : mAmount < aMax ? mAmount : aMax;}
+	public long amount(long aMax) {return isEmpty() || aMax <= 0 ? 0 : Math.min(mAmount, aMax);}
 	
 	public long capacity (                 ) {return mAdjustableCapacity == null ? mCapacity : capacity_(mFluid);}
 	public long capacity (FluidStack aFluid) {return mAdjustableCapacity == null ? mCapacity : capacity_(aFluid);}

@@ -50,9 +50,9 @@ public class CS_CH {
 
             , NBT_INPUT_REC                 = "gtch.input.rec"              // Long, Recommend input energy, for OmniOcular usage. CHanzy
             , NBT_INPUT_NOW                 = "gtch.input.now"              // Long, Current input energy, for OmniOcular usage. CHanzy
+            , NBT_INPUT_BUFFER              = "gtch.input.buffer"           // Long, Input Buffer to let output smooth. CHanzy
             , NBT_OUTPUT_REC                = "gtch.output.rec"             // Long, Recommend output energy, for OmniOcular usage. CHanzy
             , NBT_OUTPUT_NOW                = "gtch.output.now"             // Long, Current output energy, for OmniOcular usage. CHanzy
-            , NBT_OUTPUT_BUFFER             = "gtch.output.buffer"          // Long, Buffer to let output smooth. CHanzy
             , NBT_OUTPUT_SELF               = "gtch.output.self"            // Boolean, Is the main multiblock output energy self. CHanzy
 
             , NBT_PREHEAT                   = "gtch.preheat"                // Boolean, Is machine preheating, for OmniOcular usage. CHanzy
@@ -79,6 +79,9 @@ public class CS_CH {
 
             , NBT_LIGHT_VALUE               = "gtch.light.value"            // Byte, The light value of block. CHanzy
             , NBT_LIGHT_OPACITY             = "gtch.light.opacity"          // Short, The light opacity of block. CHanzy
+
+            , NBT_BEGIN                     = "gtch.begin"                  // Byte
+            , NBT_END                       = "gtch.end"                    // Byte
             ;
 
     public static class DirectoriesGTCH {
@@ -126,5 +129,13 @@ public class CS_CH {
         LIMIT,
         PRIORITY,
         DIVIDE // 保留模式
+    }
+
+    // 整数类型
+    public enum NumberType {
+        BYTE,
+        SHORT,
+        INT,
+        LONG
     }
 }

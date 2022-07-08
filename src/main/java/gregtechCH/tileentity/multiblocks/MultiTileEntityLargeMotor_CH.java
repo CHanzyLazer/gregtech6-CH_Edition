@@ -59,8 +59,8 @@ public abstract class MultiTileEntityLargeMotor_CH extends TileEntityBase10Multi
     protected TagData mEnergyTypeEmitted = TD.Energy.RU;
 
     protected int mLength = 0, mPLength = 0, mMidLength = 1, mMinLength = 1, mMaxLength = 5;
-    protected short[] mEfficiencyArray = new short[]{0};
-    protected long[] mRateArray = new long[]{0}, mPEnergyArray = new long[]{0}, mPCostArray = new long[]{0}, mCRateArray = new long[]{0};
+    protected short[] mEfficiencyArray = ZL_SHORT;
+    protected long[] mRateArray = ZL_LONG, mPEnergyArray = ZL_LONG, mPCostArray = ZL_LONG, mCRateArray = ZL_LONG;
 
     // NBT读写
     @Override
@@ -92,11 +92,11 @@ public abstract class MultiTileEntityLargeMotor_CH extends TileEntityBase10Multi
         mPCostArray = new long[aArrayLen];
         mCRateArray = new long[aArrayLen];
         for (int i = 0; i < aArrayLen; ++i) {
-            if (aNBT.hasKey(NBT_EFFICIENCY+"."+i)) mEfficiencyArray[i] = (short)UT.Code.bind_(0, 10000, aNBT.getShort(NBT_EFFICIENCY+"."+i));
-            if (aNBT.hasKey(NBT_OUTPUT+"."+i)) mRateArray[i] = aNBT.getLong(NBT_OUTPUT+"."+i);
-            if (aNBT.hasKey(NBT_PREHEAT_ENERGY+"."+i)) mPEnergyArray[i] = aNBT.getLong(NBT_PREHEAT_ENERGY+"."+i);
-            if (aNBT.hasKey(NBT_PREHEAT_COST+"."+i)) mPCostArray[i] = aNBT.getLong(NBT_PREHEAT_COST+"."+i);
-            if (aNBT.hasKey(NBT_COOLDOWN_RATE+"."+i)) mCRateArray[i] = aNBT.getLong(NBT_COOLDOWN_RATE+"."+i);
+            mEfficiencyArray[i] = (short)UT.Code.bind_(0, 10000, aNBT.getShort(NBT_EFFICIENCY+"."+i));
+            mRateArray[i] = aNBT.getLong(NBT_OUTPUT+"."+i);
+            mPEnergyArray[i] = aNBT.getLong(NBT_PREHEAT_ENERGY+"."+i);
+            mPCostArray[i] = aNBT.getLong(NBT_PREHEAT_COST+"."+i);
+            mCRateArray[i] = aNBT.getLong(NBT_COOLDOWN_RATE+"."+i);
         }
     }
     protected void setEnergyByLength() {

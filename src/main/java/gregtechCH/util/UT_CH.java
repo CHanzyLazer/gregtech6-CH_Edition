@@ -1,17 +1,21 @@
 package gregtechCH.util;
 
+import com.google.common.primitives.Bytes;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import gregapi.oredict.OreDictMaterial;
 import gregapi.oredict.OreDictPrefix;
 import gregapi.render.BlockTextureDefault;
 import gregapi.render.IIconContainer;
 import gregapi.util.UT;
+import gregtechCH.data.CS_CH;
 import net.minecraft.block.Block;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
 import java.lang.reflect.Method;
+import java.util.LinkedList;
 import java.util.List;
 
 import static gregapi.data.CS.*;
@@ -42,6 +46,22 @@ public class UT_CH {
         public static <Entry> Entry adaptive_get(List<Entry> rList, int aIdx, Class<? extends Entry> aDefaultEntryClass) {
             if (aIdx >= rList.size()) resize(rList, aIdx+1, aDefaultEntryClass);
             return rList.get(aIdx);
+        }
+
+        public static LinkedList<Long> toList(long[] aArray) {
+            LinkedList<Long> tList = new LinkedList<>();
+            for(long tEntry : aArray) tList.addLast(tEntry);
+            return tList;
+        }
+        // 限制大小的版本，优先保留尾端
+        public static LinkedList<Long> toList(long[] aArray, int aMaxSize) {
+            LinkedList<Long> tList = new LinkedList<>();
+            if (aMaxSize <= 0) return tList;
+            for (long tEntry : aArray) {
+                tList.addLast(tEntry);
+                while (tList.size() > aMaxSize) tList.pollFirst();
+            }
+            return tList;
         }
 
     }
@@ -242,6 +262,82 @@ public class UT_CH {
         }
 
     }
+
+    public static class NBT {
+        /* 方便的存储数组 NBT 的方法，自动选用最小的体积存储，统一使用 byteArray 存储，如果全是零则会移除 NBT 标签*/
+        public static NBTTagCompound setNumberArray(NBTTagCompound aNBT, Object aTag, long[] aValues) {
+            long tMaxAbsValue = 0;
+            for (long tValue : aValues) tMaxAbsValue = Math.max(tMaxAbsValue, Math.abs(tValue));
+            if (tMaxAbsValue == 0) {aNBT.removeTag(aTag.toString()); return aNBT;}
+            byte[] tBytes; // 按照数据长度存储，最后一位存储数据类型数据
+            if (tMaxAbsValue > Integer.MAX_VALUE) {
+                tBytes = new byte[(aValues.length<<3)+1];
+                for (int i = 0; i < aValues.length; ++i) {
+                    tBytes[i<<3]        = UT.Code.toByteL(aValues[i], 0);
+                    tBytes[(i<<3)+1]    = UT.Code.toByteL(aValues[i], 1);
+                    tBytes[(i<<3)+2]    = UT.Code.toByteL(aValues[i], 2);
+                    tBytes[(i<<3)+3]    = UT.Code.toByteL(aValues[i], 3);
+                    tBytes[(i<<3)+4]    = UT.Code.toByteL(aValues[i], 4);
+                    tBytes[(i<<3)+5]    = UT.Code.toByteL(aValues[i], 5);
+                    tBytes[(i<<3)+6]    = UT.Code.toByteL(aValues[i], 6);
+                    tBytes[(i<<3)+7]    = UT.Code.toByteL(aValues[i], 7);
+                }
+                tBytes[aValues.length<<3] = (byte)CS_CH.NumberType.LONG.ordinal();
+            } else
+            if (tMaxAbsValue > Short.MAX_VALUE) {
+                tBytes = new byte[(aValues.length<<2)+1];
+                for (int i = 0; i < aValues.length; ++i) {
+                    tBytes[i<<2]        = UT.Code.toByteI((int)aValues[i], 0);
+                    tBytes[(i<<2)+1]    = UT.Code.toByteI((int)aValues[i], 1);
+                    tBytes[(i<<2)+2]    = UT.Code.toByteI((int)aValues[i], 2);
+                    tBytes[(i<<2)+3]    = UT.Code.toByteI((int)aValues[i], 3);
+                }
+                tBytes[aValues.length<<2] = (byte)CS_CH.NumberType.INT.ordinal();
+            } else
+            if (tMaxAbsValue > Byte.MAX_VALUE) {
+                tBytes = new byte[(aValues.length<<1)+1];
+                for (int i = 0; i < aValues.length; ++i) {
+                    tBytes[i<<1]        = UT.Code.toByteS((short)aValues[i], 0);
+                    tBytes[(i<<1)+1]    = UT.Code.toByteS((short)aValues[i], 1);
+                }
+                tBytes[aValues.length<<1] = (byte)CS_CH.NumberType.SHORT.ordinal();
+            } else
+            {
+                tBytes = new byte[aValues.length+1];
+                for (int i = 0; i < aValues.length; ++i) tBytes[i] = (byte)aValues[i];
+                tBytes[aValues.length] = (byte)CS_CH.NumberType.BYTE.ordinal();
+            }
+            aNBT.setByteArray(aTag.toString(), tBytes);
+            return aNBT;
+        }
+        /* 对应专门的读取方法 */
+        public static long[] getNumberArray(NBTTagCompound aNBT, Object aTag) {
+            if (!aNBT.hasKey(aTag.toString())) return new long[0];
+            byte[] tBytes = aNBT.getByteArray(aTag.toString());
+            if (tBytes.length <= 1) return new long[0];
+            CS_CH.NumberType tType = CS_CH.NumberType.values()[tBytes[tBytes.length-1]];
+            long[] tValues;
+            switch (tType) {
+            case LONG:
+                tValues = new long[(tBytes.length-1)>>3];
+                for (int i = 0; i < tValues.length; ++i) tValues[i] = UT.Code.combine(tBytes[i<<3], tBytes[(i<<3)+1], tBytes[(i<<3)+2], tBytes[(i<<3)+3], tBytes[(i<<3)+4], tBytes[(i<<3)+5], tBytes[(i<<3)+6], tBytes[(i<<3)+7]);
+                return tValues;
+            case INT:
+                tValues = new long[(tBytes.length-1)>>2];
+                for (int i = 0; i < tValues.length; ++i) tValues[i] = UT.Code.combine(tBytes[i<<2], tBytes[(i<<2)+1], tBytes[(i<<2)+2], tBytes[(i<<2)+3]);
+                return tValues;
+            case SHORT:
+                tValues = new long[(tBytes.length-1)>>1];
+                for (int i = 0; i < tValues.length; ++i) tValues[i] = UT.Code.combine(tBytes[i<<1], tBytes[(i<<1)+1]);
+                return tValues;
+            case BYTE: default:
+                tValues = new long[tBytes.length-1];
+                for (int i = 0; i < tValues.length; ++i) tValues[i] = tBytes[i];
+                return tValues;
+            }
+        }
+    }
+
     // 用于直接选择材质是否要保留环境光遮蔽，光照等
     public static class Texture {
         public static BlockTextureDefault BlockTextureDefaultAO(OreDictMaterial aMaterial, int aTextureSetIndex, int aRGBa, boolean aGlow, boolean aEnableAO) {

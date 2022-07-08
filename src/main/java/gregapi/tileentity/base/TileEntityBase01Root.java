@@ -448,8 +448,10 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 	public void readFromNBT(NBTTagCompound aNBT) {
 		super.readFromNBT(aNBT);
 		// 保证服务端的初始不透明度一定是正确的
-		if (isServerSide() && this instanceof IMTE_GetLightOpacity) updateLightOpacityMark();
-		mMarkNBTFinished = T;
+		if (worldObj != null) {
+			if (isServerSide() && this instanceof IMTE_GetLightOpacity) updateLightOpacityMark();
+			mMarkNBTFinished = T;
+		}
 	}
 	
 	@Override

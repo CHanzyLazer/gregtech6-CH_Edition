@@ -61,6 +61,7 @@ import gregapi.tileentity.delegate.ITileEntityCanDelegate;
 import gregapi.util.*;
 import gregtechCH.data.LH_CH;
 import gregtechCH.fluid.IFluidHandler_CH;
+import gregtechCH.tileentity.data.ITileEntityFlowrate_CH;
 import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCauldron;
@@ -79,10 +80,10 @@ import net.minecraftforge.fluids.IFluidTank;
 /**
  * @author Gregorius Techneticies
  */
-public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered implements IMTE_GetOreDictItemData, ITileEntityQuickObstructionCheck, IFluidHandler_CH, ITileEntityGibbl, ITileEntityTemperature, ITileEntityProgress, ITileEntityServerTickPre, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnEntityCollidedWithBlock {
+public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered implements ITileEntityFlowrate_CH, IMTE_GetOreDictItemData, ITileEntityQuickObstructionCheck, IFluidHandler_CH, ITileEntityGibbl, ITileEntityTemperature, ITileEntityProgress, ITileEntityServerTickPre, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnEntityCollidedWithBlock {
 	private byte[] mLastReceivedFrom = ZL_BYTE;
 	private static final byte LRF_COOLDOWN_NUM = 8;
-	private byte[] mLRFCooldownCounters =  ZL_BYTE;
+	private byte[][] mLRFCooldownCounters =  ZL_BI_BYTE;
 
 	public byte mRenderType = 0;
 	public long mTemperature = DEF_ENV_TEMP, mMaxTemperature, mTransferredAmount = 0, mCapacity = 1000;
@@ -168,11 +169,12 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 
 			mTanks = new FluidTankGT[tTankCount];
 			mLastReceivedFrom = new byte[mTanks.length];
-			mLRFCooldownCounters = new byte[mTanks.length];
+			mLRFCooldownCounters = new byte[mTanks.length][SIDE_NUMBER];
 			for (int i = 0; i < mTanks.length; i++) {
 				mTanks[i] = new FluidTankGT(aNBT, NBT_TANK+"."+i, tCapacity).setIndex(i);
 				mLastReceivedFrom[i] = aNBT.getByte("gt.mlast."+i);
-				mLRFCooldownCounters[i] = aNBT.getByte("gt.mlast.cooldown."+i);
+				long[] tNumbers = UT_CH.NBT.getNumberArray(aNBT, "gt.mlast.cooldown."+i);
+				for (int j = 0; j < SIDE_NUMBER; ++j) mLRFCooldownCounters[i][j] = (j<tNumbers.length)?(byte)tNumbers[j]:0;
 			}
 		} else {
 			mBeginIdx = new byte[1];
@@ -187,8 +189,9 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 
 			mLastReceivedFrom = new byte[1];
 			mLastReceivedFrom[0] = aNBT.getByte("gt.mlast.0");
-			mLRFCooldownCounters = new byte[1];
-			mLRFCooldownCounters[0] = aNBT.getByte("gt.mlast.cooldown.0");
+			mLRFCooldownCounters = new byte[1][SIDE_NUMBER];
+			long[] tNumbers = UT_CH.NBT.getNumberArray(aNBT, "gt.mlast.cooldown."+0);
+			for (int j = 0; j < SIDE_NUMBER; ++j) mLRFCooldownCounters[0][j] = (j<tNumbers.length)?(byte)tNumbers[j]:0;
 		}
 		
 		if (worldObj != null && isServerSide() && mHasToAddTimer) {
@@ -216,7 +219,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		for (int i = 0; i < mTanks.length; i++) {
 			mTanks[i].writeToNBT(aNBT, NBT_TANK+"."+i);
 			UT.NBT.setNumber(aNBT, "gt.mlast."+i, mLastReceivedFrom[i]);
-			UT.NBT.setNumber(aNBT, "gt.mlast.cooldown."+i, mLRFCooldownCounters[i]);
+			UT_CH.NBT.setNumberArray(aNBT, "gt.mlast.cooldown."+i, UT_CH.STL.toLongArray(mLRFCooldownCounters[i]));
 		}
 		UT.NBT.setNumber(aNBT, "gt.mtransfer", mTransferredAmount);
 	}
@@ -631,16 +634,19 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 
 	// GTCH, 用于给重置防倒流加入一个延迟
 	protected void resetLastReceivedFrom(int tTankIdx) {
-		if (mLRFCooldownCounters[tTankIdx] > 0) {
-			--mLRFCooldownCounters[tTankIdx];
-		}
-		else {
-			mLastReceivedFrom[tTankIdx] = 0;
-			mLRFCooldownCounters[tTankIdx] = 0;
+		for (byte tSide : ALL_SIDES_VALID) {
+			if (mLRFCooldownCounters[tTankIdx][tSide] > 0) {
+				--mLRFCooldownCounters[tTankIdx][tSide];
+			}
+			else {
+				mLastReceivedFrom[tTankIdx] &= ~SBIT[tSide]; // 每个方向分别重置
+				mLRFCooldownCounters[tTankIdx][tSide] = 0;
+			}
 		}
 	}
 	protected void setLastReceivedFrom(int tTankIdx, byte aSide) {
-		mLRFCooldownCounters[tTankIdx] = LRF_COOLDOWN_NUM;
+		if (SIDES_VALID[aSide]) mLRFCooldownCounters[tTankIdx][aSide] = LRF_COOLDOWN_NUM;
+		else Arrays.fill(mLRFCooldownCounters[tTankIdx], LRF_COOLDOWN_NUM);
 		mLastReceivedFrom[tTankIdx] |= SBIT[aSide];
 	}
 
@@ -1091,8 +1097,9 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 			// 直接完全均分
 			for (FluidTankGT tPipe : tPipes) mTransferredAmount += aTank.remove(tPipe.add(aTank.amount(tAmount), aTank.get()));
 			for (DelegatorTileEntity tTank : tTanks) mTransferredAmount += aTank.remove(FL.fill(tTank, aTank.get(tAmount), T));
-		} else {
-			// 使用 else 来避免每一个 tick 都随机分配的问题
+		}
+		// 不再使用 else 来保证每一 tick 的 output 一般都能输出掉
+		if (tRemain > 0) {
 			// 剩下的从随机位置开始，依次分配
 			if (mBeginIdx[aTank.mIndex]==SIDE_INVALID || mBeginIdx[aTank.mIndex]>=tTargetCount) mBeginIdx[aTank.mIndex] = (byte)rng(tTargetCount);
 			int tBeginIdx = mBeginIdx[aTank.mIndex];
@@ -1130,18 +1137,24 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 			addInBuffer(aTank.mIndex, Math.max(0, aTank.amount()-oAmounts[aTank.mIndex]+getSmoothOutput(aTank.mIndex)-mOutputs[aTank.mIndex]));
 			return;
 		}
+		// 对于空管道专门优化
+		if (aTank.isEmpty()) {
+			addInBuffer(aTank.mIndex, 0);
+			mOutputs[aTank.mIndex] = 0;
+			return;
+		}
 		// 首先将输入量计入 buffer
 		addInBuffer(aTank.mIndex, Math.max(0, aTank.amount()-oAmounts[aTank.mIndex]));
 		// 输出则直接是对 buffer 的统计平均
 		long tOut = getSmoothOutput(aTank.mIndex);
 		if (tOut > 0) {
-			mOutputs[aTank.mIndex] = aTank.amount(tOut);
+			mOutputs[aTank.mIndex] = aTank.amount(Math.min(tOut, UT.Code.divup(aTank.capacity(), 2))); // 添加限制最大流速
 			return;
 		}
 		if (aTank.isEmpty()) return;
-		// 对于为 tOut 零但是管道有残存流体的情况，为了防止残存流体停止流动，将残存流体放入 buffer 重新计算
+		// 对于 tOut 为零但是管道有残存流体的情况，为了防止残存流体停止流动，将残存流体放入 buffer 重新计算
 		addInBuffer(aTank.mIndex, aTank.amount());
-		mOutputs[aTank.mIndex] = aTank.amount(getSmoothOutput(aTank.mIndex));
+		mOutputs[aTank.mIndex] = aTank.amount(Math.min(getSmoothOutput(aTank.mIndex), UT.Code.divup(aTank.capacity(), 2)));
 	}
 	protected void resetOutputSoft(FluidTankGT aTank) {
 		// 简单的重置
@@ -1265,6 +1278,9 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	
 	@Override public long getTemperatureValue               (byte aSide) {return mTemperature;}
 	@Override public long getTemperatureMax                 (byte aSide) {return mMaxTemperature;}
+
+	@Override public long getFlowrateValue					(byte aSide) {return mTransferredAmount;}
+	@Override public long getFlowrateMax					(byte aSide) {return UT.Code.divup(mTanks[0].capacity() * mTanks.length, 2);}
 	
 	@Override public ITexture getTextureSide                (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {
 		ITexture tBase = UT_CH.Texture.BlockTextureDefaultAO(mMaterial, getIconIndexSide(aSide, aConnections, aDiameter, aRenderPass), mRGBa, mIsGlowing, (aRenderPass <= 6 && !mIsGlowing));

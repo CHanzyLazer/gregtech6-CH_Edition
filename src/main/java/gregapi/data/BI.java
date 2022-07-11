@@ -113,7 +113,9 @@ public class BI {
 	, CHAR_LU = new Icon("overlays/characters/lu")
 	, CHAR_RU = new Icon("overlays/characters/ru")
 	, CHAR_NEUTRON = new Icon("overlays/characters/neutron")
-	
+	, CHAR_LPT = new Icon("overlays/characters/lpt")
+	, CHAR_BPT = new Icon("overlays/characters/bpt")
+
 	, CHAR_SCALE = new Icon("overlays/characters/scale")
 	, CHAR_GREG = new Icon("overlays/characters/greg")
 	, CHAR_NEI = new Icon("overlays/characters/nei")

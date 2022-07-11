@@ -21,6 +21,7 @@ public class ConfigForge_CH {
         public static boolean enableChangeMachineMachines3;
         public static boolean enableChangeMachineMachines4;
         public static boolean enableChangeMachineKinetic;
+        public static boolean enableChangeMachineSensors;
 
         public static boolean sneakingMountCover;
 
@@ -61,6 +62,7 @@ public class ConfigForge_CH {
         DATA_GTCH.enableChangeMachineMachines3 = ConfigsGTCH.GTCH.get(ConfigCategories_CH.general_CH, "enableChange_machine_machines3_(gt6_false)", T);
         DATA_GTCH.enableChangeMachineMachines4 = ConfigsGTCH.GTCH.get(ConfigCategories_CH.general_CH, "enableChange_machine_machines4_(gt6_false)", T);
         DATA_GTCH.enableChangeMachineKinetic = ConfigsGTCH.GTCH.get(ConfigCategories_CH.general_CH, "enableChange_machine_kinetic_(gt6_false)", T);
+        DATA_GTCH.enableChangeMachineSensors = ConfigsGTCH.GTCH.get(ConfigCategories_CH.general_CH, "enableChange_machine_sensors_(gt6_false)", T);
 
         DATA_GTCH.sneakingMountCover = ConfigsGTCH.GTCH.get(ConfigCategories_CH.general_CH, "sneaking_mount_cover_(gt6_false)", T);
 

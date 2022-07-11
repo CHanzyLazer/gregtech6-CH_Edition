@@ -63,6 +63,22 @@ public class UT_CH {
             }
             return tList;
         }
+        // 简化调用和重复代码的暴力转换，java 的泛型不太行只能重写好多份
+        public static long[] toLongArray(byte[] aArray) {
+            long[] tOut = new long[aArray.length];
+            for (int i = 0; i < aArray.length; ++i) tOut[i] = aArray[i];
+            return tOut;
+        }
+        public static long[] toLongArray(short[] aArray) {
+            long[] tOut = new long[aArray.length];
+            for (int i = 0; i < aArray.length; ++i) tOut[i] = aArray[i];
+            return tOut;
+        }
+        public static long[] toLongArray(int[] aArray) {
+            long[] tOut = new long[aArray.length];
+            for (int i = 0; i < aArray.length; ++i) tOut[i] = aArray[i];
+            return tOut;
+        }
 
     }
 

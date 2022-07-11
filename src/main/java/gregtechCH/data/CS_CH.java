@@ -15,6 +15,11 @@ import static gregapi.data.OP.*;
 
 public class CS_CH {
 
+    // 补充一些常量
+    public static final byte SIDE_NUMBER = (byte)ALL_SIDES_VALID.length;
+    public static final byte[][] ZL_BI_BYTE = new byte[0][0];
+    public static final long[][] ZL_BI_LONG = new long[0][0];
+
     // 只有 RGB 值的转为 RGBa 加上此值可以比较保险
     public static final int ALPHA_COLOR = 0xff000000;
     // 事先计算的一些方块的颜色，可以避免调用时频繁计算颜色值
@@ -82,6 +87,8 @@ public class CS_CH {
 
             , NBT_BEGIN                     = "gtch.begin"                  // Byte
             , NBT_END                       = "gtch.end"                    // Byte
+
+            , NBT_TICK                      = "gtch.tick"                    // Byte
             ;
 
     public static class DirectoriesGTCH {

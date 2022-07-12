@@ -42,7 +42,7 @@ public class MultiTileEntityPowerCell extends TileEntityBase09PowerCell implemen
 	@Override public int getRenderPasses2(Block aBlock, boolean[] aShouldSideBeRendered) {
 		return 1;
 	}
-	@Override public ITexture getTexture2(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {return BlockTextureDefault.get(SIDES_VERTICAL[aSide]?SIDES_TOP[aSide]?BlockIcons.ANEUTRONIC_FUSION_TOP:BlockIcons.ANEUTRONIC_FUSION_BOTTOM:BlockIcons.ANEUTRONIC_FUSION_SIDES, mDisplayedEnergy == 0 ? UT.Code.getRGBInt(UT.Code.getR(mRGBa) / 2, UT.Code.getG(mRGBa) / 2, UT.Code.getB(mRGBa) / 2) : mRGBa, 120+mDisplayedEnergy*8);}
+	@Override public ITexture getTexture2(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {return BlockTextureDefault.get(SIDES_VERTICAL[aSide]?SIDES_TOP[aSide]?BlockIcons.ANEUTRONIC_FUSION_TOP:BlockIcons.ANEUTRONIC_FUSION_BOTTOM:BlockIcons.ANEUTRONIC_FUSION_SIDES, mRGBa, 120+mDisplayedEnergy*8);}
 	
 	@Override public boolean setBlockBounds2(Block aBlock, int aRenderPass, boolean[] aShouldSideBeRendered) {return box(aBlock, PX_P[ 4], PX_P[ 0], PX_P[ 4], PX_N[ 4], PX_N[12], PX_N[ 4]);}
 	@Override public AxisAlignedBB getCollisionBoundingBoxFromPool() {return box( PX_P[ 4], PX_P[ 0], PX_P[ 4], PX_N[ 4], PX_N[12], PX_N[ 4]);}

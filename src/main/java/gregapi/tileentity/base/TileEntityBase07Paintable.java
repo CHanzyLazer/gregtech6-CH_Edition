@@ -144,10 +144,10 @@ public abstract class TileEntityBase07Paintable extends TileEntityBase06Covers i
 
 	// GTCH, 返回染色中用于叠底的颜色，用于给有外套层的机器重写，也用于客户端判断是否有染色
 	@Override public int getBottomRGB() {return UT.Code.getRGBInt(mMaterial.fRGBaSolid);}
-	// GTCH, 返回机器原本的颜色，用于客户端判断是否有染色，由于原本的默认 RGB 都是材料颜色，所以不允许重写
-	@Override public final int getOriginalRGB() {return UT.Code.getRGBInt(mMaterial.fRGBaSolid);}
+	// GTCH, 返回机器原本的颜色，一般都是材料颜色
+	@Override public int getOriginalRGB() {return UT.Code.getRGBInt(mMaterial.fRGBaSolid);}
 	
-	@Override public boolean unpaint() {if (mIsPainted) {mIsPainted=F; mRGBPaint =getBottomRGB(); updateClientData(); return T;} return F;}
+	@Override public boolean unpaint() {if (mIsPainted) {mIsPainted=F; mRGBPaint=getBottomRGB(); updateClientData(); return T;} return F;}
 	// GTCH, 原本逻辑过于麻烦，直接把是否已经染色也同步到客户端好了，这样还可以多出来一些数据用于专门处理颜色动画，可能可以方便后续的温度变色之类的开发（因为温度并没有传到客户端，不过实际用时需要优化把这个放一份到 NoSendAll里）
 	@Override public boolean isPainted() {return mIsPainted;}
 	@Override public boolean paint(int aRGB) {if (aRGB!= mRGBPaint) {mRGBPaint =aRGB; mIsPainted=T; return T;} return F;}

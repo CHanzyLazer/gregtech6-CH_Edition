@@ -20,6 +20,7 @@
 package gregapi.block.multitileentity.example;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.*;
 
@@ -50,6 +51,7 @@ import gregapi.tileentity.base.TileEntityBase05Inventories;
 import gregapi.tileentity.data.ITileEntitySurface;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.util.UT;
+import gregtechCH.data.CS_CH;
 import gregtechCH.tileentity.ITEPaintable_CH;
 import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
@@ -275,7 +277,8 @@ public class MultiTileEntityChest extends TileEntityBase05Inventories implements
 	@Override public boolean canDecolorItem(ItemStack aStack) {return mIsPainted;}
 	@Override public boolean recolorItem(ItemStack aStack, int aRGB) {if (paint((isPainted() ? UT_CH.Code.mixRGBInt(getPaint(), aRGB) : aRGB) & ALL_NON_ALPHA_COLOR)) {UT.NBT.set(aStack, writeItemNBT(aStack.hasTagCompound() ? aStack.getTagCompound() : UT.NBT.make())); return T;} return F;}
 	@Override public boolean decolorItem(ItemStack aStack) {if (unpaint()) {UT.NBT.set(aStack, writeItemNBT(aStack.hasTagCompound() ? aStack.getTagCompound() : UT.NBT.make())); return T;} return F;}
-	
+
+
 	private static final float minX = 0.0625F, minY = 0F, minZ = 0.0625F, maxX = 0.9375F, maxY = 0.875F, maxZ = 0.9375F;
 	@Override public AxisAlignedBB getCollisionBoundingBoxFromPool() {return box(minX, minY, minZ, maxX, maxY, maxZ);}
 	@Override public AxisAlignedBB getSelectedBoundingBoxFromPool () {return box(minX, minY, minZ, maxX, maxY, maxZ);}
@@ -346,6 +349,10 @@ public class MultiTileEntityChest extends TileEntityBase05Inventories implements
 				
 				bindTexture(tLocation[1]);
 				glPushMatrix();
+				if (((MultiTileEntityChest)aTileEntity).isPainted()) {
+					tRGBa = UT.Code.getRGBaArray(UT_CH.Code.getOverlayRGB(((MultiTileEntityChest)aTileEntity).getPaint()));
+					glColor4f(tRGBa[0] / 255.0F, tRGBa[1] / 255.0F, tRGBa[2] / 255.0F, 1);
+				}
 				glTranslated(aX, aY + 1, aZ + 1);
 				glScalef(1, -1, -1);
 				glTranslated(0.5, 0.5, 0.5);
@@ -355,6 +362,7 @@ public class MultiTileEntityChest extends TileEntityBase05Inventories implements
 				glDisable(GL_RESCALE_NORMAL);
 				glPopMatrix();
 				glEnable(GL_RESCALE_NORMAL);
+				if (((MultiTileEntityChest)aTileEntity).isPainted()) glColor4f(1, 1, 1, 1);
 			}
 		}
 	}

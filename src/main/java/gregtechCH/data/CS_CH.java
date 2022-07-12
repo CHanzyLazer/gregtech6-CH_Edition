@@ -88,7 +88,10 @@ public class CS_CH {
             , NBT_BEGIN                     = "gtch.begin"                  // Byte
             , NBT_END                       = "gtch.end"                    // Byte
 
-            , NBT_TICK                      = "gtch.tick"                    // Byte
+            , NBT_TICK                      = "gtch.tick"                   // Byte
+
+            , NBT_COLOR_BOTTOM              = "gtch.color.bottom"           // Integer, The bottom (or base) color of paint. CHanzy
+            , NBT_COLOR_ORIGIN              = "gtch.color.origin"           // Integer, The origin color of painted block. CHanzy
             ;
 
     public static class DirectoriesGTCH {

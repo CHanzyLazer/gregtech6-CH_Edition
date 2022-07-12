@@ -27,16 +27,29 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 import java.util.List;
 
 import static gregapi.data.CS.F;
+import static gregapi.data.CS.UNCOLORED;
+import static gregtechCH.data.CS_CH.NBT_COLOR_BOTTOM;
+import static gregtechCH.data.CS_CH.NBT_COLOR_ORIGIN;
 
 /**
  * @author Gregorius Techneticies
  */
 public abstract class TileEntityBase09PowerCell extends TileEntityBase08Battery {
+	private int mRGBBottom = UNCOLORED;
+	@Override
+	public void readFromNBT2(NBTTagCompound aNBT) {
+		if (aNBT.hasKey(NBT_COLOR_BOTTOM)) mRGBBottom = aNBT.getInteger(NBT_COLOR_BOTTOM);
+		super.readFromNBT2(aNBT);
+	}
+	@Override public int getBottomRGB() {return mDisplayedEnergy == 0 ? UT.Code.getRGBInt(UT.Code.getR(mRGBBottom) / 2, UT.Code.getG(mRGBBottom) / 2, UT.Code.getB(mRGBBottom) / 2) : mRGBBottom;}
+	@Override public int getOriginalRGB() {return getBottomRGB();}
+
 	public abstract ItemStack getEmptyPowerCell();
 	
 	@Override

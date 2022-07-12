@@ -208,11 +208,6 @@ public class UT_CH {
             return UT.Code.getRGBInt(tRGBArray);
         }
 
-        // 将 paint 混合颜色的方法放在这里方便一起修改
-        public static int getPaintRGB(int aRGBOrigin, int aRGBPaint) {
-            // 放弃复杂的算法，直接 RGB 混合效果较好
-            return getMixRGBInt(aRGBOrigin, aRGBPaint, DATA_GTCH.mixRatio);
-        }
         // 使用向上整除来保证一定能够达到后一个颜色
         public static int mixRGBInt(int aRGB1, int aRGB2) {
             short[] tFrom = getRGBArray(aRGB1);
@@ -223,8 +218,22 @@ public class UT_CH {
             tFrom[2] += (short)((tTo[2]>=0)?UT.Code.divup(tTo[2], 2):-UT.Code.divup(Math.abs(tTo[2]), 2));
             return UT.Code.getRGBInt(tFrom);
         }
-        // 直接将 RGB 混合，相比原本可以指定后一个 RGB 的占比权重，并且使用向上整除来保证一定能够达到后一个颜色
+
+        // overlay 使用的颜色通用值
+        public static int getOverlayRGB(int aRGBPaint) {
+            // 使用按比例 RGB 混合白色的方法来限制染色深浅
+            return getMixRGBInt(DYE_INT_White, aRGBPaint, DATA_GTCH.mixRatio);
+        }
+        // 将 paint 混合颜色的方法放在这里方便一起修改
+        public static int getPaintRGB(int aRGBOrigin, int aRGBPaint) {
+            return getMixRGBIntSic(aRGBOrigin, aRGBPaint, 1F-DATA_GTCH.mixRatio, DATA_GTCH.mixRatio*DATA_GTCH.mixRatio);
+        }
+        // 直接将 RGB 混合，相比原本可以指定后一个 RGB 的占比权重
         public static int getMixRGBInt(int aRGB1, int aRGB2, float aWeight) {
+            // 优化特殊输入
+            if (aWeight <= 0.0F) return aRGB1;
+            if (aWeight >= 1.0F) return aRGB2;
+
             short[] tRGBArray = getRGBArray(aRGB1);
             float[] tRGB1 = {tRGBArray[0]/255F, tRGBArray[1]/255F, tRGBArray[2]/255F};
             tRGBArray = getRGBArray(aRGB2);
@@ -235,6 +244,45 @@ public class UT_CH {
             tRGB1[2] += (tRGB2[2] - tRGB1[2]) * aWeight;
 
             tRGBArray[0] = (short) Math.round(tRGB1[0]*255); tRGBArray[1] = (short) Math.round(tRGB1[1]*255); tRGBArray[2] = (short) Math.round(tRGB1[2]*255);
+            return UT.Code.getRGBInt(tRGBArray);
+        }
+        // 使用科学染色方法得到混合颜色，应该可以得到更好的结果
+        public static int getMixRGBIntSic(int aRGBBase, int aRGBPaint, float aWeightBase, float aWeightPaint) {
+            // 优化特殊输入
+            if (aWeightBase >= 1.0F && aWeightPaint <= 0.0F) return aRGBBase;
+            if (aWeightPaint >= 1.0F && aWeightBase <= 0.0F) return aRGBPaint;
+
+            short[] tRGBArray = getRGBArray(aRGBBase);
+            float[] tRGBBase = {tRGBArray[0]/255F, tRGBArray[1]/255F, tRGBArray[2]/255F};
+            tRGBArray = getRGBArray(aRGBPaint);
+            float[] tRGBPaint = {tRGBArray[0]/255F, tRGBArray[1]/255F, tRGBArray[2]/255F};
+            aWeightBase = Math.min(1.0F, Math.max(aWeightBase, 0.0F));
+            aWeightPaint = Math.min(1.0F, Math.max(aWeightPaint, 0.0F));
+
+            // 按照 overlay 染色方法计算带有权重的底色颜色
+            tRGBBase[0] *= (tRGBPaint[0] + (1F - tRGBPaint[0]) * aWeightBase);
+            tRGBBase[1] *= (tRGBPaint[1] + (1F - tRGBPaint[1]) * aWeightBase);
+            tRGBBase[2] *= (tRGBPaint[2] + (1F - tRGBPaint[2]) * aWeightBase);
+            // 此时计算结果期望的亮度值
+            float[] tHSV = new float[3];
+            RGB2HSV(tRGBBase, tHSV);
+            float tS = tHSV[2];
+            RGB2HSV(tRGBPaint, tHSV);
+            tS += (tHSV[2] - tS) * aWeightPaint;
+            // 染料颜色直接按照权重比例放缩
+            tRGBPaint[0] *= aWeightPaint;
+            tRGBPaint[1] *= aWeightPaint;
+            tRGBPaint[2] *= aWeightPaint;
+            // 直接两者进行混合，注意混合后需要保证亮度不变
+            tRGBBase[0] += tRGBPaint[0]; tRGBBase[0] *= 0.5;
+            tRGBBase[1] += tRGBPaint[1]; tRGBBase[1] *= 0.5;
+            tRGBBase[2] += tRGBPaint[2]; tRGBBase[2] *= 0.5;
+            // 使用 HSV 来保证亮度值不变
+            RGB2HSV(tRGBBase, tHSV);
+            tHSV[2] = tS;
+            HSV2RGB(tRGBBase, tHSV);
+
+            tRGBArray[0] = (short) Math.round(tRGBBase[0]*255); tRGBArray[1] = (short) Math.round(tRGBBase[1]*255); tRGBArray[2] = (short) Math.round(tRGBBase[2]*255);
             return UT.Code.getRGBInt(tRGBArray);
         }
 

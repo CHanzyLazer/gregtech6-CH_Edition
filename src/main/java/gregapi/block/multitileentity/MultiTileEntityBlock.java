@@ -20,8 +20,6 @@
 package gregapi.block.multitileentity;
 
 import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.block.*;
 import gregapi.block.IBlockSyncData.IBlockSyncDataAndCoversAndIDs;
 import gregapi.block.multitileentity.IMultiTileEntity.*;
@@ -33,8 +31,6 @@ import gregapi.item.IItemGT;
 import gregapi.network.INetworkHandler;
 import gregapi.old.Textures;
 import gregapi.oredict.OreDictMaterialStack;
-import gregapi.random.IHasCoords;
-import gregapi.random.IHasWorld;
 import gregapi.render.IRenderedBlock;
 import gregapi.render.IRenderedBlockObject;
 import gregapi.render.ITexture;
@@ -47,9 +43,6 @@ import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
 import gregtechCH.block.IBlockTELightOpacity_CH;
-import gregtechCH.block.IBlockTELightValue_CH;
-import gregtechCH.code.LimitedHashMap;
-import gregtechCH.util.WD_CH;
 import mekanism.api.MekanismAPI;
 import micdoodle8.mods.galacticraft.api.block.IOxygenReliantBlock;
 import net.minecraft.block.Block;
@@ -64,7 +57,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -85,7 +77,7 @@ import vazkii.botania.api.mana.IManaTrigger;
 import java.util.*;
 
 import static gregapi.data.CS.*;
-import static gregtechCH.config.ConfigForge_CH.*;
+import static gregtechCH.config.ConfigForge_CH.DATA_GTCH;
 
 /**
  * @author Gregorius Techneticies

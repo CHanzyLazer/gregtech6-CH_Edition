@@ -28,7 +28,8 @@ public class ConfigForge_CH {
         public static boolean disableAllStoragePowerconducting;
 
         public static float markRatio;
-        public static float mixRatio;
+        public static float mixBaseRatio;
+        public static float mixPaintRatio;
 
         public static boolean disableGTBlockLightOpacity;
     }
@@ -69,9 +70,10 @@ public class ConfigForge_CH {
         DATA_GTCH.disableAllStoragePowerconducting = ConfigsGTCH.GTCH.get(ConfigCategories_CH.fluid_CH, "disable_all_storage_powerconducting_(gt6_false)", T);
 
         DATA_GTCH.markRatio = Math.min(1.0F, Math.max((float)ConfigsGTCH.GTCH.get(ConfigCategories_CH.colour_CH, "mark_ratio_(gt6_?)", 0.125), 0.0F));
-        DATA_GTCH.mixRatio = Math.min(1.0F, Math.max((float)ConfigsGTCH.GTCH.get(ConfigCategories_CH.colour_CH, "colour_mix_ratio_(gt6_1.0)", 0.4), 0.0F));
+        DATA_GTCH.mixBaseRatio = Math.min(1.0F, Math.max((float)ConfigsGTCH.GTCH.get(ConfigCategories_CH.colour_CH, "colour_mix_base_ratio_(gt6_0.0)", 0.5), 0.0F));
+        DATA_GTCH.mixPaintRatio = Math.min(1.0F, Math.max((float)ConfigsGTCH.GTCH.get(ConfigCategories_CH.colour_CH, "colour_mix_paint_ratio_(gt6_1.0)", 0.15), 0.0F));
 
-        DATA_GTCH.disableGTBlockLightOpacity = ConfigsGTCH.GTCH.get(ConfigCategories_CH.general_CH, "disable_GT_block_LightOpacity_(gt6_?)",  F);
+        DATA_GTCH.disableGTBlockLightOpacity = ConfigsGTCH.GTCH.get(ConfigCategories_CH.general_CH, "disable_GT_block_lightopacity_(gt6_?)",  F);
 
         DATA_MACHINES.enableChangeBoiler = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.boiler, "enableChange_boiler_(gt6_false)", T);
         DATA_MACHINES.enableChangeMotor = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.generatorMotor, "enableChange_motor_(gt6_false)", T);

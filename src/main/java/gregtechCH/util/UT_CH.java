@@ -1,6 +1,5 @@
 package gregtechCH.util;
 
-import com.google.common.primitives.Bytes;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import gregapi.oredict.OreDictMaterial;
 import gregapi.oredict.OreDictPrefix;
@@ -132,7 +131,7 @@ public class UT_CH {
         }
         // RGB 和 HSV 的相互转换
         // RGB 和 HSV 都是 0-1 的浮点数
-        public static void RGB2HSV(float[] aRGB, float[] rHSV) {
+        public static void RGB2HSV(final float[] aRGB, float[] rHSV) {
             float tMax = Math.max(aRGB[0], Math.max(aRGB[1], aRGB[2]));
             float tMin = Math.min(aRGB[0], Math.min(aRGB[1], aRGB[2]));
             float tDelta = tMax - tMin;
@@ -140,7 +139,8 @@ public class UT_CH {
                 rHSV[0] = 0.0F;
             } else
             if (tMax == aRGB[0]) {
-                rHSV[0] = (((aRGB[1] - aRGB[2])/tDelta) % 6.0F)/6.0F;
+                float tGB = aRGB[1] - aRGB[2];
+                rHSV[0] = ( (tGB/tDelta) + (tGB>0F?0.0F:6.0F) )/6.0F;
             } else
             if (tMax == aRGB[1]) {
                 rHSV[0] = (((aRGB[2] - aRGB[0])/tDelta) + 2.0F)/6.0F;
@@ -151,7 +151,7 @@ public class UT_CH {
             rHSV[1] = (tMax == 0.0F) ? 0.0F : tDelta/tMax;
             rHSV[2] = tMax;
         }
-        public static void HSV2RGB(float[] rRGB, float[] aHSV) {
+        public static void HSV2RGB(float[] rRGB, final float[] aHSV) {
             float tC = aHSV[2] * aHSV[1];
             float tX = tC * (1.0F - Math.abs((aHSV[0]*6.0F)%2.0F - 1.0F));
             float tM = aHSV[2] - tC;
@@ -169,8 +169,7 @@ public class UT_CH {
             } else
             if (aHSV[0]*6.0F < 5.0F) {
                 rRGB[0] = tX; rRGB[1] = 0.0F; rRGB[2] = tC;
-            } else
-            if (aHSV[0]*6.0F <= 6.0F) {
+            } else {
                 rRGB[0] = tC; rRGB[1] = 0.0F; rRGB[2] = tX;
             }
             rRGB[0] += tM; rRGB[1] += tM; rRGB[2] += tM;
@@ -222,11 +221,11 @@ public class UT_CH {
         // overlay 使用的颜色通用值
         public static int getOverlayRGB(int aRGBPaint) {
             // 使用按比例 RGB 混合白色的方法来限制染色深浅
-            return getMixRGBInt(DYE_INT_White, aRGBPaint, DATA_GTCH.mixRatio);
+            return getMixRGBInt(DYE_INT_White, aRGBPaint, 1F-DATA_GTCH.mixBaseRatio);
         }
         // 将 paint 混合颜色的方法放在这里方便一起修改
         public static int getPaintRGB(int aRGBOrigin, int aRGBPaint) {
-            return getMixRGBIntSic(aRGBOrigin, aRGBPaint, 1F-DATA_GTCH.mixRatio, DATA_GTCH.mixRatio*DATA_GTCH.mixRatio);
+            return getMixRGBIntSic(aRGBOrigin, aRGBPaint, DATA_GTCH.mixBaseRatio, DATA_GTCH.mixPaintRatio);
         }
         // 直接将 RGB 混合，相比原本可以指定后一个 RGB 的占比权重
         public static int getMixRGBInt(int aRGB1, int aRGB2, float aWeight) {
@@ -266,9 +265,9 @@ public class UT_CH {
             // 此时计算结果期望的亮度值
             float[] tHSV = new float[3];
             RGB2HSV(tRGBBase, tHSV);
-            float tS = tHSV[2];
+            float tV = tHSV[2];
             RGB2HSV(tRGBPaint, tHSV);
-            tS += (tHSV[2] - tS) * aWeightPaint;
+            tV += (tHSV[2] - tV) * aWeightPaint;
             // 染料颜色直接按照权重比例放缩
             tRGBPaint[0] *= aWeightPaint;
             tRGBPaint[1] *= aWeightPaint;
@@ -279,7 +278,7 @@ public class UT_CH {
             tRGBBase[2] += tRGBPaint[2]; tRGBBase[2] *= 0.5;
             // 使用 HSV 来保证亮度值不变
             RGB2HSV(tRGBBase, tHSV);
-            tHSV[2] = tS;
+            tHSV[2] = tV;
             HSV2RGB(tRGBBase, tHSV);
 
             tRGBArray[0] = (short) Math.round(tRGBBase[0]*255); tRGBArray[1] = (short) Math.round(tRGBBase[1]*255); tRGBArray[2] = (short) Math.round(tRGBBase[2]*255);
@@ -287,7 +286,6 @@ public class UT_CH {
         }
 
         // 将两个 RGB 按照 HSV 来混合，并且可以指定后一个 RGB 的 HSV 占比权重
-        @Deprecated
         public static int getMixRGBIntHSV(int aRGB1, int aRGB2, float aH, float aS, float aV) {
             short[] tRGBArray = getRGBArray(aRGB1);
             float[] tRGB1 = {tRGBArray[0]/255F, tRGBArray[1]/255F, tRGBArray[2]/255F};

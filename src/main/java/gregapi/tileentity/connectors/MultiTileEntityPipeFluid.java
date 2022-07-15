@@ -103,7 +103,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	// GTCH, 颜色，预先计算会不会好些？
 	protected int mRGBaMark, mRGBaRubber = UT.Code.getRGBInt(65, 65, 65);
 	// GTCH, 改为直接平均来实现平滑
-	protected static final int BUFFER_LENGTH = 16;
+	protected static final int BUFFER_LENGTH = 20;
 	private final List<LinkedList<Long>> mInBuffers = new ArrayList<>(); // 用于对输入统计平均
 	private long[] mOutputs = ZL_LONG, oAmounts = ZL_LONG; // 平滑后的输出值和用于计算的上一 tick 的储罐值
 	// GTCH, 用于在建筑泡沫上显示 mark

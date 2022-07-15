@@ -338,8 +338,12 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 		return tCSurface;
 	}
 	
-	@Override public int getLightOpacity() {
+	@Override public final int getLightOpacity() {
 		if (mFoamDried) return LIGHT_OPACITY_MAX;
+		if (mFoam) return LIGHT_OPACITY_WATER;
+		return getLightOpacity2();
+	}
+	public int getLightOpacity2() {
 		if (mTransparent) {
 			if (mDiameter >= 1.0F) return LIGHT_OPACITY_WATER;
 			if (mDiameter > 0.5F) return LIGHT_OPACITY_LEAVES;

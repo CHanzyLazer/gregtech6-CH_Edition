@@ -141,7 +141,12 @@ public abstract class TileEntityBase08Battery extends TileEntityBase07Paintable 
 	@Override public int getLightOpacity() {return LIGHT_OPACITY_NONE;}
 	@Override public byte getMaxStackSize(ItemStack aStack, byte aDefault) {return mEnergy > 0 ? 1 : aDefault;}
 	@Override public byte getVisualData() {return mDisplayedEnergy;}
-	@Override public void setVisualData(byte aData) {mDisplayedEnergy = aData;}
+	@Override public void setVisualData(byte aData) {
+		byte oDisplayedEnergy = mDisplayedEnergy;
+		mDisplayedEnergy = aData;
+		if (oDisplayedEnergy != mDisplayedEnergy) onDisplayedEnergyChange(oDisplayedEnergy);
+	}
+	protected void onDisplayedEnergyChange(byte aPreviousDisplayedEnergy) {/**/}
 	
 	public byte getDisplayScaleMax() {return 16;}
 	

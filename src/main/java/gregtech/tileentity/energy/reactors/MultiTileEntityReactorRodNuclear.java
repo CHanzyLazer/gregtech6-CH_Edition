@@ -177,7 +177,7 @@ public class MultiTileEntityReactorRodNuclear extends MultiTileEntityReactorRodB
 		int tNeutronSelf = mNeutronSelf;
 		int tNeutronDiv = mNeutronDiv;
 		if (FL.Coolant_IC2.is(aReactor.mTanks[0])) {
-			tNeutronOther *= (int)UT.Code.divup(tNeutronOther * 4 * DATA_REACTORS.adjustCoolantOtherMul, DATA_REACTORS.adjustCoolantOtherDiv);
+			tNeutronOther = (int)UT.Code.divup(tNeutronOther * 4L * DATA_REACTORS.adjustCoolantOtherMul, DATA_REACTORS.adjustCoolantOtherDiv);
 			tNeutronSelf *= 4;
 			tNeutronDiv *= 2;
 		} else if (MT.CO2.mGas.isFluidEqual(aReactor.mTanks[0].getFluid())) {

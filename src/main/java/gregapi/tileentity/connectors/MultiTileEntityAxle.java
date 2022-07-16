@@ -76,7 +76,7 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 	public void readFromNBT2(NBTTagCompound aNBT) {
 		super.readFromNBT2(aNBT);
 		if (aNBT.hasKey(NBT_ACTIVE_DATA)) mRotationDir = aNBT.getByte(NBT_ACTIVE_DATA);
-		if (aNBT.hasKey(NBT_ENERGY_EMITTED_SIDES)) mEnergyDir = (byte)UT_CH.Code.getItemNumber(aNBT.getByte(NBT_ENERGY_EMITTED_SIDES));
+		if (aNBT.hasKey(NBT_ENERGY_EMITTED_SIDES)) mEnergyDir = (byte) UT_CH.NBT.getItemNumber(aNBT.getByte(NBT_ENERGY_EMITTED_SIDES));
 		if (aNBT.hasKey(NBT_PIPESIZE)) mSpeed = Math.max(1, aNBT.getLong(NBT_PIPESIZE));
 		if (aNBT.hasKey(NBT_PIPEBANDWIDTH)) mPower = Math.max(1, aNBT.getLong(NBT_PIPEBANDWIDTH));
 	}
@@ -93,7 +93,7 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 	public NBTTagCompound writeItemNBT2(NBTTagCompound aNBT) {
 		if (isFoamDried()){
 			// 默认值不为零（或者可能不为零）的需要专门设置
-			if (SIDES_VALID[mEnergyDir]) aNBT.setByte(NBT_ENERGY_EMITTED_SIDES, (byte)UT_CH.Code.toItemNumber(mEnergyDir));
+			if (SIDES_VALID[mEnergyDir]) aNBT.setByte(NBT_ENERGY_EMITTED_SIDES, (byte) UT_CH.NBT.toItemNumber(mEnergyDir));
 		}
 		return super.writeItemNBT2(aNBT);
 	}

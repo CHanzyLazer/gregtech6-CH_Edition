@@ -50,6 +50,7 @@ import gregapi.render.IRenderedBlockObject;
 import gregapi.render.IRenderedBlockObjectSideCheck;
 import gregapi.util.UT;
 import gregapi.util.WD;
+import gregtechCH.tileentity.ITileEntityName_CH;
 import gregtechCH.util.UT_CH;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -82,6 +83,7 @@ public abstract class TileEntityBase03MultiTileEntities extends TileEntityBase02
 	
 	@Override
 	public void onRegistrationFirst(MultiTileEntityRegistry aRegistry, short aID) {
+		if (this instanceof ITileEntityName_CH) GameRegistry.registerTileEntity(getClass(), ((ITileEntityName_CH)this).getTileEntityName_CH()); // 注册旧的名称来兼容旧版 GTCH
 		GameRegistry.registerTileEntity(getClass(), getTileEntityName());
 	}
 	
@@ -148,7 +150,7 @@ public abstract class TileEntityBase03MultiTileEntities extends TileEntityBase02
 	public NBTTagCompound writeItemNBT(NBTTagCompound aNBT) {
 		if (UT.Code.stringValid(mCustomName)) aNBT.setTag("display", UT.NBT.makeString(aNBT.getCompoundTag("display"), "Name", mCustomName));
 		if (UT.Code.stringValid(ERROR_MESSAGE) && isClientSide()) aNBT.setTag("display", UT.NBT.makeString(aNBT.getCompoundTag("display"), "Name", ERROR_MESSAGE));
-		if (isPainted()) {aNBT.setInteger(NBT_COLOR, (int)UT_CH.Code.toItemNumber(getPaint())); aNBT.setBoolean(NBT_PAINTED, T);}
+		if (isPainted()) {aNBT.setInteger(NBT_COLOR, (int) UT_CH.NBT.toItemNumber(getPaint())); aNBT.setBoolean(NBT_PAINTED, T);}
 		return aNBT;
 	}
 	

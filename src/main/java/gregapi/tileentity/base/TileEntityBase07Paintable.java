@@ -75,7 +75,7 @@ public abstract class TileEntityBase07Paintable extends TileEntityBase06Covers i
 
 		// 需要分情况讨论，考虑有不允许染色的，带有默认颜色的，并且不是材料颜色的方块
 		if (isPainted()) {
-			if (aNBT.hasKey(NBT_COLOR)) mRGBPaint = (int)UT_CH.Code.getItemNumber(aNBT.getInteger(NBT_COLOR)); // mRGBaPaint 替代原本的 NBT_COLOR
+			if (aNBT.hasKey(NBT_COLOR)) mRGBPaint = (int) UT_CH.NBT.getItemNumber(aNBT.getInteger(NBT_COLOR)); // mRGBaPaint 替代原本的 NBT_COLOR
 			mRGBa = UT_CH.Code.getPaintRGB(getBottomRGB(), mRGBPaint) & ALL_NON_ALPHA_COLOR;
 		} else {
 			mRGBPaint = getBottomRGB();

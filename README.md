@@ -1,4 +1,4 @@
-![cover.png](https://github.com/CHanzyLazer/gregtech6-CH_Edition/wiki/cover.png)
+![cover.png](https://github.com/CHanzyLazer/gregtech6-CH_Edition/wiki/picture/cover.png)
 
 GregTech 6 CH Edition (GTCH) 是本人（b 站：[潘多拉茶壶](https://space.bilibili.com/5104148) ）基于 GregTech 6 的非官方魔改版
 

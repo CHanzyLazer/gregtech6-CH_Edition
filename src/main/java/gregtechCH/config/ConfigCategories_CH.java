@@ -5,8 +5,10 @@ public enum ConfigCategories_CH {
     colour_CH,
     fluid_CH;
     public enum Machines {
+        basic,
         boiler,
-        generatorMotor;
+        generatorMotor,
+        rotation;
     }
 
     public enum Reactors {

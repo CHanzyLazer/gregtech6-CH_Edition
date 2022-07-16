@@ -82,19 +82,6 @@ public class UT_CH {
     }
 
     public static class Code {
-        // 用来得到 item 存储 nbt 的数字类型，因为无论如何 item nbt 都会移除 0 值，因此检测到零值则将其减一
-        public static long toItemNumber(long aInt) {
-            if (aInt > 0) return aInt;
-            if (aInt == 0) return -1;
-            throw new RuntimeException("initial number of ItemNumber must be non-negative");
-        }
-        // 反向操作，用来将 item nbt 中存储的数据再次转换为需要的数据
-        public static long getItemNumber(long aInt) {
-            if (aInt >= 0) return aInt;
-            if (aInt == -1) return 0;
-            throw new RuntimeException("ItemNumber must be non-negative or -1");
-        }
-
         public final static float RENDER_LENGTH = 0.01F;
         public final static float RENDER_EPS = 0.001F;
         // 抹去 RENDER_LENGTH 的向下取整
@@ -326,6 +313,20 @@ public class UT_CH {
     }
 
     public static class NBT {
+        // 用来得到 item 存储 nbt 的数字类型，因为无论如何 item nbt 都会移除 0 值，因此检测到零值则将其减一
+        public static long toItemNumber(long aInt) {
+            if (aInt > 0) return aInt;
+            if (aInt == 0) return -1;
+            throw new RuntimeException("initial number of ItemNumber must be non-negative");
+        }
+
+        // 反向操作，用来将 item nbt 中存储的数据再次转换为需要的数据
+        public static long getItemNumber(long aInt) {
+            if (aInt >= 0) return aInt;
+            if (aInt == -1) return 0;
+            throw new RuntimeException("ItemNumber must be non-negative or -1");
+        }
+
         /* 方便的存储数组 NBT 的方法，自动选用最小的体积存储，统一使用 byteArray 存储，如果全是零则会移除 NBT 标签*/
         public static NBTTagCompound setNumberArray(NBTTagCompound aNBT, Object aTag, long[] aValues) {
             long tMaxAbsValue = 0;

@@ -20,7 +20,6 @@
 package gregapi.block.multitileentity.example;
 
 import static gregapi.data.CS.*;
-import static gregtechCH.data.CS_CH.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.*;
 
@@ -51,7 +50,6 @@ import gregapi.tileentity.base.TileEntityBase05Inventories;
 import gregapi.tileentity.data.ITileEntitySurface;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.util.UT;
-import gregtechCH.data.CS_CH;
 import gregtechCH.tileentity.ITEPaintable_CH;
 import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
@@ -112,7 +110,7 @@ public class MultiTileEntityChest extends TileEntityBase05Inventories implements
 
 		// 需要分情况讨论，考虑有不允许染色的，带有默认颜色的，并且不是材料颜色的方块
 		if (isPainted()) {
-			if (aNBT.hasKey(NBT_COLOR)) mRGBaPaint = (int)UT_CH.Code.getItemNumber(aNBT.getInteger(NBT_COLOR)); // mRGBaPaint 替代原本的 NBT_COLOR
+			if (aNBT.hasKey(NBT_COLOR)) mRGBaPaint = (int) UT_CH.NBT.getItemNumber(aNBT.getInteger(NBT_COLOR)); // mRGBaPaint 替代原本的 NBT_COLOR
 			mRGBa = UT_CH.Code.getPaintRGB(getBottomRGB(), mRGBaPaint);
 		} else {
 			mRGBaPaint = getBottomRGB();

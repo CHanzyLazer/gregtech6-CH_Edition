@@ -18,6 +18,7 @@ import gregapi.util.UT;
 import gregapi.util.WD;
 import gregtech.tileentity.energy.generators.MultiTileEntityMotorLiquid;
 import gregtechCH.data.LH_CH;
+import gregtechCH.tileentity.ITileEntityName_CH;
 import gregtechCH.tileentity.energy.MultiTileEntityMotor_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -35,7 +36,7 @@ import static gregapi.data.CS.*;
 import static gregtechCH.data.CS_CH.*;
 import static gregtechCH.data.CS_CH.NBT_PREHEAT_COST;
 
-public class MultiTileEntityMotorLiquid_CH extends MultiTileEntityMotor_CH implements IFluidHandler {
+public class MultiTileEntityMotorLiquid_CH extends MultiTileEntityMotor_CH implements IFluidHandler, ITileEntityName_CH {
 
     protected boolean mBurning = F;
     protected long mEnergyHU = 0;
@@ -328,5 +329,6 @@ public class MultiTileEntityMotorLiquid_CH extends MultiTileEntityMotor_CH imple
     @Override public boolean[] getValidSides() {return SIDES_VALID;}
 
 
-    @Override public String getTileEntityName() {return "gtch.multitileentity.generator.motor_liquid";}
+    @Override public String getTileEntityName() {return "gt.multitileentity.generator.motor_liquid";}
+    @Override public String getTileEntityName_CH() {return "gtch.multitileentity.generator.motor_liquid";}
 }

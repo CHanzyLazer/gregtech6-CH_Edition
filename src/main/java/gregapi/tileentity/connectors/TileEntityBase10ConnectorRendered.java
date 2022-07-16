@@ -105,8 +105,8 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 
 		if (mFoam||mFoamDried) {
 			if (aNBT.hasKey(NBT_PAINTED+".foam")) mIsPaintedFoam = aNBT.getBoolean(NBT_PAINTED+".foam");
-			if (mIsPaintedFoam && aNBT.hasKey(NBT_COLOR+".foam")) mRGBPaintFoam = (int)UT_CH.Code.getItemNumber(aNBT.getInteger(NBT_COLOR+".foam")); // 由于 0 值在 item 中还是会莫名丢失，因此默认值设为此值
-			else if (isPainted() && aNBT.hasKey(NBT_COLOR)) mRGBPaintFoam=(int)UT_CH.Code.getItemNumber(aNBT.getInteger(NBT_COLOR)); mIsPaintedFoam=T; // 兼容旧版染色
+			if (mIsPaintedFoam && aNBT.hasKey(NBT_COLOR+".foam")) mRGBPaintFoam = (int) UT_CH.NBT.getItemNumber(aNBT.getInteger(NBT_COLOR+".foam")); // 由于 0 值在 item 中还是会莫名丢失，因此默认值设为此值
+			else if (isPainted() && aNBT.hasKey(NBT_COLOR)) mRGBPaintFoam=(int) UT_CH.NBT.getItemNumber(aNBT.getInteger(NBT_COLOR)); mIsPaintedFoam=T; // 兼容旧版染色
 			// 应用染色
 			if (mIsPaintedFoam) mRGBaFoam = UT_CH.Code.getPaintRGB(getBottomRGBFoam(), mRGBPaintFoam) & ALL_NON_ALPHA_COLOR;
 			else mRGBaFoam = getBottomRGBFoam(); // 可以防止一些问题
@@ -128,7 +128,7 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 	@Override
 	public NBTTagCompound writeItemNBT2(NBTTagCompound aNBT) {
 		UT.NBT.setBoolean(aNBT, NBT_PAINTED+".foam", mIsPaintedFoam);
-		if (mIsPaintedFoam && (mFoam||mFoamDried)) aNBT.setInteger(NBT_COLOR+".foam", (int)UT_CH.Code.toItemNumber(mRGBPaintFoam));
+		if (mIsPaintedFoam && (mFoam||mFoamDried)) aNBT.setInteger(NBT_COLOR+".foam", (int) UT_CH.NBT.toItemNumber(mRGBPaintFoam));
 
 		UT.NBT.setBoolean(aNBT, NBT_FOAMED, mFoam);
 		UT.NBT.setBoolean(aNBT, NBT_FOAMDRIED, mFoamDried);

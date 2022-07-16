@@ -34,10 +34,12 @@ public class ConfigForge_CH {
         public static boolean disableGTBlockLightOpacity;
     }
     public static class DATA_MACHINES {
+        public static boolean enableChangeBasicMachine;
         public static boolean enableChangeBoiler;
         public static boolean enableChangeMotor;
-        public static boolean motorExplodeCheck;
+        public static boolean enableChangeRotation;
 
+        public static boolean motorExplodeCheck;
         public static boolean motorExplodeByLength;
     }
 
@@ -75,10 +77,13 @@ public class ConfigForge_CH {
 
         DATA_GTCH.disableGTBlockLightOpacity = ConfigsGTCH.GTCH.get(ConfigCategories_CH.general_CH, "disable_GT_block_lightopacity_(gt6_?)",  F);
 
+        DATA_MACHINES.enableChangeBasicMachine = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.basic, "enableChange_basicmachine_(gt6_false)", T);
         DATA_MACHINES.enableChangeBoiler = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.boiler, "enableChange_boiler_(gt6_false)", T);
         DATA_MACHINES.enableChangeMotor = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.generatorMotor, "enableChange_motor_(gt6_false)", T);
+        DATA_MACHINES.enableChangeRotation = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.rotation, "enableChange_rotation_(gt6_false)", T);
         DATA_MACHINES.motorExplodeCheck = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.generatorMotor, "motor_explode_check_(gt6_?)", T);
         DATA_MACHINES.motorExplodeByLength = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.generatorMotor, "motor_explode_by_length_(gt6_false)", T);
+
 
         DATA_REACTORS.adjustCoolantOtherDiv = ConfigsGTCH.REACTORS.get(ConfigCategories_CH.Reactors.adjustemission, "adjust_coolant_other_div_(gt6_1)", 8);
         DATA_REACTORS.adjustCoolantOtherMul = ConfigsGTCH.REACTORS.get(ConfigCategories_CH.Reactors.adjustemission, "adjust_coolant_other_mul_(gt6_1)", 3);

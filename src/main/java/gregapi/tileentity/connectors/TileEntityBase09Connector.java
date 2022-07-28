@@ -44,6 +44,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import static gregapi.data.CS.*;
@@ -69,8 +71,9 @@ public abstract class TileEntityBase09Connector extends TileEntityBase08Directio
 	@Override
 	public void onTick2(long aTimer, boolean aIsServerSide) {
 		super.onTick2(aTimer, aIsServerSide);
-		if (aIsServerSide && aTimer > 2 && mSchedule != null) {
-			mSchedule.run(); mSchedule = null; // 这里执行计划任务来防止实体还不能同步数据就进行了连接操作
+		if (aIsServerSide && aTimer > 2 && !mScheduleList.isEmpty()) {
+			for (Runnable tSchedule : mScheduleList) tSchedule.run();
+			mScheduleList.clear();
 		}
 	}
 	
@@ -93,38 +96,47 @@ public abstract class TileEntityBase09Connector extends TileEntityBase08Directio
 	
 	@Override
 	public boolean onPlaced(ItemStack aStack, EntityPlayer aPlayer, MultiTileEntityContainer aMTEContainer, World aWorld, int aX, int aY, int aZ, byte aSide, float aHitX, float aHitY, float aHitZ) {
-		if (isServerSide()) {
-			aSide = OPOS[aSide];
-			DelegatorTileEntity<TileEntity> tDelegator;
-			// GTCH, 对于是否染色采用不同的策略
-			if (!isPainted()) {
-				// 对于没有染色的，采用默认的逻辑
-				tDelegator = getAdjacentTileEntity(aSide);
-				if (tDelegator.mTileEntity instanceof ITileEntity && !((ITileEntity)tDelegator.mTileEntity).allowInteraction(aPlayer)) return T;
-				mSchedule = new ScheduleConnect(aSide, T);
-				for (byte tSide : ALL_SIDES_VALID) {
-					tDelegator = getAdjacentTileEntity(tSide);
-					if (tDelegator.mTileEntity instanceof ITileEntityConnector && SIDES_VALID[tDelegator.mSideOfTileEntity] && UT.Code.haveOneCommonElement(((ITileEntityConnector)tDelegator.mTileEntity).getConnectorTypes(tDelegator.mSideOfTileEntity), getConnectorTypes(tSide))) {
-						if (((ITileEntityConnector)tDelegator.mTileEntity).connected(tDelegator.mSideOfTileEntity)) mSchedule = new ScheduleConnect(tSide, T);
-					}
-				}
-			}
-			else {
-				// 对于有染色的，特地判断周围是否是管道并且是否是相同颜色，如果不是则不进行连接，其他的自动进行连接
-				for (byte tSide : ALL_SIDES_VALID) {
-					tDelegator = getAdjacentTileEntity(tSide);
-					if (tDelegator.mTileEntity instanceof ITileEntity && !((ITileEntity)tDelegator.mTileEntity).allowInteraction(aPlayer)) continue;
-					if (tDelegator.mTileEntity instanceof ITileEntityConnector && SIDES_VALID[tDelegator.mSideOfTileEntity] && UT.Code.haveOneCommonElement(((ITileEntityConnector)tDelegator.mTileEntity).getConnectorTypes(tDelegator.mSideOfTileEntity), getConnectorTypes(tSide))) {
-						if (tDelegator.mTileEntity instanceof ITEPaintable_CH && ((ITEPaintable_CH)tDelegator.mTileEntity).isPainted() && ((ITEPaintable_CH)tDelegator.mTileEntity).getPaint()==getPaint()) mSchedule = new ScheduleConnect(tSide, T);
-					} else
-					if (canAutoConnect(tSide,tDelegator)) {
-						// 需要避免自动连接空气和液体
-						mSchedule = new ScheduleConnect(tSide, T);
-					}
+		if (isServerSide()) schedulePlace(aPlayer, aSide); // 延迟放置的调用，保证连接时相邻的实体已经加载完毕
+		return T;
+	}
+	public class SchedulePlace implements Runnable {
+		private final EntityPlayer mPlayer; private final byte mSide;
+		public SchedulePlace(EntityPlayer aPlayer, byte aSide) {mPlayer = aPlayer; mSide = aSide;}
+		@Override public void run() {_place(mPlayer, mSide);}
+	}
+	public void schedulePlace(EntityPlayer aPlayer, byte aSide) {mScheduleList.add(new SchedulePlace(aPlayer, aSide));}
+	private final List<Runnable> mScheduleList = new ArrayList<>();
+
+	private void _place(EntityPlayer aPlayer, byte aSide) {
+		aSide = OPOS[aSide];
+		DelegatorTileEntity<TileEntity> tDelegator;
+		// GTCH, 对于是否染色采用不同的策略
+		if (!isPainted()) {
+			// 对于没有染色的，采用默认的逻辑
+			tDelegator = getAdjacentTileEntity(aSide);
+			if (tDelegator.mTileEntity instanceof ITileEntity && !((ITileEntity)tDelegator.mTileEntity).allowInteraction(aPlayer)) return;
+			connect(aSide, T);
+			for (byte tSide : ALL_SIDES_VALID) {
+				tDelegator = getAdjacentTileEntity(tSide);
+				if (tDelegator.mTileEntity instanceof ITileEntityConnector && SIDES_VALID[tDelegator.mSideOfTileEntity] && UT.Code.haveOneCommonElement(((ITileEntityConnector)tDelegator.mTileEntity).getConnectorTypes(tDelegator.mSideOfTileEntity), getConnectorTypes(tSide))) {
+					if (((ITileEntityConnector)tDelegator.mTileEntity).connected(tDelegator.mSideOfTileEntity)) connect(tSide, T);
 				}
 			}
 		}
-		return T;
+		else {
+			// 对于有染色的，特地判断周围是否是管道并且是否是相同颜色，如果不是则不进行连接，其他的自动进行连接
+			for (byte tSide : ALL_SIDES_VALID) {
+				tDelegator = getAdjacentTileEntity(tSide);
+				if (tDelegator.mTileEntity instanceof ITileEntity && !((ITileEntity)tDelegator.mTileEntity).allowInteraction(aPlayer)) continue;
+				if (tDelegator.mTileEntity instanceof ITileEntityConnector && SIDES_VALID[tDelegator.mSideOfTileEntity] && UT.Code.haveOneCommonElement(((ITileEntityConnector)tDelegator.mTileEntity).getConnectorTypes(tDelegator.mSideOfTileEntity), getConnectorTypes(tSide))) {
+					if (tDelegator.mTileEntity instanceof ITEPaintable_CH && ((ITEPaintable_CH)tDelegator.mTileEntity).isPainted() && ((ITEPaintable_CH)tDelegator.mTileEntity).getPaint()==getPaint()) connect(tSide, T);
+				} else
+				if (canAutoConnect(tSide,tDelegator)) {
+					// 需要避免自动连接空气和液体
+					connect(tSide, T);
+				}
+			}
+		}
 	}
 	
 	@Override public byte getDirectionData() {return (byte)(mConnections & (byte)63);}
@@ -177,13 +189,6 @@ public abstract class TileEntityBase09Connector extends TileEntityBase08Directio
 		}
 		return connected(aSide);
 	}
-	public class ScheduleConnect implements Runnable {
-		private final byte mSide; private final boolean mNotify; private Boolean mOut = null;
-		public ScheduleConnect(byte aSide, boolean aNotify) {mSide = aSide; mNotify = aNotify;}
-		@Override public void run() {mOut = connect(mSide, mNotify);}
-		public Boolean out() {return mOut;}
-	}
-	private Runnable mSchedule = null;
 
 	// GTCH, 用于减少重复代码
 	private void doConnect_(byte aSide) {

@@ -98,13 +98,13 @@ public class EnergyCompat {
 		if (aTarget instanceof gregapi.tileentity.ITileEntityEnergy                   ) return ((gregapi.tileentity.ITileEntityEnergy                            )aTarget).isEnergyAcceptingFrom(TD.Energy.EU, aSide, T) || ((gregapi.tileentity.ITileEntityEnergy               )aTarget).isEnergyEmittingTo(TD.Energy.EU, aSide, T);
 		if (aTarget instanceof gregtech.api.interfaces.tileentity.IEnergyConnected    ) return T; // return ((gregtech.api.interfaces.tileentity.IEnergyConnected)aTarget).inputEnergyFrom      (aSide                 ) || ((gregtech.api.interfaces.tileentity.IEnergyConnected)aTarget).outputsEnergyTo(aSide);
 		
-		if (AE_ENERGY && aThis != null && aTarget instanceof appeng.tile.powersink.IC2) return ((appeng.tile.powersink.IC2                                       )aTarget).acceptsEnergyFrom    (aThis, FORGE_DIR[aSide]);
+		if (AE_ENERGY && (aThis != null && aTarget instanceof appeng.tile.powersink.IC2)) return ((appeng.tile.powersink.IC2                                       )aTarget).acceptsEnergyFrom    (aThis, FORGE_DIR[aSide]);
 		
-		if (FL_ENERGY && aTarget instanceof com.rwtema.funkylocomotion.blocks.TilePusher || aTarget instanceof com.rwtema.funkylocomotion.blocks.TileBooster) return T;
+		if (FL_ENERGY && (aTarget instanceof com.rwtema.funkylocomotion.blocks.TilePusher || aTarget instanceof com.rwtema.funkylocomotion.blocks.TileBooster)) return T;
 		
-		if (GC_ENERGY && aTarget instanceof micdoodle8.mods.galacticraft.api.power.IEnergyHandlerGC && (!(aTarget instanceof micdoodle8.mods.galacticraft.api.transmission.tile.IConnector) || ((micdoodle8.mods.galacticraft.api.transmission.tile.IConnector)aTarget).canConnect(FORGE_DIR[aSide], micdoodle8.mods.galacticraft.api.transmission.NetworkType.POWER))) return T;
+		if (GC_ENERGY && (aTarget instanceof micdoodle8.mods.galacticraft.api.power.IEnergyHandlerGC && (!(aTarget instanceof micdoodle8.mods.galacticraft.api.transmission.tile.IConnector) || ((micdoodle8.mods.galacticraft.api.transmission.tile.IConnector)aTarget).canConnect(FORGE_DIR[aSide], micdoodle8.mods.galacticraft.api.transmission.NetworkType.POWER)))) return T;
 		
-		if (BB_ENERGY && aTarget instanceof com.builtbroken.mc.api.energy.IEnergyBufferProvider && ((com.builtbroken.mc.api.energy.IEnergyBufferProvider)aTarget).getEnergyBuffer(FORGE_DIR[aSide]) != null) return T;
+		if (BB_ENERGY && (aTarget instanceof com.builtbroken.mc.api.energy.IEnergyBufferProvider && ((com.builtbroken.mc.api.energy.IEnergyBufferProvider)aTarget).getEnergyBuffer(FORGE_DIR[aSide]) != null)) return T;
 		
 		if (IC_ENERGY && aThis != null) {
 			TileEntity tConnected = (aTarget instanceof ic2.api.energy.tile.IEnergyTile || ic2.api.energy.EnergyNet.instance == null ? aTarget : ic2.api.energy.EnergyNet.instance.getTileEntity(aTarget.getWorldObj(), aTarget.xCoord, aTarget.yCoord, aTarget.zCoord));
@@ -112,7 +112,7 @@ public class EnergyCompat {
 			if (tConnected instanceof ic2.api.energy.tile.IEnergySource && ((ic2.api.energy.tile.IEnergySource)tConnected).emitsEnergyTo    (aThis, FORGE_DIR[aSide])) return T;
 		}
 		
-		if (RF_ENERGY && (EMIT_EU_AS_RF || isElectricRFReceiver(aTarget)) && (aTarget instanceof cofh.api.energy.IEnergyHandler || (RF_ENERGY_NEW && aTarget instanceof cofh.api.energy.IEnergyReceiver))) return !(aTarget instanceof cofh.api.energy.IEnergyConnection) || ((cofh.api.energy.IEnergyConnection)aTarget).canConnectEnergy(FORGE_DIR[aSide]);
+		if (RF_ENERGY && ((EMIT_EU_AS_RF || isElectricRFReceiver(aTarget)) && (aTarget instanceof cofh.api.energy.IEnergyHandler || (RF_ENERGY_NEW && aTarget instanceof cofh.api.energy.IEnergyReceiver)))) return !(aTarget instanceof cofh.api.energy.IEnergyConnection) || ((cofh.api.energy.IEnergyConnection)aTarget).canConnectEnergy(FORGE_DIR[aSide]);
 		
 		return F;
 	}

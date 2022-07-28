@@ -139,6 +139,8 @@ public abstract class TileEntityBase03TicksAndSync extends TileEntityBase02Adjac
 		}
 		mIsRunningTick = F;
 	}
+
+//	@Override public boolean canUpdate2() {return isServerSide();}
 	
 	/** Used to reset all Variables which have something to do with the detection of Changes. A super Call is important for this one! */
 	public void onTickResetChecks(long aTimer, boolean aIsServerSide) {mBlockUpdated = F;}

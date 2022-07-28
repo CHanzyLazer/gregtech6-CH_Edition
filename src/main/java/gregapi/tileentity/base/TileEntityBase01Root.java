@@ -461,8 +461,10 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 
 	@Override
 	public final boolean canUpdate() {
-		return mIsTicking && mShouldRefresh;
+		return mIsTicking && mShouldRefresh && canUpdate2();
 	}
+
+	public boolean canUpdate2() {return T;}
 	
 	@Override
 	public boolean shouldRefresh(Block aOldBlock, Block aNewBlock, int aOldMeta, int aNewMeta, World aWorld, int aX, int aY, int aZ) {
@@ -638,7 +640,7 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 
 		IFluidHandler tOutTank = getAdjacentTank(tSide).mTileEntity;
 		if (((tOutTank instanceof IFluidHandler_CH) && ((IFluidHandler_CH)tOutTank).canFillExtra(rDrained) || FL.canFillDefault(rDrained)) ||
-				(!(tOutTank instanceof IFluidHandler_CH) && FL.canFillDefault(rDrained))) {
+			(!(tOutTank instanceof IFluidHandler_CH) && FL.canFillDefault(rDrained))) {
 			return rDrained;
 		} else {
 			if (rDrained != null && rDrained.amount > 0) {

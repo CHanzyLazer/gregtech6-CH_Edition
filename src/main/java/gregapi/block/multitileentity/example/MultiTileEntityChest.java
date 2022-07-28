@@ -258,17 +258,15 @@ public class MultiTileEntityChest extends TileEntityBase05Inventories implements
 	public void onPaintChangeClient(int aPreviousRGBaPaint) {
 		mRGBa = isPainted() ? UT_CH.Code.getPaintRGB(getBottomRGB(), mRGBaPaint) : getOriginalRGB();
 	}
-	// GTCH, 原本逻辑过于麻烦，直接把是否已经染色也同步到客户端好了，这样还可以多出来一些数据用于专门处理颜色动画，可能可以方便后续的温度变色之类的开发（因为温度并没有传到客户端）
-	public byte getPaintData() {return (byte) (mIsPainted?1:0);}
-	public void setPaintData(byte aData) {mIsPainted = ((aData & 1) != 0);}
 	// GTCH, 返回染色中用于叠底的颜色，用于给有外套层的机器重写，也用于客户端判断是否有染色
 	@Override public int getBottomRGB() {return UT.Code.getRGBInt(mMaterial.fRGBaSolid);}
 	// GTCH, 返回机器原本的颜色，用于客户端判断是否有染色，由于原本的默认 RGB 都是材料颜色，所以不允许重写
 	@Override public final int getOriginalRGB() {return UT.Code.getRGBInt(mMaterial.fRGBaSolid);}
 
-	@Override public boolean unpaint() {if (mIsPainted) {mIsPainted=F; mRGBaPaint=getBottomRGB(); updateClientData(); return T;} return F;}
+	@Override public boolean unpaint() {if (mIsPainted) {mIsPainted=F; mRGBaPaint=getBottomRGB(); return T;} return F;}
 	// GTCH, 原本逻辑过于麻烦，直接把是否已经染色也同步到客户端好了，这样还可以多出来一些数据用于专门处理颜色动画，可能可以方便后续的温度变色之类的开发（因为温度并没有传到客户端，不过实际用时需要优化把这个放一份到 NoSendAll里）
 	@Override public boolean isPainted() {return mIsPainted;}
+	@Override public void setIsPainted(boolean aIsPainted) {mIsPainted=aIsPainted;}
 	@Override public boolean paint(int aRGB) {if (aRGB!=mRGBaPaint) {mRGBaPaint=aRGB; mIsPainted=T; return T;} return F;}
 	@Override public int getPaint() {return mRGBaPaint;}
 	@Override public boolean canRecolorItem(ItemStack aStack) {return T;}

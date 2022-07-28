@@ -7,8 +7,10 @@ import gregapi.data.IL;
 import gregapi.data.OD;
 import gregapi.util.OM;
 import gregapi.util.ST;
+import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -61,39 +63,25 @@ public class RecipeObjectDeserializer_CH implements ObjectDeserializer {
                         } else
                         if (Objects.equals(tRecipePair[0], "OD")) {
                             try {
-                                tField = OD.class.getField(tRecipePair[1]);
-                                recipeObject[i] = tField.get(null);
-                            } catch (NoSuchFieldException | IllegalAccessException e) {
+                                recipeObject[i] = OD.valueOf(tRecipePair[1]);
+                            } catch (IllegalArgumentException e) {
                                 recipeObject[i] = null;
                                 e.printStackTrace();
                             }
                         } else
                         if (Objects.equals(tRecipePair[0], "IL")) {
                             try {
-                                tField = IL.class.getField(tRecipePair[1]);
-                                recipeObject[i] = tField.get(null);
-                            } catch (NoSuchFieldException | IllegalAccessException e) {
+                                recipeObject[i] = IL.valueOf(tRecipePair[1]);
+                            } catch (IllegalArgumentException e) {
                                 recipeObject[i] = null;
                                 e.printStackTrace();
                             }
                         } else
                         if (Objects.equals(tRecipePair[0], "Blocks")) {
-                            try {
-                                tField = Blocks.class.getField(tRecipePair[1]);
-                                recipeObject[i] = tField.get(null);
-                            } catch (NoSuchFieldException | IllegalAccessException e) {
-                                recipeObject[i] = null;
-                                e.printStackTrace();
-                            }
+                            recipeObject[i] = Block.blockRegistry.getObject(tRecipePair[1]);
                         } else
                         if (Objects.equals(tRecipePair[0], "Items")) {
-                            try {
-                                tField = Items.class.getField(tRecipePair[1]);
-                                recipeObject[i] = tField.get(null);
-                            } catch (NoSuchFieldException | IllegalAccessException e) {
-                                recipeObject[i] = null;
-                                e.printStackTrace();
-                            }
+                            recipeObject[i] = Item.itemRegistry.getObject(tRecipePair[1]);
                         } else
                         if (Objects.equals(tRecipePair[0], "ore")) {
                             recipeObject[i] = tRecipePair[1];

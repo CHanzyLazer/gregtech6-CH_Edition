@@ -49,6 +49,7 @@ public class BI {
 	, CHAR_7 = new Icon("overlays/characters/7")
 	, CHAR_8 = new Icon("overlays/characters/8")
 	, CHAR_9 = new Icon("overlays/characters/9")
+	, CHAR_STAR = new Icon("overlays/characters/star")
 	
 	, CHAR_A = new Icon("overlays/characters/a")
 	, CHAR_B = new Icon("overlays/characters/b")
@@ -129,7 +130,7 @@ public class BI {
 	public static ITexture nei() {
 		return NEI ? BlockTextureDefault.get(CHAR_NEI, CA_YELLOW_255, F, T, F, F) : null;
 	}
-	
+	public static IIconContainer decimalDigit(long aNumber, long aDigit, boolean aOverMax) {return aOverMax ? CHAR_STAR : decimalDigit(aNumber, aDigit);}
 	public static IIconContainer decimalDigit(long aNumber, long aDigit) {
 		aNumber = Math.abs(aNumber);
 		aDigit = UT.Code.bind_(0, 19, aDigit);
@@ -137,7 +138,7 @@ public class BI {
 		for (long i = 0; i < aDigit; i++) j*=10;
 		return CHARACTERS_DEC[(int)((aNumber / j) % 10)];
 	}
-	
+	public static IIconContainer hexadecimalDigit(long aNumber, long aDigit, boolean aOverMax) {return aOverMax ? CHAR_STAR : hexadecimalDigit(aNumber, aDigit);}
 	public static IIconContainer hexadecimalDigit(long aNumber, long aDigit) {
 		aNumber = Math.abs(aNumber);
 		aDigit = UT.Code.bind4(aDigit);

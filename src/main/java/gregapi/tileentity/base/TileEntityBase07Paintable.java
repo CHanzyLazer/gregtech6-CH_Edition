@@ -21,6 +21,7 @@ package gregapi.tileentity.base;
 
 import static gregapi.data.CS.*;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -89,7 +90,8 @@ public abstract class TileEntityBase07Paintable extends TileEntityBase06Covers i
 	public final IPacket getClientDataPacket(boolean aSendAll) {
 		// GTCH, 使用 list 的方式来实现动态数组扩容，减少后续代码中的 mRGBa 重复代码，希望不会严重影响效率
 		if (sendAny(aSendAll)) {
-			List<Byte> rList = Lists.newArrayList((byte)UT.Code.getR(mRGBPaint), (byte)UT.Code.getG(mRGBPaint), (byte)UT.Code.getB(mRGBPaint));
+			List<Byte> rList = new LinkedList<>();
+			rList.add((byte)UT.Code.getR(mRGBPaint)); rList.add((byte)UT.Code.getG(mRGBPaint)); rList.add((byte)UT.Code.getB(mRGBPaint));
 			writeToClientDataPacketByteList(rList);
 			rList.add(getPaintData()); // 放到最后避免下标变化
 			return getClientDataPacketSendAll(T, rList);
@@ -138,18 +140,15 @@ public abstract class TileEntityBase07Paintable extends TileEntityBase06Covers i
 		mRGBa = isPainted() ? UT_CH.Code.getPaintRGB(getBottomRGB(), mRGBPaint) : getOriginalRGB();
 	}
 
-	// GTCH, 原本逻辑过于麻烦，直接把是否已经染色也同步到客户端好了，这样还可以多出来一些数据用于专门处理颜色动画，可能可以方便后续的温度变色之类的开发（因为温度并没有传到客户端）
-	public byte getPaintData() {return (byte) (mIsPainted?1:0);}
-	public void setPaintData(byte aData) {mIsPainted = ((aData & 1) != 0);}
-
 	// GTCH, 返回染色中用于叠底的颜色，用于给有外套层的机器重写，也用于客户端判断是否有染色
 	@Override public int getBottomRGB() {return UT.Code.getRGBInt(mMaterial.fRGBaSolid);}
 	// GTCH, 返回机器原本的颜色，一般都是材料颜色
 	@Override public int getOriginalRGB() {return UT.Code.getRGBInt(mMaterial.fRGBaSolid);}
 	
-	@Override public boolean unpaint() {if (mIsPainted) {mIsPainted=F; mRGBPaint=getBottomRGB(); updateClientData(); return T;} return F;}
+	@Override public boolean unpaint() {if (mIsPainted) {mIsPainted=F; mRGBPaint=getBottomRGB(); return T;} return F;}
 	// GTCH, 原本逻辑过于麻烦，直接把是否已经染色也同步到客户端好了，这样还可以多出来一些数据用于专门处理颜色动画，可能可以方便后续的温度变色之类的开发（因为温度并没有传到客户端，不过实际用时需要优化把这个放一份到 NoSendAll里）
 	@Override public boolean isPainted() {return mIsPainted;}
+	@Override public void setIsPainted(boolean aIsPainted) {mIsPainted=aIsPainted;}
 	@Override public boolean paint(int aRGB) {if (aRGB!= mRGBPaint) {mRGBPaint =aRGB; mIsPainted=T; return T;} return F;}
 	@Override public int getPaint() {return mRGBPaint;}
 	@Override public boolean canRecolorItem(ItemStack aStack) {return T;}

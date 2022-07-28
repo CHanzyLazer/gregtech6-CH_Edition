@@ -50,19 +50,23 @@ import gregapi.render.IRenderedBlockObject;
 import gregapi.render.IRenderedBlockObjectSideCheck;
 import gregapi.util.UT;
 import gregapi.util.WD;
+import gregtechCH.config.ConfigForge_CH;
+import gregtechCH.tileentity.ITEAfterUpdateRender_CH;
 import gregtechCH.tileentity.ITileEntityName_CH;
 import gregtechCH.util.UT_CH;
+import gregtechCH.util.WD_CH;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.FakePlayer;
 
 /**
  * @author Gregorius Techneticies
  */
-public abstract class TileEntityBase03MultiTileEntities extends TileEntityBase02Sync implements IRenderedBlockObjectSideCheck, IRenderedBlockObject, IMTE_OnPainting, IMTE_GetPickBlock, IMTE_GetStackFromBlock, IMTE_OnRegistrationFirst, IMTE_RecolourBlock, IMTE_GetDrops, IMTE_OnBlockActivated, IMTE_ShouldSideBeRendered {
+public abstract class TileEntityBase03MultiTileEntities extends TileEntityBase02Sync implements ITEAfterUpdateRender_CH, IRenderedBlockObjectSideCheck, IRenderedBlockObject, IMTE_OnPainting, IMTE_GetPickBlock, IMTE_GetStackFromBlock, IMTE_OnRegistrationFirst, IMTE_RecolourBlock, IMTE_GetDrops, IMTE_OnBlockActivated, IMTE_ShouldSideBeRendered {
 	@Override
 	public void sendClientData(boolean aSendAll, EntityPlayerMP aPlayer) {
 		super.sendClientData(aSendAll, aPlayer);
@@ -180,23 +184,36 @@ public abstract class TileEntityBase03MultiTileEntities extends TileEntityBase02
 	public boolean recolourBlock(byte aSide, byte aColor) {
 		if (UT.Code.exists(aColor, DYES_INVERTED)) {
 			int aRGB = (isPainted() ? UT_CH.Code.mixRGBInt(getPaint(), DYES_INT_INVERTED[aColor]) : DYES_INT_INVERTED[aColor]) & ALL_NON_ALPHA_COLOR;
-			if (paint(aRGB)) {updateClientData(); causeBlockUpdate(); worldObj.markTileEntityChunkModified(xCoord, yCoord, zCoord, this); return T;}
+			if (paint(aRGB)) {updateClientData(T); causeBlockUpdate(); worldObj.markTileEntityChunkModified(xCoord, yCoord, zCoord, this); return T;}
 			return F;
 		}
-		if (unpaint()) {updateClientData(); causeBlockUpdate(); worldObj.markTileEntityChunkModified(xCoord, yCoord, zCoord, this); return T;}
+		if (unpaint()) {updateClientData(T); causeBlockUpdate(); worldObj.markTileEntityChunkModified(xCoord, yCoord, zCoord, this); return T;}
 		return F;
 	}
 	
 	@Override
 	public boolean onPainting(byte aSide, int aRGB) {
-		if (paint(aRGB)) {updateClientData(); causeBlockUpdate(); worldObj.markTileEntityChunkModified(xCoord, yCoord, zCoord, this); return T;}
+		if (paint(aRGB)) {updateClientData(T); causeBlockUpdate(); worldObj.markTileEntityChunkModified(xCoord, yCoord, zCoord, this); return T;}
 		return F;
 	}
 	
 	public boolean unpaint() {return F;}
 	public boolean isPainted() {return F;}
+	public void setIsPainted(boolean aIsPainted) {/**/}
 	public boolean paint(int aRGB) {return F;}
 	public int getPaint() {return UNCOLORED;}
+	// GTCH, 原本逻辑过于麻烦，直接把是否已经染色也同步到客户端好了，这样还可以多出来一些数据用于专门处理颜色动画，可能可以方便后续的温度变色之类的开发（因为温度并没有传到客户端）
+	public byte getPaintData() {return (byte) ((isPainted()?1:0) | (willRerendImmediate?2:0));}
+	public void setPaintData(byte aData) {setIsPainted((aData&1)!=0); willRerendImmediate = ((aData&2)!=0);}
+	// GTCH, 在染色时立刻重新渲染
+	private boolean willRerendImmediate = F;
+	public void updateClientData(boolean aRerendImmediate) {willRerendImmediate = aRerendImmediate; updateClientData(); willRerendImmediate = F;} // 后续在需要立刻重新渲染时调用此函数即可
+	@Override
+	public final void doAfterUpdateRender_CH(IBlockAccess aWorld, int aX, int aY, int aZ) {
+		if (!ConfigForge_CH.DATA_GTCH.rerenderAll && (willRerendImmediate || willRerendImmediateAny())) WD_CH.updateRender(aWorld, aX, aY, aZ, T, F);
+		willRerendImmediate = F;
+	}
+	public boolean willRerendImmediateAny() {return F;} // 也可重写此方法，在不用 sendAll 的情况下立刻重新渲染
 	
 	@Override public String getCustomName() {return UT.Code.stringValid(mCustomName) ? mCustomName : null;}
 	@Override public void setCustomName(String aName) {mCustomName = aName;}

@@ -1,6 +1,9 @@
 package gregtechCH.util;
 
+import codechicken.lib.vec.Vector3;
 import cpw.mods.fml.relauncher.ReflectionHelper;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.oredict.OreDictMaterial;
 import gregapi.oredict.OreDictPrefix;
 import gregapi.render.BlockTextureDefault;
@@ -8,12 +11,22 @@ import gregapi.render.IIconContainer;
 import gregapi.util.UT;
 import gregtechCH.data.CS_CH;
 import net.minecraft.block.Block;
+import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.client.renderer.RenderGlobal;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -42,7 +55,7 @@ public class UT_CH {
             }
         }
 
-        public static <Entry> Entry adaptive_get(List<Entry> rList, int aIdx, Class<? extends Entry> aDefaultEntryClass) {
+        public static <Entry> Entry adaptiveGet(List<Entry> rList, int aIdx, Class<? extends Entry> aDefaultEntryClass) {
             if (aIdx >= rList.size()) resize(rList, aIdx+1, aDefaultEntryClass);
             return rList.get(aIdx);
         }
@@ -82,6 +95,23 @@ public class UT_CH {
     }
 
     public static class Code {
+        // 提供一些其他类型的 combine
+        public static int combine(short aValue1, short aValue2) {return (0xffff & aValue1) | aValue2 << 16;}
+
+        // 返回玩家所在的坐标
+        @SideOnly(Side.CLIENT)
+        public static ChunkCoordinates getPlayerChunkCoord(@NotNull EntityClientPlayerMP aPlayer) {
+            return new ChunkCoordinates(((int)Math.round(aPlayer.posX))>>4, ((int)Math.round(aPlayer.posY))>>4, ((int)Math.round(aPlayer.posZ))>>4);
+        }
+        // 返回玩家视角的单位向量
+        @SideOnly(Side.CLIENT)
+        public static Vec3 getPlayerViewVec3(@NotNull Entity aPlayer) {
+            return Vec3.createVectorHelper(
+                    -Math.sin(aPlayer.rotationYaw / 180.0D * Math.PI) * Math.cos(aPlayer.rotationPitch / 180.0D * Math.PI),
+                    -Math.sin(aPlayer.rotationPitch / 180.0D * Math.PI),
+                    Math.cos(aPlayer.rotationYaw / 180.0D * Math.PI) * Math.cos(aPlayer.rotationPitch / 180.0D * Math.PI));
+        }
+
         public final static float RENDER_LENGTH = 0.01F;
         public final static float RENDER_EPS = 0.001F;
         // 抹去 RENDER_LENGTH 的向下取整
@@ -436,24 +466,29 @@ public class UT_CH {
     public static class Hack {
         public static final String[] CHUNK_RELIGHT_BLOCK = new String[]{"relightBlock", "func_76615_h"};
         public static final String[] CHUNK_PROPAGATE_SKY_LIGHT_OCCLUSION = new String[]{"propagateSkylightOcclusion", "func_76595_e"};
-        public static final String[] WORLD_COMPUTE_LIGHT_VALUE = new String[]{"computeLightValue"};
+        public static final String[] WORLD_COMPUTE_LIGHT_VALUE = new String[]{"computeLightValue", "func_98179_a"};
+        public static final String[] WORLD_WORLD_ACCESSES = new String[]{"worldAccesses", "field_73021_x"};
+        public static final String[] RENDER_WORLD_RENDERS = new String[]{"worldRenderers", "field_72765_l"};
+        public static final String[] RENDER_RENDER_CHUNKS_WIDE = new String[]{"renderChunksWide", "field_72766_m"};
+        public static final String[] RENDER_RENDER_CHUNKS_TALL = new String[]{"renderChunksTall", "field_72763_n"};
+        public static final String[] RENDER_RENDER_CHUNKS_DEEP = new String[]{"renderChunksDeep", "field_72764_o"};
+        @Deprecated public static final String[] RENDER_WORLD_RENDERS_TO_UPDATES = new String[]{"worldRenderersToUpdate", "field_72767_j"}; // 打包后不可用，域名不对
 
         public static void relightBlock(Chunk aChunk, int aX, int aY, int aZ) {
             try {
                 Method m = ReflectionHelper.findMethod(Chunk.class, null, CHUNK_RELIGHT_BLOCK, new Class[]{Integer.TYPE, Integer.TYPE, Integer.TYPE});
                 m.invoke(aChunk, aX, aY, aZ);
-            } catch (Exception var3) {
-                var3.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace(ERR);
             }
-
         }
 
         public static void propagateSkylightOcclusion(Chunk aChunk, int aX, int aZ) {
             try {
                 Method m = ReflectionHelper.findMethod(Chunk.class, null, CHUNK_PROPAGATE_SKY_LIGHT_OCCLUSION, new Class[]{Integer.TYPE, Integer.TYPE});
                 m.invoke(aChunk, aX, aZ);
-            } catch (Exception var3) {
-                var3.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace(ERR);
             }
         }
 
@@ -461,9 +496,52 @@ public class UT_CH {
             try {
                 Method m = ReflectionHelper.findMethod(World.class, null, WORLD_COMPUTE_LIGHT_VALUE, new Class[]{Integer.TYPE, Integer.TYPE});
                 return (int)m.invoke(aWorld, aX, aY, aZ, aEnumSkyBlock);
-            } catch (Exception var3) {
-                var3.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace(ERR);
                 return 0;
+            }
+        }
+
+        @SuppressWarnings("rawtypes")
+        public static List getWorldAccesses(World aWorld) {
+            try {
+                return ReflectionHelper.getPrivateValue(World.class, aWorld, WORLD_WORLD_ACCESSES);
+            } catch (Exception e) {
+                e.printStackTrace(ERR);
+                return new ArrayList<>();
+            }
+        }
+
+        @Deprecated // 弃用，减少反射使用来增加稳定性
+        public static WorldRenderer getWorldRenderer(RenderGlobal aRender, int aX, int aY, int aZ) {
+            try {
+                WorldRenderer[] tWorldRenderers = ReflectionHelper.getPrivateValue(RenderGlobal.class, aRender, RENDER_WORLD_RENDERS);
+                int tRenderChunksWide = ReflectionHelper.getPrivateValue(RenderGlobal.class, aRender, RENDER_RENDER_CHUNKS_WIDE);
+                int tRenderChunksTall = ReflectionHelper.getPrivateValue(RenderGlobal.class, aRender, RENDER_RENDER_CHUNKS_TALL);
+                int tRenderChunksDeep = ReflectionHelper.getPrivateValue(RenderGlobal.class, aRender, RENDER_RENDER_CHUNKS_DEEP);
+
+                aX = MathHelper.bucketInt(aX, 16);
+                aY = MathHelper.bucketInt(aY, 16);
+                aZ = MathHelper.bucketInt(aZ, 16);
+                aX %= tRenderChunksWide; if (aX < 0) aX += tRenderChunksWide;
+                aY %= tRenderChunksTall; if (aY < 0) aY += tRenderChunksTall;
+                aZ %= tRenderChunksDeep; if (aZ < 0) aZ += tRenderChunksDeep;
+
+                return tWorldRenderers[(aZ * tRenderChunksTall + aY) * tRenderChunksWide + aX];
+            } catch (Exception e) {
+                e.printStackTrace(ERR);
+                return null;
+            }
+        }
+
+        @Deprecated // 弃用，减少反射使用来增加稳定性
+        @SuppressWarnings("rawtypes")
+        public static List getWorldRenderersToUpdate(RenderGlobal aRender) {
+            try {
+                return ReflectionHelper.getPrivateValue(RenderGlobal.class, aRender, RENDER_WORLD_RENDERS_TO_UPDATES);
+            } catch (Exception e) {
+                e.printStackTrace(ERR);
+                return new ArrayList<>();
             }
         }
     }

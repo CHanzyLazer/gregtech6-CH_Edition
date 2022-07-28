@@ -387,21 +387,21 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 	protected int mRGBPaintFoam = UNCOLORED;
 	protected int mRGBaFoam = UNCOLORED; // 仅客户端有效
 	protected int getBottomRGBFoam() {return UT.Code.getRGBInt(MT.ConstructionFoam.fRGBaSolid);}
-	protected boolean paintFoam(int aRGB) {if (aRGB!= mRGBPaintFoam) {mRGBPaintFoam =aRGB; mIsPaintedFoam=T; updateClientData(); return T;} return F;}
-	protected boolean unpaintFoam() {if (mIsPaintedFoam) {mRGBPaintFoam=getBottomRGBFoam(); mIsPaintedFoam=F; updateClientData(); return T;} return F;}
+	protected boolean paintFoam(int aRGB) {if (aRGB!= mRGBPaintFoam) {mRGBPaintFoam =aRGB; mIsPaintedFoam=T; return T;} return F;}
+	protected boolean unpaintFoam() {if (mIsPaintedFoam) {mRGBPaintFoam=getBottomRGBFoam(); mIsPaintedFoam=F; return T;} return F;}
 	// GTCH, 直接重写 recolourBlock 和 onPainting 方法来让有建筑泡沫时染色变成给建筑泡沫染色
 	@Override public boolean recolourBlock(byte aSide, byte aColor) {
 		if (!mFoam && !mFoamDried) return super.recolourBlock(aSide, aColor);
 		if (isClientSide()) return F;
 		if (UT.Code.exists(aColor, DYES_INVERTED)) {
 			int aRGBFoam = (mIsPaintedFoam ? UT_CH.Code.mixRGBInt(mRGBPaintFoam, DYES_INT_INVERTED[aColor]) : DYES_INT_INVERTED[aColor]) & ALL_NON_ALPHA_COLOR;
-			if (paintFoam(aRGBFoam)) {causeBlockUpdate(); return T;}
+			if (paintFoam(aRGBFoam)) {updateClientData(T); causeBlockUpdate(); return T;}
 		}
 		return F;
 	}
 	@Override public boolean onPainting(byte aSide, int aRGB) {
 		if (!mFoam && !mFoamDried) return super.onPainting(aSide, aRGB);
-		if (paintFoam(aRGB)) {causeBlockUpdate(); return T;}
+		if (paintFoam(aRGB)) {updateClientData(T); causeBlockUpdate(); return T;}
 		return F;
 	}
 	@Override public boolean unpaint() {
@@ -443,7 +443,7 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 		setFoam(T); setFoamDried(F); mOwnable = aOwned;
 		if (mOwnable && aPlayer != null && !OWNERSHIP_RESET) mOwner = aPlayer.getUniqueID();
 		paintFoam(UT.Code.getRGBInt(aCFoamRGB));
-		updateClientData();
+		updateClientData(T);
 		return T;
 	}
 	
@@ -451,7 +451,7 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 	public boolean dryFoam(byte aSide, Entity aPlayer) {
 		if (!mFoam || mFoamDried || isClientSide()) return F;
 		setFoam(T); setFoamDried(T);
-		updateClientData();
+		updateClientData(T);
 		return T;
 	}
 	
@@ -460,7 +460,7 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 		if (!mFoam || !mFoamDried || isClientSide() || !allowInteraction(aPlayer)) return F;
 		setFoam(F); setFoamDried(F); mOwnable = F; mOwner = null;
 		unpaintFoam();
-		updateClientData();
+		updateClientData(T);
 		return T;
 	}
 	
@@ -491,8 +491,8 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 	public void onPaintFoamChangeClient(int aPreviousRGBaPaintFoam) {
 		mRGBaFoam = mIsPaintedFoam ? UT_CH.Code.getPaintRGB(getBottomRGBFoam(), mRGBPaintFoam) : getBottomRGBFoam();
 	}
-	@Override public byte getPaintData() {return (byte)(super.getPaintData() | (byte)(mIsPaintedFoam?2:0));}
-	@Override public void setPaintData(byte aData) {super.setPaintData(aData); mIsPaintedFoam = ((aData&2)!=0);}
+	@Override public byte getPaintData() {return (byte)(super.getPaintData() | (byte)(mIsPaintedFoam?4:0));}
+	@Override public void setPaintData(byte aData) {super.setPaintData(aData); mIsPaintedFoam = ((aData&4)!=0);}
 
 	@Override
 	public byte getDirectionData() {

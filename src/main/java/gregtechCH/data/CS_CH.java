@@ -79,9 +79,6 @@ public class CS_CH {
             , NBT_LENGTH                    = "gtch.length"                 // Integer, The current length of turbines. CHanzy
             , NBT_LENGTH_PRE                = "gtch.length.pre"             // Integer, The previous length of turbines. CHanzy
 
-            , NBT_ADD_BYTE                  = "gtch.add.byte"               // Byte, The additional byte information that have random name, CHanzy
-            , NBT_ADD_BOOL                  = "gtch.add.bool"               // Boolean, The additional boolean information that have random name, CHanzy
-
             , NBT_LIGHT_VALUE               = "gtch.light.value"            // Byte, The light value of block. CHanzy
             , NBT_LIGHT_OPACITY             = "gtch.light.opacity"          // Short, The light opacity of block. CHanzy
 
@@ -92,6 +89,14 @@ public class CS_CH {
 
             , NBT_COLOR_BOTTOM              = "gtch.color.bottom"           // Integer, The bottom (or base) color of paint. CHanzy
             , NBT_COLOR_ORIGIN              = "gtch.color.origin"           // Integer, The origin color of painted block. CHanzy
+
+            , NBT_IDMETA                    = "gtch.idmeta"                 // Integer, Containing the combination of the id and meta, CHanzy
+
+            , NBT_ADD_BOOL                  = "gtch.add.bool"               // Boolean, The additional boolean information that have random name, CHanzy
+            , NBT_ADD_BYTE                  = "gtch.add.byte"               // Byte, The additional byte information that have random name, CHanzy
+            , NBT_ADD_SHORT                 = "gtch.add.short"              // Short, The additional byte information that have random name, CHanzy
+            , NBT_ADD_INT                   = "gtch.add.int"                // Integer, The additional byte information that have random name, CHanzy
+            , NBT_ADD_LONG                  = "gtch.add.long"               // Long, The additional byte information that have random name, CHanzy
             ;
 
     public static class DirectoriesGTCH {
@@ -147,5 +152,13 @@ public class CS_CH {
         SHORT,
         INT,
         LONG
+    }
+
+    // 重新渲染的 tick 类型
+    public enum RerenderTick {
+        INIT,
+        SLEEP,
+        MAIN,
+        AROUND
     }
 }

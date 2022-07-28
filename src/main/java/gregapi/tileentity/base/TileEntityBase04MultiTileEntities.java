@@ -44,8 +44,11 @@ import gregapi.render.IRenderedBlockObjectSideCheck;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
+import gregtechCH.config.ConfigForge_CH;
+import gregtechCH.tileentity.ITEAfterUpdateRender_CH;
 import gregtechCH.tileentity.ITileEntityName_CH;
 import gregtechCH.util.UT_CH;
+import gregtechCH.util.WD_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -54,13 +57,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 
 /**
  * @author Gregorius Techneticies
  */
-public abstract class TileEntityBase04MultiTileEntities extends TileEntityBase03TicksAndSync implements IRenderedBlockObjectSideCheck, IRenderedBlockObject, IMTE_OnPainting, IMTE_OnNeighborBlockChange, IMTE_GetPickBlock, IMTE_OnRegistrationFirst, IMTE_RecolourBlock, IMTE_GetDrops, IMTE_OnBlockActivated, IMTE_ShouldSideBeRendered, IMTE_GetFlammability, IMTE_GetFireSpreadSpeed {
+public abstract class TileEntityBase04MultiTileEntities extends TileEntityBase03TicksAndSync implements ITEAfterUpdateRender_CH, IRenderedBlockObjectSideCheck, IRenderedBlockObject, IMTE_OnPainting, IMTE_OnNeighborBlockChange, IMTE_GetPickBlock, IMTE_OnRegistrationFirst, IMTE_RecolourBlock, IMTE_GetDrops, IMTE_OnBlockActivated, IMTE_ShouldSideBeRendered, IMTE_GetFlammability, IMTE_GetFireSpreadSpeed {
 	private short mMTEID = W, mMTERegistry = W;
 	private String mCustomName = null;
 	
@@ -234,23 +238,37 @@ public abstract class TileEntityBase04MultiTileEntities extends TileEntityBase03
 	public boolean recolourBlock(byte aSide, byte aColor) {
 		if (UT.Code.exists(aColor, DYES_INVERTED)) {
 			int aRGB = (isPainted() ? UT_CH.Code.mixRGBInt(getPaint(), DYES_INT_INVERTED[aColor]) : DYES_INT_INVERTED[aColor]) & ALL_NON_ALPHA_COLOR;
-			if (paint(aRGB)) {updateClientData(); causeBlockUpdate(); return T;}
+			if (paint(aRGB)) {updateClientData(T); causeBlockUpdate(); return T;}
 			return F;
 		}
-		if (unpaint()) {updateClientData(); causeBlockUpdate(); return T;}
+		if (unpaint()) {updateClientData(T); causeBlockUpdate(); return T;}
 		return F;
 	}
 	
 	@Override
 	public boolean onPainting(byte aSide, int aRGB) {
-		if (paint(aRGB)) {updateClientData(); causeBlockUpdate(); return T;}
+		if (paint(aRGB)) {updateClientData(T); causeBlockUpdate(); return T;}
 		return F;
 	}
 	
 	public boolean unpaint() {return F;}
 	public boolean isPainted() {return F;}
+	public void setIsPainted(boolean aIsPainted) {/**/}
 	public boolean paint(int aRGB) {return F;}
 	public int getPaint() {return UNCOLORED;}
+	// GTCH, 原本逻辑过于麻烦，直接把是否已经染色也同步到客户端好了，这样还可以多出来一些数据用于专门处理颜色动画，可能可以方便后续的温度变色之类的开发（因为温度并没有传到客户端）
+	public byte getPaintData() {return (byte) ((isPainted()?1:0) | (willRerendImmediate?2:0));}
+	public void setPaintData(byte aData) {setIsPainted((aData&1)!=0); willRerendImmediate = ((aData&2)!=0);}
+	// GTCH, 在染色时立刻重新渲染
+	private boolean willRerendImmediate = F;
+	public void updateClientData(boolean aRerendImmediate) {willRerendImmediate = aRerendImmediate; updateClientData();} // 后续在需要立刻重新渲染时调用此函数即可
+	@Override public void onTickResetChecks(long aTimer, boolean aIsServerSide) {super.onTickResetChecks(aTimer, aIsServerSide); if (aIsServerSide) willRerendImmediate = F;} // 对于 ticking 的需要在这里恢复标记
+	@Override
+	public final void doAfterUpdateRender_CH(IBlockAccess aWorld, int aX, int aY, int aZ) {
+		if (!ConfigForge_CH.DATA_GTCH.rerenderAll && (willRerendImmediate || willRerendImmediateAny())) WD_CH.updateRender(aWorld, aX, aY, aZ, T, F);
+		willRerendImmediate = F;
+	}
+	public boolean willRerendImmediateAny() {return F;} // 也可重写此方法，在不用 sendAll 的情况下立刻重新渲染
 	
 	public boolean removePaint(byte aSide) {return unpaint();}
 	

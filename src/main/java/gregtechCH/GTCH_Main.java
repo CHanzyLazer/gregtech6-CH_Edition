@@ -1,10 +1,13 @@
 package gregtechCH;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.tileentity.ITileEntityErrorable;
 import gregtechCH.config.ConfigJson_CH;
 import gregtechCH.data.CS_CH;
 import gregtechCH.threads.ThreadPools.ITaskNumberExecutor;
 import gregtechCH.tileentity.ITEScheduledUpdate_CH;
+import gregtechCH.util.WD_CH;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -62,7 +65,11 @@ public class GTCH_Main {
         sCurrentHandlesServer = 0;
     }
     public static void UPDATE_CLIENT_TIME() {
-        if (CLIENT_TIME > 10) doScheduled(F);
+        if (CLIENT_TIME > 10) {
+            doScheduled(F);
+            // 在这里调用 WD_CH 的 ticking，主要是区块渲染的更新
+            WD_CH.onTicking(CLIENT_TIME);
+        }
         ++CLIENT_TIME;
         sCurrentHandlesClient = 0;
     }
@@ -74,17 +81,22 @@ public class GTCH_Main {
     private final static int MAX_TICK_SCHEDULED_UPDATER = 16; // 每 tick 最多的计划数
     private final static LinkedList<Set<ITEScheduledUpdate_CH>> TE_SCHEDULED_UPDATERS_LIST_SERVER = new LinkedList<>();
     private final static LinkedList<Set<ITEScheduledUpdate_CH>> TE_SCHEDULED_UPDATERS_LIST_CLIENT = new LinkedList<>();
-    public static synchronized void pushScheduled(boolean aIsServerSide, ITEScheduledUpdate_CH aScheduleUpdater) {
+    public static void pushScheduled(boolean aIsServerSide, ITEScheduledUpdate_CH aScheduleUpdater) {
         LinkedList<Set<ITEScheduledUpdate_CH>> tUpdatersList = aIsServerSide?TE_SCHEDULED_UPDATERS_LIST_SERVER:TE_SCHEDULED_UPDATERS_LIST_CLIENT;
-        if (tUpdatersList.isEmpty() || tUpdatersList.getLast().size() >= MAX_TICK_SCHEDULED_UPDATER)
-            tUpdatersList.addLast(new HashSet<ITEScheduledUpdate_CH>());
-        tUpdatersList.getLast().add(aScheduleUpdater);
+        synchronized(aIsServerSide?TE_SCHEDULED_UPDATERS_LIST_SERVER:TE_SCHEDULED_UPDATERS_LIST_CLIENT) {
+            if (tUpdatersList.isEmpty() || tUpdatersList.getLast().size() >= MAX_TICK_SCHEDULED_UPDATER)
+                tUpdatersList.addLast(new HashSet<ITEScheduledUpdate_CH>());
+            tUpdatersList.getLast().add(aScheduleUpdater);
+        }
     }
     // 注意每 tick 只能调用一次
     // 加锁防止并行修改队列
-    private static synchronized void doScheduled(boolean aIsServerSide) {
+    private static void doScheduled(boolean aIsServerSide) {
         // 先提取本 tick 需要执行的计划，然后将其移除出总 LIST
-        Set<ITEScheduledUpdate_CH> tScheduledUpdatersDo = (aIsServerSide?TE_SCHEDULED_UPDATERS_LIST_SERVER:TE_SCHEDULED_UPDATERS_LIST_CLIENT).pollFirst();
+        Set<ITEScheduledUpdate_CH> tScheduledUpdatersDo;
+        synchronized(aIsServerSide?TE_SCHEDULED_UPDATERS_LIST_SERVER:TE_SCHEDULED_UPDATERS_LIST_CLIENT) {
+            tScheduledUpdatersDo = (aIsServerSide?TE_SCHEDULED_UPDATERS_LIST_SERVER:TE_SCHEDULED_UPDATERS_LIST_CLIENT).pollFirst();
+        }
         if (tScheduledUpdatersDo == null) return;
         // 遍历执行
         for (ITEScheduledUpdate_CH tTileEntity : tScheduledUpdatersDo) {

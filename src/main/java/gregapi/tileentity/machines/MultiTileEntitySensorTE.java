@@ -20,6 +20,7 @@
 package gregapi.tileentity.machines;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.config.ConfigForge_CH.*;
 
 import java.util.List;
 
@@ -55,6 +56,31 @@ public abstract class MultiTileEntitySensorTE extends MultiTileEntitySensor impl
 	, MODE_FULL     = 6
 	, MODE_NOT_FULL = 7
 	;
+	@Override
+	public boolean isDisplayMode() {
+		switch (mMode & 127) {
+		case MODE_DISPLAY: case MODE_PERCENT:
+			return T;
+		default:
+			return F;
+		}
+	}
+	@Override
+	public boolean isRedstoneMode() {
+		switch (mMode & 127) {
+		case MODE_PERCENT: case MODE_GREATER: case MODE_EQUAL: case MODE_SMALLER: case MODE_SCALE: case MODE_FULL: case MODE_NOT_FULL:
+			return T;
+		default:
+			return F;
+		}
+	}
+	// GTCH, 对于百分比和 16 进制的情况分别讨论
+	@Override
+	public int getSyncRound() {
+		if ((mMode & 127) == MODE_PERCENT)
+			return mMode<0 ? 7 : 5;
+		return mMode<0 ? 127 : 49;
+	}
 	
 	public static final int MAX_AVERAGING_VALUES = Short.MAX_VALUE;
 	
@@ -86,10 +112,12 @@ public abstract class MultiTileEntitySensorTE extends MultiTileEntitySensor impl
 	}
 	
 	@Override
-	public NBTTagCompound writeItemNBT2(NBTTagCompound aNBT) {
-		aNBT = super.writeItemNBT2(aNBT);
-		if (mIndex != 0) aNBT.setInteger("gt.sensor.index", mIndex);
-		if (mValues.length > 1) aNBT.setIntArray("gt.sensor.array", new int[mValues.length]);
+	public final NBTTagCompound writeItemNBT2(NBTTagCompound aNBT) {
+		if (DATA_GTCH.itemNBTSensor) {
+			aNBT = super.writeItemNBT2(aNBT);
+			if (mIndex != 0) aNBT.setInteger("gt.sensor.index", mIndex);
+			if (mValues.length > 1) aNBT.setIntArray("gt.sensor.array", new int[mValues.length]);
+		}
 		return aNBT;
 	}
 	
@@ -148,8 +176,8 @@ public abstract class MultiTileEntitySensorTE extends MultiTileEntitySensor impl
 				mRedstone = tRedstone;
 				causeBlockUpdate();
 			}
-			
-			mDisplayedNumber = UT.Code.unsignS((short)mDisplayedNumber);
+			mOverMaxDisplay = mDisplayedNumber>MAX_DISPLAY_NUMBER;
+			mDisplayedNumber = mOverMaxDisplay ? MAX_DISPLAY_NUMBER : UT.Code.unsignS((short)mDisplayedNumber);
 		}
 	}
 	
@@ -201,7 +229,7 @@ public abstract class MultiTileEntitySensorTE extends MultiTileEntitySensor impl
 		if (aTool.equals(TOOL_screwdriver)) {
 			if (hasHitDisplay(aSide, aHitX, aHitY, aHitZ)) {
 				mMode ^= B[7];
-				updateClientData();
+				updateClientData(T);
 				return 10000;
 			}
 			
@@ -229,14 +257,14 @@ public abstract class MultiTileEntitySensorTE extends MultiTileEntitySensor impl
 			}
 			
 			if (mRedstone != 0) {mRedstone = 0; causeBlockUpdate();}
-			updateClientData();
+			updateClientData(T);
 			return 10000;
 		}
 		if (aTool.equals(TOOL_softhammer)) {
 			mCurrentValue = mCurrentMax = mIndex = mDisplayedNumber = mSetNumber = mMode = mRedstone = 0;
 			mValues = new int[] {0};
 			causeBlockUpdate();
-			updateClientData();
+			updateClientData(T);
 			return 10000;
 		}
 		return 0;
@@ -252,7 +280,7 @@ public abstract class MultiTileEntitySensorTE extends MultiTileEntitySensor impl
 			case MODE_EQUAL     : return BI.CHAR_EQUAL;
 			case MODE_SMALLER   : return BI.CHAR_SMALLER;
 			case MODE_SCALE     : return BI.CHAR_SCALE;
-			default: return mMode < 0 ? BI.CHAR_HEX : BI.decimalDigit(mDisplayedNumber, 4);
+			default: return mMode < 0 ? BI.CHAR_HEX : BI.decimalDigit(mDisplayedNumber, 4, mOverMaxDisplay);
 			}
 		}
 		if ((mMode & 127) == MODE_FULL || (mMode & 127) == MODE_NOT_FULL) {
@@ -264,7 +292,7 @@ public abstract class MultiTileEntitySensorTE extends MultiTileEntitySensor impl
 			}
 		}
 		if (aIndex == 5) return (mMode & 127) == MODE_PERCENT ? BI.CHAR_PERCENT : getSymbolIcon();
-		return mMode < 0 ? BI.hexadecimalDigit(mDisplayedNumber, 4-aIndex) : BI.decimalDigit(mDisplayedNumber, 4-aIndex);
+		return mMode < 0 ? BI.hexadecimalDigit(mDisplayedNumber, 4-aIndex, mOverMaxDisplay) : BI.decimalDigit(mDisplayedNumber, 4-aIndex, mOverMaxDisplay);
 	}
 	
 	@Override

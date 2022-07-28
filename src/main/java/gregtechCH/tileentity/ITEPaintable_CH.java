@@ -5,6 +5,7 @@ public interface ITEPaintable_CH {
     int getOriginalRGB();
 
     boolean isPainted();
+    void setIsPainted(boolean aIsPainted);
     int getPaint();
 
     boolean unpaint();

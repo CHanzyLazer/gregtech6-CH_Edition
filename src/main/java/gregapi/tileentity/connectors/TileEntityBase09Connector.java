@@ -65,6 +65,14 @@ public abstract class TileEntityBase09Connector extends TileEntityBase08Directio
 		super.writeToNBT2(aNBT);
 		UT.NBT.setNumber(aNBT, NBT_CONNECTION, mConnections);
 	}
+
+	@Override
+	public void onTick2(long aTimer, boolean aIsServerSide) {
+		super.onTick2(aTimer, aIsServerSide);
+		if (aIsServerSide && aTimer > 2 && mSchedule != null) {
+			mSchedule.run(); mSchedule = null; // 这里执行计划任务来防止实体还不能同步数据就进行了连接操作
+		}
+	}
 	
 	@Override
 	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
@@ -93,11 +101,11 @@ public abstract class TileEntityBase09Connector extends TileEntityBase08Directio
 				// 对于没有染色的，采用默认的逻辑
 				tDelegator = getAdjacentTileEntity(aSide);
 				if (tDelegator.mTileEntity instanceof ITileEntity && !((ITileEntity)tDelegator.mTileEntity).allowInteraction(aPlayer)) return T;
-				connect(aSide, T);
+				mSchedule = new ScheduleConnect(aSide, T);
 				for (byte tSide : ALL_SIDES_VALID) {
 					tDelegator = getAdjacentTileEntity(tSide);
 					if (tDelegator.mTileEntity instanceof ITileEntityConnector && SIDES_VALID[tDelegator.mSideOfTileEntity] && UT.Code.haveOneCommonElement(((ITileEntityConnector)tDelegator.mTileEntity).getConnectorTypes(tDelegator.mSideOfTileEntity), getConnectorTypes(tSide))) {
-						if (((ITileEntityConnector)tDelegator.mTileEntity).connected(tDelegator.mSideOfTileEntity)) connect(tSide, T);
+						if (((ITileEntityConnector)tDelegator.mTileEntity).connected(tDelegator.mSideOfTileEntity)) mSchedule = new ScheduleConnect(tSide, T);
 					}
 				}
 			}
@@ -107,11 +115,11 @@ public abstract class TileEntityBase09Connector extends TileEntityBase08Directio
 					tDelegator = getAdjacentTileEntity(tSide);
 					if (tDelegator.mTileEntity instanceof ITileEntity && !((ITileEntity)tDelegator.mTileEntity).allowInteraction(aPlayer)) continue;
 					if (tDelegator.mTileEntity instanceof ITileEntityConnector && SIDES_VALID[tDelegator.mSideOfTileEntity] && UT.Code.haveOneCommonElement(((ITileEntityConnector)tDelegator.mTileEntity).getConnectorTypes(tDelegator.mSideOfTileEntity), getConnectorTypes(tSide))) {
-						if (tDelegator.mTileEntity instanceof ITEPaintable_CH && ((ITEPaintable_CH)tDelegator.mTileEntity).isPainted() && ((ITEPaintable_CH)tDelegator.mTileEntity).getPaint()==getPaint()) connect(tSide, T);
+						if (tDelegator.mTileEntity instanceof ITEPaintable_CH && ((ITEPaintable_CH)tDelegator.mTileEntity).isPainted() && ((ITEPaintable_CH)tDelegator.mTileEntity).getPaint()==getPaint()) mSchedule = new ScheduleConnect(tSide, T);
 					} else
 					if (canAutoConnect(tSide,tDelegator)) {
 						// 需要避免自动连接空气和液体
-						connect(tSide, T);
+						mSchedule = new ScheduleConnect(tSide, T);
 					}
 				}
 			}
@@ -169,12 +177,19 @@ public abstract class TileEntityBase09Connector extends TileEntityBase08Directio
 		}
 		return connected(aSide);
 	}
+	public class ScheduleConnect implements Runnable {
+		private final byte mSide; private final boolean mNotify; private Boolean mOut = null;
+		public ScheduleConnect(byte aSide, boolean aNotify) {mSide = aSide; mNotify = aNotify;}
+		@Override public void run() {mOut = connect(mSide, mNotify);}
+		public Boolean out() {return mOut;}
+	}
+	private Runnable mSchedule = null;
 
 	// GTCH, 用于减少重复代码
 	private void doConnect_(byte aSide) {
 		byte oConnections = mConnections;
 		mConnections |= SBIT[aSide];
-		updateClientData();
+		updateClientData(T);
 		causeBlockUpdate();
 		onConnectionChange(oConnections);
 		checkCoverValidity();
@@ -190,7 +205,7 @@ public abstract class TileEntityBase09Connector extends TileEntityBase08Directio
 		if (tDelegator.mTileEntity instanceof ITileEntityCoverable && ((ITileEntityCoverable)tDelegator.mTileEntity).getCoverData() != null && ((ITileEntityCoverable)tDelegator.mTileEntity).getCoverData().mBehaviours[tDelegator.mSideOfTileEntity] != null && ((ITileEntityCoverable)tDelegator.mTileEntity).getCoverData().mBehaviours[tDelegator.mSideOfTileEntity].interceptDisconnect(tDelegator.mSideOfTileEntity, mCovers)) return F;
 		byte oConnections = mConnections;
 		mConnections &= ~SBIT[aSide];
-		updateClientData();
+		updateClientData(T);
 		causeBlockUpdate();
 		onConnectionChange(oConnections);
 		checkCoverValidity();

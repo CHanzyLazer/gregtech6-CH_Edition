@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 public class ThreadPools {
     public static final ITaskNumberExecutor NONE_THREAD     = newSingleNoneExecutor();
     public static final ITaskNumberExecutor LIGHT_THREAD    = newSingleThreadExecutor();
+    public static final ITaskNumberExecutor RENDER_THREAD   = newSingleThreadExecutor();
     public static final ITaskNumberExecutor SOUND_THREAD    = newSingleThreadExecutor();
     public static final ITaskNumberExecutor MACHINE_THREAD  = newSingleThreadExecutor();
 
@@ -26,7 +27,7 @@ public class ThreadPools {
         public TaskNumberExecutor(ThreadPoolExecutor aExecutor) {mThreadPoolExecutor = aExecutor;}
 
         @Override public void execute(@NotNull Runnable aRunnable) {mThreadPoolExecutor.execute(aRunnable);}
-        @Override public int getTaskNumber() {return mThreadPoolExecutor.getQueue().size();}
+        @Override public int getTaskNumber() {return mThreadPoolExecutor.getActiveCount() + mThreadPoolExecutor.getQueue().size();}
     }
     public static class NoneThreadExecutor implements ITaskNumberExecutor {
         // 不会创建新的线程，直接在 execute 阶段执行

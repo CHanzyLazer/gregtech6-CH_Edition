@@ -19,15 +19,7 @@
 
 package gregapi.tileentity.machines;
 
-import static gregapi.data.CS.*;
-
-import java.util.List;
-
-import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetCollisionBoundingBoxFromPool;
-import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetSelectedBoundingBoxFromPool;
-import gregapi.block.multitileentity.IMultiTileEntity.IMTE_IgnorePlayerCollisionWhenPlacing;
-import gregapi.block.multitileentity.IMultiTileEntity.IMTE_SetBlockBoundsBasedOnState;
-import gregapi.block.multitileentity.IMultiTileEntity.IMTE_SyncDataShort;
+import gregapi.block.multitileentity.IMultiTileEntity.*;
 import gregapi.data.LH;
 import gregapi.data.LH.Chat;
 import gregapi.network.INetworkHandler;
@@ -48,19 +40,30 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
+import static gregapi.data.CS.*;
+
 /**
  * @author Gregorius Techneticies
  */
 public abstract class MultiTileEntitySensor extends TileEntityBase10FacingDouble implements ITileEntityQuickObstructionCheck, IMTE_IgnorePlayerCollisionWhenPlacing, IMTE_SetBlockBoundsBasedOnState, IMTE_GetCollisionBoundingBoxFromPool, IMTE_GetSelectedBoundingBoxFromPool, IMTE_SyncDataShort {
 	protected byte mMode = 0;
 	protected int mDisplayedNumber = 0, oDisplayedNumber = 0, mSetNumber = 0;
+	protected boolean mOverMaxDisplay = F, oOverMaxDisplay = F;
 	protected byte mRedstone = 0;
-	
+	public final static int MAX_DISPLAY_NUMBER = 65535;
+
+	public boolean isDisplayMode() {return T;}
+	public boolean isRedstoneMode() {return T;}
+	public boolean willRerendImmediateAny() {return !isDisplayMode();} // 在非显示模式下改变数据无论如何都需要重新渲染
+
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {
 		super.readFromNBT2(aNBT);
 		if (aNBT.hasKey(NBT_MODE)) mMode = aNBT.getByte(NBT_MODE);
 		if (aNBT.hasKey(NBT_VISUAL)) mDisplayedNumber = UT.Code.unsignS(aNBT.getShort(NBT_VISUAL));
+		if (aNBT.hasKey(NBT_VISUAL+".over")) mOverMaxDisplay = aNBT.getBoolean(NBT_VISUAL+".over");
 		if (aNBT.hasKey(NBT_VALUE)) mSetNumber = UT.Code.unsignS(aNBT.getShort(NBT_VALUE)); else mSetNumber = mDisplayedNumber;
 		if (aNBT.hasKey(NBT_CONNECTION)) mSecondFacing = aNBT.getByte(NBT_CONNECTION);
 		if (aNBT.hasKey(NBT_REDSTONE)) mRedstone = aNBT.getByte(NBT_REDSTONE);
@@ -70,6 +73,7 @@ public abstract class MultiTileEntitySensor extends TileEntityBase10FacingDouble
 	public void writeToNBT2(NBTTagCompound aNBT) {
 		super.writeToNBT2(aNBT);
 		aNBT.setShort(NBT_VISUAL, (short)mDisplayedNumber);
+		aNBT.setBoolean(NBT_VISUAL+".over", mOverMaxDisplay);
 		aNBT.setShort(NBT_VALUE, (short)mSetNumber);
 		aNBT.setByte(NBT_MODE, mMode);
 		aNBT.setByte(NBT_REDSTONE, mRedstone);
@@ -104,23 +108,26 @@ public abstract class MultiTileEntitySensor extends TileEntityBase10FacingDouble
 		if (aTool.equals(TOOL_monkeywrench)) {byte aTargetSide = UT.Code.getSideWrenching(aSide, aHitX, aHitY, aHitZ); if (SIDES_VALID[aTargetSide] && aTargetSide != mFacing ) {mSecondFacing = aTargetSide;                         updateClientData(); causeBlockUpdate(); return 10000;}}
 		return 0;
 	}
-	
+
 	@Override
 	public boolean onTickCheck(long aTimer) {
 		mDisplayedNumber = UT.Code.bind16(mDisplayedNumber);
-		return super.onTickCheck(aTimer) || Math.abs(mDisplayedNumber - oDisplayedNumber) > (SYNC_SECOND ? 0 : 49);
+		return super.onTickCheck(aTimer) || mOverMaxDisplay != oOverMaxDisplay || (!mOverMaxDisplay && Math.abs(mDisplayedNumber - oDisplayedNumber) > (SYNC_SECOND ? 0 : getSyncRound()));
 	}
+	// GTCH, 当显示数据变化大于此值时强制同步
+	public int getSyncRound() {return 49;}
 	
 	@Override
 	public void onTickChecked(long aTimer) {
 		super.onTickChecked(aTimer);
+		oOverMaxDisplay = mOverMaxDisplay;
 		oDisplayedNumber = mDisplayedNumber;
 	}
 
 	// GTCH, 重写这个方法保证和原本的逻辑一致
 	@Override
 	public IPacket getClientDataPacketNoSendAll(boolean aSendAll) {
-		return getClientDataPacketShort(F, (short)mDisplayedNumber);
+		return mOverMaxDisplay ? getClientDataPacketByte(F, (byte)1) : getClientDataPacketShort(F, (short)mDisplayedNumber);
 	}
 	@Override
 	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
@@ -129,21 +136,30 @@ public abstract class MultiTileEntitySensor extends TileEntityBase10FacingDouble
 		rList.add(1, UT.Code.toByteS((short)mDisplayedNumber, 1)); // 保持原本一致的顺序
 		rList.add(5, getDirectionData());
 		rList.add(6, mMode);
+		rList.add(7, (byte)(mOverMaxDisplay?1:0));
 	}
-	
+
+	@Override
+	public boolean receiveDataByte(byte aData, INetworkHandler aNetworkHandler) {
+		mDisplayedNumber = MAX_DISPLAY_NUMBER;
+		mOverMaxDisplay = ((aData&1)!=0);
+		return T;
+	}
 	@Override
 	public boolean receiveDataShort(short aData, INetworkHandler aNetworkHandler) {
 		mDisplayedNumber = UT.Code.unsignS(aData);
+		mOverMaxDisplay = F;
 		return T;
 	}
-	
+
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		mDisplayedNumber = UT.Code.unsignS(UT.Code.combine(aData[0], aData[1]));
-		if (aData.length >= 7) {
+		if (aData.length >= 8) {
 			setRGBData(aData[2], aData[3], aData[4], aData[aData.length-1]);
 			setDirectionData(aData[5]);
 			mMode = aData[6];
+			mOverMaxDisplay = ((aData[7]&1)!=0);
 		}
 		return T;
 	}

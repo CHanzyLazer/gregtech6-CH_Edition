@@ -36,6 +36,7 @@ import gregapi.tileentity.machines.ITileEntityRunningActively;
 import gregapi.tileentity.machines.ITileEntitySwitchableOnOff;
 import gregapi.util.ST;
 import gregapi.util.UT;
+import gregtechCH.util.UT_CH;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -137,7 +138,7 @@ public abstract class MultiTileEntityReactorCore extends TileEntityBase10FacingD
 			}
 			if (mTanks[0].isHalf() && mSecondFacing != mFacing) FL.move(mTanks[0], getAdjacentTank(mSecondFacing), mTanks[0].amount() - mTanks[0].capacity() / 2);
 			if (mTanks[1].has()) FL.move(mTanks[1], getAdjacentTank(mFacing));
-			
+
 			if (mTanks[0].check()) updateClientData();
 		}
 	}
@@ -292,6 +293,20 @@ public abstract class MultiTileEntityReactorCore extends TileEntityBase10FacingD
 		updateInventory();
 		return mTanks[0].fill(aFluid, aDoFill);
 	}
+
+	@Override
+	public final void updateInventory() {
+		super.updateInventory();
+		// GTCH, 改为仅检测每个存储槽内是否发生了改变
+		if (isServerSide() && checkInventory()) {
+			updateClientData();
+			inventoryChecked();
+		}
+	}
+
+	protected boolean checkInventory() {return F;}
+	protected void inventoryChecked() {/**/}
+
 
 	@Override
 	public FluidStack tapDrain(byte aSide, int aMaxDrain, boolean aDoDrain) {

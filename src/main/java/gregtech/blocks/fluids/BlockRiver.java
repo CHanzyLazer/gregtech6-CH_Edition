@@ -40,6 +40,7 @@ import static gregapi.data.CS.*;
  */
 public class BlockRiver extends BlockWaterlike {
 	public static boolean PLACEMENT_ALLOWED = F, FLOWS_OUT = T;
+	private final static boolean DEBUG_PLACEMENT = F; // GTCH, 用于 debug 时允许放置河水
 	
 	public BlockRiver(String aName, Fluid aFluid) {
 		super(aName, aFluid, FLOWS_OUT);
@@ -48,7 +49,7 @@ public class BlockRiver extends BlockWaterlike {
 	
 	@Override
 	public void onBlockAdded(World aWorld, int aX, int aY, int aZ) {
-		if (PLACEMENT_ALLOWED) {
+		if (PLACEMENT_ALLOWED || DEBUG_PLACEMENT) {
 			aWorld.scheduleBlockUpdate(aX, aY, aZ, this, 10+RNGSUS.nextInt(90));
 		} else {
 			aWorld.setBlockToAir(aX, aY, aZ);

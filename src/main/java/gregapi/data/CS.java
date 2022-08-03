@@ -2125,6 +2125,8 @@ public class CS {
 		, GC_ADV_ROCKETRY   = "advancedRocketry"
 		, VULPES            = "libVulpes"
 		, MD8               = "Micdoodlecore"
+
+		, NEID              = "notenoughIDs"
 		;
 	}
 

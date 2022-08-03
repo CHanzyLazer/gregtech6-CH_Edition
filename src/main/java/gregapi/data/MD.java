@@ -277,5 +277,7 @@ public class MD {
 	, GC_ADV_ROCKETRY   = new ModData(ModIDs.GC_ADV_ROCKETRY    , "Advanced Rocketry")
 	, VULPES            = new ModData(ModIDs.VULPES             , "Lib Vulpes")
 	, MD8               = new ModData(ModIDs.MD8                , "Micdoodle8 Core")
+
+	, NEID              = new ModData(ModIDs.NEID               , "NotEnoughIDs")
 	;
 }

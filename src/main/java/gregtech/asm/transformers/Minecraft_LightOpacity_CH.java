@@ -1,5 +1,6 @@
 package gregtech.asm.transformers;
 
+import gregapi.data.MD;
 import gregtech.asm.GT_ASM;
 import gregtech.asm.GT_ASM_UT;
 import net.minecraft.launchwrapper.IClassTransformer;
@@ -128,23 +129,47 @@ public class Minecraft_LightOpacity_CH implements IClassTransformer  {
 			// 替换行内的常量初始化，private static byte[] field_149286_i = new byte[196864];
 			for (MethodNode m: classNode.methods) if (m.name.equals("<clinit>")) {
 				int tOldValue = 196864, tNewValue = tOldValue+(2048*16);
-				GT_ASM.logger.info("Transforming first value "+tOldValue+" to "+tNewValue+" in " + C_PacketS21 + ".<clinit>");
-				if (!GT_ASM_UT.transformInlinedNumberMethod(m, tOldValue, tNewValue))
-					GT_ASM.logger.warn("Cant find value "+tOldValue+", No changes made, bailing!");
+				// 对于 NotEnoughIDs 加载的情况特殊讨论
+				if (MD.NEID.mLoaded) {
+					int tOldValue2 = 229632; tNewValue = tOldValue2+(2048*16);
+					GT_ASM.logger.info("Transforming first value "+tOldValue+" to "+tNewValue+" in " + C_PacketS21 + ".<clinit>");
+					if (!GT_ASM_UT.transformInlinedNumberMethod(m, tOldValue2, tNewValue) && !GT_ASM_UT.transformInlinedNumberMethod(m, tOldValue, tNewValue))
+						GT_ASM.logger.warn("Cant find value "+tOldValue+", No changes made, bailing!");
+				} else {
+					GT_ASM.logger.info("Transforming first value "+tOldValue+" to "+tNewValue+" in " + C_PacketS21 + ".<clinit>");
+					if (!GT_ASM_UT.transformInlinedNumberMethod(m, tOldValue, tNewValue))
+						GT_ASM.logger.warn("Cant find value "+tOldValue+", No changes made, bailing!");
+				}
 			}
 			// 替换 func_149275_c 内的常量
 			for (MethodNode m: classNode.methods) if (M_func_149275_c.matches(m)) {
 				int tOldValue = 196864, tNewValue = tOldValue+(2048*16);
-				GT_ASM.logger.info("Transforming first value "+tOldValue+" to "+tNewValue+" in " + C_PacketS21 + "." + M_func_149275_c);
-				if (!GT_ASM_UT.transformInlinedNumberMethod(m, tOldValue, tNewValue))
-					GT_ASM.logger.warn("Cant find value "+tOldValue+", No changes made, bailing!");
+				// 对于 NotEnoughIDs 加载的情况特殊讨论
+				if (MD.NEID.mLoaded) {
+					int tOldValue2 = 229632; tNewValue = tOldValue2+(2048*16);
+					GT_ASM.logger.info("Transforming first value "+tOldValue+" to "+tNewValue+" in " + C_PacketS21 + "." + M_func_149275_c);
+					if (!GT_ASM_UT.transformInlinedNumberMethod(m, tOldValue2, tNewValue) && !GT_ASM_UT.transformInlinedNumberMethod(m, tOldValue, tNewValue))
+						GT_ASM.logger.warn("Cant find value "+tOldValue+", No changes made, bailing!");
+				} else {
+					GT_ASM.logger.info("Transforming first value "+tOldValue+" to "+tNewValue+" in " + C_PacketS21 + "." + M_func_149275_c);
+					if (!GT_ASM_UT.transformInlinedNumberMethod(m, tOldValue, tNewValue))
+						GT_ASM.logger.warn("Cant find value "+tOldValue+", No changes made, bailing!");
+				}
 			}
 			// 替换 readPacketData 内的常量
 			for (MethodNode m: classNode.methods) if (M_readPacketData.matches(m)) {
 				int tOldValue = 12288, tNewValue = tOldValue+2048; // 由于 mc 并没有提供更多的数据来确定数据是否存在，方便起见，无论如何都发送 GT 的不透光度数据
-				GT_ASM.logger.info("Transforming first value "+tOldValue+" to "+tNewValue+" in " + C_PacketS21 + "." + M_readPacketData);
-				if (!GT_ASM_UT.transformInlinedNumberMethod(m, tOldValue, tNewValue))
-					GT_ASM.logger.warn("Cant find value "+tOldValue+", No changes made, bailing!");
+				// 对于 NotEnoughIDs 加载的情况特殊讨论
+				if (MD.NEID.mLoaded) {
+					int tOldValue2 = 14336; tNewValue = tOldValue2+2048;
+					GT_ASM.logger.info("Transforming first value "+tOldValue+" to "+tNewValue+" in " + C_PacketS21 + "." + M_readPacketData);
+					if (!GT_ASM_UT.transformInlinedNumberMethod(m, tOldValue2, tNewValue) && !GT_ASM_UT.transformInlinedNumberMethod(m, tOldValue, tNewValue))
+						GT_ASM.logger.warn("Cant find value "+tOldValue+", No changes made, bailing!");
+				} else {
+					GT_ASM.logger.info("Transforming first value "+tOldValue+" to "+tNewValue+" in " + C_PacketS21 + "." + M_readPacketData);
+					if (!GT_ASM_UT.transformInlinedNumberMethod(m, tOldValue, tNewValue))
+						GT_ASM.logger.warn("Cant find value "+tOldValue+", No changes made, bailing!");
+				}
 			}
 			// 修改函数 func_149269_a 来将数据写入 byte
 			for (MethodNode m: classNode.methods) if (M_func_149269_a.matches(m)) {
@@ -205,9 +230,17 @@ public class Minecraft_LightOpacity_CH implements IClassTransformer  {
 			// 替换 readPacketData 内的常量
 			for (MethodNode m: classNode.methods) if (M_readPacketData.matches(m)) {
 				int tOldValue = 8192, tNewValue = tOldValue+2048; // 由于 mc 并没有提供更多的数据来确定数据是否存在，方便起见，无论如何都发送 GT 的不透光度数据
-				GT_ASM.logger.info("Transforming first value "+tOldValue+" to "+tNewValue+" in " + C_PacketS26 + "." + M_readPacketData);
-				if (!GT_ASM_UT.transformInlinedNumberMethod(m, tOldValue, tNewValue))
-					GT_ASM.logger.warn("Cant find value "+tOldValue+", No changes made, bailing!");
+				// 对于 NotEnoughIDs 加载的情况特殊讨论
+				if (MD.NEID.mLoaded) {
+					int tOldValue2 = 12288; tNewValue = tOldValue2+2048;
+					GT_ASM.logger.info("Transforming first value "+tOldValue+" to "+tNewValue+" in " + C_PacketS26 + "." + M_readPacketData);
+					if (!GT_ASM_UT.transformInlinedNumberMethod(m, tOldValue2, tNewValue) && !GT_ASM_UT.transformInlinedNumberMethod(m, tOldValue, tNewValue))
+						GT_ASM.logger.warn("Cant find value "+tOldValue+", No changes made, bailing!");
+				} else {
+					GT_ASM.logger.info("Transforming first value "+tOldValue+" to "+tNewValue+" in " + C_PacketS26 + "." + M_readPacketData);
+					if (!GT_ASM_UT.transformInlinedNumberMethod(m, tOldValue, tNewValue))
+						GT_ASM.logger.warn("Cant find value "+tOldValue+", No changes made, bailing!");
+				}
 			}
 			return GT_ASM.writeByteArraySelfReferenceFixup(classNode);
 		}

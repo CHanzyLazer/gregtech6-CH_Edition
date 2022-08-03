@@ -1,6 +1,5 @@
 package gregtechCH.util;
 
-import codechicken.lib.vec.Vector3;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -11,7 +10,6 @@ import gregapi.render.IIconContainer;
 import gregapi.util.UT;
 import gregtechCH.data.CS_CH;
 import net.minecraft.block.Block;
-import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.entity.Entity;
@@ -19,10 +17,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.ChunkCache;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
@@ -100,7 +98,7 @@ public class UT_CH {
 
         // 返回玩家所在的坐标
         @SideOnly(Side.CLIENT)
-        public static ChunkCoordinates getPlayerChunkCoord(@NotNull EntityClientPlayerMP aPlayer) {
+        public static ChunkCoordinates getPlayerChunkCoord(@NotNull Entity aPlayer) {
             return new ChunkCoordinates(((int)Math.round(aPlayer.posX))>>4, ((int)Math.round(aPlayer.posY))>>4, ((int)Math.round(aPlayer.posZ))>>4);
         }
         // 返回玩家视角的单位向量
@@ -473,6 +471,9 @@ public class UT_CH {
         public static final String[] RENDER_RENDER_CHUNKS_TALL = new String[]{"renderChunksTall", "field_72763_n"};
         public static final String[] RENDER_RENDER_CHUNKS_DEEP = new String[]{"renderChunksDeep", "field_72764_o"};
         @Deprecated public static final String[] RENDER_WORLD_RENDERS_TO_UPDATES = new String[]{"worldRenderersToUpdate", "field_72767_j"}; // 打包后不可用，域名不对
+        public static final String[] CHUNKCACHE_CHUNKARRAY = new String[]{"chunkArray", "field_72817_c"};
+        public static final String[] CHUNKCACHE_CHUNKX = new String[]{"chunkX", "field_72818_a"};
+        public static final String[] CHUNKCACHE_CHUNKZ = new String[]{"chunkZ", "field_72816_b"};
 
         public static void relightBlock(Chunk aChunk, int aX, int aY, int aZ) {
             try {
@@ -499,6 +500,18 @@ public class UT_CH {
             } catch (Exception e) {
                 e.printStackTrace(ERR);
                 return 0;
+            }
+        }
+
+        public static Chunk getChunk(ChunkCache aChunkCache, int aX, int aZ) {
+            try {
+                Chunk[][] tChunkArray = ReflectionHelper.getPrivateValue(ChunkCache.class, aChunkCache, CHUNKCACHE_CHUNKARRAY);
+                int tChunkX = ReflectionHelper.getPrivateValue(ChunkCache.class, aChunkCache, CHUNKCACHE_CHUNKX);
+                int tChunkZ = ReflectionHelper.getPrivateValue(ChunkCache.class, aChunkCache, CHUNKCACHE_CHUNKZ);
+                return tChunkArray[(aX>>4) - tChunkX][(aZ>>4) - tChunkZ];
+            } catch (Exception e) {
+                e.printStackTrace(ERR);
+                return null;
             }
         }
 

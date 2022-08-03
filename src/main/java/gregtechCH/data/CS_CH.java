@@ -28,12 +28,13 @@ public class CS_CH {
     public static final int[] DYES_INT_Concrete = new int[DYES_INT.length];
     public static final int[] DYES_INT_Glass    = new int[DYES_INT.length];
 
-    public static void initCS_CH() {
+    private static void initCS_CH() {
         for (int i = 0; i<DYES_INT.length; ++i) DYES_INT_Asphalt[i]     = UT_CH.Code.getPaintRGB(UT.Code.getRGBInt(MT.Asphalt.fRGBaSolid),          DYES_INT[i]);
         for (int i = 0; i<DYES_INT.length; ++i) DYES_INT_CFoam[i]       = UT_CH.Code.getPaintRGB(UT.Code.getRGBInt(MT.ConstructionFoam.fRGBaSolid), DYES_INT[i]);
         for (int i = 0; i<DYES_INT.length; ++i) DYES_INT_Concrete[i]    = UT_CH.Code.getPaintRGB(UT.Code.getRGBInt(MT.Concrete.fRGBaSolid),         DYES_INT[i]);
         for (int i = 0; i<DYES_INT.length; ++i) DYES_INT_Glass[i]       = UT_CH.Code.getPaintRGB(UT.Code.getRGBInt(MT.Glass.fRGBaSolid),            DYES_INT[i]);
     }
+    static {initCS_CH();}
 
     // 用于统计哪些 prefix 是可以做覆盖板的
     public static final Set<OreDictPrefix> ALL_COVER_PREFIX = Sets.newHashSet(plate, plateDouble, plateTriple, plateQuadruple, plateQuintuple, plateDense, plateCurved, plateGem, sheetGt, foil);

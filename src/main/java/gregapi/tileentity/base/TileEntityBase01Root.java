@@ -26,6 +26,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetLightOpacity;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetLightValue;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_IsProvidingStrongPower;
+import gregapi.block.multitileentity.MultiTileEntityRegistry;
 import gregapi.code.ArrayListNoNulls;
 import gregapi.code.TagData;
 import gregapi.data.FL;
@@ -50,13 +51,10 @@ import gregapi.tileentity.multiblocks.MultiTileEntityMultiBlockPart;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
-import gregtechCH.GTCH_Main;
-import gregtechCH.block.IBlockTELightOpacity_CH;
-import gregtechCH.block.IBlockTELightValue_CH;
 import gregtechCH.fluid.IFluidHandler_CH;
-import gregtechCH.threads.ThreadPools;
 import gregtechCH.tileentity.ITEScheduledUpdate_CH;
 import gregtechCH.util.UT_CH;
+import gregtechCH.util.WD_CH;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergyTile;
@@ -85,7 +83,7 @@ import net.minecraftforge.fluids.*;
 import java.util.*;
 
 import static gregapi.data.CS.*;
-import static gregtechCH.data.CS_CH.NBT_LIGHT_OPACITY;
+import static gregtechCH.GTCH_Main.pushScheduled;
 
 /**
  * @author Gregorius Techneticies
@@ -405,10 +403,14 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 			return;
 		}
 
+		if (mDoesBlockUpdate) doBlockUpdate();
+	}
+	// GTCH，使用专门的计划更新来延迟更新，并且避免污染原本的代码
+	public void onScheduledUpdate_CH(boolean aIsServerSide) {
 		// GTCH, 执行 mark 的任务
 		if (mMarkNBTFinished) {
-			mMarkNBTFinished = F;
 			initNBTFinish();
+			mMarkNBTFinished = F;
 		}
 		if (mMarkedLightValueUpdate) {
 			updateLightValue();
@@ -419,8 +421,6 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 			mMarkedLightOpacityUpdate = F;
 			mScheduleOldOpacity = -1;
 		}
-
-		if (mDoesBlockUpdate) doBlockUpdate();
 	}
 
 	private boolean mMarkedLightValueUpdate = F;
@@ -428,18 +428,24 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 	private int mScheduleOldOpacity = -1; // 用来记录的旧不透明度，新的旧不透明度取最大值
 
 	// GTCH, 还是使用子类调用更新的方式来实现
-	// 标记式更新，在下次调用 updateEntity 时调用。用于在 NBT 读取阶段进行更新
-	public void updateLightValueMark() 					{mMarkedLightValueUpdate = T;}
-	public void updateLightOpacityMark(int aOldOpacity) {mScheduleOldOpacity = Math.max(aOldOpacity, mScheduleOldOpacity); mMarkedLightOpacityUpdate = T;}
-	public void updateLightOpacityMark() 				{mScheduleOldOpacity = LIGHT_OPACITY_MAX; mMarkedLightOpacityUpdate = T;}
-	// 一般的调用更新
+	// 标记式更新，可以用于在 NBT 读取阶段进行更新
+	public void updateLightValueMark() 					{if (this instanceof ITEScheduledUpdate_CH) {pushScheduled(isServerSide(), (ITEScheduledUpdate_CH)this); mMarkedLightValueUpdate = T;}}
+	public void updateLightOpacityMark(int aOldOpacity) {if (this instanceof ITEScheduledUpdate_CH) {pushScheduled(isServerSide(), (ITEScheduledUpdate_CH)this); mScheduleOldOpacity = Math.max(aOldOpacity, mScheduleOldOpacity); mMarkedLightOpacityUpdate = T;}}
+	public void updateLightOpacityMark() 				{if (this instanceof ITEScheduledUpdate_CH) {pushScheduled(isServerSide(), (ITEScheduledUpdate_CH)this); mScheduleOldOpacity = LIGHT_OPACITY_MAX; mMarkedLightOpacityUpdate = T;}}
+	// 一般的调用更新，更新前需要先设置区块存储的不透光度数据；并入接口避免非法重写
 	public void updateLightValue() 						{UT_CH.Light.updateLightValue(getWorld(), getX(), getY(), getZ());}
-	public void updateLightOpacity(int aOldOpacity) 	{UT_CH.Light.updateLightOpacity(aOldOpacity, getWorld(), getX(), getY(), getZ());}
-	public void updateLightOpacity() 					{UT_CH.Light.updateLightOpacity(getWorld(), getX(), getY(), getZ());}
+	public void updateLightOpacity(int aOldOpacity) 	{if (getWorld() != null && isServerSide()) WD_CH.setBlockGTLightOpacity(getWorld(), getX(), getY(), getZ(), (short)getBlock(getCoords()).getLightOpacity(getWorld(), getX(), getY(), getZ())); UT_CH.Light.updateLightOpacity(aOldOpacity, getWorld(), getX(), getY(), getZ());}
+	public void updateLightOpacity() 					{if (getWorld() != null && isServerSide()) WD_CH.setBlockGTLightOpacity(getWorld(), getX(), getY(), getZ(), (short)getBlock(getCoords()).getLightOpacity(getWorld(), getX(), getY(), getZ())); UT_CH.Light.updateLightOpacity(getWorld(), getX(), getY(), getZ());}
 	// 初始化 NBT 时调用，用于初始化方块不透光度和亮度
 	private void initNBTFinish() {
-		if (this instanceof IMTE_GetLightValue) 		{Block tBlock = getBlock(getCoords()); if (tBlock instanceof IBlockTELightValue_CH) 	((IBlockTELightValue_CH)tBlock).setTELightValue(getMetaData(getCoords()), (IMTE_GetLightValue)this);}
-		if (this instanceof IMTE_GetLightOpacity) 		{Block tBlock = getBlock(getCoords()); if (tBlock instanceof IBlockTELightOpacity_CH) 	((IBlockTELightOpacity_CH)tBlock).setTELightOpacity(getMetaData(getCoords()), (IMTE_GetLightOpacity)this);}
+		// 方块初始化时设置不透光度，保证服务端的初始不透明度一定是正确的
+		if (getWorld() != null && isServerSide() && this instanceof IMTE_GetLightOpacity) {
+			// 获取旧的存储的不透光度，检测是否有发生改变，如果发生改变则需要更新光照
+			Short oLightOpacity = WD_CH.getBlockGTLightOpacity(getWorld(), getX(), getY(), getZ());
+			if (oLightOpacity == null) updateLightOpacity();
+			else if (getBlock(getCoords()).getLightOpacity(getWorld(), getX(), getY(), getZ()) != oLightOpacity) updateLightOpacity(oLightOpacity);
+			// 使用方块不透光度判断保证实际使用的不透光度就是存储的不透光度
+		}
 	}
 	// 用来标记 NBT 设置完成，然后在初始化方块完全结束后再去调用
 	private boolean mMarkNBTFinished = F;
@@ -447,9 +453,9 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 	@Override
 	public void readFromNBT(NBTTagCompound aNBT) {
 		super.readFromNBT(aNBT);
-		// 保证服务端的初始不透明度一定是正确的
-		if (worldObj != null) {
-			if (isServerSide() && this instanceof IMTE_GetLightOpacity) updateLightOpacityMark();
+		// 仅服务端加入计划，因为不好加入世界加载和区块加载时的载入，为了避免客户端卡顿只向服务端加入计划（TODO，考虑看看世界加载和区块加载时的逻辑？）
+		if (isServerSide() && this instanceof ITEScheduledUpdate_CH) {
+			pushScheduled(T, (ITEScheduledUpdate_CH)this);
 			mMarkNBTFinished = T;
 		}
 	}

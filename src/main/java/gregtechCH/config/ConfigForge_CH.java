@@ -2,15 +2,14 @@ package gregtechCH.config;
 
 import gregapi.config.Config;
 import static gregapi.data.CS.*;
+import static gregtech.interfaces.asm.LO_CH.isEnableAsmBlockGtLightOpacity;
 
 import gregapi.util.UT;
 import gregtechCH.data.CS_CH.*;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * @author CHanzy
@@ -95,7 +94,7 @@ public class ConfigForge_CH {
         DATA_GTCH.mixBaseRatio = Math.min(1.0F, Math.max((float)ConfigsGTCH.GTCH.get(ConfigCategories_CH.colour_CH, "colour_mix_base_ratio_(gt6_0.0)", 0.5), 0.0F));
         DATA_GTCH.mixPaintRatio = Math.min(1.0F, Math.max((float)ConfigsGTCH.GTCH.get(ConfigCategories_CH.colour_CH, "colour_mix_paint_ratio_(gt6_1.0)", 0.15), 0.0F));
 
-        DATA_GTCH.disableGTBlockLightOpacity = ConfigsGTCH.GTCH.get(ConfigCategories_CH.optimize_CH, "disable_GT_block_lightopacity_(gt6_?)",  F);
+        DATA_GTCH.disableGTBlockLightOpacity = isEnableAsmBlockGtLightOpacity() ? ConfigsGTCH.GTCH.get(ConfigCategories_CH.optimize_CH, "disable_GT_block_lightopacity_(gt6_?)",  F) : T; // 对于禁用了 ASM 的情况直接禁用掉 GT 方块的不透光度
 
         DATA_GTCH.disableGTRerender         = ConfigsGTCH.GTCH.get(ConfigCategories_CH.optimize_CH, "disable_GT_rerender_(gt6_false)",  F);
         DATA_GTCH.rerenderAll               = ConfigsGTCH.GTCH.get(ConfigCategories_CH.optimize_CH, "rerender_all_(gt6_true)",  F);

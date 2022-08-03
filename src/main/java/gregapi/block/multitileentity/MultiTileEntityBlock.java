@@ -42,7 +42,6 @@ import gregapi.tileentity.inventories.ITileEntityBookShelf;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
-import gregtechCH.block.IBlockTELightOpacity_CH;
 import gregtechCH.tileentity.ITEAfterUpdateRender_CH;
 import gregtechCH.util.WD_CH;
 import mekanism.api.MekanismAPI;
@@ -51,6 +50,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -90,7 +90,7 @@ import static gregtechCH.config.ConfigForge_CH.DATA_GTCH;
 , @Optional.Interface(iface = "vazkii.botania.api.mana.IManaTrigger", modid = ModIDs.BOTA)
 })
 @SuppressWarnings("deprecation")
-public class MultiTileEntityBlock extends Block implements IBlockTELightOpacity_CH, IBlock, IItemGT, IBlockDebugable, IBlockErrorable, IBlockOnWalkOver, IBlockSealable, IOxygenReliantBlock, IPaintableBlock, IBlockSyncDataAndCoversAndIDs, IRenderedBlock, ITileEntityProvider, IBlockToolable, IBlockRetrievable, IBlockMaterial, IManaTrigger {
+public class MultiTileEntityBlock extends Block implements IBlock, IItemGT, IBlockDebugable, IBlockErrorable, IBlockOnWalkOver, IBlockSealable, IOxygenReliantBlock, IPaintableBlock, IBlockSyncDataAndCoversAndIDs, IRenderedBlock, ITileEntityProvider, IBlockToolable, IBlockRetrievable, IBlockMaterial, IManaTrigger {
 	private static final Map<String, MultiTileEntityBlock> MULTITILEENTITYBLOCKMAP = new HashMap<>();
 	
 	private final int mHarvestLevelOffset, mHarvestLevelMinimum, mHarvestLevelMaximum;
@@ -163,9 +163,11 @@ public class MultiTileEntityBlock extends Block implements IBlockTELightOpacity_
 		if (aTileEntity == null || !aTileEntity.shouldRefresh(this, aBlock, aMetaData, aMetaData, aWorld, aX, aY, aZ)) return;
 		if (aTileEntity instanceof IMTE_BreakBlock && ((IMTE_BreakBlock)aTileEntity).breakBlock()) return;
 		if (aTileEntity instanceof IMTE_HasMultiBlockMachineRelevantData && ((IMTE_HasMultiBlockMachineRelevantData)aTileEntity).hasMultiBlockMachineRelevantData()) ITileEntityMachineBlockUpdateable.Util.causeMachineUpdate(aWorld, aX, aY, aZ, this, (byte)aMetaData, T);
+		// GTCH, 移除方块时需要重置不透光度，在这里添加这个逻辑，无论实体是否真正有修改不透光度
+		if (WD_CH.isServerSide(aWorld)) WD_CH.resetBlockGTLightOpacity(aWorld, aX, aY, aZ);
 		aWorld.removeTileEntity(aX, aY, aZ);
 	}
-	
+
 	@Override
 	public MapColor getMapColor(int aMeta) {
 		return mMapColor == null ? super.getMapColor(aMeta) : mMapColor;
@@ -327,21 +329,13 @@ public class MultiTileEntityBlock extends Block implements IBlockTELightOpacity_
 
 
 
-	// GTCH, 使用扩展 Metadata 的方式来实现存储可变不透明度
-	private final Map<Integer, Short> mMetaTELightOpacity = new HashMap<>();
-	// 由于是 hashmap，加锁防止并行写入出现问题
-	@Override public final synchronized void setTELightOpacity(int aMeta, @NotNull IMTE_GetLightOpacity aTE) {
-		if (DATA_GTCH.disableGTBlockLightOpacity) return;
-		mMetaTELightOpacity.put(aMeta, UT.Code.bind8(aTE.getLightOpacity()));
-	}
 	@Override public final int getLightOpacity(IBlockAccess aWorld, int aX, int aY, int aZ) {
 		if (DATA_GTCH.disableGTBlockLightOpacity) return super.getLightOpacity(aWorld, aX, aY, aZ); // 添加一个直接全部禁用的选项，来从根本直接解决问题
 
 		TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ);
-		int tMate = aWorld.getBlockMetadata(aX, aY, aZ);
-		Short tTELightOpacity = mMetaTELightOpacity.get(tMate);
+		Short tTELightOpacity = WD_CH.getBlockGTLightOpacity(aWorld, aX, aY, aZ); // 尝试获取存储的不透光度
 		if (aTileEntity instanceof IMTE_GetLightOpacity)
-			tTELightOpacity = UT.Code.bind8(((IMTE_GetLightOpacity)aTileEntity).getLightOpacity());
+			tTELightOpacity = UT.Code.bind8(((IMTE_GetLightOpacity)aTileEntity).getLightOpacity()); // 如果实体未被卸载则优先实体的值
 		return (tTELightOpacity!=null) ? tTELightOpacity : super.getLightOpacity(aWorld, aX, aY, aZ);
 	}
 	// 亮度其实没有这个问题，直接用默认的亮度逻辑即可

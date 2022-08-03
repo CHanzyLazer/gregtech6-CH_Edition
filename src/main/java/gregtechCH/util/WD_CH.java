@@ -5,14 +5,16 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.GT_API;
 import gregapi.util.UT;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.ChunkCache;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.NibbleArray;
+import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.event.world.WorldEvent;
 
 import java.util.HashMap;
@@ -20,6 +22,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import static gregapi.data.CS.*;
+import static gregtech.interfaces.asm.LO_CH.*;
 import static gregtechCH.threads.ThreadPools.RENDER_THREAD;
 import static gregtechCH.config.ConfigForge_CH.*;
 
@@ -45,7 +48,7 @@ public class WD_CH {
     public static void doChunkRerender(long aTimer) {
         switch (DATA_GTCH.rerenderTickList[(int)(aTimer%DATA_GTCH.rerenderTickList.length)]) {
         case INIT:
-            sPlayer = Minecraft.getMinecraft().thePlayer;
+            sPlayer = GT_API.api_proxy.getThePlayer();
             if (sPlayer!=null && sUpdated) {
                 RENDER_THREAD.execute(new FormRenderList());
                 sUpdated = F;
@@ -170,7 +173,7 @@ public class WD_CH {
     @SideOnly(Side.CLIENT) private static final LinkedList<Runnable> sMainChunkRenderList = new LinkedList<>();
     @SideOnly(Side.CLIENT) private static final LinkedList<Runnable> sAroundChunkRenderList = new LinkedList<>();
     // 记录玩家，保证玩家一致
-    @SideOnly(Side.CLIENT) private static EntityClientPlayerMP sPlayer = null;
+    @SideOnly(Side.CLIENT) private static EntityPlayer sPlayer = null;
     // 记录是否成功更新，没有则不能刷新下次渲染队列
     @SideOnly(Side.CLIENT) private static boolean sUpdated = T;
     // 清空的接口
@@ -208,42 +211,72 @@ public class WD_CH {
         }
     }
 
-    // （弃用，过于麻烦，改用只标记 dirty 但不添加更新来优化）暂定的客户端调用的仅单方块渲染更新
-//    @SideOnly(Side.CLIENT)
-//    public static void updateBlockRenderer(IBlockAccess aWorld, int aX, int aY, int aZ) {
-//        ChunkCache tChunkCache = new ChunkCache((World)aWorld, aX, aY, aZ, aX, aY, aZ, 1);
-//        RenderBlocks tRenderBlocks = new RenderBlocks(tChunkCache);
-//        Block block = tChunkCache.getBlock(aX, aY, aZ);
+    // 存储的 0-15 对应的不透光度值
+    public static final Short[] LIGHT_OPACITY_ARRAY = {null, LIGHT_OPACITY_NONE, LIGHT_OPACITY_LEAVES, 2, LIGHT_OPACITY_WATER, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, LIGHT_OPACITY_MAX};
+    // 不透光度对应的存储值
+    public static byte getStoredValueLightOpacity(short aLightOpacity) {
+        if (aLightOpacity >= 0 && aLightOpacity <= 13) return (byte)(aLightOpacity+1);
+        if (aLightOpacity > 13) return 15;
+        return 0;
+    }
+    // 方便的获取 GT 方块存储的不透光度的接口，没有存储则返回 null
+    public static Short getBlockGTLightOpacity(IBlockAccess aWorld, int aX, int aY, int aZ) {
+        // 没有开启 ASM 时一定获取不到不透光度
+        if (!isEnableAsmBlockGtLightOpacity()) return null;
+        // 非法输入检测
+        if (aX < -30000000 || aZ < -30000000 || aX >= 30000000 || aZ >= 30000000 || aY < 0 || aY >= 256) return null;
+        ExtendedBlockStorage tEBS = null;
+        // 可能需要分情况讨论，一般都是这个最常见的 World 的情况
+        if (aWorld instanceof World) {
+            tEBS = ((World)aWorld).getChunkFromBlockCoords(aX, aZ).getBlockStorageArray()[aY>>4];
+        } else
+        // ChunkCache 的情况
+        if (aWorld instanceof ChunkCache) {
+            Chunk tChunk = UT_CH.Hack.getChunk((ChunkCache)aWorld, aX, aZ);
+            if (tChunk != null) tEBS = tChunk.getBlockStorageArray()[aY>>4];
+        }
 
-//        for (Object tWorldObj : UT_CH.Hack.getWorldAccesses((World)aWorld)) if (tWorldObj instanceof RenderGlobal) {
-//            WorldRenderer tWorldRenderer = UT_CH.Hack.getWorldRenderer(((RenderGlobal)tWorldObj), aX, aY, aZ);
-//            if (tWorldRenderer != null) {
-//                if (tWorldRenderer.needsUpdate) continue; // 如果需要更新则走原版的更新
-//                tWorldRenderer.updateRenderer(Minecraft.getMinecraft().thePlayer);
-//                net.minecraftforge.client.ForgeHooksClient.setWorldRendererRB(tRenderBlocks);
-//
-//                for (int tPass = 0; tPass < 2; ++tPass) {
-//                    GL11.glPushMatrix();
-//                    GL11.glTranslatef(tWorldRenderer.posXClip, tWorldRenderer.posYClip, tWorldRenderer.posZClip);
-//                    float tScale = 1.000001F;
-//                    GL11.glTranslatef(-8.0F, -8.0F, -8.0F);
-//                    GL11.glScalef(tScale, tScale, tScale);
-//                    GL11.glTranslatef(8.0F, 8.0F, 8.0F);
-//                    net.minecraftforge.client.ForgeHooksClient.onPreRenderWorld(tWorldRenderer, tPass);
-//                    Tessellator.instance.startDrawingQuads();
-//                    Tessellator.instance.setTranslation((double)(-tWorldRenderer.posX), (double)(-tWorldRenderer.posY), (double)(-tWorldRenderer.posZ));
-//
-//                    FMLRenderAccessLibrary.renderWorldBlock(tRenderBlocks, aWorld, aX, aY, aZ, block, block.getRenderType());
-//
-//                    EntityLivingBase tPlayer = Minecraft.getMinecraft().thePlayer;
-//                    if (tPass == 1 && tPlayer != null) Tessellator.instance.addVertex((float)tPlayer.posX, (float)tPlayer.posY, (float)tPlayer.posZ);
-//                    Tessellator.instance.draw();
-//                    net.minecraftforge.client.ForgeHooksClient.onPostRenderWorld(tWorldRenderer, tPass);
-//                    GL11.glPopMatrix();
-//                    Tessellator.instance.setTranslation(0.0D, 0.0D, 0.0D);
-//                }
-//                net.minecraftforge.client.ForgeHooksClient.setWorldRendererRB(null);
-//            }
-//        }
-//    }
+        // 最后获取结果
+        if (tEBS != null) {
+            NibbleArray tNA = getLightOpacityNA(tEBS);
+            if (tNA != null) return LIGHT_OPACITY_ARRAY[tNA.get(aX&15, aY&15, aZ&15)];
+        }
+        return null;
+    }
+    // 方便的设置 GT 方块不透光的接口，直接在 TE 中调用因此直接输入 World 即可，建议只在服务端调用
+    public static void setBlockGTLightOpacity(World aWorld, int aX, int aY, int aZ, short aValue) {
+        // 没有开启 ASM 时一定不能存储
+        if (!isEnableAsmBlockGtLightOpacity()) return;
+        // 非法输入检测
+        if (aX < -30000000 || aZ < -30000000 || aX >= 30000000 || aZ >= 30000000 || aY < 0 || aY >= 256) return;
+        // 执行存储
+//        OUT.println("set LO at ("+aX+", "+aY+", "+aZ+") to "+aValue+" start"); // DEBUG
+
+        byte tStoredValue = getStoredValueLightOpacity(aValue);
+        ExtendedBlockStorage tEBS = aWorld.getChunkFromBlockCoords(aX, aZ).getBlockStorageArray()[aY>>4];
+        if (tEBS == null) return; // 不知为何没有 EBS（没有方块或者其他情况，不处理）
+        NibbleArray tNA = getLightOpacityNA(tEBS);
+        if (tNA == null && tStoredValue == 0) return; // 没有数据并且设置值为 0 的情况，不需要进行存储
+        if (tNA == null) {tNA = createLightOpacityNA(); initLightOpacityNA(tEBS, tNA);} // 如果不为零且没有数据，则需要初始化数据
+        tNA.set(aX&15, aY&15, aZ&15, tStoredValue); // 存储数据
+
+//        OUT.println("set LO at ("+aX+", "+aY+", "+aZ+") to "+aValue+" end"); // DEBUG
+    }
+    // 方便的重置 GT 方块的不透光度，用于在方块破坏时调用
+    public static void resetBlockGTLightOpacity(World aWorld, int aX, int aY, int aZ) {
+        // 没有开启 ASM 时一定不能存储
+        if (!isEnableAsmBlockGtLightOpacity()) return;
+        // 非法输入检测
+        if (aX < -30000000 || aZ < -30000000 || aX >= 30000000 || aZ >= 30000000 || aY < 0 || aY >= 256) return;
+        // 执行存储
+//        OUT.println("reset LO at ("+aX+", "+aY+", "+aZ+") start"); // DEBUG
+
+        ExtendedBlockStorage tEBS = aWorld.getChunkFromBlockCoords(aX, aZ).getBlockStorageArray()[aY>>4];
+        if (tEBS == null) return; // 不知为何没有 EBS（没有方块或者其他情况，不处理）
+        NibbleArray tNA = getLightOpacityNA(tEBS);
+        if (tNA == null) return; // 没有数据的情况不需要进行重置
+        tNA.set(aX&15, aY&15, aZ&15, 0); // 设为 0 来清除数据
+
+//        OUT.println("reset LO at ("+aX+", "+aY+", "+aZ+") end"); // DEBUG
+    }
 }

@@ -27,6 +27,7 @@ import gregapi.network.INetworkHandler;
 import gregapi.network.IPacket;
 import gregapi.tileentity.ITileEntitySynchronising;
 import gregapi.util.WD;
+import gregtechCH.tileentity.ITEScheduledUpdate_CH;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 
@@ -35,7 +36,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
  * 
  * TileEntity with Network Code
  */
-public abstract class TileEntityBase03TicksAndSync extends TileEntityBase02AdjacentTEBuffer implements ITileEntitySynchronising {
+public abstract class TileEntityBase03TicksAndSync extends TileEntityBase02AdjacentTEBuffer implements ITEScheduledUpdate_CH, ITileEntitySynchronising {
 	/** Gets set if/when needed. */
 	public UUID mOwner = null;
 	

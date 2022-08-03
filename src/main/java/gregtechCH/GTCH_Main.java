@@ -1,7 +1,5 @@
 package gregtechCH;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.tileentity.ITileEntityErrorable;
 import gregtechCH.config.ConfigJson_CH;
 import gregtechCH.data.CS_CH;
@@ -10,7 +8,10 @@ import gregtechCH.tileentity.ITEScheduledUpdate_CH;
 import gregtechCH.util.WD_CH;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 import static gregapi.data.CS.*;
 
@@ -28,7 +29,6 @@ public class GTCH_Main {
         OUT.println(getModNameForLog() + ": PreInit-Phase started!");
 
         ConfigJson_CH.initJsonFile();
-        CS_CH.initCS_CH();
 
         OUT.println(getModNameForLog() + ": PreInit-Phase finished!");
         OUT.println(getModNameForLog() + ": ======================");
@@ -76,16 +76,14 @@ public class GTCH_Main {
 
     // 实现自用的实体计划任务 api，服务端和客户端通用
     // 不使用 greg 自带的用来防止相互干扰
-    // 支持自动延长计划，使用 LinkedList 来记录每 tick 需要更新的计划任务，每次更新需要移除开头的更新实体组
+    // 使用 Set 来支持自动排除已有的计划
     // 客户端和服务端应该必须手动使用的不同的数据（java 并行不是 mpi）
-    private final static int MAX_TICK_SCHEDULED_UPDATER = 16; // 每 tick 最多的计划数
     private final static LinkedList<Set<ITEScheduledUpdate_CH>> TE_SCHEDULED_UPDATERS_LIST_SERVER = new LinkedList<>();
     private final static LinkedList<Set<ITEScheduledUpdate_CH>> TE_SCHEDULED_UPDATERS_LIST_CLIENT = new LinkedList<>();
     public static void pushScheduled(boolean aIsServerSide, ITEScheduledUpdate_CH aScheduleUpdater) {
         LinkedList<Set<ITEScheduledUpdate_CH>> tUpdatersList = aIsServerSide?TE_SCHEDULED_UPDATERS_LIST_SERVER:TE_SCHEDULED_UPDATERS_LIST_CLIENT;
         synchronized(aIsServerSide?TE_SCHEDULED_UPDATERS_LIST_SERVER:TE_SCHEDULED_UPDATERS_LIST_CLIENT) {
-            if (tUpdatersList.isEmpty() || tUpdatersList.getLast().size() >= MAX_TICK_SCHEDULED_UPDATER)
-                tUpdatersList.addLast(new HashSet<ITEScheduledUpdate_CH>());
+            if (tUpdatersList.isEmpty()) tUpdatersList.addLast(new LinkedHashSet<ITEScheduledUpdate_CH>()); // 不再限制每 tick 的任务数
             tUpdatersList.getLast().add(aScheduleUpdater);
         }
     }
@@ -101,7 +99,7 @@ public class GTCH_Main {
         // 遍历执行
         for (ITEScheduledUpdate_CH tTileEntity : tScheduledUpdatersDo) {
             try {
-                tTileEntity.onScheduledUpdate(aIsServerSide);
+                tTileEntity.onScheduledUpdate_CH(aIsServerSide);
             } catch(Throwable e) {
                 if (tTileEntity instanceof ITileEntityErrorable) ((ITileEntityErrorable)tTileEntity).setError("GTCH: Scheduled TileEntity Update - " + e);
                 e.printStackTrace(ERR);

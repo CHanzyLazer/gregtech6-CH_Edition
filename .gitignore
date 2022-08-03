@@ -64,6 +64,9 @@
 # Wiki
 !/wiki/*
 
+# local libs
+!/dirtyLibs/*
+
 # OmniOcular
 !/.OmniOcular/*
 

@@ -54,6 +54,7 @@ public class GT_ASM implements IFMLLoadingPlugin {
 	@Override @SuppressWarnings("resource")
 	public void injectData(Map<String, Object> data) {
 		location = (File)data.get("coremodLocation"); // Location of the gt6 jar
+		GT_ASM_UT.OBFUSCATED = (Boolean)data.get("runtimeDeobfuscationEnabled"); // 比较正规的途径获取是否有反混淆
 		ASMConfig config = new ASMConfig((File)data.get("mcLocation"));
 		// If it's not LaunchClassLoader then a lot of other things will already be dying too
 		final LaunchClassLoader tClassLoader = (LaunchClassLoader)Thread.currentThread().getContextClassLoader();
@@ -105,6 +106,7 @@ public class GT_ASM implements IFMLLoadingPlugin {
 			transformers.put(Railcraft_RemoveBoreSpam.class.getName(), true);
 			transformers.put(Technomancy_ExtremelySlowLoadFix.class.getName(), true);
 			transformers.put(Thaumcraft_AspectLagFix.class.getName(), true);
+			transformers.put(Minecraft_LightOpacity_CH.class.getName(), true);
 
 			mclocation = new File(mclocation, "/config/gregtech");
 			mclocation.mkdirs();

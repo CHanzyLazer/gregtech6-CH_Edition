@@ -449,6 +449,7 @@ public class MultiTileEntityCoin extends TileEntityBase04MultiTileEntities imple
 	}
 	
 	@Override public int getLightOpacity() {return LIGHT_OPACITY_WATER;}
+	@SideOnly(Side.CLIENT) @Override public int colorMultiplier() {return mMaterial==null?UNCOLORED:UT.Code.getRGBInt(mMaterial.fRGBaSolid);}
 	
 	@Override public AxisAlignedBB getCollisionBoundingBoxFromPool() {return box(PX_P[ 2], PX_P[ 2], PX_P[ 2], PX_N[ 2], PX_N[ 2], PX_N[ 2]);}
 	@Override public AxisAlignedBB getSelectedBoundingBoxFromPool () {return box(PX_P[ 0], PX_P[ 0], PX_P[ 0], PX_N[ 0], PX_N[14], PX_N[ 0]);}

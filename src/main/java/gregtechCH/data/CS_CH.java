@@ -22,6 +22,23 @@ public class CS_CH {
 
     // 只有 RGB 值的转为 RGBa 加上此值可以比较保险
     public static final int ALPHA_COLOR = 0xff000000;
+    // 记录一些方块的颜色
+    public static final int
+              COLOR_BEDROCK          = 0x333333
+            , COLOR_COBBLESTONE      = 0x6e6e6e
+            , COLOR_OBSIDIAN         = 0x1e182b
+            , COLOR_GLOWSTONE        = 0x726f49
+            , COLOR_END_PORTAL_FRAME = 0x427367
+            , COLOR_GRASS            = 0x426b27
+            , COLOR_SANDWICH         = 0xf3d5ae
+            , COLOR_LOG              = 0x6d5837
+            , COLOR_WOOD             = 0x926633
+            , COLOR_STONE            = 0x7f7f7f
+            , COLOR_SAND             = 0xddd5a0
+            , COLOR_NETHERRACK       = 0xa65959
+            , COLOR_END_STONE        = 0xebf8b6
+            , COLOR_GREG_O_LANTERN   = 0xe3901d
+            ;
     // 事先计算的一些方块的颜色，可以避免调用时频繁计算颜色值
     public static final int[] DYES_INT_Asphalt  = new int[DYES_INT.length];
     public static final int[] DYES_INT_CFoam    = new int[DYES_INT.length];

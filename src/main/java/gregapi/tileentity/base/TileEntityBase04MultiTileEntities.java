@@ -22,6 +22,8 @@ package gregapi.tileentity.base;
 import static gregapi.data.CS.*;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.block.multitileentity.IMultiTileEntity.*;
 import gregapi.block.multitileentity.MultiTileEntityClassContainer;
 import gregapi.block.multitileentity.MultiTileEntityRegistry;
@@ -64,7 +66,7 @@ import net.minecraftforge.common.util.FakePlayer;
 /**
  * @author Gregorius Techneticies
  */
-public abstract class TileEntityBase04MultiTileEntities extends TileEntityBase03TicksAndSync implements ITEAfterUpdateRender_CH, IRenderedBlockObjectSideCheck, IRenderedBlockObject, IMTE_OnPainting, IMTE_OnNeighborBlockChange, IMTE_GetPickBlock, IMTE_OnRegistrationFirst, IMTE_RecolourBlock, IMTE_GetDrops, IMTE_OnBlockActivated, IMTE_ShouldSideBeRendered, IMTE_GetFlammability, IMTE_GetFireSpreadSpeed {
+public abstract class TileEntityBase04MultiTileEntities extends TileEntityBase03TicksAndSync implements IMTE_ColorMultiplier, ITEAfterUpdateRender_CH, IRenderedBlockObjectSideCheck, IRenderedBlockObject, IMTE_OnPainting, IMTE_OnNeighborBlockChange, IMTE_GetPickBlock, IMTE_OnRegistrationFirst, IMTE_RecolourBlock, IMTE_GetDrops, IMTE_OnBlockActivated, IMTE_ShouldSideBeRendered, IMTE_GetFlammability, IMTE_GetFireSpreadSpeed {
 	private short mMTEID = W, mMTERegistry = W;
 	private String mCustomName = null;
 	
@@ -250,7 +252,9 @@ public abstract class TileEntityBase04MultiTileEntities extends TileEntityBase03
 		if (paint(aRGB)) {updateClientData(T); causeBlockUpdate(); return T;}
 		return F;
 	}
-	
+ 	// 重写以更改方块的粒子特效颜色
+	@SideOnly(Side.CLIENT) @Override public int colorMultiplier() {return UNCOLORED;}
+
 	public boolean unpaint() {return F;}
 	public boolean isPainted() {return F;}
 	public void setIsPainted(boolean aIsPainted) {/**/}

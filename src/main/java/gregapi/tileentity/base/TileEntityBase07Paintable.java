@@ -151,6 +151,7 @@ public abstract class TileEntityBase07Paintable extends TileEntityBase06Covers i
 	@Override public void setIsPainted(boolean aIsPainted) {mIsPainted=aIsPainted;}
 	@Override public boolean paint(int aRGB) {if (aRGB!= mRGBPaint) {mRGBPaint =aRGB; mIsPainted=T; return T;} return F;}
 	@Override public int getPaint() {return mRGBPaint;}
+	@SideOnly(Side.CLIENT) @Override public int colorMultiplier() {return mRGBa;}
 	@Override public boolean canRecolorItem(ItemStack aStack) {return T;}
 	@Override public boolean canDecolorItem(ItemStack aStack) {return mIsPainted;}
 	@Override public boolean recolorItem(ItemStack aStack, int aRGB) {if (paint((isPainted() ? UT_CH.Code.mixRGBInt(getPaint(), aRGB) : aRGB) & ALL_NON_ALPHA_COLOR)) {UT.NBT.set(aStack, writeItemNBT(aStack.hasTagCompound() ? aStack.getTagCompound() : UT.NBT.make())); return T;} return F;}

@@ -4,8 +4,6 @@ import net.minecraft.client.Minecraft;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
-import static gregapi.data.CS.T;
-
 
 // 这里提供一些通用接口，部分借鉴 NotEnoughIDs 的写法
 public class GT_ASM_UT {

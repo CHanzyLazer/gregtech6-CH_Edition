@@ -129,6 +129,8 @@ public class MultiTileEntityMiniPortalTropics extends MultiTileEntityMiniPortal 
 	@Override public ITexture getPortalTexture() {return sTropicsPortal;}
 	@Override public ITexture getFrameTexture() {return sTropicsPortalFrame;}
 	@Override public ITexture getInactiveTexture() {return sTropicsPortalInactive;}
+
+	// TODO
 	
 	@Override public String getTileEntityName() {return "gt.multitileentity.portal.tropics";}
 }

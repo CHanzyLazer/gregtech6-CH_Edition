@@ -21,6 +21,8 @@ package gregapi.tileentity.misc;
 
 import static gregapi.data.CS.*;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_CanEntityDestroy;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetBlockHardness;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetCollisionBoundingBoxFromPool;
@@ -142,6 +144,7 @@ public abstract class MultiTileEntityPlaceable extends TileEntityBase03MultiTile
 	@Override public boolean canEntityDestroy(Entity aEntity) {return !(aEntity instanceof EntityDragon);}
 	
 	@Override public int getLightOpacity() {return LIGHT_OPACITY_LEAVES;}
+	@SideOnly(Side.CLIENT) @Override public int colorMultiplier() {return UT.Code.getRGBInt(mMaterial.fRGBaSolid);}
 	@Override public float getExplosionResistance2() {return 0;}
 	@Override public float getBlockHardness() {return 0.25F;}
 }

@@ -22,6 +22,9 @@ package gregapi.tileentity.notick;
 import static gregapi.data.CS.*;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import gregapi.block.multitileentity.IMultiTileEntity.IMTE_ColorMultiplier;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetDrops;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetPickBlock;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetStackFromBlock;
@@ -66,7 +69,7 @@ import net.minecraftforge.common.util.FakePlayer;
 /**
  * @author Gregorius Techneticies
  */
-public abstract class TileEntityBase03MultiTileEntities extends TileEntityBase02Sync implements ITEAfterUpdateRender_CH, IRenderedBlockObjectSideCheck, IRenderedBlockObject, IMTE_OnPainting, IMTE_GetPickBlock, IMTE_GetStackFromBlock, IMTE_OnRegistrationFirst, IMTE_RecolourBlock, IMTE_GetDrops, IMTE_OnBlockActivated, IMTE_ShouldSideBeRendered {
+public abstract class TileEntityBase03MultiTileEntities extends TileEntityBase02Sync implements IMTE_ColorMultiplier, ITEAfterUpdateRender_CH, IRenderedBlockObjectSideCheck, IRenderedBlockObject, IMTE_OnPainting, IMTE_GetPickBlock, IMTE_GetStackFromBlock, IMTE_OnRegistrationFirst, IMTE_RecolourBlock, IMTE_GetDrops, IMTE_OnBlockActivated, IMTE_ShouldSideBeRendered {
 	@Override
 	public void sendClientData(boolean aSendAll, EntityPlayerMP aPlayer) {
 		super.sendClientData(aSendAll, aPlayer);
@@ -196,6 +199,8 @@ public abstract class TileEntityBase03MultiTileEntities extends TileEntityBase02
 		if (paint(aRGB)) {updateClientData(T); causeBlockUpdate(); worldObj.markTileEntityChunkModified(xCoord, yCoord, zCoord, this); return T;}
 		return F;
 	}
+
+	@SideOnly(Side.CLIENT) @Override public int colorMultiplier() {return UNCOLORED;}
 	
 	public boolean unpaint() {return F;}
 	public boolean isPainted() {return F;}

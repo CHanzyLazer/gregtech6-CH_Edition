@@ -131,6 +131,8 @@ public class MultiTileEntityMiniPortalBetweenlands extends MultiTileEntityMiniPo
 	@Override public ITexture getPortalTexture() {return sBetweenlandsPortal;}
 	@Override public ITexture getFrameTexture() {return sBetweenlandsPortalFrame;}
 	@Override public ITexture getInactiveTexture() {return sBetweenlandsPortalInactive;}
+
+	// TODO
 	
 	@Override public String getTileEntityName() {return "gt.multitileentity.portal.betweenlands";}
 }

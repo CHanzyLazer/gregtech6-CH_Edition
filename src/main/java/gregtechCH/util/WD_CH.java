@@ -156,14 +156,14 @@ public class WD_CH {
 
     @SideOnly(Side.CLIENT)
     public static class ChunkRender implements Runnable {
-        private final RenderGlobal mRenderGlobal;
+        private final World mWorld;
         private final int mX, mY, mZ;
-        public ChunkRender(RenderGlobal aRenderGlobal, int aX, int aY, int aZ) {
-            mRenderGlobal = aRenderGlobal;
+        public ChunkRender(World aWorld, int aX, int aY, int aZ) {
+            mWorld = aWorld;
             mX = aX; mY = aY; mZ = aZ;
         }
         @Override public void run() {
-            mRenderGlobal.markBlocksForUpdate(mX, mY, mZ, mX, mY, mZ);
+            mWorld.markBlockRangeForRenderUpdate(mX, mY, mZ, mX, mY, mZ);
         }
     }
 
@@ -189,9 +189,9 @@ public class WD_CH {
     // 标记方块（所在区块）用于计划重新渲染
     @SideOnly(Side.CLIENT)
     public static <WorldType> void markBlockForRerender(WorldType aWorld, int aX, int aY, int aZ, boolean aImmediate) {
-        if (aWorld instanceof World) for (Object tWorldObj : UT_CH.Hack.getWorldAccesses((World)aWorld)) if (tWorldObj instanceof RenderGlobal) {
+        if (aWorld instanceof World) {
             ChunkCoordinates tCoord = new ChunkCoordinates(aX>>4, aY>>4, aZ>>4);
-            synchronized(sChunkRenderList) {sChunkRenderList.put(tCoord, new ChunkRender((RenderGlobal)tWorldObj, aX, aY, aZ));}
+            synchronized(sChunkRenderList) {sChunkRenderList.put(tCoord, new ChunkRender((World)aWorld, aX, aY, aZ));}
             if (aImmediate) {
                 Runnable tRender = checkAndGetRerender(tCoord);
                 if (tRender != null) tRender.run();

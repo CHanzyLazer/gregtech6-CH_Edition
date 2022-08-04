@@ -20,9 +20,12 @@
 package gregtech.tileentity.portals;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.COLOR_COBBLESTONE;
 
 import java.util.List;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.code.ArrayListNoNulls;
 import gregapi.data.LH;
 import gregapi.data.LH.Chat;
@@ -129,6 +132,8 @@ public class MultiTileEntityMiniPortalCW2Caveland extends MultiTileEntityMiniPor
 	public ITexture sCW2Portal = BlockTextureCopied.get(ST.block(MD.CW2, "caveland_portal", Blocks.portal), SIDE_ANY, 0, UNCOLOURED, F, T, T), sCW2PortalFrame = BlockTextureCopied.get(Blocks.mossy_cobblestone, SIDE_ANY, 0);
 	@Override public ITexture getPortalTexture() {return sCW2Portal;}
 	@Override public ITexture getFrameTexture() {return sCW2PortalFrame;}
+
+	@SideOnly(Side.CLIENT) @Override public int colorMultiplier() {return COLOR_COBBLESTONE;}
 	
 	@Override public String getTileEntityName() {return "gt.multitileentity.portal.caveland";}
 }

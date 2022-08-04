@@ -20,6 +20,8 @@
 package gregapi.block.multitileentity;
 
 import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.block.*;
 import gregapi.block.IBlockSyncData.IBlockSyncDataAndCoversAndIDs;
 import gregapi.block.multitileentity.IMultiTileEntity.*;
@@ -69,6 +71,7 @@ import net.minecraft.util.*;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.ForgeEventFactory;
@@ -257,8 +260,8 @@ public class MultiTileEntityBlock extends Block implements IBlock, IItemGT, IBlo
 	@Override public final boolean recolourBlock(World aWorld, int aX, int aY, int aZ, ForgeDirection aSide, int aColor) {TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ); return aTileEntity instanceof IMTE_RecolourBlock && ((IMTE_RecolourBlock)aTileEntity).recolourBlock(UT.Code.side(aSide), (byte)aColor);}
 	@Override public final boolean shouldCheckWeakPower(IBlockAccess aWorld, int aX, int aY, int aZ, int aSide) {TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ); return aTileEntity instanceof IMTE_ShouldCheckWeakPower ? ((IMTE_ShouldCheckWeakPower)aTileEntity).shouldCheckWeakPower(UT.Code.side(aSide)) : isNormalCube(aWorld, aX, aY, aZ);}
 	@Override public final boolean getWeakChanges(IBlockAccess aWorld, int aX, int aY, int aZ) {TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ); return aTileEntity instanceof IMTE_GetWeakChanges ? ((IMTE_GetWeakChanges)aTileEntity).getWeakChanges() : super.getWeakChanges(aWorld, aX, aY, aZ);}
-	@Override public final boolean addHitEffects(World aWorld, MovingObjectPosition aTarget, EffectRenderer aRenderer) {TileEntity aTileEntity = aWorld.getTileEntity(aTarget.blockX, aTarget.blockY, aTarget.blockZ); return aTileEntity instanceof IMTE_AddHitEffects && ((IMTE_AddHitEffects)aTileEntity).addHitEffects(aWorld, aTarget, aRenderer);}
-	@Override public final boolean addDestroyEffects(World aWorld, int aX, int aY, int aZ, int aMetaData, EffectRenderer aRenderer) {TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ); return aTileEntity instanceof IMTE_AddDestroyEffects && ((IMTE_AddDestroyEffects)aTileEntity).addDestroyEffects(aMetaData, aRenderer);}
+	@SideOnly(Side.CLIENT) @Override public final boolean addHitEffects(World aWorld, MovingObjectPosition aTarget, EffectRenderer aRenderer) {TileEntity aTileEntity = aWorld.getTileEntity(aTarget.blockX, aTarget.blockY, aTarget.blockZ); return aTileEntity instanceof IMTE_AddHitEffects && ((IMTE_AddHitEffects)aTileEntity).addHitEffects(aWorld, aTarget, aRenderer);}
+	@SideOnly(Side.CLIENT) @Override public final boolean addDestroyEffects(World aWorld, int aX, int aY, int aZ, int aMetaData, EffectRenderer aRenderer) {TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ); return aTileEntity instanceof IMTE_AddDestroyEffects && ((IMTE_AddDestroyEffects)aTileEntity).addDestroyEffects(aMetaData, aRenderer);}
 	@Override public final boolean shouldSideBeRendered(IBlockAccess aWorld, int aX, int aY, int aZ, int aSide) {TileEntity aTileEntity = aWorld.getTileEntity(aX-OFFX[aSide], aY-OFFY[aSide], aZ-OFFZ[aSide]); return aTileEntity instanceof IMTE_ShouldSideBeRendered ? ((IMTE_ShouldSideBeRendered)aTileEntity).shouldSideBeRendered(UT.Code.side(aSide)) : super.shouldSideBeRendered(aWorld, aX, aY, aZ, aSide);}
 	@Override public final void setBlockBoundsBasedOnState(IBlockAccess aWorld, int aX, int aY, int aZ) {TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ); if (aTileEntity instanceof IMTE_SetBlockBoundsBasedOnState) ((IMTE_SetBlockBoundsBasedOnState)aTileEntity).setBlockBoundsBasedOnState(this); else if (aTileEntity == null) setBlockBounds(-999, -999, -999, -998, -998, -998); else setBlockBounds(0, 0, 0, 1, 1, 1);}
 	@Override public final AxisAlignedBB getSelectedBoundingBoxFromPool(World aWorld, int aX, int aY, int aZ) {TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ); return aTileEntity == null ? AxisAlignedBB.getBoundingBox(-999, -999, -999, -998, -998, -998) : aTileEntity instanceof IMTE_GetSelectedBoundingBoxFromPool ? ((IMTE_GetSelectedBoundingBoxFromPool)aTileEntity).getSelectedBoundingBoxFromPool() : AxisAlignedBB.getBoundingBox(aX, aY, aZ, aX+1, aY+1, aZ+1);}
@@ -326,7 +329,8 @@ public class MultiTileEntityBlock extends Block implements IBlock, IItemGT, IBlo
 	@Override public final void onOxygenAdded  (World aWorld, int aX, int aY, int aZ) {TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ); if (aTileEntity instanceof IMTE_OnOxygenAdded  ) ((IMTE_OnOxygenAdded  )aTileEntity).onOxygenAdded  ();}
 	@Override public final void onOxygenRemoved(World aWorld, int aX, int aY, int aZ) {TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ); if (aTileEntity instanceof IMTE_OnOxygenRemoved) ((IMTE_OnOxygenRemoved)aTileEntity).onOxygenRemoved();}
 	@Override @Optional.Method(modid = ModIDs.BOTA) public final void onBurstCollision(vazkii.botania.api.internal.IManaBurst aMana, World aWorld, int aX, int aY, int aZ) {if (aWorld.isRemote) return; if (aMana.isFake() || !IL.BOTA_Paintslinger.equal(aMana.getSourceLens(), F, T) || !aMana.getSourceLens().hasTagCompound() || !aMana.getSourceLens().getTagCompound().hasKey("color") || aMana.getSourceLens().getTagCompound().getInteger("color") == -1) return; TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ); if (aTileEntity instanceof IMTE_OnPainting) ((IMTE_OnPainting)aTileEntity).onPainting(SIDE_UNKNOWN, (aMana.getColor() & 0x00ffffff));}
-
+	// GTCH, 使实体方块可以重写方块的附加颜色（主要是粒子特效的颜色）
+	@SideOnly(Side.CLIENT) @Override public int colorMultiplier(IBlockAccess aWorld, int aX, int aY, int aZ) {TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ); return aTileEntity instanceof IMTE_ColorMultiplier ? ((IMTE_ColorMultiplier)aTileEntity).colorMultiplier() : super.colorMultiplier(aWorld, aX, aY, aZ);}
 
 
 	@Override public final int getLightOpacity(IBlockAccess aWorld, int aX, int aY, int aZ) {

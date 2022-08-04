@@ -20,9 +20,12 @@
 package gregtech.tileentity.portals;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.COLOR_GRASS;
 
 import java.util.List;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.code.ArrayListNoNulls;
 import gregapi.data.LH;
 import gregapi.data.LH.Chat;
@@ -132,6 +135,8 @@ public class MultiTileEntityMiniPortalTwilight extends MultiTileEntityMiniPortal
 	@Override public ITexture getPortalTexture() {return sTwilightPortal;}
 	@Override public ITexture getFrameTexture() {return sTwilightPortalFrame;}
 	@Override public ITexture getInactiveTexture() {return sTwilightPortalInactive;}
+
+	@SideOnly(Side.CLIENT) @Override public int colorMultiplier() {return COLOR_GRASS;}
 	
 	@Override public String getTileEntityName() {return "gt.multitileentity.portal.twilight";}
 }

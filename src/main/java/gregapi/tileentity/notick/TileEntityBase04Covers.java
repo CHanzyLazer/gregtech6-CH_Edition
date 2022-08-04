@@ -346,7 +346,7 @@ public abstract class TileEntityBase04Covers extends TileEntityBase03MultiTileEn
 		
 		if (aBlockUpdate) causeBlockUpdate();
 		
-		updateClientData();
+		updateClientData(T);
 		
 		return checkIfCoversEmptyAndDeleteIfNeeded();
 	}

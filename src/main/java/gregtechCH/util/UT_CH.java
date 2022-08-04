@@ -10,6 +10,7 @@ import gregapi.render.IIconContainer;
 import gregapi.util.UT;
 import gregtechCH.data.CS_CH;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.MapColor;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.entity.Entity;
@@ -108,6 +109,15 @@ public class UT_CH {
                     -Math.sin(aPlayer.rotationYaw / 180.0D * Math.PI) * Math.cos(aPlayer.rotationPitch / 180.0D * Math.PI),
                     -Math.sin(aPlayer.rotationPitch / 180.0D * Math.PI),
                     Math.cos(aPlayer.rotationYaw / 180.0D * Math.PI) * Math.cos(aPlayer.rotationPitch / 180.0D * Math.PI));
+        }
+
+        // 直接遍历获取非空的 mapcolor 值
+        public static int getBlockMapColor(Block aBlock) {
+            for (int aMate=0; aMate<16; ++aMate) {
+                MapColor tMapColor = aBlock.getMapColor(aMate);
+                if (tMapColor != null) return tMapColor.colorValue;
+            }
+            return UNCOLORED;
         }
 
         public final static float RENDER_LENGTH = 0.01F;
@@ -233,6 +243,16 @@ public class UT_CH {
             return UT.Code.getRGBInt(tFrom);
         }
 
+        // 获取 overlay 之后的颜色值，用于估计粒子效果颜色
+        public static int getOverlayedRGB(int aRGBOrigin, int aRGBPaint) {
+            short[] tRGBArray = getRGBArray(getOverlayRGB(aRGBPaint));
+            float[] tRGB1 = {tRGBArray[0]/255F, tRGBArray[1]/255F, tRGBArray[2]/255F};
+            tRGBArray = getRGBArray(aRGBOrigin);
+            float[] tRGB2 = {tRGBArray[0]/255F, tRGBArray[1]/255F, tRGBArray[2]/255F};
+            tRGB2[0] *= tRGB1[0]; tRGB2[1] *= tRGB1[1]; tRGB2[2] *= tRGB1[2];
+            tRGBArray[0] = (short) Math.round(tRGB2[0]*255); tRGBArray[1] = (short) Math.round(tRGB2[1]*255); tRGBArray[2] = (short) Math.round(tRGB2[2]*255);
+            return UT.Code.getRGBInt(tRGBArray);
+        }
         // overlay 使用的颜色通用值
         public static int getOverlayRGB(int aRGBPaint) {
             // 使用按比例 RGB 混合白色的方法来限制染色深浅
@@ -515,6 +535,7 @@ public class UT_CH {
             }
         }
 
+        @Deprecated // 弃用，减少反射使用来增加稳定性
         @SuppressWarnings("rawtypes")
         public static List getWorldAccesses(World aWorld) {
             try {

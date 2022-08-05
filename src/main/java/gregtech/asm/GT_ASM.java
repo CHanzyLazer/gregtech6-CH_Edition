@@ -106,7 +106,8 @@ public class GT_ASM implements IFMLLoadingPlugin {
 			transformers.put(Railcraft_RemoveBoreSpam.class.getName(), true);
 			transformers.put(Technomancy_ExtremelySlowLoadFix.class.getName(), true);
 			transformers.put(Thaumcraft_AspectLagFix.class.getName(), true);
-			transformers.put(Minecraft_LightOpacity_CH.class.getName(), true);
+			transformers.put(Minecraft_LightOpacityFix_CH.class.getName(), true);
+			transformers.put(Minecraft_BlockParticleFix_CH.class.getName(), true);
 
 			mclocation = new File(mclocation, "/config/gregtech");
 			mclocation.mkdirs();

@@ -14,7 +14,7 @@ import static gregtech.asm.GT_ASM_UT.isObfuscated;
  * @author CHanzy
  * GTCH, 用来向区块中添加数据专门记录方块的不透光度（仅限GT的方块），来避免实体卸载造成的光照计算错误
  */
-public class Minecraft_LightOpacity_CH implements IClassTransformer  {
+public class Minecraft_LightOpacityFix_CH implements IClassTransformer  {
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] basicClass) {
 		// 向 ExtendedBlockStorage 中添加成员变量

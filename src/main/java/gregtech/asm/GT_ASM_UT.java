@@ -98,9 +98,15 @@ public class GT_ASM_UT {
         C_PlayerControllerMP("net/minecraft/client/multiplayer/PlayerControllerMP", "bje"),
         C_ItemInWorldManager("net/minecraft/server/management/ItemInWorldManager", "mx"),
         C_Player("net/minecraft/entity/player/EntityPlayer", "yz"),
+        C_Entity("net/minecraft/entity/Entity", "sa"),
 
-        M_getBlock(C_EBS, "getBlockByExtId", "a", "func_150819_a", "(III)"+toDesc(C_Block)),
-        M_setBlock(C_EBS, "func_150818_a", "a", null, "(III"+toDesc(C_Block)+")V"),
+        M_onEntityUpdate(C_Entity, "onEntityUpdate", "C", "func_70030_z", "()V"),
+        F_worldObj(C_Entity, "worldObj", "o", "field_70170_p", toDesc(C_World)),
+
+        M_getBlock(C_World, "getBlock", "a", "func_147439_a", "(III)"+toDesc(C_Block)),
+
+        M_EBS_getBlock(C_EBS, "getBlockByExtId", "a", "func_150819_a", "(III)"+toDesc(C_Block)),
+        M_EBS_setBlock(C_EBS, "func_150818_a", "a", null, "(III"+toDesc(C_Block)+")V"),
         M_getBlockLSBArray(C_EBS, "getBlockLSBArray", "g", "func_76658_g", "()[B"),
         M_getBlockMSBArray(C_EBS, "getBlockMSBArray", "i", "func_76660_i", "()"+toDesc(C_NA)),
         M_setBlockMSBArray(C_EBS, "setBlockMSBArray", "a", "func_76673_a", "("+toDesc(C_NA)+")V"),
@@ -133,6 +139,7 @@ public class GT_ASM_UT {
         M_GTReadNBT(C_GTASM_R, "readChunkFromNbt", null, null, "("+toDesc(C_EBS, C_NBT)+")V"),
         M_setLOData(C_GTASM_R, "setBlockGTLightOpacityData", null, null, "(["+toDesc(C_EBS)+"ZI[BI)I"),
         M_getLOData(C_GTASM_R, "getBlockGTLightOpacityData", null, null, "(["+toDesc(C_EBS)+"I[BI)I"),
+        M_spawnSprintingParticle(C_GTASM_R, "spawnSprintingParticle", null, null, "("+toDesc(C_Entity, C_World, C_Block)+"III)V"),
         F_GTLO(C_EBS, "blockGTLightOpacityArray", null, null, toDesc(C_NA));
 
         public final Name clazz; // 所属类

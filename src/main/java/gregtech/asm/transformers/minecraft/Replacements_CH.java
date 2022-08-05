@@ -1,9 +1,20 @@
 package gregtech.asm.transformers.minecraft;
 
+import gregapi.block.multitileentity.MultiTileEntityBlock;
+import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.EntityDiggingFX;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.NibbleArray;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
+import java.util.Random;
+
+import static gregapi.data.CS.ERR;
+import static gregapi.data.CS.RNGSUS;
 import static gregtech.interfaces.asm.LO_CH.*;
 
 /* This is a separate file so it class loads *while* minecraft loads,
@@ -68,5 +79,33 @@ public class Replacements_CH {
             aOffset += tNA.data.length;
         }
         return aOffset;
+    }
+
+
+    public static Random getRand(Entity aEntity) {
+        if (aEntity instanceof EntityLivingBase) return ((EntityLivingBase)aEntity).getRNG();
+        return RNGSUS;
+    }
+    // 将原本的奔跑粒子效果替换为如下逻辑，仅对 GT 方块生效
+    public static void spawnSprintingParticle(Entity aEntity, World aWorld, Block aBlock, int aX, int aY, int aZ) {
+        double tX = aEntity.posX + ((double)getRand(aEntity).nextFloat() - 0.5D) * (double)aEntity.width;
+        double tY = aEntity.boundingBox.minY + 0.1D;
+        double tZ = aEntity.posZ + ((double)getRand(aEntity).nextFloat() - 0.5D) * (double)aEntity.width;
+        double tVelX = -aEntity.motionX * 4.0D;
+        double tVelY = 1.5D;
+        double tVelZ = -aEntity.motionZ * 4.0D;
+        if (aBlock instanceof MultiTileEntityBlock) {
+            double tDisX = Minecraft.getMinecraft().renderViewEntity.posX - tX;
+            double tDisY = Minecraft.getMinecraft().renderViewEntity.posY - tY;
+            double tDisZ = Minecraft.getMinecraft().renderViewEntity.posZ - tZ;
+            if (tDisX*tDisX + tDisY*tDisY + tDisZ*tDisZ > 16.0D*16.0D) return;
+            try {
+                Minecraft.getMinecraft().effectRenderer.addEffect((new EntityDiggingFX(aWorld, tX, tY, tZ, tVelX, tVelY, tVelZ, aBlock, aWorld.getBlockMetadata(aX, aY, aZ))).applyColourMultiplier(aX, aY, aZ));
+            } catch (Exception e) {
+                e.printStackTrace(ERR);
+            }
+        } else {
+            aWorld.spawnParticle("blockcrack_" + Block.getIdFromBlock(aBlock) + "_" + aWorld.getBlockMetadata(aX, aY, aZ), tX, tY, tZ, tVelX, tVelY, tVelZ);
+        }
     }
 }

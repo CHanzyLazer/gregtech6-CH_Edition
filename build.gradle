@@ -194,6 +194,7 @@ dependencies {
 	compile "codechicken:CodeChickenCore:1.7.10-1.0.7.47:dev"
 	compile "codechicken:NotEnoughItems:1.7.10-1.0.5.120:dev"
 	compileOnly files("dirtyLibs/NotEnoughIDs-1.4.3.4.jar")
+	compileOnly files("dirtyLibs/journeymap-1.7.10-5.1.4p2-unlimited.jar")
 	compileOnly "inventorytweaks:InventoryTweaks:1.59-dev:deobf"
 	compileOnly "net.electricalage.eln:ElectricalAge-jrddunbr:1.16.3:dev"
 	compileOnly "net.sengir.forestry:forestry_1.7.10:4.2.16.64:dev"

@@ -1,28 +1,6 @@
-/**
- * Copyright (c) 2022 GregTech-6 Team
- *
- * This file is part of GregTech.
- *
- * GregTech is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * GregTech is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with GregTech. If not, see <http://www.gnu.org/licenses/>.
- */
-
-package gregtech.tileentity.sensors;
-
-import static gregapi.data.CS.*;
+package gregtechCH.tileentity.sensors;
 
 import gregapi.data.BI;
-import gregapi.data.LH;
 import gregapi.item.IItemReactorRod;
 import gregapi.old.Textures;
 import gregapi.render.IIconContainer;
@@ -32,19 +10,20 @@ import gregapi.util.ST;
 import gregapi.util.UT;
 import gregtech.tileentity.energy.reactors.MultiTileEntityReactorCore;
 import gregtech.tileentity.energy.reactors.MultiTileEntityReactorCore2x2;
+import gregtechCH.data.LH_CH;
 import net.minecraft.tileentity.TileEntity;
 
-/**
- * @author Gregorius Techneticies, Erik3003
- */
-public class MultiTileEntityGeigerCounter extends MultiTileEntitySensorTE {
-	static {LH.add("gt.tooltip.sensor.geigercounter", "Measures Neutron Energy Levels");}
-	@Override public String getSensorDescription() {return LH.get("gt.tooltip.sensor.geigercounter");}
+import static gregapi.data.CS.DYE_Purple;
+
+
+public class MultiTileEntityGeigerCounterKilo extends MultiTileEntitySensorTE {
+	static {LH_CH.add("gt.tooltip.sensor.geigercounterkilo", "Measures Neutron Energy Levels (In Thousands)");}
+	@Override public String getSensorDescription() {return LH_CH.get("gt.tooltip.sensor.geigercounterkilo");}
 	
 	@Override
 	public long getCurrentValue(DelegatorTileEntity<TileEntity> aDelegator) {
 		if (aDelegator.mTileEntity instanceof MultiTileEntityReactorCore) {
-			return UT.Code.sum(((MultiTileEntityReactorCore)aDelegator.mTileEntity).oNeutronCounts);
+			return UT.Code.sum(((MultiTileEntityReactorCore)aDelegator.mTileEntity).oNeutronCounts)/1000;
 		}
 		return 0;
 	}
@@ -60,13 +39,13 @@ public class MultiTileEntityGeigerCounter extends MultiTileEntitySensorTE {
 				tMaximum += TE.slotHas(2) && ST.item(TE.slot(2)) instanceof IItemReactorRod ? ((IItemReactorRod) ST.item(TE.slot(2))).getReactorRodNeutronMaximum(TE, 2, TE.slot(2)) : 0;
 				tMaximum += TE.slotHas(3) && ST.item(TE.slot(3)) instanceof IItemReactorRod ? ((IItemReactorRod) ST.item(TE.slot(3))).getReactorRodNeutronMaximum(TE, 3, TE.slot(3)) : 0;
 			}
-			return tMaximum;
+			return tMaximum/1000;
 		}
 		return 0;
 	}
 	
 	@Override public short[] getSymbolColor() {return DYE_Purple;}
-	@Override public IIconContainer getSymbolIcon() {return BI.CHAR_NEUTRON;}
+	@Override public IIconContainer getSymbolIcon() {return BI.CHAR_KILONEUTRON;}
 	@Override public IIconContainer getTextureFront() {return sTextureFront;}
 	@Override public IIconContainer getTextureBack () {return sTextureBack;}
 	@Override public IIconContainer getTextureSide () {return sTextureSide;}
@@ -75,12 +54,12 @@ public class MultiTileEntityGeigerCounter extends MultiTileEntitySensorTE {
 	@Override public IIconContainer getOverlaySide () {return sOverlaySide;}
 	
 	public static IIconContainer
-	sTextureFront   = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/geigercounter/colored/front"),
-	sTextureBack    = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/geigercounter/colored/back"),
-	sTextureSide    = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/geigercounter/colored/side"),
-	sOverlayFront   = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/geigercounter/overlay/front"),
-	sOverlayBack    = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/geigercounter/overlay/back"),
-	sOverlaySide    = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/geigercounter/overlay/side");
+	sTextureFront   = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/geigercounterkilo/colored/front"),
+	sTextureBack    = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/geigercounterkilo/colored/back"),
+	sTextureSide    = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/geigercounterkilo/colored/side"),
+	sOverlayFront   = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/geigercounterkilo/overlay/front"),
+	sOverlayBack    = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/geigercounterkilo/overlay/back"),
+	sOverlaySide    = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/geigercounterkilo/overlay/side");
 	
-	@Override public String getTileEntityName() {return "gt.multitileentity.redstone.sensors.geigercounter";}
+	@Override public String getTileEntityName() {return "gt.multitileentity.redstone.sensors.geigercounterkilo";}
 }

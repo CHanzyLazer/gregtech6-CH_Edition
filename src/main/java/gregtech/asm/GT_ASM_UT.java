@@ -92,6 +92,7 @@ public class GT_ASM_UT {
         C_PacketS21("net/minecraft/network/play/server/S21PacketChunkData", "gx"),
         C_PackedS21Ex("net/minecraft/network/play/server/S21PacketChunkData$Extracted", "gy"),
         C_World("net/minecraft/world/World", "ahb"),
+        C_WorldClient("net/minecraft/client/multiplayer/WorldClient", "bjf"),
         C_DataWatcher("net/minecraft/entity/DataWatcher", "te"),
         C_DataWatcherWO("net/minecraft/entity/DataWatcher$WatchableObject", "tf"),
         C_RenderGlobal("net/minecraft/client/renderer/RenderGlobal", "bma"),
@@ -104,6 +105,9 @@ public class GT_ASM_UT {
         F_worldObj(C_Entity, "worldObj", "o", "field_70170_p", toDesc(C_World)),
 
         M_getBlock(C_World, "getBlock", "a", "func_147439_a", "(III)"+toDesc(C_Block)),
+        M_WC_getBlock(C_WorldClient, "getBlock", "a", "func_147439_a", "(III)"+toDesc(C_Block)),
+        M_playAuxSFX(C_RenderGlobal, "playAuxSFX", "a", "func_72706_a", "("+toDesc(C_Player)+"IIIII)V"),
+        F_theWorld(C_RenderGlobal, "theWorld", "r", "field_72769_h", toDesc(C_WorldClient)),
 
         M_EBS_getBlock(C_EBS, "getBlockByExtId", "a", "func_150819_a", "(III)"+toDesc(C_Block)),
         M_EBS_setBlock(C_EBS, "func_150818_a", "a", null, "(III"+toDesc(C_Block)+")V"),
@@ -140,6 +144,7 @@ public class GT_ASM_UT {
         M_setLOData(C_GTASM_R, "setBlockGTLightOpacityData", null, null, "(["+toDesc(C_EBS)+"ZI[BI)I"),
         M_getLOData(C_GTASM_R, "getBlockGTLightOpacityData", null, null, "(["+toDesc(C_EBS)+"I[BI)I"),
         M_spawnSprintingParticle(C_GTASM_R, "spawnSprintingParticle", null, null, "("+toDesc(C_Entity, C_World, C_Block)+"III)V"),
+        M_spawnFallParticle(C_GTASM_R, "spawnFallParticle", null, null, "("+toDesc(C_World, C_Block)+"IIIDDD)V"),
         F_GTLO(C_EBS, "blockGTLightOpacityArray", null, null, toDesc(C_NA));
 
         public final Name clazz; // 所属类

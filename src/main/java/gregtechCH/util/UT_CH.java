@@ -535,7 +535,6 @@ public class UT_CH {
             }
         }
 
-        @Deprecated // 弃用，减少反射使用来增加稳定性
         @SuppressWarnings("rawtypes")
         public static List getWorldAccesses(World aWorld) {
             try {
@@ -546,7 +545,6 @@ public class UT_CH {
             }
         }
 
-        @Deprecated // 弃用，减少反射使用来增加稳定性
         public static WorldRenderer getWorldRenderer(RenderGlobal aRender, int aX, int aY, int aZ) {
             try {
                 WorldRenderer[] tWorldRenderers = ReflectionHelper.getPrivateValue(RenderGlobal.class, aRender, RENDER_WORLD_RENDERS);

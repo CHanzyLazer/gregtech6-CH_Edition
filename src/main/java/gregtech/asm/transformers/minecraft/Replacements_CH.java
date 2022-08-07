@@ -1,8 +1,10 @@
 package gregtech.asm.transformers.minecraft;
 
 import gregapi.block.multitileentity.MultiTileEntityBlock;
+import gregtechCH.util.WD_CH;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.EntityBlockDustFX;
 import net.minecraft.client.particle.EntityDiggingFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -95,17 +97,47 @@ public class Replacements_CH {
         double tVelY = 1.5D;
         double tVelZ = -aEntity.motionZ * 4.0D;
         if (aBlock instanceof MultiTileEntityBlock) {
-            double tDisX = Minecraft.getMinecraft().renderViewEntity.posX - tX;
-            double tDisY = Minecraft.getMinecraft().renderViewEntity.posY - tY;
-            double tDisZ = Minecraft.getMinecraft().renderViewEntity.posZ - tZ;
-            if (tDisX*tDisX + tDisY*tDisY + tDisZ*tDisZ > 16.0D*16.0D) return;
-            try {
-                Minecraft.getMinecraft().effectRenderer.addEffect((new EntityDiggingFX(aWorld, tX, tY, tZ, tVelX, tVelY, tVelZ, aBlock, aWorld.getBlockMetadata(aX, aY, aZ))).applyColourMultiplier(aX, aY, aZ));
-            } catch (Exception e) {
-                e.printStackTrace(ERR);
+            // 保证和原版的调用一致
+            if (WD_CH.isClientSide(aWorld)) {
+                Minecraft tMC = Minecraft.getMinecraft();
+                if (tMC != null && tMC.renderViewEntity != null && tMC.effectRenderer != null) {
+                    int tPS = tMC.gameSettings.particleSetting;
+                    if (tPS == 1 && aWorld.rand.nextInt(3) == 0) tPS = 2;
+                    if (tPS > 1) return; // 由设定禁用粒子效果
+                    double tDisX = Minecraft.getMinecraft().renderViewEntity.posX - tX;
+                    double tDisY = Minecraft.getMinecraft().renderViewEntity.posY - tY;
+                    double tDisZ = Minecraft.getMinecraft().renderViewEntity.posZ - tZ;
+                    if (tDisX*tDisX + tDisY*tDisY + tDisZ*tDisZ > 16.0D*16.0D) return;
+                    Minecraft.getMinecraft().effectRenderer.addEffect((new EntityDiggingFX(aWorld, tX, tY, tZ, tVelX, tVelY, tVelZ, aBlock, aWorld.getBlockMetadata(aX, aY, aZ))).applyColourMultiplier(aX, aY, aZ));
+                }
             }
         } else {
             aWorld.spawnParticle("blockcrack_" + Block.getIdFromBlock(aBlock) + "_" + aWorld.getBlockMetadata(aX, aY, aZ), tX, tY, tZ, tVelX, tVelY, tVelZ);
+        }
+    }
+    // 将原本的摔落粒子效果替换为如下逻辑，仅对 GT 方块生效
+    public static void spawnFallParticle(World aWorld, Block aBlock, int aX, int aY, int aZ, double aVelX, double aVelY, double aVelZ) {
+        // aVelX = d7; aVelY = d6; aVelZ = d8;
+        double tX = (float)aX + 0.5F;
+        double tY = (float)aY + 1.0F;
+        double tZ = (float)aZ + 0.5F;
+        if (aBlock instanceof MultiTileEntityBlock) {
+            // 保证和原版的调用一致
+            if (WD_CH.isClientSide(aWorld)) {
+                Minecraft tMC = Minecraft.getMinecraft();
+                if (tMC != null && tMC.renderViewEntity != null && tMC.effectRenderer != null) {
+                    int tPS = tMC.gameSettings.particleSetting;
+                    if (tPS == 1 && aWorld.rand.nextInt(3) == 0) tPS = 2;
+                    if (tPS > 1) return; // 由设定禁用粒子效果
+                    double tDisX = Minecraft.getMinecraft().renderViewEntity.posX - tX;
+                    double tDisY = Minecraft.getMinecraft().renderViewEntity.posY - tY;
+                    double tDisZ = Minecraft.getMinecraft().renderViewEntity.posZ - tZ;
+                    if (tDisX*tDisX + tDisY*tDisY + tDisZ*tDisZ > 16.0D*16.0D) return;
+                    Minecraft.getMinecraft().effectRenderer.addEffect((new EntityBlockDustFX(aWorld, tX, tY, tZ, aVelX, aVelY, aVelZ, aBlock, aWorld.getBlockMetadata(aX, aY, aZ))).applyColourMultiplier(aX, aY, aZ));
+                }
+            }
+        } else {
+            aWorld.spawnParticle("blockdust_" + Block.getIdFromBlock(aBlock) + "_" + aWorld.getBlockMetadata(aX, aY, aZ), tX, tY, tZ, aVelX, aVelY, aVelZ);
         }
     }
 }

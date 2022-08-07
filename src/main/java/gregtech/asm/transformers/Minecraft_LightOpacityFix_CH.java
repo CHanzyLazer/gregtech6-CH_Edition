@@ -74,7 +74,7 @@ public class Minecraft_LightOpacityFix_CH implements IClassTransformer  {
 					at = at.getNext();
 				}
 				if (at == null) {
-					GT_ASM.logger.warn("Reached `null` in `at` too soon!  No changes made, bailing!");
+					GT_ASM.logger.warn("Reached `null` in `at (0)` too soon!  No changes made, bailing!");
 					return GT_ASM.writeByteArraySelfReferenceFixup(classNode);
 				}
 				// 由于序号可能会发生变化，采用直接从源码中获取序号的方式
@@ -82,7 +82,7 @@ public class Minecraft_LightOpacityFix_CH implements IClassTransformer  {
 				int tNBTIdx = ((VarInsnNode)at.getPrevious()).var; // get var of nbttagcompound1
 				for (int i=0; i<4 && at!=null; ++i) at = at.getNext(); // 再向后移动四段（移动到此代码行行末尾）
 				if (at == null) {
-					GT_ASM.logger.warn("Reached `null` in `at` too soon!  No changes made, bailing!");
+					GT_ASM.logger.warn("Reached `null` in `at (1)` too soon!  No changes made, bailing!");
 					return GT_ASM.writeByteArraySelfReferenceFixup(classNode);
 				}
 				// 编辑插入的代码
@@ -101,7 +101,7 @@ public class Minecraft_LightOpacityFix_CH implements IClassTransformer  {
 					at = at.getNext();
 				}
 				if (at == null) {
-					GT_ASM.logger.warn("Reached `null` in `at` too soon!  No changes made, bailing!");
+					GT_ASM.logger.warn("Reached `null` in `at (0)` too soon!  No changes made, bailing!");
 					return GT_ASM.writeByteArraySelfReferenceFixup(classNode);
 				}
 				// 由于序号可能会发生变化，采用直接从源码中获取序号的方式
@@ -109,7 +109,7 @@ public class Minecraft_LightOpacityFix_CH implements IClassTransformer  {
 				int tNBTIdx = ((VarInsnNode)at.getPrevious()).var; 											 // get var of nbttagcompound1
 				for (int i=0; i<4 && at!=null; ++i) at = at.getNext(); // 再向后移动四段（移动到此代码行行末尾）
 				if (at == null) {
-					GT_ASM.logger.warn("Reached `null` in `at` too soon!  No changes made, bailing!");
+					GT_ASM.logger.warn("Reached `null` in `at (1)` too soon!  No changes made, bailing!");
 					return GT_ASM.writeByteArraySelfReferenceFixup(classNode);
 				}
 				// 编辑插入的代码
@@ -185,7 +185,7 @@ public class Minecraft_LightOpacityFix_CH implements IClassTransformer  {
 					at = at.getNext();
 				}
 				if (at == null) {
-					GT_ASM.logger.warn("Reached `null` in `at` too soon!  No changes made, bailing!");
+					GT_ASM.logger.warn("Reached `null` in `at (0)` too soon!  No changes made, bailing!");
 					return GT_ASM.writeByteArraySelfReferenceFixup(classNode);
 				}
 				int tEBSIdx = ((VarInsnNode)at.getNext()).var; // get var of aextendedblockstorage
@@ -200,14 +200,14 @@ public class Minecraft_LightOpacityFix_CH implements IClassTransformer  {
 					at = at.getPrevious();
 				}
 				if (at == null) {
-					GT_ASM.logger.warn("Reached `null` in `at` too soon!  No changes made, bailing!");
+					GT_ASM.logger.warn("Reached `null` in `at (1)` too soon!  No changes made, bailing!");
 					return GT_ASM.writeByteArraySelfReferenceFixup(classNode);
 				}
 				int tByteIdx = ((VarInsnNode)at.getNext().getNext().getNext()).var; // get var of abyte
 				int tJIdx    = ((VarInsnNode)at.getPrevious().getPrevious()).var;   // get var of j
 				for (int i=0; i<3 && at!=null; ++i) at = at.getPrevious(); // 再向前移动三段（移动到此代码行行首）
 				if (at == null) {
-					GT_ASM.logger.warn("Reached `null` in `at` too soon!  No changes made, bailing!");
+					GT_ASM.logger.warn("Reached `null` in `at (2)` too soon!  No changes made, bailing!");
 					return GT_ASM.writeByteArraySelfReferenceFixup(classNode);
 				}
 				// 编辑插入的代码
@@ -263,7 +263,7 @@ public class Minecraft_LightOpacityFix_CH implements IClassTransformer  {
 					at = at.getPrevious();
 				}
 				if (at == null) {
-					GT_ASM.logger.warn("Reached `null` in `at` too soon!  No changes made, bailing!");
+					GT_ASM.logger.warn("Reached `null` in `at (0)` too soon!  No changes made, bailing!");
 					return GT_ASM.writeByteArray(classNode);
 				}
 				int tKIdx = ((VarInsnNode)at.getPrevious().getPrevious()).var;   // get var of k
@@ -277,7 +277,7 @@ public class Minecraft_LightOpacityFix_CH implements IClassTransformer  {
 					at = at.getNext();
 				}
 				if (at == null) {
-					GT_ASM.logger.warn("Reached `null` in `at` too soon!  No changes made, bailing!");
+					GT_ASM.logger.warn("Reached `null` in `at (1)` too soon!  No changes made, bailing!");
 					return GT_ASM.writeByteArray(classNode);
 				}
 				// 编辑插入的代码

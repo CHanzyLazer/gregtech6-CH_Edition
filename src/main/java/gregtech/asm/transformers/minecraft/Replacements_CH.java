@@ -1,6 +1,7 @@
 package gregtech.asm.transformers.minecraft;
 
 import gregapi.block.multitileentity.MultiTileEntityBlock;
+import gregapi.block.prefixblock.PrefixBlock;
 import gregtechCH.util.WD_CH;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -96,7 +97,7 @@ public class Replacements_CH {
         double tVelX = -aEntity.motionX * 4.0D;
         double tVelY = 1.5D;
         double tVelZ = -aEntity.motionZ * 4.0D;
-        if (aBlock instanceof MultiTileEntityBlock) {
+        if (aBlock instanceof MultiTileEntityBlock || aBlock instanceof PrefixBlock) {
             // 保证和原版的调用一致
             if (WD_CH.isClientSide(aWorld)) {
                 Minecraft tMC = Minecraft.getMinecraft();
@@ -121,7 +122,7 @@ public class Replacements_CH {
         double tX = (float)aX + 0.5F;
         double tY = (float)aY + 1.0F;
         double tZ = (float)aZ + 0.5F;
-        if (aBlock instanceof MultiTileEntityBlock) {
+        if (aBlock instanceof MultiTileEntityBlock || aBlock instanceof PrefixBlock) {
             // 保证和原版的调用一致
             if (WD_CH.isClientSide(aWorld)) {
                 Minecraft tMC = Minecraft.getMinecraft();

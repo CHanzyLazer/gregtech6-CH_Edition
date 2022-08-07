@@ -6,6 +6,9 @@ import gregtechCH.data.CS_CH;
 import gregtechCH.threads.ThreadPools.ITaskNumberExecutor;
 import gregtechCH.tileentity.ITEScheduledUpdate_CH;
 import gregtechCH.util.WD_CH;
+import journeymap.client.model.BlockMD;
+import journeymap.client.model.mod.vanilla.VanillaBlockHandler;
+import net.minecraft.block.BlockLilyPad;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedHashSet;

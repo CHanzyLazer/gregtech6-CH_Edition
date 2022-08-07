@@ -27,6 +27,7 @@ public class Minecraft_LightOpacityFix_CH implements IClassTransformer  {
 		// 修改接口函数使其名副其实
 		if (transformedName.equals(C_GTASM_LO.clazzPath)) {
 			ClassNode classNode = GT_ASM.makeNodes(basicClass);
+//			GT_ASM.writePrettyPrintedOpCodesToFile(classNode, "C_GTASM_LO");
 			// 替换 bool 值让程序知道已经执行了 ASM
 			for (MethodNode m: classNode.methods) if (M_enabledLO.matches(m)) {
 				GT_ASM.logger.info("Transforming first value F to T in " + C_GTASM_LO + "." + M_enabledLO);

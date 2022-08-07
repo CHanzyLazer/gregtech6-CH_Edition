@@ -78,6 +78,7 @@ public class GT_ASM_UT {
     public enum Name {
         // C_: Class, M_: Method, F_: Field
 
+        C_Class("java/lang/Class"),
         C_ACL("net/minecraft/world/chunk/storage/AnvilChunkLoader", "aqk"),
         C_Block("net/minecraft/block/Block", "aji"),
         C_Chunk("net/minecraft/world/chunk/Chunk", "apx"),
@@ -100,6 +101,12 @@ public class GT_ASM_UT {
         C_ItemInWorldManager("net/minecraft/server/management/ItemInWorldManager", "mx"),
         C_Player("net/minecraft/entity/player/EntityPlayer", "yz"),
         C_Entity("net/minecraft/entity/Entity", "sa"),
+        C_JM_VanillaBlockHandler("journeymap/client/model/mod/vanilla/VanillaBlockHandler"),
+        C_JM_flag("journeymap/client/model/BlockMD$Flag"),
+
+        M_JM_preInitialize(C_JM_VanillaBlockHandler, "preInitialize", null, null, "()V"),
+        M_JM_setFlags(C_JM_VanillaBlockHandler, "setFlags", null, null, "("+toDesc(C_Class)+"["+toDesc(C_JM_flag)+")V"),
+        F_JM_CustomBiomeColor(C_JM_flag, "CustomBiomeColor", null, null, toDesc(C_JM_flag)),
 
         M_onEntityUpdate(C_Entity, "onEntityUpdate", "C", "func_70030_z", "()V"),
         F_worldObj(C_Entity, "worldObj", "o", "field_70170_p", toDesc(C_World)),
@@ -145,6 +152,9 @@ public class GT_ASM_UT {
         M_getLOData(C_GTASM_R, "getBlockGTLightOpacityData", null, null, "(["+toDesc(C_EBS)+"I[BI)I"),
         M_spawnSprintingParticle(C_GTASM_R, "spawnSprintingParticle", null, null, "("+toDesc(C_Entity, C_World, C_Block)+"III)V"),
         M_spawnFallParticle(C_GTASM_R, "spawnFallParticle", null, null, "("+toDesc(C_World, C_Block)+"IIIDDD)V"),
+        M_MultiTileEntityBlock(C_GTASM_R, "getMultiTileEntityBlock", null, null, "()"+toDesc(C_Class)),
+        M_PrefixBlock(C_GTASM_R, "getPrefixBlock", null, null, "()"+toDesc(C_Class)),
+        M_BlockBase(C_GTASM_R, "getBlockBase", null, null, "()"+toDesc(C_Class)),
         F_GTLO(C_EBS, "blockGTLightOpacityArray", null, null, toDesc(C_NA));
 
         public final Name clazz; // 所属类
@@ -193,11 +203,13 @@ public class GT_ASM_UT {
         public boolean matches(FieldInsnNode  f) {assert !this.desc.startsWith("("); return (this.clazz.obf.equals(f.owner) && this.obf.equals(f.name) && this.obfDesc.equals(f.desc)) || (this.clazz.srg.equals(f.owner) && this.srg.equals(f.name) && this.desc.equals(f.desc)) || (this.clazz.deobf.equals(f.owner) && this.deobf.equals(f.name) && this.desc.equals(f.desc));}
 
         // 由于 forge 的存在，注入只需要 srg 混淆即可（即注入的代码可以不进行混淆）
-        public MethodInsnNode staticInvocation(boolean obfuscated) {assert  this.desc.startsWith("("); return obfuscated ? new MethodInsnNode(Opcodes.INVOKESTATIC, this.clazz.srg, this.srg, this.desc, false) : new MethodInsnNode(Opcodes.INVOKESTATIC, this.clazz.deobf, this.deobf, this.desc, false);}
-        public FieldInsnNode  staticGet       (boolean obfuscated) {assert !this.desc.startsWith("("); return obfuscated ? new FieldInsnNode (Opcodes.GETSTATIC,    this.clazz.srg, this.srg, this.desc)           : new FieldInsnNode (Opcodes.GETSTATIC,    this.clazz.deobf, this.deobf, this.desc);}
-        public FieldInsnNode  virtualGet      (boolean obfuscated) {assert !this.desc.startsWith("("); return obfuscated ? new FieldInsnNode (Opcodes.GETFIELD,     this.clazz.srg, this.srg, this.desc)           : new FieldInsnNode (Opcodes.GETFIELD,     this.clazz.deobf, this.deobf, this.desc);}
-        public FieldInsnNode  staticSet       (boolean obfuscated) {assert !this.desc.startsWith("("); return obfuscated ? new FieldInsnNode (Opcodes.PUTSTATIC,    this.clazz.srg, this.srg, this.desc)           : new FieldInsnNode (Opcodes.PUTSTATIC,    this.clazz.deobf, this.deobf, this.desc);}
-        public FieldInsnNode  virtualSet      (boolean obfuscated) {assert !this.desc.startsWith("("); return obfuscated ? new FieldInsnNode (Opcodes.PUTFIELD,     this.clazz.srg, this.srg, this.desc)           : new FieldInsnNode (Opcodes.PUTFIELD,     this.clazz.deobf, this.deobf, this.desc);}
+        public MethodInsnNode staticInvocation (boolean obfuscated) {assert  this.desc.startsWith("("); return obfuscated ? new MethodInsnNode(Opcodes.INVOKESTATIC,  this.clazz.srg, this.srg, this.desc, false) : new MethodInsnNode(Opcodes.INVOKESTATIC,  this.clazz.deobf, this.deobf, this.desc, false);}
+        public MethodInsnNode virtualInvocation(boolean obfuscated) {assert  this.desc.startsWith("("); return obfuscated ? new MethodInsnNode(Opcodes.INVOKEVIRTUAL, this.clazz.srg, this.srg, this.desc, false) : new MethodInsnNode(Opcodes.INVOKEVIRTUAL, this.clazz.deobf, this.deobf, this.desc, false);}
+        public MethodInsnNode specialInvocation(boolean obfuscated) {assert  this.desc.startsWith("("); return obfuscated ? new MethodInsnNode(Opcodes.INVOKESPECIAL, this.clazz.srg, this.srg, this.desc, false) : new MethodInsnNode(Opcodes.INVOKESPECIAL, this.clazz.deobf, this.deobf, this.desc, false);}
+        public FieldInsnNode  staticGet        (boolean obfuscated) {assert !this.desc.startsWith("("); return obfuscated ? new FieldInsnNode (Opcodes.GETSTATIC,     this.clazz.srg, this.srg, this.desc)           : new FieldInsnNode (Opcodes.GETSTATIC,     this.clazz.deobf, this.deobf, this.desc);}
+        public FieldInsnNode  virtualGet       (boolean obfuscated) {assert !this.desc.startsWith("("); return obfuscated ? new FieldInsnNode (Opcodes.GETFIELD,      this.clazz.srg, this.srg, this.desc)           : new FieldInsnNode (Opcodes.GETFIELD,      this.clazz.deobf, this.deobf, this.desc);}
+        public FieldInsnNode  staticSet        (boolean obfuscated) {assert !this.desc.startsWith("("); return obfuscated ? new FieldInsnNode (Opcodes.PUTSTATIC,     this.clazz.srg, this.srg, this.desc)           : new FieldInsnNode (Opcodes.PUTSTATIC,     this.clazz.deobf, this.deobf, this.desc);}
+        public FieldInsnNode  virtualSet       (boolean obfuscated) {assert !this.desc.startsWith("("); return obfuscated ? new FieldInsnNode (Opcodes.PUTFIELD,      this.clazz.srg, this.srg, this.desc)           : new FieldInsnNode (Opcodes.PUTFIELD,      this.clazz.deobf, this.deobf, this.desc);}
 
         // 将反混淆的 desc 转换为混淆的
         private static void translateDescs() {

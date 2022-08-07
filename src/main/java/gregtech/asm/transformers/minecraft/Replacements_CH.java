@@ -1,5 +1,6 @@
 package gregtech.asm.transformers.minecraft;
 
+import gregapi.block.BlockBase;
 import gregapi.block.multitileentity.MultiTileEntityBlock;
 import gregapi.block.prefixblock.PrefixBlock;
 import gregtechCH.util.WD_CH;
@@ -141,4 +142,9 @@ public class Replacements_CH {
             aWorld.spawnParticle("blockdust_" + Block.getIdFromBlock(aBlock) + "_" + aWorld.getBlockMetadata(aX, aY, aZ), tX, tY, tZ, aVelX, aVelY, aVelZ);
         }
     }
+
+    // 使用这些方法来间接获取 class
+    public static Class<MultiTileEntityBlock> getMultiTileEntityBlock() {return MultiTileEntityBlock.class;}
+    public static Class<PrefixBlock> getPrefixBlock() {return PrefixBlock.class;}
+    public static Class<BlockBase> getBlockBase() {return BlockBase.class;}
 }

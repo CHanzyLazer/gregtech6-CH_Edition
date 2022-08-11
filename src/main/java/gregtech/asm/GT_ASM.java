@@ -109,6 +109,7 @@ public class GT_ASM implements IFMLLoadingPlugin {
 			transformers.put(Minecraft_LightOpacityFix_CH.class.getName(), true);
 			transformers.put(Minecraft_BlockParticleFix_CH.class.getName(), true);
 			transformers.put(Journeymap_BlockGTColorFix_CH.class.getName(), true);
+			transformers.put(BuildCraft_PipeAutoConnectFix_CH.class.getName(), true);
 
 			mclocation = new File(mclocation, "/config/gregtech");
 			mclocation.mkdirs();

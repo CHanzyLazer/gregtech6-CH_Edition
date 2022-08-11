@@ -42,7 +42,7 @@ public class Journeymap_BlockGTColorFix_CH implements IClassTransformer  {
 		insert.add(new VarInsnNode(Opcodes.ALOAD, 0));
 		insert.add(aMethod.staticInvocation(isObfuscated())); // 不能简单的通过 LDC 来直接调用，使用调用方法来间接获取 class
 		insert.add(new InsnNode(Opcodes.ICONST_1));
-		insert.add(new TypeInsnNode(Opcodes.ANEWARRAY, C_JM_flag.deobf));
+		insert.add(new TypeInsnNode(Opcodes.ANEWARRAY, C_JM_Flag.deobf));
 		insert.add(new InsnNode(Opcodes.DUP));
 		insert.add(new InsnNode(Opcodes.ICONST_0));
 		insert.add(F_JM_CustomBiomeColor.staticGet(isObfuscated()));

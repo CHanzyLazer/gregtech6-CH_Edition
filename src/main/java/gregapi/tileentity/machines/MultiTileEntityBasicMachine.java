@@ -46,10 +46,11 @@ import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.util.ST;
 import gregapi.util.UT;
-import gregtechCH.data.LH_CH;
 import gregtechCH.fluid.IFluidHandler_CH;
-import gregtechCH.tileentity.ITEInterceptAutoConnectFluid_CH;
-import gregtechCH.tileentity.ITEInterceptAutoConnectItem_CH;
+import gregtechCH.tileentity.connectors.ITEInterceptAutoConnectFluid_CH;
+import gregtechCH.tileentity.connectors.ITEInterceptAutoConnectItem_CH;
+import gregtechCH.tileentity.connectors.ITEInterceptModConnectFluid_CH;
+import gregtechCH.tileentity.connectors.ITEInterceptModConnectItem_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -92,7 +93,7 @@ import static gregtechCH.data.CS_CH.NBT_CANFILL_STEAM;
 @Optional.InterfaceList(value = {
 	@Optional.Interface(iface = "buildcraft.api.tiles.IHasWork", modid = ModIDs.BC)
 })
-public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle implements ITEInterceptAutoConnectItem_CH, ITEInterceptAutoConnectFluid_CH, IHasWork, ITileEntityFunnelAccessible, ITileEntityTapAccessible, ITileEntitySwitchableOnOff, ITileEntityRunningSuccessfully, ITileEntityAdjacentInventoryUpdatable, ITileEntityEnergy, ITileEntityProgress, ITileEntityGibbl, IFluidHandler_CH {
+public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle implements ITEInterceptModConnectItem_CH, ITEInterceptModConnectFluid_CH, ITEInterceptAutoConnectItem_CH, ITEInterceptAutoConnectFluid_CH, IHasWork, ITileEntityFunnelAccessible, ITileEntityTapAccessible, ITileEntitySwitchableOnOff, ITileEntityRunningSuccessfully, ITileEntityAdjacentInventoryUpdatable, ITileEntityEnergy, ITileEntityProgress, ITileEntityGibbl, IFluidHandler_CH {
 	public boolean mCanFillSteam = F;
 
 	public boolean mSpecialIsStartEnergy = F, mNoConstantEnergy = F, mCheapOverclocking = F, mCouldUseRecipe = F, mStopped = F, oActive = F, oRunning = F, mStateNew = F, mStateOld = F, mDisabledItemInput = F, mDisabledItemOutput = F, mDisabledFluidInput = F, mDisabledFluidOutput = F, mRequiresIgnition = F, mParallelDuration = F, mCanUseOutputTanks = F;
@@ -612,9 +613,12 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 		return ZL_FT;
 	}
 	// GTCH, 阻止非自动输入输出面的自动连接
-	@Override public boolean interceptConnectFluid(byte aSide) {if (SIDES_VALID[aSide] && (FACING_TO_SIDE[mFacing][mFluidAutoInput] == aSide || FACING_TO_SIDE[mFacing][mFluidAutoOutput] == aSide)) return F; else return T;}
-	@Override public boolean interceptConnectItem(byte aSide)  {if (SIDES_VALID[aSide] && (FACING_TO_SIDE[mFacing][mItemAutoInput]  == aSide || FACING_TO_SIDE[mFacing][mItemAutoOutput]  == aSide)) return F; else return T;}
-	
+	@Override public boolean interceptAutoConnectFluid(byte aSide) {if (SIDES_VALID[aSide] && (FACING_TO_SIDE[mFacing][mFluidAutoInput] == aSide || FACING_TO_SIDE[mFacing][mFluidAutoOutput] == aSide)) return F; else return T;}
+	@Override public boolean interceptAutoConnectItem(byte aSide)  {if (SIDES_VALID[aSide] && (FACING_TO_SIDE[mFacing][mItemAutoInput]  == aSide || FACING_TO_SIDE[mFacing][mItemAutoOutput]  == aSide)) return F; else return T;}
+	// GTCH, 不能输入和输出的面阻止 MOD 管道连接
+	@Override public boolean interceptModConnectItem(byte aSide)   {return !FACE_CONNECTED[FACING_ROTATIONS[mFacing][aSide]][mItemInputs]  && !FACE_CONNECTED[FACING_ROTATIONS[mFacing][aSide]][mItemOutputs];}
+	@Override public boolean interceptModConnectFluid(byte aSide)  {return !FACE_CONNECTED[FACING_ROTATIONS[mFacing][aSide]][mFluidInputs] && !FACE_CONNECTED[FACING_ROTATIONS[mFacing][aSide]][mFluidOutputs];}
+
 	@Override
 	public boolean breakBlock() {
 		setStateOnOff(T);

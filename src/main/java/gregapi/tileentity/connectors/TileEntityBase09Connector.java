@@ -36,6 +36,8 @@ import gregapi.util.OM;
 import gregapi.util.UT;
 import gregapi.util.WD;
 import gregtechCH.tileentity.ITEPaintable_CH;
+import gregtechCH.tileentity.connectors.ITEInterceptModConnectFluid_CH;
+import gregtechCH.tileentity.connectors.ITEInterceptModConnectItem_CH;
 import gregtechCH.util.UT_CH;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -53,7 +55,7 @@ import static gregapi.data.CS.*;
 /**
  * @author Gregorius Techneticies
  */
-public abstract class TileEntityBase09Connector extends TileEntityBase08Directional implements ITileEntityConnector, IMTE_OnPlaced, IMTE_AddToolTips {
+public abstract class TileEntityBase09Connector extends TileEntityBase08Directional implements ITEInterceptModConnectItem_CH, ITEInterceptModConnectFluid_CH, ITileEntityConnector, IMTE_OnPlaced, IMTE_AddToolTips {
 	protected byte mConnections = 0;
 	
 	@Override
@@ -223,4 +225,8 @@ public abstract class TileEntityBase09Connector extends TileEntityBase08Directio
 	public void onConnectionChange(byte aPreviousConnections) {/**/}
 	public boolean canConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator) {return F;}
 	protected boolean canAutoConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator) {return canConnect(aSide, aDelegator);}
+
+	// GTCH, 非连接面阻止 MOD 管道连接
+	@Override public boolean interceptModConnectItem(byte aSide)  {return !connected(aSide);}
+	@Override public boolean interceptModConnectFluid(byte aSide) {return !connected(aSide);}
 }

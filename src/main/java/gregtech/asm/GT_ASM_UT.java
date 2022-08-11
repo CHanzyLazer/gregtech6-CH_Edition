@@ -101,12 +101,21 @@ public class GT_ASM_UT {
         C_ItemInWorldManager("net/minecraft/server/management/ItemInWorldManager", "mx"),
         C_Player("net/minecraft/entity/player/EntityPlayer", "yz"),
         C_Entity("net/minecraft/entity/Entity", "sa"),
+        C_TileEntity("net/minecraft/tileentity/TileEntity", "aor"),
+        C_ForgeDirection("net/minecraftforge/common/util/ForgeDirection"), // Forge 类没有混淆
+        C_IFluidHandler("net/minecraftforge/fluids/IFluidHandler"), // Forge 类没有混淆
         C_JM_VanillaBlockHandler("journeymap/client/model/mod/vanilla/VanillaBlockHandler"),
-        C_JM_flag("journeymap/client/model/BlockMD$Flag"),
+        C_JM_Flag("journeymap/client/model/BlockMD$Flag"),
+        C_BC_Pipe("buildcraft/transport/PipeTransport"),
+        C_BC_IPipe("buildcraft/api/transport/IPipeTile"),
+        C_BC_PipeItem("buildcraft/transport/PipeTransportItems"),
+        C_BC_PipeFluid("buildcraft/transport/PipeTransportFluids"),
+
+        M_BC_canPipeConnect(C_BC_Pipe, "canPipeConnect", null, null, "("+toDesc(C_TileEntity, C_ForgeDirection)+")Z"),
 
         M_JM_preInitialize(C_JM_VanillaBlockHandler, "preInitialize", null, null, "()V"),
-        M_JM_setFlags(C_JM_VanillaBlockHandler, "setFlags", null, null, "("+toDesc(C_Class)+"["+toDesc(C_JM_flag)+")V"),
-        F_JM_CustomBiomeColor(C_JM_flag, "CustomBiomeColor", null, null, toDesc(C_JM_flag)),
+        M_JM_setFlags(C_JM_VanillaBlockHandler, "setFlags", null, null, "("+toDesc(C_Class)+"["+toDesc(C_JM_Flag)+")V"),
+        F_JM_CustomBiomeColor(C_JM_Flag, "CustomBiomeColor", null, null, toDesc(C_JM_Flag)),
 
         M_onEntityUpdate(C_Entity, "onEntityUpdate", "C", "func_70030_z", "()V"),
         F_worldObj(C_Entity, "worldObj", "o", "field_70170_p", toDesc(C_World)),
@@ -155,6 +164,8 @@ public class GT_ASM_UT {
         M_MultiTileEntityBlock(C_GTASM_R, "getMultiTileEntityBlock", null, null, "()"+toDesc(C_Class)),
         M_PrefixBlock(C_GTASM_R, "getPrefixBlock", null, null, "()"+toDesc(C_Class)),
         M_BlockBase(C_GTASM_R, "getBlockBase", null, null, "()"+toDesc(C_Class)),
+        M_interceptModConnectItem(C_GTASM_R, "interceptModConnectItem", null, null, "("+toDesc(C_TileEntity, C_ForgeDirection)+")Z"),
+        M_interceptModConnectFluid(C_GTASM_R, "interceptModConnectFluid", null, null, "("+toDesc(C_TileEntity, C_ForgeDirection)+")Z"),
         F_GTLO(C_EBS, "blockGTLightOpacityArray", null, null, toDesc(C_NA));
 
         public final Name clazz; // 所属类

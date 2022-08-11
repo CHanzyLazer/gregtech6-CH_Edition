@@ -3,6 +3,9 @@ package gregtech.asm.transformers.minecraft;
 import gregapi.block.BlockBase;
 import gregapi.block.multitileentity.MultiTileEntityBlock;
 import gregapi.block.prefixblock.PrefixBlock;
+import gregapi.util.UT;
+import gregtechCH.tileentity.connectors.ITEInterceptModConnectFluid_CH;
+import gregtechCH.tileentity.connectors.ITEInterceptModConnectItem_CH;
 import gregtechCH.util.WD_CH;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -11,14 +14,15 @@ import net.minecraft.client.particle.EntityDiggingFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.NibbleArray;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.Random;
 
-import static gregapi.data.CS.ERR;
-import static gregapi.data.CS.RNGSUS;
+import static gregapi.data.CS.*;
 import static gregtech.interfaces.asm.LO_CH.*;
 
 /* This is a separate file so it class loads *while* minecraft loads,
@@ -147,4 +151,14 @@ public class Replacements_CH {
     public static Class<MultiTileEntityBlock> getMultiTileEntityBlock() {return MultiTileEntityBlock.class;}
     public static Class<PrefixBlock> getPrefixBlock() {return PrefixBlock.class;}
     public static Class<BlockBase> getBlockBase() {return BlockBase.class;}
+
+    // 插入自己的判断，这里在 bc 中，side 是 tile 相对 bc 管道的方向，和 GT 的方向相反
+    public static boolean interceptModConnectItem(TileEntity aTile, ForgeDirection aSide) {
+        if (aTile instanceof ITEInterceptModConnectItem_CH) return ((ITEInterceptModConnectItem_CH)aTile).interceptModConnectItem(OPOS[UT.Code.side(aSide)]);
+        return false;
+    }
+    public static boolean interceptModConnectFluid(TileEntity aTile, ForgeDirection aSide) {
+        if (aTile instanceof ITEInterceptModConnectFluid_CH) return ((ITEInterceptModConnectFluid_CH)aTile).interceptModConnectFluid(OPOS[UT.Code.side(aSide)]);
+        return false;
+    }
 }

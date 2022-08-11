@@ -48,6 +48,8 @@ import gregapi.util.ST;
 import gregapi.util.UT;
 import gregtechCH.data.LH_CH;
 import gregtechCH.fluid.IFluidHandler_CH;
+import gregtechCH.tileentity.ITEInterceptAutoConnectFluid_CH;
+import gregtechCH.tileentity.ITEInterceptAutoConnectItem_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -90,7 +92,7 @@ import static gregtechCH.data.CS_CH.NBT_CANFILL_STEAM;
 @Optional.InterfaceList(value = {
 	@Optional.Interface(iface = "buildcraft.api.tiles.IHasWork", modid = ModIDs.BC)
 })
-public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle implements IHasWork, ITileEntityFunnelAccessible, ITileEntityTapAccessible, ITileEntitySwitchableOnOff, ITileEntityRunningSuccessfully, ITileEntityAdjacentInventoryUpdatable, ITileEntityEnergy, ITileEntityProgress, ITileEntityGibbl, IFluidHandler_CH {
+public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle implements ITEInterceptAutoConnectItem_CH, ITEInterceptAutoConnectFluid_CH, IHasWork, ITileEntityFunnelAccessible, ITileEntityTapAccessible, ITileEntitySwitchableOnOff, ITileEntityRunningSuccessfully, ITileEntityAdjacentInventoryUpdatable, ITileEntityEnergy, ITileEntityProgress, ITileEntityGibbl, IFluidHandler_CH {
 	public boolean mCanFillSteam = F;
 
 	public boolean mSpecialIsStartEnergy = F, mNoConstantEnergy = F, mCheapOverclocking = F, mCouldUseRecipe = F, mStopped = F, oActive = F, oRunning = F, mStateNew = F, mStateOld = F, mDisabledItemInput = F, mDisabledItemOutput = F, mDisabledFluidInput = F, mDisabledFluidOutput = F, mRequiresIgnition = F, mParallelDuration = F, mCanUseOutputTanks = F;
@@ -588,9 +590,9 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 	public IFluidTank getFluidTankDrainable2(byte aSide, FluidStack aFluidToDrain) {
 		if (!FACE_CONNECTED[FACING_ROTATIONS[mFacing][aSide]][mFluidOutputs]) return null;
 		if (aFluidToDrain == null) {
-			for (int i = 0; i < mTanksOutput.length; i++) if (mTanksOutput[i].has()) return mTanksOutput[i];
+			for (FluidTankGT fluidTankGT : mTanksOutput) if (fluidTankGT.has()) return fluidTankGT;
 		} else {
-			for (int i = 0; i < mTanksOutput.length; i++) if (mTanksOutput[i].contains(aFluidToDrain)) return mTanksOutput[i];
+			for (FluidTankGT fluidTankGT : mTanksOutput) if (fluidTankGT.contains(aFluidToDrain)) return fluidTankGT;
 		}
 		return null;
 	}
@@ -600,8 +602,8 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 		if (FACE_CONNECTED[FACING_ROTATIONS[mFacing][aSide]][mFluidInputs]) {
 			if (FACE_CONNECTED[FACING_ROTATIONS[mFacing][aSide]][mFluidOutputs]) {
 				IFluidTank[] rTanks = new IFluidTank[mTanksInput.length + mTanksOutput.length];
-				for (int i = 0; i < mTanksInput .length; i++) rTanks[i] = mTanksInput[i];
-				for (int i = 0; i < mTanksOutput.length; i++) rTanks[mTanksInput.length+i] = mTanksOutput[i];
+				System.arraycopy(mTanksInput, 0, rTanks, 0, mTanksInput.length);
+				System.arraycopy(mTanksOutput, 0, rTanks, mTanksInput.length, mTanksOutput.length);
 				return rTanks;
 			}
 			return mTanksInput;
@@ -609,6 +611,9 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 		if (FACE_CONNECTED[FACING_ROTATIONS[mFacing][aSide]][mFluidOutputs]) return mTanksOutput;
 		return ZL_FT;
 	}
+	// GTCH, 阻止非自动输入输出面的自动连接
+	@Override public boolean interceptConnectFluid(byte aSide) {if (SIDES_VALID[aSide] && (FACING_TO_SIDE[mFacing][mFluidAutoInput] == aSide || FACING_TO_SIDE[mFacing][mFluidAutoOutput] == aSide)) return F; else return T;}
+	@Override public boolean interceptConnectItem(byte aSide)  {if (SIDES_VALID[aSide] && (FACING_TO_SIDE[mFacing][mItemAutoInput]  == aSide || FACING_TO_SIDE[mFacing][mItemAutoOutput]  == aSide)) return F; else return T;}
 	
 	@Override
 	public boolean breakBlock() {
@@ -655,14 +660,14 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 		}
 		if (aRecipe.mFluidOutputs.length > 0) {
 			int tEmptyOutputTanks = 0, tRequiredEmptyTanks = aRecipe.mFluidOutputs.length;
-			for (int i = 0; i < mTanksOutput.length; i++) if (mTanksOutput[i].isEmpty()) tEmptyOutputTanks++; else if (aRecipe.mNeedsEmptyOutput || (mMode & 1) != 0) return 0;
+			for (FluidTankGT fluidTankGT : mTanksOutput) if (fluidTankGT.isEmpty()) tEmptyOutputTanks++; else if (aRecipe.mNeedsEmptyOutput || (mMode & 1) != 0) return 0;
 			// This optimisation would not work! The Tanks would not have an Output Amount Limiter if this was in the Code!
 			//if (tRequiredEmptyTanks <= tEmptyOutputTanks) {
 			for (int j = 0; j < aRecipe.mFluidOutputs.length; j++) {
 				if (aRecipe.mFluidOutputs[j] == null) {
 					tRequiredEmptyTanks--;
-				} else for (int i = 0; i < mTanksOutput.length; i++) if (mTanksOutput[i].contains(aRecipe.mFluidOutputs[j])) {
-					if (mTanksOutput[i].has(Math.max(16000, 1+aRecipe.mFluidOutputs[j].amount*mParallel)) && !FluidsGT.VOID_OVERFLOW.contains(aRecipe.mFluidOutputs[j].getFluid().getName())) return 0;
+				} else for (FluidTankGT fluidTankGT : mTanksOutput) if (fluidTankGT.contains(aRecipe.mFluidOutputs[j])) {
+					if (fluidTankGT.has(Math.max(16000, 1+aRecipe.mFluidOutputs[j].amount*mParallel)) && !FluidsGT.VOID_OVERFLOW.contains(aRecipe.mFluidOutputs[j].getFluid().getName())) return 0;
 					tRequiredEmptyTanks--;
 					break;
 				}
@@ -1051,8 +1056,8 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 	@Override public boolean hasWork() {return mMaxProgress > 0 || mChargeRequirement > 0;}
 	@Override public long getProgressValue(byte aSide) {return mSuccessful ? getProgressMax(aSide) : mMinEnergy < 1 ? mProgress    : mProgress    / mMinEnergy + (mProgress    % mMinEnergy == 0 ? 0 : 1) ;}
 	@Override public long getProgressMax  (byte aSide) {return Math.max(1,                           mMinEnergy < 1 ? mMaxProgress : mMaxProgress / mMinEnergy + (mMaxProgress % mMinEnergy == 0 ? 0 : 1));}
-	@Override public long getGibblValue   (byte aSide) {long rGibbl = 0; for (int i = 0; i < mTanksInput.length; i++) rGibbl += mTanksInput[i].amount  (); return rGibbl;}
-	@Override public long getGibblMax     (byte aSide) {long rGibbl = 0; for (int i = 0; i < mTanksInput.length; i++) rGibbl += mTanksInput[i].capacity(); return rGibbl;}
+	@Override public long getGibblValue   (byte aSide) {long rGibbl = 0; for (FluidTankGT fluidTankGT : mTanksInput) rGibbl += fluidTankGT.amount(); return rGibbl;}
+	@Override public long getGibblMax     (byte aSide) {long rGibbl = 0; for (FluidTankGT fluidTankGT : mTanksInput) rGibbl += fluidTankGT.capacity(); return rGibbl;}
 	
 	@Override public boolean getStateRunningPossible    () {return mCouldUseRecipe || mActive || mMaxProgress > 0 || mChargeRequirement > 0 || (mIgnited > 0 && !mDisabledItemOutput && mOutputBlocked != 0);}
 	@Override public boolean getStateRunningPassively   () {return mRunning;}

@@ -36,6 +36,7 @@ import gregapi.util.OM;
 import gregapi.util.UT;
 import gregapi.util.WD;
 import gregtechCH.tileentity.ITEPaintable_CH;
+import gregtechCH.util.UT_CH;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -45,7 +46,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import static gregapi.data.CS.*;
@@ -148,12 +148,11 @@ public abstract class TileEntityBase09Connector extends TileEntityBase08Directio
 	// GTCH, 用于实现检测玩家手上的物品是否使用完整方块 overlay
 	@Override public final boolean isUsingFullBlockOverlay(ItemStack aStack, byte aSide) {
 		if (super.isUsingFullBlockOverlay(aStack, aSide)) return T;
-		OreDictItemData tODItem = OM.data(aStack);
-		return tODItem!=null?isFullBlockPrefix(tODItem.mPrefix):F;
+		TileEntity tTE = UT_CH.getItemTE(aStack);
+		return tTE!=null? isFullBlockTE(tTE, aSide):F;
 	}
-
-	// GTCH, Stuff to Override
-	public boolean isFullBlockPrefix(OreDictPrefix aPrefix) {return F;}
+	// GTCH, 改为相同的连接性质即可
+	public boolean isFullBlockTE(TileEntity aHand, byte aSide) {return SIDES_VALID[aSide] && (aHand instanceof ITileEntityConnector) && UT.Code.haveOneCommonElement(((ITileEntityConnector)aHand).getConnectorTypes(OPOS[aSide]), getConnectorTypes(aSide));}
 
 	@Override
 	public boolean connected(byte aSide) {

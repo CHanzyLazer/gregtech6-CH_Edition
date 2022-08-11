@@ -46,7 +46,6 @@ import gregapi.old.Textures;
 import gregapi.oredict.OreDictItemData;
 import gregapi.oredict.OreDictManager;
 import gregapi.oredict.OreDictMaterial;
-import gregapi.oredict.OreDictPrefix;
 import gregapi.render.BlockTextureDefault;
 import gregapi.render.BlockTextureMulti;
 import gregapi.render.ITexture;
@@ -57,10 +56,10 @@ import gregapi.tileentity.data.ITileEntityGibbl;
 import gregapi.tileentity.data.ITileEntityProgress;
 import gregapi.tileentity.data.ITileEntityTemperature;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
-import gregapi.tileentity.delegate.ITileEntityCanDelegate;
 import gregapi.util.*;
 import gregtechCH.data.LH_CH;
 import gregtechCH.fluid.IFluidHandler_CH;
+import gregtechCH.tileentity.compat.PipeCompat_CH;
 import gregtechCH.tileentity.data.ITileEntityFlowrate_CH;
 import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
@@ -1240,23 +1239,9 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		return rFilledAmount;
 	}
 	
-	@Override
-	public boolean canConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator) {
-		if (aDelegator.mTileEntity instanceof IFluidHandler) {
-			// Extenders should always be connectable.
-			if (aDelegator.mTileEntity instanceof ITileEntityCanDelegate) return T;
-			// Make sure at least one Tank exists at this Side to connect to.
-			if (UT.Code.exists(0, ((IFluidHandler)aDelegator.mTileEntity).getTankInfo(aDelegator.getForgeSideOfTileEntity()))) return T;
-			// Okay, nothing to do here.
-			return F;
-		}
-		if (mTanks[0].capacity() >= 334) {
-			Block tBlock = aDelegator.getBlock();
-			// Yes I need to check for both to make this work. Some Mods override the Cauldron in a bad way.
-			if (tBlock == Blocks.cauldron || tBlock instanceof BlockCauldron) return T;
-		}
-		return F;
-	}
+	@Override public boolean canConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator)     {return PipeCompat_CH.canConnectFluid(this, aDelegator, aDelegator.mSideOfTileEntity);}
+	@Override public boolean canAutoConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator) {return PipeCompat_CH.canAutoConnectFluid(this, aDelegator, aDelegator.mSideOfTileEntity);}
+
 
 	// GTCH，根据状态修改是否可以输入输出
 	public boolean canEmitFluidsTo(byte aSide) {
@@ -1360,8 +1345,6 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	
 	@Override public String getFacingTool() {return TOOL_wrench;}
 	@Override public boolean isUsingWrenchingOverlay(ItemStack aStack, byte aSide) {return super.isUsingWrenchingOverlay(aStack, aSide) || ToolsGT.contains(TOOL_monkeywrench, aStack);}
-	//GTCH
-	@Override public boolean isFullBlockPrefix(OreDictPrefix aPrefix) {return ALL_PIPE_PREFIX.contains(aPrefix);}
 
 	public int getRubberCount() {
 		if (mTanks.length>=9) {

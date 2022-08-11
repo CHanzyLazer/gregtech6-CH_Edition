@@ -3,6 +3,8 @@ package gregtechCH.util;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import gregapi.block.multitileentity.MultiTileEntityClassContainer;
+import gregapi.block.multitileentity.MultiTileEntityRegistry;
 import gregapi.oredict.OreDictMaterial;
 import gregapi.oredict.OreDictPrefix;
 import gregapi.render.BlockTextureDefault;
@@ -14,7 +16,9 @@ import net.minecraft.block.material.MapColor;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
@@ -33,8 +37,16 @@ import static gregapi.data.CS.*;
 import static gregtechCH.config.ConfigForge_CH.DATA_GTCH;
 
 public class UT_CH {
-    // 提供一些 STL 常用的或者我需要用到的而 java 未提供的接口
+    // 未分类，用来获取 GT 物品的实体
+    public static TileEntity getItemTE(ItemStack aItemStack) {
+        MultiTileEntityRegistry tRegistry = MultiTileEntityRegistry.getRegistry("gt.multitileentity"); // 常量存储可能获取不到注册表，总之不重要
+        if (tRegistry == null) return null;
+        MultiTileEntityClassContainer tContainer = tRegistry.getClassContainer(aItemStack);
+        if (tContainer == null) return null;
+        return tContainer.mCanonicalTileEntity;
+    }
 
+    // 提供一些 STL 常用的或者我需要用到的而 java 未提供的接口
     public static class STL {
         public static <Entry> void resize(List<Entry> rList, int aNewSize, Class<? extends Entry> aDefaultEntryClass){
             if (aNewSize < 0)

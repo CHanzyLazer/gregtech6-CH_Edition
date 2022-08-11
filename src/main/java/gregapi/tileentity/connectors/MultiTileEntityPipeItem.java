@@ -20,7 +20,6 @@
 package gregapi.tileentity.connectors;
 
 import static gregapi.data.CS.*;
-import static gregtechCH.data.CS_CH.ALL_PIPE_PREFIX;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,7 +44,6 @@ import gregapi.data.TD;
 import gregapi.old.Textures;
 import gregapi.oredict.OreDictManager;
 import gregapi.oredict.OreDictMaterial;
-import gregapi.oredict.OreDictPrefix;
 import gregapi.render.BlockTextureDefault;
 import gregapi.render.BlockTextureMulti;
 import gregapi.render.ITexture;
@@ -57,6 +55,7 @@ import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.tileentity.delegate.ITileEntityCanDelegate;
 import gregapi.util.ST;
 import gregapi.util.UT;
+import gregtechCH.tileentity.compat.PipeCompat_CH;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -267,8 +266,9 @@ public class MultiTileEntityPipeItem extends TileEntityBase10ConnectorRendered i
 	
 	@Override public boolean canEmitItemsTo                 (byte aSide, Object aSender) {return (aSender != this || aSide != mLastReceivedFrom) && connected(aSide);}
 	@Override public boolean canAcceptItemsFrom             (byte aSide, Object aSender) {return connected(aSide);}
-	
-	@Override public boolean canConnect                     (byte aSide, DelegatorTileEntity<TileEntity> aDelegator) {return aDelegator.mTileEntity instanceof ISidedInventory ? aDelegator.mTileEntity instanceof ITileEntityCanDelegate || ((ISidedInventory)aDelegator.mTileEntity).getAccessibleSlotsFromSide(aDelegator.mSideOfTileEntity).length > 0 : ST.canConnect(aDelegator);}
+
+	@Override public boolean canConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator)     {return PipeCompat_CH.canConnectItem(this, aDelegator, aDelegator.mSideOfTileEntity);}
+	@Override public boolean canAutoConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator) {return PipeCompat_CH.canAutoConnectItem(this, aDelegator, aDelegator.mSideOfTileEntity);}
 	
 	@Override public long getProgressValue                  (byte aSide) {return getPipeContent()*64;}
 	@Override public long getProgressMax                    (byte aSide) {return getMaxPipeCapacity()*64;}
@@ -297,8 +297,6 @@ public class MultiTileEntityPipeItem extends TileEntityBase10ConnectorRendered i
 	
 	@Override public String getFacingTool() {return TOOL_wrench;}
 	@Override public boolean isUsingWrenchingOverlay(ItemStack aStack, byte aSide) {return super.isUsingWrenchingOverlay(aStack, aSide) || ToolsGT.contains(TOOL_monkeywrench, aStack);}
-	//GTCH
-	@Override public boolean isFullBlockPrefix(OreDictPrefix aPrefix) {return ALL_PIPE_PREFIX.contains(aPrefix);}
 
 	@Override public String getTileEntityName() {return "gt.multitileentity.connector.pipe.item";}
 }

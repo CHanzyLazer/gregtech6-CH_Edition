@@ -20,8 +20,6 @@
 package gregapi.tileentity.connectors;
 
 import static gregapi.data.CS.*;
-import static gregtechCH.data.CS_CH.ALL_CABLE_PREFIX;
-import static gregtechCH.data.CS_CH.ALL_WIRE_PREFIX;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,7 +42,6 @@ import gregapi.data.TD;
 import gregapi.old.Textures;
 import gregapi.oredict.OreDictManager;
 import gregapi.oredict.OreDictMaterial;
-import gregapi.oredict.OreDictPrefix;
 import gregapi.render.BlockTextureDefault;
 import gregapi.render.BlockTextureMulti;
 import gregapi.render.ITexture;
@@ -250,8 +247,6 @@ public class MultiTileEntityWireElectric extends TileEntityBase10ConnectorRender
 	@Override public Collection<TagData> getConnectorTypes  (byte aSide) {return TD.Connectors.WIRE_ELECTRIC.AS_LIST;}
 	
 	@Override public String getFacingTool                   () {return TOOL_cutter;}
-	//GTCH
-	@Override public boolean isFullBlockPrefix(OreDictPrefix aPrefix) {return ALL_WIRE_PREFIX.contains(aPrefix) || ALL_CABLE_PREFIX.contains(aPrefix);}
 
 	@Override public String getTileEntityName               () {return "gt.multitileentity.connector.wire.electric";}
 }

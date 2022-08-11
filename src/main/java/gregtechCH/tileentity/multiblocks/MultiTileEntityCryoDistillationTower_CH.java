@@ -45,7 +45,7 @@ import static gregapi.data.CS.*;
 /**
  * @author Gregorius Techneticies
  */
-public class MultiTileEntityCryoDistillationTower_CH extends TileEntityBase10MultiBlockMachine_CH {
+public class MultiTileEntityCryoDistillationTower_CH extends TileEntityBase10MultiBlockMachine_CH implements IDistillationTower {
 	@Override
 	public boolean checkStructure2() {
 		int tX = getOffsetXN(mFacing), tY = yCoord, tZ = getOffsetZN(mFacing);

@@ -1500,7 +1500,7 @@ public class UT {
 		
 		/** If this Index exists inside the passed Array and if it is != null */
 		public static <E> boolean exists(int aIndex, E[] aArray) {
-			return aIndex >= 0 && aIndex < aArray.length && aArray[aIndex] != null;
+			return aIndex >= 0 && aArray != null && aIndex < aArray.length && aArray[aIndex] != null;
 		}
 		
 		/** @return a Value for a Scale between 0 and aMax with aScale+1 possible Steps. 0 is only returned if the aValue is <= 0, aScale is only returned if the Value is >= aMax. The remaining values between ]0:aScale[ are returned for each Step of the Scale. This Function finds use in Displays such as the Barometer, but also in Redstone. */

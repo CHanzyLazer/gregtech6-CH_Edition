@@ -1,6 +1,7 @@
 package gregtechCH.data;
 
 import com.google.common.collect.Sets;
+import gregapi.block.multitileentity.MultiTileEntityRegistry;
 import gregapi.config.Config;
 import gregapi.data.MT;
 import gregapi.oredict.OreDictPrefix;

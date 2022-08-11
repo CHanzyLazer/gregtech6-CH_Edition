@@ -67,6 +67,9 @@ import gregapi.util.WD;
 import gregtechCH.GTCH_Main;
 import gregtechCH.data.CS_CH;
 import gregtechCH.fluid.IFluidHandler_CH;
+import gregtechCH.tileentity.ITEInterceptAutoConnectFluid_CH;
+import gregtechCH.tileentity.ITEInterceptAutoConnectItem_CH;
+import gregtechCH.tileentity.multiblocks.IDistillationTower;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -85,7 +88,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author Gregorius Techneticies
  */
-public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable implements ITileEntityEnergy, ITileEntityCrucible, ITileEntityLogistics, IMTE_OnWalkOver, ITileEntityTemperature, ITileEntityGibbl, ITileEntityProgress, ITileEntityWeight, ITileEntityTapAccessible, ITileEntityFunnelAccessible, ITileEntityEnergyDataCapacitor, ITileEntityAdjacentInventoryUpdatable, IFluidHandler_CH, IMTE_OnBlockAdded, IMTE_BreakBlock, ITileEntityRunningSuccessfully, ITileEntitySwitchableMode, ITileEntitySwitchableOnOff {
+public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable implements ITEInterceptAutoConnectItem_CH, ITEInterceptAutoConnectFluid_CH, ITileEntityEnergy, ITileEntityCrucible, ITileEntityLogistics, IMTE_OnWalkOver, ITileEntityTemperature, ITileEntityGibbl, ITileEntityProgress, ITileEntityWeight, ITileEntityTapAccessible, ITileEntityFunnelAccessible, ITileEntityEnergyDataCapacitor, ITileEntityAdjacentInventoryUpdatable, IFluidHandler_CH, IMTE_OnBlockAdded, IMTE_BreakBlock, ITileEntityRunningSuccessfully, ITileEntitySwitchableMode, ITileEntitySwitchableOnOff {
 	public ChunkCoordinates mTargetPos = null;
 	
 	public ITileEntityMultiBlockController mTarget = null;
@@ -533,7 +536,25 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 		if (tTileEntity instanceof ITileEntityTapAccessible) return ((ITileEntityTapAccessible)tTileEntity).nozzleDrain(aSide, aMaxDrain, aDoDrain);
 		return null;
 	}
-	
+
+	// GTCH, 阻止非输入输出面的自动连接
+	@Override
+	public boolean interceptConnectFluid(byte aSide) {
+		if ((mMode & NO_FLUID) == NO_FLUID) return T;
+		if (mDesign == FLUID_EMITTER && (mMode & NO_FLUID_IN) != 0 && aSide != mPartFacing) return T; // 仅一个面输出并且不能输入时其他面也要阻止自动连接
+		ITileEntityMultiBlockController tTileEntity = getTarget(T);
+		if (tTileEntity instanceof IDistillationTower && mDesign == 0) return T; // 对于蒸馏塔特殊讨论，仅输出口可以自动连接（TODO，以后可以根据第二个 Design 来灵活判断）
+		return F;
+	}
+	@Override
+	public boolean interceptConnectItem(byte aSide)  {
+		if ((mMode & NO_ITEM) == NO_ITEM) return T;
+		ITileEntityMultiBlockController tTileEntity = getTarget(T);
+		if (tTileEntity instanceof IDistillationTower && mDesign == 0) return T; // 对于蒸馏塔特殊讨论，仅输出口可以自动连接（TODO，以后可以根据第二个 Design 来灵活判断）
+		return F;
+	}
+
+
 	// Relay Control Covers and such
 	
 	@Override

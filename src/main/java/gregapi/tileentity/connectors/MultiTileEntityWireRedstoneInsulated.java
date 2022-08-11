@@ -20,9 +20,6 @@
 package gregapi.tileentity.connectors;
 
 import static gregapi.data.CS.*;
-import static gregapi.data.OP.cableGt01;
-import static gregapi.data.OP.wireGt01;
-import static gregtechCH.data.CS_CH.ALL_WIRE_PREFIX;
 
 import java.util.Collection;
 import java.util.List;
@@ -35,15 +32,12 @@ import gregapi.data.MD;
 import gregapi.data.OP;
 import gregapi.data.TD;
 import gregapi.old.Textures;
-import gregapi.oredict.OreDictPrefix;
 import gregapi.render.BlockTextureDefault;
 import gregapi.render.BlockTextureMulti;
 import gregapi.render.ITexture;
 import gregapi.tileentity.ITileEntityQuickObstructionCheck;
 import gregapi.tileentity.data.ITileEntityProgress;
-import gregapi.tileentity.data.ITileEntitySurface;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
-import gregapi.tileentity.logistics.ITileEntityLogistics;
 import gregapi.tileentity.machines.ITileEntitySwitchableMode;
 import gregapi.util.UT;
 import gregtechCH.util.UT_CH;
@@ -216,8 +210,6 @@ public class MultiTileEntityWireRedstoneInsulated extends TileEntityBase10Connec
 	@Override public Collection<TagData> getConnectorTypes  (byte aSide) {return TD.Connectors.WIRE_REDSTONE.AS_LIST;}
 	
 	@Override public String getFacingTool                   () {return TOOL_cutter;}
-	//GTCH
-	@Override public boolean isFullBlockPrefix(OreDictPrefix aPrefix) {return aPrefix == wireGt01 || aPrefix == cableGt01;}
 
 	@Override
 	public void setVisualData(byte aData) {

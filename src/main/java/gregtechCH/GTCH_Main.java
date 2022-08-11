@@ -2,18 +2,14 @@ package gregtechCH;
 
 import gregapi.tileentity.ITileEntityErrorable;
 import gregtechCH.config.ConfigJson_CH;
-import gregtechCH.data.CS_CH;
 import gregtechCH.threads.ThreadPools.ITaskNumberExecutor;
 import gregtechCH.tileentity.ITEScheduledUpdate_CH;
+import gregtechCH.tileentity.compat.PipeCompat_CH;
 import gregtechCH.util.WD_CH;
-import journeymap.client.model.BlockMD;
-import journeymap.client.model.mod.vanilla.VanillaBlockHandler;
-import net.minecraft.block.BlockLilyPad;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
 import static gregapi.data.CS.*;
@@ -52,6 +48,7 @@ public class GTCH_Main {
         OUT.println(getModNameForLog() + ": PostInit-Phase started!");
 
         ConfigJson_CH.readJsonFilePost();
+        PipeCompat_CH.checkAvailabilities();
 
         OUT.println(getModNameForLog() + ": PostInit-Phase finished!");
         OUT.println(getModNameForLog() + ": ======================");

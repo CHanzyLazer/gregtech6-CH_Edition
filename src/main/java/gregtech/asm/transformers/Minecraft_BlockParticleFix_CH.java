@@ -1,8 +1,6 @@
 package gregtech.asm.transformers;
 
-import gregapi.data.MD;
 import gregtech.asm.GT_ASM;
-import gregtech.asm.GT_ASM_UT;
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;

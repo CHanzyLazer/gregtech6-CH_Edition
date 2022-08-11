@@ -818,11 +818,11 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 					// 流体超过一半，存在一个压力
 					tAmount = (aTank.amount() - aTank.capacity()/2);
 					if (tAmount > 0 && !tTank.isFull()) mTransferredAmount += aTank.remove(tTank.add(aTank.amount(tAmount), aTank.get()));
-					// 是否还有压力，有则进入默认情况
-					if (aTank.amount() * 2 > aTank.capacity()) distributeDefault_(ALL_SIDES_VALID_BUT[mFluidDir], aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther);
-					// 所有事完成，退出
-					return;
 				}
+				// 是否还有压力，有则进入默认情况
+				if (aTank.amount() * 2 > aTank.capacity()) distributeDefault_(ALL_SIDES_VALID_BUT[mFluidDir], aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther);
+				// 所有事完成，退出（没有超过一半且如果压力不能输入则会保持流体不向周围流动）
+				return;
 			}
 			// 管道填充失败，进入默认情况
 			distributeDefault_(ALL_SIDES_VALID_BUT[mFluidDir], aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther);
@@ -996,7 +996,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 				// 直接进行填充
 				mTransferredAmount += aTank.remove(FL.fill(aAdjacentTanks[mFluidDir], aTank.get(tAmount), T));
 				// 是否还有压力，有则进入默认情况
-				if (aTank.amount() * 2 > aTank.capacity()) distributeDefaultFC_(ALL_SIDES_VALID_BUT[mFluidDir], aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther);
+				if (aTank.amount() * 4 > aTank.capacity() * 3) distributeDefaultFC_(ALL_SIDES_VALID_BUT[mFluidDir], aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther);
 				// 所有事完成，退出
 				return;
 			}
@@ -1016,7 +1016,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 					// 直接进行填充，虽然一定不会超过容量，但是为了以防万一还是加上 aTank.amount()
 					mTransferredAmount += aTank.remove(tTank.add(aTank.amount(tAmount), aTank.get()));
 					// 是否还有压力，有则进入默认情况
-					if (aTank.amount() * 2 > aTank.capacity()) distributeDefaultFC_(ALL_SIDES_VALID_BUT[mFluidDir], aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther);
+					if (aTank.amount() * 4 > aTank.capacity() * 3) distributeDefaultFC_(ALL_SIDES_VALID_BUT[mFluidDir], aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther);
 					// 所有事完成，退出
 					return;
 				}

@@ -91,7 +91,6 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 	protected boolean mCROut = F;
 	protected final static float MARK_LENGTH = UT_CH.Code.RENDER_EPS * 2.0F;
 	protected boolean mCRDataUpdated = F;
-	protected long oTimer = 0;
 	// 用于表示需要合并渲染的边（前一个或两个），顺序为 x z y 轴，并且 Diameter 等于自身的优先
 	byte[] mCSides = {SIDE_INVALID, SIDE_INVALID, SIDE_INVALID, SIDE_INVALID, SIDE_INVALID, SIDE_INVALID};
 	byte mConnectionsNoShrink = 0;
@@ -261,12 +260,10 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 				if (mDiameter < 1.0F && driedFoam(SIDE_ANY)) for (byte tSide : ALL_SIDES_VALID) if (connected(tSide)) mCRLengths[tSide] = UT_CH.Code.RENDER_EPS;
 			}
 		} else
-		// 在 render 的部分进行数据更新，放弃了原本的优化思路（其实这些优化都没什么用）
-		if (!mCRDataUpdated || oTimer != mTimer) {
-			// 保证每 tick 只更新一次
+		// 在 render 的部分进行数据更新
+		if (!mCRDataUpdated) {
 			updateCRData();
 			mCRDataUpdated = T;
-			oTimer = mTimer;
 		}
 
 		return getRenderPasses3(aBlock, aShouldSideBeRendered);
@@ -635,6 +632,8 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 		// 朝向改变，需要更新渲染数据
 		mCRDataUpdated = F;
 	}
+	// 相邻方块改变，需要更新渲染数据
+	@Override public void onAdjacentBlockChange2(int aTileX, int aTileY, int aTileZ) {if (isClientSide()) mCRDataUpdated = F;}
 
 	@Override public float getSurfaceSize           (byte aSide) {return (mFoam || mFoamDried) ? 1.0F : mDiameter;}
 	@Override public float getSurfaceSizeAttachable (byte aSide) {return mDiameter;}

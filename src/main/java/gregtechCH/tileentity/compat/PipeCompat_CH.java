@@ -9,6 +9,7 @@ import gregtechCH.tileentity.connectors.ITEInterceptAutoConnectItem_CH;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCauldron;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -110,6 +111,8 @@ public class PipeCompat_CH {
             if (aTarget.mTileEntity instanceof ITileEntityCanDelegate) return T;
             if (((ISidedInventory)aTarget.mTileEntity).getAccessibleSlotsFromSide(aSide).length > 0) return T;
         }
+        // ST.canConnect 的部分检测
+        if (aTarget.mTileEntity instanceof IInventory && ((IInventory)aTarget.mTileEntity).getSizeInventory() > 0) return T;
         return F;
     }
     // 特殊的需要能够连接的检测
@@ -121,8 +124,10 @@ public class PipeCompat_CH {
             if (tPipe.hasBlockingPluggable(FORGE_DIR[aSide])) return F;
             return T;
         }
-        // greg 提供的兼容接口
-        if (ST.canConnect(aTarget)) return T;
+        // ST.canConnect 的部分检测
+        if (ST.TE_PIPES && aTarget.mTileEntity instanceof cofh.api.transport.IItemDuct) return T;
+        if (ST.BC_PIPES && aTarget.mTileEntity instanceof buildcraft.api.transport.IInjectable) return ((buildcraft.api.transport.IInjectable)aTarget.mTileEntity).canInjectItems(aTarget.getForgeSideOfTileEntity());
+        if (aTarget.mTileEntity instanceof ITileEntityCanDelegate && ((ITileEntityCanDelegate)aTarget.mTileEntity).isExtender(aTarget.mSideOfTileEntity)) return T;
         // TODO 更多 mod 的管道兼容
         return F;
     }

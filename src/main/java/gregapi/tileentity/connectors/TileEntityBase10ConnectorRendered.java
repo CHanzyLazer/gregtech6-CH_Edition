@@ -165,9 +165,9 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 			mCROut = F;
 			for (byte tSide : ALL_SIDES_VALID) if (connected(tSide)) {
 				// 接小管道时连接面能正确渲染
-				if (mCRDiameters[tSide] < mDiameter && mCRLengths[tSide] >= 0.0F) mCRLengths[tSide] = Math.max(mCRLengths[tSide], MARK_LENGTH + 0.001F);
+				if (mCRDiameters[tSide] < mDiameter && mCRLengths[tSide] >= 0.0F) mCRLengths[tSide] = Math.max(mCRLengths[tSide], MARK_LENGTH+UT_CH.Code.RENDER_EPS);
 				// 让巨型管道的加长部分不易出现渲染 bug
-				if (mCRLengths[tSide] > RENDER_LENGTH && mCRDiameters[tSide] >= 1.0F) mCRDiameters[tSide] = 0.999F;
+				if (mCRLengths[tSide] > RENDER_LENGTH && mCRDiameters[tSide] >= 1.0F) mCRDiameters[tSide] = 1.0F-UT_CH.Code.RENDER_EPS;
 				mCROut |= mCRLengths[tSide] > MARK_LENGTH;
 			}
 		} else
@@ -178,7 +178,7 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 				// 让上建筑泡沫后管道会露出一部分
 				if (mCRLengths[tSide] >= 0.0F) mCRLengths[tSide] = Math.max(mCRLengths[tSide], 0.001F);
 				// 让干建筑泡沫接小管道时连接面能正确渲染
-				if (driedFoam(tSide) && mCRDiameters[tSide] < mDiameter && mCRLengths[tSide] >= 0.0F) mCRLengths[tSide] = Math.max(mCRLengths[tSide], MARK_LENGTH + 0.001F);
+				if (driedFoam(tSide) && mCRDiameters[tSide] < mDiameter && mCRLengths[tSide] >= 0.0F) mCRLengths[tSide] = Math.max(mCRLengths[tSide], MARK_LENGTH+UT_CH.Code.RENDER_EPS);
 				mCROut |= mCRLengths[tSide] > MARK_LENGTH;
 			}
 		} else
@@ -240,7 +240,14 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 			updateClientData();
 		}
 	}
-	
+
+	/*
+	 * RenderPass:
+	 * 0:    管道中心主体（如果有合并的则包含合并的部分）或者巨型管道或者干掉的建筑泡沫
+	 * 1-6:  一般管道的侧边连接部分（不能合并的部分）或者建筑泡沫干掉后的覆盖材质
+	 * 7:    未干的建筑泡沫
+	 * 8-13: 延长到其他方块的部分或者巨型管道连接小管道时的收缩材质
+	 * */
 	@Override
 	public final int getRenderPasses2(Block aBlock, boolean[] aShouldSideBeRendered) {
 		if (worldObj == null) {
@@ -251,7 +258,7 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 				mMergeCount = 2;
 			} else {
 				for (byte tSide : ALL_SIDES_VALID) mCRDiameters[tSide] = mDiameter;
-				if (mDiameter < 1.0F && driedFoam(SIDE_ANY)) for (byte tSide : ALL_SIDES_VALID) if (connected(tSide)) mCRLengths[tSide] = 0.001F;
+				if (mDiameter < 1.0F && driedFoam(SIDE_ANY)) for (byte tSide : ALL_SIDES_VALID) if (connected(tSide)) mCRLengths[tSide] = UT_CH.Code.RENDER_EPS;
 			}
 		} else
 		// 在 render 的部分进行数据更新，放弃了原本的优化思路（其实这些优化都没什么用）
@@ -286,33 +293,7 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 		if (driedFoam(SIDE_ANY)) {
 			if (aRenderPass == 0) return F;
 			if (aRenderPass <= 6 && aRenderPass >= 1) {
-				return setBlockBoundsSide(aBlock, (byte)(aRenderPass-1), mDiameter, 0.0F, 0.001F);
-			}
-			return F;
-		}
-		// 一般管道的情况
-		if (mDiameter < 1.0F) {
-			if (aRenderPass == 0) {
-				// 不使用方法为了防止超出数组的调用
-				switch (mMergeCount) {
-					case 0 : return setBlockBoundsDefault(aBlock, mDiameter);
-					case 1 : return setBlockBoundsSide(aBlock, mCSides[0], mDiameter, (1.0F+mDiameter)/2.0F, mCRLengths[mCSides[0]]<=MARK_LENGTH?mCRLengths[mCSides[0]]:0.0F);
-					case 2 : return setBlockBoundsSide(aBlock, mCSides[0], mDiameter, 1.0F+(mCRLengths[mCSides[1]]<=MARK_LENGTH?mCRLengths[mCSides[1]]:0.0F), mCRLengths[mCSides[0]]<=MARK_LENGTH?mCRLengths[mCSides[0]]:0.0F);
-					default: return F;
-				}
-			}
-			if (aRenderPass <= 6 && aRenderPass >= 1) {
-				return setBlockBoundsSide(aBlock, mCSides[aRenderPass-1], mCRDiameters[mCSides[aRenderPass-1]], (1.0F- mCRDiameters[mCSides[aRenderPass-1]])/2.0F, mCRLengths[mCSides[aRenderPass-1]]<=MARK_LENGTH?mCRLengths[mCSides[aRenderPass-1]]:0.0F);
-			}
-			return F;
-		}
-		// 巨型管道的情况
-		if (mDiameter >= 1.0F) return F;
-		// 建筑泡沫干掉的情况，注意 mCSides 此时没有意义
-		if (driedFoam(SIDE_ANY)) {
-			if (aRenderPass == 0) return F;
-			if (aRenderPass <= 6 && aRenderPass >= 1) {
-				return setBlockBoundsSide(aBlock, (byte)(aRenderPass-1), mDiameter, 0.0F, 0.001F);
+				return setBlockBoundsSide(aBlock, (byte)(aRenderPass-1), mDiameter, 0.0F, UT_CH.Code.RENDER_EPS);
 			}
 			return F;
 		}
@@ -442,7 +423,7 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 		}
 		return null;
 	}
-	
+
 	@Override public boolean usesRenderPass2(int aRenderPass, boolean[] aShouldSideBeRendered) {
 		// 将不用渲染的直接不提供 RenderPass
 		if (aRenderPass == 0) return T;

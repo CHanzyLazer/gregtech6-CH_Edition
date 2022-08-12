@@ -27,6 +27,7 @@ import gregapi.network.INetworkHandler;
 import gregapi.network.IPacket;
 import gregapi.tileentity.ITileEntitySynchronising;
 import gregapi.util.WD;
+import gregtechCH.tileentity.ITEScheduledUpdate_CH;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 
@@ -35,7 +36,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
  * 
  * TileEntity with Network Code
  */
-public abstract class TileEntityBase03TicksAndSync extends TileEntityBase02AdjacentTEBuffer implements ITileEntitySynchronising {
+public abstract class TileEntityBase03TicksAndSync extends TileEntityBase02AdjacentTEBuffer implements ITEScheduledUpdate_CH, ITileEntitySynchronising {
 	/** Gets set if/when needed. */
 	public UUID mOwner = null;
 	
@@ -139,6 +140,8 @@ public abstract class TileEntityBase03TicksAndSync extends TileEntityBase02Adjac
 		}
 		mIsRunningTick = F;
 	}
+
+//	@Override public boolean canUpdate2() {return isServerSide();}
 	
 	/** Used to reset all Variables which have something to do with the detection of Changes. A super Call is important for this one! */
 	public void onTickResetChecks(long aTimer, boolean aIsServerSide) {mBlockUpdated = F;}

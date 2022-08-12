@@ -32,6 +32,7 @@ import gregapi.tileentity.multiblocks.IMultiBlockFluidHandler;
 import gregapi.util.UT;
 import gregtechCH.data.LH_CH;
 import gregtechCH.fluid.IFluidHandler_CH;
+import gregtechCH.tileentity.ITileEntityName_CH;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -48,7 +49,7 @@ import static gregtechCH.data.CS_CH.*;
 /**
  * @author Gregorius Techneticies
  */
-public class MultiTileEntityLargeTurbineSteam_CH extends MultiTileEntityLargeMotor_CH implements IMultiBlockFluidHandler, IFluidHandler_CH {
+public class MultiTileEntityLargeTurbineSteam_CH extends MultiTileEntityLargeMotor_CH implements IMultiBlockFluidHandler, IFluidHandler_CH, ITileEntityName_CH {
 	public FluidTankGT[] mTanks = new FluidTankGT[] {new FluidTankGT(0), new FluidTankGT(0)};
 	public long pSteam = 0, mOutputSU = 0, mSteamCounter = 0;
 	protected int STEAM_PER_WATER_SELF = 170;
@@ -327,12 +328,12 @@ public class MultiTileEntityLargeTurbineSteam_CH extends MultiTileEntityLargeMot
 	@Override public Collection<TagData> getEnergyTypes(byte aSide) {return new ArrayListNoNulls<>(F, mEnergyTypeAccepted, mEnergyTypeEmitted);}
 
 	// Icons，图像动画
-	public static final IIconContainer mTextureInactive = new Textures.BlockIcons.CustomIcon("machines/multiblockmains/turbine");
+	public static final IIconContainer mTextureInactive	= new Textures.BlockIcons.CustomIcon("machines/multiblockmains/turbine");
 	public static final IIconContainer mTextureActive   = new Textures.BlockIcons.CustomIcon("machines/multiblockmains/turbine_active");
 	public static final IIconContainer mTexturePreheat  = new Textures.BlockIcons.CustomIcon("machines/multiblockmains/turbine_preheat");
-	public static final IIconContainer mTextureActiveL   = new Textures.BlockIcons.CustomIcon("machines/multiblockmains/turbine_active_l");
-	public static final IIconContainer mTexturePreheatL  = new Textures.BlockIcons.CustomIcon("machines/multiblockmains/turbine_preheat_l");
-	public static final IIconContainer mTextureOutput  = new Textures.BlockIcons.CustomIcon("machines/multiblockparts/metalwalldense/3/overlay/top");
+	public static final IIconContainer mTextureActiveL	= new Textures.BlockIcons.CustomIcon("machines/multiblockmains/turbine_active_l");
+	public static final IIconContainer mTexturePreheatL	= new Textures.BlockIcons.CustomIcon("machines/multiblockmains/turbine_preheat_l");
+	public static final IIconContainer mTextureOutput  	= new Textures.BlockIcons.CustomIcon("machines/multiblockparts/metalwalldense/3/overlay/top");
 	@Override
 	public IIconContainer getIIconContainer(IconType aIconType) {
 		switch (aIconType) {
@@ -346,7 +347,8 @@ public class MultiTileEntityLargeTurbineSteam_CH extends MultiTileEntityLargeMot
 		}
 	}
 
-	@Override public String getTileEntityName() {return "gtch.multitileentity.multiblock.turbine.steam";}
+	@Override public String getTileEntityName() {return "gt.multitileentity.multiblock.turbine.steam";}
+	@Override public String getTileEntityName_CH() {return "gtch.multitileentity.multiblock.turbine.steam";}
 
 	@Override
 	public boolean canFillExtra(FluidStack aFluid) {

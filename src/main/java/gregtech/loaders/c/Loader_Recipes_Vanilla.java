@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,22 +19,9 @@
 
 package gregtech.loaders.c;
 
-import static gregapi.data.CS.*;
-import static gregapi.data.OP.*;
-import static gregapi.util.CR.*;
-
 import gregapi.block.metatype.BlockStones;
 import gregapi.config.ConfigCategories;
-import gregapi.data.ANY;
-import gregapi.data.CS.BlocksGT;
-import gregapi.data.CS.ConfigsGT;
-import gregapi.data.CS.FluidsGT;
-import gregapi.data.CS.OreDictToolNames;
-import gregapi.data.FL;
-import gregapi.data.IL;
-import gregapi.data.MT;
-import gregapi.data.OD;
-import gregapi.data.RM;
+import gregapi.data.*;
 import gregapi.oredict.OreDictMaterial;
 import gregapi.util.CR;
 import gregapi.util.OM;
@@ -44,8 +31,15 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
+import static gregapi.data.CS.*;
+import static gregapi.data.OP.*;
+import static gregapi.util.CR.*;
+
 public class Loader_Recipes_Vanilla implements Runnable {
 	@Override public void run() {
+		RM.rem_smelting(ST.make(Items.bone, 1, W), ST.make(Items.slime_ball, 1, W));
+		RM.rem_smelting(ST.make(Items.dye , 1, W), ST.make(Items.slime_ball, 1, W));
+		
 		CR.remove(ST.make(Items.reeds, 1, 0));
 		CR.remove(ST.make(Items.reeds, 1, 0), ST.make(Items.reeds, 1, 0), ST.make(Items.reeds, 1, 0));
 		CR.remove(ST.make(Blocks.cobblestone, 1, 0), ST.make(Items.quartz, 1, 0), NI, ST.make(Items.quartz, 1, 0), ST.make(Blocks.cobblestone, 1, 0));
@@ -82,6 +76,12 @@ public class Loader_Recipes_Vanilla implements Runnable {
 		if (!ConfigsGT.RECIPES.get(ConfigCategories.Recipes.recipereplacements, "Iron.Bucket", T))
 		CR.shaped(ST.make(Items.bucket, 1, 0), DEF | DEL_OTHER_SHAPED_RECIPES, "X X", " X ", 'X', ingot.dat(ANY.Fe));
 		
+		if (ConfigsGT.RECIPES.get(ConfigCategories.Recipes.recipereplacements, "Iron.Anvil", T)) {
+			CR.shaped(ST.make(Blocks.anvil, 1, 0), DEF | DEL_OTHER_SHAPED_RECIPES, "BBB", " Ih", "III", 'B', blockIngot.dat(ANY.Fe), 'I', ingot.dat(ANY.Fe));
+		} else {
+			CR.shaped(ST.make(Blocks.anvil, 1, 0), DEF | DEL_OTHER_SHAPED_RECIPES, "BBB", " I ", "III", 'B', blockIngot.dat(ANY.Fe), 'I', ingot.dat(ANY.Fe));
+		}
+		
 		ItemStack tMat = ST.make(Items.iron_ingot, 1, 0), tStack;
 		if (ConfigsGT.RECIPES.get(ConfigCategories.Recipes.recipereplacements, "Iron.PressurePlate", T))    if (null != (tStack = CR.remove(tMat, tMat, null, null, null, null, null, null, null))) {
 			CR.shaped(tStack, DEF | DEL_OTHER_SHAPED_RECIPES, "XXh", 'X', plate.dat(ANY.Fe), 'S', OD.stickAnyWood, 'I', ingot.dat(ANY.Fe));
@@ -92,10 +92,11 @@ public class Loader_Recipes_Vanilla implements Runnable {
 			CR.shaped(ST.make(Items.compass, 1, 0), DEF | DEL_OTHER_SHAPED_RECIPES | ONLY_IF_HAS_OTHER_RECIPES, " X ", "XRX", " X ", 'X', ingot.dat(ANY.Fe), 'R', OD.itemRedstone);
 		}
 		if (ConfigsGT.RECIPES.get(ConfigCategories.Recipes.recipereplacements, "Iron.Door", T)) {
-			CR.shaped(ST.make(Items.iron_door, 3, 0), DEF | DEL_OTHER_SHAPED_RECIPES | ONLY_IF_HAS_OTHER_RECIPES, "XX ", "XXh", "XX ", 'X', plate.dat(ANY.Fe));
+			CR.shaped(ST.make(Items.iron_door, 1, 0), DEF | DEL_OTHER_SHAPED_RECIPES | ONLY_IF_HAS_OTHER_RECIPES, "XX ", "XXh", "XX ", 'X', plate.dat(ANY.Fe));
 		} else {
-			CR.shaped(ST.make(Items.iron_door, 3, 0), DEF | DEL_OTHER_SHAPED_RECIPES | ONLY_IF_HAS_OTHER_RECIPES, "II" , "II" , "II" , 'I', ingot.dat(ANY.Fe));
+			CR.shaped(ST.make(Items.iron_door, 1, 0), DEF | DEL_OTHER_SHAPED_RECIPES | ONLY_IF_HAS_OTHER_RECIPES, "II" , "II" , "II" , 'I', ingot.dat(ANY.Fe));
 		}
+		
 		if (ConfigsGT.RECIPES.get(ConfigCategories.Recipes.recipereplacements, "Iron.Cauldron", T))         if (null != (tStack = CR.remove(tMat, null, tMat, tMat, null, tMat, tMat, tMat, tMat))) {
 			CR.shaped(tStack, DEF | DEL_OTHER_SHAPED_RECIPES, "X X", "XhX", "XXX", 'X', plate.dat(ANY.Fe), 'S', OD.stickAnyWood, 'I', ingot.dat(ANY.Fe));
 		}
@@ -191,8 +192,8 @@ public class Loader_Recipes_Vanilla implements Runnable {
 		CR.shaped(IL.Stick.get(1), DEF, "k", "X", 'X', treeSapling);
 		
 		// Normal Torches need to be the absolute last in this Array!
-		IL[] tItems = new IL[] {IL.NeLi_Bonetorch, IL.Torch};
-		Object[] tSticks = new Object[] {Items.bone, OD.stickAnyWood};
+		IL[] tItems = new IL[] {IL.NeLi_Bonetorch, IL.TiC_Stonetorch, IL.Torch};
+		Object[] tSticks = new Object[] {Items.bone, OP.stick.dat(ANY.Stone), OD.stickAnyWood};
 		
 		for (int i = 0; i < tItems.length; i++) if (tItems[i].exists()) {
 			// Torches, lots and lots of Torches.
@@ -496,8 +497,9 @@ public class Loader_Recipes_Vanilla implements Runnable {
 		CR.shapeless(ST.make(Items.dye, 3, DYE_INDEX_Magenta    ), DEF, new Object[] {DYE_OREDICTS_MIXABLE[DYE_INDEX_Blue   ], DYE_OREDICTS_MIXABLE[DYE_INDEX_Red   ], DYE_OREDICTS_MIXABLE[DYE_INDEX_Pink]});
 		CR.shapeless(ST.make(Items.dye, 4, DYE_INDEX_Magenta    ), DEF, new Object[] {DYE_OREDICTS_MIXABLE[DYE_INDEX_Blue   ], DYE_OREDICTS_MIXABLE[DYE_INDEX_Red   ], DYE_OREDICTS_MIXABLE[DYE_INDEX_Red], DYE_OREDICTS_MIXABLE[DYE_INDEX_White]});
 		
-		CR.shaped(toolHeadArrow.mat(MT.Flint, 4), DEF, "fX", 'X', OD.itemFlint);
-		RM.Sharpening   .addRecipe1(T, 16,  64, ST.make(Items.flint, 1, W), toolHeadArrow.mat(MT.Flint, 4));
+		CR.shaped(toolHeadArrow.mat(MT.Flint, 6), DEF, "fX", 'X', OD.itemFlint);
+		CR.shaped(toolHeadArrow.mat(MT.Flint, 4), DEF, "RX", 'X', OD.itemFlint, 'R', OD.itemRock);
+		RM.Sharpening   .addRecipe1(T, 16,  64, ST.make(Items.flint, 1, W), toolHeadArrow.mat(MT.Flint, 8), dustTiny.mat(MT.Flint, 1));
 		RM.Sharpening   .addRecipe1(T, 16,  64, ST.make(Blocks.glass_pane, 1, W), lens.mat(MT.Glass, 1));
 		
 		RM.Lathe        .addRecipe1(T, 16,  16, ST.make(Blocks.glass_pane, 1, W), lens.mat(MT.Glass, 1), dustSmall.mat(MT.Glass, 1));
@@ -875,7 +877,7 @@ public class Loader_Recipes_Vanilla implements Runnable {
 		RM.Electrolyzer .addRecipe2(T, 64,   64, ST.tag(0), OM.dust(MT.Sand), OM.dust(MT.SiO2));
 		
 		RM.Centrifuge   .addRecipe1(T, 16,   16, OM.dust(MT.SlimyBone), NF, FL.Slime_Green.make(250), OM.dust(MT.Bone));
-		RM.Centrifuge   .addRecipe1(T, 16,   16, ST.make(Items.magma_cream, 1, W), NF, FL.Slime_Green.make(250), ST.make(Items.blaze_powder, 1, 0));
+		RM.Centrifuge   .addRecipe1(T, 16,   16, ST.make(Items.magma_cream, 1, W), NF, FL.Slime_Green.make(125), ST.make(Items.blaze_powder, 1, 0));
 		for (String tFluid : FluidsGT.SLIME) if (FL.exists(tFluid)) {
 		RM.Centrifuge   .addRecipe0(T, 16,   64, FL.make(tFluid, 250), FL.Latex.make(L/2), FL.Glue.make(250));
 		RM.Mixer        .addRecipe1(T, 16,   16, OM.dust(MT.Blaze, U9), FL.make(tFluid, 250), NF, ST.make(Items.magma_cream, 1, 0));

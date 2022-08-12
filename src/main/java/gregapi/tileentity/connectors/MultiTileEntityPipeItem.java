@@ -55,6 +55,7 @@ import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.tileentity.delegate.ITileEntityCanDelegate;
 import gregapi.util.ST;
 import gregapi.util.UT;
+import gregtechCH.tileentity.compat.PipeCompat_CH;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -258,15 +259,16 @@ public class MultiTileEntityPipeItem extends TileEntityBase10ConnectorRendered i
 	@Override public int[] getAccessibleSlotsFromSide2(byte aSide) {return ACCESSIBLE_SLOTS;}
 	@Override public int getMinimumInventorySize() {return 1;}
 	@Override public boolean canDrop(int aInventorySlot) {return T;}
-	@Override public boolean isObstructingBlockAt(byte aSide) {return mBlocking;} // Btw, Wires have this but Pipes don't. This is because Wires are flexible, while Pipes aren't.
+	@Override public boolean isObstructingBlockAt2(byte aSide) {return mBlocking;} // Btw, Wires have this but Pipes don't. This is because Wires are flexible, while Pipes aren't.
 	@Override public boolean canInsertItem2(int aSlot, ItemStack aStack, byte aSide) {if (!connected(aSide) || FACE_CONNECTED[aSide][mDisabledInputs]) return F; if (!UT.Code.containsSomething(getInventory())) mLastReceivedFrom = aSide; return mLastReceivedFrom == aSide && !slotHas(aSlot);}
 	@Override public boolean canExtractItem2(int aSlot, ItemStack aStack, byte aSide) {return SIDES_INVALID[aSide] || connected(aSide);}
 	@Override public ItemStack[] getDefaultInventory(NBTTagCompound aNBT) {ItemStack[] rStack = super.getDefaultInventory(aNBT); ACCESSIBLE_SLOTS = new int[rStack.length]; for (int i = 0; i < ACCESSIBLE_SLOTS.length; i++) ACCESSIBLE_SLOTS[i] = i; return rStack;}
 	
 	@Override public boolean canEmitItemsTo                 (byte aSide, Object aSender) {return (aSender != this || aSide != mLastReceivedFrom) && connected(aSide);}
 	@Override public boolean canAcceptItemsFrom             (byte aSide, Object aSender) {return connected(aSide);}
-	
-	@Override public boolean canConnect                     (byte aSide, DelegatorTileEntity<TileEntity> aDelegator) {return aDelegator.mTileEntity instanceof ISidedInventory ? aDelegator.mTileEntity instanceof ITileEntityCanDelegate || ((ISidedInventory)aDelegator.mTileEntity).getAccessibleSlotsFromSide(aDelegator.mSideOfTileEntity).length > 0 : ST.canConnect(aDelegator);}
+
+	@Override public boolean canConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator)     {return PipeCompat_CH.canConnectItem(this, aDelegator, aDelegator.mSideOfTileEntity);}
+	@Override public boolean canAutoConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator) {return PipeCompat_CH.canAutoConnectItem(this, aDelegator, aDelegator.mSideOfTileEntity);}
 	
 	@Override public long getProgressValue                  (byte aSide) {return getPipeContent()*64;}
 	@Override public long getProgressMax                    (byte aSide) {return getMaxPipeCapacity()*64;}
@@ -295,6 +297,6 @@ public class MultiTileEntityPipeItem extends TileEntityBase10ConnectorRendered i
 	
 	@Override public String getFacingTool() {return TOOL_wrench;}
 	@Override public boolean isUsingWrenchingOverlay(ItemStack aStack, byte aSide) {return super.isUsingWrenchingOverlay(aStack, aSide) || ToolsGT.contains(TOOL_monkeywrench, aStack);}
-	
+
 	@Override public String getTileEntityName() {return "gt.multitileentity.connector.pipe.item";}
 }

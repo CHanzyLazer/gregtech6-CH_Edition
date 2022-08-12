@@ -106,7 +106,7 @@ public class MultiTileEntityWireLaser extends TileEntityBase10ConnectorRendered 
 	@Override public long getEnergySizeInputMax(TagData aEnergyType, byte aSide) {return Long.MAX_VALUE;}
 	
 	@Override public boolean canDrop(int aInventorySlot) {return F;}
-	@Override public boolean isObstructingBlockAt(byte aSide) {return F;} // Btw, Wires have this but Pipes don't. This is because Wires are flexible, while Pipes aren't.
+	@Override public boolean isObstructingBlockAt2(byte aSide) {return F;} // Btw, Wires have this but Pipes don't. This is because Wires are flexible, while Pipes aren't.
 	
 	@Override public boolean isEnergyConducting(TagData aEnergyType) {return aEnergyType == TD.Energy.LU;}
 	@Override public long getEnergyMaxSize(TagData aEnergyType) {return aEnergyType == TD.Energy.LU ? Long.MAX_VALUE : 0;}

@@ -20,9 +20,12 @@
 package gregtech.tileentity.portals;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.COLOR_GLOWSTONE;
 
 import java.util.List;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.code.ArrayListNoNulls;
 import gregapi.data.IL;
 import gregapi.data.LH;
@@ -132,6 +135,8 @@ public class MultiTileEntityMiniPortalAether extends MultiTileEntityMiniPortal {
 	public ITexture sAetherPortal = BlockTextureCopied.get(ST.block(MD.AETHER, "aetherPortal", Blocks.portal), SIDE_ANY, 0, UNCOLOURED, F, T, T), sAetherPortalFrame = BlockTextureCopied.get(Blocks.glowstone, SIDE_ANY, 0, UNCOLOURED, F, F, F);
 	@Override public ITexture getPortalTexture() {return sAetherPortal;}
 	@Override public ITexture getFrameTexture() {return sAetherPortalFrame;}
+
+	@SideOnly(Side.CLIENT) @Override public int colorMultiplier() {return COLOR_GLOWSTONE;}
 	
 	@Override public String getTileEntityName() {return "gt.multitileentity.portal.aether";}
 }

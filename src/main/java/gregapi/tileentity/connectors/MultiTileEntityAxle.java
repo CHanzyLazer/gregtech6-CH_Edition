@@ -76,7 +76,7 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 	public void readFromNBT2(NBTTagCompound aNBT) {
 		super.readFromNBT2(aNBT);
 		if (aNBT.hasKey(NBT_ACTIVE_DATA)) mRotationDir = aNBT.getByte(NBT_ACTIVE_DATA);
-		if (aNBT.hasKey(NBT_ENERGY_EMITTED_SIDES)) mEnergyDir = aNBT.getByte(NBT_ENERGY_EMITTED_SIDES);
+		if (aNBT.hasKey(NBT_ENERGY_EMITTED_SIDES)) mEnergyDir = (byte) UT_CH.NBT.getItemNumber(aNBT.getByte(NBT_ENERGY_EMITTED_SIDES));
 		if (aNBT.hasKey(NBT_PIPESIZE)) mSpeed = Math.max(1, aNBT.getLong(NBT_PIPESIZE));
 		if (aNBT.hasKey(NBT_PIPEBANDWIDTH)) mPower = Math.max(1, aNBT.getLong(NBT_PIPEBANDWIDTH));
 	}
@@ -85,13 +85,15 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 	public void writeToNBT2(NBTTagCompound aNBT) {
 		super.writeToNBT2(aNBT);
 		aNBT.setByte(NBT_ACTIVE_DATA, mRotationDir);
-		aNBT.setByte(NBT_ENERGY_EMITTED_SIDES, mEnergyDir);
+		// 默认值不为零（或者可能不为零）的需要专门设置
+		if (SIDES_VALID[mEnergyDir]) aNBT.setByte(NBT_ENERGY_EMITTED_SIDES, mEnergyDir);
 	}
 
 	@Override
 	public NBTTagCompound writeItemNBT2(NBTTagCompound aNBT) {
-		if (mFoamDried){
-			aNBT.setByte(NBT_ENERGY_EMITTED_SIDES, mEnergyDir);
+		if (isFoamDried()){
+			// 默认值不为零（或者可能不为零）的需要专门设置
+			if (SIDES_VALID[mEnergyDir]) aNBT.setByte(NBT_ENERGY_EMITTED_SIDES, (byte) UT_CH.NBT.toItemNumber(mEnergyDir));
 		}
 		return super.writeItemNBT2(aNBT);
 	}
@@ -137,7 +139,7 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 		}
 		if (aTool.equals(TOOL_magnifyingglass)) {
 			checkConnection();
-			if (mFoamDried) {
+			if (isFoamDried()) {
 				mMarkBuffer = 128;
 				mOutMark = T;
 			}
@@ -168,7 +170,7 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 			mPowerLast = mTransferredPower;
 			mStateSpeed = mTransferredPower = 0;
 
-			if (mFoamDried && mOutMark) {
+			if (isFoamDried() && mOutMark) {
 				--mMarkBuffer;
 				if (mMarkBuffer < 0) {
 					mOutMark = F;
@@ -180,7 +182,7 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 
 	@Override
 	protected int getRenderPasses3(Block aBlock, boolean[] aShouldSideBeRendered) {
-		if (worldObj == null && mFoamDried) mRGBaMark = UT_CH.Code.getMarkRGB(mRGBa);
+		if (worldObj == null && isFoamDried()) mRGBaMark = UT_CH.Code.getMarkRGB(mRGBa);
 		return super.getRenderPasses3(aBlock, aShouldSideBeRendered);
 	}
 	
@@ -264,7 +266,6 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 	@Override public long getEnergySizeInputMax(TagData aEnergyType, byte aSide) {return mSpeed;}
 	
 	@Override public boolean canDrop(int aInventorySlot) {return F;}
-	@Override public boolean isObstructingBlockAt(byte aSide) {return T;}
 	
 	@Override public boolean isEnergyConducting(TagData aEnergyType) {return aEnergyType == TD.Energy.RU;}
 	@Override public long getEnergyMaxSize(TagData aEnergyType) {return aEnergyType == TD.Energy.RU ? mSpeed : 0;}

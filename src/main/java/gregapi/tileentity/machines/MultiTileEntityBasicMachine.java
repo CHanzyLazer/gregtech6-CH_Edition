@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,27 +19,13 @@
 
 package gregapi.tileentity.machines;
 
-import static gregapi.data.CS.*;
-import static gregtechCH.data.CS_CH.NBT_CANFILL_STEAM;
-
-import java.util.Collection;
-import java.util.List;
-
 import buildcraft.api.tiles.IHasWork;
 import cpw.mods.fml.common.Optional;
 import gregapi.GT_API;
 import gregapi.block.multitileentity.MultiTileEntityRegistry;
 import gregapi.code.TagData;
-import gregapi.data.CS.FluidsGT;
-import gregapi.data.CS.GarbageGT;
-import gregapi.data.CS.ModIDs;
-import gregapi.data.CS.SFX;
-import gregapi.data.FL;
-import gregapi.data.IL;
-import gregapi.data.LH;
+import gregapi.data.*;
 import gregapi.data.LH.Chat;
-import gregapi.data.RM;
-import gregapi.data.TD;
 import gregapi.fluid.FluidTankGT;
 import gregapi.gui.ContainerClientBasicMachine;
 import gregapi.gui.ContainerCommonBasicMachine;
@@ -60,8 +46,11 @@ import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.util.ST;
 import gregapi.util.UT;
-import gregtechCH.data.LH_CH;
 import gregtechCH.fluid.IFluidHandler_CH;
+import gregtechCH.tileentity.connectors.ITEInterceptAutoConnectFluid_CH;
+import gregtechCH.tileentity.connectors.ITEInterceptAutoConnectItem_CH;
+import gregtechCH.tileentity.connectors.ITEInterceptModConnectFluid_CH;
+import gregtechCH.tileentity.connectors.ITEInterceptModConnectItem_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -70,11 +59,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
-import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.*;
+
+import java.util.Collection;
+import java.util.List;
+
+import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.NBT_CANFILL_STEAM;
 
 /**
  * @author Gregorius Techneticies
@@ -102,7 +93,7 @@ import net.minecraftforge.fluids.IFluidTank;
 @Optional.InterfaceList(value = {
 	@Optional.Interface(iface = "buildcraft.api.tiles.IHasWork", modid = ModIDs.BC)
 })
-public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle implements IHasWork, ITileEntityFunnelAccessible, ITileEntityTapAccessible, ITileEntitySwitchableOnOff, ITileEntityRunningSuccessfully, ITileEntityAdjacentInventoryUpdatable, ITileEntityEnergy, ITileEntityProgress, ITileEntityGibbl, IFluidHandler_CH {
+public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle implements ITEInterceptModConnectItem_CH, ITEInterceptModConnectFluid_CH, ITEInterceptAutoConnectItem_CH, ITEInterceptAutoConnectFluid_CH, IHasWork, ITileEntityFunnelAccessible, ITileEntityTapAccessible, ITileEntitySwitchableOnOff, ITileEntityRunningSuccessfully, ITileEntityAdjacentInventoryUpdatable, ITileEntityEnergy, ITileEntityProgress, ITileEntityGibbl, IFluidHandler_CH {
 	public boolean mCanFillSteam = F;
 
 	public boolean mSpecialIsStartEnergy = F, mNoConstantEnergy = F, mCheapOverclocking = F, mCouldUseRecipe = F, mStopped = F, oActive = F, oRunning = F, mStateNew = F, mStateOld = F, mDisabledItemInput = F, mDisabledItemOutput = F, mDisabledFluidInput = F, mDisabledFluidOutput = F, mRequiresIgnition = F, mParallelDuration = F, mCanUseOutputTanks = F;
@@ -469,7 +460,6 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 	public void onTickFirst2(boolean aIsServerSide) {
 		super.onTickFirst2(aIsServerSide);
 		if (aIsServerSide) {
-			updateAdjacentToggleableEnergySources();
 			if (checkStructure(T) && !mActive) checkRecipe(F, mRunning || mStopped);
 		}
 	}
@@ -589,6 +579,7 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 	
 	@Override
 	public IFluidTank getFluidTankFillable2(byte aSide, FluidStack aFluidToFill) {
+		if (!mDisabledFluidOutput && SIDES_VALID[mFluidAutoOutput] && FACING_TO_SIDE[mFacing][mFluidAutoOutput] == aSide) return null;
 		if (!FACE_CONNECTED[FACING_ROTATIONS[mFacing][aSide]][mFluidInputs]) return null;
 		for (int i = 0; i < mTanksInput.length; i++) if (mTanksInput[i].contains(aFluidToFill)) return mTanksInput[i];
 		if (!mRecipes.containsInput(aFluidToFill, this, slot(mRecipes.mInputItemsCount + mRecipes.mOutputItemsCount))) return null;
@@ -600,9 +591,9 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 	public IFluidTank getFluidTankDrainable2(byte aSide, FluidStack aFluidToDrain) {
 		if (!FACE_CONNECTED[FACING_ROTATIONS[mFacing][aSide]][mFluidOutputs]) return null;
 		if (aFluidToDrain == null) {
-			for (int i = 0; i < mTanksOutput.length; i++) if (mTanksOutput[i].has()) return mTanksOutput[i];
+			for (FluidTankGT fluidTankGT : mTanksOutput) if (fluidTankGT.has()) return fluidTankGT;
 		} else {
-			for (int i = 0; i < mTanksOutput.length; i++) if (mTanksOutput[i].contains(aFluidToDrain)) return mTanksOutput[i];
+			for (FluidTankGT fluidTankGT : mTanksOutput) if (fluidTankGT.contains(aFluidToDrain)) return fluidTankGT;
 		}
 		return null;
 	}
@@ -612,8 +603,8 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 		if (FACE_CONNECTED[FACING_ROTATIONS[mFacing][aSide]][mFluidInputs]) {
 			if (FACE_CONNECTED[FACING_ROTATIONS[mFacing][aSide]][mFluidOutputs]) {
 				IFluidTank[] rTanks = new IFluidTank[mTanksInput.length + mTanksOutput.length];
-				for (int i = 0; i < mTanksInput .length; i++) rTanks[i] = mTanksInput[i];
-				for (int i = 0; i < mTanksOutput.length; i++) rTanks[mTanksInput.length+i] = mTanksOutput[i];
+				System.arraycopy(mTanksInput, 0, rTanks, 0, mTanksInput.length);
+				System.arraycopy(mTanksOutput, 0, rTanks, mTanksInput.length, mTanksOutput.length);
 				return rTanks;
 			}
 			return mTanksInput;
@@ -621,7 +612,13 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 		if (FACE_CONNECTED[FACING_ROTATIONS[mFacing][aSide]][mFluidOutputs]) return mTanksOutput;
 		return ZL_FT;
 	}
-	
+	// GTCH, 阻止非自动输入输出面的自动连接
+	@Override public boolean interceptAutoConnectFluid(byte aSide) {if (SIDES_VALID[aSide] && (FACING_TO_SIDE[mFacing][mFluidAutoInput] == aSide || FACING_TO_SIDE[mFacing][mFluidAutoOutput] == aSide)) return F; else return T;}
+	@Override public boolean interceptAutoConnectItem(byte aSide)  {if (SIDES_VALID[aSide] && (FACING_TO_SIDE[mFacing][mItemAutoInput]  == aSide || FACING_TO_SIDE[mFacing][mItemAutoOutput]  == aSide)) return F; else return T;}
+	// GTCH, 不能输入和输出的面阻止 MOD 管道连接
+	@Override public boolean interceptModConnectItem(byte aSide)   {return !FACE_CONNECTED[FACING_ROTATIONS[mFacing][aSide]][mItemInputs]  && !FACE_CONNECTED[FACING_ROTATIONS[mFacing][aSide]][mItemOutputs];}
+	@Override public boolean interceptModConnectFluid(byte aSide)  {return !FACE_CONNECTED[FACING_ROTATIONS[mFacing][aSide]][mFluidInputs] && !FACE_CONNECTED[FACING_ROTATIONS[mFacing][aSide]][mFluidOutputs];}
+
 	@Override
 	public boolean breakBlock() {
 		setStateOnOff(T);
@@ -667,14 +664,14 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 		}
 		if (aRecipe.mFluidOutputs.length > 0) {
 			int tEmptyOutputTanks = 0, tRequiredEmptyTanks = aRecipe.mFluidOutputs.length;
-			for (int i = 0; i < mTanksOutput.length; i++) if (mTanksOutput[i].isEmpty()) tEmptyOutputTanks++; else if (aRecipe.mNeedsEmptyOutput || (mMode & 1) != 0) return 0;
+			for (FluidTankGT fluidTankGT : mTanksOutput) if (fluidTankGT.isEmpty()) tEmptyOutputTanks++; else if (aRecipe.mNeedsEmptyOutput || (mMode & 1) != 0) return 0;
 			// This optimisation would not work! The Tanks would not have an Output Amount Limiter if this was in the Code!
 			//if (tRequiredEmptyTanks <= tEmptyOutputTanks) {
 			for (int j = 0; j < aRecipe.mFluidOutputs.length; j++) {
 				if (aRecipe.mFluidOutputs[j] == null) {
 					tRequiredEmptyTanks--;
-				} else for (int i = 0; i < mTanksOutput.length; i++) if (mTanksOutput[i].contains(aRecipe.mFluidOutputs[j])) {
-					if (mTanksOutput[i].has(Math.max(16000, 1+aRecipe.mFluidOutputs[j].amount*mParallel)) && !FluidsGT.VOID_OVERFLOW.contains(aRecipe.mFluidOutputs[j].getFluid().getName())) return 0;
+				} else for (FluidTankGT fluidTankGT : mTanksOutput) if (fluidTankGT.contains(aRecipe.mFluidOutputs[j])) {
+					if (fluidTankGT.has(Math.max(16000, 1+aRecipe.mFluidOutputs[j].amount*mParallel)) && !FluidsGT.VOID_OVERFLOW.contains(aRecipe.mFluidOutputs[j].getFluid().getName())) return 0;
 					tRequiredEmptyTanks--;
 					break;
 				}
@@ -945,7 +942,7 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 			if (!mDisabledItemOutput) doOutputItems();
 		}
 		if (CONSTANT_ENERGY && !mNoConstantEnergy) mProgress = 0;
-		if (mRunning || mIgnited > 0 || mInventoryChanged || aTimer%1200 == 5) {
+		if (mRunning || mIgnited > 0 || mInventoryChanged || aTimer % 1200 == 5) {
 			if (!checkStructure(F)) checkStructure(T);
 			checkRecipe(F, T);
 		}
@@ -1063,8 +1060,8 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 	@Override public boolean hasWork() {return mMaxProgress > 0 || mChargeRequirement > 0;}
 	@Override public long getProgressValue(byte aSide) {return mSuccessful ? getProgressMax(aSide) : mMinEnergy < 1 ? mProgress    : mProgress    / mMinEnergy + (mProgress    % mMinEnergy == 0 ? 0 : 1) ;}
 	@Override public long getProgressMax  (byte aSide) {return Math.max(1,                           mMinEnergy < 1 ? mMaxProgress : mMaxProgress / mMinEnergy + (mMaxProgress % mMinEnergy == 0 ? 0 : 1));}
-	@Override public long getGibblValue   (byte aSide) {long rGibbl = 0; for (int i = 0; i < mTanksInput.length; i++) rGibbl += mTanksInput[i].amount  (); return rGibbl;}
-	@Override public long getGibblMax     (byte aSide) {long rGibbl = 0; for (int i = 0; i < mTanksInput.length; i++) rGibbl += mTanksInput[i].capacity(); return rGibbl;}
+	@Override public long getGibblValue   (byte aSide) {long rGibbl = 0; for (FluidTankGT fluidTankGT : mTanksInput) rGibbl += fluidTankGT.amount(); return rGibbl;}
+	@Override public long getGibblMax     (byte aSide) {long rGibbl = 0; for (FluidTankGT fluidTankGT : mTanksInput) rGibbl += fluidTankGT.capacity(); return rGibbl;}
 	
 	@Override public boolean getStateRunningPossible    () {return mCouldUseRecipe || mActive || mMaxProgress > 0 || mChargeRequirement > 0 || (mIgnited > 0 && !mDisabledItemOutput && mOutputBlocked != 0);}
 	@Override public boolean getStateRunningPassively   () {return mRunning;}

@@ -96,7 +96,7 @@ public interface IMultiTileEntity extends ITileEntitySpecificPlacementBehavior {
 	public static interface IMTE_GetExplosionResistance             extends IMultiTileEntity {public float getExplosionResistance(Entity aExploder, double aExplosionX, double aExplosionY, double aExplosionZ); public float getExplosionResistance();}
 	public static interface IMTE_IsSideSolid                        extends IMultiTileEntity {public boolean isSideSolid(byte aSide);}
 	public static interface IMTE_IsBeaconBase                       extends IMultiTileEntity {public boolean isBeaconBase(int aBeaconX, int aBeaconY, int aBeaconZ);}
-	public static interface IMTE_GetLightOpacity                    extends IMultiTileEntity {public int getLightOpacity();}
+	public static interface IMTE_GetLightOpacity                    extends IMultiTileEntity {public int getLightOpacity(); public void updateLightOpacity(); public void updateLightOpacity(int aOldOpacity);}
 	public static interface IMTE_GetBlocksMovement                  extends IMultiTileEntity {public boolean getBlocksMovement();}
 	public static interface IMTE_ShouldSideBeRendered               extends IMultiTileEntity {public boolean shouldSideBeRendered(byte aSide);}
 	public static interface IMTE_AddCollisionBoxesToList            extends IMultiTileEntity {public void addCollisionBoxesToList(AxisAlignedBB aAABB, List<AxisAlignedBB> aList, Entity aEntity);}
@@ -122,7 +122,7 @@ public interface IMultiTileEntity extends ITileEntitySpecificPlacementBehavior {
 	public static interface IMTE_OnBlockPreDestroy                  extends IMultiTileEntity {public void onBlockPreDestroy(int aMetaData);}
 	public static interface IMTE_FillWithRain                       extends IMultiTileEntity {public void fillWithRain();}
 	public static interface IMTE_GetComparatorInputOverride         extends IMultiTileEntity {public int getComparatorInputOverride(byte aSide);}
-	public static interface IMTE_GetLightValue                      extends IMultiTileEntity {public int getLightValue();}
+	public static interface IMTE_GetLightValue                      extends IMultiTileEntity {public int getLightValue(); public void updateLightValue();}
 	public static interface IMTE_IsLadder                           extends IMultiTileEntity {public boolean isLadder(EntityLivingBase aEntity);}
 	public static interface IMTE_IsNormalCube                       extends IMultiTileEntity {public boolean isNormalCube();}
 	public static interface IMTE_IsReplaceable                      extends IMultiTileEntity {public boolean isReplaceable();}
@@ -160,7 +160,9 @@ public interface IMultiTileEntity extends ITileEntitySpecificPlacementBehavior {
 	public static interface IMTE_RegisterIcons                      extends IMultiTileEntity {@SideOnly(Side.CLIENT) public void registerIcons(IIconRegister aIconRegister);}
 	public static interface IMTE_AddHitEffects                      extends IMultiTileEntity {@SideOnly(Side.CLIENT) public boolean addHitEffects(World aWorld, MovingObjectPosition aTarget, EffectRenderer aRenderer);}
 	public static interface IMTE_AddDestroyEffects                  extends IMultiTileEntity {@SideOnly(Side.CLIENT) public boolean addDestroyEffects(int aMetaData, EffectRenderer aRenderer);}
-	
+    // GTCH, 使实体方块可以重写方块的附加颜色（主要是粒子特效的颜色）
+	public static interface IMTE_ColorMultiplier                    extends IMultiTileEntity {@SideOnly(Side.CLIENT) public int colorMultiplier();}
+
 	public static interface IMTE_SyncDataByte extends IMultiTileEntity {
 		/**
 		 * If you have something that causes a Crash here, the Connection gets terminated.

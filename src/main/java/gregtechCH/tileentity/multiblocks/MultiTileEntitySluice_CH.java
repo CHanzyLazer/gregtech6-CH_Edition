@@ -18,6 +18,7 @@
  */
 
 package gregtechCH.tileentity.multiblocks;
+import gregtech.tileentity.multiblocks.MultiTileEntitySluice;
 
 import gregapi.data.LH;
 import gregapi.data.LH.Chat;
@@ -26,7 +27,6 @@ import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.tileentity.machines.ITileEntityAdjacentOnOff;
 import gregapi.tileentity.multiblocks.ITileEntityMultiBlockController;
 import gregapi.tileentity.multiblocks.MultiTileEntityMultiBlockPart;
-import gregapi.tileentity.multiblocks.TileEntityBase10MultiBlockMachine;
 import gregapi.util.WD;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
@@ -49,7 +49,7 @@ public class MultiTileEntitySluice_CH extends TileEntityBase10MultiBlockMachine_
 		tMaxX = xCoord+(SIDE_X_POS==mFacing?0:SIDE_X_NEG==mFacing?6:1),
 		tMaxZ = zCoord+(SIDE_Z_POS==mFacing?0:SIDE_Z_NEG==mFacing?6:1),
 		tD = (mActive?mFacing+2:mFacing-2);
-		
+
 		if (worldObj.blockExists(tMinX, yCoord, tMinZ) && worldObj.blockExists(tMaxX, yCoord+2, tMaxZ)) {
 			boolean tSuccess = T;
 			for (int tX = tMinX; tX <= tMaxX; tX++) for (int tZ = tMinZ; tZ <= tMaxZ; tZ++) {
@@ -58,13 +58,13 @@ public class MultiTileEntitySluice_CH extends TileEntityBase10MultiBlockMachine_
 				} else {
 				if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX, yCoord  , tZ, 18006, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.NOTHING)) tSuccess = F;
 				}
-				
+
 				if (SIDES_AXIS_X[mFacing] ? Math.abs(tX-xCoord)==5 && tZ != zCoord : Math.abs(tZ-zCoord)==5 && tX != xCoord) {
 				if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX, yCoord+1, tZ, 18006, getMultiTileEntityRegistryID(), 3, MultiTileEntityMultiBlockPart.ONLY_ENERGY_IN)) tSuccess = F;
 				} else {
 				if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX, yCoord+1, tZ, 18006, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.NOTHING)) tSuccess = F;
 				}
-				
+
 				if (SIDES_AXIS_X[mFacing] ? Math.abs(tX-xCoord)==6 : Math.abs(tZ-zCoord)==6) {
 				if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX, yCoord+2, tZ, 18106, getMultiTileEntityRegistryID(),tD, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID_IN)) tSuccess = F;
 				} else {
@@ -75,7 +75,7 @@ public class MultiTileEntitySluice_CH extends TileEntityBase10MultiBlockMachine_
 		}
 		return mStructureOkay;
 	}
-	
+
 	static {
 		LH.add("gt.tooltip.multiblock.sluice.1", "Two 3x7 Layers of Titanium Walls");
 		LH.add("gt.tooltip.multiblock.sluice.2", "3x7 Layer of Sluice Parts ontop of that");
@@ -83,7 +83,7 @@ public class MultiTileEntitySluice_CH extends TileEntityBase10MultiBlockMachine_
 		LH.add("gt.tooltip.multiblock.sluice.4", "Input only at the Top of the Far Side");
 		LH.add("gt.tooltip.multiblock.sluice.5", "Output only at the Bottom of the Close Side");
 	}
-	
+
 	@Override
 	protected void toolTipsMultiblock(List<String> aList) {
 		aList.add(Chat.CYAN     + LH.get(LH.STRUCTURE) + ":");
@@ -93,7 +93,7 @@ public class MultiTileEntitySluice_CH extends TileEntityBase10MultiBlockMachine_
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.sluice.4"));
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.sluice.5"));
 	}
-	
+
 	@Override
 	public boolean isInsideStructure(int aX, int aY, int aZ) {
 		return
@@ -104,7 +104,7 @@ public class MultiTileEntitySluice_CH extends TileEntityBase10MultiBlockMachine_
 		aY <= yCoord+2 &&
 		aZ <= zCoord+(SIDE_Z_POS==mFacing?0:SIDE_Z_NEG==mFacing?6:1);
 	}
-	
+
 	@Override
 	public void updateAdjacentToggleableEnergySources() {
 		DelegatorTileEntity<TileEntity> tDelegator;
@@ -120,21 +120,22 @@ public class MultiTileEntitySluice_CH extends TileEntityBase10MultiBlockMachine_
 			if (tDelegator.mTileEntity instanceof ITileEntityAdjacentOnOff && tDelegator.mTileEntity instanceof ITileEntityEnergy && ((ITileEntityEnergy)tDelegator.mTileEntity).isEnergyEmittingTo(mEnergyTypeAccepted, tDelegator.mSideOfTileEntity, T)) ((ITileEntityAdjacentOnOff)tDelegator.mTileEntity).setAdjacentOnOff(getStateOnOff());
 		}
 	}
-	
+
 	@Override
 	public DelegatorTileEntity<IFluidHandler> getFluidOutputTarget(byte aSide, Fluid aOutput) {
 		return getAdjacentTank(SIDE_BOTTOM);
 	}
-	
+
 	@Override
 	public DelegatorTileEntity<TileEntity> getItemOutputTarget(byte aSide) {
 		return getAdjacentTileEntity(SIDE_BOTTOM);
 	}
-	
+
 	@Override public DelegatorTileEntity<IInventory> getItemInputTarget(byte aSide) {return null;}
 	@Override public DelegatorTileEntity<IFluidHandler> getFluidInputTarget(byte aSide) {return null;}
-	
+
 	@Override public boolean refreshStructureOnActiveStateChange() {return T;}
-	
-	@Override public String getTileEntityName() {return "gtch.multitileentity.multiblock.sluice";}
+
+	@Override public String getTileEntityName() {return "gt.multitileentity.multiblock.sluice";}
+	@Override public String getTileEntityName_CH() {return "gtch.multitileentity.multiblock.sluice";}
 }

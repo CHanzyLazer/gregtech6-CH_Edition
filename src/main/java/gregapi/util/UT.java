@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,41 +19,15 @@
 
 package gregapi.util;
 
-import static gregapi.data.CS.*;
-
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.text.DateFormat;
-import java.util.*;
-import java.util.Map.Entry;
-
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.GT_API;
-import gregapi.code.ArrayListNoNulls;
-import gregapi.code.ItemStackContainer;
-import gregapi.code.ModData;
-import gregapi.code.ObjectStack;
-import gregapi.code.TagData;
+import gregapi.code.*;
 import gregapi.damage.DamageSources;
-import gregapi.data.ANY;
-import gregapi.data.CS.ArmorsGT;
-import gregapi.data.CS.FluidsGT;
-import gregapi.data.CS.IconsGT;
-import gregapi.data.CS.ItemsGT;
-import gregapi.data.CS.PotionsGT;
-import gregapi.data.FL;
-import gregapi.data.IL;
-import gregapi.data.LH;
-import gregapi.data.MD;
-import gregapi.data.MT;
-import gregapi.data.OD;
-import gregapi.data.RM;
+import gregapi.data.*;
+import gregapi.data.CS.*;
 import gregapi.data.TC.TC_AspectStack;
-import gregapi.data.TD;
 import gregapi.enchants.Enchantment_Radioactivity;
 import gregapi.fluid.FluidGT;
 import gregapi.fluid.FluidTankGT;
@@ -81,25 +55,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.boss.EntityWither;
-import net.minecraft.entity.monster.EntityBlaze;
-import net.minecraft.entity.monster.EntityEnderman;
-import net.minecraft.entity.monster.EntityGhast;
-import net.minecraft.entity.monster.EntityIronGolem;
-import net.minecraft.entity.monster.EntityMagmaCube;
-import net.minecraft.entity.monster.EntityPigZombie;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.EntitySlime;
-import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.monster.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemHoe;
-import net.minecraft.item.ItemPickaxe;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
+import net.minecraft.item.*;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTBase.NBTPrimitive;
 import net.minecraft.nbt.NBTTagCompound;
@@ -109,26 +71,25 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.stats.AchievementList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.BlockFluidBase;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidContainerItem;
-import net.minecraftforge.fluids.IFluidHandler;
-import net.minecraftforge.fluids.IFluidTank;
 import twilightforest.TFAchievementPage;
+
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.text.DateFormat;
+import java.util.*;
+import java.util.Map.Entry;
+
+import static gregapi.data.CS.*;
+import static gregtechCH.threads.ThreadPools.SOUND_THREAD;
 
 /**
  * @author Gregorius Techneticies
@@ -1539,7 +1500,7 @@ public class UT {
 		
 		/** If this Index exists inside the passed Array and if it is != null */
 		public static <E> boolean exists(int aIndex, E[] aArray) {
-			return aIndex >= 0 && aIndex < aArray.length && aArray[aIndex] != null;
+			return aIndex >= 0 && aArray != null && aIndex < aArray.length && aArray[aIndex] != null;
 		}
 		
 		/** @return a Value for a Scale between 0 and aMax with aScale+1 possible Steps. 0 is only returned if the aValue is <= 0, aScale is only returned if the Value is >= aMax. The remaining values between ]0:aScale[ are returned for each Step of the Scale. This Function finds use in Displays such as the Barometer, but also in Redstone. */
@@ -1584,8 +1545,8 @@ public class UT {
 			for (int i = 0; i < aColors.length; i++) aColors[i] = bind8(aColors[i]);
 			return aColors;
 		}
-		
-		public static int mixRGBInt(int aRGB1, int aRGB2) {
+		// GTCH, 标记 private 防止后续更新调用
+		private static int mixRGBInt(int aRGB1, int aRGB2) {
 			return getRGBInt(new short[] {(short)((getR(aRGB1) + getR(aRGB2)) >> 1), (short)((getG(aRGB1) + getG(aRGB2)) >> 1), (short)((getB(aRGB1) + getB(aRGB2)) >> 1)});
 		}
 		
@@ -2010,9 +1971,9 @@ public class UT {
 		/** Saves on Data Size by choosing the smallest possible Data Type, and by also not adding zeros or negative Numbers. The regular getLong() Function can also get the other Number Types. */
 		public static NBTTagCompound setPosNum(NBTTagCompound aNBT, Object aTag, long aValue) {
 			if (aValue <= 0) {aNBT.removeTag(aTag.toString()); return aNBT;}
-			if (aValue > Integer.MAX_VALUE || aValue < Integer.MIN_VALUE) {aNBT.setLong(aTag.toString(), aValue); return aNBT;}
-			if (aValue > Short.MAX_VALUE || aValue < Short.MIN_VALUE) {aNBT.setInteger(aTag.toString(), (int)aValue); return aNBT;}
-			if (aValue > Byte.MAX_VALUE || aValue < Byte.MIN_VALUE) {aNBT.setShort(aTag.toString(), (short)aValue); return aNBT;}
+			if (aValue > Integer.MAX_VALUE) {aNBT.setLong(aTag.toString(), aValue); return aNBT;}
+			if (aValue > Short.MAX_VALUE) {aNBT.setInteger(aTag.toString(), (int)aValue); return aNBT;}
+			if (aValue > Byte.MAX_VALUE) {aNBT.setShort(aTag.toString(), (short)aValue); return aNBT;}
 			aNBT.setByte(aTag.toString(), (byte)aValue);
 			return aNBT;
 		}
@@ -2929,7 +2890,7 @@ public class UT {
 			EntityPlayer aPlayer = GT_API.api_proxy.getThePlayer();
 			if (aPlayer == null || !aPlayer.worldObj.isRemote || Code.stringInvalid(aSoundName)) return F;
 			if (MULTITHREADED)
-				new Thread(new ThreadedSound(aPlayer.worldObj, UT.Code.roundDown(aCoords.posX), UT.Code.roundDown(aCoords.posY), UT.Code.roundDown(aCoords.posZ), aTimeUntilNextSound, aSoundName, aSoundStrength, aSoundModulation), "Sound Effect").start();
+				SOUND_THREAD.execute(new ThreadedSound(aPlayer.worldObj, UT.Code.roundDown(aCoords.posX), UT.Code.roundDown(aCoords.posY), UT.Code.roundDown(aCoords.posZ), aTimeUntilNextSound, aSoundName, aSoundStrength, aSoundModulation));
 			else
 				new ThreadedSound(aPlayer.worldObj, UT.Code.roundDown(aCoords.posX), UT.Code.roundDown(aCoords.posY), UT.Code.roundDown(aCoords.posZ), aTimeUntilNextSound, aSoundName, aSoundStrength, aSoundModulation).run();
 			return T;

@@ -20,9 +20,12 @@
 package gregtech.tileentity.portals;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.COLOR_BEDROCK;
 
 import java.util.List;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.code.ArrayListNoNulls;
 import gregapi.data.LH;
 import gregapi.data.LH.Chat;
@@ -129,6 +132,8 @@ public class MultiTileEntityMiniPortalEnviromine extends MultiTileEntityMiniPort
 	public ITexture sEnvirominePortal = BlockTextureCopied.get(Blocks.portal, SIDE_ANY, 0, 0x00ff0000, F, T, T), sEnvirominePortalFrame = BlockTextureCopied.get(Blocks.bedrock, SIDE_ANY, 0, UNCOLOURED, F, F, F);
 	@Override public ITexture getPortalTexture() {return sEnvirominePortal;}
 	@Override public ITexture getFrameTexture() {return sEnvirominePortalFrame;}
+
+	@SideOnly(Side.CLIENT) @Override public int colorMultiplier() {return COLOR_BEDROCK;}
 	
 	@Override public String getTileEntityName() {return "gt.multitileentity.portal.enviromine";}
 }

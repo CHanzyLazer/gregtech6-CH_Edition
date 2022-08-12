@@ -6,6 +6,7 @@ import gregapi.recipes.Recipe;
 import gregapi.tileentity.machines.MultiTileEntityBasicMachine;
 import gregapi.util.UT;
 import gregtechCH.data.LH_CH;
+import gregtechCH.tileentity.ITileEntityName_CH;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.List;
@@ -16,7 +17,7 @@ import static gregtechCH.data.CS_CH.*;
 // 重写处理过程，将处理所需能量不变，单独增加一个变量表示处理速度，受到效率影响，超过合成表功率也会有损失，具体算法可以重写
 // ParallelDuration 意义改成并行直接合并工作时间，不会进行加速
 // 重写部分 tooltips
-public class MultiTileEntityBasicMachine_CH extends MultiTileEntityBasicMachine {
+public class MultiTileEntityBasicMachine_CH extends MultiTileEntityBasicMachine implements ITileEntityName_CH {
     long mProgressRate = Math.min(mInputMax, mEnergy);
     long mInputNow = mEnergy;
 
@@ -117,5 +118,5 @@ public class MultiTileEntityBasicMachine_CH extends MultiTileEntityBasicMachine 
         if (mIgnited > 0) mIgnited--;
     }
 
-    @Override public String getTileEntityName() {return "gtch.multitileentity.machine.basic";}
+    @Override public String getTileEntityName_CH() {return "gtch.multitileentity.machine.basic";}
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -20,6 +20,7 @@
 package gregtech.tileentity.energy.reactors;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.NBT_IDMETA;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +41,7 @@ import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.tileentity.machines.ITileEntitySwitchableMode;
 import gregapi.util.ST;
 import gregapi.util.UT;
+import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -54,6 +56,19 @@ import org.jetbrains.annotations.NotNull;
  * @author Gregorius Techneticies
  */
 public class MultiTileEntityReactorCore2x2 extends MultiTileEntityReactorCore implements ITileEntitySwitchableMode {
+	@Override
+	public void readFromNBT2(NBTTagCompound aNBT) {
+		super.readFromNBT2(aNBT);
+		oSlotIdMeta = new int[4];
+		for (int i = 0; i < oSlotIdMeta.length; ++i) oSlotIdMeta[i] = aNBT.getInteger(NBT_IDMETA+"."+i);
+	}
+
+	@Override
+	public void writeToNBT2(NBTTagCompound aNBT) {
+		super.writeToNBT2(aNBT);
+		for (int i = 0; i < oSlotIdMeta.length; ++i) UT.NBT.setNumber(aNBT, NBT_IDMETA+"."+i, oSlotIdMeta[i]);
+	}
+
 	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void onServerTickPost(boolean aFirst) {
@@ -197,7 +212,7 @@ public class MultiTileEntityReactorCore2x2 extends MultiTileEntityReactorCore im
 						mEnergy -= EU_PER_THORIUM_SALT * mTanks[0].remove(tEnergy);
 					} else tIsExploding = T;
 				} else if (mTanks[0].isEmpty()) {
-					if (mEnergy > EU_PER_THORIUM_SALT) tIsExploding = T;
+					if (oEnergy > 0) tIsExploding = T;
 				}
 
 				if (tIsExploding && !invempty()) {
@@ -414,11 +429,14 @@ public class MultiTileEntityReactorCore2x2 extends MultiTileEntityReactorCore im
 		new Textures.BlockIcons.CustomIcon("machines/generators/reactor_core_2x2/overlay/face1"),
 		new Textures.BlockIcons.CustomIcon("machines/generators/reactor_core_2x2/overlay/face2")
 	};
-	
-	@Override
-	public void updateInventory() {
-		super.updateInventory();
-		updateClientData();
+
+	private int[] oSlotIdMeta = ZL_INTEGER;
+	protected boolean checkInventory() {
+		for (int i = 0; i < oSlotIdMeta.length; ++i) if (oSlotIdMeta[i] != UT_CH.Code.combine(ST.id(slot(i)), ST.meta(slot(i)))) return T;
+		return F;
+	}
+	protected void inventoryChecked() {
+		for (int i = 0; i < oSlotIdMeta.length; ++i) oSlotIdMeta[i] = UT_CH.Code.combine(ST.id(slot(i)), ST.meta(slot(i)));
 	}
 	
 	@Override public ItemStack[] getDefaultInventory(NBTTagCompound aNBT) {return new ItemStack[4];}

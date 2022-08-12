@@ -18,6 +18,7 @@
  */
 
 package gregtechCH.tileentity.multiblocks;
+import gregtech.tileentity.multiblocks.MultiTileEntityShredder;
 
 import gregapi.damage.DamageSources;
 import gregapi.data.LH;
@@ -27,7 +28,6 @@ import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.tileentity.machines.ITileEntityAdjacentOnOff;
 import gregapi.tileentity.multiblocks.ITileEntityMultiBlockController;
 import gregapi.tileentity.multiblocks.MultiTileEntityMultiBlockPart;
-import gregapi.tileentity.multiblocks.TileEntityBase10MultiBlockMachine;
 import gregapi.util.WD;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.IInventory;
@@ -48,7 +48,7 @@ public class MultiTileEntityShredder_CH extends TileEntityBase10MultiBlockMachin
 		int tX = getOffsetXN(mFacing, 2)-2, tY = yCoord, tZ = getOffsetZN(mFacing, 2)-2, tD = (SIDES_AXIS_Z[mFacing]?mRunning?1:0:mRunning?3:2);
 		if (worldObj.blockExists(tX, tY, tZ) && worldObj.blockExists(tX+4, tY, tZ) && worldObj.blockExists(tX, tY, tZ+4) && worldObj.blockExists(tX+4, tY, tZ+4)) {
 			boolean tSuccess = T;
-			
+
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX  , tY  , tZ  , 18003, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID_OUT)) tSuccess = F;
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+1, tY  , tZ  , 18003, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID_OUT)) tSuccess = F;
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+2, tY  , tZ  , 18003, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID_OUT)) tSuccess = F;
@@ -74,7 +74,7 @@ public class MultiTileEntityShredder_CH extends TileEntityBase10MultiBlockMachin
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+2, tY  , tZ+4, 18003, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID_OUT)) tSuccess = F;
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+3, tY  , tZ+4, 18003, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID_OUT)) tSuccess = F;
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+4, tY  , tZ+4, 18003, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID_OUT)) tSuccess = F;
-			
+
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX  , tY+1, tZ  , 18003, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.NOTHING)) tSuccess = F;
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+1, tY+1, tZ  , 18003, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.NOTHING)) tSuccess = F;
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+2, tY+1, tZ  , 18003, getMultiTileEntityRegistryID(), SIDES_AXIS_Z[mFacing]?0:3, SIDES_AXIS_Z[mFacing]?MultiTileEntityMultiBlockPart.NOTHING:MultiTileEntityMultiBlockPart.ONLY_ENERGY_IN)) tSuccess = F;
@@ -100,7 +100,7 @@ public class MultiTileEntityShredder_CH extends TileEntityBase10MultiBlockMachin
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+2, tY+1, tZ+4, 18003, getMultiTileEntityRegistryID(), SIDES_AXIS_Z[mFacing]?0:3, SIDES_AXIS_Z[mFacing]?MultiTileEntityMultiBlockPart.NOTHING:MultiTileEntityMultiBlockPart.ONLY_ENERGY_IN)) tSuccess = F;
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+3, tY+1, tZ+4, 18003, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.NOTHING)) tSuccess = F;
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+4, tY+1, tZ+4, 18003, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.NOTHING)) tSuccess = F;
-			
+
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX  , tY+2, tZ  , 18003, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.NOTHING)) tSuccess = F;
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+1, tY+2, tZ  , 18003, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.NOTHING)) tSuccess = F;
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+2, tY+2, tZ  , 18003, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.NOTHING)) tSuccess = F;
@@ -126,19 +126,19 @@ public class MultiTileEntityShredder_CH extends TileEntityBase10MultiBlockMachin
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+2, tY+2, tZ+4, 18003, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.NOTHING)) tSuccess = F;
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+3, tY+2, tZ+4, 18003, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.NOTHING)) tSuccess = F;
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+4, tY+2, tZ+4, 18003, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.NOTHING)) tSuccess = F;
-			
+
 			return tSuccess;
 		}
 		return mStructureOkay;
 	}
-	
+
 	static {
 		LH.add("gt.tooltip.multiblock.shredder.1", "5x5x3 'Basin' of 56 Tungstensteel Walls");
 		LH.add("gt.tooltip.multiblock.shredder.2", "3x3x2 Filling with Shredder Blades");
 		LH.add("gt.tooltip.multiblock.shredder.3", "Main Block centered on Side-Bottom and facing outwards");
 		LH.add("gt.tooltip.multiblock.shredder.4", "Input only at Shredder Blades, Output at Bottom Layer");
 	}
-	
+
 	@Override
 	protected void toolTipsMultiblock(List<String> aList) {
 		aList.add(Chat.CYAN     + LH.get(LH.STRUCTURE) + ":");
@@ -147,13 +147,13 @@ public class MultiTileEntityShredder_CH extends TileEntityBase10MultiBlockMachin
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.shredder.3"));
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.shredder.4"));
 	}
-	
+
 	@Override
 	public boolean isInsideStructure(int aX, int aY, int aZ) {
 		int tX = getOffsetXN(mFacing, 2), tY = yCoord, tZ = getOffsetZN(mFacing, 2);
 		return aX >= tX - 2 && aY >= tY && aZ >= tZ - 2 && aX <= tX + 2 && aY <= tY + 2 && aZ <= tZ + 2;
 	}
-	
+
 	@Override
 	public void updateAdjacentToggleableEnergySources() {
 		DelegatorTileEntity<TileEntity> tDelegator;
@@ -169,7 +169,7 @@ public class MultiTileEntityShredder_CH extends TileEntityBase10MultiBlockMachin
 			if (tDelegator.mTileEntity instanceof ITileEntityAdjacentOnOff && tDelegator.mTileEntity instanceof ITileEntityEnergy && ((ITileEntityEnergy)tDelegator.mTileEntity).isEnergyEmittingTo(mEnergyTypeAccepted, tDelegator.mSideOfTileEntity, T)) ((ITileEntityAdjacentOnOff)tDelegator.mTileEntity).setAdjacentOnOff(getStateOnOff());
 		}
 	}
-	
+
 	@Override
 	public void onWalkOver2(EntityLivingBase aEntity) {
 		super.onWalkOver2(aEntity);
@@ -177,21 +177,22 @@ public class MultiTileEntityShredder_CH extends TileEntityBase10MultiBlockMachin
 			aEntity.attackEntityFrom(DamageSources.getShredderDamage(), 5.0F);
 		}
 	}
-	
+
 	@Override
 	public DelegatorTileEntity<IFluidHandler> getFluidOutputTarget(byte aSide, Fluid aOutput) {
 		return getAdjacentTank(SIDE_BOTTOM);
 	}
-	
+
 	@Override
 	public DelegatorTileEntity<TileEntity> getItemOutputTarget(byte aSide) {
 		return getAdjacentTileEntity(SIDE_BOTTOM);
 	}
-	
+
 	@Override public DelegatorTileEntity<IInventory> getItemInputTarget(byte aSide) {return null;}
 	@Override public DelegatorTileEntity<IFluidHandler> getFluidInputTarget(byte aSide) {return null;}
-	
+
 	@Override public boolean refreshStructureOnActiveStateChange() {return T;}
-	
-	@Override public String getTileEntityName() {return "gtch.multitileentity.multiblock.shredder";}
+
+	@Override public String getTileEntityName() {return "gt.multitileentity.multiblock.shredder";}
+	@Override public String getTileEntityName_CH() {return "gtch.multitileentity.multiblock.shredder";}
 }

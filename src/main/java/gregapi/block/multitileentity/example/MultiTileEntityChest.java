@@ -20,6 +20,7 @@
 package gregapi.block.multitileentity.example;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.*;
 
@@ -50,6 +51,8 @@ import gregapi.tileentity.base.TileEntityBase05Inventories;
 import gregapi.tileentity.data.ITileEntitySurface;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.util.UT;
+import gregtechCH.tileentity.ITEPaintable_CH;
+import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -78,9 +81,13 @@ import net.minecraftforge.common.ChestGenHooks;
  * 
  * An example implementation of a Chest with my MultiTileEntity System.
  */
-public class MultiTileEntityChest extends TileEntityBase05Inventories implements IItemColorableRGB, ITileEntityDecolorable, ITileEntitySurface, IMTE_OnRegistrationClient, IMTE_OnRegistrationFirstClient, IMTE_SyncDataByte, IMTE_AddToolTips, IMTE_SetBlockBoundsBasedOnState, IMTE_GetSubItems, IMTE_SyncDataByteArray, IMTE_GetExplosionResistance, IMTE_GetBlockHardness, IMTE_GetComparatorInputOverride, IMTE_GetSelectedBoundingBoxFromPool, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnPlaced, IMTE_OnToolClick {
+public class MultiTileEntityChest extends TileEntityBase05Inventories implements ITEPaintable_CH, IMTE_GetLightOpacity, IItemColorableRGB, ITileEntityDecolorable, ITileEntitySurface, IMTE_OnRegistrationClient, IMTE_OnRegistrationFirstClient, IMTE_SyncDataByte, IMTE_AddToolTips, IMTE_SetBlockBoundsBasedOnState, IMTE_GetSubItems, IMTE_SyncDataByteArray, IMTE_GetExplosionResistance, IMTE_GetBlockHardness, IMTE_GetComparatorInputOverride, IMTE_GetSelectedBoundingBoxFromPool, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnPlaced, IMTE_OnToolClick {
 	protected boolean mIsPainted = F;
+	// GTCH, 用于在染色后保留一定原本颜色
+	protected int mRGBPaint = UNCOLORED;
+	// 仅客户端有效
 	protected int mRGBa = UNCOLORED;
+
 	protected byte mFacing = 3, mUsingPlayers = 0, oUsingPlayers = 0;
 	protected float mLidAngle = 0, oLidAngle = 0, mHardness = 6, mResistance = 3;
 	protected OreDictMaterial mMaterial = MT.NULL;
@@ -93,7 +100,7 @@ public class MultiTileEntityChest extends TileEntityBase05Inventories implements
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {
 		super.readFromNBT2(aNBT);
-		if (aNBT.hasKey(NBT_COLOR)) mRGBa = aNBT.getInteger(NBT_COLOR);
+//		if (aNBT.hasKey(NBT_COLOR)) mRGBa = aNBT.getInteger(NBT_COLOR); // 变成了临时变量，不需要存储
 		if (aNBT.hasKey(NBT_FACING)) mFacing = aNBT.getByte(NBT_FACING);
 		if (aNBT.hasKey(NBT_PAINTED)) mIsPainted = aNBT.getBoolean(NBT_PAINTED);
 		if (aNBT.hasKey(NBT_TEXTURE)) mTextureName = aNBT.getString(NBT_TEXTURE);
@@ -101,6 +108,16 @@ public class MultiTileEntityChest extends TileEntityBase05Inventories implements
 		if (aNBT.hasKey(NBT_HARDNESS)) mHardness = aNBT.getFloat(NBT_HARDNESS);
 		if (aNBT.hasKey(NBT_RESISTANCE)) mResistance = aNBT.getFloat(NBT_RESISTANCE);
 		if (aNBT.hasKey(NBT_MATERIAL)) mMaterial = OreDictMaterial.get(aNBT.getString(NBT_MATERIAL));
+
+		// 需要分情况讨论，考虑有不允许染色的，带有默认颜色的，并且不是材料颜色的方块
+		if (isPainted()) {
+			if (aNBT.hasKey(NBT_COLOR)) mRGBPaint = (int) UT_CH.NBT.getItemNumber(aNBT.getInteger(NBT_COLOR)); // mRGBaPaint 替代原本的 NBT_COLOR
+			mRGBa = UT_CH.Code.getPaintRGB(getBottomRGB(), mRGBPaint);
+		} else {
+			mRGBPaint = getBottomRGB();
+			if (aNBT.hasKey(NBT_COLOR)) mRGBa = aNBT.getInteger(NBT_COLOR);
+			else mRGBa = getOriginalRGB(); // 可以防止一些问题
+		}
 	}
 	
 	@Override
@@ -119,7 +136,7 @@ public class MultiTileEntityChest extends TileEntityBase05Inventories implements
 	
 	@Override
 	public IPacket getClientDataPacket(boolean aSendAll) {
-		return getClientDataPacketByteArray(aSendAll, mFacing, mUsingPlayers, (byte)getSizeInventory(), (byte)UT.Code.getR(mRGBa), (byte)UT.Code.getG(mRGBa), (byte)UT.Code.getB(mRGBa));
+		return getClientDataPacketByteArray(aSendAll, mFacing, mUsingPlayers, (byte)getSizeInventory(), (byte)UT.Code.getR(mRGBPaint), (byte)UT.Code.getG(mRGBPaint), (byte)UT.Code.getB(mRGBPaint), getPaintData());
 	}
 	
 	@Override
@@ -225,19 +242,46 @@ public class MultiTileEntityChest extends TileEntityBase05Inventories implements
 		mFacing = (byte)(aData[0] & 7);
 		mUsingPlayers = aData[1];
 		if (UT.Code.unsignB(aData[2]) != getSizeInventory()) setInventory(new ItemStack[UT.Code.unsignB(aData[2])]);
-		mRGBa = UT.Code.getRGBInt(new short[] {UT.Code.unsignB(aData[3]), UT.Code.unsignB(aData[4]), UT.Code.unsignB(aData[5])});
+		setRGBData(aData[3], aData[4], aData[5], aData[6]);
 		return T;
 	}
-	
-	@Override public boolean unpaint() {if (mIsPainted) {mIsPainted=F; mRGBa=UT.Code.getRGBInt(mMaterial.fRGBaSolid); updateClientData(); return T;} return F;}
-	@Override public boolean isPainted() {return mIsPainted || (worldObj != null && isClientSide() && UT.Code.getRGBInt(mMaterial.fRGBaSolid) != mRGBa);}
-	@Override public boolean paint(int aRGB) {if (aRGB!=mRGBa) {mRGBa=aRGB; mIsPainted=T; return T;} return F;}
-	@Override public int getPaint() {return mRGBa;}
+
+	// 用于在重写接受数据代码时调用简单的设置颜色
+	protected final void setRGBData(byte aR, byte aG, byte aB, byte aPaintData) {
+		setPaintData(aPaintData);
+		int oRGB = UT.Code.getRGBInt(new short[] {UT.Code.unsignB(aR), UT.Code.unsignB(aG), UT.Code.unsignB(aB)});
+		if (oRGB != mRGBPaint) {
+			mRGBPaint = oRGB;
+			onPaintChangeClient(oRGB); // 仅客户端，用于在染色改变时客户端更改对应的显示颜色
+		}
+	}
+	/* 仅客户端，用于在染色改变时客户端更改对应的显示颜色 */
+	public void onPaintChangeClient(int aPreviousRGBaPaint) {
+		mRGBa = isPainted() ? UT_CH.Code.getPaintRGB(getBottomRGB(), mRGBPaint) : getOriginalRGB();
+	}
+	// GTCH, 返回染色中用于叠底的颜色，用于给有外套层的机器重写，也用于客户端判断是否有染色
+	@Override public int getBottomRGB() {return UT.Code.getRGBInt(mMaterial.fRGBaSolid);}
+	// GTCH, 返回机器原本的颜色，用于客户端判断是否有染色，由于原本的默认 RGB 都是材料颜色，所以不允许重写
+	@Override public final int getOriginalRGB() {return UT.Code.getRGBInt(mMaterial.fRGBaSolid);}
+
+	@Override public boolean unpaint() {if (mIsPainted) {mIsPainted=F; mRGBPaint =getBottomRGB(); return T;} return F;}
+	// GTCH, 原本逻辑过于麻烦，直接把是否已经染色也同步到客户端好了，这样还可以多出来一些数据用于专门处理颜色动画，可能可以方便后续的温度变色之类的开发（因为温度并没有传到客户端，不过实际用时需要优化把这个放一份到 NoSendAll里）
+	@Override public boolean isPainted() {return mIsPainted;}
+	@Override public void setIsPainted(boolean aIsPainted) {mIsPainted=aIsPainted;}
+	@Override public boolean paint(int aRGB) {if (aRGB!= mRGBPaint) {mRGBPaint =aRGB; mIsPainted=T; return T;} return F;}
+	@Override public int getPaint() {return mRGBPaint;}
 	@Override public boolean canRecolorItem(ItemStack aStack) {return T;}
 	@Override public boolean canDecolorItem(ItemStack aStack) {return mIsPainted;}
-	@Override public boolean recolorItem(ItemStack aStack, int aRGB) {if (paint((isPainted() ? UT.Code.mixRGBInt(aRGB, getPaint()) : aRGB) & ALL_NON_ALPHA_COLOR)) {UT.NBT.set(aStack, writeItemNBT(aStack.hasTagCompound() ? aStack.getTagCompound() : UT.NBT.make())); return T;} return F;}
+	@Override public boolean recolorItem(ItemStack aStack, int aRGB) {if (paint((isPainted() ? UT_CH.Code.mixRGBInt(getPaint(), aRGB) : aRGB) & ALL_NON_ALPHA_COLOR)) {UT.NBT.set(aStack, writeItemNBT(aStack.hasTagCompound() ? aStack.getTagCompound() : UT.NBT.make())); return T;} return F;}
 	@Override public boolean decolorItem(ItemStack aStack) {if (unpaint()) {UT.NBT.set(aStack, writeItemNBT(aStack.hasTagCompound() ? aStack.getTagCompound() : UT.NBT.make())); return T;} return F;}
-	
+	@SideOnly(Side.CLIENT) @Override public int colorMultiplier() {
+		if ("lootchest".equalsIgnoreCase(mTextureName))
+			return UT_CH.Code.getOverlayedRGB(COLOR_STONE, getPaint());
+		if ("woodchest".equalsIgnoreCase(mTextureName))
+			return UT_CH.Code.getOverlayedRGB(COLOR_WOOD, getPaint());
+		return mRGBa;
+	}
+
 	private static final float minX = 0.0625F, minY = 0F, minZ = 0.0625F, maxX = 0.9375F, maxY = 0.875F, maxZ = 0.9375F;
 	@Override public AxisAlignedBB getCollisionBoundingBoxFromPool() {return box(minX, minY, minZ, maxX, maxY, maxZ);}
 	@Override public AxisAlignedBB getSelectedBoundingBoxFromPool () {return box(minX, minY, minZ, maxX, maxY, maxZ);}
@@ -272,7 +316,9 @@ public class MultiTileEntityChest extends TileEntityBase05Inventories implements
 	public void onRegistrationClient(MultiTileEntityRegistry aRegistry, short aID) {
 		RENDERER.mResources.put(mTextureName, new ResourceLocation[] {new ResourceLocation(MD.GT.mID, TEX_DIR_MODEL + aRegistry.mNameInternal + "/" + mTextureName + ".colored.png"), new ResourceLocation(MD.GT.mID, TEX_DIR_MODEL + aRegistry.mNameInternal + "/" + mTextureName + ".plain.png")});
 	}
-	
+
+	@Override public int getLightOpacity() {return LIGHT_OPACITY_NONE;}
+
 	@SideOnly(Side.CLIENT)
 	public static class MultiTileEntityRendererChest extends TileEntitySpecialRenderer {
 		private static final MultiTileEntityModelChest sModel = new MultiTileEntityModelChest();
@@ -306,6 +352,10 @@ public class MultiTileEntityChest extends TileEntityBase05Inventories implements
 				
 				bindTexture(tLocation[1]);
 				glPushMatrix();
+				if (((MultiTileEntityChest)aTileEntity).isPainted()) {
+					tRGBa = UT.Code.getRGBaArray(UT_CH.Code.getOverlayRGB(((MultiTileEntityChest)aTileEntity).getPaint()));
+					glColor4f(tRGBa[0] / 255.0F, tRGBa[1] / 255.0F, tRGBa[2] / 255.0F, 1);
+				}
 				glTranslated(aX, aY + 1, aZ + 1);
 				glScalef(1, -1, -1);
 				glTranslated(0.5, 0.5, 0.5);
@@ -315,6 +365,7 @@ public class MultiTileEntityChest extends TileEntityBase05Inventories implements
 				glDisable(GL_RESCALE_NORMAL);
 				glPopMatrix();
 				glEnable(GL_RESCALE_NORMAL);
+				if (((MultiTileEntityChest)aTileEntity).isPainted()) glColor4f(1, 1, 1, 1);
 			}
 		}
 	}

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -20,10 +20,12 @@
 package gregtech.tileentity.energy.reactors;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.NBT_IDMETA;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import gregapi.GT_API_Proxy;
 import gregapi.data.CS.SFX;
 import gregapi.data.FL;
 import gregapi.data.MT;
@@ -39,6 +41,7 @@ import gregapi.render.ITexture;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.util.ST;
 import gregapi.util.UT;
+import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -53,6 +56,18 @@ import org.jetbrains.annotations.NotNull;
  * @author Gregorius Techneticies
  */
 public class MultiTileEntityReactorCore1x1 extends MultiTileEntityReactorCore {
+	@Override
+	public void readFromNBT2(NBTTagCompound aNBT) {
+		super.readFromNBT2(aNBT);
+		oSlotIdMeta = aNBT.getInteger(NBT_IDMETA);
+	}
+
+	@Override
+	public void writeToNBT2(NBTTagCompound aNBT) {
+		super.writeToNBT2(aNBT);
+		UT.NBT.setNumber(aNBT, NBT_IDMETA, oSlotIdMeta);
+	}
+
 	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void onServerTickPost(boolean aFirst) {
@@ -170,7 +185,7 @@ public class MultiTileEntityReactorCore1x1 extends MultiTileEntityReactorCore {
 						mEnergy -= EU_PER_THORIUM_SALT * mTanks[0].remove(tEnergy);
 					} else tIsExploding = T;
 				} else if (mTanks[0].isEmpty()) {
-					if (mEnergy > EU_PER_THORIUM_SALT) tIsExploding = T;
+					if (oEnergy > 0) tIsExploding = T;
 				}
 
 				if (tIsExploding && !invempty()) {
@@ -353,12 +368,10 @@ public class MultiTileEntityReactorCore1x1 extends MultiTileEntityReactorCore {
 		new Textures.BlockIcons.CustomIcon("machines/generators/reactor_core_1x1/overlay/face1"),
 		new Textures.BlockIcons.CustomIcon("machines/generators/reactor_core_1x1/overlay/face2")
 	};
-	
-	@Override
-	public void updateInventory() {
-		super.updateInventory();
-		updateClientData();
-	}
+
+	private int oSlotIdMeta = 0;
+	protected boolean checkInventory() {return oSlotIdMeta != UT_CH.Code.combine(ST.id(slot(0)), ST.meta(slot(0)));}
+	protected void inventoryChecked() {oSlotIdMeta = UT_CH.Code.combine(ST.id(slot(0)), ST.meta(slot(0)));}
 	
 	@Override public ItemStack[] getDefaultInventory(NBTTagCompound aNBT) {return new ItemStack[1];}
 	@Override public int[] getAccessibleSlotsFromSide2(byte aSide) {return aSide == SIDE_DOWN || aSide == SIDE_TOP ? UT.Code.getAscendingArray(1) : ZL_INTEGER;}

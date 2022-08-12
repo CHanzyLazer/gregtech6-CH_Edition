@@ -20,7 +20,10 @@
 package gregtech.tileentity.misc;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.COLOR_BEDROCK;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetBlockHardness;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetExplosionResistance;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetLightOpacity;
@@ -154,6 +157,7 @@ public class MultiTileEntityFluidSpring extends TileEntityBase04MultiTileEntitie
 	@Override public ITexture getTexture(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {return aShouldSideBeRendered[aSide] ? BlockTextureMulti.get(BlockTextureFluid.get(mFluid), BlockTextureDefault.get(Textures.BlockIcons.FLUID_SPRING)) : null;}
 	
 	@Override public int getLightOpacity() {return LIGHT_OPACITY_MAX;}
+	@SideOnly(Side.CLIENT) @Override public int colorMultiplier() {return COLOR_BEDROCK;}
 	
 	@Override public float getExplosionResistance2() {return Blocks.bedrock.getExplosionResistance(null);}
 	@Override public float getBlockHardness() {return -1;}

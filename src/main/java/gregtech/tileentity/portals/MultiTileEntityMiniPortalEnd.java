@@ -20,9 +20,12 @@
 package gregtech.tileentity.portals;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.COLOR_END_PORTAL_FRAME;
 
 import java.util.List;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.code.ArrayListNoNulls;
 import gregapi.data.LH;
 import gregapi.data.LH.Chat;
@@ -128,7 +131,8 @@ public class MultiTileEntityMiniPortalEnd extends MultiTileEntityMiniPortal {
 	public ITexture sEndPortal = BlockTextureCopied.get(Blocks.portal, SIDE_ANY, 0, DYE_Black, F, T, T), sEndPortalFrame = BlockTextureCopied.get(Blocks.end_portal_frame, SIDE_TOP, 0);
 	@Override public ITexture getPortalTexture() {return sEndPortal;}
 	@Override public ITexture getFrameTexture() {return sEndPortalFrame;}
-	
-	
+
+	@SideOnly(Side.CLIENT) @Override public int colorMultiplier() {return COLOR_END_PORTAL_FRAME;}
+
 	@Override public String getTileEntityName() {return "gt.multitileentity.portal.end";}
 }

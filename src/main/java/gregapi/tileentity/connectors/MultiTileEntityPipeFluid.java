@@ -24,6 +24,7 @@ import static gregtechCH.data.CS_CH.*;
 
 import java.util.*;
 
+import com.google.common.primitives.Longs;
 import com.mojang.realmsclient.util.Pair;
 import gregapi.GT_API_Proxy;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetOreDictItemData;
@@ -55,10 +56,11 @@ import gregapi.tileentity.data.ITileEntityGibbl;
 import gregapi.tileentity.data.ITileEntityProgress;
 import gregapi.tileentity.data.ITileEntityTemperature;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
-import gregapi.tileentity.delegate.ITileEntityCanDelegate;
 import gregapi.util.*;
 import gregtechCH.data.LH_CH;
 import gregtechCH.fluid.IFluidHandler_CH;
+import gregtechCH.tileentity.compat.PipeCompat_CH;
+import gregtechCH.tileentity.data.ITileEntityFlowrate_CH;
 import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCauldron;
@@ -77,8 +79,11 @@ import net.minecraftforge.fluids.IFluidTank;
 /**
  * @author Gregorius Techneticies
  */
-public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered implements IMTE_GetOreDictItemData, ITileEntityQuickObstructionCheck, IFluidHandler_CH, ITileEntityGibbl, ITileEntityTemperature, ITileEntityProgress, ITileEntityServerTickPre, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnEntityCollidedWithBlock {
-	public byte[] mLastReceivedFrom = ZL_BYTE;
+public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered implements ITileEntityFlowrate_CH, IMTE_GetOreDictItemData, ITileEntityQuickObstructionCheck, IFluidHandler_CH, ITileEntityGibbl, ITileEntityTemperature, ITileEntityProgress, ITileEntityServerTickPre, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnEntityCollidedWithBlock {
+	private byte[] mLastReceivedFrom = ZL_BYTE;
+	private static final byte LRF_COOLDOWN_NUM = 8;
+	private byte[][] mLRFCooldownCounters =  ZL_BI_BYTE;
+
 	public byte mRenderType = 0;
 	public long mTemperature = DEF_ENV_TEMP, mMaxTemperature, mTransferredAmount = 0, mCapacity = 1000;
 	public boolean mGasProof = F, mAcidProof = F, mPlasmaProof = F, mBlocking = F;
@@ -90,18 +95,16 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	// GTCH，用来限制流量（通过限制容量）
 	public byte mCapacityLimit = 0;
 	public final static byte MAX_LIMIT = 8;
+	private byte[] mBeginIdx = ZL_BYTE; // 用来存储进行均分时下一个起始位置，可以实现比较完美的均分
 	// GTCH, 控制流速
 	public boolean mFlowControl = F, oFlowControl = F;
 	public boolean mAllowSwitchFC = T; // 是否允许切换流速控制
 	// GTCH, 颜色，预先计算会不会好些？
 	protected int mRGBaMark, mRGBaRubber = UT.Code.getRGBInt(65, 65, 65);
-	// GTCH, 使用这个算法使输出平滑
-	protected static final byte OUT_BUFFER_MUL = 16;
-	protected static final byte COOLDOWN_NUM = 64;
-	public byte[] mCooldownCounters =  new byte[1];
-	public long[] mOutBuffers = new long[1], mOutputs = new long[1];
-	// GTCH, 用于记录上一 tick 的储罐存量
-	public long[] oAmounts = new long[1];
+	// GTCH, 改为直接平均来实现平滑
+	protected static final int BUFFER_LENGTH = 20;
+	private final List<LinkedList<Long>> mInBuffers = new ArrayList<>(); // 用于对输入统计平均
+	private long[] mOutputs = ZL_LONG, oAmounts = ZL_LONG; // 平滑后的输出值和用于计算的上一 tick 的储罐值
 	// GTCH, 用于在建筑泡沫上显示 mark
 	public int mMarkBuffer = 0;
 	public boolean mOutMark = F, oOutMark = F;
@@ -134,8 +137,8 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {
 		super.readFromNBT2(aNBT);
-		if (aNBT.hasKey(NBT_ADD_BYTE + ".dir")) mFluidDir = aNBT.getByte(NBT_ADD_BYTE + ".dir");
-		if (aNBT.hasKey(NBT_ADD_BYTE + ".mode")) mFluidMode = Mode.values()[aNBT.getByte(NBT_ADD_BYTE + ".mode")];
+		if (aNBT.hasKey(NBT_ADD_BYTE + ".dir")) mFluidDir = (byte) UT_CH.NBT.getItemNumber(aNBT.getByte(NBT_ADD_BYTE + ".dir"));
+		if (aNBT.hasKey(NBT_ADD_BYTE + ".mode")) mFluidMode = Mode.values()[(byte) UT_CH.NBT.getItemNumber(aNBT.getByte(NBT_ADD_BYTE + ".mode"))];
 		if (aNBT.hasKey(NBT_ADD_BYTE + ".limit")) mCapacityLimit = aNBT.getByte(NBT_ADD_BYTE + ".limit");
 		if (aNBT.hasKey(NBT_ADD_BOOL + ".fc")) mFlowControl = aNBT.getBoolean(NBT_ADD_BOOL + ".fc");
 
@@ -153,22 +156,41 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 
 		if (aNBT.hasKey(NBT_TEMPERATURE)) mMaxTemperature = aNBT.getLong(NBT_TEMPERATURE);
 		if (aNBT.hasKey(NBT_TANK_COUNT)) {
-			mCooldownCounters = new byte[aNBT.getInteger(NBT_TANK_COUNT)];
-			mOutBuffers = new long[aNBT.getInteger(NBT_TANK_COUNT)]; mOutputs = new long[aNBT.getInteger(NBT_TANK_COUNT)]; oAmounts = new long[aNBT.getInteger(NBT_TANK_COUNT)];
-			mTanks = new FluidTankGT[Math.max(1, aNBT.getInteger(NBT_TANK_COUNT))];
-			for (int i = 0; i < mCooldownCounters.length; i++) if(aNBT.hasKey(NBT_COOLDOWN_COUNTER+"."+i)) mCooldownCounters[i] = aNBT.getByte(NBT_COOLDOWN_COUNTER+"."+i);
-			for (int i = 0; i < mOutBuffers.length; i++) if (aNBT.hasKey(NBT_OUTPUT_BUFFER+"."+i)) mOutBuffers[i] = aNBT.getLong(NBT_OUTPUT_BUFFER+"."+i);
-			for (int i = 0; i < oAmounts.length; i++) if (aNBT.hasKey(NBT_TANK+".o."+i)) oAmounts[i] = aNBT.getLong(NBT_TANK+".o."+i);
+			int tTankCount = Math.max(1, aNBT.getInteger(NBT_TANK_COUNT));
+			mBeginIdx = new byte[tTankCount];
+			for (int i = 0; i < tTankCount; ++i) mBeginIdx[i] = aNBT.hasKey(NBT_BEGIN+"."+i)?aNBT.getByte(NBT_BEGIN+"."+i):SIDE_INVALID;
+			mOutputs = new long[tTankCount];
+			oAmounts = new long[tTankCount];
+			for (int i = 0; i < tTankCount; ++i) oAmounts[i] = aNBT.getLong(NBT_TANK+".o."+i);
+			mInBuffers.clear();
+			for (int i = 0; i < tTankCount; ++i)
+				mInBuffers.add(aNBT.hasKey(NBT_INPUT_BUFFER +"."+i) ? UT_CH.STL.toList(UT_CH.NBT.getNumberArray(aNBT, NBT_INPUT_BUFFER +"."+i), BUFFER_LENGTH) : new LinkedList<Long>());
 
+			mTanks = new FluidTankGT[tTankCount];
 			mLastReceivedFrom = new byte[mTanks.length];
+			mLRFCooldownCounters = new byte[mTanks.length][SIDE_NUMBER];
 			for (int i = 0; i < mTanks.length; i++) {
 				mTanks[i] = new FluidTankGT(aNBT, NBT_TANK+"."+i, tCapacity).setIndex(i);
 				mLastReceivedFrom[i] = aNBT.getByte("gt.mlast."+i);
+				long[] tNumbers = UT_CH.NBT.getNumberArray(aNBT, "gt.mlast.cooldown."+i);
+				for (int j = 0; j < SIDE_NUMBER; ++j) mLRFCooldownCounters[i][j] = (j<tNumbers.length)?(byte)tNumbers[j]:0;
 			}
 		} else {
-			mOutBuffers = new long[1]; mOutputs = new long[1];
-			mTanks = new FluidTankGT(aNBT, NBT_TANK+"."+0, tCapacity).AS_ARRAY;
-			mLastReceivedFrom = new byte[] {aNBT.getByte("gt.mlast.0")};
+			mBeginIdx = new byte[1];
+			mBeginIdx[0] = aNBT.hasKey(NBT_BEGIN+"."+0)?aNBT.getByte(NBT_BEGIN+"."+0):SIDE_INVALID;
+			mOutputs = new long[1];
+			oAmounts = new long[1];
+			oAmounts[0] = aNBT.getLong(NBT_TANK+".o."+0);
+			mInBuffers.clear();
+			mInBuffers.add(aNBT.hasKey(NBT_INPUT_BUFFER +"."+0) ? UT_CH.STL.toList(UT_CH.NBT.getNumberArray(aNBT, NBT_INPUT_BUFFER +"."+0), BUFFER_LENGTH) : new LinkedList<Long>());
+
+			mTanks = new FluidTankGT(aNBT, NBT_TANK+".0", tCapacity).AS_ARRAY;
+
+			mLastReceivedFrom = new byte[1];
+			mLastReceivedFrom[0] = aNBT.getByte("gt.mlast.0");
+			mLRFCooldownCounters = new byte[1][SIDE_NUMBER];
+			long[] tNumbers = UT_CH.NBT.getNumberArray(aNBT, "gt.mlast.cooldown."+0);
+			for (int j = 0; j < SIDE_NUMBER; ++j) mLRFCooldownCounters[0][j] = (j<tNumbers.length)?(byte)tNumbers[j]:0;
 		}
 		
 		if (worldObj != null && isServerSide() && mHasToAddTimer) {
@@ -184,17 +206,19 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	@Override
 	public void writeToNBT2(NBTTagCompound aNBT) {
 		super.writeToNBT2(aNBT);
-		UT.NBT.setNumber(aNBT, NBT_ADD_BYTE + ".dir", mFluidDir);
-		UT.NBT.setNumber(aNBT, NBT_ADD_BYTE + ".mode", mFluidMode.ordinal());
+		// 默认值不为零（或者可能不为零）的需要专门设置
+		if (SIDES_VALID[mFluidDir]) aNBT.setByte(NBT_ADD_BYTE + ".dir", mFluidDir);
+		if (mFluidMode != Mode.DEFAULT) aNBT.setByte(NBT_ADD_BYTE + ".mode", (byte)mFluidMode.ordinal());
 		UT.NBT.setNumber(aNBT, NBT_ADD_BYTE + ".limit", mCapacityLimit);
 		UT.NBT.setBoolean(aNBT, NBT_ADD_BOOL + ".fc", mFlowControl);
-		for (int i = 0; i < mCooldownCounters.length; i++) UT.NBT.setNumber(aNBT, NBT_COOLDOWN_COUNTER+"."+i, mCooldownCounters[i]);
-		for (int i = 0; i < mOutBuffers.length; i++) UT.NBT.setNumber(aNBT, NBT_OUTPUT_BUFFER+"."+i, mOutBuffers[i]);
+		for (int i = 0; i < mInBuffers.size(); i++) UT_CH.NBT.setNumberArray(aNBT, NBT_INPUT_BUFFER +"."+i, Longs.toArray(mInBuffers.get(i)));
 		for (int i = 0; i < oAmounts.length; i++) UT.NBT.setNumber(aNBT, NBT_TANK+".o."+i, oAmounts[i]);
+		for (int i = 0; i < mBeginIdx.length; i++) if (mBeginIdx[i] != SIDE_INVALID) aNBT.setByte(NBT_BEGIN+"."+i, mBeginIdx[i]);
 
 		for (int i = 0; i < mTanks.length; i++) {
 			mTanks[i].writeToNBT(aNBT, NBT_TANK+"."+i);
-			aNBT.setByte("gt.mlast."+i, mLastReceivedFrom[i]);
+			UT.NBT.setNumber(aNBT, "gt.mlast."+i, mLastReceivedFrom[i]);
+			UT_CH.NBT.setNumberArray(aNBT, "gt.mlast.cooldown."+i, UT_CH.STL.toLongArray(mLRFCooldownCounters[i]));
 		}
 		UT.NBT.setNumber(aNBT, "gt.mtransfer", mTransferredAmount);
 	}
@@ -203,10 +227,11 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	public NBTTagCompound writeItemNBT2(NBTTagCompound aNBT) {
 		// 用于在拆下后保留橡胶圈
 		UT.NBT.setBoolean(aNBT, NBT_ADD_BOOL + ".fc", mFlowControl);
-		if (mFoamDried){
+		if (isFoamDried()){
 			UT.NBT.setNumber(aNBT, NBT_ADD_BYTE + ".dir", mFluidDir);
-			UT.NBT.setNumber(aNBT, NBT_ADD_BYTE + ".mode", mFluidMode.ordinal());
-			UT.NBT.setNumber(aNBT, NBT_ADD_BYTE + ".limit", mCapacityLimit);
+			// 默认值不为零（或者可能不为零）的需要专门设置
+			if (SIDES_VALID[mFluidDir]) aNBT.setByte(NBT_ADD_BYTE + ".dir", (byte) UT_CH.NBT.toItemNumber(mFluidDir));
+			if (mFluidMode != Mode.DEFAULT) aNBT.setByte(NBT_ADD_BYTE + ".mode", (byte) UT_CH.NBT.toItemNumber(mFluidMode.ordinal()));
 		}
 		return super.writeItemNBT2(aNBT);
 	}
@@ -344,7 +369,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		// GTCH, 直接扳手改为显示状态
 		if (aTool.equals(TOOL_magnifyingglass)) {
 			checkConnection();
-			if (mFoamDried) {
+			if (isFoamDried()) {
 				mMarkBuffer = 128;
 				mOutMark = T;
 			}
@@ -368,32 +393,13 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		if (aTool.equals(TOOL_monkeywrench)) {
 			byte aTargetSide = UT.Code.getSideWrenching(aSide, aHitX, aHitY, aHitZ);
 			if (connected(aTargetSide)) {
-				// 先让模式合法
-				checkConnection();
-				// 切换模式
-				if (mFluidDir == aTargetSide && mFluidMode == Mode.LIMIT) {
-					mFluidMode = Mode.PRIORITY;
-				} else
-				if (mFluidDir == aTargetSide && mFluidMode == Mode.PRIORITY) {
-					mFluidDir = SIDE_ANY;
-					mFluidMode = Mode.DEFAULT;
-				} else {
-					mFluidDir = aTargetSide;
-					mFluidMode = Mode.LIMIT;
-				}
-//				if (aChatReturn != null) {
-//					switch (mFluidMode) {
-//						case LIMIT: aChatReturn.add("Switched to Limit Mode, Only output to Selected Side"); return 2500;
-//						case PRIORITY: aChatReturn.add("Switched to Priority Mode, will output to Selected Side First"); return 2500;
-//						case DEFAULT:
-//						default: aChatReturn.add("Switched to Default Mode"); return 2500;
-//					}
-//				}
+				changeFluidMode(aTargetSide, aSneaking);
 				return 2500;
 			} else {
 				return 0;
 			}
 		}
+
 		// TODO: 使用阀门控制容量
 		// GTCH，暂定直接使用螺丝刀调整容量
 		if (aTool.equals(TOOL_screwdriver)) {
@@ -412,10 +418,35 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		return 0;
 	}
 
-	protected byte changeModeAdd(byte aCurrentMode, byte aMaxMode) {
+	private void changeFluidMode(byte aTargetSide, boolean aReverse) {
+		// 先让模式合法
+		checkConnection();
+		// 切换模式
+		if (mFluidDir == aTargetSide && mFluidMode == Mode.LIMIT) {
+			if (aReverse)
+				mFluidMode = Mode.PRIORITY;
+			else {
+				mFluidDir = SIDE_ANY;
+				mFluidMode = Mode.DEFAULT;
+			}
+		} else
+		if (mFluidDir == aTargetSide && mFluidMode == Mode.PRIORITY) {
+			if (aReverse) {
+				mFluidDir = SIDE_ANY;
+				mFluidMode = Mode.DEFAULT;
+			}
+			else
+				mFluidMode = Mode.LIMIT;
+		} else {
+			mFluidDir = aTargetSide;
+			mFluidMode = aReverse?Mode.LIMIT:Mode.PRIORITY;
+		}
+	}
+
+	private byte changeModeAdd(byte aCurrentMode, byte aMaxMode) {
 		return aCurrentMode < aMaxMode ? (byte) (aCurrentMode + 1) : 0;
 	}
-	protected byte changeModeRed(byte aCurrentMode, byte aMaxMode) {
+	private byte changeModeRed(byte aCurrentMode, byte aMaxMode) {
 		return aCurrentMode > 0 ? (byte) (aCurrentMode - 1) : aMaxMode;
 	}
 
@@ -489,7 +520,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 			mHasToAddTimer = F;
 		}
 		if (aIsServerSide) {
-			if (mFoamDried && mOutMark) {
+			if (isFoamDried() && mOutMark) {
 				--mMarkBuffer;
 				if (mMarkBuffer < 0) {
 					mOutMark = F;
@@ -583,21 +614,39 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 						if (mFlowControl) distributePriorityFC(tTank, tAdjacentPipes, tAdjacentTanks, tAdjacentOther);
 						else distributePriority(tTank, tAdjacentPipes, tAdjacentTanks, tAdjacentOther);
 						break;
-					case DEFAULT:
-					default:
+					case DEFAULT: default:
 						if (mFlowControl) distributeFC(tTank, tAdjacentPipes, tAdjacentTanks, tAdjacentOther);
 						else distribute(tTank, tAdjacentPipes, tAdjacentTanks, tAdjacentOther);
 						break;
 				}
 			}
-			
-			mLastReceivedFrom[tTank.mIndex] = 0;
+
+			resetLastReceivedFrom(tTank.mIndex);
+			if (mFlowControl) oAmounts[tTank.mIndex] = tTank.amount();
 		}
 		
 		if (tCheckTemperature) {
 			long tEnvTemp = WD.envTemp(worldObj, xCoord, yCoord, zCoord);
 			if (mTemperature < tEnvTemp) mTemperature++; else if (mTemperature > tEnvTemp) mTemperature--;
 		}
+	}
+
+	// GTCH, 用于给重置防倒流加入一个延迟
+	protected void resetLastReceivedFrom(int tTankIdx) {
+		for (byte tSide : ALL_SIDES_VALID) {
+			if (mLRFCooldownCounters[tTankIdx][tSide] > 0) {
+				--mLRFCooldownCounters[tTankIdx][tSide];
+			}
+			else {
+				mLastReceivedFrom[tTankIdx] &= ~SBIT[tSide]; // 每个方向分别重置
+				mLRFCooldownCounters[tTankIdx][tSide] = 0;
+			}
+		}
+	}
+	protected void setLastReceivedFrom(int tTankIdx, byte aSide) {
+		if (SIDES_VALID[aSide]) mLRFCooldownCounters[tTankIdx][aSide] = LRF_COOLDOWN_NUM;
+		else Arrays.fill(mLRFCooldownCounters[tTankIdx], LRF_COOLDOWN_NUM);
+		mLastReceivedFrom[tTankIdx] |= SBIT[aSide];
 	}
 
 	protected boolean coverCheck(byte aSide, FluidStack aFluid) {
@@ -625,6 +674,34 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 			}
 		}
 		return aTEOther.getMetaData();
+	}
+
+	// GTCH, 更加智能的获取周围管道的容器的函数，可以保证多合一管道在传输液体时尽量维持在同一位置
+	// 需要注意覆盖版或者手动设置的情况
+	protected FluidTankGT getAdjacentPipeTankFillable(FluidTankGT aTank, DelegatorTileEntity<MultiTileEntityPipeFluid> aAdjacentPipe) {
+		FluidTankGT tTank = (FluidTankGT)aAdjacentPipe.mTileEntity.getFluidTankFillable(aAdjacentPipe.mSideOfTileEntity, aTank.get());
+		// 对于多合一的管道相互连接的情况，并且管道数目相同的情况，进行专门考虑
+		// tTank 为 null 时表示通过了原版的方法禁用了输入，否则一定可以进行输入（说明这个修改一定会兼容原版的逻辑）
+		if (tTank!=null && mTanks.length > 1 && mTanks.length == aAdjacentPipe.mTileEntity.mTanks.length) {
+			if (aAdjacentPipe.mTileEntity.canTankIdxFill(aTank.mIndex, aTank.get()))
+				return aAdjacentPipe.mTileEntity.mTanks[aTank.mIndex];
+			else
+				return null; // 对于相同尺寸的多合一管道，如果相同的管道口不能填充，则完全不允许填充（禁止串味）
+		}
+		return tTank;
+	}
+	// GTCH, 对于多合一管道检测某个位置能否输入
+	// TODO 后续自定义具体管道输入可能会通过修改这个函数实现
+	protected boolean canTankIdxFill(int aTankIdx, FluidStack aFluidToFill) {
+		if (aTankIdx >= mTanks.length) return F;
+		if (mTanks[aTankIdx].isEmpty() || mTanks[aTankIdx].contains(aFluidToFill)) return T;
+		return F;
+	}
+	// 用来管道间传输液体时计算压力，避免流速控制管道清空时流速慢的问题
+	protected long getPressure(int aTankIdx) {
+		if (mFlowControl && mTanks[aTankIdx].amount()*4 <= mTanks[aTankIdx].capacity()*3)
+			return mTanks[aTankIdx].isEmpty()?0:1;
+		return mTanks[aTankIdx].amount();
 	}
 
 	// 默认的输出流体逻辑
@@ -667,13 +744,16 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		// 再处理管道的情况
 		if (aAdjacentPipes[mFluidDir] != null) {
 			// Check if the Pipe can be filled with this Fluid.
-			FluidTankGT tTank = (FluidTankGT)aAdjacentPipes[mFluidDir].mTileEntity.getFluidTankFillable(aAdjacentPipes[mFluidDir].mSideOfTileEntity, aTank.get());
-			if (tTank != null && tTank.amount() < aTank.amount()) {
-				// 设置输出管道的接受流体方向
-				aAdjacentPipes[mFluidDir].mTileEntity.mLastReceivedFrom[tTank.mIndex] |= SBIT[aAdjacentPipes[mFluidDir].mSideOfTileEntity];
+			FluidTankGT tTank = getAdjacentPipeTankFillable(aTank, aAdjacentPipes[mFluidDir]);
+			if (tTank == null) return;
+			long toPressure = aAdjacentPipes[mFluidDir].mTileEntity.getPressure(tTank.mIndex);
+			long fromPressure = getPressure(aTank.mIndex);
+			// 即使压力相同也要设置接收方向来防止倒流
+			if (toPressure <= fromPressure) aAdjacentPipes[mFluidDir].mTileEntity.setLastReceivedFrom(tTank.mIndex, aAdjacentPipes[mFluidDir].mSideOfTileEntity);
+			if (toPressure < fromPressure) {
 				// 直接进行填充，按照原本逻辑是这个结果
-				tAmount = UT.Code.divup(aTank.amount() + tTank.amount(), 2);
-				mTransferredAmount += aTank.remove(tTank.add(aTank.amount(tAmount-tTank.amount()), aTank.get()));
+				tAmount = UT.Code.divup(fromPressure + toPressure, 2);
+				mTransferredAmount += aTank.remove(tTank.add(aTank.amount(tAmount-toPressure), aTank.get()));
 				// 流体超过一半，存在一个压力
 				tAmount = (aTank.amount() - aTank.capacity()/2);
 				if (tAmount > 0 && !tTank.isFull()) mTransferredAmount += aTank.remove(tTank.add(aTank.amount(tAmount), aTank.get()));
@@ -725,19 +805,23 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		// 再处理管道的情况
 		if (aAdjacentPipes[mFluidDir] != null) {
 			// Check if the Pipe can be filled with this Fluid.
-			FluidTankGT tTank = (FluidTankGT)aAdjacentPipes[mFluidDir].mTileEntity.getFluidTankFillable(aAdjacentPipes[mFluidDir].mSideOfTileEntity, aTank.get());
-			if (tTank != null && tTank.amount() < aTank.amount()) {
-				// 设置输出管道的接受流体方向
-				aAdjacentPipes[mFluidDir].mTileEntity.mLastReceivedFrom[tTank.mIndex] |= SBIT[aAdjacentPipes[mFluidDir].mSideOfTileEntity];
-				// 直接进行填充，按照原本逻辑是这个结果
-				tAmount = UT.Code.divup(aTank.amount() + tTank.amount(), 2);
-				mTransferredAmount += aTank.remove(tTank.add(aTank.amount(tAmount-tTank.amount()), aTank.get()));
-				// 流体超过一半，存在一个压力
-				tAmount = (aTank.amount() - aTank.capacity()/2);
-				if (tAmount > 0 && !tTank.isFull()) mTransferredAmount += aTank.remove(tTank.add(aTank.amount(tAmount), aTank.get()));
+			FluidTankGT tTank = getAdjacentPipeTankFillable(aTank, aAdjacentPipes[mFluidDir]);
+			if (tTank != null) {
+				long toPressure = aAdjacentPipes[mFluidDir].mTileEntity.getPressure(tTank.mIndex);
+				long fromPressure = getPressure(aTank.mIndex);
+				// 即使压力相同也要设置接收方向来防止倒流
+				if (toPressure <= fromPressure) aAdjacentPipes[mFluidDir].mTileEntity.setLastReceivedFrom(tTank.mIndex, aAdjacentPipes[mFluidDir].mSideOfTileEntity);
+				if (toPressure < fromPressure) {
+					// 直接进行填充，按照原本逻辑是这个结果
+					tAmount = UT.Code.divup(fromPressure + toPressure, 2);
+					mTransferredAmount += aTank.remove(tTank.add(aTank.amount(tAmount-toPressure), aTank.get()));
+					// 流体超过一半，存在一个压力
+					tAmount = (aTank.amount() - aTank.capacity()/2);
+					if (tAmount > 0 && !tTank.isFull()) mTransferredAmount += aTank.remove(tTank.add(aTank.amount(tAmount), aTank.get()));
+				}
 				// 是否还有压力，有则进入默认情况
 				if (aTank.amount() * 2 > aTank.capacity()) distributeDefault_(ALL_SIDES_VALID_BUT[mFluidDir], aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther);
-				// 所有事完成，退出
+				// 所有事完成，退出（没有超过一半且如果压力不能输入则会保持流体不向周围流动）
 				return;
 			}
 			// 管道填充失败，进入默认情况
@@ -760,9 +844,10 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		if (aTank.isEmpty()) return;
 		// Compile all possible Targets into one List.
 		List<DelegatorTileEntity> tTanks = new ArrayListNoNulls<>();
-		List<FluidTankGT> tPipes = new ArrayListNoNulls<>();
+		List<Pair<FluidTankGT, Long>> tPipes = new ArrayListNoNulls<>();
 		// Amount to check for Distribution
-		long tAmount = aTank.amount();
+		long fromPressure = getPressure(aTank.mIndex);
+		long tAmount = fromPressure;
 		// Count all Targets. Also includes THIS for even distribution, thats why it starts at 1.
 		int tTargetCount = 1;
 		// Put Targets into Lists.
@@ -776,14 +861,16 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 			// Is it a Pipe?
 			if (aAdjacentPipes[tSide] != null) {
 				// Check if the Pipe can be filled with this Fluid.
-				FluidTankGT tTank = (FluidTankGT)aAdjacentPipes[tSide].mTileEntity.getFluidTankFillable(aAdjacentPipes[tSide].mSideOfTileEntity, aTank.get());
-				if (tTank != null && tTank.amount() < aTank.amount()) {
-					// Setting Last Side Received From.
-					aAdjacentPipes[tSide].mTileEntity.mLastReceivedFrom[tTank.mIndex] |= SBIT[aAdjacentPipes[tSide].mSideOfTileEntity];
+				FluidTankGT tTank = getAdjacentPipeTankFillable(aTank, aAdjacentPipes[tSide]);
+				if (tTank == null) continue;
+				long toPressure = aAdjacentPipes[tSide].mTileEntity.getPressure(tTank.mIndex);
+				// 即使压力相同也要设置接收方向来防止倒流
+				if (toPressure <= fromPressure) aAdjacentPipes[tSide].mTileEntity.setLastReceivedFrom(tTank.mIndex, aAdjacentPipes[tSide].mSideOfTileEntity);
+				if (toPressure < fromPressure) {
 					// Add to a random Position in the List.
-					tPipes.add(rng(tPipes.size()+1), tTank);
+					tPipes.add(rng(tPipes.size()+1), Pair.of(tTank, toPressure));
 					// For Balancing the Pipe Output.
-					tAmount += tTank.amount();
+					tAmount += toPressure;
 					// One more Target.
 					tTargetCount++;
 					// Done everything.
@@ -809,7 +896,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		// Amount to distribute normally.
 		tAmount = UT.Code.divup(tAmount, tTargetCount);
 		// Distribute to Pipes first.
-		for (FluidTankGT tPipe : tPipes) mTransferredAmount += aTank.remove(tPipe.add(aTank.amount(tAmount-tPipe.amount()), aTank.get()));
+		for (Pair<FluidTankGT, Long> tPair : tPipes) mTransferredAmount += aTank.remove(tPair.first().add(aTank.amount(tAmount-tPair.second()), aTank.get()));
 		// Check if we are empty.
 		if (aTank.isEmpty()) return;
 		// Distribute to Tanks afterwards.
@@ -820,7 +907,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		if (tPipes.isEmpty()) return;
 		// And then if there still is pressure, distribute to Pipes again.
 		tAmount = (aTank.amount() - aTank.capacity()/2) / tPipes.size();
-		if (tAmount > 0) for (FluidTankGT tPipe : tPipes) mTransferredAmount += aTank.remove(tPipe.add(aTank.amount(tAmount), aTank.get()));
+		if (tAmount > 0) for (Pair<FluidTankGT, Long> tPair : tPipes) mTransferredAmount += aTank.remove(tPair.first().add(aTank.amount(tAmount), aTank.get()));
 	}
 
 	// GTCH，默认模式，有流速控制
@@ -865,10 +952,10 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		// 再处理管道的情况
 		if (aAdjacentPipes[mFluidDir] != null) {
 			// Check if the Pipe can be filled with this Fluid.
-			FluidTankGT tTank = (FluidTankGT)aAdjacentPipes[mFluidDir].mTileEntity.getFluidTankFillable(aAdjacentPipes[mFluidDir].mSideOfTileEntity, aTank.get());
+			FluidTankGT tTank = getAdjacentPipeTankFillable(aTank, aAdjacentPipes[mFluidDir]);
 			if (tTank != null) {
 				// 设置输出管道的接受流体方向，无论是否填满都要防止倒流
-				aAdjacentPipes[mFluidDir].mTileEntity.mLastReceivedFrom[tTank.mIndex] |= SBIT[aAdjacentPipes[mFluidDir].mSideOfTileEntity];
+				aAdjacentPipes[mFluidDir].mTileEntity.setLastReceivedFrom(tTank.mIndex, aAdjacentPipes[mFluidDir].mSideOfTileEntity);
 				if (!tTank.isFull()) {
 					// 直接进行填充，虽然一定不会超过容量，但是为了以防万一还是加上 aTank.amount()
 					mTransferredAmount += aTank.remove(tTank.add(aTank.amount(tAmount), aTank.get()));
@@ -909,7 +996,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 				// 直接进行填充
 				mTransferredAmount += aTank.remove(FL.fill(aAdjacentTanks[mFluidDir], aTank.get(tAmount), T));
 				// 是否还有压力，有则进入默认情况
-				if (aTank.amount() * 2 > aTank.capacity()) distributeDefaultFC_(ALL_SIDES_VALID_BUT[mFluidDir], aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther);
+				if (aTank.amount() * 4 > aTank.capacity() * 3) distributeDefaultFC_(ALL_SIDES_VALID_BUT[mFluidDir], aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther);
 				// 所有事完成，退出
 				return;
 			}
@@ -921,15 +1008,15 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		// 再处理管道的情况
 		if (aAdjacentPipes[mFluidDir] != null) {
 			// Check if the Pipe can be filled with this Fluid.
-			FluidTankGT tTank = (FluidTankGT)aAdjacentPipes[mFluidDir].mTileEntity.getFluidTankFillable(aAdjacentPipes[mFluidDir].mSideOfTileEntity, aTank.get());
+			FluidTankGT tTank = getAdjacentPipeTankFillable(aTank, aAdjacentPipes[mFluidDir]);
 			if (tTank != null) {
 				// 设置输出管道的接受流体方向，无论是否填满都要防止倒流
-				aAdjacentPipes[mFluidDir].mTileEntity.mLastReceivedFrom[tTank.mIndex] |= SBIT[aAdjacentPipes[mFluidDir].mSideOfTileEntity];
+				aAdjacentPipes[mFluidDir].mTileEntity.setLastReceivedFrom(tTank.mIndex, aAdjacentPipes[mFluidDir].mSideOfTileEntity);
 				if(!tTank.isFull()){
 					// 直接进行填充，虽然一定不会超过容量，但是为了以防万一还是加上 aTank.amount()
 					mTransferredAmount += aTank.remove(tTank.add(aTank.amount(tAmount), aTank.get()));
 					// 是否还有压力，有则进入默认情况
-					if (aTank.amount() * 2 > aTank.capacity()) distributeDefaultFC_(ALL_SIDES_VALID_BUT[mFluidDir], aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther);
+					if (aTank.amount() * 4 > aTank.capacity() * 3) distributeDefaultFC_(ALL_SIDES_VALID_BUT[mFluidDir], aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther);
 					// 所有事完成，退出
 					return;
 				}
@@ -971,10 +1058,10 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 			// Is it a Pipe?
 			if (aAdjacentPipes[tSide] != null) {
 				// Check if the Pipe can be filled with this Fluid.
-				FluidTankGT tTank = (FluidTankGT)aAdjacentPipes[tSide].mTileEntity.getFluidTankFillable(aAdjacentPipes[tSide].mSideOfTileEntity, aTank.get());
+				FluidTankGT tTank = getAdjacentPipeTankFillable(aTank, aAdjacentPipes[tSide]);
 				if (tTank != null) {
 					// 设置输出管道的接受流体方向，无论是否填满都要防止倒流
-					aAdjacentPipes[tSide].mTileEntity.mLastReceivedFrom[tTank.mIndex] |= SBIT[aAdjacentPipes[tSide].mSideOfTileEntity];
+					aAdjacentPipes[tSide].mTileEntity.setLastReceivedFrom(tTank.mIndex, aAdjacentPipes[tSide].mSideOfTileEntity);
 					// 必须要非空的管道才能加入队列
 					if (!tTank.isFull()) {
 						// 直接加入 List
@@ -1004,88 +1091,74 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		if (tTargetCount <= 0) return;
 		// 使用另外一种算法实现均分
 		int tRemain = (int) (tAmount%tTargetCount);
-		tAmount = tAmount / tTargetCount;
+		tAmount = tAmount/tTargetCount;
 		if (tAmount > 0) {
 			// 直接完全均分
 			for (FluidTankGT tPipe : tPipes) mTransferredAmount += aTank.remove(tPipe.add(aTank.amount(tAmount), aTank.get()));
 			for (DelegatorTileEntity tTank : tTanks) mTransferredAmount += aTank.remove(FL.fill(tTank, aTank.get(tAmount), T));
-		} else {
-			// 剩下的随机分，使用从随机位置开始的方法实现
-			int tDistributed = 0;
-			int tIndex = rng(tTargetCount);
-			if (tIndex < tPipes.size()) {
-				for(Iterator<FluidTankGT> it=tPipes.listIterator(tIndex); it.hasNext() && tDistributed < tRemain; ++tDistributed){
-					mTransferredAmount += aTank.remove(it.next().add(aTank.amount(1), aTank.get()));
-				}
-				for (Iterator<DelegatorTileEntity> it=tTanks.listIterator(); it.hasNext() && tDistributed < tRemain; ++tDistributed) {
-					mTransferredAmount += aTank.remove(FL.fill(it.next(), aTank.get(1), T));
-				}
-				for(Iterator<FluidTankGT> it=tPipes.listIterator(); it.hasNext() && tDistributed < tRemain; ++tDistributed){
-					mTransferredAmount += aTank.remove(it.next().add(aTank.amount(1), aTank.get()));
-				}
-			} else {
-				for (Iterator<DelegatorTileEntity> it=tTanks.listIterator(tIndex-tPipes.size()); it.hasNext() && tDistributed < tRemain; ++tDistributed) {
-					mTransferredAmount += aTank.remove(FL.fill(it.next(), aTank.get(1), T));
-				}
-				for(Iterator<FluidTankGT> it=tPipes.listIterator(); it.hasNext() && tDistributed < tRemain; ++tDistributed){
-					mTransferredAmount += aTank.remove(it.next().add(aTank.amount(1), aTank.get()));
-				}
-				for (Iterator<DelegatorTileEntity> it=tTanks.listIterator(); it.hasNext() && tDistributed < tRemain; ++tDistributed) {
-					mTransferredAmount += aTank.remove(FL.fill(it.next(), aTank.get(1), T));
-				}
+		}
+		// 不再使用 else 来保证每一 tick 的 output 一般都能输出掉
+		if (tRemain > 0) {
+			// 剩下的从随机位置开始，依次分配
+			if (mBeginIdx[aTank.mIndex]==SIDE_INVALID || mBeginIdx[aTank.mIndex]>=tTargetCount) mBeginIdx[aTank.mIndex] = (byte)rng(tTargetCount);
+			int tBeginIdx = mBeginIdx[aTank.mIndex];
+			// 使用取模的方法合并讨论
+			for (int tShiftIdx = 0; tShiftIdx < tRemain; ++tShiftIdx) {
+				int tDistributed = (tBeginIdx+tShiftIdx)%tTargetCount;
+				if (tDistributed < tPipes.size()) mTransferredAmount += aTank.remove(tPipes.get(tDistributed).add(aTank.amount(1), aTank.get()));
+				else mTransferredAmount += aTank.remove(FL.fill(tTanks.get(tDistributed-tPipes.size()), aTank.get(1), T));
 			}
+			// 将其移动到下一个开始位置
+			mBeginIdx[aTank.mIndex] += tRemain;
+			mBeginIdx[aTank.mIndex] %= tTargetCount;
 		}
 		// 由于流速控制，即使塞不进去也不会改变其他方向流速
 	}
 
+	private void addInBuffer(int aIdx, long aInAmount) {
+		mInBuffers.get(aIdx).addLast(aInAmount);
+		while (mInBuffers.get(aIdx).size() > BUFFER_LENGTH) mInBuffers.get(aIdx).pollFirst();
+	}
+	private long getSmoothOutput(int aIdx) {
+		// 输出则直接是对 buffer 的统计平均
+		long tSum = 0;
+		for (long tInAmount : mInBuffers.get(aIdx)) tSum += tInAmount;
+		return UT.Code.divup(tSum, BUFFER_LENGTH);
+	}
+
 	//使用这个算法使输出平滑
 	protected void setOutputSoft(FluidTankGT aTank) {
-		if (aTank.amount() * 2 > aTank.capacity()) {
-			// 有压力不进行平滑
+		if (aTank.amount() * 4 > aTank.capacity() * 3) {
+			// 为了让更多时候都可以平滑流速，流速控制管道的压力判断更加宽裕
+			// 超过压力时平滑算法失效
 			mOutputs[aTank.mIndex] = UT.Code.divup(aTank.capacity(), 2);
-			oAmounts[aTank.mIndex] = aTank.amount() - mOutputs[aTank.mIndex];
-			mCooldownCounters[aTank.mIndex] = COOLDOWN_NUM;
+			// 估计此时等效的 buffer 输入，减少对正常平滑的干扰
+			addInBuffer(aTank.mIndex, Math.max(0, aTank.amount()-oAmounts[aTank.mIndex]+getSmoothOutput(aTank.mIndex)-mOutputs[aTank.mIndex]));
 			return;
 		}
-		// 输出容器增加的量
-		mOutputs[aTank.mIndex] = aTank.amount() - oAmounts[aTank.mIndex];
-		if (mOutputs[aTank.mIndex] <= 0) {
-			// 没有输入，倒数准备清空统计
-			--mCooldownCounters[aTank.mIndex];
-			if (mCooldownCounters[aTank.mIndex] < 0) {
-				resetOutputSoft(aTank);
-				return;
-			}
-		} else {
-			// 有输入，重置倒数
-			mCooldownCounters[aTank.mIndex] = COOLDOWN_NUM;
-		}
-		if (mOutBuffers[aTank.mIndex] == 0 && mOutputs[aTank.mIndex] > 0) {
-			// 加速平滑算法
-			mOutBuffers[aTank.mIndex] = mOutputs[aTank.mIndex] * OUT_BUFFER_MUL;
-		} else {
-			// 将本应该的输出加入 buffer
-			mOutBuffers[aTank.mIndex] += mOutputs[aTank.mIndex];
-		}
-		// 可能会小于零？
-		if (mOutBuffers[aTank.mIndex] > 0) {
-			// buffer中按比例输出来进行平滑，向上取整保证不会剩 1 L
-			mOutputs[aTank.mIndex] = UT.Code.divup(mOutBuffers[aTank.mIndex], OUT_BUFFER_MUL);
-			// 将输出了的结果移出 buffer
-			mOutBuffers[aTank.mIndex] -= mOutputs[aTank.mIndex];
-			// 避免输出过高，来源是加速平滑算法
-			mOutputs[aTank.mIndex] = Math.min(mOutputs[aTank.mIndex], aTank.amount());
-		} else {
-			mOutBuffers[aTank.mIndex] = 0;
+		// 对于空管道专门优化
+		if (aTank.isEmpty()) {
+			addInBuffer(aTank.mIndex, 0);
 			mOutputs[aTank.mIndex] = 0;
+			return;
 		}
-		// 最后记录容器存储量，这样可以避免加载时没有 mOutputs 的问题
-		oAmounts[aTank.mIndex] = aTank.amount() - mOutputs[aTank.mIndex];
+		// 首先将输入量计入 buffer
+		addInBuffer(aTank.mIndex, Math.max(0, aTank.amount()-oAmounts[aTank.mIndex]));
+		// 输出则直接是对 buffer 的统计平均
+		long tOut = getSmoothOutput(aTank.mIndex);
+		if (tOut > 0) {
+			mOutputs[aTank.mIndex] = aTank.amount(Math.min(tOut, UT.Code.divup(aTank.capacity(), 2))); // 添加限制最大流速
+			return;
+		}
+		if (aTank.isEmpty()) return;
+		// 对于 tOut 为零但是管道有残存流体的情况，为了防止残存流体停止流动，将残存流体放入 buffer 重新计算
+		addInBuffer(aTank.mIndex, aTank.amount());
+		mOutputs[aTank.mIndex] = aTank.amount(Math.min(getSmoothOutput(aTank.mIndex), UT.Code.divup(aTank.capacity(), 2)));
 	}
 	protected void resetOutputSoft(FluidTankGT aTank) {
 		// 简单的重置
-		mCooldownCounters[aTank.mIndex] = 0;
-		mOutBuffers[aTank.mIndex] = 0;
+		mBeginIdx[aTank.mIndex] = SIDE_INVALID;
+		mInBuffers.get(aTank.mIndex).clear();
 		mOutputs[aTank.mIndex] = 0;
 		oAmounts[aTank.mIndex] = 0;
 	}
@@ -1119,6 +1192,8 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	@Override
 	public void onConnectionChange(byte aPreviousConnections) {
 		super.onConnectionChange(aPreviousConnections);
+		// 改变连接方式后需要重置均分的 idx
+		Arrays.fill(mBeginIdx, SIDE_INVALID);
 		// GTCH, 使用内部的改变连接方向来检测连接
 		checkConnection();
 		for (byte tSide : ALL_SIDES_VALID) {
@@ -1130,14 +1205,14 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	}
 	
 	@Override public boolean canDrop(int aInventorySlot) {return F;}
-	@Override public boolean isObstructingBlockAt(byte aSide) {return mBlocking;} // Btw, Wires have this but Pipes don't. This is because Wires are flexible, while Pipes aren't.
+	@Override public boolean isObstructingBlockAt2(byte aSide) {return mBlocking;} // Btw, Wires have this but Pipes don't. This is because Wires are flexible, while Pipes aren't.
 	
-	@Override public void onEntityCollidedWithBlock(Entity aEntity) {if (mContactDamage && !mFoamDried) UT.Entities.applyTemperatureDamage(aEntity, mTemperature, 1, 5.0F);}
+	@Override public void onEntityCollidedWithBlock(Entity aEntity) {if (mContactDamage && !isFoamDried()) UT.Entities.applyTemperatureDamage(aEntity, mTemperature, 1, 5.0F);}
 	
 	@Override
 	protected IFluidTank getFluidTankFillable2(byte aSide, FluidStack aFluidToFill) {
 		if (SIDES_VALID[aSide] && !canAcceptFluidsFrom(aSide)) return null;
-		for (FluidTankGT tTank : mTanks) if (tTank.contains(aFluidToFill)) return tTank;
+		for (FluidTankGT tTank : mTanks) if (tTank.contains(aFluidToFill)) return tTank; // 永远只填充相同液体种类的 tank，无论是否已经填满（默认就是这个逻辑，挺好）
 		for (FluidTankGT tTank : mTanks) if (tTank.isEmpty()) return tTank;
 		return null;
 	}
@@ -1159,28 +1234,14 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		int rFilledAmount = tTank.fill(aFluid, aDoFill);
 		if (aDoFill) {
 			if (rFilledAmount > 0) updateInventory();
-			mLastReceivedFrom[tTank.mIndex] |= SBIT[UT.Code.side(aDirection)];
+			setLastReceivedFrom(tTank.mIndex, UT.Code.side(aDirection));
 		}
 		return rFilledAmount;
 	}
 	
-	@Override
-	public boolean canConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator) {
-		if (aDelegator.mTileEntity instanceof IFluidHandler) {
-			// Extenders should always be connectable.
-			if (aDelegator.mTileEntity instanceof ITileEntityCanDelegate) return T;
-			// Make sure at least one Tank exists at this Side to connect to.
-			if (UT.Code.exists(0, ((IFluidHandler)aDelegator.mTileEntity).getTankInfo(aDelegator.getForgeSideOfTileEntity()))) return T;
-			// Okay, nothing to do here.
-			return F;
-		}
-		if (mTanks[0].capacity() >= 334) {
-			Block tBlock = aDelegator.getBlock();
-			// Yes I need to check for both to make this work. Some Mods override the Cauldron in a bad way.
-			if (tBlock == Blocks.cauldron || tBlock instanceof BlockCauldron) return T;
-		}
-		return F;
-	}
+	@Override public boolean canConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator)     {return PipeCompat_CH.canConnectFluid(this, aDelegator, aDelegator.mSideOfTileEntity);}
+	@Override public boolean canAutoConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator) {return PipeCompat_CH.canAutoConnectFluid(this, aDelegator, aDelegator.mSideOfTileEntity);}
+
 
 	// GTCH，根据状态修改是否可以输入输出
 	public boolean canEmitFluidsTo(byte aSide) {
@@ -1202,6 +1263,9 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	
 	@Override public long getTemperatureValue               (byte aSide) {return mTemperature;}
 	@Override public long getTemperatureMax                 (byte aSide) {return mMaxTemperature;}
+
+	@Override public long getFlowrateValue					(byte aSide) {return mTransferredAmount;}
+	@Override public long getFlowrateMax					(byte aSide) {return UT.Code.divup(mTanks[0].capacity() * mTanks.length, 2);}
 	
 	@Override public ITexture getTextureSide                (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {
 		ITexture tBase = UT_CH.Texture.BlockTextureDefaultAO(mMaterial, getIconIndexSide(aSide, aConnections, aDiameter, aRenderPass), mRGBa, mIsGlowing, (aRenderPass <= 6 && !mIsGlowing));
@@ -1212,7 +1276,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 			tMark = BlockTextureDefault.get(Textures.BlockIcons.ARROWS[mFluidMode.ordinal()][aSide][mFluidDir], mRGBaMark, mIsGlowing);
 			if (mFlowControl && mAllowSwitchFC) {
 				// 专门处理干掉的情况，干掉时不再需要侧边的橡胶材质
-				if (mFoamDried) tRubber = getTextureRubber(aDiameter);
+				if (isFoamDried()) tRubber = getTextureRubber(aDiameter);
 				else tRubber = BlockTextureDefault.get(Textures.BlockIcons.PIPE_RESTRICTOR, mRGBaRubber, mIsGlowing);
 			}
 		}
@@ -1257,7 +1321,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	// GTCH，图像动画数据
 	@Override
 	protected int getRenderPasses3(Block aBlock, boolean[] aShouldSideBeRendered) {
-		if (worldObj == null && mFoamDried) mRGBaMark = UT_CH.Code.getMarkRGB(mRGBa);
+		if (worldObj == null && isFoamDried()) mRGBaMark = UT_CH.Code.getMarkRGB(mRGBa);
 		return super.getRenderPasses3(aBlock, aShouldSideBeRendered);
 	}
 	@Override public boolean onTickCheck(long aTimer) {return mFluidDir != oFluidDir || mFluidMode != oFluidMode || mFlowControl != oFlowControl || mOutMark != oOutMark || super.onTickCheck(aTimer);}

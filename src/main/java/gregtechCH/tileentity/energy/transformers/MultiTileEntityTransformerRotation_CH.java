@@ -35,6 +35,7 @@ import gregapi.tileentity.machines.ITileEntityRunningActively;
 import gregapi.util.UT;
 import gregtechCH.config.ConfigForge_CH;
 import gregtechCH.data.LH_CH;
+import gregtechCH.tileentity.ITileEntityName_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.IInventory;
@@ -46,7 +47,7 @@ import java.util.List;
 
 import static gregapi.data.CS.*;
 
-public class MultiTileEntityTransformerRotation_CH extends TileEntityBase09FacingSingle implements ITileEntityAdjacentOnOff, ITileEntityEnergy, ITileEntityRunningActively {
+public class MultiTileEntityTransformerRotation_CH extends TileEntityBase09FacingSingle implements ITileEntityName_CH, ITileEntityAdjacentOnOff, ITileEntityEnergy, ITileEntityRunningActively {
 	protected long mRate = 16, mMultiplier = 4;
 
 	public long mPower = 0, mSpeed = 0, mEnergy = 0;
@@ -315,6 +316,7 @@ public class MultiTileEntityTransformerRotation_CH extends TileEntityBase09Facin
 		aIndex2 = (aSide == mFacing)? 0 : ((aSide == OPOS[mFacing])? 1 : 2);
 		return BlockTextureMulti.get(BlockTextureDefault.get(sColoreds[aIndex1][aIndex2], mRGBa), BlockTextureDefault.get(sOverlays[aIndex1][aIndex2], mRGBa));
 	}
-	
-	@Override public String getTileEntityName() {return "gtch.multitileentity.transformers.transformer_rotation";}
+
+	@Override public String getTileEntityName() {return "gt.multitileentity.transformers.transformer_rotation";}
+	@Override public String getTileEntityName_CH() {return "gtch.multitileentity.transformers.transformer_rotation";}
 }

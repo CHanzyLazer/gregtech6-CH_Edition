@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,21 +19,12 @@
 
 package gregtech.tileentity.placeables;
 
-import static gregapi.data.CS.*;
-
-import java.util.List;
-import java.util.Random;
-
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.block.metatype.BlockStones;
 import gregapi.block.multitileentity.IMultiTileEntity.*;
 import gregapi.code.ArrayListNoNulls;
-import gregapi.data.CS.BlocksGT;
-import gregapi.data.IL;
-import gregapi.data.LH;
-import gregapi.data.MT;
-import gregapi.data.OD;
-import gregapi.data.OP;
-import gregapi.data.TD;
+import gregapi.data.*;
 import gregapi.oredict.OreDictItemData;
 import gregapi.render.BlockTextureCopied;
 import gregapi.render.ITexture;
@@ -43,6 +34,7 @@ import gregapi.util.OM;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
+import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -54,6 +46,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
+
+import java.util.List;
+import java.util.Random;
+
+import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.*;
 
 /**
  * @author Gregorius Techneticies
@@ -225,6 +223,57 @@ public class MultiTileEntityRock extends TileEntityBase03MultiTileEntities imple
 		}
 		mTexture = BlockTextureCopied.get(Blocks.stone);
 		return 1;
+	}
+
+	@SideOnly(Side.CLIENT) @Override public int colorMultiplier() {
+		if (worldObj == null) {
+			return COLOR_STONE;
+		}
+		Block tBlock = getBlockAtSide(SIDE_BOTTOM);
+		if (tBlock == BlocksGT.Diggables) {
+			return UT.Code.getRGBInt(MT.STONES.Kimberlite.fRGBaSolid);
+		}
+		if (tBlock instanceof BlockStones) {
+			return UT.Code.getRGBInt(((BlockStones)tBlock).mMaterial.fRGBaSolid);
+		}
+		if (tBlock == Blocks.stone) {
+			return COLOR_STONE;
+		}
+		if (tBlock == Blocks.end_stone) {
+			return COLOR_END_STONE;
+		}
+		if (tBlock == Blocks.obsidian) {
+			return COLOR_OBSIDIAN;
+		}
+		if (tBlock == Blocks.netherrack || tBlock == Blocks.nether_brick || tBlock == Blocks.soul_sand) {
+			return COLOR_NETHERRACK;
+		}
+		if (tBlock == Blocks.sandstone || tBlock == Blocks.sand || IL.AETHER_Sand.equal(tBlock)) {
+			return COLOR_SAND;
+		}
+		if (tBlock == Blocks.cobblestone || tBlock == Blocks.gravel) {
+			return COLOR_COBBLESTONE;
+		}
+		if (IL.NeLi_Gravel.equal(tBlock)) {
+			return UT.Code.getRGBInt(MT.STONES.GraniteBlack.fRGBaSolid);
+		}
+
+		if (worldObj.provider.dimensionId == -1) return COLOR_NETHERRACK;
+		if (worldObj.provider.dimensionId ==  0) return COLOR_STONE;
+		if (worldObj.provider.dimensionId == +1) return COLOR_END_STONE;
+		if (WD.dimTF(worldObj))                  return COLOR_STONE;
+		if (WD.dimERE(worldObj))                 return 0x907050;
+		if (WD.dimBTL(worldObj))                 return 0x308030;
+		if (WD.dimALF(worldObj))                 return UT.Code.getRGBInt(MT.STONES.Marble.fRGBaSolid);
+		if (WD.dimATUM(worldObj))                return UT.Code.getRGBInt(MT.STONES.Limestone.fRGBaSolid);
+		if (WD.dimAETHER(worldObj))              return UT.Code.getRGBInt(MT.STONES.Andesite.fRGBaSolid);
+		if (WD.dimTROPIC(worldObj))              return UT.Code.getRGBInt(MT.STONES.Basalt.fRGBaSolid);
+
+		if (BIOMES_SPACE.contains(getBiome().biomeName)) {
+			if (tBlock.getMaterial() == Material.rock) return tBlock.getMaterial().getMaterialMapColor().colorValue;
+			return COLOR_OBSIDIAN;
+		}
+		return COLOR_STONE;
 	}
 	
 	@Override public boolean setBlockBounds(Block aBlock, int aRenderPass, boolean[] aShouldSideBeRendered) {box(aBlock,mMinX, 0, mMinZ, mMaxX, mMaxY, mMaxZ); return T;}

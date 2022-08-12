@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -403,7 +403,8 @@ public class Override_Drops {
 					case 10: aDrops.add(ST.entity(aDead, ST.book("Manual_Extenders")));        break;
 					case 11: aDrops.add(ST.entity(aDead, ST.book("Manual_Printer")));          break;
 					case 12: aDrops.add(ST.entity(aDead, ST.book("Manual_Steam")));            break;
-					case 13: aDrops.add(ST.entity(aDead, ST.book("Manual_Random")));           break;
+					case 13: aDrops.add(ST.entity(aDead, ST.book("Manual_Reactors")));         break;
+					case 14: aDrops.add(ST.entity(aDead, ST.book("Manual_Random")));           break;
 					default: aDrops.add(ST.entity(aDead, ST.book(UT.Books.MATERIAL_DICTIONARIES.get(RNGSUS.nextInt(UT.Books.MATERIAL_DICTIONARIES.size()))))); break;
 					}
 				}

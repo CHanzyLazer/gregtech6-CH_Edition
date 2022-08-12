@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,17 +19,7 @@
 
 package gregtech.loaders.a;
 
-import static gregapi.data.CS.*;
-
-import gregapi.data.CS.FluidsGT;
-import gregapi.data.CS.IconsGT;
-import gregapi.data.CS.PotionsGT;
-import gregapi.data.FL;
-import gregapi.data.IL;
-import gregapi.data.LH;
-import gregapi.data.MD;
-import gregapi.data.MT;
-import gregapi.data.TD;
+import gregapi.data.*;
 import gregapi.item.multiitem.food.FoodStatDrink;
 import gregapi.old.Textures;
 import gregapi.oredict.OreDictMaterial;
@@ -40,6 +30,8 @@ import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
 import net.minecraft.potion.Potion;
 import net.minecraftforge.fluids.FluidStack;
+
+import static gregapi.data.CS.*;
 
 public class Loader_Fluids implements Runnable {
 	@Override
@@ -134,10 +126,10 @@ public class Loader_Fluids implements Runnable {
 		
 		//-----
 		
-		MT.Pyrotheum .liquid(FL.make("pyrotheum" , 250));
-		MT.Cryotheum .liquid(FL.make("cryotheum" , 250));
-		MT.Petrotheum.liquid(FL.make("petrotheum", 250));
-		MT.Aerotheum .gas   (FL.make("aerotheum" , 250));
+		FL.create("pyrotheum"          , "Blazing Pyrotheum"  , MT.Pyrotheum , 1, 250, 4000).setDensity(2000).setViscosity(1200).setLuminosity(15);
+		FL.create("cryotheum"          , "Gelid Cryotheum"    , MT.Cryotheum , 1, 250,   50).setDensity(4000).setViscosity(3000);
+		FL.create("petrotheum"         , "Tectonic Petrotheum", MT.Petrotheum, 1, 250,  400).setDensity(4000).setViscosity(1500);
+		FL.create("aerotheum"          , "Zephyrean Aerotheum", MT.Aerotheum , 2, 250,  300).setDensity(-800).setViscosity( 100);
 		
 		FluidStack
 		tFluid = FL.make("mana", 250);
@@ -164,6 +156,36 @@ public class Loader_Fluids implements Runnable {
 			tFluid.getFluid().setTemperature((int)MT.TritaniumAlloy.mMeltingPoint);
 			MT.TritaniumAlloy.liquid(tFluid);
 		}
+		
+		tFluid = FL.make("ardite.molten"       , 144); if (tFluid != null) {tFluid.getFluid().setTemperature((int)MT.Ardite.mMeltingPoint); MT.Ardite.liquid(tFluid);}
+		tFluid = FL.make("manyullyn.molten"    , 144); if (tFluid != null) {tFluid.getFluid().setTemperature((int)MT.Manyullyn.mMeltingPoint); MT.Manyullyn.liquid(tFluid);}
+		tFluid = FL.make("aluminumbrass.molten", 144); if (tFluid != null) {tFluid.getFluid().setTemperature((int)MT.AluminiumBrass.mMeltingPoint); MT.AluminiumBrass.liquid(tFluid);}
+		tFluid = FL.make("bronze.molten"       , 144); if (tFluid != null) {tFluid.getFluid().setTemperature((int)MT.Bronze.mMeltingPoint); MT.Bronze.liquid(tFluid);}
+		tFluid = FL.make("steel.molten"        , 144); if (tFluid != null) {tFluid.getFluid().setTemperature((int)MT.Steel.mMeltingPoint); MT.Steel.liquid(tFluid);}
+		tFluid = FL.make("electrum.molten"     , 144); if (tFluid != null) {tFluid.getFluid().setTemperature((int)MT.Electrum.mMeltingPoint); MT.Electrum.liquid(tFluid);}
+		tFluid = FL.make("invar.molten"        , 144); if (tFluid != null) {tFluid.getFluid().setTemperature((int)MT.Invar.mMeltingPoint); MT.Invar.liquid(tFluid);}
+		tFluid = FL.make("alumite.molten"      , 144); if (tFluid != null) {tFluid.getFluid().setTemperature((int)MT.Alumite.mMeltingPoint); MT.Alumite.liquid(tFluid);}
+		tFluid = FL.make("lumium.molten"       , 144); if (tFluid != null) {tFluid.getFluid().setTemperature((int)MT.Lumium.mMeltingPoint); MT.Lumium.liquid(tFluid);}
+		tFluid = FL.make("signalum.molten"     , 144); if (tFluid != null) {tFluid.getFluid().setTemperature((int)MT.Signalum.mMeltingPoint); MT.Signalum.liquid(tFluid);}
+		tFluid = FL.make("enderium.molten"     , 144); if (tFluid != null) {tFluid.getFluid().setTemperature((int)MT.Enderium.mMeltingPoint); MT.Enderium.liquid(tFluid);}
+		tFluid = FL.make("mithril.molten"      , 144); if (tFluid != null) {tFluid.getFluid().setTemperature((int)MT.Mithril.mMeltingPoint); MT.Mithril.liquid(tFluid);}
+		tFluid = FL.make("pigiron.molten"      , 144); if (tFluid != null) {tFluid.getFluid().setTemperature((int)MT.PigIron.mMeltingPoint); MT.PigIron.liquid(tFluid);}
+		tFluid = FL.make("molten.aluminum"     , 144); if (tFluid != null) {tFluid.getFluid().setTemperature((int)MT.Al.mMeltingPoint); MT.Al.liquid(tFluid);}
+		tFluid = FL.make("aluminium.molten"    , 144); if (tFluid != null) {tFluid.getFluid().setTemperature((int)MT.Al.mMeltingPoint); MT.Al.liquid(tFluid);}
+		tFluid = FL.make("aluminum.molten"     , 144); if (tFluid != null) {tFluid.getFluid().setTemperature((int)MT.Al.mMeltingPoint); MT.Al.liquid(tFluid);}
+		tFluid = FL.make("titanium.molten"     , 144); if (tFluid != null) {tFluid.getFluid().setTemperature((int)MT.Ti.mMeltingPoint); MT.Ti.liquid(tFluid);}
+		tFluid = FL.make("magnesium.molten"    , 144); if (tFluid != null) {tFluid.getFluid().setTemperature((int)MT.Mg.mMeltingPoint); MT.Mg.liquid(tFluid);}
+		tFluid = FL.make("zinc.molten"         , 144); if (tFluid != null) {tFluid.getFluid().setTemperature((int)MT.Zn.mMeltingPoint); MT.Zn.liquid(tFluid);}
+		tFluid = FL.make("osmium.molten"       , 144); if (tFluid != null) {tFluid.getFluid().setTemperature((int)MT.Ge.mMeltingPoint); MT.Ge.liquid(tFluid);}
+		tFluid = FL.make("iron.molten"         , 144); if (tFluid != null) {tFluid.getFluid().setTemperature((int)MT.Fe.mMeltingPoint); MT.Fe.liquid(tFluid);}
+		tFluid = FL.make("gold.molten"         , 144); if (tFluid != null) {tFluid.getFluid().setTemperature((int)MT.Au.mMeltingPoint); MT.Au.liquid(tFluid);}
+		tFluid = FL.make("silver.molten"       , 144); if (tFluid != null) {tFluid.getFluid().setTemperature((int)MT.Ag.mMeltingPoint); MT.Ag.liquid(tFluid);}
+		tFluid = FL.make("lead.molten"         , 144); if (tFluid != null) {tFluid.getFluid().setTemperature((int)MT.Pb.mMeltingPoint); MT.Pb.liquid(tFluid);}
+		tFluid = FL.make("copper.molten"       , 144); if (tFluid != null) {tFluid.getFluid().setTemperature((int)MT.Cu.mMeltingPoint); MT.Cu.liquid(tFluid);}
+		tFluid = FL.make("tin.molten"          , 144); if (tFluid != null) {tFluid.getFluid().setTemperature((int)MT.Sn.mMeltingPoint); MT.Sn.liquid(tFluid);}
+		tFluid = FL.make("nickel.molten"       , 144); if (tFluid != null) {tFluid.getFluid().setTemperature((int)MT.Ni.mMeltingPoint); MT.Ni.liquid(tFluid);}
+		tFluid = FL.make("platinum.molten"     , 144); if (tFluid != null) {tFluid.getFluid().setTemperature((int)MT.Pt.mMeltingPoint); MT.Pt.liquid(tFluid);}
+		tFluid = FL.make("cobalt.molten"       , 144); if (tFluid != null) {tFluid.getFluid().setTemperature((int)MT.Co.mMeltingPoint); MT.Co.liquid(tFluid);}
 		
 		FL.create("plastic"                  , "Molten Plastic"      , MT.Plastic        , 1, 1000,   423);
 		FL.create("glass"                    , "Molten Glass"        , MT.Glass          , 1,    L,  1200);
@@ -350,7 +372,7 @@ public class Loader_Fluids implements Runnable {
 		new FoodStatDrink(FL.create("hellderberryjuice"                          , "Hellderberry Juice"                      , null                  , 1, 1000, 300)                                                                                                , ""                                                                ,  3, 0.4F  ,  30, C+37,  0.50F,  0,  0,  0, 20,  0, EnumAction.drink, F, F, F, Potion.damageBoost              .id, 200, 1,  25);
 		new FoodStatDrink(FL.create("binnie.juicelemon"                          , "Lemon Juice"                             , null                  , 1, 1000, 300)                                                                                                , "Maybe adding Sugar will make it less sour"                       ,  3, 0.8F  ,  20, C+37,  0.50F,  0,  0,  0, 20,  0, EnumAction.drink, F, F, F, Potion.digSpeed                 .id,1200, 0,  60, PotionsGT.ID_CONDUCTIVE, 300, 0,  70);
 		new FoodStatDrink(FL.create("binnie.juicepineapple"                      , "Ananas Juice"                            , null                  , 1, 1000, 300)                                                                                                , "Made of Trees!"                                                  ,  3, 0.4F  ,  20, C+37,  0.50F,  0,  0,  0, 20,  0, EnumAction.drink, F, F, F, Potion.digSpeed                 .id,1200, 0,  60);
-		new FoodStatDrink(FL.create("binnie.juiceorange"                         , "Orange Juice"                            , null                  , 1, 1000, 300)                                                                                                , "A very annoying Juice"                                           ,  3, 0.8F  ,  20, C+37,  0.50F,  0,  0,  0, 20,  0, EnumAction.drink, F, F, F, Potion.digSpeed                 .id,1200, 0,  60, PotionsGT.ID_CONDUCTIVE, 300, 0,  70);
+		new FoodStatDrink(FL.create("binnie.juiceorange"                         , "Orange Juice"                            , null                  , 1, 1000, 300)                                                                                                , "All 100% of it!"                                                 ,  3, 0.8F  ,  20, C+37,  0.50F,  0,  0,  0, 20,  0, EnumAction.drink, F, F, F, Potion.digSpeed                 .id,1200, 0,  60, PotionsGT.ID_CONDUCTIVE, 300, 0,  70);
 		new FoodStatDrink(FL.create("binnie.juiceapricot"                        , "Apricot Juice"                           , null                  , 1, 1000, 300)                                                                                                , ""                                                                ,  3, 0.8F  ,  20, C+37,  0.50F,  0,  0,  0, 20,  0, EnumAction.drink, F, F, F, Potion.digSpeed                 .id,1200, 0,  60);
 		new FoodStatDrink(FL.create("binnie.juicelime"                           , "Lime Juice"                              , null                  , 1, 1000, 300)                                                                                                , ""                                                                ,  3, 0.8F  ,  20, C+37,  0.50F,  0,  0,  0, 20,  0, EnumAction.drink, F, F, F, Potion.digSpeed                 .id,1200, 0,  60, PotionsGT.ID_CONDUCTIVE, 300, 0,  70);
 		new FoodStatDrink(FL.create("binnie.juicepear"                           , "Pear Juice"                              , null                  , 1, 1000, 300)                                                                                                , ""                                                                ,  6, 0.4F  ,  20, C+37,  0.50F,  0,  0,  5, 20,  0, EnumAction.drink, F, F, F, Potion.hunger                   .id, 200, 0,  20);
@@ -580,6 +602,7 @@ public class Loader_Fluids implements Runnable {
 		new FoodStatDrink(FL.create("mercury"                                    , "Mercury"                                 , MT.Hg                 , 1, L   , 300, FluidsGT.SIMPLE)                                                                        , "Liquid Metal"                                                    ,  0, 0.0F  ,   0, C+37,  0.00F,  0,  0,  0,  0,  0, EnumAction.drink, T, F, F, PotionsGT.ID_CONDUCTIVE            , 300, 0,  90, Potion.poison     .id,2000, 3, 100);
 		new FoodStatDrink(FL.create("sluicejuice"                                , "Sluice Juice"                            , null                  , 1, 1000, 300, FluidsGT.SIMPLE)                                                                        , ""                                                                ,  0, 0.0F  ,   0, C+37,  0.00F,  0,  0,  0,  0,  0, EnumAction.drink, T, F, F, Potion.moveSlowdown             .id,2000, 3, 100, Potion.poison     .id, 100, 1, 100);
 		
+		
 		new FoodStatDrink(FL.create("soymilk"                                    , "Soy Milk"                                , null                  , 1, 1000, 275)                                                                                         , "Milk Substitute"                                                 ,  0, 0.0F  ,  20, C+37,  0.50F,  0,  0,  0, 10,  0, EnumAction.drink, T, F, F).setMilk();
 		new FoodStatDrink(FL.create("grcmilk.milk"                               , "Milk"                                    , MT.Milk               , 1, 1000, 300)                                                                                         , "Got Milk?"                                                       ,  0, 0.0F  ,  20, C+37,  0.75F,  0,  0,  0,  0, 10, EnumAction.drink, T, F, F).setMilk();
 		new FoodStatDrink(FL.create("milk"                                       , "Milk"                                    , MT.Milk               , 1, 1000, 300, ST.make(Items.milk_bucket,1,0), ST.make(Items.bucket,1,0), 1000)                        , "Got Milk?"                                                       ,  0, 0.0F  ,  20, C+37,  0.75F,  0,  0,  0,  0, 10, EnumAction.drink, T, F, F).setMilk();
@@ -588,11 +611,12 @@ public class Loader_Fluids implements Runnable {
 		new FoodStatDrink(FL.create("mushroomsoup"                               , "Mushroom Stew"                           , null                  , 1, 1000, 300, ST.make(Items.mushroom_stew,1,0), ST.make(Items.bowl,1,0), 1000)                        , ""                                                                ,  2, 0.6F  ,   5, C+37,  0.15F,  0,  0, 10, 10,  0, EnumAction.eat  , T, F, F);
 		
 		
+		new FoodStatDrink("slime.blue"                                                                                                                                                                                                                       , "Blue Slime Juice"                                                ,  2, 0.5F  ,  20, C+37,  0.50F,  0,  0,  0,  0,  0, EnumAction.drink, F, F, F, Potion.jump                     .id, 600, 0,  50, PotionsGT.ID_STICKY, 300, 0, 90);
 		new FoodStatDrink("pinkslime"                                                                                                                                                                                                                        , "Meaty Slime Juice"                                               ,  4, 0.5F  ,  20, C+37,  0.50F,  0,  0,  0, 20,  0, EnumAction.drink, F, F, F, Potion.jump                     .id,1200, 1,  75, PotionsGT.ID_STICKY, 300, 0, 90);
 		new FoodStatDrink(FL.create("slime"                                      , "Slime"                                   , null                  , 1, 1000, 300)                                                                                         , "Green Slime Juice"                                               ,  2, 0.5F  ,  20, C+37,  0.50F,  0,  0,  0,  0,  0, EnumAction.drink, F, F, F, Potion.jump                     .id, 600, 0,  50, PotionsGT.ID_STICKY, 300, 0, 90);
 		new FoodStatDrink(FL.create("bawls"                                      , "BAWLS"                                   , null                  , 1, 1000, 275)                                                                                         , "Here, take a cold and refreshing sip of my BAWLS"                ,  2, 0.5F  ,  20, C+35,  0.50F,  0,  0,  0,  0,  0, EnumAction.drink, F, F, F, Potion.jump                     .id,1200, 1,  90, PotionsGT.ID_STICKY, 300, 0, 90);
-
-
+		
+		
 		new FoodStatDrink(FL.create("potion.darkcoffee"                          , "Dark Coffee"                             , null                  , 1, 1000, 300, FluidsGT.SIMPLE, FluidsGT.FOOD, FluidsGT.THERMOS)                                       , "Coffee, dark, without anything else"                             ,  2, 0.2F  ,   5, C+39,  0.50F,  0, 30, 15,  0,  0, EnumAction.drink, F, F, F);
 		new FoodStatDrink(FL.create("potion.darkcafeaulait"                      , "Dark Cafe au lait"                       , null                  , 1, 1000, 300, FluidsGT.SIMPLE, FluidsGT.FOOD, FluidsGT.THERMOS)                                       , "Keeping you awake the whole night"                               ,  2, 0.2F  ,   5, C+39,  0.50F,  0, 30, 15, 20,  0, EnumAction.drink, F, F, F);
 		new FoodStatDrink(FL.create("potion.coffee"                              , "Coffee"                                  , null                  , 1, 1000, 300, FluidsGT.SIMPLE, FluidsGT.FOOD, FluidsGT.THERMOS)                                       , "Just the regular morning Coffee"                                 ,  4, 0.4F  ,   5, C+39,  0.50F,  0, 30, 15,  0,  0, EnumAction.drink, F, F, F);
@@ -627,51 +651,53 @@ public class Loader_Fluids implements Runnable {
 		FL.Air_End   .fluid().setDensity(0);
 		
 		
-		FL.reg(FL.Air               .make(1000), IL.Cell_Air                     .get(1), IL.Cell_Empty.get(1), F, T, T);
-		FL.reg(FL.Air_Nether        .make(1000), IL.Cell_Air                     .get(1), IL.Cell_Empty.get(1), F, T, F);
-		FL.reg(FL.Air_End           .make(1000), IL.Cell_Air                     .get(1), IL.Cell_Empty.get(1), F, T, F);
-		FL.reg(FL.Air_End           .make(1000), IL.BOTA_Ender_Air_Bottle        .get(1), IL.Bottle_Empty.get(1));
-		FL.reg(FL.Juice_Hellderberry.make( 250), IL.NeLi_Bottle_Hellderberryjuice.get(1), IL.Bottle_Empty.get(1));
-		FL.reg(FL.FieryTears        .make(   L), IL.TF_Vial_FieryTears           .get(1), IL.Bottle_Empty.get(1));
-		FL.reg(FL.FieryBlood        .make(   L), IL.TF_Vial_FieryBlood           .get(1), IL.Bottle_Empty.get(1));
-		FL.reg(MT.Hg              .liquid(U, T), IL.HBM_Mercury_Bottle           .get(1), IL.Bottle_Empty.get(1));
-		FL.reg(FL.XP                .make( 160), ST.make(Items.experience_bottle , 1, 0), IL.Bottle_Empty.get(1), F, T, T);
-		FL.reg(FL.Mob               .make( 534), ST.make(Items.experience_bottle , 1, 0), IL.Bottle_Empty.get(1), F, T, F);
-		FL.reg(FL.Gas_Natural       .make(1000), ST.make(MD.MaCu, "fluids"       , 1,27), IL.Bottle_Empty.get(1), F, T, T);
-		FL.reg(FL.Gas_Natural       .make(2000), ST.make(MD.MaCu, "fluids"       , 1, 2), ST.make(MD.MaCu, "fluids", 1, 20), F, T, T);
-		FL.reg(FL.Ambrosia          .make(1000), IL.FR_Ambrosia                  .get(1), IL.FR_WaxCapsule.get(1), T, F, F);
-		FL.reg(FL.Honey             .make(1000), IL.GrC_Honey_Jar                .get(1), ST.make(Items.flower_pot, 1, 0));
-		FL.reg(FL.Honey             .make( 500), IL.BoP_Jar_Honey                .get(1), IL.BoP_Jar_Empty.get(1, IL.Bottle_Empty.get(1)));
-		FL.reg(FL.Potion_Poison_2   .make( 500), IL.BoP_Jar_Poison               .get(1), IL.BoP_Jar_Empty.get(1, IL.Bottle_Empty.get(1)));
-		FL.reg(FL.Water             .make(1000), IL.AETHER_Bucket_Water          .get(1), IL.AETHER_Bucket_Empty.get(1));
-		FL.reg(FL.Milk              .make(1000), IL.AETHER_Bucket_Milk           .get(1), IL.AETHER_Bucket_Empty.get(1));
-		FL.reg(FL.SpDew             .make(1000), IL.NeLi_Bucket_Spectral_Dew     .get(1), ST.make(Items.bucket, 1, 0), F, T, T);
-		FL.reg(FL.Water             .make(5000), IL.SC2_Teapot_Water             .get(1), IL.SC2_Teapot_Empty.get(1), F, T, T);
-		FL.reg(FL.DistW             .make(5000), IL.SC2_Teapot_Water             .get(1), IL.SC2_Teapot_Empty.get(1), F, T, F);
-		FL.reg(FL.SpDew             .make(5000), IL.SC2_Teapot_Water             .get(1), IL.SC2_Teapot_Empty.get(1), F, T, F);
-		FL.reg(FL.Water_Boiling     .make(5000), IL.SC2_Teapot_Boiling           .get(1), IL.SC2_Teapot_Empty.get(1), F, T, T);
-		FL.reg(FL.Water_Hot         .make(5000), IL.SC2_Teapot_Boiling           .get(1), IL.SC2_Teapot_Empty.get(1), F, T, F);
-		FL.reg(FL.Water_Geothermal  .make(5000), IL.SC2_Teapot_Boiling           .get(1), IL.SC2_Teapot_Empty.get(1), F, T, F);
-		FL.reg(FL.Tea_Sweet         .make(5000), IL.SC2_Teapot_Full              .get(1), IL.SC2_Teapot_Empty.get(1), F, T, T);
-		FL.reg(FL.Tea_Sweet         .make( 500), ST.make(MD.SC2, "ItemTeapot"    , 1, 3), IL.SC2_Teapot_Empty.get(1), F, F, T);
-		FL.reg(FL.Tea_Sweet         .make(1000), ST.make(MD.SC2, "ItemTeapot"    , 1, 4), IL.SC2_Teapot_Empty.get(1), F, F, T);
-		FL.reg(FL.Tea_Sweet         .make(1500), ST.make(MD.SC2, "ItemTeapot"    , 1, 5), IL.SC2_Teapot_Empty.get(1), F, F, T);
-		FL.reg(FL.Tea_Sweet         .make(2000), ST.make(MD.SC2, "ItemTeapot"    , 1, 6), IL.SC2_Teapot_Empty.get(1), F, F, T);
-		FL.reg(FL.Tea_Sweet         .make(2500), ST.make(MD.SC2, "ItemTeapot"    , 1, 7), IL.SC2_Teapot_Empty.get(1), F, F, T);
-		FL.reg(FL.Tea_Sweet         .make(3000), ST.make(MD.SC2, "ItemTeapot"    , 1, 8), IL.SC2_Teapot_Empty.get(1), F, F, T);
-		FL.reg(FL.Tea_Sweet         .make(3500), ST.make(MD.SC2, "ItemTeapot"    , 1, 9), IL.SC2_Teapot_Empty.get(1), F, F, T);
-		FL.reg(FL.Tea_Sweet         .make(4000), ST.make(MD.SC2, "ItemTeapot"    , 1,10), IL.SC2_Teapot_Empty.get(1), F, F, T);
-		FL.reg(FL.Tea_Sweet         .make(4500), ST.make(MD.SC2, "ItemTeapot"    , 1,11), IL.SC2_Teapot_Empty.get(1), F, F, T);
-		FL.reg(FL.Tea_Sweet         .make( 500), IL.SC2_Teacup_Full              .get(1), IL.SC2_Teacup_Empty.get(1), F, T, T);
-		FL.reg(FL.Tea_Sweet         .make(  50), ST.make(MD.SC2, "ItemTeacup"    , 1, 1), IL.SC2_Teacup_Empty.get(1), F, F, T);
-		FL.reg(FL.Tea_Sweet         .make( 100), ST.make(MD.SC2, "ItemTeacup"    , 1, 2), IL.SC2_Teacup_Empty.get(1), F, F, T);
-		FL.reg(FL.Tea_Sweet         .make( 150), ST.make(MD.SC2, "ItemTeacup"    , 1, 3), IL.SC2_Teacup_Empty.get(1), F, F, T);
-		FL.reg(FL.Tea_Sweet         .make( 200), ST.make(MD.SC2, "ItemTeacup"    , 1, 4), IL.SC2_Teacup_Empty.get(1), F, F, T);
-		FL.reg(FL.Tea_Sweet         .make( 250), ST.make(MD.SC2, "ItemTeacup"    , 1, 5), IL.SC2_Teacup_Empty.get(1), F, F, T);
-		FL.reg(FL.Tea_Sweet         .make( 300), ST.make(MD.SC2, "ItemTeacup"    , 1, 6), IL.SC2_Teacup_Empty.get(1), F, F, T);
-		FL.reg(FL.Tea_Sweet         .make( 350), ST.make(MD.SC2, "ItemTeacup"    , 1, 7), IL.SC2_Teacup_Empty.get(1), F, F, T);
-		FL.reg(FL.Tea_Sweet         .make( 400), ST.make(MD.SC2, "ItemTeacup"    , 1, 8), IL.SC2_Teacup_Empty.get(1), F, F, T);
-		FL.reg(FL.Tea_Sweet         .make( 450), ST.make(MD.SC2, "ItemTeacup"    , 1, 9), IL.SC2_Teacup_Empty.get(1), F, F, T);
+		FL.reg(FL.Air                     .make(1000), IL.Cell_Air                                 .get(1), IL.Cell_Empty.get(1), F, T, T);
+		FL.reg(FL.Air_Nether              .make(1000), IL.Cell_Air                                 .get(1), IL.Cell_Empty.get(1), F, T, F);
+		FL.reg(FL.Air_End                 .make(1000), IL.Cell_Air                                 .get(1), IL.Cell_Empty.get(1), F, T, F);
+		FL.reg(FL.Air_End                 .make(1000), IL.BOTA_Ender_Air_Bottle                    .get(1), IL.Bottle_Empty.get(1));
+		FL.reg(FL.Juice_Hellderberry      .make( 250), IL.NeLi_Bottle_Hellderberryjuice            .get(1), IL.Bottle_Empty.get(1));
+		FL.reg(FL.FieryTears              .make(   L), IL.TF_Vial_FieryTears                       .get(1), IL.Bottle_Empty.get(1));
+		FL.reg(FL.FieryBlood              .make(   L), IL.TF_Vial_FieryBlood                       .get(1), IL.Bottle_Empty.get(1));
+		FL.reg(MT.Hg                    .liquid(U, T), IL.HBM_Mercury_Bottle                       .get(1), IL.Bottle_Empty.get(1));
+		FL.reg(FL.XP                      .make( 160), ST.make(Items.experience_bottle             , 1, 0), IL.Bottle_Empty.get(1), F, T, T);
+		FL.reg(FL.Mob                     .make( 534), ST.make(Items.experience_bottle             , 1, 0), IL.Bottle_Empty.get(1), F, T, F);
+		FL.reg(FL.Gas_Natural             .make(1000), ST.make(MD.MaCu, "fluids"                   , 1,27), IL.Bottle_Empty.get(1), F, T, T);
+		FL.reg(FL.Gas_Natural             .make(2000), ST.make(MD.MaCu, "fluids"                   , 1, 2), ST.make(MD.MaCu, "fluids", 1, 20), F, T, T);
+		FL.reg(FL.Ambrosia                .make(1000), IL.FR_Ambrosia                              .get(1), IL.FR_WaxCapsule.get(1), T, F, F);
+		FL.reg(FL.Honey                   .make(1000), IL.GrC_Honey_Jar                            .get(1), ST.make(Items.flower_pot, 1, 0));
+		FL.reg(FL.Honey                   .make( 500), IL.BoP_Jar_Honey                            .get(1), IL.BoP_Jar_Empty.get(1, IL.Bottle_Empty.get(1)));
+		FL.reg(FL.Potion_Poison_2         .make( 500), IL.BoP_Jar_Poison                           .get(1), IL.BoP_Jar_Empty.get(1, IL.Bottle_Empty.get(1)));
+		FL.reg(FL.Water                   .make(1000), IL.AETHER_Bucket_Water                      .get(1), IL.AETHER_Bucket_Empty.get(1));
+		FL.reg(FL.Milk                    .make(1000), IL.AETHER_Bucket_Milk                       .get(1), IL.AETHER_Bucket_Empty.get(1));
+		FL.reg(FL.SpDew                   .make(1000), IL.NeLi_Bucket_Spectral_Dew                 .get(1), ST.make(Items.bucket, 1, 0), F, T, T);
+		FL.reg(FL.Water                   .make(5000), IL.SC2_Teapot_Water                         .get(1), IL.SC2_Teapot_Empty.get(1), F, T, T);
+		FL.reg(FL.DistW                   .make(5000), IL.SC2_Teapot_Water                         .get(1), IL.SC2_Teapot_Empty.get(1), F, T, F);
+		FL.reg(FL.SpDew                   .make(5000), IL.SC2_Teapot_Water                         .get(1), IL.SC2_Teapot_Empty.get(1), F, T, F);
+		FL.reg(FL.Water_Boiling           .make(5000), IL.SC2_Teapot_Boiling                       .get(1), IL.SC2_Teapot_Empty.get(1), F, T, T);
+		FL.reg(FL.Water_Hot               .make(5000), IL.SC2_Teapot_Boiling                       .get(1), IL.SC2_Teapot_Empty.get(1), F, T, F);
+		FL.reg(FL.Water_Geothermal        .make(5000), IL.SC2_Teapot_Boiling                       .get(1), IL.SC2_Teapot_Empty.get(1), F, T, F);
+		FL.reg(FL.Tea_Sweet               .make(5000), IL.SC2_Teapot_Full                          .get(1), IL.SC2_Teapot_Empty.get(1), F, T, T);
+		FL.reg(FL.Tea_Sweet               .make( 500), ST.make(MD.SC2, "ItemTeapot"                , 1, 3), IL.SC2_Teapot_Empty.get(1), F, F, T);
+		FL.reg(FL.Tea_Sweet               .make(1000), ST.make(MD.SC2, "ItemTeapot"                , 1, 4), IL.SC2_Teapot_Empty.get(1), F, F, T);
+		FL.reg(FL.Tea_Sweet               .make(1500), ST.make(MD.SC2, "ItemTeapot"                , 1, 5), IL.SC2_Teapot_Empty.get(1), F, F, T);
+		FL.reg(FL.Tea_Sweet               .make(2000), ST.make(MD.SC2, "ItemTeapot"                , 1, 6), IL.SC2_Teapot_Empty.get(1), F, F, T);
+		FL.reg(FL.Tea_Sweet               .make(2500), ST.make(MD.SC2, "ItemTeapot"                , 1, 7), IL.SC2_Teapot_Empty.get(1), F, F, T);
+		FL.reg(FL.Tea_Sweet               .make(3000), ST.make(MD.SC2, "ItemTeapot"                , 1, 8), IL.SC2_Teapot_Empty.get(1), F, F, T);
+		FL.reg(FL.Tea_Sweet               .make(3500), ST.make(MD.SC2, "ItemTeapot"                , 1, 9), IL.SC2_Teapot_Empty.get(1), F, F, T);
+		FL.reg(FL.Tea_Sweet               .make(4000), ST.make(MD.SC2, "ItemTeapot"                , 1,10), IL.SC2_Teapot_Empty.get(1), F, F, T);
+		FL.reg(FL.Tea_Sweet               .make(4500), ST.make(MD.SC2, "ItemTeapot"                , 1,11), IL.SC2_Teapot_Empty.get(1), F, F, T);
+		FL.reg(FL.Tea_Sweet               .make( 500), IL.SC2_Teacup_Full                          .get(1), IL.SC2_Teacup_Empty.get(1), F, T, T);
+		FL.reg(FL.Tea_Sweet               .make(  50), ST.make(MD.SC2, "ItemTeacup"                , 1, 1), IL.SC2_Teacup_Empty.get(1), F, F, T);
+		FL.reg(FL.Tea_Sweet               .make( 100), ST.make(MD.SC2, "ItemTeacup"                , 1, 2), IL.SC2_Teacup_Empty.get(1), F, F, T);
+		FL.reg(FL.Tea_Sweet               .make( 150), ST.make(MD.SC2, "ItemTeacup"                , 1, 3), IL.SC2_Teacup_Empty.get(1), F, F, T);
+		FL.reg(FL.Tea_Sweet               .make( 200), ST.make(MD.SC2, "ItemTeacup"                , 1, 4), IL.SC2_Teacup_Empty.get(1), F, F, T);
+		FL.reg(FL.Tea_Sweet               .make( 250), ST.make(MD.SC2, "ItemTeacup"                , 1, 5), IL.SC2_Teacup_Empty.get(1), F, F, T);
+		FL.reg(FL.Tea_Sweet               .make( 300), ST.make(MD.SC2, "ItemTeacup"                , 1, 6), IL.SC2_Teacup_Empty.get(1), F, F, T);
+		FL.reg(FL.Tea_Sweet               .make( 350), ST.make(MD.SC2, "ItemTeacup"                , 1, 7), IL.SC2_Teacup_Empty.get(1), F, F, T);
+		FL.reg(FL.Tea_Sweet               .make( 400), ST.make(MD.SC2, "ItemTeacup"                , 1, 8), IL.SC2_Teacup_Empty.get(1), F, F, T);
+		FL.reg(FL.Tea_Sweet               .make( 450), ST.make(MD.SC2, "ItemTeacup"                , 1, 9), IL.SC2_Teacup_Empty.get(1), F, F, T);
+		FL.reg(FL.make("sulfuric_acid_fluid"  , 1000), ST.make(MD.HBM, "item.bucket_sulfuric_acid" , 1, 0), ST.make(Items.bucket, 1, 0), F, T, F);
+		FL.reg(FL.make("sulfuricacid"         , 1000), ST.make(MD.HBM, "item.bucket_sulfuric_acid" , 1, 0), ST.make(Items.bucket, 1, 0), F, T, T);
 		
 		/* TODO
 		FL.registerFluidContainer(FL.make("potion.poison"        , 125), IL.Arrow_Head_Glass_Poison          .get(1), IL.Arrow_Head_Glass_Empty.get(1));

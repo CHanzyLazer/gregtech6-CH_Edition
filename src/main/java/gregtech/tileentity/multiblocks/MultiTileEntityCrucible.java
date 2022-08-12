@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,35 +19,23 @@
 
 package gregtech.tileentity.multiblocks;
 
-import static gregapi.data.CS.*;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-
-import com.google.common.primitives.Bytes;
 import gregapi.GT_API_Proxy;
 import gregapi.block.multitileentity.MultiTileEntityContainer;
 import gregapi.code.ArrayListNoNulls;
 import gregapi.code.HashSetNoNulls;
 import gregapi.code.TagData;
-import gregapi.data.CS.GarbageGT;
-import gregapi.data.CS.SFX;
-import gregapi.data.FL;
-import gregapi.data.LH;
+import gregapi.data.*;
 import gregapi.data.LH.Chat;
-import gregapi.data.MT;
-import gregapi.data.OP;
-import gregapi.data.TD;
 import gregapi.network.INetworkHandler;
 import gregapi.network.IPacket;
+import gregapi.old.Textures;
 import gregapi.oredict.OreDictItemData;
 import gregapi.oredict.OreDictMaterial;
 import gregapi.oredict.OreDictMaterialStack;
 import gregapi.oredict.configurations.IOreDictConfigurationComponent;
 import gregapi.render.BlockTextureDefault;
 import gregapi.render.BlockTextureMulti;
+import gregapi.render.IIconContainer;
 import gregapi.render.ITexture;
 import gregapi.tileentity.ITileEntityServerTickPost;
 import gregapi.tileentity.data.ITileEntityTemperature;
@@ -56,28 +44,16 @@ import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.tileentity.energy.ITileEntityEnergyDataCapacitor;
 import gregapi.tileentity.machines.ITileEntityCrucible;
 import gregapi.tileentity.machines.ITileEntityMold;
-import gregapi.tileentity.multiblocks.IMultiBlockEnergy;
-import gregapi.tileentity.multiblocks.IMultiBlockFluidHandler;
-import gregapi.tileentity.multiblocks.IMultiBlockInventory;
-import gregapi.tileentity.multiblocks.ITileEntityMultiBlockController;
-import gregapi.tileentity.multiblocks.MultiTileEntityMultiBlockPart;
-import gregapi.tileentity.multiblocks.TileEntityBase10MultiBlockBase;
+import gregapi.tileentity.multiblocks.*;
 import gregapi.util.OM;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
+import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.monster.EntityCreeper;
-import net.minecraft.entity.monster.EntityEnderman;
-import net.minecraft.entity.monster.EntityIronGolem;
-import net.minecraft.entity.monster.EntitySilverfish;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.EntitySnowman;
-import net.minecraft.entity.monster.EntitySpider;
-import net.minecraft.entity.monster.EntityWitch;
-import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.monster.*;
 import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -88,6 +64,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
+import static gregapi.data.CS.*;
 
 /**
  * @author Gregorius Techneticies
@@ -128,24 +111,26 @@ public class MultiTileEntityCrucible extends TileEntityBase10MultiBlockBase impl
 	
 	@Override
 	public boolean checkStructure2() {
-		boolean tSuccess = T;
-		
-		if (getAir(xCoord, yCoord+1, zCoord)) worldObj.setBlockToAir(xCoord, yCoord+1, zCoord); else tSuccess = F;
-		if (getAir(xCoord, yCoord+2, zCoord)) worldObj.setBlockToAir(xCoord, yCoord+2, zCoord); else tSuccess = F;
-		
+		if (worldObj.blockExists(xCoord-1, yCoord, zCoord-1) && worldObj.blockExists(xCoord+1, yCoord+2, zCoord+1)) {
+			if (getAir(xCoord, yCoord+1, zCoord)) worldObj.setBlockToAir(xCoord, yCoord+1, zCoord); else {resetStructurePart(); return F;}
+			if (getAir(xCoord, yCoord+2, zCoord)) worldObj.setBlockToAir(xCoord, yCoord+2, zCoord); else {resetStructurePart(); return F;}
+
+			for (int i = -1; i < 2; i++) for (int j = -1; j < 2; j++) if (i != 0 || j != 0) {
+				if (!ITileEntityMultiBlockController.Util.checkAndSetTargetOffset(this, i, 0, j, mWalls, getMultiTileEntityRegistryID(), MultiTileEntityMultiBlockPart.TRANSPARENT, MultiTileEntityMultiBlockPart.ONLY_ENERGY_IN)) {resetStructurePart(); return F;}
+				if (!ITileEntityMultiBlockController.Util.checkAndSetTargetOffset(this, i, 1, j, mWalls, getMultiTileEntityRegistryID(), MultiTileEntityMultiBlockPart.TRANSPARENT, MultiTileEntityMultiBlockPart.ONLY_CRUCIBLE)) {resetStructurePart(); return F;}
+				if (!ITileEntityMultiBlockController.Util.checkAndSetTargetOffset(this, i, 2, j, mWalls, getMultiTileEntityRegistryID(), MultiTileEntityMultiBlockPart.TRANSPARENT, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID)) {resetStructurePart(); return F;}
+			}
+			return T;
+		}
+		return isStructureOkay();
+	}
+
+	protected void resetStructurePart() {
 		for (int i = -1; i < 2; i++) for (int j = -1; j < 2; j++) if (i != 0 || j != 0) {
-			if (!ITileEntityMultiBlockController.Util.checkAndSetTargetOffset(this, i, 0, j, mWalls, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.ONLY_ENERGY_IN)) tSuccess = F;
-			if (!ITileEntityMultiBlockController.Util.checkAndSetTargetOffset(this, i, 1, j, mWalls, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.ONLY_CRUCIBLE)) tSuccess = F;
-			if (!ITileEntityMultiBlockController.Util.checkAndSetTargetOffset(this, i, 2, j, mWalls, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID)) tSuccess = F;
+			ITileEntityMultiBlockController.Util.checkAndResetTargetOffset(this, i, 0, j, mWalls, getMultiTileEntityRegistryID());
+			ITileEntityMultiBlockController.Util.checkAndResetTargetOffset(this, i, 1, j, mWalls, getMultiTileEntityRegistryID());
+			ITileEntityMultiBlockController.Util.checkAndResetTargetOffset(this, i, 2, j, mWalls, getMultiTileEntityRegistryID());
 		}
-		
-		if (tSuccess) for (int i = -1; i < 2; i++) for (int j = -1; j < 2; j++) if (i != 0 || j != 0) {
-			if (!ITileEntityMultiBlockController.Util.checkAndSetTargetOffset(this, i, 0, j, mWalls, getMultiTileEntityRegistryID(), 4, MultiTileEntityMultiBlockPart.ONLY_ENERGY_IN)) tSuccess = F;
-			if (!ITileEntityMultiBlockController.Util.checkAndSetTargetOffset(this, i, 1, j, mWalls, getMultiTileEntityRegistryID(), 4, MultiTileEntityMultiBlockPart.ONLY_CRUCIBLE)) tSuccess = F;
-			if (!ITileEntityMultiBlockController.Util.checkAndSetTargetOffset(this, i, 2, j, mWalls, getMultiTileEntityRegistryID(), 4, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID)) tSuccess = F;
-		}
-		
-		return tSuccess;
 	}
 	
 	@Override
@@ -168,9 +153,10 @@ public class MultiTileEntityCrucible extends TileEntityBase10MultiBlockBase impl
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.crucible.2"));
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.crucible.3"));
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.crucible.4"));
-		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.crucible.5"));
 		aList.add(Chat.CYAN     + LH.get(LH.CONVERTS_FROM_X) + " 1 " + TD.Energy.HU.getLocalisedNameShort() + " " + LH.get(LH.CONVERTS_TO_Y) + " +1 K " + LH.get(LH.CONVERTS_PER_Z) + " "+ KG_PER_ENERGY + "kg (at least "+getEnergySizeInputMin(TD.Energy.HU, SIDE_ANY)+" Units per Tick required!)");
+		aList.add(Chat.YELLOW   + LH.get(LH.TOOLTIP_THERMALMASS) + mMaterial.getWeight(U*100) + " kg");
 		aList.add(Chat.DRED     + LH.get(LH.HAZARD_MELTDOWN) + " (" + getTemperatureMax(SIDE_ANY) + " K)");
+		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.crucible.5"));
 		if (mAcidProof) aList.add(Chat.ORANGE + LH.get(LH.TOOLTIP_ACIDPROOF));
 		aList.add(Chat.DRED     + LH.get(LH.HAZARD_FIRE) + " ("+(FLAME_RANGE+1)+"m)");
 		aList.add(Chat.DRED     + LH.get(LH.HAZARD_CONTACT));
@@ -190,6 +176,7 @@ public class MultiTileEntityCrucible extends TileEntityBase10MultiBlockBase impl
 	
 	@Override
 	public void onTick2(long aTimer, boolean aIsServerSide) {
+		super.onTick2(aTimer, aIsServerSide);
 		if (aIsServerSide && mHasToAddTimer) {
 			GT_API_Proxy.SERVER_TICK_POST.add(this);
 			mHasToAddTimer = F;
@@ -387,8 +374,8 @@ public class MultiTileEntityCrucible extends TileEntityBase10MultiBlockBase impl
 	}
 	
 	public boolean addMaterialStacks(List<OreDictMaterialStack> aList, long aTemperature) {
-		if (checkStructure(F) && OM.total(mContent)+OM.total(aList) <= MAX_AMOUNT) {
-			double tWeight1 = OM.weight(mContent)+mMaterial.getWeight(U*7), tWeight2 = OM.weight(aList);
+		if (checkStructureOnly(F) && OM.total(mContent)+OM.total(aList) <= MAX_AMOUNT) {
+			double tWeight1 = OM.weight(mContent)+mMaterial.getWeight(U*100), tWeight2 = OM.weight(aList);
 			if (tWeight1+tWeight2 > 0) mTemperature = aTemperature + (mTemperature>aTemperature?+1:-1)*UT.Code.units(Math.abs(mTemperature - aTemperature), (long)(tWeight1+tWeight2), (long)tWeight1, F);
 			for (OreDictMaterialStack tMaterial : aList) {
 				if (mTemperature >= tMaterial.mMaterial.mMeltingPoint) {
@@ -422,7 +409,7 @@ public class MultiTileEntityCrucible extends TileEntityBase10MultiBlockBase impl
 	
 	@Override
 	public boolean isMoldInputSide(byte aSide) {
-		return SIDES_TOP[aSide] && checkStructure(F);
+		return SIDES_TOP[aSide] && checkStructureOnly(F);
 	}
 	
 	@Override
@@ -449,11 +436,7 @@ public class MultiTileEntityCrucible extends TileEntityBase10MultiBlockBase impl
 	@Override
 	public boolean breakBlock() {
 		GarbageGT.trash(mContent);
-		for (int i = -1; i < 2; i++) for (int j = -1; j < 2; j++) if (i != 0 || j != 0) {
-			ITileEntityMultiBlockController.Util.checkAndSetTargetOffset(this, i, 0, j, mWalls, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.ONLY_ENERGY_IN);
-			ITileEntityMultiBlockController.Util.checkAndSetTargetOffset(this, i, 1, j, mWalls, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.ONLY_CRUCIBLE);
-			ITileEntityMultiBlockController.Util.checkAndSetTargetOffset(this, i, 2, j, mWalls, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID);
-		}
+		resetStructurePart();
 		return super.breakBlock();
 	}
 	
@@ -461,7 +444,7 @@ public class MultiTileEntityCrucible extends TileEntityBase10MultiBlockBase impl
 	
 	@Override
 	public boolean onBlockActivated3(EntityPlayer aPlayer, byte aSide, float aHitX, float aHitY, float aHitZ) {
-		if (!checkStructure(F)) return F;
+		if (!checkStructureOnly(F)) return F;
 		if (SIDES_TOP[aSide]) {
 			if (isServerSide() && aPlayer != null) {
 				ItemStack aStack = aPlayer.getCurrentEquippedItem();
@@ -548,7 +531,7 @@ public class MultiTileEntityCrucible extends TileEntityBase10MultiBlockBase impl
 	
 	@Override
 	public boolean fillMoldAtSide(ITileEntityMold aMold, byte aSide, byte aSideOfMold) {
-		if (checkStructure(F)) for (OreDictMaterialStack tContent : mContent) if (tContent != null && mTemperature >= tContent.mMaterial.mMeltingPoint && tContent.mMaterial.mTargetSmelting.mMaterial == tContent.mMaterial) {
+		if (checkStructureOnly(F)) for (OreDictMaterialStack tContent : mContent) if (tContent != null && mTemperature >= tContent.mMaterial.mMeltingPoint && tContent.mMaterial.mTargetSmelting.mMaterial == tContent.mMaterial) {
 			long tAmount = aMold.fillMold(tContent, mTemperature, aSideOfMold);
 			if (tAmount > 0) {
 				tContent.mAmount -= tAmount;
@@ -562,7 +545,7 @@ public class MultiTileEntityCrucible extends TileEntityBase10MultiBlockBase impl
 	public long onToolClick2(String aTool, long aRemainingDurability, long aQuality, Entity aPlayer, List<String> aChatReturn, IInventory aPlayerInventory, boolean aSneaking, ItemStack aStack, byte aSide, float aHitX, float aHitY, float aHitZ) {
 		if (isClientSide()) return super.onToolClick2(aTool, aRemainingDurability, aQuality, aPlayer, aChatReturn, aPlayerInventory, aSneaking, aStack, aSide, aHitX, aHitY, aHitZ);
 		if (aTool.equals(TOOL_thermometer)) {if (aChatReturn != null) aChatReturn.add("Temperature: " + mTemperature + "K"); return 10000;}
-		if (aTool.equals(TOOL_shovel) && SIDES_TOP[aSide] && checkStructure(F) && aPlayer instanceof EntityPlayer) {
+		if (aTool.equals(TOOL_shovel) && SIDES_TOP[aSide] && checkStructureOnly(F) && aPlayer instanceof EntityPlayer) {
 			OreDictMaterialStack tLightest = null;
 			for (OreDictMaterialStack tMaterial : mContent) if (tLightest == null || tMaterial.mMaterial.mGramPerCubicCentimeter < tLightest.mMaterial.mGramPerCubicCentimeter) tLightest = tMaterial;
 			if (tLightest != null && mTemperature < tLightest.mMaterial.mMeltingPoint) {
@@ -624,6 +607,7 @@ public class MultiTileEntityCrucible extends TileEntityBase10MultiBlockBase impl
 	
 	@Override
 	public int getRenderPasses2(Block aBlock, boolean[] aShouldSideBeRendered) {
+		if (!isStructureOkay()) return 1;
 		short[] tRGBaArray = UT.Code.getRGBaArray(mRGBa);
 		if (mMeltDown) {
 			tRGBaArray[0] = UT.Code.bind8(tRGBaArray[0]*2+50);
@@ -635,37 +619,55 @@ public class MultiTileEntityCrucible extends TileEntityBase10MultiBlockBase impl
 		if (UT.Code.exists(mDisplayedFluid, OreDictMaterial.MATERIAL_ARRAY)) {
 			mTextureMolten = OreDictMaterial.MATERIAL_ARRAY[mDisplayedFluid].getTextureMolten();
 		} else {
-			mTextureMolten = BlockTextureDefault.get(MT.NULL, OP.blockRaw, CA_GRAY_64, F);
+			mTextureMolten = UT_CH.Texture.BlockTextureDefaultNoAO(MT.NULL, OP.blockRaw, CA_GRAY_64);
 		}
 		return 6;
 	}
 	
 	@Override
 	public boolean setBlockBounds2(Block aBlock, int aRenderPass, boolean[] aShouldSideBeRendered) {
-		if (mStructureOkay) switch(aRenderPass) {
-		case  0: box(aBlock,-0.999, 0.0,-0.999,-0.500, 3.000, 1.999); return T;
-		case  1: box(aBlock,-0.999, 0.0,-0.999, 1.999, 3.000,-0.500); return T;
-		case  2: box(aBlock, 1.500, 0.0,-0.999, 1.999, 3.000, 1.999); return T;
-		case  3: box(aBlock,-0.999, 0.0, 1.500, 1.999, 3.000, 1.999); return T;
-		case  4: box(aBlock,-0.999, 0.0,-0.999, 1.999, 1.125, 1.999); return T;
-		case  5: box(aBlock,-0.999, 0.0,-0.999, 1.999, 1.125+(UT.Code.unsignB(mDisplayedHeight) / 150.0), 1.999); return T;
+		// GTCH, 略微调整 box
+		if (isStructureOkay()) switch(aRenderPass) {
+		case  0: box(aBlock,-1.0 + UT_CH.Code.RENDER_EPS,	UT_CH.Code.RENDER_EPS,	-1.0 + UT_CH.Code.RENDER_EPS,	-0.5, 						3.0 - UT_CH.Code.RENDER_EPS,		2.0 - UT_CH.Code.RENDER_EPS	); return T;
+		case  1: box(aBlock,-1.0 + UT_CH.Code.RENDER_EPS,	UT_CH.Code.RENDER_EPS,	-1.0 + UT_CH.Code.RENDER_EPS,	2.0 - UT_CH.Code.RENDER_EPS,	3.0 - UT_CH.Code.RENDER_EPS*2.0,	-0.5							); return T;
+		case  2: box(aBlock,1.5, 							UT_CH.Code.RENDER_EPS,	-1.0 + UT_CH.Code.RENDER_EPS, 	2.0 - UT_CH.Code.RENDER_EPS,	3.0 - UT_CH.Code.RENDER_EPS,		2.0 - UT_CH.Code.RENDER_EPS	); return T;
+		case  3: box(aBlock,-1.0 + UT_CH.Code.RENDER_EPS,	UT_CH.Code.RENDER_EPS,	1.5, 							2.0 - UT_CH.Code.RENDER_EPS, 3.0 - UT_CH.Code.RENDER_EPS*2.0,	2.0 - UT_CH.Code.RENDER_EPS	); return T;
+		case  4: box(aBlock,-1.0 + UT_CH.Code.RENDER_EPS,	UT_CH.Code.RENDER_EPS,	-1.0 + UT_CH.Code.RENDER_EPS, 	2.0 - UT_CH.Code.RENDER_EPS, 1.125, 							2.0 - UT_CH.Code.RENDER_EPS	); return T;
+		case  5: box(aBlock,-0.5 - UT_CH.Code.RENDER_EPS,	UT_CH.Code.RENDER_EPS,	-0.5 - UT_CH.Code.RENDER_EPS,	1.5 + UT_CH.Code.RENDER_EPS,	1.125+(UT.Code.unsignB(mDisplayedHeight) / 150.0), 1.5 + UT_CH.Code.RENDER_EPS); return T;
 		}
 		return T;
 	}
 	
 	private ITexture mTextureMolten;
+	public static final IIconContainer[] mTextureSideTops = new IIconContainer[] {
+		new Textures.BlockIcons.CustomIcon("machines/multiblockmains/crucible/colored_side/top_xn"),
+		new Textures.BlockIcons.CustomIcon("machines/multiblockmains/crucible/colored_side/top_zn"),
+		new Textures.BlockIcons.CustomIcon("machines/multiblockmains/crucible/colored_side/top_xp"),
+		new Textures.BlockIcons.CustomIcon("machines/multiblockmains/crucible/colored_side/top_zp"),
+	};
 	
 	@Override
 	public ITexture getTexture2(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
-		switch(aRenderPass) {
-		case  0: case  2: return SIDES_AXIS_Z[aSide]||aSide==SIDE_BOTTOM?null:BlockTextureMulti.get(BlockTextureDefault.get((aSide==mFacing?mTexturesFront:mTextures)[FACES_TBS[aSide]], mRenderedRGBA, T), BlockTextureDefault.get((aSide==mFacing?mTexturesFront:mTextures)[FACES_TBS[aSide]+3], T));
-		case  1: case  3: return SIDES_AXIS_X[aSide]||aSide==SIDE_BOTTOM?null:BlockTextureMulti.get(BlockTextureDefault.get((aSide==mFacing?mTexturesFront:mTextures)[FACES_TBS[aSide]], mRenderedRGBA, T), BlockTextureDefault.get((aSide==mFacing?mTexturesFront:mTextures)[FACES_TBS[aSide]+3], T));
-		case  4: return SIDES_VERTICAL[aSide]?BlockTextureMulti.get(BlockTextureDefault.get((aSide==mFacing?mTexturesFront:mTextures)[FACES_TBS[aSide]], mRenderedRGBA, T), BlockTextureDefault.get((aSide==mFacing?mTexturesFront:mTextures)[FACES_TBS[aSide]+3], T)):null;
+		// 超过了原本的方块，所以无论何时都要渲染，并且需要关闭环境光遮蔽来防止一些显示错误
+		if (isStructureOkay()) switch(aRenderPass) {
+		case  0: case  2:
+			if (SIDES_AXIS_Z[aSide]||aSide==SIDE_BOTTOM) return null;
+			if (aSide == SIDE_TOP) return UT_CH.Texture.BlockTextureDefaultNoAO(mTextureSideTops[aRenderPass], mRenderedRGBA);
+			return BlockTextureMulti.get(UT_CH.Texture.BlockTextureDefaultNoAO((aSide == mFacing ? mTexturesFront : mTextures)[FACES_TBS[aSide]], mRenderedRGBA), UT_CH.Texture.BlockTextureDefaultNoAO((aSide == mFacing ? mTexturesFront : mTextures)[FACES_TBS[aSide] + 3]));
+		case  1: case  3:
+			if (SIDES_AXIS_X[aSide]||aSide==SIDE_BOTTOM) return null;
+			if (aSide == SIDE_TOP) return UT_CH.Texture.BlockTextureDefaultNoAO(mTextureSideTops[aRenderPass], mRenderedRGBA);
+			return BlockTextureMulti.get(UT_CH.Texture.BlockTextureDefaultNoAO((aSide == mFacing ? mTexturesFront : mTextures)[FACES_TBS[aSide]], mRenderedRGBA), UT_CH.Texture.BlockTextureDefaultNoAO((aSide == mFacing ? mTexturesFront : mTextures)[FACES_TBS[aSide] + 3]));
+		case  4: return SIDES_VERTICAL[aSide]?BlockTextureMulti.get(UT_CH.Texture.BlockTextureDefaultNoAO((aSide==mFacing?mTexturesFront:mTextures)[FACES_TBS[aSide]], mRenderedRGBA), UT_CH.Texture.BlockTextureDefaultNoAO((aSide==mFacing?mTexturesFront:mTextures)[FACES_TBS[aSide]+3])):null;
 		case  5: return mDisplayedHeight != 0 && SIDES_TOP[aSide]?mTextureMolten:null;
 		}
-		return BlockTextureMulti.get(BlockTextureDefault.get((aSide==mFacing?mTexturesFront:mTextures)[FACES_TBS[aSide]], mRenderedRGBA, T), BlockTextureDefault.get((aSide==mFacing?mTexturesFront:mTextures)[FACES_TBS[aSide]+3], T));
+		return BlockTextureMulti.get(BlockTextureDefault.get((aSide==mFacing?mTexturesFront:mTextures)[FACES_TBS[aSide]], mRGBa), BlockTextureDefault.get((aSide==mFacing?mTexturesFront:mTextures)[FACES_TBS[aSide]+3]));
 	}
-	
+
+	// GTCH, 需要在结构成形时设置其为透明
+	@Override public int getLightOpacity() {return isStructureOkay() ? LIGHT_OPACITY_WATER : super.getLightOpacity();}
+	@Override protected void setStructureOkay2(int aOldOpacity) {updateLightOpacity(aOldOpacity);}
+
 	@Override
 	public void onWalkOver2(EntityLivingBase aEntity) {
 		super.onWalkOver2(aEntity);

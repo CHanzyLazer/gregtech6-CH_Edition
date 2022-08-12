@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,23 +19,14 @@
 
 package gregapi.tileentity.base;
 
-import static gregapi.data.CS.*;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
 import appeng.api.movable.IMovableTile;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetLightValue;
+import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetLightOpacity;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_IsProvidingStrongPower;
 import gregapi.code.ArrayListNoNulls;
 import gregapi.code.TagData;
-import gregapi.data.CS.GarbageGT;
-import gregapi.data.CS.ModIDs;
-import gregapi.data.CS.SFX;
 import gregapi.data.FL;
 import gregapi.data.TD;
 import gregapi.gui.ContainerCommon;
@@ -59,7 +50,9 @@ import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
 import gregtechCH.fluid.IFluidHandler_CH;
-import gregtechCH.vision.IAlternateOpacity_CH;
+import gregtechCH.tileentity.ITEScheduledUpdate_CH;
+import gregtechCH.util.UT_CH;
+import gregtechCH.util.WD_CH;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergyTile;
@@ -77,18 +70,20 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
-import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.*;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import static gregapi.data.CS.*;
+import static gregtechCH.GTCH_Main.pushScheduled;
 
 /**
  * @author Gregorius Techneticies
@@ -394,9 +389,9 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 	public void updateEntity() {
 		// Well, if the TileEntity gets ticked, it is alive.
 		if (isDead()) setAlive();
-		
+
 		if (isServerSide() && !mIsAddedToEnet && mDoEnetCheck) try {loadIntoEnet();} catch(Throwable e) {mDoEnetCheck = F;}
-		
+
 		if (mExplosionStrength > 0) {
 			setToAir();
 			if (mExplosionStrength < 1) {
@@ -407,19 +402,75 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 			setDead();
 			return;
 		}
-		
+
 		if (mDoesBlockUpdate) doBlockUpdate();
+	}
+	// GTCH，使用专门的计划更新来延迟更新，并且避免污染原本的代码
+	public void onScheduledUpdate_CH(boolean aIsServerSide) {
+		// GTCH, 执行 mark 的任务
+		if (mMarkNBTFinished) {
+			initNBTFinish();
+			mMarkNBTFinished = F;
+		}
+		if (mMarkedLightValueUpdate) {
+			updateLightValue();
+			mMarkedLightValueUpdate = F;
+		}
+		if (mMarkedLightOpacityUpdate) {
+			updateLightOpacity(mScheduleOldOpacity);
+			mMarkedLightOpacityUpdate = F;
+			mScheduleOldOpacity = -1;
+		}
+	}
+
+	private boolean mMarkedLightValueUpdate = F;
+	private boolean mMarkedLightOpacityUpdate = F;
+	private int mScheduleOldOpacity = -1; // 用来记录的旧不透明度，新的旧不透明度取最大值
+
+	// GTCH, 还是使用子类调用更新的方式来实现
+	// 标记式更新，可以用于在 NBT 读取阶段进行更新
+	public void updateLightValueMark() 					{if (this instanceof ITEScheduledUpdate_CH) {pushScheduled(isServerSide(), (ITEScheduledUpdate_CH)this); mMarkedLightValueUpdate = T;}}
+	public void updateLightOpacityMark(int aOldOpacity) {if (this instanceof ITEScheduledUpdate_CH) {pushScheduled(isServerSide(), (ITEScheduledUpdate_CH)this); mScheduleOldOpacity = Math.max(aOldOpacity, mScheduleOldOpacity); mMarkedLightOpacityUpdate = T;}}
+	public void updateLightOpacityMark() 				{if (this instanceof ITEScheduledUpdate_CH) {pushScheduled(isServerSide(), (ITEScheduledUpdate_CH)this); mScheduleOldOpacity = LIGHT_OPACITY_MAX; mMarkedLightOpacityUpdate = T;}}
+	// 一般的调用更新，更新前需要先设置区块存储的不透光度数据；并入接口避免非法重写
+	public void updateLightValue() 						{UT_CH.Light.updateLightValue(getWorld(), getX(), getY(), getZ());}
+	public void updateLightOpacity(int aOldOpacity) 	{if (getWorld() != null && isServerSide()) WD_CH.setBlockGTLightOpacity(getWorld(), getX(), getY(), getZ(), (short)getBlock(getCoords()).getLightOpacity(getWorld(), getX(), getY(), getZ())); UT_CH.Light.updateLightOpacity(aOldOpacity, getWorld(), getX(), getY(), getZ());}
+	public void updateLightOpacity() 					{if (getWorld() != null && isServerSide()) WD_CH.setBlockGTLightOpacity(getWorld(), getX(), getY(), getZ(), (short)getBlock(getCoords()).getLightOpacity(getWorld(), getX(), getY(), getZ())); UT_CH.Light.updateLightOpacity(getWorld(), getX(), getY(), getZ());}
+	// 初始化 NBT 时调用，用于初始化方块不透光度和亮度
+	private void initNBTFinish() {
+		// 方块初始化时设置不透光度，保证服务端的初始不透明度一定是正确的
+		if (getWorld() != null && isServerSide() && this instanceof IMTE_GetLightOpacity) {
+			// 获取旧的存储的不透光度，检测是否有发生改变，如果发生改变则需要更新光照
+			Short oLightOpacity = WD_CH.getBlockGTLightOpacity(getWorld(), getX(), getY(), getZ());
+			if (oLightOpacity == null) updateLightOpacity();
+			else if (getBlock(getCoords()).getLightOpacity(getWorld(), getX(), getY(), getZ()) != oLightOpacity) updateLightOpacity(oLightOpacity);
+			// 使用方块不透光度判断保证实际使用的不透光度就是存储的不透光度
+		}
+	}
+	// 用来标记 NBT 设置完成，然后在初始化方块完全结束后再去调用
+	private boolean mMarkNBTFinished = F;
+	// GTCH, 添加这个方法来统一执行，避免重复代码
+	@Override
+	public void readFromNBT(NBTTagCompound aNBT) {
+		super.readFromNBT(aNBT);
+		// 仅服务端加入计划，因为不好加入世界加载和区块加载时的载入，为了避免客户端卡顿只向服务端加入计划（TODO，考虑看看世界加载和区块加载时的逻辑？）
+		if (isServerSide() && this instanceof ITEScheduledUpdate_CH) {
+			pushScheduled(T, (ITEScheduledUpdate_CH)this);
+			mMarkNBTFinished = T;
+		}
 	}
 	
 	@Override
 	public long getTimer() {
 		return 0;
 	}
-	
+
 	@Override
-	public boolean canUpdate() {
-		return mIsTicking && mShouldRefresh;
+	public final boolean canUpdate() {
+		return mIsTicking && mShouldRefresh && canUpdate2();
 	}
+
+	public boolean canUpdate2() {return T;}
 	
 	@Override
 	public boolean shouldRefresh(Block aOldBlock, Block aNewBlock, int aOldMeta, int aNewMeta, World aWorld, int aX, int aY, int aZ) {
@@ -517,27 +568,16 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 	@SideOnly(Side.CLIENT) public final IRenderedBlockObject passRenderingToObject(ItemStack aStack) {return ERROR_MESSAGE == null ? passRenderingToObject2(aStack) : ErrorRenderer.INSTANCE;}
 	@SideOnly(Side.CLIENT) public final IRenderedBlockObject passRenderingToObject(IBlockAccess aWorld, int aX, int aY, int aZ) {return ERROR_MESSAGE == null ? passRenderingToObject2(aWorld, aX, aY, aZ) : ErrorRenderer.INSTANCE;}
 	@SideOnly(Side.CLIENT) public IRenderedBlockObject passRenderingToObject2(ItemStack aStack) {return (IRenderedBlockObject)this;}
-	@SideOnly(Side.CLIENT) public IRenderedBlockObject passRenderingToObject2(IBlockAccess aWorld, int aX, int aY, int aZ) {
-		// GTCH，用于使得自动调整不透光度的方块能即时调整
-		if((this instanceof IAlternateOpacity_CH) && ((IAlternateOpacity_CH) this).updateLightCheck()) {
-			worldObj.updateLightByType(EnumSkyBlock.Sky, xCoord, yCoord, zCoord);
-			((IAlternateOpacity_CH) this).updateLightReset();
-		}
-		return (IRenderedBlockObject)this;
-	}
-	
+	@SideOnly(Side.CLIENT) public IRenderedBlockObject passRenderingToObject2(IBlockAccess aWorld, int aX, int aY, int aZ) {return (IRenderedBlockObject)this;}
+
 	public void updateInventory() {/**/}
 	public void updateAdjacentInventories() {for (byte tSide : ALL_SIDES_VALID) {DelegatorTileEntity<TileEntity> tDelegator = getAdjacentTileEntity(tSide); if (tDelegator.mTileEntity instanceof ITileEntityAdjacentInventoryUpdatable) ((ITileEntityAdjacentInventoryUpdatable)tDelegator.mTileEntity).adjacentInventoryUpdated(tDelegator.mSideOfTileEntity, (IInventory)this);}}
 	
 	public void playClick() {UT.Sounds.send(worldObj, SFX.MC_CLICK, 1, 1, getCoords());}
 	public void playCollect() {UT.Sounds.send(worldObj, SFX.MC_COLLECT, 0.2F, ((RNGSUS.nextFloat() - RNGSUS.nextFloat()) * 0.7F + 1) * 2, getCoords());}
-	
-	public void updateLightValue() {
-		if (this instanceof IMTE_GetLightValue) {
-			worldObj.setLightValue(EnumSkyBlock.Block, xCoord, yCoord, zCoord, ((IMTE_GetLightValue)this).getLightValue());
-			for (byte tSide : ALL_SIDES_MIDDLE) worldObj.updateLightByType(EnumSkyBlock.Block, xCoord+OFFX[tSide], yCoord+OFFY[tSide], zCoord+OFFZ[tSide]);
-		}
-	}
+
+	// 注释掉避免后续更新意外调用
+//	public void updateLightValue() {/* REMOVED */}
 	
 	public boolean shouldCheckWeakPower(byte aSide) {
 		return F;
@@ -606,7 +646,7 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 
 		IFluidHandler tOutTank = getAdjacentTank(tSide).mTileEntity;
 		if (((tOutTank instanceof IFluidHandler_CH) && ((IFluidHandler_CH)tOutTank).canFillExtra(rDrained) || FL.canFillDefault(rDrained)) ||
-				(!(tOutTank instanceof IFluidHandler_CH) && FL.canFillDefault(rDrained))) {
+			(!(tOutTank instanceof IFluidHandler_CH) && FL.canFillDefault(rDrained))) {
 			return rDrained;
 		} else {
 			if (rDrained != null && rDrained.amount > 0) {
@@ -664,13 +704,13 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 	
 	// A Default implementation of the MultiBlock related Fluid Tank behaviour.
 	
-	protected IFluidTank getFluidTankFillable(MultiTileEntityMultiBlockPart aPart, byte aSide, FluidStack aFluidToFill) {return getFluidTankFillable(aSide, aFluidToFill);}
-	protected IFluidTank getFluidTankDrainable(MultiTileEntityMultiBlockPart aPart, byte aSide, FluidStack aFluidToDrain) {return getFluidTankDrainable(aSide, aFluidToDrain);}
-	protected IFluidTank[] getFluidTanks(MultiTileEntityMultiBlockPart aPart, byte aSide) {return getFluidTanks(aSide);}
+	protected IFluidTank getFluidTankFillable(MultiTileEntityMultiBlockPart aPart, byte aSide, FluidStack aFluidToFill) {return getFluidTankFillable(SIDE_ANY, aFluidToFill);}
+	protected IFluidTank getFluidTankDrainable(MultiTileEntityMultiBlockPart aPart, byte aSide, FluidStack aFluidToDrain) {return getFluidTankDrainable(SIDE_ANY, aFluidToDrain);}
+	protected IFluidTank[] getFluidTanks(MultiTileEntityMultiBlockPart aPart, byte aSide) {return getFluidTanks(SIDE_ANY);}
 	
 	public int fill(MultiTileEntityMultiBlockPart aPart, byte aDirection, FluidStack aFluid, boolean aDoFill) {
 		if (aFluid == null || aFluid.amount <= 0) return 0;
-		IFluidTank tTank = getFluidTankFillable(aPart, UT.Code.side(aDirection), aFluid);
+		IFluidTank tTank = getFluidTankFillable(aPart, SIDE_ANY, aFluid);
 		if (tTank == null) return 0;
 		int rFilledAmount = tTank.fill(aFluid, aDoFill);
 		if (rFilledAmount > 0 && aDoFill) updateInventory();
@@ -679,7 +719,7 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 	
 	public FluidStack drain(MultiTileEntityMultiBlockPart aPart, byte aDirection, FluidStack aFluid, boolean aDoDrain) {
 		if (aFluid == null || aFluid.amount <= 0) return null;
-		IFluidTank tTank = getFluidTankDrainable(aPart, UT.Code.side(aDirection), aFluid);
+		IFluidTank tTank = getFluidTankDrainable(aPart, SIDE_ANY, aFluid);
 		if (tTank == null || tTank.getFluid() == null || tTank.getFluidAmount() == 0 || !tTank.getFluid().isFluidEqual(aFluid)) return null;
 		FluidStack rDrained = tTank.drain(aFluid.amount, aDoDrain);
 		if (rDrained != null && aDoDrain) updateInventory();
@@ -688,7 +728,7 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 	
 	public FluidStack drain(MultiTileEntityMultiBlockPart aPart, byte aDirection, int aAmountToDrain, boolean aDoDrain) {
 		if (aAmountToDrain <= 0) return null;
-		IFluidTank tTank = getFluidTankDrainable(aPart, UT.Code.side(aDirection), null);
+		IFluidTank tTank = getFluidTankDrainable(aPart, SIDE_ANY, null);
 		if (tTank == null || tTank.getFluid() == null || tTank.getFluidAmount() == 0) return null;
 		FluidStack rDrained = tTank.drain(aAmountToDrain, aDoDrain);
 		if (rDrained != null && aDoDrain) updateInventory();
@@ -697,18 +737,18 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 	
 	public boolean canFill(MultiTileEntityMultiBlockPart aPart, byte aDirection, Fluid aFluid) {
 		if (aFluid == null) return F;
-		IFluidTank tTank = getFluidTankFillable(aPart, UT.Code.side(aDirection), FL.make(aFluid, 0));
+		IFluidTank tTank = getFluidTankFillable(aPart, SIDE_ANY, FL.make(aFluid, 0));
 		return tTank != null && (tTank.getFluid() == null || tTank.getFluid().getFluid() == aFluid);
 	}
 	
 	public boolean canDrain(MultiTileEntityMultiBlockPart aPart, byte aDirection, Fluid aFluid) {
 		if (aFluid == null) return F;
-		IFluidTank tTank = getFluidTankDrainable(aPart, UT.Code.side(aDirection), FL.make(aFluid, 0));
+		IFluidTank tTank = getFluidTankDrainable(aPart, SIDE_ANY, FL.make(aFluid, 0));
 		return tTank != null && (tTank.getFluid() != null && tTank.getFluid().getFluid() == aFluid);
 	}
 	
 	public FluidTankInfo[] getTankInfo(MultiTileEntityMultiBlockPart aPart, byte aDirection) {
-		IFluidTank[] tTanks = getFluidTanks(aPart, UT.Code.side(aDirection));
+		IFluidTank[] tTanks = getFluidTanks(aPart, SIDE_ANY);
 		if (tTanks == null || tTanks.length <= 0) return ZL_FLUIDTANKINFO;
 		FluidTankInfo[] rInfo = new FluidTankInfo[tTanks.length];
 		for (int i = 0; i < tTanks.length; i++) rInfo[i] = new FluidTankInfo(tTanks[i]);
@@ -999,6 +1039,11 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 	}
 	
 	public boolean onDrawBlockHighlight2(DrawBlockHighlightEvent aEvent) {return F;}
+
+	// GTCH, 更多种类的 Overlay
+	public boolean isUsingFullBlockOverlay(ItemStack aStack, byte aSide) {
+		return F;
+	}
 	
 	public final boolean onDrawBlockHighlight(DrawBlockHighlightEvent aEvent) {
 		FORCE_FULL_SELECTION_BOXES = F;
@@ -1007,6 +1052,11 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 			FORCE_FULL_SELECTION_BOXES = T;
 			byte tConnections = 0; for (byte i = 0; i < 6; i++) if (isConnectedWrenchingOverlay(aEvent.currentItem, i)) tConnections |= (1 << i);
 			RenderHelper.drawWrenchOverlay(aEvent.player, aEvent.target.blockX, aEvent.target.blockY, aEvent.target.blockZ, tConnections, (byte)aEvent.target.sideHit, aEvent.partialTicks);
+			return T;
+		}
+		// 自定义的优先级较低
+		if (ST.valid(aEvent.currentItem) && isUsingFullBlockOverlay(aEvent.currentItem, (byte)aEvent.target.sideHit)) {
+			FORCE_FULL_SELECTION_BOXES = T;
 			return T;
 		}
 		return T;

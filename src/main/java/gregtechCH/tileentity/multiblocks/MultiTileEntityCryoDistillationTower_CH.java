@@ -18,6 +18,7 @@
  */
 
 package gregtechCH.tileentity.multiblocks;
+import gregtech.tileentity.multiblocks.MultiTileEntityCryoDistillationTower;
 
 import gregapi.data.FL;
 import gregapi.data.LH;
@@ -29,7 +30,6 @@ import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.tileentity.machines.ITileEntityAdjacentOnOff;
 import gregapi.tileentity.multiblocks.ITileEntityMultiBlockController;
 import gregapi.tileentity.multiblocks.MultiTileEntityMultiBlockPart;
-import gregapi.tileentity.multiblocks.TileEntityBase10MultiBlockMachine;
 import gregapi.util.ST;
 import gregapi.util.WD;
 import net.minecraft.inventory.IInventory;
@@ -45,13 +45,13 @@ import static gregapi.data.CS.*;
 /**
  * @author Gregorius Techneticies
  */
-public class MultiTileEntityCryoDistillationTower_CH extends TileEntityBase10MultiBlockMachine_CH {
+public class MultiTileEntityCryoDistillationTower_CH extends TileEntityBase10MultiBlockMachine_CH implements IDistillationTower {
 	@Override
 	public boolean checkStructure2() {
 		int tX = getOffsetXN(mFacing), tY = yCoord, tZ = getOffsetZN(mFacing);
 		if (worldObj.blockExists(tX-1, tY, tZ-1) && worldObj.blockExists(tX+1, tY, tZ-1) && worldObj.blockExists(tX-1, tY, tZ+1) && worldObj.blockExists(tX+1, tY, tZ+1)) {
 			boolean tSuccess = T;
-			
+
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX-1, tY-1, tZ-1, 18101, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.ONLY_ENERGY_IN)) tSuccess = F;
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX  , tY-1, tZ-1, 18101, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.ONLY_ENERGY_IN)) tSuccess = F;
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+1, tY-1, tZ-1, 18101, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.ONLY_ENERGY_IN)) tSuccess = F;
@@ -61,7 +61,7 @@ public class MultiTileEntityCryoDistillationTower_CH extends TileEntityBase10Mul
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX-1, tY-1, tZ+1, 18101, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.ONLY_ENERGY_IN)) tSuccess = F;
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX  , tY-1, tZ+1, 18101, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.ONLY_ENERGY_IN)) tSuccess = F;
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+1, tY-1, tZ+1, 18101, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.ONLY_ENERGY_IN)) tSuccess = F;
-			
+
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX-1, tY  , tZ-1, 18102, getMultiTileEntityRegistryID(),                              0, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID)) tSuccess = F;
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX  , tY  , tZ-1, 18102, getMultiTileEntityRegistryID(),  mFacing == SIDE_Z_POS ? 1 : 0, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID)) tSuccess = F;
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+1, tY  , tZ-1, 18102, getMultiTileEntityRegistryID(),                              0, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID)) tSuccess = F;
@@ -71,7 +71,7 @@ public class MultiTileEntityCryoDistillationTower_CH extends TileEntityBase10Mul
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX-1, tY  , tZ+1, 18102, getMultiTileEntityRegistryID(),                              0, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID)) tSuccess = F;
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX  , tY  , tZ+1, 18102, getMultiTileEntityRegistryID(),  mFacing == SIDE_Z_NEG ? 1 : 0, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID)) tSuccess = F;
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+1, tY  , tZ+1, 18102, getMultiTileEntityRegistryID(),                              0, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID)) tSuccess = F;
-			
+
 			for (int i = 1; i < 8; i++) {
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX-1, tY+i, tZ-1, 18102, getMultiTileEntityRegistryID(),                              0, MultiTileEntityMultiBlockPart.ONLY_FLUID_OUT)) tSuccess = F;
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX  , tY+i, tZ-1, 18102, getMultiTileEntityRegistryID(),  mFacing == SIDE_Z_POS ? 1 : 0, MultiTileEntityMultiBlockPart.ONLY_FLUID_OUT)) tSuccess = F;
@@ -83,12 +83,12 @@ public class MultiTileEntityCryoDistillationTower_CH extends TileEntityBase10Mul
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX  , tY+i, tZ+1, 18102, getMultiTileEntityRegistryID(),  mFacing == SIDE_Z_NEG ? 1 : 0, MultiTileEntityMultiBlockPart.ONLY_FLUID_OUT)) tSuccess = F;
 			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+1, tY+i, tZ+1, 18102, getMultiTileEntityRegistryID(),                              0, MultiTileEntityMultiBlockPart.ONLY_FLUID_OUT)) tSuccess = F;
 			}
-			
+
 			return tSuccess;
 		}
 		return mStructureOkay;
 	}
-	
+
 	static {
 		LH.add("gt.tooltip.multiblock.cryodistillationtower.1", "3x3 Base of Heat Transmitters. They can also transfer Cold. ;)");
 		LH.add("gt.tooltip.multiblock.cryodistillationtower.2", "3x3x8 of Distillation Tower Parts");
@@ -97,7 +97,7 @@ public class MultiTileEntityCryoDistillationTower_CH extends TileEntityBase10Mul
 		LH.add("gt.tooltip.multiblock.cryodistillationtower.5", "Bottom Hole is for outputting all Items");
 		LH.add("gt.tooltip.multiblock.cryodistillationtower.6", "Input only possible at Bottom Layer of Tower");
 	}
-	
+
 	@Override
 	protected void toolTipsMultiblock(List<String> aList) {
 		aList.add(Chat.CYAN     + LH.get(LH.STRUCTURE) + ":");
@@ -108,7 +108,7 @@ public class MultiTileEntityCryoDistillationTower_CH extends TileEntityBase10Mul
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.cryodistillationtower.5"));
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.cryodistillationtower.6"));
 	}
-	
+
 	@Override
 	public void addToolTipsSided(List<String> aList, ItemStack aStack, boolean aF3_H) {
 		String tSideNames = ""; boolean temp = F;
@@ -117,13 +117,13 @@ public class MultiTileEntityCryoDistillationTower_CH extends TileEntityBase10Mul
 		LH.addEnergyToolTips(this, aList, mEnergyTypeAccepted, null, tSideNames, null);
 		}
 	}
-	
+
 	@Override
 	public boolean isInsideStructure(int aX, int aY, int aZ) {
 		int tX = getOffsetXN(mFacing), tY = yCoord, tZ = getOffsetZN(mFacing);
 		return aX >= tX - 1 && aY >= tY - 1 && aZ >= tZ - 1 && aX <= tX + 1 && aY <= tY + 7 && aZ <= tZ + 1;
 	}
-	
+
 	@Override
 	public void updateAdjacentToggleableEnergySources() {
 		int tX = getOffsetXN(mFacing) - 1, tZ = getOffsetZN(mFacing) - 1;
@@ -134,12 +134,12 @@ public class MultiTileEntityCryoDistillationTower_CH extends TileEntityBase10Mul
 			}
 		}
 	}
-	
+
 	@Override
 	public void doOutputItems() {
 		ST.moveAll(delegator(FACING_TO_SIDE[mFacing][mItemAutoOutput]), WD.te(worldObj, getOffsetXN(mFacing, 3), yCoord, getOffsetZN(mFacing, 3), mFacing, F));
 	}
-	
+
 	@Override
 	public void doOutputFluids() {
 		for (FluidTankGT tTank : mTanksOutput) {
@@ -161,16 +161,17 @@ public class MultiTileEntityCryoDistillationTower_CH extends TileEntityBase10Mul
 				} else {
 					tDelegator = WD.te(worldObj, getOffsetXN(mFacing, 3), yCoord+1, getOffsetZN(mFacing, 3), mFacing, F);
 				}
-				
+
 				if (FL.move(tTank, tDelegator) > 0) updateInventory();
 			}
 		}
 	}
-	
+
 	@Override public DelegatorTileEntity<IInventory> getItemInputTarget(byte aSide) {return null;}
 	@Override public DelegatorTileEntity<TileEntity> getItemOutputTarget(byte aSide) {return null;}
 	@Override public DelegatorTileEntity<IFluidHandler> getFluidInputTarget(byte aSide) {return null;}
 	@Override public DelegatorTileEntity<IFluidHandler> getFluidOutputTarget(byte aSide, Fluid aOutput) {return null;}
-	
-	@Override public String getTileEntityName() {return "gtch.multitileentity.multiblock.cryodistillationtower";}
+
+	@Override public String getTileEntityName() {return "gt.multitileentity.multiblock.cryodistillationtower";}
+	@Override public String getTileEntityName_CH() {return "gtch.multitileentity.multiblock.cryodistillationtower";}
 }

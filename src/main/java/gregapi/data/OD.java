@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -83,6 +83,16 @@ public enum OD {
 	, container250glue
 	, container1000poison
 	, container250poison
+	, container1000blood
+	, container250blood
+	, container1000slimegreen
+	, container1000slimeblue
+	, container1000slimepink
+	, container1000slime
+	, container250slimegreen
+	, container250slimeblue
+	, container250slimepink
+	, container250slime
 	, aquaRegia
 	, sulfuricAcid
 	, enderChest
@@ -112,8 +122,14 @@ public enum OD {
 	, paperWritten
 	, paperWritable
 	, paperEnchanted
+	, bookEmptySmall
+	, bookEmptyBig
 	, bookEmpty
+	, bookWrittenSmall
+	, bookWrittenBig
 	, bookWritten
+	, bookWritableSmall
+	, bookWritableBig
 	, bookWritable
 	, bookEnchanted
 	, stairWood
@@ -132,6 +148,7 @@ public enum OD {
 	, hardenedClay
 	, fiberCarbon
 	, slimeball
+	, slimeballBlue
 	, slimeballPink
 	, slimeballRice
 	, slimeballSwet
@@ -151,6 +168,7 @@ public enum OD {
 	, itemMoss
 	, itemSlag
 	, itemGlue
+	, itemBlood
 	, itemPoison
 	, itemBarkDry
 	, itemLubricant

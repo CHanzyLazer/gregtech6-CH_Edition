@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,12 +19,6 @@
 
 package gregapi.block.prefixblock;
 
-import static gregapi.data.CS.*;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 import gregapi.GT_API_Proxy;
 import gregapi.block.IBlockSyncData;
 import gregapi.block.IBlockToolable;
@@ -32,11 +26,7 @@ import gregapi.block.IPrefixBlock;
 import gregapi.block.ToolCompat;
 import gregapi.block.behaviors.Drops;
 import gregapi.code.ModData;
-import gregapi.data.LH;
-import gregapi.data.MD;
-import gregapi.data.MT;
-import gregapi.data.OP;
-import gregapi.data.TD;
+import gregapi.data.*;
 import gregapi.lang.LanguageHandler;
 import gregapi.network.INetworkHandler;
 import gregapi.oredict.OreDictManager;
@@ -44,17 +34,13 @@ import gregapi.oredict.OreDictMaterial;
 import gregapi.oredict.OreDictMaterialStack;
 import gregapi.oredict.OreDictPrefix;
 import gregapi.random.ExplosionGT;
-import gregapi.render.BlockTextureDefault;
-import gregapi.render.BlockTextureMulti;
-import gregapi.render.IRenderedBlock;
-import gregapi.render.IRenderedBlockObject;
-import gregapi.render.ITexture;
-import gregapi.render.RendererBlockTextured;
+import gregapi.render.*;
 import gregapi.tileentity.ITileEntity;
 import gregapi.util.OM;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
+import mekanism.api.MekanismAPI;
 import mods.railcraft.common.carts.EntityTunnelBore;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFalling;
@@ -85,6 +71,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.ForgeEventFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import static gregapi.data.CS.*;
 
 /**
  * @author Gregorius Techneticies
@@ -229,6 +221,7 @@ public class PrefixBlock extends Block implements Runnable, ITileEntityProvider,
 		}
 		
 		if (MD.RC.mLoaded) try {EntityTunnelBore.addMineableBlock(this);} catch(Throwable e) {e.printStackTrace(ERR);}
+		if (MD.Mek.mLoaded) try {MekanismAPI.addBoxBlacklist(this, W);} catch(Throwable e) {e.printStackTrace(ERR);}
 		
 		if (mOpaque) VISUALLY_OPAQUE_BLOCKS.add(this);
 		mDrops = aDrops==null?new Drops(this, this, this, this, F, F, 0, 0):aDrops;
@@ -336,8 +329,8 @@ public class PrefixBlock extends Block implements Runnable, ITileEntityProvider,
 	
 	@Override
 	public IRenderedBlockObject passRenderingToObject(IBlockAccess aWorld, int aX, int aY, int aZ) {
-		mRenderParameterTileEntity = aWorld.getTileEntity(aX, aY, aZ);
-		return mRenderingObjectBlock != null ? mRenderingObjectBlock : mRenderParameterTileEntity instanceof IRenderedBlockObject ? (IRenderedBlockObject)mRenderParameterTileEntity : null;
+		TileEntity tRenderParameterTileEntity = aWorld.getTileEntity(aX, aY, aZ);
+		return mRenderingObjectBlock != null ? mRenderingObjectBlock : tRenderParameterTileEntity instanceof IRenderedBlockObject ? (IRenderedBlockObject)tRenderParameterTileEntity : null;
 	}
 	
 	@Override
@@ -345,7 +338,6 @@ public class PrefixBlock extends Block implements Runnable, ITileEntityProvider,
 		return mRenderingObjectStack;
 	}
 	
-	public TileEntity mRenderParameterTileEntity = null;
 	public IRenderedBlockObject mRenderingObjectBlock = null, mRenderingObjectStack = null;
 	
 	public PrefixBlock setRenderingObject(IRenderedBlockObject aBlock, IRenderedBlockObject aStack) {
@@ -368,13 +360,33 @@ public class PrefixBlock extends Block implements Runnable, ITileEntityProvider,
 	
 	@Override
 	public void onNeighborBlockChange(World aWorld, int aX, int aY, int aZ, Block aBlock) {
+		TileEntity aTileEntity = null;
 		if (!LOCK) {
 			LOCK = T;
-			TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ);
+			aTileEntity = aWorld.getTileEntity(aX, aY, aZ);
 			if (aTileEntity instanceof ITileEntity) ((ITileEntity)aTileEntity).onAdjacentBlockChange(aX, aY, aZ);
 			LOCK = F;
 		}
-		aWorld.scheduleBlockUpdate(aX, aY, aZ, this, 2);
+		scheduleUpdateIfNeeded(aWorld, aX, aY, aZ, aTileEntity);
+	}
+	
+	public boolean scheduleUpdateIfNeeded(World aWorld, int aX, int aY, int aZ, TileEntity aTileEntity) {
+		if (mGravity && aY > 0 && BlockFalling.func_149831_e(aWorld, aX, aY - 1, aZ)) {
+			aWorld.scheduleBlockUpdate(aX, aY, aZ, this, 2);
+			return T;
+		}
+		if (aTileEntity == null) return F;
+		if (!mCanBurn && !mCanExplode) return F;
+		if (mPrefix.contains(TD.Prefix.DUST_BASED)) {
+			aWorld.scheduleBlockUpdate(aX, aY, aZ, this, 2);
+			return T;
+		}
+		OreDictMaterial aMaterial = getMetaMaterial(aTileEntity);
+		if (aMaterial.containsAny(TD.Properties.FLAMMABLE, TD.Properties.EXPLOSIVE, TD.Atomic.ALKALI_METAL)) {
+			aWorld.scheduleBlockUpdate(aX, aY, aZ, this, 2);
+			return T;
+		}
+		return F;
 	}
 	
 	@Override
@@ -424,7 +436,7 @@ public class PrefixBlock extends Block implements Runnable, ITileEntityProvider,
 			// This darn TileEntity update is ruining World generation Code (infinite Loops when placing TileEntities on Chunk Borders). I'm glad I finally found a way to disable it.
 			TileEntity tTileEntity = createTileEntity(aWorld, aX, aY, aZ, aSide, aMetaData, aNBT);
 			WD.te(aWorld, aX, aY, aZ, tTileEntity, aCauseBlockUpdates);
-			aWorld.scheduleBlockUpdate(aX, aY, aZ, this, 2);
+			scheduleUpdateIfNeeded(aWorld, aX, aY, aZ, tTileEntity);
 			if (!aWorld.isRemote) GT_API_Proxy.SCHEDULED_TILEENTITY_UPDATES.add((PrefixBlockTileEntity)tTileEntity);
 			return T;
 		}

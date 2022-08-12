@@ -102,7 +102,7 @@ public class MultiTileEntityLargeTurbineSteam extends MultiTileEntityLargeTurbin
 			}
 			return tSuccess;
 		}
-		return mStructureOkay;
+		return isStructureOkay();
 	}
 	
 	static {

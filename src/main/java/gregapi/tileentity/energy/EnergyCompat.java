@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,14 +19,14 @@
 
 package gregapi.tileentity.energy;
 
-import static gregapi.data.CS.*;
-
 import gregapi.code.TagData;
 import gregapi.data.MD;
 import gregapi.data.TD;
 import gregapi.util.UT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+
+import static gregapi.data.CS.*;
 
 /**
  * @author Gregorius Techneticies
@@ -37,6 +37,7 @@ public class EnergyCompat {
 	public static boolean RF_ENERGY = F, RF_ENERGY_NEW = F, AE_ENERGY = F, FL_ENERGY = F, IC_ENERGY = F, BB_ENERGY = F, GC_ENERGY = F, BC_LASER = F;
 	
 	/** Gets Called once during postInit to see which Interfaces are there and Classloaded. */
+	@SuppressWarnings("ResultOfMethodCallIgnored")
 	public static void checkAvailabilities() {
 		try {
 			com.rwtema.funkylocomotion.blocks.TilePusher                 .class.getCanonicalName();
@@ -83,7 +84,7 @@ public class EnergyCompat {
 	public static boolean isElectricRFReceiver(TileEntity aReceiver) {
 		if (aReceiver == null) return F;
 		String tClass = null;
-		if (MD.OMT.mLoaded) {if (tClass == null) tClass = aReceiver.getClass().getName(); if (tClass.startsWith("openmodularturrets"             )) return T;}
+		if (MD.OMT.mLoaded) {                    tClass = aReceiver.getClass().getName(); if (tClass.startsWith("openmodularturrets"             )) return T;}
 		if (MD.TG .mLoaded) {if (tClass == null) tClass = aReceiver.getClass().getName(); if (tClass.startsWith("techguns"                       )) return T;}
 		if (MD.IE .mLoaded) {if (tClass == null) tClass = aReceiver.getClass().getName(); if (tClass.startsWith("blusunrize.immersiveengineering")) return T;}
 		if (MD.OC .mLoaded) {if (tClass == null) tClass = aReceiver.getClass().getName(); if (tClass.startsWith("li.cil.oc"                      )) return T;}
@@ -97,13 +98,13 @@ public class EnergyCompat {
 		if (aTarget instanceof gregapi.tileentity.ITileEntityEnergy                   ) return ((gregapi.tileentity.ITileEntityEnergy                            )aTarget).isEnergyAcceptingFrom(TD.Energy.EU, aSide, T) || ((gregapi.tileentity.ITileEntityEnergy               )aTarget).isEnergyEmittingTo(TD.Energy.EU, aSide, T);
 		if (aTarget instanceof gregtech.api.interfaces.tileentity.IEnergyConnected    ) return T; // return ((gregtech.api.interfaces.tileentity.IEnergyConnected)aTarget).inputEnergyFrom      (aSide                 ) || ((gregtech.api.interfaces.tileentity.IEnergyConnected)aTarget).outputsEnergyTo(aSide);
 		
-		if (AE_ENERGY && aThis != null && aTarget instanceof appeng.tile.powersink.IC2) return ((appeng.tile.powersink.IC2                                       )aTarget).acceptsEnergyFrom    (aThis, FORGE_DIR[aSide]);
+		if (AE_ENERGY && (aThis != null && aTarget instanceof appeng.tile.powersink.IC2)) return ((appeng.tile.powersink.IC2                                       )aTarget).acceptsEnergyFrom    (aThis, FORGE_DIR[aSide]);
 		
-		if (FL_ENERGY && aTarget instanceof com.rwtema.funkylocomotion.blocks.TilePusher || aTarget instanceof com.rwtema.funkylocomotion.blocks.TileBooster) return T;
+		if (FL_ENERGY && (aTarget instanceof com.rwtema.funkylocomotion.blocks.TilePusher || aTarget instanceof com.rwtema.funkylocomotion.blocks.TileBooster)) return T;
 		
-		if (GC_ENERGY && aTarget instanceof micdoodle8.mods.galacticraft.api.power.IEnergyHandlerGC && (!(aTarget instanceof micdoodle8.mods.galacticraft.api.transmission.tile.IConnector) || ((micdoodle8.mods.galacticraft.api.transmission.tile.IConnector)aTarget).canConnect(FORGE_DIR[aSide], micdoodle8.mods.galacticraft.api.transmission.NetworkType.POWER))) return T;
+		if (GC_ENERGY && (aTarget instanceof micdoodle8.mods.galacticraft.api.power.IEnergyHandlerGC && (!(aTarget instanceof micdoodle8.mods.galacticraft.api.transmission.tile.IConnector) || ((micdoodle8.mods.galacticraft.api.transmission.tile.IConnector)aTarget).canConnect(FORGE_DIR[aSide], micdoodle8.mods.galacticraft.api.transmission.NetworkType.POWER)))) return T;
 		
-		if (BB_ENERGY && aTarget instanceof com.builtbroken.mc.api.energy.IEnergyBufferProvider && ((com.builtbroken.mc.api.energy.IEnergyBufferProvider)aTarget).getEnergyBuffer(FORGE_DIR[aSide]) != null) return T;
+		if (BB_ENERGY && (aTarget instanceof com.builtbroken.mc.api.energy.IEnergyBufferProvider && ((com.builtbroken.mc.api.energy.IEnergyBufferProvider)aTarget).getEnergyBuffer(FORGE_DIR[aSide]) != null)) return T;
 		
 		if (IC_ENERGY && aThis != null) {
 			TileEntity tConnected = (aTarget instanceof ic2.api.energy.tile.IEnergyTile || ic2.api.energy.EnergyNet.instance == null ? aTarget : ic2.api.energy.EnergyNet.instance.getTileEntity(aTarget.getWorldObj(), aTarget.xCoord, aTarget.yCoord, aTarget.zCoord));
@@ -111,7 +112,7 @@ public class EnergyCompat {
 			if (tConnected instanceof ic2.api.energy.tile.IEnergySource && ((ic2.api.energy.tile.IEnergySource)tConnected).emitsEnergyTo    (aThis, FORGE_DIR[aSide])) return T;
 		}
 		
-		if (RF_ENERGY && (EMIT_EU_AS_RF || isElectricRFReceiver(aTarget)) && (aTarget instanceof cofh.api.energy.IEnergyHandler || (RF_ENERGY_NEW && aTarget instanceof cofh.api.energy.IEnergyReceiver))) return !(aTarget instanceof cofh.api.energy.IEnergyConnection) || ((cofh.api.energy.IEnergyConnection)aTarget).canConnectEnergy(FORGE_DIR[aSide]);
+		if (RF_ENERGY && ((EMIT_EU_AS_RF || isElectricRFReceiver(aTarget)) && (aTarget instanceof cofh.api.energy.IEnergyHandler || (RF_ENERGY_NEW && aTarget instanceof cofh.api.energy.IEnergyReceiver)))) return !(aTarget instanceof cofh.api.energy.IEnergyConnection) || ((cofh.api.energy.IEnergyConnection)aTarget).canConnectEnergy(FORGE_DIR[aSide]);
 		
 		return F;
 	}
@@ -179,7 +180,10 @@ public class EnergyCompat {
 			// Voltz Stuff
 			if (BB_ENERGY && aReceiver instanceof com.builtbroken.mc.api.energy.IEnergyBufferProvider) {
 				Object tEnergyBuffer = ((com.builtbroken.mc.api.energy.IEnergyBufferProvider)aReceiver).getEnergyBuffer(FORGE_DIR[aSide]);
-				if (tEnergyBuffer != null) return checkOverCharge(aSize, aReceiver) ? aAmount : UT.Code.divup(((com.builtbroken.mc.api.energy.IEnergyBuffer)tEnergyBuffer).addEnergyToStorage(UT.Code.bind31(aSize * aAmount) * J_PER_EU, T), aSize * J_PER_EU);
+				if (tEnergyBuffer != null) {
+					//noinspection CastCanBeRemovedNarrowingVariableType
+					return checkOverCharge(aSize, aReceiver) ? aAmount : UT.Code.divup(((com.builtbroken.mc.api.energy.IEnergyBuffer)tEnergyBuffer).addEnergyToStorage(UT.Code.bind31(aSize * aAmount) * J_PER_EU, T), aSize * J_PER_EU);
+				}
 			}
 			
 			// Electricity alike RF Receivers that are whitelisted for my Power System.

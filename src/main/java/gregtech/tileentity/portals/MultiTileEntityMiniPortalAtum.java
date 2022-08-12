@@ -20,15 +20,19 @@
 package gregtech.tileentity.portals;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.COLOR_COBBLESTONE;
 
 import java.util.List;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.code.ArrayListNoNulls;
 import gregapi.data.CS.BlocksGT;
 import gregapi.data.IL;
 import gregapi.data.LH;
 import gregapi.data.LH.Chat;
 import gregapi.data.MD;
+import gregapi.data.MT;
 import gregapi.render.BlockTextureCopied;
 import gregapi.render.ITexture;
 import gregapi.util.ST;
@@ -131,7 +135,8 @@ public class MultiTileEntityMiniPortalAtum extends MultiTileEntityMiniPortal {
 	public ITexture sAtumPortal = BlockTextureCopied.get(ST.block(MD.ATUM, "tile.portal", Blocks.portal), SIDE_ANY, 0, UNCOLOURED, F, T, T), sAtumPortalFrame = BlockTextureCopied.get(ST.block(MD.ATUM, "tile.carvedBrick", BlocksGT.Limestone), SIDE_ANY, 0, UNCOLOURED, F, F, F);
 	@Override public ITexture getPortalTexture() {return sAtumPortal;}
 	@Override public ITexture getFrameTexture() {return sAtumPortalFrame;}
-	
+
+	@SideOnly(Side.CLIENT) @Override public int colorMultiplier() {return UT.Code.getRGBInt(MT.STONES.Limestone.fRGBaSolid);}
 	
 	@Override public String getTileEntityName() {return "gt.multitileentity.portal.atum";}
 }

@@ -20,16 +20,20 @@
 package gregtech.tileentity.portals;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.COLOR_OBSIDIAN;
 
 import java.util.List;
 import java.util.Random;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_RandomDisplayTick;
 import gregapi.code.ArrayListNoNulls;
 import gregapi.data.LH;
 import gregapi.data.LH.Chat;
 import gregapi.render.BlockTextureCopied;
 import gregapi.render.ITexture;
+import gregapi.util.UT;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
@@ -133,6 +137,8 @@ public class MultiTileEntityMiniPortalNether extends MultiTileEntityMiniPortal i
 	public ITexture sNetherPortal = BlockTextureCopied.get(Blocks.portal, SIDE_ANY, 0, UNCOLOURED, F, T, T), sNetherPortalFrame = BlockTextureCopied.get(Blocks.obsidian, SIDE_ANY, 0);
 	@Override public ITexture getPortalTexture() {return sNetherPortal;}
 	@Override public ITexture getFrameTexture() {return sNetherPortalFrame;}
-	
+
+	@SideOnly(Side.CLIENT) @Override public int colorMultiplier() {return COLOR_OBSIDIAN;}
+
 	@Override public String getTileEntityName() {return "gt.multitileentity.portal.nether";}
 }

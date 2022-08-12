@@ -59,8 +59,8 @@ public abstract class MultiTileEntityLargeMotor_CH extends TileEntityBase10Multi
     protected TagData mEnergyTypeEmitted = TD.Energy.RU;
 
     protected int mLength = 0, mPLength = 0, mMidLength = 1, mMinLength = 1, mMaxLength = 5;
-    protected short[] mEfficiencyArray = new short[1];
-    protected long[] mRateArray = new long[1], mPEnergyArray = new long[1], mPCostArray = new long[1], mCRateArray = new long[1];
+    protected short[] mEfficiencyArray = ZL_SHORT;
+    protected long[] mRateArray = ZL_LONG, mPEnergyArray = ZL_LONG, mPCostArray = ZL_LONG, mCRateArray = ZL_LONG;
 
     // NBT读写
     @Override
@@ -92,11 +92,11 @@ public abstract class MultiTileEntityLargeMotor_CH extends TileEntityBase10Multi
         mPCostArray = new long[aArrayLen];
         mCRateArray = new long[aArrayLen];
         for (int i = 0; i < aArrayLen; ++i) {
-            if (aNBT.hasKey(NBT_EFFICIENCY+"."+i)) mEfficiencyArray[i] = (short)UT.Code.bind_(0, 10000, aNBT.getShort(NBT_EFFICIENCY+"."+i));
-            if (aNBT.hasKey(NBT_OUTPUT+"."+i)) mRateArray[i] = aNBT.getLong(NBT_OUTPUT+"."+i);
-            if (aNBT.hasKey(NBT_PREHEAT_ENERGY+"."+i)) mPEnergyArray[i] = aNBT.getLong(NBT_PREHEAT_ENERGY+"."+i);
-            if (aNBT.hasKey(NBT_PREHEAT_COST+"."+i)) mPCostArray[i] = aNBT.getLong(NBT_PREHEAT_COST+"."+i);
-            if (aNBT.hasKey(NBT_COOLDOWN_RATE+"."+i)) mCRateArray[i] = aNBT.getLong(NBT_COOLDOWN_RATE+"."+i);
+            mEfficiencyArray[i] = (short)UT.Code.bind_(0, 10000, aNBT.getShort(NBT_EFFICIENCY+"."+i));
+            mRateArray[i] = aNBT.getLong(NBT_OUTPUT+"."+i);
+            mPEnergyArray[i] = aNBT.getLong(NBT_PREHEAT_ENERGY+"."+i);
+            mPCostArray[i] = aNBT.getLong(NBT_PREHEAT_COST+"."+i);
+            mCRateArray[i] = aNBT.getLong(NBT_COOLDOWN_RATE+"."+i);
         }
     }
     protected void setEnergyByLength() {
@@ -287,7 +287,7 @@ public abstract class MultiTileEntityLargeMotor_CH extends TileEntityBase10Multi
             }
             return tSuccess;
         }
-        return mStructureOkay;
+        return isStructureOkay();
     }
 
     protected void doLengthChange() {
@@ -313,15 +313,15 @@ public abstract class MultiTileEntityLargeMotor_CH extends TileEntityBase10Multi
     public boolean isInsideStructure(int aX, int aY, int aZ) {
         return
                 aX >= xCoord-(SIDE_X_NEG==mFacing?0:SIDE_X_POS==mFacing?(mLength-1):1) &&
-                        aY >= yCoord-(SIDE_Y_NEG==mFacing?0:SIDE_Y_POS==mFacing?(mLength-1):1) &&
-                        aZ >= zCoord-(SIDE_Z_NEG==mFacing?0:SIDE_Z_POS==mFacing?(mLength-1):1) &&
-                        aX <= xCoord+(SIDE_X_POS==mFacing?0:SIDE_X_NEG==mFacing?(mLength-1):1) &&
-                        aY <= yCoord+(SIDE_Y_POS==mFacing?0:SIDE_Y_NEG==mFacing?(mLength-1):1) &&
-                        aZ <= zCoord+(SIDE_Z_POS==mFacing?0:SIDE_Z_NEG==mFacing?(mLength-1):1);
+                aY >= yCoord-(SIDE_Y_NEG==mFacing?0:SIDE_Y_POS==mFacing?(mLength-1):1) &&
+                aZ >= zCoord-(SIDE_Z_NEG==mFacing?0:SIDE_Z_POS==mFacing?(mLength-1):1) &&
+                aX <= xCoord+(SIDE_X_POS==mFacing?0:SIDE_X_NEG==mFacing?(mLength-1):1) &&
+                aY <= yCoord+(SIDE_Y_POS==mFacing?0:SIDE_Y_NEG==mFacing?(mLength-1):1) &&
+                aZ <= zCoord+(SIDE_Z_POS==mFacing?0:SIDE_Z_NEG==mFacing?(mLength-1):1);
     }
     @Override
     public int getRenderPasses2(Block aBlock, boolean[] aShouldSideBeRendered) {
-        return mStructureOkay ? 2 : 1;
+        return isStructureOkay() ? 2 : 1;
     }
     @Override
     public boolean setBlockBounds2(Block aBlock, int aRenderPass, boolean[] aShouldSideBeRendered) {
@@ -407,7 +407,7 @@ public abstract class MultiTileEntityLargeMotor_CH extends TileEntityBase10Multi
     public final void onTick2(long aTimer, boolean aIsServerSide) {
         super.onTick2(aTimer, aIsServerSide);
         checkStructure(F);
-        if (aIsServerSide && mStructureOkay) {
+        if (aIsServerSide && isStructureOkay()) {
             // 转换能量
             convert();
             // 状态判断
@@ -434,7 +434,7 @@ public abstract class MultiTileEntityLargeMotor_CH extends TileEntityBase10Multi
             emitEnergy();
             // 多方快不会淋雨损坏
         }
-        if (!mStructureOkay) {
+        if (!isStructureOkay()) {
             // 结构破坏，停止机器
             stop();
         }

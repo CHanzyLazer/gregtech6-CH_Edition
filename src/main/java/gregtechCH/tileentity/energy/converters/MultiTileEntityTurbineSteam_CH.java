@@ -12,6 +12,7 @@ import gregapi.render.IIconContainer;
 import gregapi.util.UT;
 import gregtechCH.data.LH_CH;
 import gregtechCH.fluid.IFluidHandler_CH;
+import gregtechCH.tileentity.ITileEntityName_CH;
 import gregtechCH.tileentity.energy.MultiTileEntityMotor_CH;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -27,7 +28,7 @@ import java.util.List;
 import static gregapi.data.CS.*;
 import static gregtechCH.data.CS_CH.*;
 
-public class MultiTileEntityTurbineSteam_CH extends MultiTileEntityMotor_CH implements IFluidHandler_CH {
+public class MultiTileEntityTurbineSteam_CH extends MultiTileEntityMotor_CH implements IFluidHandler_CH, ITileEntityName_CH {
 	public FluidTankGT mTank = new FluidTankGT();
 	public long pSteam = 0, mOutputSU = 0, mSteamCounter = 0;
 	protected int STEAM_PER_WATER_SELF = 200;
@@ -342,7 +343,8 @@ public class MultiTileEntityTurbineSteam_CH extends MultiTileEntityMotor_CH impl
 
 	@Override public void onWalkOver2(EntityLivingBase aEntity) {if (SIDES_TOP[mFacing] && mActive) {aEntity.rotationYaw=aEntity.rotationYaw+(mCounterClockwise?-5:+5)*(mFast?2:1); aEntity.rotationYawHead=aEntity.rotationYawHead+(mCounterClockwise?-5:+5)*(mFast?2:1);}}
 
-	@Override public String getTileEntityName() {return "gtch.multitileentity.turbines.rotation_steam";}
+	@Override public String getTileEntityName() {return "gt.multitileentity.turbines.rotation_steam";}
+	@Override public String getTileEntityName_CH() {return "gtch.multitileentity.turbines.rotation_steam";}
 
 	@Override
 	public boolean canFillExtra(FluidStack aFluid) {

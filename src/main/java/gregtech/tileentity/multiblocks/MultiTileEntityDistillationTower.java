@@ -36,6 +36,7 @@ import gregapi.tileentity.multiblocks.MultiTileEntityMultiBlockPart;
 import gregapi.tileentity.multiblocks.TileEntityBase10MultiBlockMachine;
 import gregapi.util.ST;
 import gregapi.util.WD;
+import gregtechCH.tileentity.multiblocks.IDistillationTower;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -45,7 +46,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 /**
  * @author Gregorius Techneticies
  */
-public class MultiTileEntityDistillationTower extends TileEntityBase10MultiBlockMachine {
+public class MultiTileEntityDistillationTower extends TileEntityBase10MultiBlockMachine implements IDistillationTower {
 	@Override
 	public boolean checkStructure2() {
 		int tX = getOffsetXN(mFacing), tY = yCoord, tZ = getOffsetZN(mFacing);

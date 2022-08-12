@@ -15,6 +15,7 @@ import gregapi.tileentity.multiblocks.*;
 import gregapi.util.UT;
 import gregapi.util.WD;
 import gregtechCH.data.LH_CH;
+import gregtechCH.tileentity.ITileEntityName_CH;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -26,13 +27,13 @@ import net.minecraftforge.fluids.IFluidTank;
 import java.util.Collection;
 import java.util.List;
 
-public class MultiTileEntityLargeTurbineGas_CH extends MultiTileEntityLargeMotor_CH implements IMultiBlockFluidHandler, IFluidHandler {
+public class MultiTileEntityLargeTurbineGas_CH extends MultiTileEntityLargeMotor_CH implements IMultiBlockFluidHandler, IFluidHandler, ITileEntityName_CH {
 
     protected boolean mBurning = F;
     protected long mEnergyHU;
     protected long mPRate = 16384, mInPRate = 16384;
 
-    protected long[] mPRateArray = new long[1];
+    protected long[] mPRateArray = ZL_LONG;
 
     protected static final byte COOLDOWN_NUM = 16;
     protected byte mBurningCounter = 0;  // 注意默认是停止工作的
@@ -60,7 +61,7 @@ public class MultiTileEntityLargeTurbineGas_CH extends MultiTileEntityLargeMotor
         super.setEnergyArray(aNBT, aArrayLen);
         mPRateArray = new long[aArrayLen];
         for (int i = 0; i < aArrayLen; ++i) {
-            if (aNBT.hasKey(NBT_PREHEAT_RATE+"."+i)) mPRateArray[i] = aNBT.getLong(NBT_PREHEAT_RATE+"."+i);
+            mPRateArray[i] = aNBT.getLong(NBT_PREHEAT_RATE+"."+i);
         }
     }
     @Override
@@ -333,6 +334,7 @@ public class MultiTileEntityLargeTurbineGas_CH extends MultiTileEntityLargeMotor
         }
     }
 
-    @Override public String getTileEntityName() {return "gtch.multitileentity.multiblock.turbine.gas";}
+    @Override public String getTileEntityName() {return "gt.multitileentity.multiblock.turbine.gas";}
+    @Override public String getTileEntityName_CH() {return "gtch.multitileentity.multiblock.turbine.gas";}
 }
 

@@ -44,7 +44,6 @@ import gregapi.render.ITexture;
 import gregapi.tileentity.ITileEntityAdjacentInventoryUpdatable;
 import gregapi.tileentity.ITileEntityFunnelAccessible;
 import gregapi.tileentity.ITileEntityTapAccessible;
-import gregapi.tileentity.base.TileEntityBase07Paintable;
 import gregapi.tileentity.base.TileEntityBase09FacingSingle;
 import gregapi.tileentity.data.ITileEntityGibbl;
 import gregapi.tileentity.data.ITileEntityProgress;
@@ -67,6 +66,11 @@ import gregapi.util.UT;
 import gregapi.util.WD;
 import gregtechCH.data.CS_CH;
 import gregtechCH.fluid.IFluidHandler_CH;
+import gregtechCH.tileentity.connectors.ITEInterceptAutoConnectFluid_CH;
+import gregtechCH.tileentity.connectors.ITEInterceptAutoConnectItem_CH;
+import gregtechCH.tileentity.connectors.ITEInterceptModConnectFluid_CH;
+import gregtechCH.tileentity.connectors.ITEInterceptModConnectItem_CH;
+import gregtechCH.tileentity.multiblocks.IDistillationTower;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -85,14 +89,24 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author Gregorius Techneticies
  */
-public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable implements ITileEntityEnergy, ITileEntityCrucible, ITileEntityLogistics, IMTE_OnWalkOver, ITileEntityTemperature, ITileEntityGibbl, ITileEntityProgress, ITileEntityWeight, ITileEntityTapAccessible, ITileEntityFunnelAccessible, ITileEntityEnergyDataCapacitor, ITileEntityAdjacentInventoryUpdatable, IFluidHandler_CH, IMTE_OnBlockAdded, IMTE_BreakBlock, ITileEntityRunningSuccessfully, ITileEntitySwitchableMode, ITileEntitySwitchableOnOff {
+public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable implements ITEInterceptModConnectItem_CH, ITEInterceptModConnectFluid_CH, ITEInterceptAutoConnectItem_CH, ITEInterceptAutoConnectFluid_CH, ITileEntityEnergy, ITileEntityCrucible, ITileEntityLogistics, IMTE_OnWalkOver, ITileEntityTemperature, ITileEntityGibbl, ITileEntityProgress, ITileEntityWeight, ITileEntityTapAccessible, ITileEntityFunnelAccessible, ITileEntityEnergyDataCapacitor, ITileEntityAdjacentInventoryUpdatable, IFluidHandler_CH, IMTE_OnBlockAdded, IMTE_BreakBlock, ITileEntityRunningSuccessfully, ITileEntitySwitchableMode, ITileEntitySwitchableOnOff {
 	public ChunkCoordinates mTargetPos = null;
 	
 	public ITileEntityMultiBlockController mTarget = null;
 	
 	protected IIconContainer[][] mTextures = L1L6_IICONCONTAINER;
-	
-	public short mDesign = 0;
+
+	// 用 private 封装防止意料外的修改
+	private short mDesign = 0;
+	// GTCH, 用于子类重写实现在结构改变时更新不透明度
+	private void setDesignInternal(short aDesign) {
+		if (aDesign == mDesign) return;
+		int tOldOpacity = getLightOpacity();
+		mDesign = aDesign;
+		if (tOldOpacity == getLightOpacity()) return;
+		updateLightOpacity(tOldOpacity); // 改为强制更新的版本来避免更新失效
+	}
+
 	public int mMode = 0;
 	
 	public static final int
@@ -142,7 +156,7 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 	public void readFromNBT2(NBTTagCompound aNBT) {
 		super.readFromNBT2(aNBT);
 		if (aNBT.hasKey(NBT_TARGET)) {mTargetPos = new ChunkCoordinates(UT.Code.bindInt(aNBT.getLong(NBT_TARGET_X)), UT.Code.bindInt(aNBT.getLong(NBT_TARGET_Y)), UT.Code.bindInt(aNBT.getLong(NBT_TARGET_Z)));}
-		if (aNBT.hasKey(NBT_DESIGN)) mDesign = aNBT.getShort(NBT_DESIGN);
+		if (aNBT.hasKey(NBT_DESIGN)) mDesign = aNBT.getShort(NBT_DESIGN); // NBT 修改会有统一的更新和优化，不需要在这里再次调用
 		if (aNBT.hasKey(NBT_MODE)) mMode = aNBT.getInteger(NBT_MODE);
 		
 		if (CODE_CLIENT) {
@@ -192,7 +206,7 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 			DelegatorTileEntity<TileEntity> tDelegator = getAdjacentTileEntity(tSide);
 			if (tDelegator.mTileEntity instanceof MultiTileEntityMultiBlockPart) {
 				ITileEntityMultiBlockController tController = ((MultiTileEntityMultiBlockPart)tDelegator.mTileEntity).getTarget(F);
-				if (tController != null) tController.onStructureChange();;
+				if (tController != null) tController.onStructureChange();
 			} else if (tDelegator.mTileEntity instanceof ITileEntityMultiBlockController) {
 				((ITileEntityMultiBlockController)tDelegator.mTileEntity).onStructureChange();
 			}
@@ -219,7 +233,7 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 				}
 			}
 		}
-		return aCheckValidity ? mTarget != null && mTarget.checkStructure(F) ? mTarget : null : mTarget;
+		return aCheckValidity ? mTarget != null && mTarget.checkStructureOnly(F) ? mTarget : null : mTarget;
 	}
 	
 	public void setTarget(ITileEntityMultiBlockController aTarget, int aDesign, int aMode) {
@@ -232,13 +246,17 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 	// 图像部分
 	// 技术原因所有图像情况还是只能都放在这里
 	public static final byte
-			  FLUID_EMITTER 		= -1	// 仅在主方块背面绘制的流体输出
-			, ENERGY_EMITTER_RU 	= -3	// 仅在主方块背面绘制的RU输出
+			  TRANSPARENT 			= -1	// 透明多方快部件，这里方便起见不考虑方向
+			, FLUID_EMITTER 		= -2	// 仅在主方块背面绘制的流体输出
+			, ENERGY_EMITTER_RU 	= -4	// 仅在主方块背面绘制的RU输出
 			;
+
+	// GTCH, 需要在其是透明部件时设置透光
+	@Override public int getLightOpacity() {return mDesign == TRANSPARENT ? LIGHT_OPACITY_NONE : super.getLightOpacity();}
 	
 	public boolean setDesign(int aDesign) {
 		if (aDesign != mDesign) {
-			mDesign = (short)aDesign;
+			setDesignInternal((short)aDesign);
 			refreshVisual();
 			return T;
 		}
@@ -278,6 +296,7 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 	@Override
 	public ITexture getTexture2(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
 		if (mDesign >= 0 && mDesign < mTextures.length) return aShouldSideBeRendered[aSide] ? BlockTextureMulti.get(BlockTextureDefault.get(mTextures[mDesign][FACES_TBS[aSide]], mRGBa), BlockTextureDefault.get(mTextures[mDesign][FACES_TBS[aSide]+3])) : null;
+		if (mDesign == TRANSPARENT) return null;
 		if (mDesign <= -1) {
 			return aShouldSideBeRendered[aSide] ? BlockTextureMulti.get(BlockTextureDefault.get(mTextures[0][FACES_TBS[aSide]], mRGBa), getStructurePartTexture(aBlock, aRenderPass, aSide, aShouldSideBeRendered)) : null;
 		}
@@ -330,7 +349,7 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 	}
 	
 	@Override public byte getVisualData() {return (byte)mDesign;}
-	@Override public void setVisualData(byte aData) {mDesign = aData;}
+	@Override public void setVisualData(byte aData) {setDesignInternal(aData);}
 
 	// 用于我的额外的图像信息，朝向，是否在运行，等等
 	public byte getVisualData_CH() {return (byte)(mPartFacing & 7);}
@@ -518,7 +537,28 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 		if (tTileEntity instanceof ITileEntityTapAccessible) return ((ITileEntityTapAccessible)tTileEntity).nozzleDrain(aSide, aMaxDrain, aDoDrain);
 		return null;
 	}
-	
+
+	// GTCH, 阻止非输入输出面的自动连接
+	@Override
+	public boolean interceptAutoConnectFluid(byte aSide) {
+		if ((mMode & NO_FLUID) == NO_FLUID) return T;
+		if (mDesign == FLUID_EMITTER && (mMode & NO_FLUID_IN) != 0 && aSide != mPartFacing) return T; // 仅一个面输出并且不能输入时其他面也要阻止自动连接
+		ITileEntityMultiBlockController tTileEntity = getTarget(T);
+		if (tTileEntity instanceof IDistillationTower && mDesign == 0) return T; // 对于蒸馏塔特殊讨论，仅输出口可以自动连接（TODO，以后可以根据第二个 Design 来灵活判断）
+		return F;
+	}
+	@Override
+	public boolean interceptAutoConnectItem(byte aSide)  {
+		if ((mMode & NO_ITEM) == NO_ITEM) return T;
+		ITileEntityMultiBlockController tTileEntity = getTarget(T);
+		if (tTileEntity instanceof IDistillationTower && mDesign == 0) return T; // 对于蒸馏塔特殊讨论，仅输出口可以自动连接（TODO，以后可以根据第二个 Design 来灵活判断）
+		return F;
+	}
+	// GTCH, 不能输入和输出的面阻止 MOD 管道连接
+	@Override public boolean interceptModConnectFluid(byte aSide) {return (mMode & NO_FLUID) == NO_FLUID;}
+	@Override public boolean interceptModConnectItem(byte aSide)  {return (mMode & NO_ITEM)  == NO_ITEM;}
+
+
 	// Relay Control Covers and such
 	
 	@Override

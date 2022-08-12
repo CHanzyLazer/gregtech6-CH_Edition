@@ -18,14 +18,13 @@
  */
 
 package gregtechCH.tileentity.multiblocks;
+import gregtech.tileentity.multiblocks.MultiTileEntityImplosionCompressor;
 
-import gregapi.data.CS.*;
 import gregapi.data.LH;
 import gregapi.data.LH.Chat;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.tileentity.multiblocks.ITileEntityMultiBlockController;
 import gregapi.tileentity.multiblocks.MultiTileEntityMultiBlockPart;
-import gregapi.tileentity.multiblocks.TileEntityBase10MultiBlockMachine;
 import gregapi.util.UT;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
@@ -56,39 +55,40 @@ public class MultiTileEntityImplosionCompressor_CH extends TileEntityBase10Multi
 		}
 		return mStructureOkay;
 	}
-	
+
 	@Override public void onProcessStarted() {UT.Sounds.send(SFX.MC_EXPLODE, this); super.onProcessStarted();}
-	
+
 	static {
 		LH.add("gt.tooltip.multiblock.implosioncompressor.1", "3x3x3 Hollow of 25 Dense Tungstensteel Walls filled with Air");
 		LH.add("gt.tooltip.multiblock.implosioncompressor.2", "Main Block centered on Side-Bottom and facing outwards");
 	}
-	
+
 	@Override
 	protected void toolTipsMultiblock(List<String> aList) {
 		aList.add(Chat.CYAN     + LH.get(LH.STRUCTURE) + ":");
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.implosioncompressor.1"));
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.implosioncompressor.2"));
 	}
-	
+
 	@Override
 	public boolean isInsideStructure(int aX, int aY, int aZ) {
 		int tX = getOffsetXN(mFacing, 1), tY = yCoord, tZ = getOffsetZN(mFacing, 1);
 		return aX >= tX - 1 && aY >= tY && aZ >= tZ - 1 && aX <= tX + 1 && aY <= tY + 2 && aZ <= tZ + 1;
 	}
-	
+
 	@Override
 	public DelegatorTileEntity<IFluidHandler> getFluidOutputTarget(byte aSide, Fluid aOutput) {
 		return getAdjacentTank(SIDE_BOTTOM);
 	}
-	
+
 	@Override
 	public DelegatorTileEntity<TileEntity> getItemOutputTarget(byte aSide) {
 		return getAdjacentTileEntity(SIDE_BOTTOM);
 	}
-	
+
 	@Override public DelegatorTileEntity<IInventory> getItemInputTarget(byte aSide) {return null;}
 	@Override public DelegatorTileEntity<IFluidHandler> getFluidInputTarget(byte aSide) {return null;}
-	
-	@Override public String getTileEntityName() {return "gtch.multitileentity.multiblock.implosioncompressor";}
+
+	@Override public String getTileEntityName() {return "gt.multitileentity.multiblock.implosioncompressor";}
+	@Override public String getTileEntityName_CH() {return "gtch.multitileentity.multiblock.implosioncompressor";}
 }

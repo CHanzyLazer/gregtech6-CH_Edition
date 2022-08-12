@@ -113,7 +113,7 @@ public class MultiTileEntityLargeHeatExchanger extends TileEntityBase10MultiBloc
 			
 			return tSuccess;
 		}
-		return mStructureOkay;
+		return isStructureOkay();
 	}
 	
 	@Override

@@ -20,9 +20,12 @@
 package gregtech.tileentity.food;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.COLOR_SANDWICH;
 
 import java.util.List;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import enviromine.handlers.EM_StatusManager;
 import enviromine.trackers.EnviroDataTracker;
 import gregapi.block.multitileentity.IMultiTileEntity.*;
@@ -385,6 +388,7 @@ public class MultiTileEntitySandwich extends TileEntityBase03MultiTileEntities i
 	@Override public boolean checkObstruction(EntityPlayer aPlayer, byte aSide, float aHitX, float aHitY, float aHitZ) {return F;}
 	
 	@Override public int getLightOpacity() {return LIGHT_OPACITY_NONE;}
+	@SideOnly(Side.CLIENT) @Override public int colorMultiplier() {return COLOR_SANDWICH;}
 	@Override public float getExplosionResistance2() {return 0;}
 	@Override public float getBlockHardness() {return 0.25F;}
 	

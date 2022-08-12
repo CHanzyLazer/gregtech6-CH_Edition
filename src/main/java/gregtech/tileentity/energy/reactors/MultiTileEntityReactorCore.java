@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,14 +19,9 @@
 
 package gregtech.tileentity.energy.reactors;
 
-import static gregapi.data.CS.*;
-
-import java.util.List;
-
 import gregapi.GT_API_Proxy;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetCollisionBoundingBoxFromPool;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_OnEntityCollidedWithBlock;
-import gregapi.data.CS.SFX;
 import gregapi.data.FL;
 import gregapi.data.LH;
 import gregapi.data.LH.Chat;
@@ -41,6 +36,7 @@ import gregapi.tileentity.machines.ITileEntityRunningActively;
 import gregapi.tileentity.machines.ITileEntitySwitchableOnOff;
 import gregapi.util.ST;
 import gregapi.util.UT;
+import gregtechCH.util.UT_CH;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -50,6 +46,10 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fluids.IFluidTank;
+
+import java.util.List;
+
+import static gregapi.data.CS.*;
 
 /**
  * @author Gregorius Techneticies
@@ -136,9 +136,9 @@ public abstract class MultiTileEntityReactorCore extends TileEntityBase10FacingD
 				GT_API_Proxy.SERVER_TICK_PO2T.add(this);
 				mHasToAddTimer = F;
 			}
-			if (mTanks[0].isHalf()) FL.move(mTanks[0], getAdjacentTank(mSecondFacing), mTanks[0].amount() - mTanks[0].capacity() / 2);
+			if (mTanks[0].isHalf() && mSecondFacing != mFacing) FL.move(mTanks[0], getAdjacentTank(mSecondFacing), mTanks[0].amount() - mTanks[0].capacity() / 2);
 			if (mTanks[1].has()) FL.move(mTanks[1], getAdjacentTank(mFacing));
-			
+
 			if (mTanks[0].check()) updateClientData();
 		}
 	}
@@ -295,6 +295,20 @@ public abstract class MultiTileEntityReactorCore extends TileEntityBase10FacingD
 	}
 
 	@Override
+	public final void updateInventory() {
+		super.updateInventory();
+		// GTCH, 改为仅检测每个存储槽内是否发生了改变
+		if (isServerSide() && checkInventory()) {
+			updateClientData();
+			inventoryChecked();
+		}
+	}
+
+	protected boolean checkInventory() {return F;}
+	protected void inventoryChecked() {/**/}
+
+
+	@Override
 	public FluidStack tapDrain(byte aSide, int aMaxDrain, boolean aDoDrain) {
 		updateInventory();
 		return mTanks[mTanks[1].has() ? 1 : 0].drain(aMaxDrain, aDoDrain);
@@ -304,6 +318,7 @@ public abstract class MultiTileEntityReactorCore extends TileEntityBase10FacingD
 	@Override public AxisAlignedBB getCollisionBoundingBoxFromPool() {return box(PX_P[1], PX_P[1], PX_P[1], PX_N[1], PX_N[1], PX_N[1]);}
 	
 	@Override public boolean canDrop(int aInventorySlot) {return T;}
+	@Override public boolean isSurfaceOpaque2(byte aSide) {return SIDES_VERTICAL[aSide];}
 	
 	@Override public int[] getAccessibleSlotsFromSide2(byte aSide) {return ZL_INTEGER;}
 	@Override public boolean canInsertItem2 (int aSlot, ItemStack aStack, byte aSide) {return F;}

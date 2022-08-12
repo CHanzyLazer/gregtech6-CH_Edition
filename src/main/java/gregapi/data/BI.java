@@ -49,6 +49,7 @@ public class BI {
 	, CHAR_7 = new Icon("overlays/characters/7")
 	, CHAR_8 = new Icon("overlays/characters/8")
 	, CHAR_9 = new Icon("overlays/characters/9")
+	, CHAR_STAR = new Icon("overlays/characters/star")
 	
 	, CHAR_A = new Icon("overlays/characters/a")
 	, CHAR_B = new Icon("overlays/characters/b")
@@ -105,15 +106,22 @@ public class BI {
 	, CHAR_LUMIN = new Icon("overlays/characters/lumin")
 	, CHAR_CLOCK = new Icon("overlays/characters/clock")
 	, CHAR_GIBBL = new Icon("overlays/characters/gibbl")
+	, CHAR_KILOGIBBL = new Icon("overlays/characters/kilogibbl")
 	, CHAR_GRAMM = new Icon("overlays/characters/gramm")
 	, CHAR_KILOGRAMM = new Icon("overlays/characters/kilogramm")
 	, CHAR_TON = new Icon("overlays/characters/ton")
 	, CHAR_KILOTON = new Icon("overlays/characters/kiloton")
 	, CHAR_EU = new Icon("overlays/characters/eu")
+	, CHAR_KILOEU = new Icon("overlays/characters/kiloeu")
 	, CHAR_LU = new Icon("overlays/characters/lu")
+	, CHAR_KILOLU = new Icon("overlays/characters/kilolu")
 	, CHAR_RU = new Icon("overlays/characters/ru")
+	, CHAR_KILORU = new Icon("overlays/characters/kiloru")
 	, CHAR_NEUTRON = new Icon("overlays/characters/neutron")
-	
+	, CHAR_KILONEUTRON = new Icon("overlays/characters/kiloneutron")
+	, CHAR_LPT = new Icon("overlays/characters/lpt")
+	, CHAR_BPT = new Icon("overlays/characters/bpt")
+
 	, CHAR_SCALE = new Icon("overlays/characters/scale")
 	, CHAR_GREG = new Icon("overlays/characters/greg")
 	, CHAR_NEI = new Icon("overlays/characters/nei")
@@ -127,7 +135,7 @@ public class BI {
 	public static ITexture nei() {
 		return NEI ? BlockTextureDefault.get(CHAR_NEI, CA_YELLOW_255, F, T, F, F) : null;
 	}
-	
+	public static IIconContainer decimalDigit(long aNumber, long aDigit, boolean aOverMax) {return aOverMax ? CHAR_STAR : decimalDigit(aNumber, aDigit);}
 	public static IIconContainer decimalDigit(long aNumber, long aDigit) {
 		aNumber = Math.abs(aNumber);
 		aDigit = UT.Code.bind_(0, 19, aDigit);
@@ -135,7 +143,7 @@ public class BI {
 		for (long i = 0; i < aDigit; i++) j*=10;
 		return CHARACTERS_DEC[(int)((aNumber / j) % 10)];
 	}
-	
+	public static IIconContainer hexadecimalDigit(long aNumber, long aDigit, boolean aOverMax) {return aOverMax ? CHAR_STAR : hexadecimalDigit(aNumber, aDigit);}
 	public static IIconContainer hexadecimalDigit(long aNumber, long aDigit) {
 		aNumber = Math.abs(aNumber);
 		aDigit = UT.Code.bind4(aDigit);

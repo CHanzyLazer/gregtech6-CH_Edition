@@ -20,9 +20,12 @@
 package gregtech.tileentity.placeables;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.COLOR_LOG;
 
 import java.util.Random;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.block.multitileentity.IMultiTileEntity.*;
 import gregapi.code.ArrayListNoNulls;
 import gregapi.data.IL;
@@ -171,6 +174,7 @@ public class MultiTileEntityStick extends TileEntityBase03MultiTileEntities impl
 	@Override public boolean ignorePlayerCollisionWhenPlacing() {return T;}
 	
 	@Override public int getLightOpacity() {return LIGHT_OPACITY_NONE;}
+	@SideOnly(Side.CLIENT) @Override public int colorMultiplier() {return COLOR_LOG;}
 	@Override public float getExplosionResistance2() {return 0;}
 	@Override public float getBlockHardness() {return 0.25F;}
 	@Override public int getFireSpreadSpeed(byte aSide, boolean aDefault) {return 300;}

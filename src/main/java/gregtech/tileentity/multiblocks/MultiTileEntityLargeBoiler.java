@@ -139,7 +139,7 @@ public class MultiTileEntityLargeBoiler extends TileEntityBase10MultiBlockBase i
 
 			return tSuccess;
 		}
-		return mStructureOkay;
+		return isStructureOkay();
 	}
 
 	static {

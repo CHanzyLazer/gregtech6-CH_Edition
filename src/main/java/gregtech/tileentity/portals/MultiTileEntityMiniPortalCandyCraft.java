@@ -129,6 +129,8 @@ public class MultiTileEntityMiniPortalCandyCraft extends MultiTileEntityMiniPort
 	public ITexture sCandyPortal = BlockTextureCopied.get(ST.block(MD.CANDY, "B40", Blocks.portal), SIDE_ANY, 0, UNCOLOURED, F, T, T), sCandyPortalFrame = BlockTextureCopied.get(ST.block(MD.CANDY, "BarleyBlock", Blocks.quartz_block), SIDE_FRONT, 0, UNCOLOURED, F, F, F);
 	@Override public ITexture getPortalTexture() {return sCandyPortal;}
 	@Override public ITexture getFrameTexture() {return sCandyPortalFrame;}
+
+	// TODO
 	
 	@Override public String getTileEntityName() {return "gt.multitileentity.portal.candy";}
 }

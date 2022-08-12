@@ -20,13 +20,17 @@
 package gregtech.tileentity.misc;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.*;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetLightValue;
 import gregapi.old.Textures;
 import gregapi.render.BlockTextureCopied;
 import gregapi.render.BlockTextureDefault;
 import gregapi.render.ITexture;
 import gregapi.tileentity.base.TileEntityBase09FacingSingle;
+import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
@@ -35,7 +39,7 @@ import net.minecraft.init.Blocks;
  * @author Gregorius Techneticies
  */
 public class MultiTileEntityGregOLantern extends TileEntityBase09FacingSingle implements IMTE_GetLightValue {
-	@Override public ITexture getTexture2(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {return aShouldSideBeRendered[aSide] ? aSide == mFacing ? BlockTextureDefault.get(Textures.BlockIcons.GREG_O_LANTERN, mRGBa, F, T, T, F) : BlockTextureCopied.get(Blocks.lit_pumpkin, aSide, 4, mRGBa, F, T, T) : null;}
+	@Override public ITexture getTexture2(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {return aShouldSideBeRendered[aSide] ? aSide == mFacing ? BlockTextureDefault.get(Textures.BlockIcons.GREG_O_LANTERN, UT_CH.Code.getOverlayRGB(getPaint()), F, T, T, F) : BlockTextureCopied.get(Blocks.lit_pumpkin, aSide, 4, UT_CH.Code.getOverlayRGB(getPaint()), F, T, T) : null;}
 	
 	@Override public int getLightOpacity() {return LIGHT_OPACITY_NONE;}
 	@Override public int getLightValue() {return 15;}
@@ -51,6 +55,10 @@ public class MultiTileEntityGregOLantern extends TileEntityBase09FacingSingle im
 	@Override public boolean canDrop(int aSlot) {return F;}
 	@Override public boolean[] getValidSides() {return SIDES_HORIZONTAL;}
 	@Override public byte getDefaultSide() {return SIDE_FRONT;}
+
+	@SideOnly(Side.CLIENT) @Override public int colorMultiplier() {
+		return UT_CH.Code.getOverlayedRGB(COLOR_GREG_O_LANTERN, getPaint());
+	}
 	
 	@Override public String getTileEntityName() {return "gt.multitileentity.greg.o.lantern";}
 }

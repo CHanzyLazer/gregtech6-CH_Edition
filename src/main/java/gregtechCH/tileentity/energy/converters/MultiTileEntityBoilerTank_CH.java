@@ -8,6 +8,7 @@ import gregapi.data.TD;
 import gregapi.util.UT;
 import gregtech.tileentity.energy.converters.MultiTileEntityBoilerTank;
 import gregtechCH.data.LH_CH;
+import gregtechCH.tileentity.ITileEntityName_CH;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidRegistry;
 
@@ -16,7 +17,7 @@ import java.util.List;
 import static gregapi.data.CS.*;
 import static gregtechCH.data.CS_CH.*;
 
-public class MultiTileEntityBoilerTank_CH extends MultiTileEntityBoilerTank {
+public class MultiTileEntityBoilerTank_CH extends MultiTileEntityBoilerTank implements ITileEntityName_CH {
 	protected long mEnergyEff = 0, mInput = 64, pEnergy = 0;
 
 	protected long mOutputNow = 0;
@@ -137,5 +138,5 @@ public class MultiTileEntityBoilerTank_CH extends MultiTileEntityBoilerTank {
 	@Override public long getEnergyDemanded(TagData aEnergyType, byte aSide, long aSize) {return mInput;}
 	@Override public long getEnergySizeInputRecommended(TagData aEnergyType, byte aSide) {return mInput;}
 	
-	@Override public String getTileEntityName() {return "gtch.multitileentity.tank.boiler_steam";}
+	@Override public String getTileEntityName_CH() {return "gtch.multitileentity.tank.boiler_steam";}
 }

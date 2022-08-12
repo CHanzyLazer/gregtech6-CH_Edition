@@ -338,7 +338,7 @@ public abstract class TileEntityBase06Covers extends TileEntityBase05Inventories
 
 		if (aBlockUpdate) causeBlockUpdate();
 
-		updateClientData();
+		updateClientData(T);
 
 		return checkIfCoversEmptyAndDeleteIfNeeded();
 	}

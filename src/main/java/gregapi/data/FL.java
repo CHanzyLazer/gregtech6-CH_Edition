@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,19 +19,8 @@
 
 package gregapi.data;
 
-import static gregapi.data.CS.*;
-import static gregapi.data.CS.FluidsGT.*;
-import static gregtechCH.config.ConfigForge_CH.DATA_GTCH.disableAllStoragePowerconducting;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import gregapi.code.ItemStackContainer;
 import gregapi.code.ItemStackMap;
-import gregapi.data.CS.FluidsGT;
-import gregapi.data.CS.IconsGT;
 import gregapi.fluid.FluidGT;
 import gregapi.fluid.FluidTankGT;
 import gregapi.old.Textures;
@@ -50,15 +39,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
-import net.minecraftforge.fluids.BlockFluidBase;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidContainerItem;
-import net.minecraftforge.fluids.IFluidHandler;
-import net.minecraftforge.fluids.IFluidTank;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import static gregapi.data.CS.*;
+import static gregapi.data.CS.FluidsGT.*;
+import static gregtechCH.config.ConfigForge_CH.DATA_GTCH.disableAllStoragePowerconducting;
 
 /**
  * @author Gregorius Techneticies
@@ -74,6 +65,7 @@ public enum FL {
 	, MatterCharged             ("chargedmatter"                                            , LIQUID, ENCHANTED_EFFECT)
 	
 	, XP                        ("xpjuice"                                                  , SIMPLE, LIQUID, VOID_OVERFLOW)
+	, XP_Molten                 ("xp"                                                       , SIMPLE, LIQUID, VOID_OVERFLOW)
 	, Mob                       ("mobessence"                                               , SIMPLE, LIQUID, VOID_OVERFLOW)
 	
 	, Air                       ("air"                                                      , SIMPLE, GAS, AIR)
@@ -287,6 +279,7 @@ public enum FL {
 	, Sauce_Snitches            ("potion.diablosauce.strong"                                , SIMPLE, LIQUID, FOOD)
 	, Sauce_BBQ                 ("bbqsauce"                                                 , SIMPLE, LIQUID, FOOD)
 	
+	, Slime_Blue                ("slime.blue"                                               , SIMPLE, LIQUID, FOOD, SLIME)
 	, Slime_Pink                ("pinkslime"                                                , SIMPLE, LIQUID, FOOD, SLIME)
 	, Slime_Green               ("slime"                                                    , SIMPLE, LIQUID, FOOD, SLIME)
 	, BAWLS                     ("bawls"                                                    , SIMPLE, LIQUID, FOOD)
@@ -298,6 +291,7 @@ public enum FL {
 	, Purple_Drink              ("purpledrink"              , "potion.purpledrink"          , SIMPLE, LIQUID, FOOD)
 	, Lemonade                  ("potion.lemonade"                                          , SIMPLE, LIQUID, FOOD)
 	, Grenade_Juice             ("potion.cavejohnsonsgrenadejuice"                          , SIMPLE, LIQUID, FOOD)
+	, Blood                     ("blood"                                                    , SIMPLE, LIQUID, FOOD)
 	
 	, Vinegar_Grape             ("vinegar"                  , "potion.vinegar"              , SIMPLE, LIQUID, FOOD, ALCOHOLIC, VINEGAR)
 	, Vinegar_Apple             ("applevinegar"                                             , SIMPLE, LIQUID, FOOD, ALCOHOLIC, VINEGAR)

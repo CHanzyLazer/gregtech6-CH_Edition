@@ -22,6 +22,8 @@ package gregapi.tileentity.base;
 import static gregapi.data.CS.*;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.block.multitileentity.IMultiTileEntity.*;
 import gregapi.block.multitileentity.MultiTileEntityClassContainer;
 import gregapi.block.multitileentity.MultiTileEntityRegistry;
@@ -44,6 +46,11 @@ import gregapi.render.IRenderedBlockObjectSideCheck;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
+import gregtechCH.config.ConfigForge_CH;
+import gregtechCH.tileentity.ITEAfterUpdateRender_CH;
+import gregtechCH.tileentity.ITileEntityName_CH;
+import gregtechCH.util.UT_CH;
+import gregtechCH.util.WD_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -52,13 +59,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 
 /**
  * @author Gregorius Techneticies
  */
-public abstract class TileEntityBase04MultiTileEntities extends TileEntityBase03TicksAndSync implements IRenderedBlockObjectSideCheck, IRenderedBlockObject, IMTE_OnPainting, IMTE_OnNeighborBlockChange, IMTE_GetPickBlock, IMTE_OnRegistrationFirst, IMTE_RecolourBlock, IMTE_GetDrops, IMTE_OnBlockActivated, IMTE_ShouldSideBeRendered, IMTE_GetFlammability, IMTE_GetFireSpreadSpeed {
+public abstract class TileEntityBase04MultiTileEntities extends TileEntityBase03TicksAndSync implements IMTE_ColorMultiplier, ITEAfterUpdateRender_CH, IRenderedBlockObjectSideCheck, IRenderedBlockObject, IMTE_OnPainting, IMTE_OnNeighborBlockChange, IMTE_GetPickBlock, IMTE_OnRegistrationFirst, IMTE_RecolourBlock, IMTE_GetDrops, IMTE_OnBlockActivated, IMTE_ShouldSideBeRendered, IMTE_GetFlammability, IMTE_GetFireSpreadSpeed {
 	private short mMTEID = W, mMTERegistry = W;
 	private String mCustomName = null;
 	
@@ -67,6 +75,7 @@ public abstract class TileEntityBase04MultiTileEntities extends TileEntityBase03
 	
 	@Override
 	public void onRegistrationFirst(MultiTileEntityRegistry aRegistry, short aID) {
+		if (this instanceof ITileEntityName_CH) GameRegistry.registerTileEntity(getClass(), ((ITileEntityName_CH)this).getTileEntityName_CH()); // 注册旧的名称来兼容旧版 GTCH
 		GameRegistry.registerTileEntity(getClass(), getTileEntityName());
 	}
 	
@@ -89,6 +98,7 @@ public abstract class TileEntityBase04MultiTileEntities extends TileEntityBase03
 	
 	@Override
 	public final void readFromNBT(NBTTagCompound aNBT) {
+		super.readFromNBT(aNBT);
 		// Check if this is a World/Chunk Loading Process calling readFromNBT.
 		if (mMTEID == W || mMTERegistry == W) {
 			// Yes it is, so read the ID Tags first.
@@ -104,10 +114,6 @@ public abstract class TileEntityBase04MultiTileEntities extends TileEntityBase03
 				}
 			}
 		}
-		// read the Coords if it has them.
-		if (aNBT.hasKey("x")) xCoord = aNBT.getInteger("x");
-		if (aNBT.hasKey("y")) yCoord = aNBT.getInteger("y");
-		if (aNBT.hasKey("z")) zCoord = aNBT.getInteger("z");
 		// read the custom Name.
 		if (aNBT.hasKey("display")) mCustomName = aNBT.getCompoundTag("display").getString("Name");
 		// And now your custom readFromNBT.
@@ -135,7 +141,7 @@ public abstract class TileEntityBase04MultiTileEntities extends TileEntityBase03
 	public NBTTagCompound writeItemNBT(NBTTagCompound aNBT) {
 		if (UT.Code.stringValid(mCustomName)) aNBT.setTag("display", UT.NBT.makeString(aNBT.getCompoundTag("display"), "Name", mCustomName));
 		if (UT.Code.stringValid(ERROR_MESSAGE) && isClientSide()) aNBT.setTag("display", UT.NBT.makeString(aNBT.getCompoundTag("display"), "Name", ERROR_MESSAGE));
-		if (isPainted()) {aNBT.setInteger(NBT_COLOR, getPaint()); aNBT.setBoolean(NBT_PAINTED, T);}
+		if (isPainted()) {aNBT.setInteger(NBT_COLOR, (int) UT_CH.NBT.toItemNumber(getPaint())); aNBT.setBoolean(NBT_PAINTED, T);}
 		return aNBT;
 	}
 	
@@ -233,24 +239,40 @@ public abstract class TileEntityBase04MultiTileEntities extends TileEntityBase03
 	@Override
 	public boolean recolourBlock(byte aSide, byte aColor) {
 		if (UT.Code.exists(aColor, DYES_INVERTED)) {
-			int aRGB = (isPainted() ? UT.Code.mixRGBInt(DYES_INT_INVERTED[aColor], getPaint()) : DYES_INT_INVERTED[aColor]) & ALL_NON_ALPHA_COLOR;
-			if (paint(aRGB)) {updateClientData(); causeBlockUpdate(); return T;}
+			int aRGB = (isPainted() ? UT_CH.Code.mixRGBInt(getPaint(), DYES_INT_INVERTED[aColor]) : DYES_INT_INVERTED[aColor]) & ALL_NON_ALPHA_COLOR;
+			if (paint(aRGB)) {updateClientData(T); causeBlockUpdate(); return T;}
 			return F;
 		}
-		if (unpaint()) {updateClientData(); causeBlockUpdate(); return T;}
+		if (unpaint()) {updateClientData(T); causeBlockUpdate(); return T;}
 		return F;
 	}
 	
 	@Override
 	public boolean onPainting(byte aSide, int aRGB) {
-		if (paint(aRGB)) {updateClientData(); causeBlockUpdate(); return T;}
+		if (paint(aRGB)) {updateClientData(T); causeBlockUpdate(); return T;}
 		return F;
 	}
-	
+ 	// 重写以更改方块的粒子特效颜色
+	@SideOnly(Side.CLIENT) @Override public int colorMultiplier() {return UNCOLORED;}
+
 	public boolean unpaint() {return F;}
 	public boolean isPainted() {return F;}
+	public void setIsPainted(boolean aIsPainted) {/**/}
 	public boolean paint(int aRGB) {return F;}
 	public int getPaint() {return UNCOLORED;}
+	// GTCH, 原本逻辑过于麻烦，直接把是否已经染色也同步到客户端好了，这样还可以多出来一些数据用于专门处理颜色动画，可能可以方便后续的温度变色之类的开发（因为温度并没有传到客户端）
+	public byte getPaintData() {return (byte) ((isPainted()?1:0) | (willRerendImmediate?2:0));}
+	public void setPaintData(byte aData) {setIsPainted((aData&1)!=0); willRerendImmediate = ((aData&2)!=0);}
+	// GTCH, 在染色时立刻重新渲染
+	private boolean willRerendImmediate = F;
+	public void updateClientData(boolean aRerendImmediate) {willRerendImmediate = aRerendImmediate; updateClientData();} // 后续在需要立刻重新渲染时调用此函数即可
+	@Override public void onTickResetChecks(long aTimer, boolean aIsServerSide) {super.onTickResetChecks(aTimer, aIsServerSide); if (aIsServerSide) willRerendImmediate = F;} // 对于 ticking 的需要在这里恢复标记
+	@Override
+	public final void doAfterUpdateRender_CH(IBlockAccess aWorld, int aX, int aY, int aZ) {
+		if (!ConfigForge_CH.DATA_GTCH.rerenderAll && (willRerendImmediate || willRerendImmediateAny())) WD_CH.updateRender(aWorld, aX, aY, aZ, T, F);
+		willRerendImmediate = F;
+	}
+	public boolean willRerendImmediateAny() {return F;} // 也可重写此方法，在不用 sendAll 的情况下立刻重新渲染
 	
 	public boolean removePaint(byte aSide) {return unpaint();}
 	

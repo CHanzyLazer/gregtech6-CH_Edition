@@ -1,6 +1,6 @@
 ![cover.png](https://github.com/CHanzyLazer/gregtech6-CH_Edition/wiki/picture/cover.png)
 
-GregTech 6 CH Edition (GTCH) 是本人（b 站：[潘多拉茶壶](https://space.bilibili.com/5104148) ）基于 GregTech 6 的非官方魔改版
+GregTech 6 CH Edition (GTCH) 是本人（b 站：[潘多拉茶壶](https://space.bilibili.com/5104148) ）基于 [GregTech-6](https://gregtech.mechaenetia.com) 的非官方魔改版
 
 是否希望给物品添加 GT6 的材料？是否感觉 GT6 的机器数值不够平衡？甚至觉得 GT6 还不够科学？在这里你能找到解决方案！
 

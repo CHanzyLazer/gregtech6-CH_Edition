@@ -72,3 +72,6 @@
 
 # Language
 !/.lang/*
+
+# idea config
+/.idea/

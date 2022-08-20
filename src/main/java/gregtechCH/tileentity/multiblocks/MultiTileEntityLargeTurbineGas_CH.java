@@ -15,7 +15,7 @@ import gregapi.tileentity.multiblocks.*;
 import gregapi.util.UT;
 import gregapi.util.WD;
 import gregtechCH.data.LH_CH;
-import gregtechCH.tileentity.ITileEntityName_CH;
+import gregtechCH.tileentity.ITileEntityNameCompat;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -27,7 +27,7 @@ import net.minecraftforge.fluids.IFluidTank;
 import java.util.Collection;
 import java.util.List;
 
-public class MultiTileEntityLargeTurbineGas_CH extends MultiTileEntityLargeMotor_CH implements IMultiBlockFluidHandler, IFluidHandler, ITileEntityName_CH {
+public class MultiTileEntityLargeTurbineGas_CH extends MultiTileEntityLargeMotor_CH implements IMultiBlockFluidHandler, IFluidHandler, ITileEntityNameCompat {
 
     protected boolean mBurning = F;
     protected long mEnergyHU;
@@ -335,6 +335,6 @@ public class MultiTileEntityLargeTurbineGas_CH extends MultiTileEntityLargeMotor
     }
 
     @Override public String getTileEntityName() {return "gt.multitileentity.multiblock.turbine.gas";}
-    @Override public String getTileEntityName_CH() {return "gtch.multitileentity.multiblock.turbine.gas";}
+    @Override public String getTileEntityNameCompat() {return "gtch.multitileentity.multiblock.turbine.gas";}
 }
 

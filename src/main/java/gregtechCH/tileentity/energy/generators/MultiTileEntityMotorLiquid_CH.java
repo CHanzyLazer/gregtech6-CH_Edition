@@ -4,23 +4,15 @@ import gregapi.code.TagData;
 import gregapi.data.FL;
 import gregapi.data.FM;
 import gregapi.data.LH;
-import gregapi.data.TD;
 import gregapi.fluid.FluidTankGT;
 import gregapi.old.Textures;
 import gregapi.recipes.Recipe;
-import gregapi.render.BlockTextureDefault;
-import gregapi.render.BlockTextureMulti;
 import gregapi.render.IIconContainer;
-import gregapi.render.ITexture;
-import gregapi.tileentity.behavior.TE_Behavior_Active_Trinary;
-import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.util.UT;
 import gregapi.util.WD;
-import gregtech.tileentity.energy.generators.MultiTileEntityMotorLiquid;
 import gregtechCH.data.LH_CH;
-import gregtechCH.tileentity.ITileEntityName_CH;
+import gregtechCH.tileentity.ITileEntityNameCompat;
 import gregtechCH.tileentity.energy.MultiTileEntityMotor_CH;
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -29,14 +21,12 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fluids.IFluidTank;
 
-import java.util.Collection;
 import java.util.List;
 
 import static gregapi.data.CS.*;
 import static gregtechCH.data.CS_CH.*;
-import static gregtechCH.data.CS_CH.NBT_PREHEAT_COST;
 
-public class MultiTileEntityMotorLiquid_CH extends MultiTileEntityMotor_CH implements IFluidHandler, ITileEntityName_CH {
+public class MultiTileEntityMotorLiquid_CH extends MultiTileEntityMotor_CH implements IFluidHandler, ITileEntityNameCompat {
 
     protected boolean mBurning = F;
     protected long mEnergyHU = 0;
@@ -330,5 +320,5 @@ public class MultiTileEntityMotorLiquid_CH extends MultiTileEntityMotor_CH imple
 
 
     @Override public String getTileEntityName() {return "gt.multitileentity.generator.motor_liquid";}
-    @Override public String getTileEntityName_CH() {return "gtch.multitileentity.generator.motor_liquid";}
+    @Override public String getTileEntityNameCompat() {return "gtch.multitileentity.generator.motor_liquid";}
 }

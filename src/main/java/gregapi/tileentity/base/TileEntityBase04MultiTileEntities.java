@@ -48,7 +48,7 @@ import gregapi.util.UT;
 import gregapi.util.WD;
 import gregtechCH.config.ConfigForge_CH;
 import gregtechCH.tileentity.ITEAfterUpdateRender_CH;
-import gregtechCH.tileentity.ITileEntityName_CH;
+import gregtechCH.tileentity.ITileEntityNameCompat;
 import gregtechCH.util.UT_CH;
 import gregtechCH.util.WD_CH;
 import net.minecraft.block.Block;
@@ -75,7 +75,7 @@ public abstract class TileEntityBase04MultiTileEntities extends TileEntityBase03
 	
 	@Override
 	public void onRegistrationFirst(MultiTileEntityRegistry aRegistry, short aID) {
-		if (this instanceof ITileEntityName_CH) GameRegistry.registerTileEntity(getClass(), ((ITileEntityName_CH)this).getTileEntityName_CH()); // 注册旧的名称来兼容旧版 GTCH
+		if (this instanceof ITileEntityNameCompat) GameRegistry.registerTileEntity(getClass(), ((ITileEntityNameCompat)this).getTileEntityNameCompat()); // 注册旧的名称来兼容旧版 GTCH
 		GameRegistry.registerTileEntity(getClass(), getTileEntityName());
 	}
 	

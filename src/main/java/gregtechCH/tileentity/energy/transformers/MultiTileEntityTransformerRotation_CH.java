@@ -29,13 +29,11 @@ import gregapi.render.IIconContainer;
 import gregapi.render.ITexture;
 import gregapi.tileentity.base.TileEntityBase09FacingSingle;
 import gregapi.tileentity.energy.ITileEntityEnergy;
-import gregapi.tileentity.energy.ITileEntityEnergyElectricityAcceptor;
 import gregapi.tileentity.machines.ITileEntityAdjacentOnOff;
 import gregapi.tileentity.machines.ITileEntityRunningActively;
 import gregapi.util.UT;
-import gregtechCH.config.ConfigForge_CH;
 import gregtechCH.data.LH_CH;
-import gregtechCH.tileentity.ITileEntityName_CH;
+import gregtechCH.tileentity.ITileEntityNameCompat;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.IInventory;
@@ -47,7 +45,7 @@ import java.util.List;
 
 import static gregapi.data.CS.*;
 
-public class MultiTileEntityTransformerRotation_CH extends TileEntityBase09FacingSingle implements ITileEntityName_CH, ITileEntityAdjacentOnOff, ITileEntityEnergy, ITileEntityRunningActively {
+public class MultiTileEntityTransformerRotation_CH extends TileEntityBase09FacingSingle implements ITileEntityNameCompat, ITileEntityAdjacentOnOff, ITileEntityEnergy, ITileEntityRunningActively {
 	protected long mRate = 16, mMultiplier = 4;
 
 	public long mPower = 0, mSpeed = 0, mEnergy = 0;
@@ -56,7 +54,7 @@ public class MultiTileEntityTransformerRotation_CH extends TileEntityBase09Facin
 	public boolean mCounterClockwise = F, oCounterClockwise = F;
 
 	public boolean mActive = F, oActive = F;
-	public boolean  mEmitsEnergy = F;
+	public boolean mEmitsEnergy = F;
 
 	protected TagData mEnergyTypeAccepted = TD.Energy.RU;
 	protected TagData mEnergyTypeEmitted = TD.Energy.RU;
@@ -318,5 +316,5 @@ public class MultiTileEntityTransformerRotation_CH extends TileEntityBase09Facin
 	}
 
 	@Override public String getTileEntityName() {return "gt.multitileentity.transformers.transformer_rotation";}
-	@Override public String getTileEntityName_CH() {return "gtch.multitileentity.transformers.transformer_rotation";}
+	@Override public String getTileEntityNameCompat() {return "gtch.multitileentity.transformers.transformer_rotation";}
 }

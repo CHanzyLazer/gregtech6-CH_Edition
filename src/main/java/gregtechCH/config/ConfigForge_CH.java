@@ -18,6 +18,7 @@ import java.util.LinkedList;
  */
 public class ConfigForge_CH {
     public static class DATA_GTCH {
+        // TODO 这些涵盖过多机器的选项需要移除，使用 DATA_MACHINES 中的选项控制
         public static boolean enableChangeMachineUnsorted1;
         public static boolean enableChangeMachineUnsorted2;
         public static boolean enableChangeMachineMultiblocks;

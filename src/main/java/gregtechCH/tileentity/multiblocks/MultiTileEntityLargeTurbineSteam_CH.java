@@ -32,7 +32,7 @@ import gregapi.tileentity.multiblocks.IMultiBlockFluidHandler;
 import gregapi.util.UT;
 import gregtechCH.data.LH_CH;
 import gregtechCH.fluid.IFluidHandler_CH;
-import gregtechCH.tileentity.ITileEntityName_CH;
+import gregtechCH.tileentity.ITileEntityNameCompat;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -49,7 +49,7 @@ import static gregtechCH.data.CS_CH.*;
 /**
  * @author Gregorius Techneticies
  */
-public class MultiTileEntityLargeTurbineSteam_CH extends MultiTileEntityLargeMotor_CH implements IMultiBlockFluidHandler, IFluidHandler_CH, ITileEntityName_CH {
+public class MultiTileEntityLargeTurbineSteam_CH extends MultiTileEntityLargeMotor_CH implements IMultiBlockFluidHandler, IFluidHandler_CH, ITileEntityNameCompat {
 	public FluidTankGT[] mTanks = new FluidTankGT[] {new FluidTankGT(0), new FluidTankGT(0)};
 	public long pSteam = 0, mOutputSU = 0, mSteamCounter = 0;
 	protected int STEAM_PER_WATER_SELF = 170;
@@ -348,7 +348,7 @@ public class MultiTileEntityLargeTurbineSteam_CH extends MultiTileEntityLargeMot
 	}
 
 	@Override public String getTileEntityName() {return "gt.multitileentity.multiblock.turbine.steam";}
-	@Override public String getTileEntityName_CH() {return "gtch.multitileentity.multiblock.turbine.steam";}
+	@Override public String getTileEntityNameCompat() {return "gtch.multitileentity.multiblock.turbine.steam";}
 
 	@Override
 	public boolean canFillExtra(FluidStack aFluid) {

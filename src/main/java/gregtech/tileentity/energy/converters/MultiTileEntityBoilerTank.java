@@ -34,10 +34,10 @@ import gregapi.tileentity.base.TileEntityBase09FacingSingle;
 import gregapi.tileentity.data.ITileEntityGibbl;
 import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.tileentity.energy.ITileEntityEnergyDataCapacitor;
-import gregtechCH.tileentity.cores.IMTEC_BoilerTank;
+import gregtechCH.tileentity.cores.boilers.IMTEC_BoilerTank;
 import gregtechCH.tileentity.cores.IMTEC_ToolTips;
-import gregtechCH.tileentity.cores.MTEC_BoilerTank_Greg;
-import gregtechCH.tileentity.cores.MTEC_BoilerTank;
+import gregtechCH.tileentity.cores.boilers.MTEC_BoilerTank_Greg;
+import gregtechCH.tileentity.cores.boilers.MTEC_BoilerTank;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -64,10 +64,9 @@ public class MultiTileEntityBoilerTank extends TileEntityBase09FacingSingle impl
 
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {
-		super.readFromNBT2(aNBT);
-
 		// GTCH, core init
-		mCore = new MTEC_BoilerTank(this);
+		if (mCore == null) mCore = new MTEC_BoilerTank(this);
+		super.readFromNBT2(aNBT);
 		mCore.readFromNBT(aNBT);
 	}
 
@@ -75,11 +74,12 @@ public class MultiTileEntityBoilerTank extends TileEntityBase09FacingSingle impl
 	public void writeToNBT2(NBTTagCompound aNBT) {
 		super.writeToNBT2(aNBT);
 
+		// GTCH, core save
 		mCore.writeToNBT(aNBT);
 	}
 
 	// tooltips
-	@Override public final void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {IMTEC_ToolTips.Util.addToolTips(mCore, aList, aStack, aF3_H);}
+	@Override public final void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {IMTEC_ToolTips.Util.addToolTips(mCore, aList, aStack, aF3_H); super.addToolTips(aList, aStack, aF3_H);}
 	// ticking
 	@Override public void onTick2(long aTimer, boolean aIsServerSide) {if (aIsServerSide) IMTEC_BoilerTank.Util.onTick(mCore);}
 

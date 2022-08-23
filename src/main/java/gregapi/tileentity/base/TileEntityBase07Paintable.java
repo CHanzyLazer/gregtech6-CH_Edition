@@ -63,6 +63,7 @@ public abstract class TileEntityBase07Paintable extends TileEntityBase06Covers i
 	protected int mRGBPaint = UNCOLORED;
 	// 仅客户端有效
 	protected int mRGBa = UNCOLORED;
+	@Override public int getRGBa() {return mRGBa;}
 
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {

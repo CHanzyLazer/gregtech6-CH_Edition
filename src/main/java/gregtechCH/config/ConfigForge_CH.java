@@ -18,7 +18,7 @@ import java.util.LinkedList;
  */
 public class ConfigForge_CH {
     public static class DATA_GTCH {
-        // TODO 这些涵盖过多机器的选项需要移除，使用 DATA_MACHINES 中的选项控制
+        // TODO 这些涵盖过多机器的选项需要移除
         public static boolean enableChangeMachineUnsorted1;
         public static boolean enableChangeMachineUnsorted2;
         public static boolean enableChangeMachineMultiblocks;
@@ -53,9 +53,6 @@ public class ConfigForge_CH {
         public static int rerenderAroundLength;
     }
     public static class DATA_MACHINES {
-        public static boolean enableChangeBasicMachine;
-        public static boolean enableChangeBoiler;
-        public static boolean enableChangeMotor;
         public static boolean enableChangeRotation;
 
         public static boolean motorExplodeCheck;
@@ -115,9 +112,7 @@ public class ConfigForge_CH {
         tList.addFirst(RerenderTick.INIT); // 保证第一个是 INIT
         DATA_GTCH.rerenderTickList = tList.toArray(new RerenderTick[0]);
 
-        DATA_MACHINES.enableChangeBasicMachine = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.basic, "enableChange_basicmachine_(gt6_false)", T);
-        DATA_MACHINES.enableChangeBoiler = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.boiler, "enableChange_boiler_(gt6_false)", T);
-        DATA_MACHINES.enableChangeMotor = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.generatorMotor, "enableChange_motor_(gt6_false)", T);
+
         DATA_MACHINES.enableChangeRotation = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.rotation, "enableChange_rotation_(gt6_false)", T);
         DATA_MACHINES.motorExplodeCheck = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.generatorMotor, "motor_explode_check_(gt6_?)", T);
         DATA_MACHINES.motorExplodeByLength = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.generatorMotor, "motor_explode_by_length_(gt6_false)", T);

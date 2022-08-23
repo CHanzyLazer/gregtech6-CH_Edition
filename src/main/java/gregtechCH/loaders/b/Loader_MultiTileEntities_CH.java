@@ -41,8 +41,6 @@ import gregtechCH.config.machine.multiblock.AttributesLargeBoilerTank_CH;
 import gregtechCH.config.machine.multiblock.AttributesLargeGasTurbine_CH;
 import gregtechCH.config.machine.multiblock.AttributesLargeSteamTurbine_CH;
 import gregtechCH.config.machine.steam.*;
-import gregtechCH.tileentity.energy.converters.MultiTileEntityTurbineSteam_CH;
-import gregtechCH.tileentity.energy.generators.MultiTileEntityMotorLiquid_CH;
 import gregtechCH.tileentity.energy.transformers.MultiTileEntityTransformerRotation_CH;
 import gregtechCH.tileentity.multiblocks.*;
 import gregtechCH.tileentity.sensors.*;
@@ -248,7 +246,7 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities implem
                     DENSE_HEAT_EXCHANGER.recipeObject);
         }
         // Diesel Engines
-        aClass = enableChangeMotor ? MultiTileEntityMotorLiquid_CH.class :  MultiTileEntityMotorLiquid.class;
+        aClass = MultiTileEntityMotorLiquid.class;
         for (AttributesDieselEngine_CH DIESEL_ENGINE : DATA_MACHINES_GENERATOR.DieselEngine) {
             aMat = DIESEL_ENGINE.material;
             aRegistry.add("Diesel Engine ("+aMat.getLocal()+")", "Engines", DIESEL_ENGINE.ID, 1304, aClass, aMat.mToolQuality, DIESEL_ENGINE.stackSize, aMachine,
@@ -315,7 +313,7 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities implem
         aMat = MT.T;                    aRegistry.add("Tritium Enriched Rod"                          , "Reactors",  9431,  9200, MultiTileEntityReactorRodProduct.class  , aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F, NBT_VALUE, 9430)); RM.Canner.addRecipe1(F, 16, 16, aRegistry.getItem(), new FluidStack[] {}, FL.amount(aMat.mGas, 500L), IL.Reactor_Rod_Empty.get(1));
 
         // Steam Turbines
-        aClass = enableChangeMotor ? MultiTileEntityTurbineSteam_CH.class : MultiTileEntityTurbineSteam.class;
+        aClass = MultiTileEntityTurbineSteam.class;
         for (AttributesSteamTurbine_CH STEAM_TURBINE : DATA_MACHINES_STEAM.SteamTurbine) {
             aMat = STEAM_TURBINE.material;
             aRegistry.add("Steam Turbine ("+STEAM_TURBINE.rotorMaterial.getLocal()+")" , "Turbines",  STEAM_TURBINE.ID,  1538, aClass, aMat.mToolQuality, STEAM_TURBINE.stackSize, aMachine,
@@ -783,7 +781,7 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities implem
 
         // Steam Turbines
         NBTTagCompound tNBT;
-        aClass = enableChangeMotor ? MultiTileEntityLargeTurbineSteam_CH.class : MultiTileEntityLargeTurbineSteam.class;
+        aClass = MultiTileEntityLargeTurbineSteam.class;
         for (AttributesLargeSteamTurbine_CH STEAM_TURBINE : DATA_MACHINES_MULTIBLOCK.LargeSteamTurbine) {
             aMat = STEAM_TURBINE.material;
             tNBT = UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, STEAM_TURBINE.nbtHardness, NBT_RESISTANCE, STEAM_TURBINE.nbtResistance, NBT_TEXTURE, "largeturbine", NBT_DESIGN, STEAM_TURBINE.nbtDesign, NBT_EFFICIENCY_WATER, STEAM_TURBINE.nbtEfficiencyWater, NBT_LENGTH_MIN, STEAM_TURBINE.nbtLengthMin, NBT_LENGTH_MAX, STEAM_TURBINE.nbtLengthMax, NBT_LENGTH_MID, STEAM_TURBINE.nbtLengthMid, NBT_EFFICIENCY_OC, STEAM_TURBINE.nbtEfficiencyOC, NBT_ENERGY_ACCEPTED, TD.Energy.STEAM, NBT_ENERGY_EMITTED, TD.Energy.RU
@@ -805,7 +803,7 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities implem
         aMat = MT.Ad;                   aRegistry.add("Adamantium Dynamo Main Housing"                      , "Multiblock Machines", 17224, 17101, MultiTileEntityLargeDynamo.class         , aMat.mToolQuality, 16, aMachine   , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 100.0F, NBT_RESISTANCE, 100.0F, NBT_TEXTURE, "largedynamo"             , NBT_DESIGN, 18025, NBT_INPUT, 137970, NBT_OUTPUT, 131072, NBT_WASTE_ENERGY, T, NBT_ENERGY_ACCEPTED, TD.Energy.RU, NBT_ENERGY_EMITTED, TD.Energy.EU), "SwS", "CMC", "SBS", 'M', aRegistry.getItem(18025), 'S', OP.stickLong.dat(aMat), 'C', OD_CIRCUITS[6], 'B', "gt:re-battery1");
 
         // Gas Turbines
-        aClass = enableChangeMotor ? MultiTileEntityLargeTurbineGas_CH.class : MultiTileEntityLargeTurbineGas.class;
+        aClass = MultiTileEntityLargeTurbineGas.class;
         for (AttributesLargeGasTurbine_CH GAS_TURBINE : DATA_MACHINES_MULTIBLOCK.LargeGasTurbine) {
             aMat = GAS_TURBINE.material;
             tNBT = UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   GAS_TURBINE.nbtHardness, NBT_RESISTANCE,   GAS_TURBINE.nbtResistance, NBT_TEXTURE, "gasturbine", NBT_DESIGN, GAS_TURBINE.nbtDesign, NBT_LENGTH_MIN, GAS_TURBINE.nbtLengthMin, NBT_LENGTH_MAX, GAS_TURBINE.nbtLengthMax, NBT_LENGTH_MID, GAS_TURBINE.nbtLengthMid, NBT_ENERGY_EMITTED, TD.Energy.RU, NBT_FUELMAP, FM.Gas

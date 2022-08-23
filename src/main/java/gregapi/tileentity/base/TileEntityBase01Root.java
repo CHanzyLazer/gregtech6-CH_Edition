@@ -370,7 +370,7 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 		mIsAddedToEnet = F;
 	}
 	
-	protected void doEnetUpdate() {
+	public void doEnetUpdate() {
 		if (isServerSide() && mIsAddedToEnet && mDoEnetCheck) try {unloadFromEnet(); loadIntoEnet();} catch(Throwable e) {mDoEnetCheck = F;}
 	}
 	

@@ -194,6 +194,9 @@ public abstract class TileEntityBase10MultiBlockBase extends TileEntityBase09Fac
 	
 	@Override
 	public ITexture getTexture2(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
+		return getBaseTexture(aSide, aShouldSideBeRendered);
+	}
+	public final ITexture getBaseTexture(byte aSide, boolean[] aShouldSideBeRendered) {
 		return aShouldSideBeRendered[aSide] ? BlockTextureMulti.get(BlockTextureDefault.get((aSide==mFacing?mTexturesFront:mTextures)[FACES_TBS[aSide]], mRGBa), BlockTextureDefault.get((aSide==mFacing?mTexturesFront:mTextures)[FACES_TBS[aSide]+3])) : null;
 	}
 	

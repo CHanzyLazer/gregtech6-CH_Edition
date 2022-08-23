@@ -25,8 +25,8 @@ import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.tileentity.machines.ITileEntityAdjacentOnOff;
 import gregapi.tileentity.multiblocks.TileEntityBase10MultiBlockMachine;
 import gregapi.util.WD;
-import gregtechCH.tileentity.cores.MTEC_MultiBlockCrusher;
-import gregtechCH.tileentity.cores.MTEC_MultiblockMachine;
+import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockCrusher;
+import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockMachine;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.tileentity.TileEntity;
 
@@ -36,7 +36,7 @@ import static gregapi.data.CS.*;
  * @author Gregorius Techneticies
  */
 public class MultiTileEntityCrusher extends TileEntityBase10MultiBlockMachine {
-	@Override protected MTEC_MultiblockMachine getNewCoreMultiBlock() {return new MTEC_MultiBlockCrusher(this);}
+	@Override protected MTEC_MultiBlockMachine getNewCoreMultiBlock() {return new MTEC_MultiBlockCrusher(this);}
 	
 	@Override
 	public void updateAdjacentToggleableEnergySources() {

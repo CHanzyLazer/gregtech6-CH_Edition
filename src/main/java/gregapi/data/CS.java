@@ -1396,7 +1396,7 @@ public class CS {
 		public static long trash(IFluidTank[] aTanks) {
 			if (aTanks == null) return 0;
 			long rTrashed = 0;
-			for (int i = 0; i < aTanks.length; i++) rTrashed += trash(aTanks[i]);
+			for (IFluidTank aTank : aTanks) rTrashed += trash(aTank);
 			return rTrashed;
 		}
 		public static long trash(IFluidTank[] aTanks, int aIndex) {
@@ -1406,7 +1406,7 @@ public class CS {
 		public static long trash(FluidStack[] aFluids) {
 			if (aFluids == null) return 0;
 			long rTrashed = 0;
-			for (int i = 0; i < aFluids.length; i++) rTrashed += trash(aFluids[i]);
+			for (FluidStack aFluid : aFluids) rTrashed += trash(aFluid);
 			return rTrashed;
 		}
 		public static long trash(FluidStack[] aFluids, int aIndex) {

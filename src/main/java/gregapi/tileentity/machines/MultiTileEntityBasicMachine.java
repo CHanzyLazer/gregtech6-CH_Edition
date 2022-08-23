@@ -51,10 +51,10 @@ import gregtechCH.tileentity.connectors.ITEInterceptAutoConnectFluid_CH;
 import gregtechCH.tileentity.connectors.ITEInterceptAutoConnectItem_CH;
 import gregtechCH.tileentity.connectors.ITEInterceptModConnectFluid_CH;
 import gregtechCH.tileentity.connectors.ITEInterceptModConnectItem_CH;
-import gregtechCH.tileentity.cores.IMTEC_BasicMachine;
+import gregtechCH.tileentity.cores.basicmachines.IMTEC_BasicMachine;
 import gregtechCH.tileentity.cores.IMTEC_ToolTips;
-import gregtechCH.tileentity.cores.MTEC_BasicMachine_Greg;
-import gregtechCH.tileentity.cores.MTEC_BasicMachine;
+import gregtechCH.tileentity.cores.basicmachines.MTEC_BasicMachine_Greg;
+import gregtechCH.tileentity.cores.basicmachines.MTEC_BasicMachine;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -120,6 +120,8 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 	
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {
+		// GTCH, core init
+		if (mCore == null) mCore = new MTEC_BasicMachine(this);
 		super.readFromNBT2(aNBT);
 
 		mGUITexture = mRecipes.mGUIPath;
@@ -228,7 +230,6 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 		updateAccessibleSlots();
 
 		// GTCH, core init
-		mCore = new MTEC_BasicMachine(this);
 		mCore.readFromNBT(aNBT);
 	}
 	
@@ -278,7 +279,7 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 	}
 
 	// tooltips
-	@Override public final void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {IMTEC_ToolTips.Util.addToolTips(this, aList, aStack, aF3_H);}
+	@Override public final void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {IMTEC_ToolTips.Util.addToolTips(this, aList, aStack, aF3_H); super.addToolTips(aList, aStack, aF3_H);}
 	// 这种写法可以既让子类实体可以用额外的 core 来重写 tooltips，又可以让 core 的重写来补充 tooltips
 	@Override public void toolTipsMultiblock(List<String> aList) {mCore.toolTipsMultiblock(aList);}
 	@Override public void toolTipsRecipe(List<String> aList) {mCore.toolTipsRecipe(aList);}
@@ -286,7 +287,7 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 	@Override public void toolTipsUseful(List<String> aList) {mCore.toolTipsUseful(aList);}
 	@Override public void toolTipsImportant(List<String> aList) {mCore.toolTipsImportant(aList);}
 	@Override public void toolTipsHazard(List<String> aList) {mCore.toolTipsHazard(aList);}
-	@Override public void toolTipsOther(List<String> aList, ItemStack aStack, boolean aF3_H) {mCore.toolTipsOther(aList, aStack, aF3_H); super.addToolTips(aList, aStack, aF3_H);}
+	@Override public void toolTipsOther(List<String> aList, ItemStack aStack, boolean aF3_H) {mCore.toolTipsOther(aList, aStack, aF3_H);}
 	@Override public void addToolTipsSided(List<String> aList, ItemStack aStack, boolean aF3_H) {mCore.addToolTipsSided(aList, aStack, aF3_H);}
 
 
@@ -503,9 +504,9 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 	public IFluidTank getFluidTankFillable2(byte aSide, FluidStack aFluidToFill) {
 		if (!mDisabledFluidOutput && SIDES_VALID[mFluidAutoOutput] && FACING_TO_SIDE[mFacing][mFluidAutoOutput] == aSide) return null;
 		if (!FACE_CONNECTED[FACING_ROTATIONS[mFacing][aSide]][mFluidInputs]) return null;
-		for (int i = 0; i < mTanksInput.length; i++) if (mTanksInput[i].contains(aFluidToFill)) return mTanksInput[i];
+		for (FluidTankGT fluidTankGT : mTanksInput) if (fluidTankGT.contains(aFluidToFill)) return fluidTankGT;
 		if (!mRecipes.containsInput(aFluidToFill, this, slot(mRecipes.mInputItemsCount + mRecipes.mOutputItemsCount))) return null;
-		for (int i = 0; i < mTanksInput.length; i++) if (mTanksInput[i].isEmpty()) return mTanksInput[i];
+		for (FluidTankGT fluidTankGT : mTanksInput) if (fluidTankGT.isEmpty()) return fluidTankGT;
 		return null;
 	}
 	

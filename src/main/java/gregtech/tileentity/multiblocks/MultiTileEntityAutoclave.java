@@ -20,14 +20,14 @@
 package gregtech.tileentity.multiblocks;
 
 import gregapi.tileentity.multiblocks.TileEntityBase10MultiBlockMachine;
-import gregtechCH.tileentity.cores.MTEC_MultiBlockAutoclave;
-import gregtechCH.tileentity.cores.MTEC_MultiblockMachine;
+import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockAutoclave;
+import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockMachine;
 
 /**
  * @author Gregorius Techneticies
  */
 public class MultiTileEntityAutoclave extends TileEntityBase10MultiBlockMachine {
-	@Override protected MTEC_MultiblockMachine getNewCoreMultiBlock() {return new MTEC_MultiBlockAutoclave(this);}
+	@Override protected MTEC_MultiBlockMachine getNewCoreMultiBlock() {return new MTEC_MultiBlockAutoclave(this);}
 
 	@Override public String getTileEntityName() {return "gt.multitileentity.multiblock.autoclave";}
 }

@@ -87,6 +87,7 @@ public class MultiTileEntityChest extends TileEntityBase05Inventories implements
 	protected int mRGBPaint = UNCOLORED;
 	// 仅客户端有效
 	protected int mRGBa = UNCOLORED;
+	@Override public int getRGBa() {return mRGBa;}
 
 	protected byte mFacing = 3, mUsingPlayers = 0, oUsingPlayers = 0;
 	protected float mLidAngle = 0, oLidAngle = 0, mHardness = 6, mResistance = 3;

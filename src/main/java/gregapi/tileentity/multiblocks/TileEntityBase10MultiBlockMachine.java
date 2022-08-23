@@ -28,7 +28,7 @@ import gregapi.data.TD;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.tileentity.machines.MultiTileEntityBasicMachine;
 import gregapi.util.UT;
-import gregtechCH.tileentity.cores.MTEC_MultiblockMachine;
+import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockMachine;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -48,7 +48,7 @@ import net.minecraftforge.fluids.IFluidTank;
  */
 public abstract class TileEntityBase10MultiBlockMachine extends MultiTileEntityBasicMachine implements IMultiBlockFluidHandler, IMultiBlockInventory, IMultiBlockEnergy {
 	public boolean mStructureChanged = F;
-	protected MTEC_MultiblockMachine mCoreMultiBlock;
+	protected MTEC_MultiBlockMachine mCoreMultiBlock;
 
 	// 用 private 封装防止意料外的修改
 	private boolean mStructureOkay = F;
@@ -72,7 +72,7 @@ public abstract class TileEntityBase10MultiBlockMachine extends MultiTileEntityB
 		mCoreMultiBlock = getNewCoreMultiBlock();
 	}
 	// 用于子类重写
-	protected abstract MTEC_MultiblockMachine getNewCoreMultiBlock();
+	protected abstract MTEC_MultiBlockMachine getNewCoreMultiBlock();
 	
 	@Override
 	public void writeToNBT2(NBTTagCompound aNBT) {

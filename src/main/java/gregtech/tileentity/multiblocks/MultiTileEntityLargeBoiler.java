@@ -43,6 +43,9 @@ import gregapi.tileentity.multiblocks.ITileEntityMultiBlockController;
 import gregapi.tileentity.multiblocks.MultiTileEntityMultiBlockPart;
 import gregapi.tileentity.multiblocks.TileEntityBase10MultiBlockBase;
 import gregtechCH.tileentity.cores.*;
+import gregtechCH.tileentity.cores.boilers.IMTEC_BoilerTank;
+import gregtechCH.tileentity.cores.boilers.MTEC_BoilerTank_Greg;
+import gregtechCH.tileentity.cores.boilers.MTEC_LargeBoilerTank;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -126,7 +129,7 @@ public class MultiTileEntityLargeBoiler extends TileEntityBase10MultiBlockBase i
 		return isStructureOkay();
 	}
 
-	@Override public final void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {IMTEC_ToolTips.Util.addToolTips(this, aList, aStack, aF3_H);}
+	@Override public final void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {IMTEC_ToolTips.Util.addToolTips(this, aList, aStack, aF3_H); super.addToolTips(aList, aStack, aF3_H);}
 	@Override public void toolTipsMultiblock(List<String> aList) {
 		aList.add(Chat.CYAN     + LH.get(LH.STRUCTURE) + ":");
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.largeboiler.1"));
@@ -140,7 +143,7 @@ public class MultiTileEntityLargeBoiler extends TileEntityBase10MultiBlockBase i
 	@Override public void toolTipsUseful(List<String> aList) {mCore.toolTipsUseful(aList);}
 	@Override public void toolTipsImportant(List<String> aList) {mCore.toolTipsImportant(aList);}
 	@Override public void toolTipsHazard(List<String> aList) {mCore.toolTipsHazard(aList);}
-	@Override public void toolTipsOther(List<String> aList, ItemStack aStack, boolean aF3_H) {mCore.toolTipsOther(aList, aStack, aF3_H); super.addToolTips(aList, aStack, aF3_H);}
+	@Override public void toolTipsOther(List<String> aList, ItemStack aStack, boolean aF3_H) {mCore.toolTipsOther(aList, aStack, aF3_H);}
 
 
 	@Override

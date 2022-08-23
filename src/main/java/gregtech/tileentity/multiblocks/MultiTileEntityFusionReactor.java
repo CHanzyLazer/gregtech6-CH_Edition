@@ -22,8 +22,8 @@ package gregtech.tileentity.multiblocks;
 import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.tileentity.multiblocks.TileEntityBase10MultiBlockMachine;
 import gregapi.util.WD;
-import gregtechCH.tileentity.cores.MTEC_MultiBlockFusionReactor;
-import gregtechCH.tileentity.cores.MTEC_MultiblockMachine;
+import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockFusionReactor;
+import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockMachine;
 
 import static gregapi.data.CS.*;
 
@@ -31,7 +31,7 @@ import static gregapi.data.CS.*;
  * @author Gregorius Techneticies
  */
 public class MultiTileEntityFusionReactor extends TileEntityBase10MultiBlockMachine {
-	@Override protected MTEC_MultiblockMachine getNewCoreMultiBlock() {return new MTEC_MultiBlockFusionReactor(this);}
+	@Override protected MTEC_MultiBlockMachine getNewCoreMultiBlock() {return new MTEC_MultiBlockFusionReactor(this);}
 	
 	@Override
 	public void doOutputEnergy() {

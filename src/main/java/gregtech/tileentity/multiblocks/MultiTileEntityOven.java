@@ -19,29 +19,15 @@
 
 package gregtech.tileentity.multiblocks;
 
-import static gregapi.data.CS.*;
-
-import java.util.List;
-
-import gregapi.data.LH;
-import gregapi.data.LH.Chat;
-import gregapi.tileentity.delegate.DelegatorTileEntity;
-import gregapi.tileentity.multiblocks.ITileEntityMultiBlockController;
-import gregapi.tileentity.multiblocks.MultiTileEntityMultiBlockPart;
 import gregapi.tileentity.multiblocks.TileEntityBase10MultiBlockMachine;
-import gregtechCH.tileentity.cores.MTEC_MultiBlockAutoclave;
-import gregtechCH.tileentity.cores.MTEC_MultiBlockOven;
-import gregtechCH.tileentity.cores.MTEC_MultiblockMachine;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.IFluidHandler;
+import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockOven;
+import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockMachine;
 
 /**
  * @author Gregorius Techneticies
  */
 public class MultiTileEntityOven extends TileEntityBase10MultiBlockMachine {
-	@Override protected MTEC_MultiblockMachine getNewCoreMultiBlock() {return new MTEC_MultiBlockOven(this);}
+	@Override protected MTEC_MultiBlockMachine getNewCoreMultiBlock() {return new MTEC_MultiBlockOven(this);}
 	
 	@Override public String getTileEntityName() {return "gt.multitileentity.multiblock.oven";}
 }

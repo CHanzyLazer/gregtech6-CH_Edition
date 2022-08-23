@@ -22,14 +22,14 @@ package gregtech.tileentity.multiblocks;
 import gregapi.data.CS.SFX;
 import gregapi.tileentity.multiblocks.TileEntityBase10MultiBlockMachine;
 import gregapi.util.UT;
-import gregtechCH.tileentity.cores.MTEC_MultiBlockImplosionCompressor;
-import gregtechCH.tileentity.cores.MTEC_MultiblockMachine;
+import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockImplosionCompressor;
+import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockMachine;
 
 /**
  * @author Gregorius Techneticies
  */
 public class MultiTileEntityImplosionCompressor extends TileEntityBase10MultiBlockMachine {
-	@Override protected MTEC_MultiblockMachine getNewCoreMultiBlock() {return new MTEC_MultiBlockImplosionCompressor(this);}
+	@Override protected MTEC_MultiBlockMachine getNewCoreMultiBlock() {return new MTEC_MultiBlockImplosionCompressor(this);}
 	
 	@Override public void onProcessStarted() {UT.Sounds.send(SFX.MC_EXPLODE, this); super.onProcessStarted();}
 	

@@ -42,11 +42,12 @@ import net.minecraft.world.World;
  * @author Gregorius Techneticies
  */
 public abstract class TileEntityBase09FacingSingle extends TileEntityBase08Directional implements IMTE_OnPlaced, IMTE_AddToolTips {
-	public byte mFacing = getDefaultSide();
+	public byte mFacing = SIDE_UP;
 	
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {
 		super.readFromNBT2(aNBT);
+		mFacing = getDefaultSide();
 		if (aNBT.hasKey(NBT_FACING)) mFacing = aNBT.getByte(NBT_FACING);
 	}
 	

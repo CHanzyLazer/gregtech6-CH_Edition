@@ -1,6 +1,7 @@
 package gregtechCH.tileentity;
 
 public interface ITEPaintable_CH {
+    int getRGBa();
     int getBottomRGB();
     int getOriginalRGB();
 

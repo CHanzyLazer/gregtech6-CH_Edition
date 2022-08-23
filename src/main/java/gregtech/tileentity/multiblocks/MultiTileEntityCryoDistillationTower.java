@@ -29,8 +29,8 @@ import gregapi.tileentity.machines.ITileEntityAdjacentOnOff;
 import gregapi.tileentity.multiblocks.TileEntityBase10MultiBlockMachine;
 import gregapi.util.ST;
 import gregapi.util.WD;
-import gregtechCH.tileentity.cores.MTEC_MultiBlockCryoDistillationTower;
-import gregtechCH.tileentity.cores.MTEC_MultiblockMachine;
+import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockCryoDistillationTower;
+import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockMachine;
 import gregtechCH.tileentity.multiblocks.IDistillationTower;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -44,7 +44,7 @@ import static gregapi.data.CS.*;
  * @author Gregorius Techneticies
  */
 public class MultiTileEntityCryoDistillationTower extends TileEntityBase10MultiBlockMachine implements IDistillationTower {
-	@Override protected MTEC_MultiblockMachine getNewCoreMultiBlock() {return new MTEC_MultiBlockCryoDistillationTower(this);}
+	@Override protected MTEC_MultiBlockMachine getNewCoreMultiBlock() {return new MTEC_MultiBlockCryoDistillationTower(this);}
 	
 	@Override
 	public void addToolTipsSided(List<String> aList, ItemStack aStack, boolean aF3_H) {

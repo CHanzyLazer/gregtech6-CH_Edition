@@ -145,7 +145,7 @@ public abstract class MTEC_MotorMainBase implements IMTEC_MotorTick {
         if (ConfigForge_CH.DATA_MACHINES.motorExplodeCheck && (aTimer % 600 == 5) && (mActive || mPreheat)) mCore.mTE.doDefaultStructuralChecks();
     }
 
-    protected long getRealEfficiency() {return mEfficiency;}
+    protected abstract long getRealEfficiency();
 
     // tanks
     public IFluidTank getFluidTankFillable(byte aSide, FluidStack aFluidToFill) {return null;}

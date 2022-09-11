@@ -185,6 +185,7 @@ public class MTEC_MotorMainFluidBurner extends MTEC_MotorMainBase {
     }
 
     // 重复的接口消除
+    @Override protected long getRealEfficiency() {return UT.Code.units(10000, mInRate, mRate, F);}
     @Override public IFluidTank getFluidTankFillable(byte aSide, FluidStack aFluidToFill) {return mRecipes.containsInput(aFluidToFill, mCore.mTE, NI) ? mTankFluid : null;}
     @Override public IFluidTank getFluidTankDrainable(byte aSide, FluidStack aFluidToDrain) {return mCTanks.getFluidTankDrainable(aSide, aFluidToDrain);}
     @Override public IFluidTank[] getFluidTanks(byte aSide) {return mCTanks.getFluidTanks(aSide);}

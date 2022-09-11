@@ -32,8 +32,6 @@ public class MTEC_MotorMainSteam extends MTEC_MotorMainBase {
     protected short mEfficiencyWater = 8000;
     protected short mEfficiencyOverclock = 5000;
 
-    protected long mOutputConvert = 0;
-
     protected static final byte COOLDOWN_NUM = 16;
     protected byte mCooldownCounter = 0; // 注意默认是停止工作的
 
@@ -95,7 +93,7 @@ public class MTEC_MotorMainSteam extends MTEC_MotorMainBase {
                     if (mEnergy < mPEnergy - mInRate * 2) {
                         convert(mInRate * 2, mRate * 2, F);
                     } else {
-                        convert_(tSteam, F);
+                        convert_(Math.min(tSteam, mInRate * 2), F);
                     }
                 } else {
                     // 运行状态下不积攒蒸汽，回到原本的两种情况
@@ -177,7 +175,7 @@ public class MTEC_MotorMainSteam extends MTEC_MotorMainBase {
 
     // 重复的接口实现消除
     public void toolTipsUseful(List<String> aList) {aList.add(LH.Chat.YELLOW + LH_CH.get(LH_CH.OVERCLOCK_GENERATOR) + " (" + LH_CH.getToolTipEfficiencySimple(mEfficiencyOverclock) + ")");}
-    @Override public long getRealEfficiency() {return UT.Code.units(mEfficiency, mOutputConvert, mOutput, F);}
+    @Override public long getRealEfficiency() {return UT.Code.units(10000 * STEAM_PER_EU, mInputSU, mOutput, F);}
     @Override public IFluidTank getFluidTankFillable(byte aSide, FluidStack aFluidToFill) {return !mCore.mD.mStopped && FL.steam(aFluidToFill) ? mTankSteam : null;}
     @Override public IFluidTank getFluidTankDrainable(byte aSide, FluidStack aFluidToDrain) {return mCTanks.getFluidTankDrainable(aSide, aFluidToDrain);}
     @Override public IFluidTank[] getFluidTanks(byte aSide) {return mCTanks.getFluidTanks(aSide);}

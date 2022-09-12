@@ -207,6 +207,8 @@ public class MTEC_MultiBlockMotorBase {
         setCoorByOrder(tEndXYZ, mEndIJK);
         if (mCore.mTE.getWorldObj().blockExists(tXYZ[0], tXYZ[1], tXYZ[2]) && (mPLength==0 || (mCore.mTE.getWorldObj().blockExists(tEndXYZ[0], tEndXYZ[1], tEndXYZ[2])))) {
             mLength = getStructureLength(START_IJK, mEndIJK);
+            // 如果在运行，则不会增加长度
+            if (mCore.mD.mEnergy > 0) mLength = Math.min(mLength, mPLength);
             boolean tSuccess;
             if (mLength >= mMinLength) {
                 tSuccess = T;
@@ -235,6 +237,7 @@ public class MTEC_MultiBlockMotorBase {
         stopByLength();
         setOutRateFromLength();
         setInRateFromLength();
+        mCore.postInitTank(); // 需要重置容器的容量
     }
     protected boolean checkExplodeByLength() {
         return (ConfigForge_CH.DATA_MACHINES.motorExplodeByLength && (UT.Code.units(mCore.mD.mEnergy, mCore.mD.mPEnergy, 16, F) > 4));

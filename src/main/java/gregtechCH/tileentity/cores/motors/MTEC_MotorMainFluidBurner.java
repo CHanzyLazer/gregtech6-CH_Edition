@@ -73,8 +73,8 @@ public class MTEC_MotorMainFluidBurner extends MTEC_MotorMainBase {
 
     // 每 tick 转换，统一采用燃气涡轮的逻辑
     protected boolean isTankOutputFull() {
-        if (mCTanks.mTanksInput.length == 0) return T;
-        for (FluidTankGT tTank : mCTanks.mTanksInput) if (tTank.isHalf()) return T;
+        if (mCTanks.mTanksOutput.length == 0) return T;
+        for (FluidTankGT tTank : mCTanks.mTanksOutput) if (tTank.isHalf()) return T;
         return F;
     }
     @Override
@@ -92,7 +92,7 @@ public class MTEC_MotorMainFluidBurner extends MTEC_MotorMainBase {
                     int tParallel = tRecipe.isRecipeInputEqual(tMax, mCTanks.mTanksInput, ZL_IS);
                     if (tParallel > 0) {
                         mEnergyHU += tParallel * tRecipeEnergy;
-                        for (int i = 0; i < tRecipe.mFluidOutputs.length; i++) {
+                        for (int i = 0; i < tRecipe.mFluidOutputs.length; ++i) {
                             // 填充废气，并且判断是否填充成功
                             if (i >= mCTanks.mTanksOutput.length || !mCTanks.mTanksOutput[i].fillAll(tRecipe.mFluidOutputs[i], tParallel)) {
                                 // 废气清空速度不够，停止燃烧（主要是种类检测）

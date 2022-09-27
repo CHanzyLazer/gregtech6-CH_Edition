@@ -28,18 +28,18 @@ public class ConfigForge_CH {
         public static boolean enableChangeMachineMachines4;
         public static boolean enableChangeMachineKinetic;
         public static boolean enableChangeMachineSensors;
-
+        
         public static boolean sneakingMountCover;
         public static boolean itemNBTSensor;
-
+        
         public static boolean disableAllStoragePowerconducting;
-
+        
         public static float markRatio;
         public static float mixBaseRatio;
         public static float mixPaintRatio;
-
+        
         public static boolean disableGTBlockLightOpacity;
-
+        
         public static boolean disableGTRerender;
         public static boolean rerenderAll;
         public static int rerenderMainTick;
@@ -53,17 +53,15 @@ public class ConfigForge_CH {
         public static int rerenderAroundLength;
     }
     public static class DATA_MACHINES {
-        public static boolean enableChangeRotation;
-
         public static boolean motorExplodeCheck;
         public static boolean motorExplodeByLength;
     }
-
+    
     public static class DATA_REACTORS {
         public static int adjustCoolantOtherDiv;
         public static int adjustCoolantOtherMul;
     }
-
+    
     public static void initFile() {
         DirectoriesGTCH.CONFIG_GTCH = new File(DirectoriesGT.CONFIG, "GregTechCH");
         if (!DirectoriesGTCH.CONFIG_GTCH.exists()) DirectoriesGTCH.CONFIG_GTCH = new File(DirectoriesGT.CONFIG, "gregtechCH");
@@ -72,7 +70,7 @@ public class ConfigForge_CH {
         ConfigsGTCH.REACTORS    = new Config(DirectoriesGTCH.CONFIG_GTCH, "Reactors.cfg");
         ConfigsGTCH.MACHINES    = new Config(DirectoriesGTCH.CONFIG_GTCH, "Machines.cfg");
         ConfigsGTCH.GTCH        = new Config(DirectoriesGTCH.CONFIG_GTCH, "GTCH.cfg");
-
+        
         DATA_GTCH.enableChangeMachineUnsorted1 = ConfigsGTCH.GTCH.get(ConfigCategories_CH.general_CH, "enableChange_machine_unsorted1_(gt6_false)",  T);
         DATA_GTCH.enableChangeMachineUnsorted2 = ConfigsGTCH.GTCH.get(ConfigCategories_CH.general_CH, "enableChange_machine_unsorted2_(gt6_false)",  T);
         DATA_GTCH.enableChangeMachineMultiblocks = ConfigsGTCH.GTCH.get(ConfigCategories_CH.general_CH, "enableChange_machine_multiblocks_(gt6_false)", T);
@@ -82,18 +80,18 @@ public class ConfigForge_CH {
         DATA_GTCH.enableChangeMachineMachines4 = ConfigsGTCH.GTCH.get(ConfigCategories_CH.general_CH, "enableChange_machine_machines4_(gt6_false)", T);
         DATA_GTCH.enableChangeMachineKinetic = ConfigsGTCH.GTCH.get(ConfigCategories_CH.general_CH, "enableChange_machine_kinetic_(gt6_false)", T);
         DATA_GTCH.enableChangeMachineSensors = ConfigsGTCH.GTCH.get(ConfigCategories_CH.general_CH, "enableChange_machine_sensors_(gt6_false)", T);
-
+        
         DATA_GTCH.sneakingMountCover = ConfigsGTCH.GTCH.get(ConfigCategories_CH.general_CH, "sneaking_mount_cover_(gt6_false)", T);
         DATA_GTCH.itemNBTSensor = ConfigsGTCH.GTCH.get(ConfigCategories_CH.nbt_CH, "item_nbt_sensor_(gt6_true)", F);
-
+        
         DATA_GTCH.disableAllStoragePowerconducting = ConfigsGTCH.GTCH.get(ConfigCategories_CH.fluid_CH, "disable_all_storage_powerconducting_(gt6_false)", T);
-
+        
         DATA_GTCH.markRatio = Math.min(1.0F, Math.max((float)ConfigsGTCH.GTCH.get(ConfigCategories_CH.colour_CH, "mark_ratio_(gt6_?)", 0.125), 0.0F));
         DATA_GTCH.mixBaseRatio = Math.min(1.0F, Math.max((float)ConfigsGTCH.GTCH.get(ConfigCategories_CH.colour_CH, "colour_mix_base_ratio_(gt6_0.0)", 0.5), 0.0F));
         DATA_GTCH.mixPaintRatio = Math.min(1.0F, Math.max((float)ConfigsGTCH.GTCH.get(ConfigCategories_CH.colour_CH, "colour_mix_paint_ratio_(gt6_1.0)", 0.15), 0.0F));
-
+        
         DATA_GTCH.disableGTBlockLightOpacity = isEnableAsmBlockGtLightOpacity() ? ConfigsGTCH.GTCH.get(ConfigCategories_CH.optimize_CH, "disable_GT_block_lightopacity_(gt6_?)",  F) : T; // 对于禁用了 ASM 的情况直接禁用掉 GT 方块的不透光度
-
+        
         DATA_GTCH.disableGTRerender         = ConfigsGTCH.GTCH.get(ConfigCategories_CH.optimize_CH, "disable_GT_rerender_(gt6_false)",  F);
         DATA_GTCH.rerenderAll               = ConfigsGTCH.GTCH.get(ConfigCategories_CH.optimize_CH, "rerender_all_(gt6_true)",  F);
         DATA_GTCH.rerenderMainTick          = UT.Code.bind7(ConfigsGTCH.GTCH.get(ConfigCategories_CH.optimize_CH, "rerender_main_tick_(gt6_?)",  2));
@@ -111,13 +109,12 @@ public class ConfigForge_CH {
         Collections.shuffle(tList); // 使用内部方法来随机打乱队列
         tList.addFirst(RerenderTick.INIT); // 保证第一个是 INIT
         DATA_GTCH.rerenderTickList = tList.toArray(new RerenderTick[0]);
-
-
-        DATA_MACHINES.enableChangeRotation = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.rotation, "enableChange_rotation_(gt6_false)", T);
+        
+        
         DATA_MACHINES.motorExplodeCheck = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.generatorMotor, "motor_explode_check_(gt6_?)", T);
         DATA_MACHINES.motorExplodeByLength = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.generatorMotor, "motor_explode_by_length_(gt6_false)", T);
-
-
+        
+        
         DATA_REACTORS.adjustCoolantOtherDiv = ConfigsGTCH.REACTORS.get(ConfigCategories_CH.Reactors.adjustemission, "adjust_coolant_other_div_(gt6_1)", 8);
         DATA_REACTORS.adjustCoolantOtherMul = ConfigsGTCH.REACTORS.get(ConfigCategories_CH.Reactors.adjustemission, "adjust_coolant_other_mul_(gt6_1)", 3);
     }

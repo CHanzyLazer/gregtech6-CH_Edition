@@ -41,7 +41,6 @@ import gregtechCH.config.machine.multiblock.AttributesLargeBoilerTank_CH;
 import gregtechCH.config.machine.multiblock.AttributesLargeGasTurbine_CH;
 import gregtechCH.config.machine.multiblock.AttributesLargeSteamTurbine_CH;
 import gregtechCH.config.machine.steam.*;
-import gregtechCH.tileentity.energy.transformers.MultiTileEntityTransformerRotation_CH;
 import gregtechCH.tileentity.multiblocks.*;
 import gregtechCH.tileentity.sensors.*;
 import net.minecraft.block.Block;
@@ -1237,7 +1236,7 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities implem
                     ENGINE_ROTATION.recipeObject);
         }
         // Transformer rotations
-        aClass = enableChangeRotation ? MultiTileEntityTransformerRotation_CH.class : MultiTileEntityTransformerRotation.class;
+        aClass = MultiTileEntityTransformerRotation.class;
         for (AttributesTransformerRotationWood_CH TRANSFORMER : DATA_MACHINES_KINETIC.TransformerRotationWood) {
             aMat = TRANSFORMER.material;
             aRegistry.add("Wooden Transformer Gearbox", "Axles and Gearboxes", TRANSFORMER.ID, 24819, aClass, aMat.mToolQuality, TRANSFORMER.stackSize, aWooden ,

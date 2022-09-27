@@ -24,6 +24,8 @@ import static gregapi.data.CS.*;
 import java.util.Collection;
 import java.util.List;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetComparatorInputOverride;
 import gregapi.code.TagData;
 import gregapi.data.LH;
@@ -238,6 +240,8 @@ public class MultiTileEntityWireRedstoneInsulated extends TileEntityBase10Connec
 
 	// GTCH, 返回绝缘层的颜色为原本颜色
 	@Override public int getBottomRGB() {return UT.Code.getRGBInt(96, 64, 64);}
+	// GTCH, 绝缘时返回绝缘层颜色
+	@SideOnly(Side.CLIENT) @Override protected int colorMultiplier2() {return isPainted()?mRGBa: getBottomRGB();}
 
 	@Override public ITexture getTextureSide                (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {return BlockTextureDefault.get(Textures.BlockIcons.INSULATION_FULL, isPainted()?mRGBa: getBottomRGB());}
 	@Override public ITexture getTextureConnected           (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {return BlockTextureMulti.get(BlockTextureDefault.get(mMaterial, getIconIndexConnected(aSide, aConnections, aDiameter, aRenderPass), getState()>0, worldObj==null?getRedstoneRGB():(getState()>0?mRGBaRedstoneON:mRGBaRedstoneOFF)), BlockTextureDefault.get(aDiameter<0.37F?Textures.BlockIcons.INSULATION_TINY:aDiameter<0.49F?Textures.BlockIcons.INSULATION_SMALL:aDiameter<0.74F?Textures.BlockIcons.INSULATION_MEDIUM:aDiameter<0.99F?Textures.BlockIcons.INSULATION_LARGE:Textures.BlockIcons.INSULATION_HUGE, isPainted()?mRGBa: getBottomRGB()));}

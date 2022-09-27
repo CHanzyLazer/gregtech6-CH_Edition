@@ -465,11 +465,14 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 		if (mDiameter > 0.5F) return LIGHT_OPACITY_WATER;
 		return LIGHT_OPACITY_LEAVES;
 	}
-	// 对于套上建筑泡沫的情况需要使用建筑泡沫的颜色作为粒子效果
-	@SideOnly(Side.CLIENT) @Override public int colorMultiplier() {
-		if (mFoam || mFoamDried) return mRGBaFoam;
-		return super.colorMultiplier();
-	}
+    // 对于套上建筑泡沫的情况需要使用建筑泡沫的颜色作为粒子效果
+    @SideOnly(Side.CLIENT) @Override public final int colorMultiplier() {
+        if (mFoam || mFoamDried) return mRGBaFoam;
+        return colorMultiplier2();
+    }
+    @SideOnly(Side.CLIENT) protected int colorMultiplier2() {
+        return super.colorMultiplier();
+    }
 
 
 	@Override public boolean ignorePlayerCollisionWhenPlacing(ItemStack aStack, EntityPlayer aPlayer, World aWorld, int aX, int aY, int aZ, byte aSide, float aHitX, float aHitY, float aHitZ) {return !mFoam && mDiameter < 1.0F;}

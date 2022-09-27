@@ -101,9 +101,9 @@ public abstract class TileEntityBase05Paintable extends TileEntityBase04Covers i
 			rList.add((byte)UT.Code.getR(mRGBPaint)); rList.add((byte)UT.Code.getG(mRGBPaint)); rList.add((byte)UT.Code.getB(mRGBPaint));
 			writeToClientDataPacketByteList(rList);
 			rList.add(getPaintData()); // 放到最后避免下标变化
-			return getClientDataPacketSendAll(T, rList);
+			return getClientDataPacketSendAll(aSendAll, rList);
 		}
-		return getClientDataPacketNoSendAll(F);
+		return getClientDataPacketNoSendAll(aSendAll);
 	}
 	// 用于重写发送数据
 	public boolean sendAny(boolean aSendAll) {return aSendAll;}

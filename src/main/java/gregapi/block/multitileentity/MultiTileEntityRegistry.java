@@ -44,6 +44,7 @@ import net.minecraftforge.client.MinecraftForgeClient;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -156,72 +157,99 @@ public class MultiTileEntityRegistry {
 		return add(F, aLocalised, aCategoricalName, aClassContainer, aRecipe);
 	}
 	
-	/** Adds a new MultiTileEntity. It is highly recommended to do this in either the PreInit or the Init Phase. PostInit might not work well.*/
+	// GTCH, 通过将 add 的项目存入 linkedHashMap 的方法来延迟 add 操作，方便魔改时对添加操作进行运行时修改并且保留对原版的更新的兼容
 	public ItemStack add(Boolean aIsGTCH, String aLocalised, String aCategoricalName, MultiTileEntityClassContainer aClassContainer, Object... aRecipe) {
-		boolean tFailed = F;
-		if (UT.Code.stringInvalid(aLocalised)) {
-			ERR.println("MTE REGISTRY ERROR: Localisation Missing!");
-			tFailed = T;
+		AddObject tAddObject = new AddObject(aIsGTCH, aLocalised, aCategoricalName, aClassContainer, aRecipe);
+		if (!mIsHoldingAdd) return tAddObject.addSelf();
+		mHoldingAdds.put(aClassContainer.mID, tAddObject); // holding 时可以避免相同 id 的情况，直接选取后添加的
+		return null; // holding 时直接返回空
+	}
+	
+	public void holdAdd() {mIsHoldingAdd = T;}
+	public void releaseAdd() {
+		mIsHoldingAdd = F;
+		for (AddObject tAddObject : mHoldingAdds.values()) tAddObject.addSelf();
+		mHoldingAdds.clear();
+	}
+	
+	private boolean mIsHoldingAdd = F;
+	private final Map<Short, AddObject> mHoldingAdds = new LinkedHashMap<>();
+	private class AddObject {
+		private final Boolean mIsGTCH;
+		private final String mLocalised;
+		private final String mCategoricalName;
+		private final MultiTileEntityClassContainer mClassContainer;
+		private Object[] mRecipe;
+		public AddObject(Boolean aIsGTCH, String aLocalised, String aCategoricalName, MultiTileEntityClassContainer aClassContainer, Object... aRecipe) {
+			mIsGTCH = aIsGTCH; mLocalised = aLocalised; mCategoricalName = aCategoricalName; mClassContainer = aClassContainer; mRecipe = aRecipe;
 		}
-		if (aClassContainer == null) {
-			ERR.println("MTE REGISTRY ERROR: Class Container is null!");
-			tFailed = T;
-		} else {
-			if (aClassContainer.mClass == null) {
-				ERR.println("MTE REGISTRY ERROR: Class inside Class Container is null!");
+		/** Adds a new MultiTileEntity. It is highly recommended to do this in either the PreInit or the Init Phase. PostInit might not work well.*/
+		public ItemStack addSelf() {
+			boolean tFailed = F;
+			if (UT.Code.stringInvalid(mLocalised)) {
+				ERR.println("MTE REGISTRY ERROR: Localisation Missing!");
 				tFailed = T;
 			}
-			if (aClassContainer.mID == W) {
-				ERR.println("MTE REGISTRY ERROR: Class Container uses Wildcard MetaData!");
+			if (mClassContainer == null) {
+				ERR.println("MTE REGISTRY ERROR: Class Container is null!");
 				tFailed = T;
+			} else {
+				if (mClassContainer.mClass == null) {
+					ERR.println("MTE REGISTRY ERROR: Class inside Class Container is null!");
+					tFailed = T;
+				}
+				if (mClassContainer.mID == W) {
+					ERR.println("MTE REGISTRY ERROR: Class Container uses Wildcard MetaData!");
+					tFailed = T;
+				}
+				if (mClassContainer.mID < 0) {
+					ERR.println("MTE REGISTRY ERROR: Class Container uses negative MetaData!");
+					tFailed = T;
+				}
+				if (mRegistry.containsKey(mClassContainer.mID)) {
+					ERR.println("MTE REGISTRY ERROR: Class Container uses occupied MetaData!");
+					tFailed = T;
+				}
 			}
-			if (aClassContainer.mID < 0) {
-				ERR.println("MTE REGISTRY ERROR: Class Container uses negative MetaData!");
-				tFailed = T;
+			if (tFailed) {
+				ERR.println("MTE REGISTRY ERROR: STACKTRACE START");
+				int i = 0; for (StackTraceElement tElement : new Exception().getStackTrace()) if (i++<5 && !tElement.getClassName().startsWith("sun")) ERR.println("\tat " + tElement); else break;
+				ERR.println("MTE REGISTRY ERROR: STACKTRACE END");
+				return null;
 			}
-			if (mRegistry.containsKey(aClassContainer.mID)) {
-				ERR.println("MTE REGISTRY ERROR: Class Container uses occupied MetaData!");
-				tFailed = T;
+			assert mClassContainer != null;
+			if (mIsGTCH) LH_CH.add(mNameInternal+"."+mClassContainer.mID+".name", mLocalised);
+			else LH.add(mNameInternal+"."+mClassContainer.mID+".name", mLocalised);
+			mRegistry.put(mClassContainer.mID, mClassContainer);
+			mLastRegisteredID = mClassContainer.mID;
+			mRegistrations.add(mClassContainer);
+			if (!mCreativeTabs.containsKey(mClassContainer.mCreativeTabID)) mCreativeTabs.put(mClassContainer.mCreativeTabID, new CreativeTab(mNameInternal+"."+mClassContainer.mCreativeTabID, mCategoricalName, Item.getItemFromBlock(mBlock), mClassContainer.mCreativeTabID));
+			if (sRegisteredTileEntities.add(mClassContainer.mCanonicalTileEntity.getClass())) {
+				if (mClassContainer.mCanonicalTileEntity instanceof IMTE_OnRegistrationFirst) ((IMTE_OnRegistrationFirst)mClassContainer.mCanonicalTileEntity).onRegistrationFirst(MultiTileEntityRegistry.this, mClassContainer.mID);
+				if (CODE_CLIENT && mClassContainer.mCanonicalTileEntity instanceof IMTE_OnRegistrationFirstClient) ((IMTE_OnRegistrationFirstClient)mClassContainer.mCanonicalTileEntity).onRegistrationFirstClient(MultiTileEntityRegistry.this, mClassContainer.mID);
 			}
+			if (mRegisteredTileEntities.add(mClassContainer.mCanonicalTileEntity.getClass())) {
+				if (mClassContainer.mCanonicalTileEntity instanceof IMTE_OnRegistrationFirstOfRegister) ((IMTE_OnRegistrationFirstOfRegister)mClassContainer.mCanonicalTileEntity).onRegistrationFirstOfRegister(MultiTileEntityRegistry.this, mClassContainer.mID);
+				if (mClassContainer.mCanonicalTileEntity instanceof IMTE_OnRegistrationFirstOfRegisterClient) ((IMTE_OnRegistrationFirstOfRegisterClient)mClassContainer.mCanonicalTileEntity).onRegistrationFirstOfRegisterClient(MultiTileEntityRegistry.this, mClassContainer.mID);
+			}
+			if (mClassContainer.mCanonicalTileEntity instanceof IMTE_OnRegistration) {
+				((IMTE_OnRegistration)mClassContainer.mCanonicalTileEntity).onRegistration(MultiTileEntityRegistry.this, mClassContainer.mID);
+			}
+			if (CODE_CLIENT && mClassContainer.mCanonicalTileEntity instanceof IMTE_OnRegistrationClient) {
+				((IMTE_OnRegistrationClient)mClassContainer.mCanonicalTileEntity).onRegistrationClient(MultiTileEntityRegistry.this, mClassContainer.mID);
+			}
+			if (mRecipe != null && mRecipe.length > 1) {
+				if (mRecipe[0] instanceof Object[]) mRecipe = (Object[])mRecipe[0];
+				if (mRecipe.length > 2) CR.shaped(getItem(mClassContainer.mID), CR.DEF_REV_NCC, mRecipe);
+			}
+			// A simple special case to make it easier to add a Machine to Recipe Lists without having to worry about anything.
+			String
+			tRecipeMapName = mClassContainer.mParameters.getString(NBT_RECIPEMAP);
+			if (UT.Code.stringValid(tRecipeMapName)) {RecipeMap tMap = RecipeMap.RECIPE_MAPS.get(tRecipeMapName); if (tMap != null) tMap.mRecipeMachineList.add(getItem(mClassContainer.mID));}
+			tRecipeMapName = mClassContainer.mParameters.getString(NBT_FUELMAP);
+			if (UT.Code.stringValid(tRecipeMapName)) {RecipeMap tMap = RecipeMap.RECIPE_MAPS.get(tRecipeMapName); if (tMap != null) tMap.mRecipeMachineList.add(getItem(mClassContainer.mID));}
+			return getItem(mClassContainer.mID);
 		}
-		if (tFailed) {
-			ERR.println("MTE REGISTRY ERROR: STACKTRACE START");
-			int i = 0; for (StackTraceElement tElement : new Exception().getStackTrace()) if (i++<5 && !tElement.getClassName().startsWith("sun")) ERR.println("\tat " + tElement); else break;
-			ERR.println("MTE REGISTRY ERROR: STACKTRACE END");
-			return null;
-		}
-		assert aClassContainer != null;
-		if (aIsGTCH) LH_CH.add(mNameInternal+"."+aClassContainer.mID+".name", aLocalised);
-		else LH.add(mNameInternal+"."+aClassContainer.mID+".name", aLocalised);
-		mRegistry.put(aClassContainer.mID, aClassContainer);
-		mLastRegisteredID = aClassContainer.mID;
-		mRegistrations.add(aClassContainer);
-		if (!mCreativeTabs.containsKey(aClassContainer.mCreativeTabID)) mCreativeTabs.put(aClassContainer.mCreativeTabID, new CreativeTab(mNameInternal+"."+aClassContainer.mCreativeTabID, aCategoricalName, Item.getItemFromBlock(mBlock), aClassContainer.mCreativeTabID));
-		if (sRegisteredTileEntities.add(aClassContainer.mCanonicalTileEntity.getClass())) {
-			if (aClassContainer.mCanonicalTileEntity instanceof IMTE_OnRegistrationFirst) ((IMTE_OnRegistrationFirst)aClassContainer.mCanonicalTileEntity).onRegistrationFirst(this, aClassContainer.mID);
-			if (CODE_CLIENT && aClassContainer.mCanonicalTileEntity instanceof IMTE_OnRegistrationFirstClient) ((IMTE_OnRegistrationFirstClient)aClassContainer.mCanonicalTileEntity).onRegistrationFirstClient(this, aClassContainer.mID);
-		}
-		if (mRegisteredTileEntities.add(aClassContainer.mCanonicalTileEntity.getClass())) {
-			if (aClassContainer.mCanonicalTileEntity instanceof IMTE_OnRegistrationFirstOfRegister) ((IMTE_OnRegistrationFirstOfRegister)aClassContainer.mCanonicalTileEntity).onRegistrationFirstOfRegister(this, aClassContainer.mID);
-			if (aClassContainer.mCanonicalTileEntity instanceof IMTE_OnRegistrationFirstOfRegisterClient) ((IMTE_OnRegistrationFirstOfRegisterClient)aClassContainer.mCanonicalTileEntity).onRegistrationFirstOfRegisterClient(this, aClassContainer.mID);
-		}
-		if (aClassContainer.mCanonicalTileEntity instanceof IMTE_OnRegistration) {
-			((IMTE_OnRegistration)aClassContainer.mCanonicalTileEntity).onRegistration(this, aClassContainer.mID);
-		}
-		if (CODE_CLIENT && aClassContainer.mCanonicalTileEntity instanceof IMTE_OnRegistrationClient) {
-			((IMTE_OnRegistrationClient)aClassContainer.mCanonicalTileEntity).onRegistrationClient(this, aClassContainer.mID);
-		}
-		if (aRecipe != null && aRecipe.length > 1) {
-			if (aRecipe[0] instanceof Object[]) aRecipe = (Object[])aRecipe[0];
-			if (aRecipe.length > 2) CR.shaped(getItem(aClassContainer.mID), CR.DEF_REV_NCC, aRecipe);
-		}
-		// A simple special case to make it easier to add a Machine to Recipe Lists without having to worry about anything.
-		String
-		tRecipeMapName = aClassContainer.mParameters.getString(NBT_RECIPEMAP);
-		if (UT.Code.stringValid(tRecipeMapName)) {RecipeMap tMap = RecipeMap.RECIPE_MAPS.get(tRecipeMapName); if (tMap != null) tMap.mRecipeMachineList.add(getItem(aClassContainer.mID));}
-		tRecipeMapName = aClassContainer.mParameters.getString(NBT_FUELMAP);
-		if (UT.Code.stringValid(tRecipeMapName)) {RecipeMap tMap = RecipeMap.RECIPE_MAPS.get(tRecipeMapName); if (tMap != null) tMap.mRecipeMachineList.add(getItem(aClassContainer.mID));}
-		return getItem(aClassContainer.mID);
 	}
 	
 	public short mLastRegisteredID = W;

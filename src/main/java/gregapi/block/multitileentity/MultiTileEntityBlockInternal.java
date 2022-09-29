@@ -75,6 +75,7 @@ public class MultiTileEntityBlockInternal extends Block implements IBlock, IItem
 	
 	@Override
 	public void registerBlockIcons(IIconRegister aIconRegister) {
+		assert !mMultiTileEntityRegistry.isHoldingAdd();
 		for (MultiTileEntityClassContainer tClassContainer : mMultiTileEntityRegistry.mRegistry.values()) if (tClassContainer.mCanonicalTileEntity instanceof IMTE_RegisterIcons) ((IMTE_RegisterIcons)tClassContainer.mCanonicalTileEntity).registerIcons(aIconRegister);
 	}
 	

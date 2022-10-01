@@ -159,11 +159,17 @@ public class MultiTileEntityRegistry {
 	}
 	
 	// GTCH, 通过将 add 的项目存入 linkedHashMap 的方法来延迟 add 操作，方便魔改时对添加操作进行运行时修改并且保留对原版的更新的兼容
+	// 通过添加时检测 ID 是否处于替换 Map 中来进行“完美”的替换或删除
 	public ItemStack add(Boolean aIsGTCH, String aLocalised, String aCategoricalName, MultiTileEntityClassContainer aClassContainer, Object... aRecipe) {
 		AddObject tAddObject = new AddObject(aIsGTCH, aLocalised, aCategoricalName, aClassContainer, aRecipe);
 		tAddObject.checkValid(); // 无论如何都要先检测输入是否合理
 		if (!mIsHoldingAdd) return tAddObject.addSelf();
-		mHoldingAdds.put(aClassContainer.mID, tAddObject);
+		if (mReplacingAdds.containsKey(aClassContainer.mID)) {
+			tAddObject = mReplacingAdds.get(aClassContainer.mID); // 用来保证只有存在的项才会设置，而不会都变成 null
+			mReplacingAdds.remove(aClassContainer.mID); // 获取后移除
+		}
+		if (tAddObject == null) return null; // null 则被移除，直接返回 null
+		mHoldingAdds.put(aClassContainer.mID, tAddObject); // 允许一个 ID 被添加，然后移除，然后又添加这种情况。可能原本的注册有些附加操作需要排除
 		return getItem(aClassContainer.mID); // holding 时也需要能够返回合适的结果
 	}
 	
@@ -172,6 +178,12 @@ public class MultiTileEntityRegistry {
 		mIsHoldingAdd = F;
 		for (AddObject tAddObject : mHoldingAdds.values()) tAddObject.addSelf();
 		mHoldingAdds.clear();
+		// replace 条目应该已经为空，进行错误检测
+		for (Map.Entry<Short, AddObject> tEntry : mReplacingAdds.entrySet()) {
+			if (tEntry.getValue() != null) ERR.println("MTE REGISTRY ERROR: Has no ID \"" + tEntry.getKey() + "\" on replaceHolding, replace fail!");
+			else ERR.println("Has no ID \"" + tEntry.getKey() + "\" on removeHolding, remove fail!");
+		}
+		mReplacingAdds.clear();
 	}
 	public boolean isHoldingAdd() {return mIsHoldingAdd;}
 	
@@ -185,19 +197,15 @@ public class MultiTileEntityRegistry {
 	}
 	public void replaceHolding(Boolean aIsGTCH, String aLocalised, String aCategoricalName, MultiTileEntityClassContainer aClassContainer, Object... aRecipe) {
 		AddObject tAddObject = new AddObject(aIsGTCH, aLocalised, aCategoricalName, aClassContainer, aRecipe);
-		tAddObject.checkValid(T); // 无论如何都要先检测输入是否合理
-		if (!mHoldingAdds.containsKey(aClassContainer.mID)) ERR.println("MTE REGISTRY ERROR: Has no ID \"" + aClassContainer.mID + "\" on replaceHolding, the MTE \"" + aLocalised +  "\" will be put at the end!");
-		mHoldingAdds.put(aClassContainer.mID, tAddObject);
+		tAddObject.checkValid(); // 无论如何都要先检测输入是否合理
+		if (mReplacingAdds.containsKey(aClassContainer.mID)) ERR.println("MTE REGISTRY WARNING: The ID \"" + aClassContainer.mID + "\" is already on the replace list, the MTE \"" + aLocalised +  "\" will override it.");
+		mReplacingAdds.put(aClassContainer.mID, tAddObject);
 	}
-	// 删除指定条目，比较危险的操作，需要清楚删除的物品是否被使用
+	// 删除指定条目
 	public void removeHolding(int aID) {
-		// 移除输出此物品的合成表
-		CR.delate(getItem(aID));
-		// TODO 移除输入涉及的合成表
-		// TODO 移除 greg 机器的合成表
-		if (mHoldingAdds.remove((Short)(short)aID) == null) ERR.println("Has no ID \"" + aID + "\" on removeHolding, remove fail!");
+		mReplacingAdds.put((short)aID, null);
 	}
-	// 在指定位置之前添加条目（添加项默认是 gtch） TODO 添加项要移到新的注册表中来永久避免可能的 id 冲突
+	// 在指定位置之前添加条目（添加项默认是 gtch）
 	public void appendHoldingBefore(int aBeforeID, String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
 		appendHoldingBefore(aBeforeID, T, aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
 	}
@@ -209,7 +217,7 @@ public class MultiTileEntityRegistry {
 		tAddObject.checkValid(); // 无论如何都要先检测输入是否合理
 		int tIdx = mHoldingAdds.indexOf((short)aBeforeID);
 		if (tIdx == -1) {
-			ERR.println("MTE REGISTRY ERROR: Has no ID \"" + aBeforeID + "\" on appendHolding, the MTE \"" + aLocalised +  "\" will be put at the end!");
+			ERR.println("MTE REGISTRY WARNING: Has no ID \"" + aBeforeID + "\" on appendHolding, the MTE \"" + aLocalised +  "\" will be put at the end!");
 			mHoldingAdds.put(aClassContainer.mID, tAddObject);
 		} else {
 			mHoldingAdds.put(tIdx, aClassContainer.mID, tAddObject);
@@ -227,7 +235,7 @@ public class MultiTileEntityRegistry {
 		tAddObject.checkValid(); // 无论如何都要先检测输入是否合理
 		int tIdx = mHoldingAdds.indexOf((short)aAfterID);
 		if (tIdx == -1) {
-			ERR.println("MTE REGISTRY ERROR: Has no ID \"" + aAfterID + "\" on appendHolding, the MTE \"" + aLocalised +  "\" will be put at the end!");
+			ERR.println("MTE REGISTRY WARNING: Has no ID \"" + aAfterID + "\" on appendHolding, the MTE \"" + aLocalised +  "\" will be put at the end!");
 			mHoldingAdds.put(aClassContainer.mID, tAddObject);
 		} else {
 			++tIdx;
@@ -236,7 +244,8 @@ public class MultiTileEntityRegistry {
 	}
 	
 	private boolean mIsHoldingAdd = F;
-	private final ListOrderedMap<Short, AddObject> mHoldingAdds = new ListOrderedMap<>();
+	private final ListOrderedMap<Short, AddObject> mHoldingAdds = new ListOrderedMap<>(); // 存储 holding 的添加项，主要用来自定义在 nei 上的顺序
+	private final Map<Short, AddObject> mReplacingAdds = new HashMap<>(); // 存储将要替换的项目，如果为 null 则为删除
 	private class AddObject {
 		private final Boolean mIsGTCH;
 		private final String mLocalised;
@@ -249,8 +258,7 @@ public class MultiTileEntityRegistry {
 			mIsGTCH = aIsGTCH; mLocalised = aLocalised; mCategoricalName = aCategoricalName; mClassContainer = aClassContainer; mRecipe = aRecipe;
 		}
 		
-		public void checkValid() {checkValid(F);}
-		public void checkValid(boolean aIsReplace) {
+		public void checkValid() {
 			if (UT.Code.stringInvalid(mLocalised)) {
 				ERR.println("MTE REGISTRY ERROR: Localisation Missing!");
 				mFailed = T;
@@ -275,8 +283,8 @@ public class MultiTileEntityRegistry {
 					ERR.println("MTE REGISTRY ERROR: Class Container uses occupied MetaData!");
 					mFailed = T;
 				}
-				// GTCH, 添加 holding 的判断
-				if (mIsHoldingAdd && !aIsReplace && mHoldingAdds.containsKey(mClassContainer.mID)) {
+				// GTCH, 添加 holding 的判断（由于现在移除和删除都在实际添加之前，因此也适用于这个判断）
+				if (mIsHoldingAdd && mHoldingAdds.containsKey(mClassContainer.mID)) {
 					ERR.println("MTE REGISTRY ERROR: Class Container uses occupied MetaData!");
 					mFailed = T;
 				}

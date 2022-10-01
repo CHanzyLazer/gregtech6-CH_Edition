@@ -115,97 +115,97 @@ public class Loader_MultiTileEntities implements Runnable {
 		, aHive       = MultiTileEntityBlock.getOrCreate(MD.GT.mID, "rock"         , MaterialScoopable.instance, Block.soundTypeWood , TOOL_scoop  , 0, 0, 15, F, F)
 		;
 		
-		if (DATA_GTCH.enableChangeLoader_MTEStorages) storagesBeforeLoad(aRegistry);
+		if (DATA_GTCH.enableChangeLoader_MTEStorages) storagesBeforeLoad(aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);
 		storages   (aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);
 		if (DATA_GTCH.enableChangeLoader_MTEStorages) storagesFinishLoad(aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);
 		
-		if (DATA_GTCH.enableChangeLoader_MTECrucible) crucibleBeforeLoad(aRegistry);
+		if (DATA_GTCH.enableChangeLoader_MTECrucible) crucibleBeforeLoad(aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);
 		crucible   (aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);
 		if (DATA_GTCH.enableChangeLoader_MTECrucible) crucibleFinishLoad(aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);;
 		
-		if (DATA_GTCH.enableChangeLoader_MTEUnsorted1) unsorted1BeforeLoad(aRegistry);
+		if (DATA_GTCH.enableChangeLoader_MTEUnsorted1) unsorted1BeforeLoad(aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);
 		unsorted1  (aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);
 		if (DATA_GTCH.enableChangeLoader_MTEUnsorted1) unsorted1FinishLoad(aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);;
 		
-		if (DATA_GTCH.enableChangeLoader_MTEUnsorted2) unsorted2BeforeLoad(aRegistry);
+		if (DATA_GTCH.enableChangeLoader_MTEUnsorted2) unsorted2BeforeLoad(aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);
 		unsorted2  (aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);
 		if (DATA_GTCH.enableChangeLoader_MTEUnsorted2) unsorted2FinishLoad(aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);;
 		
-		if (DATA_GTCH.enableChangeLoader_MTEComputer) computerBeforeLoad(aRegistry);
+		if (DATA_GTCH.enableChangeLoader_MTEComputer) computerBeforeLoad(aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);
 		computer   (aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);
 		if (DATA_GTCH.enableChangeLoader_MTEComputer) computerFinishLoad(aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);;
 		
-		if (DATA_GTCH.enableChangeLoader_MTEMultiblocks) multiblocksBeforeLoad(aRegistry);
+		if (DATA_GTCH.enableChangeLoader_MTEMultiblocks) multiblocksBeforeLoad(aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);
 		multiblocks(aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);
 		if (DATA_GTCH.enableChangeLoader_MTEMultiblocks) multiblocksFinishLoad(aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);;
 		
-		if (DATA_GTCH.enableChangeLoader_MTEMachines1) machines1BeforeLoad(aRegistry);
+		if (DATA_GTCH.enableChangeLoader_MTEMachines1) machines1BeforeLoad(aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);
 		machines1  (aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);
 		if (DATA_GTCH.enableChangeLoader_MTEMachines1) machines1FinishLoad(aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);;
 		
-		if (DATA_GTCH.enableChangeLoader_MTEMachines2) machines2BeforeLoad(aRegistry);
+		if (DATA_GTCH.enableChangeLoader_MTEMachines2) machines2BeforeLoad(aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);
 		machines2  (aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);
 		if (DATA_GTCH.enableChangeLoader_MTEMachines2) machines2FinishLoad(aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);;
 		
-		if (DATA_GTCH.enableChangeLoader_MTEMachines3) machines3BeforeLoad(aRegistry);
+		if (DATA_GTCH.enableChangeLoader_MTEMachines3) machines3BeforeLoad(aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);
 		machines3  (aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);
 		if (DATA_GTCH.enableChangeLoader_MTEMachines3) machines3FinishLoad(aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);;
 		
-		if (DATA_GTCH.enableChangeLoader_MTEMachines4) machines4BeforeLoad(aRegistry);
+		if (DATA_GTCH.enableChangeLoader_MTEMachines4) machines4BeforeLoad(aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);
 		machines4  (aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);
 		if (DATA_GTCH.enableChangeLoader_MTEMachines4) machines4FinishLoad(aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);;
 		
-		if (DATA_GTCH.enableChangeLoader_MTEKinetic) kineticBeforeLoad(aRegistry);
+		if (DATA_GTCH.enableChangeLoader_MTEKinetic) kineticBeforeLoad(aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);
 		kinetic    (aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);
 		if (DATA_GTCH.enableChangeLoader_MTEKinetic) kineticFinishLoad(aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);;
 		
-		if (DATA_GTCH.enableChangeLoader_MTEConnectors) connectorsBeforeLoad(aRegistry);
+		if (DATA_GTCH.enableChangeLoader_MTEConnectors) connectorsBeforeLoad(aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);
 		connectors (aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);
 		if (DATA_GTCH.enableChangeLoader_MTEConnectors) connectorsFinishLoad(aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);;
 		
-		if (DATA_GTCH.enableChangeLoader_MTEExtenders) extendersBeforeLoad(aRegistry);
+		if (DATA_GTCH.enableChangeLoader_MTEExtenders) extendersBeforeLoad(aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);
 		extenders  (aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);
 		if (DATA_GTCH.enableChangeLoader_MTEExtenders) extendersFinishLoad(aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);;
 		
-		if (DATA_GTCH.enableChangeLoader_MTESensors) sensorsBeforeLoad(aRegistry);
+		if (DATA_GTCH.enableChangeLoader_MTESensors) sensorsBeforeLoad(aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);
 		sensors    (aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);
 		if (DATA_GTCH.enableChangeLoader_MTESensors) sensorsFinishLoad(aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);;
 		
-		if (DATA_GTCH.enableChangeLoader_MTEMisc) miscBeforeLoad(aRegistry);
+		if (DATA_GTCH.enableChangeLoader_MTEMisc) miscBeforeLoad(aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);
 		misc       (aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);
 		if (DATA_GTCH.enableChangeLoader_MTEMisc) miscFinishLoad(aRegistry, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool, MT.NULL, null);;
 	}
 	
 	/* Stuff to override */
-	protected void storagesBeforeLoad(MultiTileEntityRegistry aRegistry) {}
+	protected void storagesBeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {}
 	protected void storagesFinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {}
-	protected void crucibleBeforeLoad(MultiTileEntityRegistry aRegistry) {}
+	protected void crucibleBeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {}
 	protected void crucibleFinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {}
-	protected void unsorted1BeforeLoad(MultiTileEntityRegistry aRegistry) {}
+	protected void unsorted1BeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {}
 	protected void unsorted1FinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity>aClass) {}
-	protected void unsorted2BeforeLoad(MultiTileEntityRegistry aRegistry) {}
+	protected void unsorted2BeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {}
 	protected void unsorted2FinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {}
-	protected void computerBeforeLoad(MultiTileEntityRegistry aRegistry) {}
+	protected void computerBeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {}
 	protected void computerFinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {}
-	protected void multiblocksBeforeLoad(MultiTileEntityRegistry aRegistry) {}
+	protected void multiblocksBeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {}
 	protected void multiblocksFinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {}
-	protected void machines1BeforeLoad(MultiTileEntityRegistry aRegistry) {}
+	protected void machines1BeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {}
 	protected void machines1FinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {}
-	protected void machines2BeforeLoad(MultiTileEntityRegistry aRegistry) {}
+	protected void machines2BeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {}
 	protected void machines2FinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {}
-	protected void machines3BeforeLoad(MultiTileEntityRegistry aRegistry) {}
+	protected void machines3BeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {}
 	protected void machines3FinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {}
-	protected void machines4BeforeLoad(MultiTileEntityRegistry aRegistry) {}
+	protected void machines4BeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {}
 	protected void machines4FinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {}
-	protected void kineticBeforeLoad(MultiTileEntityRegistry aRegistry) {}
+	protected void kineticBeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {}
 	protected void kineticFinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {}
-	protected void connectorsBeforeLoad(MultiTileEntityRegistry aRegistry) {}
+	protected void connectorsBeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {}
 	protected void connectorsFinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {}
-	protected void extendersBeforeLoad(MultiTileEntityRegistry aRegistry) {}
+	protected void extendersBeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {}
 	protected void extendersFinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {}
-	protected void sensorsBeforeLoad(MultiTileEntityRegistry aRegistry) {}
+	protected void sensorsBeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {}
 	protected void sensorsFinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {}
-	protected void miscBeforeLoad(MultiTileEntityRegistry aRegistry) {}
+	protected void miscBeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {}
 	protected void miscFinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {}
 	
 	/* Greg's stuffs */
@@ -267,7 +267,7 @@ public class Loader_MultiTileEntities implements Runnable {
 		metalset(aRegistry, aMetal, aMachine, aWooden, MT.Sb                    ,   47,   4.0F,   4.0F,  2);
 		metalset(aRegistry, aMetal, aMachine, aWooden, MT.Ni                    ,   22,   4.0F,   4.0F,  3);
 		metalset(aRegistry, aMetal, aMachine, aWooden, MT.Bronze                ,    9,   7.0F,   7.0F,  3);
-		metalset(aRegistry, aMetal, aMachine, aWooden, MT.Constantan            ,   37,   2.0F,   2.0F,  3);
+		metalset(aRegistry, aMetal, aMachine, aWooden, MT.Constantan            ,   37,   4.0F,   4.0F,  3);
 		metalset(aRegistry, aMetal, aMachine, aWooden, MT.Al                    ,    1,   2.0F,   2.0F,  4);
 		metalset(aRegistry, aMetal, aMachine, aWooden, MT.Brass                 ,    8,   2.5F,   2.5F,  4);
 		metalset(aRegistry, aMetal, aMachine, aWooden, MT.TinAlloy              ,    5,   3.0F,   3.0F,  4);
@@ -277,10 +277,10 @@ public class Loader_MultiTileEntities implements Runnable {
 		metalset(aRegistry, aMetal, aMachine, aWooden, MT.Invar                 ,    6,   4.0F,   4.0F,  5);
 		metalset(aRegistry, aMetal, aMachine, aWooden, MT.Steel                 ,   10,   6.0F,   6.0F,  5);
 		metalset(aRegistry, aMetal, aMachine, aWooden, MT.HSLA                  ,   18,   6.0F,   6.0F,  6);
-		metalset(aRegistry, aMetal, aMachine, aWooden, MT.Au                    ,    2,   2.0F,   2.0F,  6);
-		metalset(aRegistry, aMetal, aMachine, aWooden, MT.Ag                    ,    3,   2.0F,   2.0F,  6);
+		metalset(aRegistry, aMetal, aMachine, aWooden, MT.Au                    ,    2,   3.0F,   3.0F,  6);
+		metalset(aRegistry, aMetal, aMachine, aWooden, MT.Ag                    ,    3,   3.0F,   3.0F,  6);
 		metalset(aRegistry, aMetal, aMachine, aWooden, MT.Mn                    ,   46,   6.0F,   6.0F,  6);
-		metalset(aRegistry, aMetal, aMachine, aWooden, MT.Manyullyn             ,   39,   3.0F,   3.0F,  6);
+		metalset(aRegistry, aMetal, aMachine, aWooden, MT.Manyullyn             ,   39,   4.0F,   4.0F,  6);
 		metalset(aRegistry, aMetal, aMachine, aWooden, MT.Lumium                ,   54,   2.0F,   2.0F,  6);
 		metalset(aRegistry, aMetal, aMachine, aWooden, MT.Knightmetal           ,   25,   7.0F,   7.0F,  7);
 		metalset(aRegistry, aMetal, aMachine, aWooden, MT.SteelGalvanized       ,   19,   6.0F,   6.0F,  7);
@@ -289,7 +289,7 @@ public class Loader_MultiTileEntities implements Runnable {
 		metalset(aRegistry, aMetal, aMachine, aWooden, MT.GildedIron            ,   20,   6.0F,   6.0F,  8);
 		metalset(aRegistry, aMetal, aMachine, aWooden, MT.Mo                    ,   49,   6.0F,   6.0F,  8);
 		metalset(aRegistry, aMetal, aMachine, aWooden, MT.Syrmorite             ,   44,   4.0F,   4.0F,  9);
-		metalset(aRegistry, aMetal, aMachine, aWooden, MT.Electrum              ,    7,   2.0F,   2.0F,  9);
+		metalset(aRegistry, aMetal, aMachine, aWooden, MT.Electrum              ,    7,   3.0F,   3.0F,  9);
 		metalset(aRegistry, aMetal, aMachine, aWooden, MT.StainlessSteel        ,   11,   5.0F,   5.0F,  9);
 		metalset(aRegistry, aMetal, aMachine, aWooden, MT.Thaumium              ,   27,   9.0F,   9.0F,  9);
 		metalset(aRegistry, aMetal, aMachine, aWooden, MT.Manasteel             ,   40,   9.0F,   9.0F,  9);
@@ -310,7 +310,7 @@ public class Loader_MultiTileEntities implements Runnable {
 		metalset(aRegistry, aMetal, aMachine, aWooden, MT.DeshAlloy             ,   55,  15.0F,  15.0F, 27);
 		metalset(aRegistry, aMetal, aMachine, aWooden, ANY.W                    ,   26,  10.0F,  10.0F, 36);
 		metalset(aRegistry, aMetal, aMachine, aWooden, MT.Ir                    ,   15,  15.0F,  15.0F, 36);
-		metalset(aRegistry, aMetal, aMachine, aWooden, MT.Os                    ,   29,   3.0F,   3.0F, 36);
+		metalset(aRegistry, aMetal, aMachine, aWooden, MT.Os                    ,   29,   9.0F,   9.0F, 36);
 		metalset(aRegistry, aMetal, aMachine, aWooden, MT.VoidMetal             ,   28,  30.0F,  30.0F, 36);
 		metalset(aRegistry, aMetal, aMachine, aWooden, MT.ElvenElementium       ,   41,  30.0F,  30.0F, 36);
 		metalset(aRegistry, aMetal, aMachine, aWooden, MT.TritaniumAlloy        ,   32,  30.0F,  30.0F, 36);
@@ -943,7 +943,8 @@ public class Loader_MultiTileEntities implements Runnable {
 		
 		// Solar Panels
 		aClass = MultiTileEntitySolarPanelElectric.class;
-		aMat = MT.DATA.Electric_T[0];   aRegistry.add("Solar Panel"                                         , "Solar Panels"                        , 10050, 10050, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   4.0F, NBT_RESISTANCE,   4.0F, NBT_OUTPUT, 8, NBT_ENERGY_EMITTED, TD.Energy.EU), "SWS", "CMC", "SWS", 'M', OP.casingMachine.dat(aMat), 'W', OP.cableGt01.dat(ANY.Cu), 'C', OD_CIRCUITS[1], 'S', OP.plateGem.dat(ANY.Si));
+		aMat = MT.DATA.Electric_T[0];   aRegistry.add("Solar Panel (Silicon)"                               , "Solar Panels"                        , 10050, 10050, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   4.0F, NBT_RESISTANCE,   4.0F, NBT_OUTPUT,  8, NBT_ENERGY_EMITTED, TD.Energy.EU), "SWS", "CMC", "SWS", 'M', OP.casingMachine.dat(aMat), 'W', OP.cableGt01.dat(ANY.Cu           ), 'C', OD_CIRCUITS[1], 'S', OP.plateGem.dat(ANY.Si));
+		aMat = MT.DATA.Electric_T[2];   aRegistry.add("Solar Panel (Germanium)"                             , "Solar Panels"                        , 10051, 10050, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   4.0F, NBT_RESISTANCE,   4.0F, NBT_OUTPUT, 16, NBT_ENERGY_EMITTED, TD.Energy.EU), "SWS", "CMC", "SWS", 'M', OP.casingMachine.dat(aMat), 'W', OP.cableGt01.dat(MT.AnnealedCopper), 'C', OD_CIRCUITS[6], 'S', OP.plateGem.dat(MT.Ge));
 		
 		
 		
@@ -1151,8 +1152,16 @@ public class Loader_MultiTileEntities implements Runnable {
 		OreDictManager.INSTANCE.setTarget(OP.gemExquisite   , MT.EnergiumCyan, IL.Crystal_Energium_Cyan_EV.get(1));
 		OreDictManager.INSTANCE.setTarget(OP.gemLegendary   , MT.EnergiumCyan, IL.Crystal_Energium_Cyan_IV.get(1));
 		
-		IL.ZPM                          .set(aRegistry.add("Zero-Point-Module (ZPM)"                        , "ZPM"                                 , 14999, 14999, MultiTileEntityZPM.class, 0, 16, aUtilMetal, UT.NBT.make(NBT_HARDNESS, 0.5F, NBT_RESISTANCE, 1.0F, NBT_COLOR, 0xffdd00, NBT_INPUT_MIN, 1, NBT_INPUT, V[7], NBT_INPUT_MAX, VMAX[7], NBT_CAPACITY, 2000000000000L, NBT_ENERGY_ACCEPTED, TD.Energy.QU)), null, "gt:zpm"); if (COMPAT_TC != null) COMPAT_TC.registerThaumcraftAspectsToItem(aRegistry.getItem(), F, TC.stack(TC.ALIENIS, 10), TC.stack(TC.MACHINA, 10), TC.stack(TC.VACUOS, 10), TC.stack(TC.POTENTIA, 10), TC.stack(TC.LUX, 10), TC.stack(TC.LUCRUM, 10));
 		
+		IL.Power_Cell_Empty             .set(aRegistry.add("Power Cell (Empty)"                             , "Portable Power Cells"                , 14700, 14700, MultiTileEntityPowerCell       .class, 0, 16, aUtilMetal, UT.NBT.make(NBT_HARDNESS, 0.5F, NBT_RESISTANCE, 1.0F, NBT_ENERGY_ACCEPTED, TD.Energy.EU                                                                                                                                            ), "ACA", "FPF", "ACA", 'C', OD_CIRCUITS[4], 'P', OP.foil.dat(MT.Pt), 'F', OP.foil.dat(MT.Plastic), 'A', OP.casingSmall.dat(MT.Al)));
+		IL.Power_Cell_H                 .set(aRegistry.add("Power Cell (Hydrogen)"                          , "Portable Power Cells"                , 14701, 14700, MultiTileEntityPowerCell       .class, 0, 16, aUtilMetal, UT.NBT.make(NBT_HARDNESS, 0.5F, NBT_RESISTANCE, 1.0F, NBT_ENERGY_ACCEPTED, TD.Energy.EU, NBT_COLOR, UT.Code.getRGBInt(MT.H  .fRGBaGas), NBT_INPUT_MIN, 1, NBT_INPUT, V[3], NBT_INPUT_MAX, V   [3], NBT_CAPACITY,         3_200_000L))); RM.Canner.addRecipe1(F, 16, 256, IL.Power_Cell_Empty       .get(1), MT.H   .gas(U*200, T), NF, aRegistry.getItem(UT.NBT.make(NBT_ACTIVE_ENERGY, T))); RM.Canner.addRecipe1(F, 16, 256, aRegistry.getItem(), NF, NF, IL.Power_Cell_Empty.get(1));
+		
+		
+		IL.Aneutronic_Fusion_Empty      .set(aRegistry.add("Aneutronic Fusion Power Cell (Empty)"           , "Portable Power Cells"                , 14600, 14700, MultiTileEntityAneutronicFusion.class, 0, 16, aUtilMetal, UT.NBT.make(NBT_HARDNESS, 0.5F, NBT_RESISTANCE, 1.0F, NBT_ENERGY_ACCEPTED, TD.Energy.EU                                                                                                                                            ), "VPV", "GFG", "VGV", 'P', IL.Processor_Crystal_Ruby, 'V', OP.plateGemTiny.dat(MT.Vb), 'F', IL.FIELD_GENERATORS[5], 'G', OP.foil.dat(MT.Graphene)));
+		IL.Aneutronic_Fusion_He3        .set(aRegistry.add("Aneutronic Fusion Power Cell (Helium-3)"        , "Portable Power Cells"                , 14601, 14700, MultiTileEntityAneutronicFusion.class, 0, 16, aUtilMetal, UT.NBT.make(NBT_HARDNESS, 0.5F, NBT_RESISTANCE, 1.0F, NBT_ENERGY_ACCEPTED, TD.Energy.EU                                               , NBT_INPUT_MIN, 1, NBT_INPUT, V[5], NBT_INPUT_MAX, V   [5], NBT_CAPACITY,     1_024_000_000L))); RM.Canner.addRecipe1(F, 16, 256, IL.Aneutronic_Fusion_Empty.get(1), MT.He_3.gas(U*200, T), NF, aRegistry.getItem(UT.NBT.make(NBT_ACTIVE_ENERGY, T))); RM.Canner.addRecipe1(F, 16, 256, aRegistry.getItem(), NF, NF, IL.Aneutronic_Fusion_Empty.get(1));
+		
+		
+		IL.ZPM                          .set(aRegistry.add("Zero-Point-Module (ZPM)"                        , "ZPM"                                 , 14999, 14999, MultiTileEntityZPM             .class, 0, 16, aUtilMetal, UT.NBT.make(NBT_HARDNESS, 0.5F, NBT_RESISTANCE, 1.0F, NBT_ENERGY_ACCEPTED, TD.Energy.QU, NBT_COLOR,                           0xffdd00, NBT_INPUT_MIN, 1, NBT_INPUT, V[7], NBT_INPUT_MAX, VMAX[7], NBT_CAPACITY, 2_000_000_000_000L)), null, "gt:zpm"); if (COMPAT_TC != null) COMPAT_TC.registerThaumcraftAspectsToItem(aRegistry.getItem(), F, TC.stack(TC.ALIENIS, 10), TC.stack(TC.MACHINA, 10), TC.stack(TC.VACUOS, 10), TC.stack(TC.POTENTIA, 10), TC.stack(TC.LUX, 10), TC.stack(TC.LUCRUM, 10));
 		
 		
 		// Auto-Tools

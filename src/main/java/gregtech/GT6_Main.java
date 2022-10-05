@@ -59,6 +59,7 @@ import gregtech.loaders.a.*;
 import gregtech.loaders.b.*;
 import gregtech.loaders.c.*;
 import gregtechCH.GTCH_Main;
+import gregtechCH.loaders.a.Loader_Fluids_CH;
 import gregtechCH.loaders.b.Loader_MultiTileEntities_CH;
 import ic2.core.Ic2Items;
 import net.minecraft.block.Block;
@@ -208,7 +209,8 @@ public class GT6_Main extends Abstract_Mod {
 		RM.pulverizing(ST.make(Items.melon       , 1, W), ST.make(Items.melon_seeds, 1, 0), null, 0, F);
 		RM.pulverizing(ST.make(Blocks.wool       , 1, W), ST.make(Items.string, 2, 0), ST.make(Items.string, 1, 0), 50, F);
 		
-		new Loader_Fluids().run();
+//		new Loader_Fluids().run();
+		new Loader_Fluids_CH().run();
 		new Loader_Tools().run();
 		new Loader_Items().run();
 		new Loader_PrefixBlocks().run();

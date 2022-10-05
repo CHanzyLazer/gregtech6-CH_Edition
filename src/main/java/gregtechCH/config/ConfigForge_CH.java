@@ -18,6 +18,8 @@ import java.util.LinkedList;
  */
 public class ConfigForge_CH {
     public static class DATA_GTCH {
+        public static boolean enableChangeLoader_Fluids;
+        
         public static boolean enableChangeLoader_MTEStorages;
         public static boolean enableChangeLoader_MTECrucible;
         public static boolean enableChangeLoader_MTEUnsorted1;
@@ -76,6 +78,8 @@ public class ConfigForge_CH {
         ConfigsGTCH.MACHINES    = new Config(DirectoriesGTCH.CONFIG_GTCH, "Machines.cfg");
         ConfigsGTCH.GTCH        = new Config(DirectoriesGTCH.CONFIG_GTCH, "GTCH.cfg");
         
+        DATA_GTCH.enableChangeLoader_Fluids = ConfigsGTCH.GTCH.get(ConfigCategories_CH.loader, "enableChangeLoader_fluids_(gt6_false)", T);
+        
         DATA_GTCH.enableChangeLoader_MTEStorages = ConfigsGTCH.GTCH.get(ConfigCategories_CH.loader, "enableChangeLoader_MTE_storages_(gt6_false)",  T);
         DATA_GTCH.enableChangeLoader_MTECrucible = ConfigsGTCH.GTCH.get(ConfigCategories_CH.loader, "enableChangeLoader_MTE_crucible_(gt6_false)",  T);
         DATA_GTCH.enableChangeLoader_MTEUnsorted1 = ConfigsGTCH.GTCH.get(ConfigCategories_CH.loader, "enableChangeLoader_MTE_unsorted1_(gt6_false)",  T);
@@ -91,7 +95,7 @@ public class ConfigForge_CH {
         DATA_GTCH.enableChangeLoader_MTEExtenders = ConfigsGTCH.GTCH.get(ConfigCategories_CH.loader, "enableChangeLoader_MTE_extenders_(gt6_false)", T);
         DATA_GTCH.enableChangeLoader_MTESensors = ConfigsGTCH.GTCH.get(ConfigCategories_CH.loader, "enableChangeLoader_MTE_sensors_(gt6_false)", T);
         DATA_GTCH.enableChangeLoader_MTEMisc = ConfigsGTCH.GTCH.get(ConfigCategories_CH.loader, "enableChangeLoader_MTE_misc_(gt6_false)", T);
-    
+        
         DATA_GTCH.sneakingMountCover = ConfigsGTCH.GTCH.get(ConfigCategories_CH.general, "sneaking_mount_cover_(gt6_false)", T);
         DATA_GTCH.itemNBTSensor = ConfigsGTCH.GTCH.get(ConfigCategories_CH.nbt, "item_nbt_sensor_(gt6_true)", F);
         

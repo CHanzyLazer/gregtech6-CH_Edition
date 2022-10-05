@@ -1,5 +1,5 @@
 package gregtechCH.tileentity.connectors;
 
-public interface ITEInterceptModConnectFluid_CH {
+public interface ITEInterceptModConnectFluid {
     boolean interceptModConnectFluid(byte aSide);
 }

@@ -4,8 +4,8 @@ import gregapi.block.BlockBase;
 import gregapi.block.multitileentity.MultiTileEntityBlock;
 import gregapi.block.prefixblock.PrefixBlock;
 import gregapi.util.UT;
-import gregtechCH.tileentity.connectors.ITEInterceptModConnectFluid_CH;
-import gregtechCH.tileentity.connectors.ITEInterceptModConnectItem_CH;
+import gregtechCH.tileentity.connectors.ITEInterceptModConnectFluid;
+import gregtechCH.tileentity.connectors.ITEInterceptModConnectItem;
 import gregtechCH.util.WD_CH;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -154,11 +154,11 @@ public class Replacements_CH {
 
     // 插入自己的判断，这里在 bc 中，side 是 tile 相对 bc 管道的方向，和 GT 的方向相反
     public static boolean interceptModConnectItem(TileEntity aTile, ForgeDirection aSide) {
-        if (aTile instanceof ITEInterceptModConnectItem_CH) return ((ITEInterceptModConnectItem_CH)aTile).interceptModConnectItem(OPOS[UT.Code.side(aSide)]);
+        if (aTile instanceof ITEInterceptModConnectItem) return ((ITEInterceptModConnectItem)aTile).interceptModConnectItem(OPOS[UT.Code.side(aSide)]);
         return false;
     }
     public static boolean interceptModConnectFluid(TileEntity aTile, ForgeDirection aSide) {
-        if (aTile instanceof ITEInterceptModConnectFluid_CH) return ((ITEInterceptModConnectFluid_CH)aTile).interceptModConnectFluid(OPOS[UT.Code.side(aSide)]);
+        if (aTile instanceof ITEInterceptModConnectFluid) return ((ITEInterceptModConnectFluid)aTile).interceptModConnectFluid(OPOS[UT.Code.side(aSide)]);
         return false;
     }
 }

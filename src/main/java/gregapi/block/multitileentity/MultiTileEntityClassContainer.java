@@ -20,6 +20,7 @@
 package gregapi.block.multitileentity;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.*;
 
 import gregapi.oredict.OreDictMaterial;
 import gregapi.util.UT;
@@ -37,9 +38,15 @@ public class MultiTileEntityClassContainer {
 	public final byte mBlockMetaData, mStackSize;
 	public final short mID, mCreativeTabID;
 	public final boolean mHidden;
+	// GTCH
+	public final MTEType mType;
 	
 	public MultiTileEntityClassContainer(int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters) {
+		this(MTEType.GREG, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters);
+	}
+	public MultiTileEntityClassContainer(MTEType aType, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters) {
 		if (!IMultiTileEntity.class.isAssignableFrom(aClass)) throw new IllegalArgumentException("MultiTileEntities must implement the Interface IMultiTileEntity!");
+		mType = aType;
 		mBlockMetaData = (byte)aBlockMetaData;
 		mStackSize = (byte)aStackSize;
 		mParameters = aParameters==null?UT.NBT.make():aParameters;

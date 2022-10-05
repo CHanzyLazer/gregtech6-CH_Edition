@@ -47,10 +47,10 @@ import gregapi.util.ST;
 import gregapi.util.UT;
 import gregtechCH.fluid.IFluidHandler_CH;
 import gregtechCH.tileentity.ITileEntityNameCompat;
-import gregtechCH.tileentity.connectors.ITEInterceptAutoConnectFluid_CH;
-import gregtechCH.tileentity.connectors.ITEInterceptAutoConnectItem_CH;
-import gregtechCH.tileentity.connectors.ITEInterceptModConnectFluid_CH;
-import gregtechCH.tileentity.connectors.ITEInterceptModConnectItem_CH;
+import gregtechCH.tileentity.connectors.ITEInterceptAutoConnectFluid;
+import gregtechCH.tileentity.connectors.ITEInterceptAutoConnectItem;
+import gregtechCH.tileentity.connectors.ITEInterceptModConnectFluid;
+import gregtechCH.tileentity.connectors.ITEInterceptModConnectItem;
 import gregtechCH.tileentity.cores.basicmachines.IMTEC_BasicMachine;
 import gregtechCH.tileentity.cores.IMTEC_ToolTips;
 import gregtechCH.tileentity.cores.basicmachines.MTEC_BasicMachine_Greg;
@@ -96,7 +96,7 @@ import static gregapi.data.CS.*;
 @Optional.InterfaceList(value = {
 	@Optional.Interface(iface = "buildcraft.api.tiles.IHasWork", modid = ModIDs.BC)
 })
-public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle implements IMTEC_ToolTips, ITileEntityNameCompat, ITEInterceptModConnectItem_CH, ITEInterceptModConnectFluid_CH, ITEInterceptAutoConnectItem_CH, ITEInterceptAutoConnectFluid_CH, IHasWork, ITileEntityFunnelAccessible, ITileEntityTapAccessible, ITileEntitySwitchableOnOff, ITileEntityRunningSuccessfully, ITileEntityAdjacentInventoryUpdatable, ITileEntityEnergy, ITileEntityProgress, ITileEntityGibbl, IFluidHandler_CH {
+public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle implements IMTEC_ToolTips, ITileEntityNameCompat, ITEInterceptModConnectItem, ITEInterceptModConnectFluid, ITEInterceptAutoConnectItem, ITEInterceptAutoConnectFluid, IHasWork, ITileEntityFunnelAccessible, ITileEntityTapAccessible, ITileEntitySwitchableOnOff, ITileEntityRunningSuccessfully, ITileEntityAdjacentInventoryUpdatable, ITileEntityEnergy, ITileEntityProgress, ITileEntityGibbl, IFluidHandler_CH {
 	protected MTEC_BasicMachine_Greg mCore; // 暂时使用类而不是接口
 
 	public boolean mSpecialIsStartEnergy = F, mNoConstantEnergy = F, mCheapOverclocking = F, mCouldUseRecipe = F, mStopped = F, oActive = F, oRunning = F, mStateNew = F, mStateOld = F, mDisabledItemInput = F, mDisabledItemOutput = F, mDisabledFluidInput = F, mDisabledFluidOutput = F, mRequiresIgnition = F, mParallelDuration = F, mCanUseOutputTanks = F;

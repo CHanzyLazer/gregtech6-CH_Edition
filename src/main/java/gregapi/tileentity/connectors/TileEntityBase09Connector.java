@@ -25,19 +25,16 @@ import gregapi.block.multitileentity.MultiTileEntityContainer;
 import gregapi.cover.ITileEntityCoverable;
 import gregapi.data.LH;
 import gregapi.data.LH.Chat;
-import gregapi.oredict.OreDictItemData;
-import gregapi.oredict.OreDictPrefix;
 import gregapi.tileentity.ITileEntity;
 import gregapi.tileentity.ITileEntityFoamable;
 import gregapi.tileentity.ITileEntityMachineBlockUpdateable;
 import gregapi.tileentity.base.TileEntityBase08Directional;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
-import gregapi.util.OM;
 import gregapi.util.UT;
 import gregapi.util.WD;
-import gregtechCH.tileentity.ITEPaintable_CH;
-import gregtechCH.tileentity.connectors.ITEInterceptModConnectFluid_CH;
-import gregtechCH.tileentity.connectors.ITEInterceptModConnectItem_CH;
+import gregtechCH.tileentity.IMTEPaintable;
+import gregtechCH.tileentity.connectors.ITEInterceptModConnectFluid;
+import gregtechCH.tileentity.connectors.ITEInterceptModConnectItem;
 import gregtechCH.util.UT_CH;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -55,7 +52,7 @@ import static gregapi.data.CS.*;
 /**
  * @author Gregorius Techneticies
  */
-public abstract class TileEntityBase09Connector extends TileEntityBase08Directional implements ITEInterceptModConnectItem_CH, ITEInterceptModConnectFluid_CH, ITileEntityConnector, IMTE_OnPlaced, IMTE_AddToolTips {
+public abstract class TileEntityBase09Connector extends TileEntityBase08Directional implements ITEInterceptModConnectItem, ITEInterceptModConnectFluid, ITileEntityConnector, IMTE_OnPlaced, IMTE_AddToolTips {
 	protected byte mConnections = 0;
 	
 	@Override
@@ -131,7 +128,7 @@ public abstract class TileEntityBase09Connector extends TileEntityBase08Directio
 				tDelegator = getAdjacentTileEntity(tSide);
 				if (tDelegator.mTileEntity instanceof ITileEntity && !((ITileEntity)tDelegator.mTileEntity).allowInteraction(aPlayer)) continue;
 				if (tDelegator.mTileEntity instanceof ITileEntityConnector && SIDES_VALID[tDelegator.mSideOfTileEntity] && UT.Code.haveOneCommonElement(((ITileEntityConnector)tDelegator.mTileEntity).getConnectorTypes(tDelegator.mSideOfTileEntity), getConnectorTypes(tSide))) {
-					if (tDelegator.mTileEntity instanceof ITEPaintable_CH && ((ITEPaintable_CH)tDelegator.mTileEntity).isPainted() && ((ITEPaintable_CH)tDelegator.mTileEntity).getPaint()==getPaint()) connect(tSide, T);
+					if (tDelegator.mTileEntity instanceof IMTEPaintable && ((IMTEPaintable)tDelegator.mTileEntity).isPainted() && ((IMTEPaintable)tDelegator.mTileEntity).getPaint()==getPaint()) connect(tSide, T);
 				} else
 				if (canAutoConnect(tSide,tDelegator)) {
 					// 需要避免自动连接空气和液体

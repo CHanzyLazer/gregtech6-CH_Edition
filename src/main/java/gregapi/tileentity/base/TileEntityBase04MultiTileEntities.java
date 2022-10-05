@@ -47,7 +47,7 @@ import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
 import gregtechCH.config.ConfigForge_CH;
-import gregtechCH.tileentity.ITEAfterUpdateRender_CH;
+import gregtechCH.tileentity.ITEAfterUpdateRender;
 import gregtechCH.tileentity.ITileEntityNameCompat;
 import gregtechCH.util.UT_CH;
 import gregtechCH.util.WD_CH;
@@ -66,7 +66,7 @@ import net.minecraftforge.common.util.FakePlayer;
 /**
  * @author Gregorius Techneticies
  */
-public abstract class TileEntityBase04MultiTileEntities extends TileEntityBase03TicksAndSync implements IMTE_ColorMultiplier, ITEAfterUpdateRender_CH, IRenderedBlockObjectSideCheck, IRenderedBlockObject, IMTE_OnPainting, IMTE_OnNeighborBlockChange, IMTE_GetPickBlock, IMTE_OnRegistrationFirst, IMTE_RecolourBlock, IMTE_GetDrops, IMTE_OnBlockActivated, IMTE_ShouldSideBeRendered, IMTE_GetFlammability, IMTE_GetFireSpreadSpeed {
+public abstract class TileEntityBase04MultiTileEntities extends TileEntityBase03TicksAndSync implements IMTE_ColorMultiplier, ITEAfterUpdateRender, IRenderedBlockObjectSideCheck, IRenderedBlockObject, IMTE_OnPainting, IMTE_OnNeighborBlockChange, IMTE_GetPickBlock, IMTE_OnRegistrationFirst, IMTE_RecolourBlock, IMTE_GetDrops, IMTE_OnBlockActivated, IMTE_ShouldSideBeRendered, IMTE_GetFlammability, IMTE_GetFireSpreadSpeed {
 	private short mMTEID = W, mMTERegistry = W;
 	private String mCustomName = null;
 	

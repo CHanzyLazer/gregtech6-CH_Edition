@@ -7,7 +7,7 @@ import gregapi.oredict.OreDictMaterial;
 import java.util.HashMap;
 
 // MA: Material Attribute
-public class MA_MachineGenerator_CH extends HashMap<String, MA_MachineGenerator_CH.GeneralAttributes> {
+public class MA_MachineGenerator extends HashMap<String, MA_MachineGenerator.GeneralAttributes> {
     public static class GeneralAttributes {
         public int mID = 0;
         public int mStackSize = 16;
@@ -27,7 +27,7 @@ public class MA_MachineGenerator_CH extends HashMap<String, MA_MachineGenerator_
 
 //    private static Map<String, GeneralAttributes> mData = new TreeMap<>();
 
-    public MA_MachineGenerator_CH() {
+    public MA_MachineGenerator() {
         put(MT.Brick.mNameInternal,         new GeneralAttributes(99,     16,    6.0F,   6.0F,  10000,  16,     16));
         put(MT.Pb.mNameInternal,            new GeneralAttributes(0,      16,    4.0F,   4.0F,  7500,   16,     16));
         put(MT.Bi.mNameInternal,            new GeneralAttributes(1,      16,    4.0F,   4.0F,  8000,   20,     20));

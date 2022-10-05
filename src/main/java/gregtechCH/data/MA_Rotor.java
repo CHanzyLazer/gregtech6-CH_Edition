@@ -7,7 +7,7 @@ import gregapi.oredict.OreDictMaterial;
 import java.util.HashMap;
 
 // MA: Material Attribute
-public class MA_Rotor_CH extends HashMap<String, MA_Rotor_CH.GeneralAttributes> {
+public class MA_Rotor extends HashMap<String, MA_Rotor.GeneralAttributes> {
     public static class GeneralAttributes {
         public int mID = 0;
         public int mNbtEfficiencyLoss = 0;
@@ -23,7 +23,7 @@ public class MA_Rotor_CH extends HashMap<String, MA_Rotor_CH.GeneralAttributes> 
 
 //    private static Map<String, GeneralAttributes> mData = new TreeMap<>();
 
-    public MA_Rotor_CH() {
+    public MA_Rotor() {
         put(MT.Bronze.mNameInternal,        new GeneralAttributes(2,  5000,   24,     16));
         put(MT.Brass.mNameInternal,         new GeneralAttributes(5,  5000,   36,     24));
         put(MT.Invar.mNameInternal,         new GeneralAttributes(8,  4000,   48,     32));

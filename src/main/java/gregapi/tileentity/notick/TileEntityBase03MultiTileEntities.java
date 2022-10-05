@@ -54,7 +54,7 @@ import gregapi.render.IRenderedBlockObjectSideCheck;
 import gregapi.util.UT;
 import gregapi.util.WD;
 import gregtechCH.config.ConfigForge_CH;
-import gregtechCH.tileentity.ITEAfterUpdateRender_CH;
+import gregtechCH.tileentity.ITEAfterUpdateRender;
 import gregtechCH.tileentity.ITileEntityNameCompat;
 import gregtechCH.util.UT_CH;
 import gregtechCH.util.WD_CH;
@@ -69,7 +69,7 @@ import net.minecraftforge.common.util.FakePlayer;
 /**
  * @author Gregorius Techneticies
  */
-public abstract class TileEntityBase03MultiTileEntities extends TileEntityBase02Sync implements IMTE_ColorMultiplier, ITEAfterUpdateRender_CH, IRenderedBlockObjectSideCheck, IRenderedBlockObject, IMTE_OnPainting, IMTE_GetPickBlock, IMTE_GetStackFromBlock, IMTE_OnRegistrationFirst, IMTE_RecolourBlock, IMTE_GetDrops, IMTE_OnBlockActivated, IMTE_ShouldSideBeRendered {
+public abstract class TileEntityBase03MultiTileEntities extends TileEntityBase02Sync implements IMTE_ColorMultiplier, ITEAfterUpdateRender, IRenderedBlockObjectSideCheck, IRenderedBlockObject, IMTE_OnPainting, IMTE_GetPickBlock, IMTE_GetStackFromBlock, IMTE_OnRegistrationFirst, IMTE_RecolourBlock, IMTE_GetDrops, IMTE_OnBlockActivated, IMTE_ShouldSideBeRendered {
 	@Override
 	public void sendClientData(boolean aSendAll, EntityPlayerMP aPlayer) {
 		super.sendClientData(aSendAll, aPlayer);

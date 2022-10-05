@@ -20,11 +20,11 @@ import java.io.File;
  */
 public class ConfigJson_CH {
 
-    public static MA_MachineGenerator_CH MA_MACHINE_GENERATOR = new MA_MachineGenerator_CH();
-    public static MA_MachineKinetic_CH MA_MACHINE_KINETIC = new MA_MachineKinetic_CH();
-    public static MA_Rotor_CH MA_ROTOR = new MA_Rotor_CH();
-    public static MA_PipeSize_CH MA_PIPE_SIZE = new MA_PipeSize_CH();
-    public static MA_MachineMultiblock_CH MA_MACHINE_MULTIBLOCK = new MA_MachineMultiblock_CH();
+    public static MA_MachineGenerator MA_MACHINE_GENERATOR = new MA_MachineGenerator();
+    public static MA_MachineKinetic MA_MACHINE_KINETIC = new MA_MachineKinetic();
+    public static MA_Rotor MA_ROTOR = new MA_Rotor();
+    public static MA_PipeSize MA_PIPE_SIZE = new MA_PipeSize();
+    public static MA_MachineMultiblock MA_MACHINE_MULTIBLOCK = new MA_MachineMultiblock();
 
     public static DataMachinesSteam_CH DATA_MACHINES_STEAM = new DataMachinesSteam_CH();
     public static DataMachinesGenerator_CH DATA_MACHINES_GENERATOR = new DataMachinesGenerator_CH();

@@ -50,7 +50,7 @@ import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
 import gregtechCH.fluid.IFluidHandler_CH;
-import gregtechCH.tileentity.ITEScheduledUpdate_CH;
+import gregtechCH.tileentity.IMTEScheduledUpdate_CH;
 import gregtechCH.util.UT_CH;
 import gregtechCH.util.WD_CH;
 import ic2.api.energy.event.EnergyTileLoadEvent;
@@ -429,9 +429,9 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 
 	// GTCH, 还是使用子类调用更新的方式来实现
 	// 标记式更新，可以用于在 NBT 读取阶段进行更新
-	public void updateLightValueMark() 					{if (this instanceof ITEScheduledUpdate_CH) {pushScheduled(isServerSide(), (ITEScheduledUpdate_CH)this); mMarkedLightValueUpdate = T;}}
-	public void updateLightOpacityMark(int aOldOpacity) {if (this instanceof ITEScheduledUpdate_CH) {pushScheduled(isServerSide(), (ITEScheduledUpdate_CH)this); mScheduleOldOpacity = Math.max(aOldOpacity, mScheduleOldOpacity); mMarkedLightOpacityUpdate = T;}}
-	public void updateLightOpacityMark() 				{if (this instanceof ITEScheduledUpdate_CH) {pushScheduled(isServerSide(), (ITEScheduledUpdate_CH)this); mScheduleOldOpacity = LIGHT_OPACITY_MAX; mMarkedLightOpacityUpdate = T;}}
+	public void updateLightValueMark() 					{if (this instanceof IMTEScheduledUpdate_CH) {pushScheduled(isServerSide(), (IMTEScheduledUpdate_CH)this); mMarkedLightValueUpdate = T;}}
+	public void updateLightOpacityMark(int aOldOpacity) {if (this instanceof IMTEScheduledUpdate_CH) {pushScheduled(isServerSide(), (IMTEScheduledUpdate_CH)this); mScheduleOldOpacity = Math.max(aOldOpacity, mScheduleOldOpacity); mMarkedLightOpacityUpdate = T;}}
+	public void updateLightOpacityMark() 				{if (this instanceof IMTEScheduledUpdate_CH) {pushScheduled(isServerSide(), (IMTEScheduledUpdate_CH)this); mScheduleOldOpacity = LIGHT_OPACITY_MAX; mMarkedLightOpacityUpdate = T;}}
 	// 一般的调用更新，更新前需要先设置区块存储的不透光度数据；并入接口避免非法重写
 	public void updateLightValue() 						{UT_CH.Light.updateLightValue(getWorld(), getX(), getY(), getZ());}
 	public void updateLightOpacity(int aOldOpacity) 	{if (getWorld() != null && isServerSide()) WD_CH.setBlockGTLightOpacity(getWorld(), getX(), getY(), getZ(), (short)getBlock(getCoords()).getLightOpacity(getWorld(), getX(), getY(), getZ())); UT_CH.Light.updateLightOpacity(aOldOpacity, getWorld(), getX(), getY(), getZ());}
@@ -454,8 +454,8 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 	public void readFromNBT(NBTTagCompound aNBT) {
 		super.readFromNBT(aNBT);
 		// 仅服务端加入计划，因为不好加入世界加载和区块加载时的载入，为了避免客户端卡顿只向服务端加入计划（TODO，考虑看看世界加载和区块加载时的逻辑？）
-		if (isServerSide() && this instanceof ITEScheduledUpdate_CH) {
-			pushScheduled(T, (ITEScheduledUpdate_CH)this);
+		if (isServerSide() && this instanceof IMTEScheduledUpdate_CH) {
+			pushScheduled(T, (IMTEScheduledUpdate_CH)this);
 			mMarkNBTFinished = T;
 		}
 	}

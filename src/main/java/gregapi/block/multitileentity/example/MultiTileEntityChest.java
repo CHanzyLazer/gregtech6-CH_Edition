@@ -51,7 +51,7 @@ import gregapi.tileentity.base.TileEntityBase05Inventories;
 import gregapi.tileentity.data.ITileEntitySurface;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.util.UT;
-import gregtechCH.tileentity.ITEPaintable_CH;
+import gregtechCH.tileentity.IMTEPaintable;
 import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
 import net.minecraft.client.model.ModelBase;
@@ -81,7 +81,7 @@ import net.minecraftforge.common.ChestGenHooks;
  * 
  * An example implementation of a Chest with my MultiTileEntity System.
  */
-public class MultiTileEntityChest extends TileEntityBase05Inventories implements ITEPaintable_CH, IMTE_GetLightOpacity, IItemColorableRGB, ITileEntityDecolorable, ITileEntitySurface, IMTE_OnRegistrationClient, IMTE_OnRegistrationFirstClient, IMTE_SyncDataByte, IMTE_AddToolTips, IMTE_SetBlockBoundsBasedOnState, IMTE_GetSubItems, IMTE_SyncDataByteArray, IMTE_GetExplosionResistance, IMTE_GetBlockHardness, IMTE_GetComparatorInputOverride, IMTE_GetSelectedBoundingBoxFromPool, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnPlaced, IMTE_OnToolClick {
+public class MultiTileEntityChest extends TileEntityBase05Inventories implements IMTEPaintable, IMTE_GetLightOpacity, IItemColorableRGB, ITileEntityDecolorable, ITileEntitySurface, IMTE_OnRegistrationClient, IMTE_OnRegistrationFirstClient, IMTE_SyncDataByte, IMTE_AddToolTips, IMTE_SetBlockBoundsBasedOnState, IMTE_GetSubItems, IMTE_SyncDataByteArray, IMTE_GetExplosionResistance, IMTE_GetBlockHardness, IMTE_GetComparatorInputOverride, IMTE_GetSelectedBoundingBoxFromPool, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnPlaced, IMTE_OnToolClick {
 	protected boolean mIsPainted = F;
 	// GTCH, 用于在染色后保留一定原本颜色
 	protected int mRGBPaint = UNCOLORED;

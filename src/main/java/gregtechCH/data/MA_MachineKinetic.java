@@ -9,7 +9,7 @@ import java.util.HashMap;
 import static gregapi.data.CS.V;
 
 // MA: Material Attribute
-public class MA_MachineKinetic_CH extends HashMap<String, MA_MachineKinetic_CH.GeneralAttributes> {
+public class MA_MachineKinetic extends HashMap<String, MA_MachineKinetic.GeneralAttributes> {
     public static class GeneralAttributes {
         public int mID = 0;
         public int mStackSize = 16;
@@ -29,7 +29,7 @@ public class MA_MachineKinetic_CH extends HashMap<String, MA_MachineKinetic_CH.G
 
 //    private static Map<String, GeneralAttributes> mData = new TreeMap<>();
 
-    public MA_MachineKinetic_CH() {
+    public MA_MachineKinetic() {
         put(ANY.Wood.mNameInternal,         new GeneralAttributes(0,     16,    4.0F,   4.0F,  0,   V[0],  V[0]));
         put(MT.Bronze.mNameInternal,        new GeneralAttributes(1,     16,    7.0F,   7.0F,  0,   V[1],  V[1]));
         put(ANY.Steel.mNameInternal,        new GeneralAttributes(2,     16,    6.0F,   6.0F,  0,   V[2],  V[2]));

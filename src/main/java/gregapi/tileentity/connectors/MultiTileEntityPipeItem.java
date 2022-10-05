@@ -52,13 +52,11 @@ import gregapi.tileentity.ITileEntityQuickObstructionCheck;
 import gregapi.tileentity.ITileEntityServerTickPre;
 import gregapi.tileentity.data.ITileEntityProgress;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
-import gregapi.tileentity.delegate.ITileEntityCanDelegate;
 import gregapi.util.ST;
 import gregapi.util.UT;
-import gregtechCH.tileentity.compat.PipeCompat_CH;
+import gregtechCH.tileentity.compat.PipeCompat;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -267,8 +265,8 @@ public class MultiTileEntityPipeItem extends TileEntityBase10ConnectorRendered i
 	@Override public boolean canEmitItemsTo                 (byte aSide, Object aSender) {return (aSender != this || aSide != mLastReceivedFrom) && connected(aSide);}
 	@Override public boolean canAcceptItemsFrom             (byte aSide, Object aSender) {return connected(aSide);}
 
-	@Override public boolean canConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator)     {return PipeCompat_CH.canConnectItem(this, aDelegator, aDelegator.mSideOfTileEntity);}
-	@Override public boolean canAutoConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator) {return PipeCompat_CH.canAutoConnectItem(this, aDelegator, aDelegator.mSideOfTileEntity);}
+	@Override public boolean canConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator)     {return PipeCompat.canConnectItem(this, aDelegator, aDelegator.mSideOfTileEntity);}
+	@Override public boolean canAutoConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator) {return PipeCompat.canAutoConnectItem(this, aDelegator, aDelegator.mSideOfTileEntity);}
 	
 	@Override public long getProgressValue                  (byte aSide) {return getPipeContent()*64;}
 	@Override public long getProgressMax                    (byte aSide) {return getMaxPipeCapacity()*64;}

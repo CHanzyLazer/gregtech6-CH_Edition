@@ -59,8 +59,8 @@ import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.util.*;
 import gregtechCH.data.LH_CH;
 import gregtechCH.fluid.IFluidHandler_CH;
-import gregtechCH.tileentity.compat.PipeCompat_CH;
-import gregtechCH.tileentity.data.ITileEntityFlowrate_CH;
+import gregtechCH.tileentity.compat.PipeCompat;
+import gregtechCH.tileentity.data.ITileEntityFlowrate;
 import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCauldron;
@@ -79,7 +79,7 @@ import net.minecraftforge.fluids.IFluidTank;
 /**
  * @author Gregorius Techneticies
  */
-public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered implements ITileEntityFlowrate_CH, IMTE_GetOreDictItemData, ITileEntityQuickObstructionCheck, IFluidHandler_CH, ITileEntityGibbl, ITileEntityTemperature, ITileEntityProgress, ITileEntityServerTickPre, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnEntityCollidedWithBlock {
+public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered implements ITileEntityFlowrate, IMTE_GetOreDictItemData, ITileEntityQuickObstructionCheck, IFluidHandler_CH, ITileEntityGibbl, ITileEntityTemperature, ITileEntityProgress, ITileEntityServerTickPre, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnEntityCollidedWithBlock {
 	private byte[] mLastReceivedFrom = ZL_BYTE;
 	private static final byte LRF_COOLDOWN_NUM = 8;
 	private byte[][] mLRFCooldownCounters =  ZL_BI_BYTE;
@@ -1239,8 +1239,8 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		return rFilledAmount;
 	}
 	
-	@Override public boolean canConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator)     {return PipeCompat_CH.canConnectFluid(this, aDelegator, aDelegator.mSideOfTileEntity);}
-	@Override public boolean canAutoConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator) {return PipeCompat_CH.canAutoConnectFluid(this, aDelegator, aDelegator.mSideOfTileEntity);}
+	@Override public boolean canConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator)     {return PipeCompat.canConnectFluid(this, aDelegator, aDelegator.mSideOfTileEntity);}
+	@Override public boolean canAutoConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator) {return PipeCompat.canAutoConnectFluid(this, aDelegator, aDelegator.mSideOfTileEntity);}
 
 
 	// GTCH，根据状态修改是否可以输入输出

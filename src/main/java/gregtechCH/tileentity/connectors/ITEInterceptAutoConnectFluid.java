@@ -1,6 +1,6 @@
 package gregtechCH.tileentity.connectors;
 
 // 实体继承此类用于阻止部分面的染色管道自动连接
-public interface ITEInterceptAutoConnectItem_CH {
-    boolean interceptAutoConnectItem(byte aSide);
+public interface ITEInterceptAutoConnectFluid {
+    boolean interceptAutoConnectFluid(byte aSide);
 }

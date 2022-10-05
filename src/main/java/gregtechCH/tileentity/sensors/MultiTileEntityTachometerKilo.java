@@ -14,8 +14,8 @@ import static gregapi.data.CS.CA_GREEN_255;
 
 
 public class MultiTileEntityTachometerKilo extends MultiTileEntitySensorTE {
-	static {LH_CH.add("gt.tooltip.sensor.tachometerkilo", "Measures Axle Rotations (In Kilo-RU)");}
-	@Override public String getSensorDescription() {return LH_CH.get("gt.tooltip.sensor.tachometerkilo");}
+	static {LH_CH.add("gtch.tooltip.sensor.tachometerkilo", "Measures Axle Rotations (In Kilo-RU)");}
+	@Override public String getSensorDescription() {return LH_CH.get("gtch.tooltip.sensor.tachometerkilo");}
 	
 	@Override
 	public long getCurrentValue(DelegatorTileEntity<TileEntity> aDelegator) {

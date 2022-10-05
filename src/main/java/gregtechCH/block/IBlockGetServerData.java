@@ -7,7 +7,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 
 // 实现这个接口来实现方块获取服务器的数据
 @Deprecated
-public interface IBlockGetServerData_CH {
+public interface IBlockGetServerData {
     // 告知服务器需要获取数据
     @SideOnly(Side.CLIENT)
     void callGetServerData(int aX, int aY, int aZ, EntityPlayerMP aPlayer);

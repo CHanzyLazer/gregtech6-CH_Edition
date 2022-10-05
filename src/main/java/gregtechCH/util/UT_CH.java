@@ -35,13 +35,13 @@ import java.util.List;
 
 import static gregapi.data.CS.*;
 import static gregtechCH.config.ConfigForge_CH.DATA_GTCH;
+import static gregtechCH.data.CS_CH.REG_GREG;
 
 public class UT_CH {
     // 未分类，用来获取 GT 物品的实体
     public static TileEntity getItemTE(ItemStack aItemStack) {
-        MultiTileEntityRegistry tRegistry = MultiTileEntityRegistry.getRegistry("gt.multitileentity"); // 常量存储可能获取不到注册表，总之不重要
-        if (tRegistry == null) return null;
-        MultiTileEntityClassContainer tContainer = tRegistry.getClassContainer(aItemStack);
+        if (REG_GREG == null) return null;
+        MultiTileEntityClassContainer tContainer = REG_GREG.getClassContainer(aItemStack);
         if (tContainer == null) return null;
         return tContainer.mCanonicalTileEntity;
     }

@@ -25,7 +25,6 @@ import gregapi.code.HashSetNoNulls;
 import gregapi.code.ItemStackContainer;
 import gregapi.code.ItemStackMap;
 import gregapi.data.LH;
-import gregapi.data.RM;
 import gregapi.item.CreativeTab;
 import gregapi.recipes.Recipe.RecipeMap;
 import gregapi.render.RendererBlockTextured;
@@ -33,6 +32,7 @@ import gregapi.util.CR;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregtechCH.data.LH_CH;
+import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -50,6 +50,7 @@ import java.util.List;
 import java.util.Map;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.*;
 
 /**
  * @author Gregorius Techneticies
@@ -145,23 +146,18 @@ public class MultiTileEntityRegistry {
 	
 	/** Adds a new MultiTileEntity. It is highly recommended to do this in either the PreInit or the Init Phase. PostInit might not work well.*/
 	public ItemStack add(String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
-		return add(F, aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
+		return add(aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
 	}
-
+	
 	// GTCH, 为额外添加的机器添加特殊情况
-	public ItemStack add(Boolean aIsGTCH, String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
-		return add(aIsGTCH, aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
-	}
-
-	// 保留兼容
-	public ItemStack add(String aLocalised, String aCategoricalName, MultiTileEntityClassContainer aClassContainer, Object... aRecipe) {
-		return add(F, aLocalised, aCategoricalName, aClassContainer, aRecipe);
+	public ItemStack add(MTEType aMTEType, String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
+		return add(aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aMTEType, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
 	}
 	
 	// GTCH, 通过将 add 的项目存入 linkedHashMap 的方法来延迟 add 操作，方便魔改时对添加操作进行运行时修改并且保留对原版的更新的兼容
 	// 通过添加时检测 ID 是否处于替换 Map 中来进行“完美”的替换或删除
-	public ItemStack add(Boolean aIsGTCH, String aLocalised, String aCategoricalName, MultiTileEntityClassContainer aClassContainer, Object... aRecipe) {
-		AddObject tAddObject = new AddObject(aIsGTCH, aLocalised, aCategoricalName, aClassContainer, aRecipe);
+	public ItemStack add(String aLocalised, String aCategoricalName, MultiTileEntityClassContainer aClassContainer, Object... aRecipe) {
+		AddObject tAddObject = new AddObject(aLocalised, aCategoricalName, aClassContainer, aRecipe);
 		tAddObject.checkValid(); // 无论如何都要先检测输入是否合理
 		if (!mIsHoldingAdd) return tAddObject.addSelf();
 		if (mReplacingAdds.containsKey(aClassContainer.mID)) {
@@ -172,6 +168,63 @@ public class MultiTileEntityRegistry {
 		mHoldingAdds.put(aClassContainer.mID, tAddObject); // 允许一个 ID 被添加，然后移除，然后又添加这种情况。可能原本的注册有些附加操作需要排除
 		return getItem(aClassContainer.mID); // holding 时也需要能够返回合适的结果
 	}
+	
+	/* 提供一些修改 holding adds 的一些接口 */
+	// 修改原有的条目
+	public void replaceHolding(String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
+		replaceHolding(aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
+	}
+	public void replaceHolding(MTEType aMTEType, String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
+		replaceHolding(aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aMTEType, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
+	}
+	public void replaceHolding(String aLocalised, String aCategoricalName, MultiTileEntityClassContainer aClassContainer, Object... aRecipe) {
+		AddObject tAddObject = new AddObject(aLocalised, aCategoricalName, aClassContainer, aRecipe);
+		tAddObject.checkValid(); // 无论如何都要先检测输入是否合理
+		if (mReplacingAdds.containsKey(aClassContainer.mID)) ERR.println("MTE REGISTRY WARNING: The ID \"" + aClassContainer.mID + "\" is already on the replace list, the MTE \"" + aLocalised +  "\" will override it.");
+		mReplacingAdds.put(aClassContainer.mID, tAddObject);
+	}
+	// 删除指定条目
+	public void removeHolding(int aID) {
+		mReplacingAdds.put((short)aID, null);
+	}
+	// 在指定位置之前添加条目（添加项默认是 gtch）
+	public void appendHoldingBefore(int aBeforeID, String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
+		appendHoldingBefore(aBeforeID, aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
+	}
+	public void appendHoldingBefore(int aBeforeID, MTEType aMTEType, String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
+		appendHoldingBefore(aBeforeID, aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aMTEType, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
+	}
+	public void appendHoldingBefore(int aBeforeID, String aLocalised, String aCategoricalName, MultiTileEntityClassContainer aClassContainer, Object... aRecipe) {
+		AddObject tAddObject = new AddObject(aLocalised, aCategoricalName, aClassContainer, aRecipe);
+		tAddObject.checkValid(); // 无论如何都要先检测输入是否合理
+		int tIdx = mHoldingAdds.indexOf((short)aBeforeID);
+		if (tIdx == -1) {
+			ERR.println("MTE REGISTRY WARNING: Has no ID \"" + aBeforeID + "\" on appendHolding, the MTE \"" + aLocalised +  "\" will be put at the end!");
+			mHoldingAdds.put(aClassContainer.mID, tAddObject);
+		} else {
+			mHoldingAdds.put(tIdx, aClassContainer.mID, tAddObject);
+		}
+	}
+	// 在指定位置之后添加条目
+	public void appendHoldingAfter(int aAfterID, String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
+		appendHoldingAfter(aAfterID, aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
+	}
+	public void appendHoldingAfter(int aAfterID, MTEType aMTEType, String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
+		appendHoldingAfter(aAfterID, aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aMTEType, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
+	}
+	public void appendHoldingAfter(int aAfterID, String aLocalised, String aCategoricalName, MultiTileEntityClassContainer aClassContainer, Object... aRecipe) {
+		AddObject tAddObject = new AddObject(aLocalised, aCategoricalName, aClassContainer, aRecipe);
+		tAddObject.checkValid(); // 无论如何都要先检测输入是否合理
+		int tIdx = mHoldingAdds.indexOf((short)aAfterID);
+		if (tIdx == -1) {
+			ERR.println("MTE REGISTRY WARNING: Has no ID \"" + aAfterID + "\" on appendHolding, the MTE \"" + aLocalised +  "\" will be put at the end!");
+			mHoldingAdds.put(aClassContainer.mID, tAddObject);
+		} else {
+			++tIdx;
+			mHoldingAdds.put(tIdx, aClassContainer.mID, tAddObject);
+		}
+	}
+	
 	
 	public void holdAdd() {mIsHoldingAdd = T;}
 	public void releaseAdd() {
@@ -187,75 +240,18 @@ public class MultiTileEntityRegistry {
 	}
 	public boolean isHoldingAdd() {return mIsHoldingAdd;}
 	
-	/* 提供一些修改 holding adds 的一些接口 */
-	// 修改原有的条目
-	public void replaceHolding(String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
-		replaceHolding(F, aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
-	}
-	public void replaceHolding(Boolean aIsGTCH, String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
-		replaceHolding(aIsGTCH, aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
-	}
-	public void replaceHolding(Boolean aIsGTCH, String aLocalised, String aCategoricalName, MultiTileEntityClassContainer aClassContainer, Object... aRecipe) {
-		AddObject tAddObject = new AddObject(aIsGTCH, aLocalised, aCategoricalName, aClassContainer, aRecipe);
-		tAddObject.checkValid(); // 无论如何都要先检测输入是否合理
-		if (mReplacingAdds.containsKey(aClassContainer.mID)) ERR.println("MTE REGISTRY WARNING: The ID \"" + aClassContainer.mID + "\" is already on the replace list, the MTE \"" + aLocalised +  "\" will override it.");
-		mReplacingAdds.put(aClassContainer.mID, tAddObject);
-	}
-	// 删除指定条目
-	public void removeHolding(int aID) {
-		mReplacingAdds.put((short)aID, null);
-	}
-	// 在指定位置之前添加条目（添加项默认是 gtch）
-	public void appendHoldingBefore(int aBeforeID, String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
-		appendHoldingBefore(aBeforeID, T, aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
-	}
-	public void appendHoldingBefore(int aBeforeID, Boolean aIsGTCH, String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
-		appendHoldingBefore(aBeforeID, aIsGTCH, aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
-	}
-	public void appendHoldingBefore(int aBeforeID, Boolean aIsGTCH, String aLocalised, String aCategoricalName, MultiTileEntityClassContainer aClassContainer, Object... aRecipe) {
-		AddObject tAddObject = new AddObject(aIsGTCH, aLocalised, aCategoricalName, aClassContainer, aRecipe);
-		tAddObject.checkValid(); // 无论如何都要先检测输入是否合理
-		int tIdx = mHoldingAdds.indexOf((short)aBeforeID);
-		if (tIdx == -1) {
-			ERR.println("MTE REGISTRY WARNING: Has no ID \"" + aBeforeID + "\" on appendHolding, the MTE \"" + aLocalised +  "\" will be put at the end!");
-			mHoldingAdds.put(aClassContainer.mID, tAddObject);
-		} else {
-			mHoldingAdds.put(tIdx, aClassContainer.mID, tAddObject);
-		}
-	}
-	// 在指定位置之后添加条目
-	public void appendHoldingAfter(int aAfterID, String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
-		appendHoldingAfter(aAfterID, T, aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
-	}
-	public void appendHoldingAfter(int aAfterID, Boolean aIsGTCH, String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
-		appendHoldingAfter(aAfterID, aIsGTCH, aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
-	}
-	public void appendHoldingAfter(int aAfterID, Boolean aIsGTCH, String aLocalised, String aCategoricalName, MultiTileEntityClassContainer aClassContainer, Object... aRecipe) {
-		AddObject tAddObject = new AddObject(aIsGTCH, aLocalised, aCategoricalName, aClassContainer, aRecipe);
-		tAddObject.checkValid(); // 无论如何都要先检测输入是否合理
-		int tIdx = mHoldingAdds.indexOf((short)aAfterID);
-		if (tIdx == -1) {
-			ERR.println("MTE REGISTRY WARNING: Has no ID \"" + aAfterID + "\" on appendHolding, the MTE \"" + aLocalised +  "\" will be put at the end!");
-			mHoldingAdds.put(aClassContainer.mID, tAddObject);
-		} else {
-			++tIdx;
-			mHoldingAdds.put(tIdx, aClassContainer.mID, tAddObject);
-		}
-	}
-	
 	private boolean mIsHoldingAdd = F;
 	private final ListOrderedMap<Short, AddObject> mHoldingAdds = new ListOrderedMap<>(); // 存储 holding 的添加项，主要用来自定义在 nei 上的顺序
 	private final Map<Short, AddObject> mReplacingAdds = new HashMap<>(); // 存储将要替换的项目，如果为 null 则为删除
 	private class AddObject {
-		private final Boolean mIsGTCH;
 		private final String mLocalised;
 		private final String mCategoricalName;
 		private final MultiTileEntityClassContainer mClassContainer;
 		private Object[] mRecipe;
 		private boolean mFailed = F;
 		
-		public AddObject(Boolean aIsGTCH, String aLocalised, String aCategoricalName, MultiTileEntityClassContainer aClassContainer, Object... aRecipe) {
-			mIsGTCH = aIsGTCH; mLocalised = aLocalised; mCategoricalName = aCategoricalName; mClassContainer = aClassContainer; mRecipe = aRecipe;
+		public AddObject(String aLocalised, String aCategoricalName, MultiTileEntityClassContainer aClassContainer, Object... aRecipe) {
+			mLocalised = aLocalised; mCategoricalName = aCategoricalName; mClassContainer = aClassContainer; mRecipe = aRecipe;
 		}
 		
 		public void checkValid() {
@@ -299,7 +295,7 @@ public class MultiTileEntityRegistry {
 		private ItemStack addSelf() {
 			if (mFailed) return null;
 			assert mClassContainer != null;
-			if (mIsGTCH) LH_CH.add(mNameInternal+"."+mClassContainer.mID+".name", mLocalised);
+			if (mClassContainer.mType!=MTEType.GREG) LH_CH.add(getLHFront(mClassContainer.mType)+"."+mClassContainer.mID+".name", mLocalised); // 目前所有的非 greg 的 MTE 都使用外置的语言文件
 			else LH.add(mNameInternal+"."+mClassContainer.mID+".name", mLocalised);
 			mRegistry.put(mClassContainer.mID, mClassContainer);
 			mLastRegisteredID = mClassContainer.mID;
@@ -332,6 +328,16 @@ public class MultiTileEntityRegistry {
 			return getItem(mClassContainer.mID);
 		}
 	}
+	public String getLHFront(MTEType aMTEType) {
+		switch (aMTEType) {
+			case GTCH:
+				return "gtch.multitileentity";
+			case GT6U:
+				return "gt6u.multitileentity";
+			case GREG: default:
+				return mNameInternal;
+		}
+	}
 	
 	public short mLastRegisteredID = W;
 	
@@ -354,7 +360,7 @@ public class MultiTileEntityRegistry {
 	}
 
 	// get 由于是共用的一个语言 map 所以可以不用改
-	public String getLocal(int aID) {assert !mIsHoldingAdd; return LH.get(mNameInternal+"."+aID+".name");}
+	public String getLocal(int aID) {assert !mIsHoldingAdd; return LH.get(getLHFront(getClassContainer(aID).mType)+"."+aID+".name");}
 	
 	// GTCH, 需要对 holding 的情况特殊讨论，保证能够正常工作
 	public MultiTileEntityClassContainer getClassContainer(int aID) {

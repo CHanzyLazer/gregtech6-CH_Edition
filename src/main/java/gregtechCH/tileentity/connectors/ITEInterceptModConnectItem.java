@@ -1,5 +1,5 @@
 package gregtechCH.tileentity.connectors;
 
-public interface ITEInterceptModConnectItem_CH {
+public interface ITEInterceptModConnectItem {
     boolean interceptModConnectItem(byte aSide);
 }

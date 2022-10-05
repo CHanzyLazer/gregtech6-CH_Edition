@@ -24,7 +24,6 @@ import static gregapi.data.CS.*;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.google.common.collect.Lists;
 import com.google.common.primitives.Bytes;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -42,7 +41,7 @@ import gregapi.network.IPacket;
 import gregapi.oredict.OreDictMaterial;
 import gregapi.tileentity.ITileEntityDecolorable;
 import gregapi.util.UT;
-import gregtechCH.tileentity.ITEPaintable_CH;
+import gregtechCH.tileentity.IMTEPaintable;
 import gregtechCH.util.UT_CH;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -53,7 +52,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author Gregorius Techneticies
  */
-public abstract class TileEntityBase07Paintable extends TileEntityBase06Covers implements ITEPaintable_CH, IItemColorableRGB, ITileEntityDecolorable, IMTE_GetSubItems, IMTE_GetExplosionResistance, IMTE_GetBlockHardness, IMTE_GetLightOpacity, IMTE_SyncDataByte, IMTE_SyncDataByteArray {
+public abstract class TileEntityBase07Paintable extends TileEntityBase06Covers implements IMTEPaintable, IItemColorableRGB, ITileEntityDecolorable, IMTE_GetSubItems, IMTE_GetExplosionResistance, IMTE_GetBlockHardness, IMTE_GetLightOpacity, IMTE_SyncDataByte, IMTE_SyncDataByteArray {
 	protected boolean mIsPainted = F;
 	protected int mFlammability = 0;
 	protected float mHardness = 1.0F, mResistance = 3.0F;

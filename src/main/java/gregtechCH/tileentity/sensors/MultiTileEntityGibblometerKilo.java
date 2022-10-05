@@ -13,8 +13,8 @@ import static gregapi.data.CS.CA_YELLOW_255;
 
 
 public class MultiTileEntityGibblometerKilo extends MultiTileEntitySensorTE {
-	static {LH_CH.add("gt.tooltip.sensor.gibblometerkilo", "Measures Compression (In Kilo-Gibbl)");}
-	@Override public String getSensorDescription() {return LH_CH.get("gt.tooltip.sensor.gibblometerkilo");}
+	static {LH_CH.add("gtch.tooltip.sensor.gibblometerkilo", "Measures Compression (In Kilo-Gibbl)");}
+	@Override public String getSensorDescription() {return LH_CH.get("gtch.tooltip.sensor.gibblometerkilo");}
 	
 	@Override public long getCurrentValue(DelegatorTileEntity<TileEntity> aDelegator) {if (aDelegator.mTileEntity instanceof ITileEntityGibbl) return ((ITileEntityGibbl)aDelegator.mTileEntity).getGibblValue(aDelegator.mSideOfTileEntity) / 1000000; return 0;}
 	@Override public long getCurrentMax  (DelegatorTileEntity<TileEntity> aDelegator) {if (aDelegator.mTileEntity instanceof ITileEntityGibbl) return ((ITileEntityGibbl)aDelegator.mTileEntity).getGibblMax  (aDelegator.mSideOfTileEntity) / 1000000; return 0;}

@@ -4,8 +4,8 @@ import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.tileentity.delegate.ITileEntityCanDelegate;
 import gregapi.util.ST;
 import gregapi.util.UT;
-import gregtechCH.tileentity.connectors.ITEInterceptAutoConnectFluid_CH;
-import gregtechCH.tileentity.connectors.ITEInterceptAutoConnectItem_CH;
+import gregtechCH.tileentity.connectors.ITEInterceptAutoConnectFluid;
+import gregtechCH.tileentity.connectors.ITEInterceptAutoConnectItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCauldron;
 import net.minecraft.init.Blocks;
@@ -18,7 +18,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 import static gregapi.data.CS.*;
 
 // 用于处理管道和其他 mod 的连接
-public class PipeCompat_CH {
+public class PipeCompat {
     public static boolean BC_PIPES = F, EIO_PIPES = F;
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -97,7 +97,7 @@ public class PipeCompat_CH {
     }
     // 需要阻止自动连接的检测
     private static boolean interceptAutoConnectFluid(TileEntity aThis, DelegatorTileEntity<TileEntity> aTarget, byte aSide) {
-        if (aTarget.mTileEntity instanceof ITEInterceptAutoConnectFluid_CH && ((ITEInterceptAutoConnectFluid_CH)aTarget.mTileEntity).interceptAutoConnectFluid(aSide)) return T;
+        if (aTarget.mTileEntity instanceof ITEInterceptAutoConnectFluid && ((ITEInterceptAutoConnectFluid)aTarget.mTileEntity).interceptAutoConnectFluid(aSide)) return T;
         // 对于 EnderIO 管道的兼容，防止流体管道自动连接 EnderIO 的管道
         if (EIO_PIPES && aTarget.mTileEntity instanceof crazypants.enderio.conduit.IConduitBundle) return T;
         return F;
@@ -133,7 +133,7 @@ public class PipeCompat_CH {
     }
     // 需要阻止自动连接的检测
     private static boolean interceptAutoConnectItem(TileEntity aThis, DelegatorTileEntity<TileEntity> aTarget, byte aSide) {
-        if (aTarget.mTileEntity instanceof ITEInterceptAutoConnectItem_CH && ((ITEInterceptAutoConnectItem_CH)aTarget.mTileEntity).interceptAutoConnectItem(aSide)) return T;
+        if (aTarget.mTileEntity instanceof ITEInterceptAutoConnectItem && ((ITEInterceptAutoConnectItem)aTarget.mTileEntity).interceptAutoConnectItem(aSide)) return T;
         // 对于 EnderIO 管道的兼容，防止物品管道自动连接 EnderIO 的管道
         if (EIO_PIPES && aTarget.mTileEntity instanceof crazypants.enderio.conduit.IConduitBundle) return T;
         return F;

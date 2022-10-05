@@ -7,6 +7,7 @@ import gregapi.data.MT;
 import gregapi.oredict.OreDictPrefix;
 import gregapi.util.UT;
 import gregtechCH.util.UT_CH;
+import net.minecraft.block.Block;
 
 import java.io.File;
 import java.util.Set;
@@ -15,12 +16,15 @@ import static gregapi.data.CS.*;
 import static gregapi.data.OP.*;
 
 public class CS_CH {
-
+    // 各种注册表的引用，为了避免不必要的问题会在其第一次初始化后有效
+    public static MultiTileEntityRegistry REG_GREG;
+    public static Short REG_GREG_ID; // 可能在跨版本的存档中会失效！！！
+    
     // 补充一些常量
     public static final byte SIDE_NUMBER = (byte)ALL_SIDES_VALID.length;
     public static final byte[][] ZL_BI_BYTE = new byte[0][0];
     public static final long[][] ZL_BI_LONG = new long[0][0];
-
+    
     // 只有 RGB 值的转为 RGBa 加上此值可以比较保险
     public static final int ALPHA_COLOR = 0xff000000;
     // 记录一些方块的颜色
@@ -45,15 +49,19 @@ public class CS_CH {
     public static final int[] DYES_INT_CFoam    = new int[DYES_INT.length];
     public static final int[] DYES_INT_Concrete = new int[DYES_INT.length];
     public static final int[] DYES_INT_Glass    = new int[DYES_INT.length];
-
-    private static void initCS_CH() {
+    
+    private static void staticInitCS_CH() {
         for (int i = 0; i<DYES_INT.length; ++i) DYES_INT_Asphalt[i]     = UT_CH.Code.getPaintRGB(UT.Code.getRGBInt(MT.Asphalt.fRGBaSolid),          DYES_INT[i]);
         for (int i = 0; i<DYES_INT.length; ++i) DYES_INT_CFoam[i]       = UT_CH.Code.getPaintRGB(UT.Code.getRGBInt(MT.ConstructionFoam.fRGBaSolid), DYES_INT[i]);
         for (int i = 0; i<DYES_INT.length; ++i) DYES_INT_Concrete[i]    = UT_CH.Code.getPaintRGB(UT.Code.getRGBInt(MT.Concrete.fRGBaSolid),         DYES_INT[i]);
         for (int i = 0; i<DYES_INT.length; ++i) DYES_INT_Glass[i]       = UT_CH.Code.getPaintRGB(UT.Code.getRGBInt(MT.Glass.fRGBaSolid),            DYES_INT[i]);
     }
-    static {initCS_CH();}
-
+    static {staticInitCS_CH();}
+    public static void initCS_CH() {
+        REG_GREG = MultiTileEntityRegistry.getRegistry("gt.multitileentity");
+        REG_GREG_ID = (short)Block.getIdFromBlock(REG_GREG.mBlock);
+    }
+    
     /** 将连接 byte 转换为侧边 byte， 没有连接的为 6，并且会优先排列在轴上前后都连接的（用于优化管道的环境光遮蔽），使用 CONNECTED_SIDE_AXIS[connection][0] 可以调用最长的连接方向，相同长度时优先级为 x z y */
     public static final byte[][] CONNECTED_SIDE_AXIS = {
             {6,6,6,6,6,6}, {0,6,6,6,6,6}, {1,6,6,6,6,6}, {0,1,6,6,6,6},
@@ -73,14 +81,14 @@ public class CS_CH {
             {4,5,3,6,6,6}, {4,5,0,3,6,6}, {4,5,1,3,6,6}, {4,5,0,1,3,6},
             {4,5,2,3,6,6}, {4,5,0,2,3,6}, {4,5,1,2,3,6}, {4,5,0,1,2,3}
     };
-
+    
     // 用于统计哪些 prefix 是可以做覆盖板的
     public static final Set<OreDictPrefix> ALL_COVER_PREFIX = Sets.newHashSet(plate, plateDouble, plateTriple, plateQuadruple, plateQuintuple, plateDense, plateCurved, plateGem, sheetGt, foil);
     // 用于统计哪些 prefix 是属于管道或者线缆或者是连接器
     public static final Set<OreDictPrefix> ALL_PIPE_PREFIX  = Sets.newHashSet(pipeTiny, pipeSmall, pipeMedium, pipeLarge, pipeHuge, pipeQuadruple, pipeNonuple, pipeRestrictiveTiny, pipeRestrictiveSmall, pipeRestrictiveMedium, pipeRestrictiveLarge, pipeRestrictiveHuge, pipe);
     public static final Set<OreDictPrefix> ALL_WIRE_PREFIX  = Sets.newHashSet(wireGt01, wireGt02, wireGt03, wireGt04, wireGt05, wireGt06, wireGt07, wireGt08, wireGt09, wireGt10, wireGt11, wireGt12, wireGt13, wireGt14, wireGt15, wireGt16);
     public static final Set<OreDictPrefix> ALL_CABLE_PREFIX = Sets.newHashSet(cableGt01, cableGt02, cableGt04, cableGt08, cableGt12);
-
+    
     public static final String
               NBT_CANFILL_STEAM             = "gtch.canfill.steam"          // Boolean, Is this machine can fill steam. CHanzy
 
@@ -137,13 +145,13 @@ public class CS_CH {
             , NBT_ADD_INT                   = "gtch.add.int"                // Integer, The additional byte information that have random name, CHanzy
             , NBT_ADD_LONG                  = "gtch.add.long"               // Long, The additional byte information that have random name, CHanzy
             ;
-
+    
     public static class DirectoriesGTCH {
         public static File
                 CONFIG_GTCH,
                 JSON_GTCH;
     }
-
+    
     /** Configs CH */
     public static class ConfigsGTCH {
         public static Config
@@ -151,7 +159,14 @@ public class CS_CH {
                 MACHINES,
                 REACTORS;
     }
-
+    
+    /* MTE 来源的种类 */
+    public enum MTEType {
+        GREG,
+        GTCH,
+        GT6U;
+    }
+    
     public enum IconType {
         COLORED,
         OVERLAY,
@@ -168,7 +183,7 @@ public class CS_CH {
         OVERLAY_ENERGY_RU,
         OVERLAY_FLUID;
     }
-
+    
     // 管道尺寸
     public enum Size {
         SMALL,
@@ -176,7 +191,7 @@ public class CS_CH {
         LARGE,
         HUGE
     }
-
+    
     // 管道模式
     public enum Mode {
         DEFAULT,
@@ -184,7 +199,7 @@ public class CS_CH {
         PRIORITY,
         DIVIDE // 保留模式
     }
-
+    
     // 整数类型
     public enum NumberType {
         BYTE,
@@ -192,7 +207,7 @@ public class CS_CH {
         INT,
         LONG
     }
-
+    
     // 重新渲染的 tick 类型
     public enum RerenderTick {
         INIT,

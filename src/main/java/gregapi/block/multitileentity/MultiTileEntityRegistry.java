@@ -146,7 +146,7 @@ public class MultiTileEntityRegistry {
 	
 	/** Adds a new MultiTileEntity. It is highly recommended to do this in either the PreInit or the Init Phase. PostInit might not work well.*/
 	public ItemStack add(String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
-		return add(aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
+		return add(aLocalised, aCategoricalName, new MultiTileEntityClassContainer(MTEType.GREG, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
 	}
 	
 	// GTCH, 为额外添加的机器添加特殊情况
@@ -172,7 +172,7 @@ public class MultiTileEntityRegistry {
 	/* 提供一些修改 holding adds 的一些接口 */
 	// 修改原有的条目
 	public void replaceHolding(String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
-		replaceHolding(aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
+		replaceHolding(aLocalised, aCategoricalName, new MultiTileEntityClassContainer(MTEType.GREG, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
 	}
 	public void replaceHolding(MTEType aMTEType, String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
 		replaceHolding(aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aMTEType, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
@@ -189,7 +189,7 @@ public class MultiTileEntityRegistry {
 	}
 	// 在指定位置之前添加条目（添加项默认是 gtch）
 	public void appendHoldingBefore(int aBeforeID, String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
-		appendHoldingBefore(aBeforeID, aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
+		appendHoldingBefore(aBeforeID, aLocalised, aCategoricalName, new MultiTileEntityClassContainer(MTEType.GTCH, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
 	}
 	public void appendHoldingBefore(int aBeforeID, MTEType aMTEType, String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
 		appendHoldingBefore(aBeforeID, aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aMTEType, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
@@ -207,7 +207,7 @@ public class MultiTileEntityRegistry {
 	}
 	// 在指定位置之后添加条目
 	public void appendHoldingAfter(int aAfterID, String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
-		appendHoldingAfter(aAfterID, aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
+		appendHoldingAfter(aAfterID, aLocalised, aCategoricalName, new MultiTileEntityClassContainer(MTEType.GTCH, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
 	}
 	public void appendHoldingAfter(int aAfterID, MTEType aMTEType, String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
 		appendHoldingAfter(aAfterID, aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aMTEType, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
@@ -295,8 +295,15 @@ public class MultiTileEntityRegistry {
 		private ItemStack addSelf() {
 			if (mFailed) return null;
 			assert mClassContainer != null;
-			if (mClassContainer.mType!=MTEType.GREG) LH_CH.add(getLHFront(mClassContainer.mType)+"."+mClassContainer.mID+".name", mLocalised); // 目前所有的非 greg 的 MTE 都使用外置的语言文件
-			else LH.add(mNameInternal+"."+mClassContainer.mID+".name", mLocalised);
+			// 目前所有的非 greg 的 MTE 都使用外置的语言文件
+			switch (mClassContainer.mType) {
+				case GTCH:
+					LH_CH.add(mNameInternal+"."+mClassContainer.mID+".name", mLocalised); break;
+				case GT6U:
+					LH_CH.add(T, mNameInternal+"."+mClassContainer.mID+".name", mLocalised); break;
+				case GREG: default:
+					LH.add(mNameInternal+"."+mClassContainer.mID+".name", mLocalised); break;
+			}
 			mRegistry.put(mClassContainer.mID, mClassContainer);
 			mLastRegisteredID = mClassContainer.mID;
 			mRegistrations.add(mClassContainer);
@@ -328,16 +335,6 @@ public class MultiTileEntityRegistry {
 			return getItem(mClassContainer.mID);
 		}
 	}
-	public String getLHFront(MTEType aMTEType) {
-		switch (aMTEType) {
-			case GTCH:
-				return "gtch.multitileentity";
-			case GT6U:
-				return "gt6u.multitileentity";
-			case GREG: default:
-				return mNameInternal;
-		}
-	}
 	
 	public short mLastRegisteredID = W;
 	
@@ -360,7 +357,7 @@ public class MultiTileEntityRegistry {
 	}
 
 	// get 由于是共用的一个语言 map 所以可以不用改
-	public String getLocal(int aID) {assert !mIsHoldingAdd; return LH.get(getLHFront(getClassContainer(aID).mType)+"."+aID+".name");}
+	public String getLocal(int aID) {assert !mIsHoldingAdd; return LH.get(mNameInternal+"."+aID+".name");}
 	
 	// GTCH, 需要对 holding 的情况特殊讨论，保证能够正常工作
 	public MultiTileEntityClassContainer getClassContainer(int aID) {

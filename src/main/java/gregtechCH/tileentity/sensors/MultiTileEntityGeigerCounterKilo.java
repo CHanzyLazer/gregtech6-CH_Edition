@@ -17,8 +17,8 @@ import static gregapi.data.CS.DYE_Purple;
 
 
 public class MultiTileEntityGeigerCounterKilo extends MultiTileEntitySensorTE {
-	static {LH_CH.add("gtch.tooltip.sensor.geigercounterkilo", "Measures Neutron Energy Levels (In Thousands)");}
-	@Override public String getSensorDescription() {return LH_CH.get("gtch.tooltip.sensor.geigercounterkilo");}
+	static {LH_CH.add("gt.tooltip.sensor.geigercounterkilo", "Measures Neutron Energy Levels (In Thousands)");}
+	@Override public String getSensorDescription() {return LH_CH.get("gt.tooltip.sensor.geigercounterkilo");}
 	
 	@Override
 	public long getCurrentValue(DelegatorTileEntity<TileEntity> aDelegator) {

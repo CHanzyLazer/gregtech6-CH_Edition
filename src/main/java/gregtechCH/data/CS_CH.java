@@ -18,7 +18,7 @@ import static gregapi.data.OP.*;
 public class CS_CH {
     // 各种注册表的引用，为了避免不必要的问题会在其第一次初始化后有效
     public static MultiTileEntityRegistry REG_GREG;
-    public static Short REG_GREG_ID; // 可能在跨版本的存档中会失效！！！
+//    public static Short REG_GREG_ID; // TODO 可能在跨版本的存档中会失效！！！
     
     // 补充一些常量
     public static final byte SIDE_NUMBER = (byte)ALL_SIDES_VALID.length;
@@ -59,7 +59,7 @@ public class CS_CH {
     static {staticInitCS_CH();}
     public static void initCS_CH() {
         REG_GREG = MultiTileEntityRegistry.getRegistry("gt.multitileentity");
-        REG_GREG_ID = (short)Block.getIdFromBlock(REG_GREG.mBlock);
+//        REG_GREG_ID = (short)Block.getIdFromBlock(REG_GREG.mBlock);
     }
     
     /** 将连接 byte 转换为侧边 byte， 没有连接的为 6，并且会优先排列在轴上前后都连接的（用于优化管道的环境光遮蔽），使用 CONNECTED_SIDE_AXIS[connection][0] 可以调用最长的连接方向，相同长度时优先级为 x z y */

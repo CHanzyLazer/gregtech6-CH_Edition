@@ -13,8 +13,8 @@ import static gregapi.data.CS.CA_YELLOW_255;
 
 
 public class MultiTileEntityLaserometerKilo extends MultiTileEntitySensorTE {
-	static {LH_CH.add("gtch.tooltip.sensor.laserometerkilo", "Measures Power transmitted through Laser Fiber (In Kilo-LU)");}
-	@Override public String getSensorDescription() {return LH_CH.get("gtch.tooltip.sensor.laserometerkilo");}
+	static {LH_CH.add("gt.tooltip.sensor.laserometerkilo", "Measures Power transmitted through Laser Fiber (In Kilo-LU)");}
+	@Override public String getSensorDescription() {return LH_CH.get("gt.tooltip.sensor.laserometerkilo");}
 	
 	@Override
 	public long getCurrentValue(DelegatorTileEntity<TileEntity> aDelegator) {

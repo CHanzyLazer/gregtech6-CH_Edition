@@ -2,6 +2,8 @@ package gregtechCH.data;
 
 import gregtechCH.lang.LanguageHandler_CH;
 
+import static gregapi.data.CS.F;
+
 public class LH_CH {
     public static final String
               AXLE_STATS_SPEED                          = "gtch.lang.axle.stats.speed"
@@ -28,7 +30,8 @@ public class LH_CH {
             , HAZARD_EXPLOSION_LENGTH                   = "gtch.lang.hazard.explosion.motor.length"
             ;
 
-    public static final String add(String aKey, String aEnglish) {LanguageHandler_CH.add(aKey, aEnglish); return aKey;}
+    public static final String add(String aKey, String aEnglish) {LanguageHandler_CH.add(F, aKey, aEnglish); return aKey;}
+    public static final String add(boolean aIsGT6U, String aKey, String aEnglish) {LanguageHandler_CH.add(aIsGT6U, aKey, aEnglish); return aKey;}
     public static final String get(String aKey) {return LanguageHandler_CH.translate(aKey);}
     public static final String getNumber(String aKey, long aNum) {return String.format(LanguageHandler_CH.translate(aKey), aNum);}
     public static final String getNumber(String aKey, long aNum1, long aNum2) {return String.format(LanguageHandler_CH.translate(aKey), aNum1, aNum2);}

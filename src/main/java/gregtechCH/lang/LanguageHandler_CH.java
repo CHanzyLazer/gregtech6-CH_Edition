@@ -27,8 +27,9 @@ public class LanguageHandler_CH extends LanguageHandler {
             sLangFile.save();
         }
     }
-
-    public static synchronized void add(String aKey, String aEnglish) {
+    
+    public static synchronized void add(String aKey, String aEnglish) {add(F, aKey, aEnglish);}
+    public static synchronized void add(boolean aIsGT6U, String aKey, String aEnglish) {
         if (aKey == null) return;
         aKey = aKey.trim();
         if (aKey.length() <= 0) return;
@@ -39,7 +40,7 @@ public class LanguageHandler_CH extends LanguageHandler {
             mUseFile = sLangFile.get("EnableLangFile", "UseThisFileAsLanguageFile", F).getBoolean(F);
             if (!BUFFERMAP.isEmpty()) {
                 for (Map.Entry<String, String> tEntry : BUFFERMAP.entrySet()) {
-                    Property tProperty = sLangFile.get("LanguageFile", tEntry.getKey(), tEntry.getValue());
+                    Property tProperty = sLangFile.get(aIsGT6U?"LanguageFile_GT6U":"LanguageFile", tEntry.getKey(), tEntry.getValue());
                     TEMPMAP.put(tEntry.getKey(), mUseFile?tProperty.getString():tEntry.getValue());
                     LanguageRegistry.instance().injectLanguage("en_US", TEMPMAP);
                     TEMPMAP.clear();
@@ -47,7 +48,7 @@ public class LanguageHandler_CH extends LanguageHandler {
                 if (mWritingEnabled) sLangFile.save();
                 BUFFERMAP.clear();
             }
-            Property tProperty = sLangFile.get("LanguageFile", aKey, aEnglish);
+            Property tProperty = sLangFile.get(aIsGT6U?"LanguageFile_GT6U":"LanguageFile", aKey, aEnglish);
             if (!tProperty.wasRead() && mWritingEnabled) sLangFile.save();
             TEMPMAP.put(aKey, mUseFile?tProperty.getString():aEnglish);
             LanguageRegistry.instance().injectLanguage("en_US", TEMPMAP);

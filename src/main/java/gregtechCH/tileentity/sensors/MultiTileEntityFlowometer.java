@@ -32,8 +32,8 @@ import static gregapi.data.CS.CA_CYAN_255;
 
 /* 目前仅能检测 GT 流体管道的流速 */
 public class MultiTileEntityFlowometer extends MultiTileEntitySensorTE {
-	static {LH_CH.add("gtch.tooltip.sensor.flowometer", "Measures Fluid Flow Rate (In Liter per Tick)");}
-	@Override public String getSensorDescription() {return LH_CH.get("gtch.tooltip.sensor.flowometer");}
+	static {LH_CH.add("gt.tooltip.sensor.flowometer", "Measures Fluid Flow Rate (In Liter per Tick)");}
+	@Override public String getSensorDescription() {return LH_CH.get("gt.tooltip.sensor.flowometer");}
 	
 	@Override
 	public long getCurrentValue(DelegatorTileEntity<TileEntity> aDelegator) {

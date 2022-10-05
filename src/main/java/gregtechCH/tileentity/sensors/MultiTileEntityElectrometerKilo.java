@@ -18,8 +18,8 @@ import static gregapi.data.CS.V;
 
 
 public class MultiTileEntityElectrometerKilo extends MultiTileEntitySensorTE {
-	static {LH_CH.add("gtch.tooltip.sensor.electrometerkilo", "Measures Electricity Flow (In Kilo-EU)");}
-	@Override public String getSensorDescription() {return LH_CH.get("gtch.tooltip.sensor.electrometerkilo");}
+	static {LH_CH.add("gt.tooltip.sensor.electrometerkilo", "Measures Electricity Flow (In Kilo-EU)");}
+	@Override public String getSensorDescription() {return LH_CH.get("gt.tooltip.sensor.electrometerkilo");}
 	
 	@Override
 	public long getCurrentValue(DelegatorTileEntity<TileEntity> aDelegator) {

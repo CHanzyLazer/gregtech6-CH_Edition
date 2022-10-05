@@ -41,6 +41,7 @@ public class MultiTileEntityClassContainer {
 	// GTCH
 	public final MTEType mType;
 	
+	// 保留兼容
 	public MultiTileEntityClassContainer(int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters) {
 		this(MTEType.GREG, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters);
 	}

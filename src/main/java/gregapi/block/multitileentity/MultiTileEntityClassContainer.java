@@ -39,13 +39,13 @@ public class MultiTileEntityClassContainer {
 	public final short mID, mCreativeTabID;
 	public final boolean mHidden;
 	// GTCH
-	public final MTEType mType;
+	public final RegType mType;
 	
 	// 保留兼容
 	public MultiTileEntityClassContainer(int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters) {
-		this(MTEType.GREG, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters);
+		this(RegType.GREG, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters);
 	}
-	public MultiTileEntityClassContainer(MTEType aType, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters) {
+	public MultiTileEntityClassContainer(RegType aType, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters) {
 		if (!IMultiTileEntity.class.isAssignableFrom(aClass)) throw new IllegalArgumentException("MultiTileEntities must implement the Interface IMultiTileEntity!");
 		mType = aType;
 		mBlockMetaData = (byte)aBlockMetaData;

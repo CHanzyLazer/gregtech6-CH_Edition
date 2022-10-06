@@ -145,19 +145,18 @@ public class MultiTileEntityRegistry {
 	
 	/** Adds a new MultiTileEntity. It is highly recommended to do this in either the PreInit or the Init Phase. PostInit might not work well.*/
 	public ItemStack add(String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
-		return add(aLocalised, aCategoricalName, new MultiTileEntityClassContainer(MTEType.GREG, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
+		return add(aLocalised, aCategoricalName, new MultiTileEntityClassContainer(RegType.GREG, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
 	}
 	
 	// GTCH, 为额外添加的机器添加特殊情况
-	public ItemStack add(MTEType aMTEType, String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
-		return add(aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aMTEType, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
+	public ItemStack add(RegType aRegType, String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
+		return add(aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aRegType, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
 	}
 	
 	// GTCH, 通过添加时检测 ID 是否处于替换 Map 中来进行“完美”的替换或删除
 	// 不允许一个 ID 被添加，然后移除，然后又添加这种情况。（移除必须要在添加之前）
 	public ItemStack add(String aLocalised, String aCategoricalName, MultiTileEntityClassContainer aClassContainer, Object... aRecipe) {
 		AddObject tAddObject = new AddObject(aLocalised, aCategoricalName, aClassContainer, aRecipe);
-		tAddObject.checkValid(); // 无论如何都要先检测输入是否合理
 		if (!mIsModifyingAdd) return tAddObject.addSelf();
 		/// 先检测替换和移除
 		if (mReplacingAddList.containsKey(aClassContainer.mID)) {
@@ -168,7 +167,7 @@ public class MultiTileEntityRegistry {
 		List<AddObject>
 		tAppendList = mAppendingAddBeforeList.get(aClassContainer.mID);
 		if (tAppendList != null) {
-			for (AddObject tAppendObject : tAppendList) {tAppendObject.checkValid(); tAppendObject.addSelf();} // 遍历列表添加
+			for (AddObject tAppendObject : tAppendList) tAppendObject.addSelf(); // 遍历列表添加
 			mAppendingAddBeforeList.remove(aClassContainer.mID); // 添加后移除此项
 		}
 		/// 进行添加
@@ -176,55 +175,69 @@ public class MultiTileEntityRegistry {
 		/// 检测之后添加
 		tAppendList = mAppendingAddAfterList.get(aClassContainer.mID);
 		if (tAppendList != null) {
-			for (AddObject tAppendObject : tAppendList) {tAppendObject.checkValid(); tAppendObject.addSelf();} // 遍历列表添加
+			for (AddObject tAppendObject : tAppendList) tAppendObject.addSelf(); // 遍历列表添加
 			mAppendingAddAfterList.remove(aClassContainer.mID); // 添加后移除此项
 		}
 		return tOut;
 	}
 	
-	/* 提供一些修改 holding adds 的一些接口 */
+	/* 提供一些修改 adds 的一些接口 */
 	// 修改原有的条目
 	public void replaceAdd(String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
-		replaceAdd(aLocalised, aCategoricalName, new MultiTileEntityClassContainer(MTEType.GREG, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
+		replaceAdd(aLocalised, aCategoricalName, new MultiTileEntityClassContainer(RegType.GREG, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
 	}
-	public void replaceAdd(MTEType aMTEType, String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
-		replaceAdd(aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aMTEType, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
+	public void replaceAdd(RegType aRegType, String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
+		replaceAdd(aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aRegType, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
 	}
 	public void replaceAdd(String aLocalised, String aCategoricalName, MultiTileEntityClassContainer aClassContainer, Object... aRecipe) {
 		AddObject tAddObject = new AddObject(aLocalised, aCategoricalName, aClassContainer, aRecipe);
-		tAddObject.checkValid(); // 无论如何都要先检测输入是否合理
-		if (mReplacingAddList.containsKey(aClassContainer.mID)) ERR.println("MTE REGISTRY WARNING: The ID \"" + aClassContainer.mID + "\" is already on the replace list, the MTE \"" + aLocalised +  "\" will override it.");
+		if (mReplacingAddList.containsKey(aClassContainer.mID)) {
+			ERR.println("MTE REGISTRY WARNING: The ID \"" + aClassContainer.mID + "\" is already on the replace list, replace fail!"); // TODO 后续为了配置文件修改，可以不进行此报错
+			return;
+		}
 		mReplacingAddList.put(aClassContainer.mID, tAddObject);
 	}
 	// 删除指定条目
 	public void removeAdds(int aID) {
+		if (mReplacingAddList.containsKey((short)aID)) {
+			ERR.println("MTE REGISTRY WARNING: The ID \"" + aID + "\" is already on the replace list, remove fail!"); // TODO 后续为了配置文件修改，可以不进行此报错
+			return;
+		}
 		mReplacingAddList.put((short)aID, null);
 	}
 	// 在指定位置之前添加条目（添加项默认是 gtch）
 	public void appendAddBefore(int aBeforeID, String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
-		appendAddBefore(aBeforeID, aLocalised, aCategoricalName, new MultiTileEntityClassContainer(MTEType.GTCH, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
+		appendAddBefore(aBeforeID, aLocalised, aCategoricalName, new MultiTileEntityClassContainer(RegType.GTCH, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
 	}
-	public void appendAddBefore(int aBeforeID, MTEType aMTEType, String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
-		appendAddBefore(aBeforeID, aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aMTEType, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
+	public void appendAddBefore(int aBeforeID, RegType aRegType, String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
+		appendAddBefore(aBeforeID, aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aRegType, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
 	}
 	public void appendAddBefore(int aBeforeID, String aLocalised, String aCategoricalName, MultiTileEntityClassContainer aClassContainer, Object... aRecipe) {
 		AddObject tAddObject = new AddObject(aLocalised, aCategoricalName, aClassContainer, aRecipe);
-		tAddObject.checkValid(); // 为了保证能够获取有用的 stackTrace，这里还是 check 一下。方便起见为了避免多个 append 到相同 id 时的 append id 冲突，最后添加前还需要再次进行 check
 		if (!mAppendingAddBeforeList.containsKey((short)aBeforeID)) mAppendingAddBeforeList.put((short)aBeforeID, new LinkedList<AddObject>());
-		mAppendingAddBeforeList.get((short)aBeforeID).add(tAddObject);
+		// replace 也可以影响 append 操作
+		if (mReplacingAddList.containsKey(aClassContainer.mID)) {
+			tAddObject = mReplacingAddList.get(aClassContainer.mID); // 用来保证只有存在的项才会设置，而不会都变成 null
+			mReplacingAddList.remove(aClassContainer.mID); // 获取后移除
+		}
+		if (tAddObject != null) mAppendingAddBeforeList.get((short)aBeforeID).add(tAddObject);
 	}
 	// 在指定位置之后添加条目
 	public void appendAddAfter(int aAfterID, String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
-		appendAddAfter(aAfterID, aLocalised, aCategoricalName, new MultiTileEntityClassContainer(MTEType.GTCH, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
+		appendAddAfter(aAfterID, aLocalised, aCategoricalName, new MultiTileEntityClassContainer(RegType.GTCH, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
 	}
-	public void appendAddAfter(int aAfterID, MTEType aMTEType, String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
-		appendAddAfter(aAfterID, aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aMTEType, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
+	public void appendAddAfter(int aAfterID, RegType aRegType, String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
+		appendAddAfter(aAfterID, aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aRegType, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
 	}
 	public void appendAddAfter(int aAfterID, String aLocalised, String aCategoricalName, MultiTileEntityClassContainer aClassContainer, Object... aRecipe) {
 		AddObject tAddObject = new AddObject(aLocalised, aCategoricalName, aClassContainer, aRecipe);
-		tAddObject.checkValid(); // 为了保证能够获取有用的 stackTrace，这里还是 check 一下。方便起见为了避免多个 append 到相同 id 时的 append id 冲突，最后添加前还需要再次进行 check
 		if (!mAppendingAddAfterList.containsKey((short)aAfterID)) mAppendingAddAfterList.put((short)aAfterID, new LinkedList<AddObject>());
-		mAppendingAddAfterList.get((short)aAfterID).add(tAddObject);
+		// replace 也可以影响 append 操作
+		if (mReplacingAddList.containsKey(aClassContainer.mID)) {
+			tAddObject = mReplacingAddList.get(aClassContainer.mID); // 用来保证只有存在的项才会设置，而不会都变成 null
+			mReplacingAddList.remove(aClassContainer.mID); // 获取后移除
+		}
+		if (tAddObject != null) mAppendingAddAfterList.get((short)aAfterID).add(tAddObject);
 	}
 	
 	
@@ -240,107 +253,103 @@ public class MultiTileEntityRegistry {
 		// appendBefore 条目应该已经为空，进行错误检测
 		for (Map.Entry<Short,  List<AddObject>> tEntry : mAppendingAddBeforeList.entrySet()) {
 			ERR.println("MTE REGISTRY WARNING: Has no ID \"" + tEntry.getKey() + "\" on appendAdd, these MTE will be put at the end!");
-			for (AddObject tAppendObject : tEntry.getValue()) {tAppendObject.checkValid(); tAppendObject.addSelf();}
+			for (AddObject tAppendObject : tEntry.getValue()) tAppendObject.addSelf();
 		}
 		mAppendingAddBeforeList.clear();
 		// appendAfterefore 条目应该已经为空，进行错误检测
 		for (Map.Entry<Short, List<AddObject>> tEntry : mAppendingAddAfterList.entrySet()) {
 			ERR.println("MTE REGISTRY WARNING: Has no ID \"" + tEntry.getKey() + "\" on appendAdd, these MTE will be put at the end!");
-			for (AddObject tAppendObject : tEntry.getValue()) {tAppendObject.checkValid(); tAppendObject.addSelf();}
+			for (AddObject tAppendObject : tEntry.getValue()) tAppendObject.addSelf();
 		}
 		mAppendingAddAfterList.clear();
 	}
-	public boolean isHoldingAdd() {return mIsModifyingAdd;}
 	
 	private boolean mIsModifyingAdd = F;
 	private final Map<Short, List<AddObject>> mAppendingAddBeforeList = new HashMap<>(); // 存储需要在指定位置之前添加的项
 	private final Map<Short, List<AddObject>> mAppendingAddAfterList = new HashMap<>(); // 存储需要在指定位置之后添加的项
 	private final Map<Short, AddObject> mReplacingAddList = new HashMap<>(); // 存储将要替换的项目，如果为 null 则为删除
 	private class AddObject {
-		private final String mLocalised;
-		private final String mCategoricalName;
-		private final MultiTileEntityClassContainer mClassContainer;
-		private Object[] mRecipe;
-		private boolean mFailed = F;
+		private final String aLocalised;
+		private final String aCategoricalName;
+		private final MultiTileEntityClassContainer aClassContainer;
+		private Object[] aRecipe;
 		
 		public AddObject(String aLocalised, String aCategoricalName, MultiTileEntityClassContainer aClassContainer, Object... aRecipe) {
-			mLocalised = aLocalised; mCategoricalName = aCategoricalName; mClassContainer = aClassContainer; mRecipe = aRecipe;
-		}
-		
-		public void checkValid() {
-			if (UT.Code.stringInvalid(mLocalised)) {
-				ERR.println("MTE REGISTRY ERROR: Localisation Missing!");
-				mFailed = T;
-			}
-			if (mClassContainer == null) {
-				ERR.println("MTE REGISTRY ERROR: Class Container is null!");
-				mFailed = T;
-			} else {
-				if (mClassContainer.mClass == null) {
-					ERR.println("MTE REGISTRY ERROR: Class inside Class Container is null!");
-					mFailed = T;
-				}
-				if (mClassContainer.mID == W) {
-					ERR.println("MTE REGISTRY ERROR: Class Container uses Wildcard MetaData!");
-					mFailed = T;
-				}
-				if (mClassContainer.mID < 0) {
-					ERR.println("MTE REGISTRY ERROR: Class Container uses negative MetaData!");
-					mFailed = T;
-				}
-				if (mRegistry.containsKey(mClassContainer.mID)) {
-					ERR.println("MTE REGISTRY ERROR: Class Container uses occupied MetaData!");
-					mFailed = T;
-				}
-			}
-			if (mFailed) {
-				ERR.println("MTE REGISTRY ERROR: STACKTRACE START");
-				int i = 0; for (StackTraceElement tElement : new Exception().getStackTrace()) if (i++<5 && !tElement.getClassName().startsWith("sun")) ERR.println("\tat " + tElement); else break;
-				ERR.println("MTE REGISTRY ERROR: STACKTRACE END");
-			}
+			this.aLocalised = aLocalised; this.aCategoricalName = aCategoricalName; this.aClassContainer = aClassContainer; this.aRecipe = aRecipe;
 		}
 		
 		private ItemStack addSelf() {
-			if (mFailed) return null;
-			assert mClassContainer != null;
+			boolean tFailed = F;
+			if (UT.Code.stringInvalid(aLocalised)) {
+				ERR.println("MTE REGISTRY ERROR: Localisation Missing!");
+				tFailed = T;
+			}
+			if (aClassContainer == null) {
+				ERR.println("MTE REGISTRY ERROR: Class Container is null!");
+				tFailed = T;
+			} else {
+				if (aClassContainer.mClass == null) {
+					ERR.println("MTE REGISTRY ERROR: Class inside Class Container is null!");
+					tFailed = T;
+				}
+				if (aClassContainer.mID == W) {
+					ERR.println("MTE REGISTRY ERROR: Class Container uses Wildcard MetaData!");
+					tFailed = T;
+				}
+				if (aClassContainer.mID < 0) {
+					ERR.println("MTE REGISTRY ERROR: Class Container uses negative MetaData!");
+					tFailed = T;
+				}
+				if (mRegistry.containsKey(aClassContainer.mID)) {
+					ERR.println("MTE REGISTRY ERROR: Class Container uses occupied MetaData!");
+					tFailed = T;
+				}
+			}
+			if (tFailed) {
+				ERR.println("MTE REGISTRY ERROR: STACKTRACE START");
+				int i = 0; for (StackTraceElement tElement : new Exception().getStackTrace()) if (i++<10 && !tElement.getClassName().startsWith("sun")) ERR.println("\tat " + tElement); else break;
+				ERR.println("MTE REGISTRY ERROR: STACKTRACE END");
+			}
+			if (tFailed) return null;
+			assert aClassContainer != null;
 			// 目前所有的非 greg 的 MTE 都使用外置的语言文件
-			switch (mClassContainer.mType) {
-				case GTCH:
-					LH_CH.add(mNameInternal+"."+mClassContainer.mID+".name", mLocalised); break;
-				case GT6U:
-					LH_CH.add(T, mNameInternal+"."+mClassContainer.mID+".name", mLocalised); break;
-				case GREG: default:
-					LH.add(mNameInternal+"."+mClassContainer.mID+".name", mLocalised); break;
+			switch (aClassContainer.mType) {
+			case GTCH:
+				LH_CH.add(mNameInternal+"."+ aClassContainer.mID+".name", aLocalised); break;
+			case GT6U:
+				LH_CH.add(T, mNameInternal+"."+ aClassContainer.mID+".name", aLocalised); break;
+			case GREG: default:
+				LH.add(mNameInternal+"."+ aClassContainer.mID+".name", aLocalised); break;
 			}
-			mRegistry.put(mClassContainer.mID, mClassContainer);
-			mLastRegisteredID = mClassContainer.mID;
-			mRegistrations.add(mClassContainer);
-			if (!mCreativeTabs.containsKey(mClassContainer.mCreativeTabID)) mCreativeTabs.put(mClassContainer.mCreativeTabID, new CreativeTab(mNameInternal+"."+mClassContainer.mCreativeTabID, mCategoricalName, Item.getItemFromBlock(mBlock), mClassContainer.mCreativeTabID));
-			if (sRegisteredTileEntities.add(mClassContainer.mCanonicalTileEntity.getClass())) {
-				if (mClassContainer.mCanonicalTileEntity instanceof IMTE_OnRegistrationFirst) ((IMTE_OnRegistrationFirst)mClassContainer.mCanonicalTileEntity).onRegistrationFirst(MultiTileEntityRegistry.this, mClassContainer.mID);
-				if (CODE_CLIENT && mClassContainer.mCanonicalTileEntity instanceof IMTE_OnRegistrationFirstClient) ((IMTE_OnRegistrationFirstClient)mClassContainer.mCanonicalTileEntity).onRegistrationFirstClient(MultiTileEntityRegistry.this, mClassContainer.mID);
+			mRegistry.put(aClassContainer.mID, aClassContainer);
+			mLastRegisteredID = aClassContainer.mID;
+			mRegistrations.add(aClassContainer);
+			if (!mCreativeTabs.containsKey(aClassContainer.mCreativeTabID)) mCreativeTabs.put(aClassContainer.mCreativeTabID, new CreativeTab(mNameInternal+"."+ aClassContainer.mCreativeTabID, aCategoricalName, Item.getItemFromBlock(mBlock), aClassContainer.mCreativeTabID));
+			if (sRegisteredTileEntities.add(aClassContainer.mCanonicalTileEntity.getClass())) {
+				if (aClassContainer.mCanonicalTileEntity instanceof IMTE_OnRegistrationFirst) ((IMTE_OnRegistrationFirst) aClassContainer.mCanonicalTileEntity).onRegistrationFirst(MultiTileEntityRegistry.this, aClassContainer.mID);
+				if (CODE_CLIENT && aClassContainer.mCanonicalTileEntity instanceof IMTE_OnRegistrationFirstClient) ((IMTE_OnRegistrationFirstClient) aClassContainer.mCanonicalTileEntity).onRegistrationFirstClient(MultiTileEntityRegistry.this, aClassContainer.mID);
 			}
-			if (mRegisteredTileEntities.add(mClassContainer.mCanonicalTileEntity.getClass())) {
-				if (mClassContainer.mCanonicalTileEntity instanceof IMTE_OnRegistrationFirstOfRegister) ((IMTE_OnRegistrationFirstOfRegister)mClassContainer.mCanonicalTileEntity).onRegistrationFirstOfRegister(MultiTileEntityRegistry.this, mClassContainer.mID);
-				if (mClassContainer.mCanonicalTileEntity instanceof IMTE_OnRegistrationFirstOfRegisterClient) ((IMTE_OnRegistrationFirstOfRegisterClient)mClassContainer.mCanonicalTileEntity).onRegistrationFirstOfRegisterClient(MultiTileEntityRegistry.this, mClassContainer.mID);
+			if (mRegisteredTileEntities.add(aClassContainer.mCanonicalTileEntity.getClass())) {
+				if (aClassContainer.mCanonicalTileEntity instanceof IMTE_OnRegistrationFirstOfRegister) ((IMTE_OnRegistrationFirstOfRegister) aClassContainer.mCanonicalTileEntity).onRegistrationFirstOfRegister(MultiTileEntityRegistry.this, aClassContainer.mID);
+				if (aClassContainer.mCanonicalTileEntity instanceof IMTE_OnRegistrationFirstOfRegisterClient) ((IMTE_OnRegistrationFirstOfRegisterClient) aClassContainer.mCanonicalTileEntity).onRegistrationFirstOfRegisterClient(MultiTileEntityRegistry.this, aClassContainer.mID);
 			}
-			if (mClassContainer.mCanonicalTileEntity instanceof IMTE_OnRegistration) {
-				((IMTE_OnRegistration)mClassContainer.mCanonicalTileEntity).onRegistration(MultiTileEntityRegistry.this, mClassContainer.mID);
+			if (aClassContainer.mCanonicalTileEntity instanceof IMTE_OnRegistration) {
+				((IMTE_OnRegistration) aClassContainer.mCanonicalTileEntity).onRegistration(MultiTileEntityRegistry.this, aClassContainer.mID);
 			}
-			if (CODE_CLIENT && mClassContainer.mCanonicalTileEntity instanceof IMTE_OnRegistrationClient) {
-				((IMTE_OnRegistrationClient)mClassContainer.mCanonicalTileEntity).onRegistrationClient(MultiTileEntityRegistry.this, mClassContainer.mID);
+			if (CODE_CLIENT && aClassContainer.mCanonicalTileEntity instanceof IMTE_OnRegistrationClient) {
+				((IMTE_OnRegistrationClient) aClassContainer.mCanonicalTileEntity).onRegistrationClient(MultiTileEntityRegistry.this, aClassContainer.mID);
 			}
-			if (mRecipe != null && mRecipe.length > 1) {
-				if (mRecipe[0] instanceof Object[]) mRecipe = (Object[])mRecipe[0];
-				if (mRecipe.length > 2) CR.shaped(getItem(mClassContainer.mID), CR.DEF_REV_NCC, mRecipe);
+			if (aRecipe != null && aRecipe.length > 1) {
+				if (aRecipe[0] instanceof Object[]) aRecipe = (Object[]) aRecipe[0];
+				if (aRecipe.length > 2) CR.shaped(getItem(aClassContainer.mID), CR.DEF_REV_NCC, aRecipe);
 			}
 			// A simple special case to make it easier to add a Machine to Recipe Lists without having to worry about anything.
 			String
-			tRecipeMapName = mClassContainer.mParameters.getString(NBT_RECIPEMAP);
-			if (UT.Code.stringValid(tRecipeMapName)) {RecipeMap tMap = RecipeMap.RECIPE_MAPS.get(tRecipeMapName); if (tMap != null) tMap.mRecipeMachineList.add(getItem(mClassContainer.mID));}
-			tRecipeMapName = mClassContainer.mParameters.getString(NBT_FUELMAP);
-			if (UT.Code.stringValid(tRecipeMapName)) {RecipeMap tMap = RecipeMap.RECIPE_MAPS.get(tRecipeMapName); if (tMap != null) tMap.mRecipeMachineList.add(getItem(mClassContainer.mID));}
-			return getItem(mClassContainer.mID);
+			tRecipeMapName = aClassContainer.mParameters.getString(NBT_RECIPEMAP);
+			if (UT.Code.stringValid(tRecipeMapName)) {RecipeMap tMap = RecipeMap.RECIPE_MAPS.get(tRecipeMapName); if (tMap != null) tMap.mRecipeMachineList.add(getItem(aClassContainer.mID));}
+			tRecipeMapName = aClassContainer.mParameters.getString(NBT_FUELMAP);
+			if (UT.Code.stringValid(tRecipeMapName)) {RecipeMap tMap = RecipeMap.RECIPE_MAPS.get(tRecipeMapName); if (tMap != null) tMap.mRecipeMachineList.add(getItem(aClassContainer.mID));}
+			return getItem(aClassContainer.mID);
 		}
 	}
 	

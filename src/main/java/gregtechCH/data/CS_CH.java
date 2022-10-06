@@ -4,10 +4,11 @@ import com.google.common.collect.Sets;
 import gregapi.block.multitileentity.MultiTileEntityRegistry;
 import gregapi.config.Config;
 import gregapi.data.MT;
+import gregapi.fluid.FluidGT;
 import gregapi.oredict.OreDictPrefix;
 import gregapi.util.UT;
 import gregtechCH.util.UT_CH;
-import net.minecraft.block.Block;
+import net.minecraftforge.fluids.Fluid;
 
 import java.io.File;
 import java.util.Set;
@@ -24,6 +25,7 @@ public class CS_CH {
     public static final byte SIDE_NUMBER = (byte)ALL_SIDES_VALID.length;
     public static final byte[][] ZL_BI_BYTE = new byte[0][0];
     public static final long[][] ZL_BI_LONG = new long[0][0];
+    public static final Fluid NF = new Fluid("null"); // 用于替代 null 作为被移除的 create 的返回避免空指针错误
     
     // 只有 RGB 值的转为 RGBa 加上此值可以比较保险
     public static final int ALPHA_COLOR = 0xff000000;
@@ -160,8 +162,8 @@ public class CS_CH {
                 REACTORS;
     }
     
-    /* MTE 来源的种类 */
-    public enum MTEType {
+    /* 注册来源的种类 */
+    public enum RegType {
         GREG,
         GTCH,
         GT6U;

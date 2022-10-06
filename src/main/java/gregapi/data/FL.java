@@ -27,11 +27,12 @@ import gregapi.old.Textures;
 import gregapi.oredict.OreDictMaterial;
 import gregapi.render.IIconContainer;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
-import gregapi.tileentity.multiblocks.IMultiBlockFluidHandler;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.UT.Code;
 import gregapi.util.UT.NBT;
+import gregtechCH.data.CS_CH;
+import gregtechCH.data.LH_CH;
 import gregtechCH.fluid.IFluidHandler_CH;
 import net.minecraft.block.Block;
 import net.minecraft.init.Items;
@@ -42,14 +43,12 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static gregapi.data.CS.*;
 import static gregapi.data.CS.FluidsGT.*;
 import static gregtechCH.config.ConfigForge_CH.DATA_GTCH.disableAllStoragePowerconducting;
+import static gregtechCH.data.CS_CH.RegType;
 
 /**
  * @author Gregorius Techneticies
@@ -564,6 +563,148 @@ public enum FL {
 	, Potion_Invisibility_1LS   ("potion.invisibility.long.splash"                          , SIMPLE, LIQUID, POTION, ENCHANTED_EFFECT)
 	, Potion_Invisibility_1D    ("potion.invisibility.lingering"                            , SIMPLE, LIQUID, POTION, ENCHANTED_EFFECT)
 	, Potion_Invisibility_1LD   ("potion.invisibility.long.lingering"                       , SIMPLE, LIQUID, POTION, ENCHANTED_EFFECT)
+	
+	/* 由于枚举类不能继承，因此只能全部放在一起。这里仅进行罗列因此顺序不重要，将 GT6U GTCH 的部分和原版分开来方便合并 */
+	/* GT6U stuff */
+	// plasmas
+	, HeliumP                   ("heliumplasma"                                             , PLASMA)
+	, NitrogenP                 ("nitrogenplasma"                                           , PLASMA)
+	, OxygenP                   ("oxygenplasma"                                             , PLASMA)
+	, IronP                     ("ironplasma"                                               , PLASMA)
+	//, neutronP                  ("neutronplasma"                                            , PLASMA)
+	, protonP                   ("protonplasma"                                             , PLASMA)
+	, antiprotonP               ("antiprotonplasma"                                         , PLASMA)
+	, electronP                 ("electronplasma"                                           , PLASMA)
+	, positronP                 ("positronplasma"                                           , PLASMA)
+	//, neutrinoP                 ("neutrinoplasma"                                           , PLASMA)
+	//, antineutrinoP             ("antineutrinoplasma"                                       , PLASMA)
+	
+	// ionized plasmas
+	, HydrogenI					("ionizedhydrogen"											, GAS)
+	, HeliumI					("ionizedhelium"												, GAS)
+	
+	//
+	, Iron                      ("iron"                                                     , LIQUID)
+	
+	// Anti Elements
+	, AntiNitrogen              ("antinitrogen"                                             , GAS)
+	, AntiHydrogen              ("antihydrogen"                                             , GAS)
+	, AntiDeuterium             ("antideuterium"                                            , GAS)
+	, AntiTritium               ("antitritium"                                              , GAS)
+	, AntiHelium                ("antihelium"                                               , GAS)
+	, AntiHelium_3              ("antihelium-3"                                             , GAS)
+	, AntiCarbon_13             ("anticarbon-13"                                            , LIQUID)
+	
+	//
+	, Gasoil                    ("gasoil"                                                   , SIMPLE, LIQUID)
+	
+	// Petrol Final Products
+	, Naphtha                   ("naphtha"                                                  , SIMPLE, LIQUID)
+	, benzene                   ("benzene"                                                  , SIMPLE, LIQUID)
+	//, lpg                       ("lpg"                                                      , SIMPLE, LIQUID)
+	, phenol                    ("phenol"                                                   , SIMPLE, LIQUID)
+	, acetone                   ("acetone"                                                  , SIMPLE, LIQUID)
+	, bisphenol                 ("bisphenol"                                                , SIMPLE, LIQUID)
+	, epichlorohydrin           ("epichlorohydrin"                                          , SIMPLE, LIQUID)
+	, Isoprene                  ("isoprene"                                                 , SIMPLE, LIQUID)
+	, Dichloroisopropanol       ("dichloroisopropanol"                                      , SIMPLE, LIQUID)
+	, Cumene                    ("cumene"                                                   , SIMPLE, LIQUID)
+	, Silane                    ("silane"                                                   , SIMPLE, LIQUID)
+	, Allyl_Chloride            ("allylchloride"                                            , SIMPLE, LIQUID)
+	, Acrylic_Acid              ("acrylicacid"                                              , SIMPLE, LIQUID)
+	, Ethyl_Acrylate            ("ethylacrylate"                                            , SIMPLE, LIQUID)
+	, Styrene                   ("styrene"                                                  , SIMPLE, LIQUID)
+	, Vinyl_Chloride            ("vinylchloride"                                            , SIMPLE, LIQUID)
+	, Ethyne                    ("ethyne"                                                   , SIMPLE, LIQUID)
+	, Photoresist               ("photoresist"                                              , SIMPLE, LIQUID)
+	, Monochlorodifluoromethane ("monochlorodifluoromethane"                                , SIMPLE, GAS)
+	, Trichloromethane          ("trichloromethane"                                         , SIMPLE, GAS)
+	, Tetrafluoroethylene       ("tetrafluoroethylene"                                      , SIMPLE, GAS)
+	
+	// Platinum Family Metal processing related fluids
+	, SolutionRichPtPa		    ("solutionrichptpa"                                         , SIMPLE, LIQUID)
+	, SolutionRichPa            ("solutionrichpa"                                           , SIMPLE, LIQUID)
+	, MoltenSodiumBisulfate     ("moltensodiumbisulfate"                                    , SIMPLE, LIQUID)
+	, RhodiumSulfideSolution    ("rhodiumsulfidesolution"                                   , SIMPLE, LIQUID)
+	, PregnantSolutionOsRu		("pregnantsolutionosru"                                     , SIMPLE, LIQUID)
+	, AbsorptionLiquidOsRu      ("absorptionliquidosru"                                     , SIMPLE, LIQUID)
+	, AbsorptionLiquidRu        ("absorptionliquidru"                                       , SIMPLE, LIQUID)
+	, RutheniumTetroxide        ("rutheniumtetroxide"                                       , SIMPLE, GAS)
+	, OsmiumTetroxide           ("osmiumtetroxide"                                          , SIMPLE, GAS)
+	, ChloroRhodiumAcid         ("chlororhodiumacid"                                        , SIMPLE, LIQUID)
+	, EvaporatedliquidOs        ("evaporatedliquidos"                                       , SIMPLE, LIQUID)
+	, SodiumOsmiumHexachloride  ("sodiumosmiumhexachloride"                                 , SIMPLE, LIQUID)
+	
+	//fluids about bio tech
+	, MSCBasalMedium            ("mscbasalmedium"                                           , SIMPLE, LIQUID)
+	, MSCSupplement             ("mscsupplement"                                            , SIMPLE, LIQUID)
+	, MSC                       ("msc"                                                      , SIMPLE, LIQUID)
+	, BoneMarrow                ("bonemarrow"                                               , SIMPLE, LIQUID)
+	, SPSS                      ("spss"                                                     , SIMPLE, LIQUID)
+	, AmylumSolution            ("amylumsolution"                                           , SIMPLE, LIQUID)
+	, VitaminSolution           ("vitaminsolution"                                          , SIMPLE, LIQUID)
+	, HormoneSolution           ("hormonesolution"                                          , SIMPLE, LIQUID)
+	, DifferentiationPromotingProteinNeuron("differentiationpromotingproteinneuron"         , SIMPLE, LIQUID)
+	, Methanol                  ("methanol"                                                 , SIMPLE, LIQUID)
+	, CoconutOil                ("coconutoil"                                               , SIMPLE, LIQUID)
+	, MethylLaurate             ("methyllaurate"                                            , SIMPLE, LIQUID)
+	, MethylHydrolaurate        ("methylhydrolaurate"                                       , SIMPLE, LIQUID)
+	, Tris_HCl                  ("tris_hcl"                                                 , SIMPLE, LIQUID)
+	, AceticAcid                ("aceticacid"                                               , SIMPLE, LIQUID)
+	, EDTA                      ("edta"                                                     , SIMPLE, LIQUID)
+	, AnimalTissueHomogenate    ("animaltissuehomogenate"                                   , SIMPLE, LIQUID)
+	, DNAExtract                ("dnaextract"                                               , SIMPLE, LIQUID)
+	, DNASolution               ("dnasolution"                                              , SIMPLE, LIQUID)
+	, Bacteria_DifferentiationPromotingProteinNeuron("bacteria_differentiationpromotingproteinneuron", SIMPLE, LIQUID)
+	, Protein                   ("protein"                                                  , SIMPLE, LIQUID)
+	, Dodecane                  ("dodecane"                                                 , SIMPLE, LIQUID)
+	, Dodecane_Chloride         ("dodecanechloride"                                         , SIMPLE, LIQUID)
+	, Monochlorodecane          ("monochlorodecane"                                         , SIMPLE, LIQUID)
+	, Deoxyribonucleotide       ("deoxyribonucleotide"                                      , SIMPLE, LIQUID)
+	, Primer                    ("primer"                                                   , SIMPLE, LIQUID)
+	, taqDNAPolymerase          ("taqdnapolymerase"                                         , SIMPLE, LIQUID)
+	, EscherichiaColi           ("escherichiacoli"                                          , SIMPLE, LIQUID)
+	, RestrictionEndonuclease   ("restrictionendonuclease"                                  , SIMPLE, LIQUID)
+	, DifferentiationPromotingProtein_NerveCell_Gene("differentiationpromotingprotein_nervecell_gene", SIMPLE, LIQUID)
+	, LaurylAlcohol             ("laurylalcohol"                                            , SIMPLE, LIQUID)
+	
+	//fluids about bacteria
+	, Biowaste                  ("biowaste"                                                 , SIMPLE, LIQUID) //琼脂 - Canddleberry 提取
+	
+	, Agar                      ("agar"                                                     , SIMPLE, LIQUID) //琼脂 - Canddleberry 提取
+	, BiomassFlora              ("biomass_flora"                                            , SIMPLE, LIQUID) //生物质菌群
+	, DilutedBiomass            ("biomass_diluted"                                          , SIMPLE, LIQUID) //稀释生物质
+	, BacteriaMedium            ("bacteria_medium"                                          , SIMPLE, LIQUID) //琼脂 + SPSS + 葡萄糖
+	
+	, Yeast                     ("yeast"                                                    , SIMPLE, LIQUID) //酵母菌
+	, Methanogens               ("methanogens"                                              , SIMPLE, LIQUID) //产甲烷菌
+	, Bacillus                  ("bacillus"                                                 , SIMPLE, LIQUID) //芽孢杆菌（Bacillus）吸氧 产氢气 + 氧气
+	, Clostridia                ("clostridia"                                               , SIMPLE, LIQUID) //产氢梭菌Clostridia 厌氧 + 氦气
+	
+	// Other
+	, MixedEster                ("mixedester"                                               , SIMPLE, LIQUID) //混酯液体
+	
+	// Fishery Fluids
+	, AquaticWaste             	("aquaticwaste"                                           , SIMPLE, LIQUID) //养殖废水
+	, AquaticNutrition         	("aquaticnutrition"                                       , SIMPLE, LIQUID) //养殖水
+	
+	//I don't know the reason why it only has a texture ,so I added it here.
+	//,Ethanol                    ("ethanol"                                                  , SIMPLE, LIQUID)
+	
+	// Polymers
+	, Polyethylene              ("polyethylene"                                             , SIMPLE, LIQUID)
+	, polytetrafluoroethylene   ("polytetrafluoroethylene"                                  , SIMPLE, LIQUID)
+	, polyvinylchloride         ("polyvinylchloride"                                        , SIMPLE, LIQUID)
+	, epoxid                    ("epoxid"                                                   , SIMPLE, LIQUID)
+	
+	// Petrol Processing
+	, SFuel                     ("sfuel"                                                    , SIMPLE, LIQUID)
+	, SDiesel                   ("sdiesel"                                                  , SIMPLE, LIQUID)
+	, SKerosine                 ("skerosine"                                                , SIMPLE, LIQUID)
+	, SPetrol                   ("spetrol"                                                  , SIMPLE, LIQUID)
+	, SNaphtha                  ("snaphtha"                                                 , SIMPLE, LIQUID)
+	, SGasoil                   ("sgasoil"                                                  , SIMPLE, LIQUID)
+	/* GT6U stuff END */
 	;
 	
 	public final String mName;
@@ -1120,57 +1261,234 @@ public enum FL {
 	@SafeVarargs public static Fluid create(String aName, String aLocalized, OreDictMaterial aMaterial, int aState, Set<String>... aFluidList) {return create(aName, aLocalized, aMaterial, aState, 1000, 300, null, null, 0, aFluidList);}
 	@SafeVarargs public static Fluid create(String aName, String aLocalized, OreDictMaterial aMaterial, int aState, long aAmountPerUnit, long aTemperatureK, Set<String>... aFluidList) {return create(aName, aLocalized, aMaterial, aState, aAmountPerUnit, aTemperatureK, null, null, 0, aFluidList);}
 	@SafeVarargs public static Fluid create(String aName, String aLocalized, OreDictMaterial aMaterial, int aState, long aAmountPerUnit, long aTemperatureK, ItemStack aFullContainer, ItemStack aEmptyContainer, int aFluidAmount, Set<String>... aFluidList) {return create(aName, new Textures.BlockIcons.CustomIcon("fluids/" + aName.toLowerCase()), aLocalized, aMaterial, null, aState, aAmountPerUnit, aTemperatureK, aFullContainer, aEmptyContainer, aFluidAmount, aFluidList);}
+	@SafeVarargs public static Fluid create(String aName, IIconContainer aTexture, String aLocalized, OreDictMaterial aMaterial, short[] aRGBa, int aState, long aAmountPerUnit, long aTemperatureK, ItemStack aFullContainer, ItemStack aEmptyContainer, int aFluidAmount, Set<String>... aFluidList) {return create(RegType.GREG, aName, aTexture, aLocalized, aMaterial, aRGBa, aState, aAmountPerUnit, aTemperatureK, aFullContainer, aEmptyContainer, aFluidAmount, aFluidList);}
+	
+	@SafeVarargs public static Fluid create(RegType aRegType, String aName, String aLocalized, OreDictMaterial aMaterial, int aState, Set<String>... aFluidList) {return create(aRegType, aName, aLocalized, aMaterial, aState, 1000, 300, null, null, 0, aFluidList);}
+	@SafeVarargs public static Fluid create(RegType aRegType, String aName, String aLocalized, OreDictMaterial aMaterial, int aState, long aAmountPerUnit, long aTemperatureK, Set<String>... aFluidList) {return create(aRegType, aName, aLocalized, aMaterial, aState, aAmountPerUnit, aTemperatureK, null, null, 0, aFluidList);}
+	@SafeVarargs public static Fluid create(RegType aRegType, String aName, String aLocalized, OreDictMaterial aMaterial, int aState, long aAmountPerUnit, long aTemperatureK, ItemStack aFullContainer, ItemStack aEmptyContainer, int aFluidAmount, Set<String>... aFluidList) {return create(aRegType, aName, new Textures.BlockIcons.CustomIcon("fluids/" + aName.toLowerCase()), aLocalized, aMaterial, null, aState, aAmountPerUnit, aTemperatureK, aFullContainer, aEmptyContainer, aFluidAmount, aFluidList);}
 	
 	@SafeVarargs
-	public static Fluid create(String aName, IIconContainer aTexture, String aLocalized, OreDictMaterial aMaterial, short[] aRGBa, int aState, long aAmountPerUnit, long aTemperatureK, ItemStack aFullContainer, ItemStack aEmptyContainer, int aFluidAmount, Set<String>... aFluidList) {
-		aName = aName.toLowerCase();
-		aLocalized = (aLocalized==null?aMaterial==null||aMaterial==MT.NULL?UT.Code.capitaliseWords(aName):aMaterial.getLocal():aLocalized);
-		
-		Fluid rFluid = new FluidGT(aName, aTexture, aRGBa == null ? UNCOLOURED : aRGBa, aTemperatureK, aState == 2 || aState == 3);
-		LH.add(rFluid.getUnlocalizedName(), aLocalized);
-		LH.add(rFluid.getUnlocalizedName()+".name", aLocalized);
-		
-		for (Set<String> tSet : aFluidList) tSet.add(aName);
-		
-		switch (aState) {
-		case STATE_SOLID  : rFluid.setViscosity(10000); break;
-		case STATE_LIQUID : rFluid.setViscosity( 1000); FluidsGT.LIQUID.add(aName); break;
-		case STATE_GASEOUS: rFluid.setViscosity(  200); rFluid.setDensity(   -100); FluidsGT.GAS.add(aName); break;
-		case STATE_PLASMA : rFluid.setViscosity(   10); rFluid.setDensity(-100000); rFluid.setLuminosity(15); FluidsGT.PLASMA.add(aName); break;
-		case 4            : rFluid.setViscosity( 1000); break;
+	public static Fluid create(RegType aRegType, String aName, IIconContainer aTexture, String aLocalized, OreDictMaterial aMaterial, short[] aRGBa, int aState, long aAmountPerUnit, long aTemperatureK, ItemStack aFullContainer, ItemStack aEmptyContainer, int aFluidAmount, Set<String>... aFluidList) {
+		CreateObject tCreateObject = new CreateObject(aRegType, aName, aTexture, aLocalized, aMaterial, aRGBa, aState, aAmountPerUnit, aTemperatureK, aFullContainer, aEmptyContainer, aFluidAmount, aFluidList);
+		if (!sIsModifyingCreate) return tCreateObject.createSelf();
+		/// 先检测替换和移除
+		if (sReplacingCreateList.containsKey(aName)) {
+			tCreateObject = sReplacingCreateList.get(aName); // 用来保证只有存在的项才会设置，而不会都变成 null
+			sReplacingCreateList.remove(aName); // 获取后移除
 		}
-		
-		if (FL.exists(aName) || !FluidRegistry.registerFluid(rFluid)) {
-			rFluid = FluidRegistry.getFluid(aName);
-			LH.add(rFluid.getUnlocalizedName(), aLocalized);
-			if (rFluid.getTemperature() == new Fluid("test").getTemperature() || rFluid.getTemperature() <= 0) rFluid.setTemperature(UT.Code.bindInt(aTemperatureK));
-			rFluid.setGaseous(aState == 2 || aState == 3);
+		/// 检测之前添加
+		List<CreateObject>
+		tAppendList = sAppendingCreateBeforeList.get(aName);
+		if (tAppendList != null) {
+			for (CreateObject tAppendObject : tAppendList) tAppendObject.createSelf(); // 遍历列表添加
+			sAppendingCreateBeforeList.remove(aName); // 添加后移除此项
 		}
+		/// 进行添加
+		Fluid tOut = (tCreateObject!=null) ? tCreateObject.createSelf() : CS_CH.NF; // 用于防止返回 null 导致后续 set 出错
+		/// 检测之后添加
+		tAppendList = sAppendingCreateAfterList.get(aName);
+		if (tAppendList != null) {
+			for (CreateObject tAppendObject : tAppendList) tAppendObject.createSelf(); // 遍历列表添加
+			sAppendingCreateAfterList.remove(aName); // 添加后移除此项
+		}
+		return tOut;
+	}
+	
+	/* 提供一些修改 create 的一些接口 */
+	// 修改原有的条目
+	@SafeVarargs public static void replaceCreate(String aName, String aLocalized, OreDictMaterial aMaterial, int aState, Set<String>... aFluidList) {replaceCreate(aName, aLocalized, aMaterial, aState, 1000, 300, null, null, 0, aFluidList);}
+	@SafeVarargs public static void replaceCreate(String aName, String aLocalized, OreDictMaterial aMaterial, int aState, long aAmountPerUnit, long aTemperatureK, Set<String>... aFluidList) {replaceCreate(aName, aLocalized, aMaterial, aState, aAmountPerUnit, aTemperatureK, null, null, 0, aFluidList);}
+	@SafeVarargs public static void replaceCreate(String aName, String aLocalized, OreDictMaterial aMaterial, int aState, long aAmountPerUnit, long aTemperatureK, ItemStack aFullContainer, ItemStack aEmptyContainer, int aFluidAmount, Set<String>... aFluidList) {replaceCreate(aName, new Textures.BlockIcons.CustomIcon("fluids/" + aName.toLowerCase()), aLocalized, aMaterial, null, aState, aAmountPerUnit, aTemperatureK, aFullContainer, aEmptyContainer, aFluidAmount, aFluidList);}
+	@SafeVarargs public static void replaceCreate(String aName, IIconContainer aTexture, String aLocalized, OreDictMaterial aMaterial, short[] aRGBa, int aState, long aAmountPerUnit, long aTemperatureK, ItemStack aFullContainer, ItemStack aEmptyContainer, int aFluidAmount, Set<String>... aFluidList) {replaceCreate(RegType.GREG, aName, aTexture, aLocalized, aMaterial, aRGBa, aState, aAmountPerUnit, aTemperatureK, aFullContainer, aEmptyContainer, aFluidAmount, aFluidList);}
+	
+	@SafeVarargs public static void replaceCreate(RegType aRegType, String aName, String aLocalized, OreDictMaterial aMaterial, int aState, Set<String>... aFluidList) {replaceCreate(aRegType, aName, aLocalized, aMaterial, aState, 1000, 300, null, null, 0, aFluidList);}
+	@SafeVarargs public static void replaceCreate(RegType aRegType, String aName, String aLocalized, OreDictMaterial aMaterial, int aState, long aAmountPerUnit, long aTemperatureK, Set<String>... aFluidList) {replaceCreate(aRegType, aName, aLocalized, aMaterial, aState, aAmountPerUnit, aTemperatureK, null, null, 0, aFluidList);}
+	@SafeVarargs public static void replaceCreate(RegType aRegType, String aName, String aLocalized, OreDictMaterial aMaterial, int aState, long aAmountPerUnit, long aTemperatureK, ItemStack aFullContainer, ItemStack aEmptyContainer, int aFluidAmount, Set<String>... aFluidList) {replaceCreate(aRegType, aName, new Textures.BlockIcons.CustomIcon("fluids/" + aName.toLowerCase()), aLocalized, aMaterial, null, aState, aAmountPerUnit, aTemperatureK, aFullContainer, aEmptyContainer, aFluidAmount, aFluidList);}
+	
+	@SafeVarargs
+	public static void replaceCreate(RegType aRegType, String aName, IIconContainer aTexture, String aLocalized, OreDictMaterial aMaterial, short[] aRGBa, int aState, long aAmountPerUnit, long aTemperatureK, ItemStack aFullContainer, ItemStack aEmptyContainer, int aFluidAmount, Set<String>... aFluidList) {
+		CreateObject tCreateObject = new CreateObject(aRegType, aName, aTexture, aLocalized, aMaterial, aRGBa, aState, aAmountPerUnit, aTemperatureK, aFullContainer, aEmptyContainer, aFluidAmount, aFluidList);
+		if (sReplacingCreateList.containsKey(aName)) {
+			ERR.println("FL CREATE WARNING: The Fluid \"" + aName + "\" is already on the replace list, replace fail!");
+			return;
+		}
+		sReplacingCreateList.put(aName, tCreateObject);
+	}
+	
+	// 删除指定条目
+	public static void removeAdds(String aName) {
+		if (sReplacingCreateList.containsKey(aName)) {
+			ERR.println("FL CREATE WARNING: The Fluid \"" + aName + "\" is already on the replace list, remove fail!");
+			return;
+		}
+		sReplacingCreateList.put(aName, null);
+	}
+	
+	// 在指定位置之前添加条目（添加项默认是 gtch）
+	@SafeVarargs public static void appendAddBefore(String aBeforeName, String aName, String aLocalized, OreDictMaterial aMaterial, int aState, Set<String>... aFluidList) {appendAddBefore(aBeforeName, aName, aLocalized, aMaterial, aState, 1000, 300, null, null, 0, aFluidList);}
+	@SafeVarargs public static void appendAddBefore(String aBeforeName, String aName, String aLocalized, OreDictMaterial aMaterial, int aState, long aAmountPerUnit, long aTemperatureK, Set<String>... aFluidList) {appendAddBefore(aBeforeName, aName, aLocalized, aMaterial, aState, aAmountPerUnit, aTemperatureK, null, null, 0, aFluidList);}
+	@SafeVarargs public static void appendAddBefore(String aBeforeName, String aName, String aLocalized, OreDictMaterial aMaterial, int aState, long aAmountPerUnit, long aTemperatureK, ItemStack aFullContainer, ItemStack aEmptyContainer, int aFluidAmount, Set<String>... aFluidList) {appendAddBefore(aBeforeName, aName, new Textures.BlockIcons.CustomIcon("fluids/" + aName.toLowerCase()), aLocalized, aMaterial, null, aState, aAmountPerUnit, aTemperatureK, aFullContainer, aEmptyContainer, aFluidAmount, aFluidList);}
+	@SafeVarargs public static void appendAddBefore(String aBeforeName, String aName, IIconContainer aTexture, String aLocalized, OreDictMaterial aMaterial, short[] aRGBa, int aState, long aAmountPerUnit, long aTemperatureK, ItemStack aFullContainer, ItemStack aEmptyContainer, int aFluidAmount, Set<String>... aFluidList) {appendAddBefore(aBeforeName, RegType.GTCH, aName, aTexture, aLocalized, aMaterial, aRGBa, aState, aAmountPerUnit, aTemperatureK, aFullContainer, aEmptyContainer, aFluidAmount, aFluidList);}
+	
+	@SafeVarargs public static void appendAddBefore(String aBeforeName, RegType aRegType, String aName, String aLocalized, OreDictMaterial aMaterial, int aState, Set<String>... aFluidList) {appendAddBefore(aBeforeName, aRegType, aName, aLocalized, aMaterial, aState, 1000, 300, null, null, 0, aFluidList);}
+	@SafeVarargs public static void appendAddBefore(String aBeforeName, RegType aRegType, String aName, String aLocalized, OreDictMaterial aMaterial, int aState, long aAmountPerUnit, long aTemperatureK, Set<String>... aFluidList) {appendAddBefore(aBeforeName, aRegType, aName, aLocalized, aMaterial, aState, aAmountPerUnit, aTemperatureK, null, null, 0, aFluidList);}
+	@SafeVarargs public static void appendAddBefore(String aBeforeName, RegType aRegType, String aName, String aLocalized, OreDictMaterial aMaterial, int aState, long aAmountPerUnit, long aTemperatureK, ItemStack aFullContainer, ItemStack aEmptyContainer, int aFluidAmount, Set<String>... aFluidList) {appendAddBefore(aBeforeName, aRegType, aName, new Textures.BlockIcons.CustomIcon("fluids/" + aName.toLowerCase()), aLocalized, aMaterial, null, aState, aAmountPerUnit, aTemperatureK, aFullContainer, aEmptyContainer, aFluidAmount, aFluidList);}
+	
+	@SafeVarargs
+	public static void appendAddBefore(String aBeforeName, RegType aRegType, String aName, IIconContainer aTexture, String aLocalized, OreDictMaterial aMaterial, short[] aRGBa, int aState, long aAmountPerUnit, long aTemperatureK, ItemStack aFullContainer, ItemStack aEmptyContainer, int aFluidAmount, Set<String>... aFluidList) {
+		CreateObject tCreateObject = new CreateObject(aRegType, aName, aTexture, aLocalized, aMaterial, aRGBa, aState, aAmountPerUnit, aTemperatureK, aFullContainer, aEmptyContainer, aFluidAmount, aFluidList);
+		if (!sAppendingCreateBeforeList.containsKey(aBeforeName)) sAppendingCreateBeforeList.put(aBeforeName, new LinkedList<CreateObject>());
+		// replace 也可以影响 append 操作
+		if (sReplacingCreateList.containsKey(aName)) {
+			tCreateObject = sReplacingCreateList.get(aName); // 用来保证只有存在的项才会设置，而不会都变成 null
+			sReplacingCreateList.remove(aName); // 获取后移除
+		}
+		if (tCreateObject != null) sAppendingCreateBeforeList.get(aBeforeName).add(tCreateObject);
+	}
+	// 在指定位置之后添加条目
+	@SafeVarargs public static void appendAddAfter(String aAfterName, String aName, String aLocalized, OreDictMaterial aMaterial, int aState, Set<String>... aFluidList) {appendAddAfter(aAfterName, aName, aLocalized, aMaterial, aState, 1000, 300, null, null, 0, aFluidList);}
+	@SafeVarargs public static void appendAddAfter(String aAfterName, String aName, String aLocalized, OreDictMaterial aMaterial, int aState, long aAmountPerUnit, long aTemperatureK, Set<String>... aFluidList) {appendAddAfter(aAfterName, aName, aLocalized, aMaterial, aState, aAmountPerUnit, aTemperatureK, null, null, 0, aFluidList);}
+	@SafeVarargs public static void appendAddAfter(String aAfterName, String aName, String aLocalized, OreDictMaterial aMaterial, int aState, long aAmountPerUnit, long aTemperatureK, ItemStack aFullContainer, ItemStack aEmptyContainer, int aFluidAmount, Set<String>... aFluidList) {appendAddAfter(aAfterName, aName, new Textures.BlockIcons.CustomIcon("fluids/" + aName.toLowerCase()), aLocalized, aMaterial, null, aState, aAmountPerUnit, aTemperatureK, aFullContainer, aEmptyContainer, aFluidAmount, aFluidList);}
+	@SafeVarargs public static void appendAddAfter(String aAfterName, String aName, IIconContainer aTexture, String aLocalized, OreDictMaterial aMaterial, short[] aRGBa, int aState, long aAmountPerUnit, long aTemperatureK, ItemStack aFullContainer, ItemStack aEmptyContainer, int aFluidAmount, Set<String>... aFluidList) {appendAddAfter(aAfterName, RegType.GTCH, aName, aTexture, aLocalized, aMaterial, aRGBa, aState, aAmountPerUnit, aTemperatureK, aFullContainer, aEmptyContainer, aFluidAmount, aFluidList);}
+	
+	@SafeVarargs public static void appendAddAfter(String aAfterName, RegType aRegType, String aName, String aLocalized, OreDictMaterial aMaterial, int aState, Set<String>... aFluidList) {appendAddAfter(aAfterName, aRegType, aName, aLocalized, aMaterial, aState, 1000, 300, null, null, 0, aFluidList);}
+	@SafeVarargs public static void appendAddAfter(String aAfterName, RegType aRegType, String aName, String aLocalized, OreDictMaterial aMaterial, int aState, long aAmountPerUnit, long aTemperatureK, Set<String>... aFluidList) {appendAddAfter(aAfterName, aRegType, aName, aLocalized, aMaterial, aState, aAmountPerUnit, aTemperatureK, null, null, 0, aFluidList);}
+	@SafeVarargs public static void appendAddAfter(String aAfterName, RegType aRegType, String aName, String aLocalized, OreDictMaterial aMaterial, int aState, long aAmountPerUnit, long aTemperatureK, ItemStack aFullContainer, ItemStack aEmptyContainer, int aFluidAmount, Set<String>... aFluidList) {appendAddAfter(aAfterName, aRegType, aName, new Textures.BlockIcons.CustomIcon("fluids/" + aName.toLowerCase()), aLocalized, aMaterial, null, aState, aAmountPerUnit, aTemperatureK, aFullContainer, aEmptyContainer, aFluidAmount, aFluidList);}
+	
+	@SafeVarargs
+	public static void appendAddAfter(String aAfterName, RegType aRegType, String aName, IIconContainer aTexture, String aLocalized, OreDictMaterial aMaterial, short[] aRGBa, int aState, long aAmountPerUnit, long aTemperatureK, ItemStack aFullContainer, ItemStack aEmptyContainer, int aFluidAmount, Set<String>... aFluidList) {
+		CreateObject tCreateObject = new CreateObject(aRegType, aName, aTexture, aLocalized, aMaterial, aRGBa, aState, aAmountPerUnit, aTemperatureK, aFullContainer, aEmptyContainer, aFluidAmount, aFluidList);
+		if (!sAppendingCreateAfterList.containsKey(aAfterName)) sAppendingCreateAfterList.put(aAfterName, new LinkedList<CreateObject>());
+		// replace 也可以影响 append 操作
+		if (sReplacingCreateList.containsKey(aName)) {
+			tCreateObject = sReplacingCreateList.get(aName); // 用来保证只有存在的项才会设置，而不会都变成 null
+			sReplacingCreateList.remove(aName); // 获取后移除
+		}
+		if (tCreateObject != null) sAppendingCreateAfterList.get(aAfterName).add(tCreateObject);
+	}
+	
+	
+	public static void MODIFYING_CREATE_START() {sIsModifyingCreate = T;}
+	public static void MODIFYING_CREATE_END() {
+		sIsModifyingCreate = F;
+		// replace 条目应该已经为空，进行错误检测
+		for (Map.Entry<String, CreateObject> tEntry : sReplacingCreateList.entrySet()) {
+			if (tEntry.getValue() != null) ERR.println("FL CREATE ERROR: Has no Fluid \"" + tEntry.getKey() + "\" on replaceCreate, replace fail!");
+			else ERR.println("Has no Fluid \"" + tEntry.getKey() + "\" on removeHolding, remove fail!");
+		}
+		sReplacingCreateList.clear();
+		// appendBefore 条目应该已经为空，进行错误检测
+		for (Map.Entry<String, List<CreateObject>> tEntry : sAppendingCreateBeforeList.entrySet()) {
+			ERR.println("FL CREATE ERROR: Has no Fluid \"" + tEntry.getKey() + "\" on appendCreate, these Fluids will be created at the end!");
+			for (CreateObject tAppendObject : tEntry.getValue()) tAppendObject.createSelf();
+		}
+		sAppendingCreateBeforeList.clear();
+		// appendAfterefore 条目应该已经为空，进行错误检测
+		for (Map.Entry<String, List<CreateObject>> tEntry : sAppendingCreateAfterList.entrySet()) {
+			ERR.println("FL CREATE ERROR: Has no Fluid \"" + tEntry.getKey() + "\" on appendCreate, these Fluids will be created at the end!");
+			for (CreateObject tAppendObject : tEntry.getValue()) tAppendObject.createSelf();
+		}
+		sAppendingCreateAfterList.clear();
+		sCreatedFluidGT.clear();
+	}
+	
+	private static boolean sIsModifyingCreate = F;
+	private static final Map<String, List<CreateObject>> sAppendingCreateBeforeList = new HashMap<>(); // 存储需要在指定位置之前添加的项
+	private static final Map<String, List<CreateObject>> sAppendingCreateAfterList = new HashMap<>(); // 存储需要在指定位置之后添加的项
+	private static final Map<String, CreateObject> sReplacingCreateList = new HashMap<>(); // 存储将要替换的项目，如果为 null 则为删除
+	private static final Map<String, Fluid> sCreatedFluidGT = new HashMap<>(); // 存储在 GT 中创造的流体，仅 modify 时有效
+	
+	private static class CreateObject {
+		private final RegType aRegType;
+		private String aName;
+		private final IIconContainer aTexture;
+		private String aLocalized;
+		private final OreDictMaterial aMaterial;
+		private final short[] aRGBa;
+		private final int aState;
+		private final long aAmountPerUnit;
+		private final long aTemperatureK;
+		private final ItemStack aFullContainer;
+		private final ItemStack aEmptyContainer;
+		private final int aFluidAmount;
+		private final Set<String>[] aFluidList;
 		
-		if (aMaterial != null) {
-			if (aMaterial.contains(TD.Properties.ACID    )) FluidsGT.ACID.add(aName);
-			if (aMaterial.contains(TD.Properties.GLOWING )) rFluid.setLuminosity(Math.max(rFluid.getLuminosity(), 5));
-			if (aMaterial.contains(TD.Properties.LIGHTING)) rFluid.setLuminosity(Math.max(rFluid.getLuminosity(), 15));
-			switch (aState) {
-			case STATE_LIQUID : aMaterial.liquid(make(rFluid, UT.Code.bindInt(aAmountPerUnit))); break;
-			case STATE_GASEOUS: aMaterial.gas   (make(rFluid, UT.Code.bindInt(aAmountPerUnit))); break;
-			case STATE_PLASMA : aMaterial.plasma(make(rFluid, UT.Code.bindInt(aAmountPerUnit))); break;
+		public CreateObject(RegType aRegType, String aName, IIconContainer aTexture, String aLocalized, OreDictMaterial aMaterial, short[] aRGBa, int aState, long aAmountPerUnit, long aTemperatureK, ItemStack aFullContainer, ItemStack aEmptyContainer, int aFluidAmount, Set<String>[] aFluidList) {
+			this.aRegType = aRegType; this.aName = aName; this.aTexture = aTexture; this.aLocalized = aLocalized; this.aMaterial = aMaterial; this.aRGBa = aRGBa; this.aState = aState; this.aAmountPerUnit = aAmountPerUnit; this.aTemperatureK = aTemperatureK; this.aFullContainer = aFullContainer; this.aEmptyContainer = aEmptyContainer; this.aFluidAmount = aFluidAmount; this.aFluidList = aFluidList;
+		}
+		public Fluid createSelf() {
+			aName = aName.toLowerCase();
+			aLocalized = (aLocalized==null?aMaterial==null||aMaterial==MT.NULL?UT.Code.capitaliseWords(aName):aMaterial.getLocal():aLocalized);
+			
+			Fluid rFluid = new FluidGT(aName, aTexture, aRGBa == null ? UNCOLOURED : aRGBa, aTemperatureK, aState == 2 || aState == 3);
+			// 目前所有的非 greg 的 Fluid 都使用外置的语言文件
+			switch (aRegType) {
+			case GTCH:
+				LH_CH.add(rFluid.getUnlocalizedName(), aLocalized);
+				LH_CH.add(rFluid.getUnlocalizedName()+".name", aLocalized);
+				break;
+			case GT6U:
+				LH_CH.add(T, rFluid.getUnlocalizedName(), aLocalized);
+				LH_CH.add(T, rFluid.getUnlocalizedName()+".name", aLocalized);
+				break;
+			case GREG: default:
+				LH.add(rFluid.getUnlocalizedName(), aLocalized);
+				LH.add(rFluid.getUnlocalizedName()+".name", aLocalized);
+				break;
 			}
-			// Translating Real Life Density to that weird Integer based Density System.
-			if (aMaterial.mGramPerCubicCentimeter > 0 && (aState == STATE_LIQUID || aState == STATE_GASEOUS)) {
-				if (aMaterial.mGramPerCubicCentimeter > WEIGHT_AIR_G_PER_CUBIC_CENTIMETER) {
-					rFluid.setDensity(UT.Code.bindInt((long)(1000 * aMaterial.mGramPerCubicCentimeter)));
-				} else if (aMaterial.mGramPerCubicCentimeter < WEIGHT_AIR_G_PER_CUBIC_CENTIMETER) {
-					rFluid.setDensity(UT.Code.bindInt((long)(-0.1 / aMaterial.mGramPerCubicCentimeter)));
-				} else {
-					rFluid.setDensity(0);
+			
+			for (Set<String> tSet : aFluidList) tSet.add(aName);
+			
+			switch (aState) {
+			case STATE_SOLID  : rFluid.setViscosity(10000); break;
+			case STATE_LIQUID : rFluid.setViscosity( 1000); FluidsGT.LIQUID.add(aName); break;
+			case STATE_GASEOUS: rFluid.setViscosity(  200); rFluid.setDensity(   -100); FluidsGT.GAS.add(aName); break;
+			case STATE_PLASMA : rFluid.setViscosity(   10); rFluid.setDensity(-100000); rFluid.setLuminosity(15); FluidsGT.PLASMA.add(aName); break;
+			case 4            : rFluid.setViscosity( 1000); break;
+			}
+			
+			if (sIsModifyingCreate) {
+				if (sCreatedFluidGT.containsKey(aName)) {
+					ERR.println("FL CREATE WARNING: Fluid uses occupied Name \""+aName+"\"! the replace or remove of this fluid will fail!");
+					ERR.println("FL CREATE WARNING: STACKTRACE START");
+					int i = 0; for (StackTraceElement tElement : new Exception().getStackTrace()) if (i++<10 && !tElement.getClassName().startsWith("sun")) ERR.println("\tat " + tElement); else break;
+					ERR.println("FL CREATE WARNING: STACKTRACE END");
+				}
+				sCreatedFluidGT.put(aName, rFluid);
+			}
+			
+			if (FL.exists(aName) || !FluidRegistry.registerFluid(rFluid)) {
+				rFluid = FluidRegistry.getFluid(aName);
+				LH.add(rFluid.getUnlocalizedName(), aLocalized);
+				if (rFluid.getTemperature() == new Fluid("test").getTemperature() || rFluid.getTemperature() <= 0) rFluid.setTemperature(UT.Code.bindInt(aTemperatureK));
+				rFluid.setGaseous(aState == 2 || aState == 3);
+			}
+			
+			if (aMaterial != null) {
+				if (aMaterial.contains(TD.Properties.ACID    )) FluidsGT.ACID.add(aName);
+				if (aMaterial.contains(TD.Properties.GLOWING )) rFluid.setLuminosity(Math.max(rFluid.getLuminosity(), 5));
+				if (aMaterial.contains(TD.Properties.LIGHTING)) rFluid.setLuminosity(Math.max(rFluid.getLuminosity(), 15));
+				switch (aState) {
+				case STATE_LIQUID : aMaterial.liquid(make(rFluid, UT.Code.bindInt(aAmountPerUnit))); break;
+				case STATE_GASEOUS: aMaterial.gas   (make(rFluid, UT.Code.bindInt(aAmountPerUnit))); break;
+				case STATE_PLASMA : aMaterial.plasma(make(rFluid, UT.Code.bindInt(aAmountPerUnit))); break;
+				}
+				// Translating Real Life Density to that weird Integer based Density System.
+				if (aMaterial.mGramPerCubicCentimeter > 0 && (aState == STATE_LIQUID || aState == STATE_GASEOUS)) {
+					if (aMaterial.mGramPerCubicCentimeter > WEIGHT_AIR_G_PER_CUBIC_CENTIMETER) {
+						rFluid.setDensity(UT.Code.bindInt((long)(1000 * aMaterial.mGramPerCubicCentimeter)));
+					} else if (aMaterial.mGramPerCubicCentimeter < WEIGHT_AIR_G_PER_CUBIC_CENTIMETER) {
+						rFluid.setDensity(UT.Code.bindInt((long)(-0.1 / aMaterial.mGramPerCubicCentimeter)));
+					} else {
+						rFluid.setDensity(0);
+					}
 				}
 			}
+			
+			if (aFullContainer != null && aEmptyContainer != null && !FluidContainerRegistry.registerFluidContainer(make(rFluid, aFluidAmount), aFullContainer, aEmptyContainer)) {
+				RM.Canner.addRecipe1(T, 16, Math.max(aFluidAmount / 64, 16), aFullContainer, NF, make(rFluid, aFluidAmount), ST.container(aFullContainer, F));
+			}
+			return rFluid;
 		}
-		
-		if (aFullContainer != null && aEmptyContainer != null && !FluidContainerRegistry.registerFluidContainer(make(rFluid, aFluidAmount), aFullContainer, aEmptyContainer)) {
-			RM.Canner.addRecipe1(T, 16, Math.max(aFluidAmount / 64, 16), aFullContainer, NF, make(rFluid, aFluidAmount), ST.container(aFullContainer, F));
-		}
-		return rFluid;
 	}
 }

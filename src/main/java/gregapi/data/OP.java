@@ -543,7 +543,7 @@ public class OP {
 	public static final OreDictPrefix[] array_dust_ingot = {dust, ingot}, array_dust_ingot_plate = {dust, ingot, plate}, array_dust_ingot_plate_gem = {dust, ingot, plate, gem}, array_ingot_plate = {ingot, plate}, array_ingot_plate_gem = {ingot, plate, gem}, array_ingot_gem = {ingot, gem};
 	
 	static {
-		MT.init();
+//		MT.init(); // GTCH，没必要，可能会导致循环初始化
 		
 		crushed    .addListener(new OreDictListenerItem_Washing(crushedPurified, 2, crushedPurifiedTiny));
 		dustImpure .addListener(new OreDictListenerItem_Washing(dust, 1));

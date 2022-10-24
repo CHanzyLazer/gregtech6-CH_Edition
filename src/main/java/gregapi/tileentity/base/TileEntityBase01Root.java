@@ -453,7 +453,7 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 	@Override
 	public void readFromNBT(NBTTagCompound aNBT) {
 		super.readFromNBT(aNBT);
-		// 仅服务端加入计划，因为不好加入世界加载和区块加载时的载入，为了避免客户端卡顿只向服务端加入计划（TODO，考虑看看世界加载和区块加载时的逻辑？）
+		// 仅服务端加入计划，因为不好加入世界加载和区块加载时的载入，为了避免客户端卡顿只向服务端加入计划
 		if (isServerSide() && this instanceof IMTEScheduledUpdate_CH) {
 			pushScheduled(T, (IMTEScheduledUpdate_CH)this);
 			mMarkNBTFinished = T;

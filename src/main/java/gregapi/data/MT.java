@@ -53,7 +53,8 @@ public class MT {
 	static OreDictMaterial unused       (String aNameOreDict) {return create(-1, aNameOreDict).put(UNUSED_MATERIAL, DONT_SHOW_THIS_COMPONENT);}
 	static OreDictMaterial depricated   (String aNameOreDict) {return create(-1, aNameOreDict).put(UNUSED_MATERIAL, DONT_SHOW_THIS_COMPONENT);}
 	static OreDictMaterial invalid      (String aNameOreDict) {return create(-1, aNameOreDict).put(UNUSED_MATERIAL, DONT_SHOW_THIS_COMPONENT, INVALID_MATERIAL);}
-	static OreDictMaterial create       (int aID, String aNameOreDict) {if (aID >= 10000) return null; OreDictMaterial rMaterial = OreDictMaterial.createMaterial(aID, aNameOreDict, aNameOreDict); ALL_MATERIALS_REGISTERED_HERE.add(rMaterial); if (aID > 0) rMaterial.setOriginalMod(MD.GAPI); return rMaterial.handle(ANY.WoodPlastic);}
+	/* 15000-15999 For GregTech6-Unofficial，16000-16999 For GregTech6-CH_Edition */
+	static OreDictMaterial create       (int aID, String aNameOreDict) {if (aID >= 17000) return null; if (aID >= 10000 && aID < 15000) return null; OreDictMaterial rMaterial = OreDictMaterial.createMaterial(aID, aNameOreDict, aNameOreDict); ALL_MATERIALS_REGISTERED_HERE.add(rMaterial); if (aID > 0) rMaterial.setOriginalMod(MD.GAPI); return rMaterial.handle(ANY.WoodPlastic);}
 	static OreDictMaterial create       (int aID, String aNameOreDict, TextureSet[] aSets) {return create(aID, aNameOreDict).setTextures(aSets);}
 	static OreDictMaterial create       (int aID, String aNameOreDict, TextureSet[] aSets, long aR, long aG, long aB, long aA, Object... aRandomData) {return create(aID, aNameOreDict, aSets).setRGBa(aR, aG, aB, aA).put(aRandomData, aR==256?UNUSED_MATERIAL:null).hide(aR==256);}
 	
@@ -1865,13 +1866,24 @@ public class MT {
 		INITIALIZED = true;
 		// Making sure shit is statically loaded, damn it.
 		H.getClass();
-		DATA.Dye_Materials.getClass();
+		MT_CH.Nb2Ti3C5.getClass(); // GTCH stuff
 		OREMATS.Magnetite.getClass();
 		WOODS.Oak.getClass();
 		AM.Hydrogen.getClass();
-		ANY.init();
 		TECH.Unknown.getClass();
+	}
+	
+	private static boolean INITIALIZED_LATER = false;
+	
+	// 最后的初始化，避免过多的引用导致其他静态类过早的初始化
+	public static void initLater() {
+		if (!INITIALIZED || INITIALIZED_LATER) return;
+		INITIALIZED_LATER = true;
+		DATA.Dye_Materials.getClass();
 		TECH.init();
+		ANY.init();
+		MT_CH.DATA.FIBERCABLES_04.getClass(); // GTCH stuff
+		MT_CH.TECH.init(); // GTCH stuff
 	}
 	
 	/** I had to remove the full length names of Elements from this List, but in order to keep Compat with Mods that used some, such as IHL or Tinkers Gregworks, I got a few of them here. */

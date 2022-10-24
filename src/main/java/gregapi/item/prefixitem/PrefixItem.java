@@ -36,6 +36,7 @@ import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
 import gregtechCH.config.ConfigForge_CH.DATA_GTCH;
+import gregtechCH.data.LH_CH;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -107,7 +108,7 @@ public class PrefixItem extends Item implements Runnable, IItemUpdatable, IPrefi
 		boolean tUnificationAllowed = (mPrefix.contains(TD.Prefix.UNIFICATABLE) && !mPrefix.contains(TD.Prefix.UNIFICATABLE_RECIPES));
 		for (short i = 0; i < mMaterialList.length; i++) if (mPrefix.isGeneratingItem(mMaterialList[i])) {
 			ItemStack tStack = ST.update_(ST.make(this, 1, i));
-			LH.add("oredict." + mPrefix.dat(mMaterialList[i]).toString() + ".name", getLocalName(mPrefix, mMaterialList[i]));
+			LH_CH.addOredict(mPrefix, mMaterialList[i]);
 			if (tUnificationAllowed) OreDictManager.INSTANCE.addTarget_(mPrefix, mMaterialList[i], tStack); else OreDictManager.INSTANCE.registerOre_(mPrefix, mMaterialList[i], tStack);
 		}
 	}
@@ -226,7 +227,7 @@ public class PrefixItem extends Item implements Runnable, IItemUpdatable, IPrefi
 	*/
 	
 	/** @return the Local Name for this Item depending on Prefix and Material. */
-	public String getLocalName(OreDictPrefix aPrefix, OreDictMaterial aMaterial) {
+	public static String getLocalName(OreDictPrefix aPrefix, OreDictMaterial aMaterial) {
 		return LanguageHandler.getLocalName(aPrefix, aMaterial);
 	}
 

@@ -20,6 +20,7 @@
 package gregapi.oredict;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.RegType;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -99,14 +100,19 @@ public final class OreDictPrefix implements IOreDictListenerEvent, ITagDataConta
 	/** List of ThaumCraft Aspects. */
 	public final List<TC_AspectStack> mAspects = new ArrayListNoNulls<>(1);
 	
-	public static OreDictPrefix createPrefix(String aName) {
+	/** GTCH, Where is this Prefix registered */
+	public final RegType mRegType;
+	
+	public static OreDictPrefix createPrefix(String aName) {return createPrefix(RegType.GREG, aName);}
+	public static OreDictPrefix createPrefix(RegType aRegType, String aName) {
 		if (GAPI.mStartedInit) throw new IllegalStateException("Prefixes have to be initialised in PreInit or earlier!");
 		String tName = aName.replaceAll(" ", "").replaceAll("-", ""); // Auto-Replace all Spaces and Minuses.
 		OreDictPrefix rPrefix = sPrefixes.get(tName);
-		return rPrefix == null ? new OreDictPrefix(tName, aName) : rPrefix;
+		return rPrefix == null ? new OreDictPrefix(aRegType, tName, aName) : rPrefix;
 	}
 	
-	private OreDictPrefix(String aNameInternal, String aNameLocal) {
+	private OreDictPrefix(RegType aRegType, String aNameInternal, String aNameLocal) {
+		mRegType = aRegType;
 		mNameInternal = aNameInternal;
 		mNameTextureSet = mNameInternal;
 		mNameCategory = mNameLocal = aNameLocal;

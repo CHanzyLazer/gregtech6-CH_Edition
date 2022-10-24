@@ -166,7 +166,8 @@ public class CS_CH {
     public enum RegType {
         GREG,
         GTCH,
-        GT6U;
+        GT6U,
+        OTHER;
     }
     
     public enum IconType {

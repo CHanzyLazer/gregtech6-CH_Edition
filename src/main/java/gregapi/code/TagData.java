@@ -26,6 +26,9 @@ import java.util.List;
 
 import gregapi.data.LH;
 import gregapi.oredict.OreDictMaterial;
+import gregtechCH.data.LH_CH;
+
+import static gregtechCH.data.CS_CH.RegType;
 
 /**
  * @author Gregorius Techneticies
@@ -54,22 +57,25 @@ public final class TagData implements ICondition<ITagDataContainer> {
 		TAGS.add(this);
 	}
 	
-	public static TagData createTagData(String aName, String aLocalShort, String aLocalLong, String aChatFormat) {
-		TagData rTagData = createTagData(aName, aLocalShort, aLocalLong);
+	public static TagData createTagData(String aName, String aLocalShort, String aLocalLong, String aChatFormat) {return createTagData(RegType.GREG, aName, aLocalShort, aLocalLong, aChatFormat);}
+	public static TagData createTagData(RegType aRegType, String aName, String aLocalShort, String aLocalLong, String aChatFormat) {
+		TagData rTagData = createTagData(aRegType, aName, aLocalShort, aLocalLong);
 		rTagData.mChatFormat = aChatFormat;
 		return rTagData;
 	}
 	
-	public static TagData createTagData(String aName, String aLocalShort, String aLocalLong) {
+	public static TagData createTagData(String aName, String aLocalShort, String aLocalLong) {return createTagData(RegType.GREG, aName, aLocalShort, aLocalLong);}
+	public static TagData createTagData(RegType aRegType, String aName, String aLocalShort, String aLocalLong) {
 		TagData rTagData = createTagData(aName);
-		LH.add(rTagData.getTranslatableNameShort(), aLocalShort);
-		LH.add(rTagData.getTranslatableNameLong(), aLocalLong);
+		if (aRegType == RegType.GREG) LH.add(rTagData.getTranslatableNameShort(), aLocalShort);
+		else LH_CH.add(aRegType, rTagData.getTranslatableNameShort(), aLocalShort);
+		if (aRegType == RegType.GREG) LH.add(rTagData.getTranslatableNameLong(), aLocalLong);
+		else LH_CH.add(aRegType, rTagData.getTranslatableNameLong(), aLocalLong);
 		return rTagData;
 	}
 	
-	public static TagData createTagData(String aName, String aLocal) {
-		return createTagData(aName, aLocal, aLocal);
-	}
+	public static TagData createTagData(RegType aRegType, String aName, String aLocal) {return createTagData(aRegType, aName, aLocal, aLocal);}
+	public static TagData createTagData(String aName, String aLocal) {return createTagData(aName, aLocal, aLocal);}
 	
 	public static TagData createTagData(String aName) {
 		aName = aName.toUpperCase();

@@ -78,12 +78,15 @@ import gregapi.render.ITexture;
 import gregapi.render.TextureSet;
 import gregapi.tileentity.energy.EnergyCompat;
 import gregapi.util.CR;
+import gregapi.util.OM;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.worldgen.GT6WorldGenerator;
 import gregtechCH.config.ConfigForge_CH;
 import gregtechCH.config.ConfigJson_CH;
 import gregtechCH.data.LH_CH;
+import gregtechCH.data.OP_CH;
+import gregtechCH.data.TD_CH;
 import gregtechCH.lang.LanguageHandler_CH;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -133,6 +136,9 @@ public class GT_API extends Abstract_Mod {
 		MT.init();
 		BI.BAROMETER.toString();
 		OP.ore.toString();
+		OP_CH.wireLPGt16.toString(); // GTCH stuff
+		TD_CH.init(); // GTCH stuff
+		MT.initLater(); // GTCH, 保证引用项正确初始化
 		
 		// Make sure Icons are initialized.
 		Textures.BlockIcons.VOID.toString();

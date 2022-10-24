@@ -38,6 +38,7 @@ public class MD {
 	, GAPI_POST         = new ModData(ModIDs.GAPI_POST          , "Greg-API-Post")
 	, GT5U              = new ModData(ModIDs.GT                 , "GregTech 5 Unofficial")
 	, GT6U              = new ModData(ModIDs.GT                 , "GregTech 6 Unofficial")
+	, GTCH              = new ModData(ModIDs.GT                 , "GregTech 6 CH Edition")
 	
 	, QT                = new ModData(ModIDs.QT                 , "QwerTech")
 	

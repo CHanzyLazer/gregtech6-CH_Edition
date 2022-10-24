@@ -313,14 +313,9 @@ public class MultiTileEntityRegistry {
 			if (tFailed) return null;
 			assert aClassContainer != null;
 			// 目前所有的非 greg 的 MTE 都使用外置的语言文件
-			switch (aClassContainer.mType) {
-			case GTCH:
-				LH_CH.add(mNameInternal+"."+ aClassContainer.mID+".name", aLocalised); break;
-			case GT6U:
-				LH_CH.add(T, mNameInternal+"."+ aClassContainer.mID+".name", aLocalised); break;
-			case GREG: default:
-				LH.add(mNameInternal+"."+ aClassContainer.mID+".name", aLocalised); break;
-			}
+			if (aClassContainer.mRegType == RegType.GREG) LH.add(mNameInternal+"."+ aClassContainer.mID+".name", aLocalised);
+			else LH_CH.add(aClassContainer.mRegType, mNameInternal+"."+ aClassContainer.mID+".name", aLocalised);
+			
 			mRegistry.put(aClassContainer.mID, aClassContainer);
 			mLastRegisteredID = aClassContainer.mID;
 			mRegistrations.add(aClassContainer);

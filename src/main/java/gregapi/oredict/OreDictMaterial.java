@@ -41,6 +41,7 @@ import net.minecraftforge.fluids.FluidStack;
 import java.util.*;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.*;
 
 /**
  * @author Gregorius Techneticies
@@ -76,7 +77,7 @@ public final class OreDictMaterial implements ITagDataContainer<OreDictMaterial>
 	 * <BR>[13000:13999] Qwertygiy
 	 * <BR>[14000:14999] Lauren
 	 * <BR>[15000:15999] Yuesha / GT6U
-	 * <BR>[16000:16999] the next one who asks me (do not use unless I personally tell you to use this larger Range)
+	 * <BR>[16000:16999] the next one who asks me (do not use unless I personally tell you to use this larger Range) TODO it would be GTCH
 	 * <BR>[17000:17999] Free
 	 * <BR>[18000:18999] Free
 	 * <BR>[19000:19999] Free
@@ -308,6 +309,9 @@ public final class OreDictMaterial implements ITagDataContainer<OreDictMaterial>
 	/** Stores the Tool and Armor Enchants */
 	public final List<ObjectStack<Enchantment>> mEnchantmentTools = new ArrayListNoNulls<>(1), mEnchantmentWeapons = new ArrayListNoNulls<>(1), mEnchantmentArmors = new ArrayListNoNulls<>(1);
 	
+	/** GTCH, Where is this Material registered, 15000-15999 For GregTech6-Unofficial，16000-16999 For GregTech6-CH_Edition */
+	public final RegType mRegType;
+	
 	private OreDictMaterial(short aID, String aNameInternal, String aNameLocal) {
 		mID = aID;
 		mNameInternal = aNameInternal;
@@ -315,6 +319,11 @@ public final class OreDictMaterial implements ITagDataContainer<OreDictMaterial>
 		MATERIAL_MAP.put(mNameInternal, this);
 		if (mID >= 0) MATERIAL_ARRAY[mID] = this;
 		mHashID = sHashID++;
+		// GTCH
+		if (mID < 9999) mRegType = RegType.GREG; // 小于零的 id 也是 greg 的
+		else if (mID >= 15000 && mID < 15999) mRegType = RegType.GT6U;
+		else if (mID >= 16000 && mID < 16999) mRegType = RegType.GTCH;
+		else mRegType = RegType.OTHER;
 	}
 	
 	/** Sets the localised Name of this Material */

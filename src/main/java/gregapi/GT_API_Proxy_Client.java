@@ -80,6 +80,8 @@ import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
 import gregtechCH.GTCH_Main;
+import gregtechCH.data.CS_CH;
+import gregtechCH.data.LH_CH;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderFallingBlock;
@@ -187,13 +189,19 @@ public class GT_API_Proxy_Client extends GT_API_Proxy {
 	
 	@Override
 	public void onProxyBeforeInit(Abstract_Mod aMod, FMLInitializationEvent aEvent) {
-		for (OreDictMaterial tMaterial : OreDictMaterial.MATERIAL_MAP.values()) LH.add("gt.material." + tMaterial.mNameInternal, tMaterial.mNameLocal);
+		for (OreDictMaterial tMaterial : OreDictMaterial.MATERIAL_MAP.values()) {
+			// 目前所有的非 greg 的 material 都使用外置的语言文件
+			if (tMaterial.mRegType == CS_CH.RegType.GREG) LH.add("gt.material." + tMaterial.mNameInternal, tMaterial.mNameLocal);
+			else LH_CH.add(tMaterial.mRegType, "gt.material." + tMaterial.mNameInternal, tMaterial.mNameLocal);
+		}
 	}
 	
 	@Override
 	public void onProxyAfterInit(Abstract_Mod aMod, FMLInitializationEvent aEvent) {
 		for (OreDictPrefix tPrefix : OreDictPrefix.VALUES) {
-			LH.add("oredict.prefix." + tPrefix.mNameInternal, tPrefix.mNameLocal);
+			// 目前所有的非 greg 的 prefix 都使用外置的语言文件
+			if (tPrefix.mRegType == CS_CH.RegType.GREG) LH.add("oredict.prefix." + tPrefix.mNameInternal, tPrefix.mNameLocal);
+			else LH_CH.add(tPrefix.mRegType, "oredict.prefix." + tPrefix.mNameInternal, tPrefix.mNameLocal);
 			tPrefix.mNameLocal = LH.get("oredict.prefix." + tPrefix.mNameInternal, tPrefix.mNameLocal);
 		}
 	}

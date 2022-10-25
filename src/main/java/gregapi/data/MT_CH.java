@@ -126,21 +126,21 @@ public class MT_CH extends MT {
             Proton.put(FUSION);
 //            Li_6.put(MOLTEN_6U); // 不必要
 //            Be_7.put(MOLTEN_6U); // 不必要
-            Ru.put(MOLTEN_6U); // 可能不必要
-            Rh.put(MOLTEN_6U); // 可能不必要
-            Hf.put(MOLTEN_6U); // 可能不必要
-            Ta.put(MOLTEN_6U); // 可能不必要
+            Ru.put(MOLTEN_6U);
+            Rh.put(MOLTEN_6U);
+            Hf.put(MOLTEN_6U);
+            Ta.put(MOLTEN_6U);
 //            U_238.put(MOLTEN_6U); // 不必要
 //            U_235.put(MOLTEN_6U); // 不必要
-            Pu.put(MOLTEN_6U); // 可能不必要
-            Pu_241.put(MOLTEN_6U); // 可能不必要
-            Pu_243.put(MOLTEN_6U); // 可能不必要
-            Pu_239.put(MOLTEN_6U); // 可能不必要
-            Am.put(MOLTEN_6U); // 可能不必要
-            Am_241.put(MOLTEN_6U); // 可能不必要
+            Pu.put(MOLTEN_6U);
+            Pu_241.put(MOLTEN_6U);
+            Pu_243.put(MOLTEN_6U);
+            Pu_239.put(MOLTEN_6U);
+            Am.put(MOLTEN_6U);
+            Am_241.put(MOLTEN_6U);
             // MARK Tn Dn 不再进行熔沸点调整
             // MARK Sand SoulSand SluiceSand 依旧保留为 dust
-//            OREMATS.Chromite.addOreByProducts(MnO2 , Cr , Mg , OREMATS.Bromargyrite ); // TODO 暂时不修改铬铁矿，看起来是给铬铁矿添加铬作为产物了？应该只是nei
+//            OREMATS.Chromite.addOreByProducts(MnO2 , Cr , Mg , OREMATS.Bromargyrite ); // MARK 这是副产物表所以不用修改
             // TODO 暂不去除 Chromite 的 .setSmelting(Cr , 2*U9)
         }
     }

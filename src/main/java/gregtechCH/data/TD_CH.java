@@ -6,14 +6,14 @@ import gregapi.data.LH;
 
 import static gregapi.data.TD.Energy.ALL;
 import static gregapi.data.TD.Energy.ALL_NEGATIVE_ALLOWED;
-import static gregtechCH.data.CS_CH.RegType.*;
+import static gregtechCH.data.CS_CH.RegType;
 
 // TODO 查看这些 TD 的使用
 /* 额外添加的 Tag Data 统一放在这里 */
 public class TD_CH {
     public static class Connectors {
         /* GT6U stuff */
-        public static final TagData WIRE_OpticalFiber   = TagData.createTagData(GT6U, "CONNECTORS.WIRE_OPTICSLFIBER", "Optical Fiber");
+        public static final TagData WIRE_OpticalFiber   = TagData.createTagData(RegType.GT6U, "CONNECTORS.WIRE_OPTICSLFIBER", "Optical Fiber");
     }
     
     public static class Energy {
@@ -23,7 +23,7 @@ public class TD_CH {
          * Size = Nobody knows
          * Amount = Nobody knows
          */
-        public static final TagData LP                  = TagData.createTagData(GT6U, "ENERGY.LP", "LP", "Light Energy", LH.Chat.YELLOW);
+        public static final TagData LP                  = TagData.createTagData(RegType.GT6U, "ENERGY.LP", "LP", "Light Energy", LH.Chat.YELLOW);
         static {
             ALL.add(LP);
             ALL_NEGATIVE_ALLOWED.add(LP);

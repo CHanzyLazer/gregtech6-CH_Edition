@@ -69,10 +69,10 @@ public class MTEC_HasTanks {
 
     // 放大镜右键监视内部储罐
     public void onMagnifyingGlass(List<String> aChatReturn) {
-        if (mTanksInput.length == 1) if (mTanksInput[0].has()) aChatReturn.add("Tank input: " + mTanksInput[0].content());
-        else for (int i = 0; i < mTanksInput.length; ++i) if (mTanksInput[i].has()) aChatReturn.add("Tank input " + (i+1) + ": " + mTanksInput[i].content());
-        if (mTanksOutput.length == 1) if (mTanksOutput[0].has()) aChatReturn.add("Tank output: " + mTanksOutput[0].content());
-        else for (int i = 0; i < mTanksOutput.length; ++i) if (mTanksOutput[i].has()) aChatReturn.add("Tank output " + (i+1) + ": " + mTanksOutput[i].content());
+        if (mTanksInput.length == 1) {if (mTanksInput[0].has()) aChatReturn.add("Tank input: " + mTanksInput[0].content());}
+        else {for (int i = 0; i < mTanksInput.length; ++i) if (mTanksInput[i].has()) aChatReturn.add("Tank input " + (i+1) + ": " + mTanksInput[i].content());}
+        if (mTanksOutput.length == 1) {if (mTanksOutput[0].has()) aChatReturn.add("Tank output: " + mTanksOutput[0].content());}
+        else {for (int i = 0; i < mTanksOutput.length; ++i) if (mTanksOutput[i].has()) aChatReturn.add("Tank output " + (i+1) + ": " + mTanksOutput[i].content());}
     }
     // 搋子右键清空内部流体
     public void onPlunger(List<String> aChatReturn) {

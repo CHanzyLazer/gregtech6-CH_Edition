@@ -131,9 +131,9 @@ public class MTEC_MotorMainFluidBurner extends MTEC_MotorMainBase {
         long tFluid;
         for (FluidTankGT tankOutput : mCTanks.mTanksOutput) {
             if (tankOutput.has()) {
-                FL.move(tankOutput, mCore.getFluidEmitter().getAdjacentTank(mCore.getEmittingSide()));
+                FL.move(tankOutput, mCore.getFluidEmitter().getAdjacentTank(mCore.getFluidEmittingSide()));
                 tFluid = tankOutput.amount() - tankOutput.capacity() / 4;
-                if (tFluid > 0 && !WD.hasCollide(mCore.mTE.getWorldObj(), mCore.getFluidEmitter().getOffset(mCore.getEmittingSide(), 1))) {
+                if (tFluid > 0 && !WD.hasCollide(mCore.mTE.getWorldObj(), mCore.getFluidEmitter().getOffset(mCore.getFluidEmittingSide(), 1))) {
                     GarbageGT.trash(tankOutput, tFluid);
                 }
             }

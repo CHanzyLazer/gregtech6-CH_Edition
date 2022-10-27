@@ -1840,9 +1840,9 @@
 				return RED + "停机";
 			}
 			if(nbt['gtch.preheat'] != undefined){
-				if((nbt['gt.energy'] != undefined) && (nbt['gtch.preheat.energy'] != undefined)){
-					if(nbt['gt.energy'] < nbt['gtch.preheat.energy']){
-						return BLUE + "预热" + WHITE + " - " + parseInt(nbt['gt.energy'] / nbt['gtch.preheat.energy'] * 10000) / 100 + "%";
+				if((nbt['gt.energy'] != undefined) && (nbt['gtch.preheat.energy.oo'] != undefined)){
+					if(nbt['gt.energy'] < nbt['gtch.preheat.energy.oo']){
+						return BLUE + "预热" + WHITE + " - " + parseInt(nbt['gt.energy'] / nbt['gtch.preheat.energy.oo'] * 10000) / 100 + "%";
 					}
 				}else{
 					return BLUE + "预热" + WHITE + " - " + "0.00%";
@@ -1902,9 +1902,9 @@
 				return RED + "停机";
 			}
 			if(nbt['gtch.preheat'] != undefined){
-				if((nbt['gt.energy'] != undefined) && (nbt['gtch.preheat.energy'] != undefined)){
-					if(nbt['gt.energy'] < nbt['gtch.preheat.energy']){
-						return BLUE + "预热" + WHITE + " - " + parseInt(nbt['gt.energy'] / nbt['gtch.preheat.energy'] * 10000) / 100 + "%";
+				if((nbt['gt.energy'] != undefined) && (nbt['gtch.preheat.energy.oo'] != undefined)){
+					if(nbt['gt.energy'] < nbt['gtch.preheat.energy.oo']){
+						return BLUE + "预热" + WHITE + " - " + parseInt(nbt['gt.energy'] / nbt['gtch.preheat.energy.oo'] * 10000) / 100 + "%";
 					}
 				}else{
 					return BLUE + "预热" + WHITE + " - " + "0.00%";
@@ -1961,8 +1961,8 @@
 	<!-- 多方快涡轮 -->
 	<tileentity id = "gt.multitileentity.multiblock.turbine.steam">
 		<line displayname = "爆炸警告">
-			if((nbt['gt.energy'] != undefined) && (nbt['gtch.preheat.energy'] != undefined)){
-				if((nbt['gt.energy'] / nbt['gtch.preheat.energy']) > 0.25){
+			if((nbt['gt.energy'] != undefined) && (nbt['gtch.preheat.energy.oo'] != undefined)){
+				if((nbt['gt.energy'] / nbt['gtch.preheat.energy.oo']) > 0.25){
 					return RED + "此时改变结构会造成" + ExplodeRoundSULarge(nbt['gt.energy']) + "点的爆炸";
 				}
 			}
@@ -1978,9 +1978,9 @@
 				return RED + "停机";
 			}
 			if(nbt['gtch.preheat'] != undefined){
-				if((nbt['gt.energy'] != undefined) && (nbt['gtch.preheat.energy'] != undefined)){
-					if(nbt['gt.energy'] < nbt['gtch.preheat.energy']){
-						return BLUE + "预热" + WHITE + " - " + parseInt(nbt['gt.energy'] / nbt['gtch.preheat.energy'] * 10000) / 100 + "%";
+				if((nbt['gt.energy'] != undefined) && (nbt['gtch.preheat.energy.oo'] != undefined)){
+					if(nbt['gt.energy'] < nbt['gtch.preheat.energy.oo']){
+						return BLUE + "预热" + WHITE + " - " + parseInt(nbt['gt.energy'] / nbt['gtch.preheat.energy.oo'] * 10000) / 100 + "%";
 					}
 				}else{
 					return BLUE + "预热" + WHITE + " - " + "0.00%";
@@ -2077,8 +2077,8 @@
 	<!-- 燃气涡轮 -->
 	<tileentity id = "gt.multitileentity.multiblock.turbine.gas">
 		<line displayname = "爆炸警告">
-			if((nbt['gt.energy'] != undefined) && (nbt['gtch.preheat.energy'] != undefined)){
-				if((nbt['gt.energy'] / nbt['gtch.preheat.energy']) > 0.25){
+			if((nbt['gt.energy'] != undefined) && (nbt['gtch.preheat.energy.oo'] != undefined)){
+				if((nbt['gt.energy'] / nbt['gtch.preheat.energy.oo']) > 0.25){
 					return RED + "此时改变结构会造成" + ExplodeRoundSULarge(nbt['gt.energy']) + "点的爆炸";
 				}
 			}
@@ -2089,9 +2089,9 @@
 				return RED + "停机";
 			}
 			if(nbt['gtch.preheat'] != undefined){
-				if((nbt['gt.energy'] != undefined) && (nbt['gtch.preheat.energy'] != undefined)){
-					if(nbt['gt.energy'] < nbt['gtch.preheat.energy']){
-						return BLUE + "预热" + WHITE + " - " + parseInt(nbt['gt.energy'] / nbt['gtch.preheat.energy'] * 10000) / 100 + "%";
+				if((nbt['gt.energy'] != undefined) && (nbt['gtch.preheat.energy.oo'] != undefined)){
+					if(nbt['gt.energy'] < nbt['gtch.preheat.energy.oo']){
+						return BLUE + "预热" + WHITE + " - " + parseInt(nbt['gt.energy'] / nbt['gtch.preheat.energy.oo'] * 10000) / 100 + "%";
 					}
 				}else{
 					return BLUE + "预热" + WHITE + " - " + "0.00%";

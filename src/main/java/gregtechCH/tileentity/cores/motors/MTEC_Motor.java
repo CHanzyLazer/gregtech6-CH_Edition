@@ -40,7 +40,7 @@ public abstract class MTEC_Motor implements IMTEC_MotorTick, IMTEC_ToolTips {
     protected abstract IMTEC_Texture getNewCoreIcon();
     protected ITileEntityEnergy getEnergyEmitter() {return (ITileEntityEnergy)mTE;}
     protected TileEntityBase01Root getFluidEmitter() {return mTE;}
-    protected byte getEmittingSide() {return mTE.mFacing;}
+    protected byte getFluidEmittingSide() {return OPOS[mTE.mFacing];}
     protected void convertToTanks(FluidStack... aFluids) {/**/}
     protected void convertAutoOutput() {/**/}
 
@@ -176,7 +176,7 @@ public abstract class MTEC_Motor implements IMTEC_MotorTick, IMTEC_ToolTips {
     public boolean canDrop(int aInventorySlot) {return mD.canDrop(aInventorySlot);}
 
     // energy interfaces
-    protected boolean isInput (byte aSide) {return aSide == OPOS[mTE.mFacing];}
+    protected boolean isInput (byte aSide) {return aSide != mTE.mFacing && aSide != OPOS[mTE.mFacing];}
     protected boolean isOutput(byte aSide) {return aSide == mTE.mFacing;}
 
     public boolean allowCovers(byte aSide) {return T;}

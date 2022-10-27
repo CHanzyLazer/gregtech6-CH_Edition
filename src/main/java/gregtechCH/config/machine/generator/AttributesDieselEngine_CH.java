@@ -56,10 +56,11 @@ public class AttributesDieselEngine_CH extends AttributesMotor_CH {
         } else {
             nbtOutput = MA_MACHINE_GENERATOR.get(aMat).mNbtOutput;
         }
-        nbtEfficiency = 10000 - Math.max(MA_MACHINE_GENERATOR.get(aMat).mNbtEfficiencyLoss / 5 + 6000, 0);
+        nbtEfficiency = 10000 - Math.max(MA_MACHINE_GENERATOR.get(aMat).mNbtEfficiencyLoss / 4 + 6000, 0);
         nbtEfficiency = (int) UT_CH.Code.effNormalize(nbtEfficiency);
         setEnergy();
-        nbtPreheatRate = nbtOutput * 4;
+        nbtPreheatEnergy = nbtOutput * 1000;
+        nbtPreheatRate = nbtOutput;
 
         recipeObject = new Object[]{
                 "PLP", "SMS", "GOC",

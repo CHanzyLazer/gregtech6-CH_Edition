@@ -5,7 +5,8 @@ import gregapi.render.IIconContainer;
 import gregtechCH.data.CS_CH;
 
 public class MTEC_MotorIconLiquid extends MTEC_MotorIconBase {
-    protected MTEC_MotorIconLiquid(MTEC_MotorLiquid aCore) {super(aCore);}
+    public MTEC_MotorIconLiquid(MTEC_MotorLiquid aCore) {super(aCore);}
+    protected MTEC_MotorIconLiquid(MTEC_Motor aCore) {super(aCore);}
     public MTEC_MotorLiquid core() {return (MTEC_MotorLiquid)mCore;}
 
     public final static IIconContainer[] sColoreds = new IIconContainer[] {

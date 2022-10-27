@@ -11,7 +11,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import java.util.List;
 
 import static gregapi.data.CS.*;
-import static gregapi.data.CS.NBT_VISUAL;
 
 
 public abstract class MTEC_LargeMotor extends MTEC_Motor {
@@ -23,7 +22,6 @@ public abstract class MTEC_LargeMotor extends MTEC_Motor {
     protected MTEC_MultiBlockMotorBase getNewCoreMultiBlock() {return new MTEC_MultiBlockMotorBase(this);}
     @Override protected ITileEntityEnergy getEnergyEmitter() {return mDL.getEnergyEmitter();}
     @Override protected TileEntityBase01Root getFluidEmitter() {return mDL.getFluidEmitter();}
-    @Override protected byte getEmittingSide() {return OPOS[super.getEmittingSide()];}
 
     /* main code */
 

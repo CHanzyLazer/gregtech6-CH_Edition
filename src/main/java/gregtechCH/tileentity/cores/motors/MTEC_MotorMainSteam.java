@@ -56,6 +56,7 @@ public class MTEC_MotorMainSteam extends MTEC_MotorMainBase {
     }
     @Override
     public void postInitNBT(NBTTagCompound aNBT) {
+        super.postInitNBT(aNBT);
         STEAM_PER_WATER_SELF = mEfficiencyWater < 100 ? -1 : (int)UT.Code.units(STEAM_PER_WATER, mEfficiencyWater, 10000, T);
     }
     @Override

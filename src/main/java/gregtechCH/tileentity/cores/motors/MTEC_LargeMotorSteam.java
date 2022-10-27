@@ -98,7 +98,7 @@ public class MTEC_LargeMotorSteam extends MTEC_LargeMotor {
     @Override
     protected void convertAutoOutput() {
         if (mTankWater.has()) {
-            FL.move(mTankWater, getFluidEmitter().getAdjacentTank(getEmittingSide()));
+            FL.move(mTankWater, getFluidEmitter().getAdjacentTank(getFluidEmittingSide()));
             long tAmount = mTankWater.amount() - mTankWater.capacity() / 2;
             if (tAmount > 0) GarbageGT.trash(mTankWater, tAmount);
         }

@@ -16,12 +16,14 @@ import gregtech.tileentity.energy.transformers.MultiTileEntityTransformerRotatio
 import gregtech.tileentity.multiblocks.MultiTileEntityLargeBoiler;
 import gregtech.tileentity.multiblocks.MultiTileEntityLargeTurbineGas;
 import gregtech.tileentity.multiblocks.MultiTileEntityLargeTurbineSteam;
+import gregtech.tileentity.tools.*;
 import gregtechCH.config.machine.generator.*;
 import gregtechCH.config.machine.kinetic.*;
 import gregtechCH.config.machine.multiblock.AttributesLargeBoilerTank_CH;
 import gregtechCH.config.machine.multiblock.AttributesLargeGasTurbine_CH;
 import gregtechCH.config.machine.multiblock.AttributesLargeSteamTurbine_CH;
 import gregtechCH.config.machine.steam.*;
+import gregtechCH.tileentity.energy.MultiTileEntityMotorGas;
 import gregtechCH.tileentity.sensors.*;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -34,6 +36,12 @@ import static gregapi.data.CS.*;
 import static gregtechCH.config.ConfigJson_CH.*;
 import static gregtechCH.data.CS_CH.*;
 
+
+/**
+ * EMPTY IDS: 23000 - 24999; 15000 - 16999; 9500 - 9999
+ * 由于后续 greg 还有比较激进的添加，因此不按照 mod 来分划 id 使用区域
+ * TODO 想方法完善 id 改变时能够找到正确的新 id 的方法
+ **/
 public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
     /* FORMAT:
     @Override protected void xxxBeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
@@ -54,13 +62,73 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         aRegistry.MODIFYING_ADD_END();
     }
     **/
+    @Override protected void crucibleBeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
+        /// 修改前标记修改开始
+        aRegistry.MODIFYING_ADD_START();
+        
+        /// 添加项
+        /* GT6U stuff */
+        // 碳化铌钛坩埚 // MARK ID 1044 -> 1045
+        aClass = MultiTileEntitySmeltery.class;
+        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1043, RegType.GT6U, "Smelting Crucible ("             +aMat.getLocal()+")", "Smelting Crucibles"                  ,  1045,  1022, aClass, aMat.mToolQuality, 16, aMetal           , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   9.0F, NBT_RESISTANCE,   9.0F, NBT_RECIPEMAP, RM.CrucibleAlloying , NBT_ENERGY_ACCEPTED, TD.Energy.HU, NBT_ACIDPROOF, F), "PhP", "PwP", "PPP", 'P', OP.plate.dat(aMat));
+        // 碳化铌钛浇筑口 // MARK ID 1795 -> 1745
+        aClass = MultiTileEntityFaucet.class;
+        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1743, RegType.GT6U, "Crucible Faucet ("               +aMat.getLocal()+")", "Crucibles Faucets"                   ,  1745,  1722, aClass, aMat.mToolQuality, 16, aUtilMetal       , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   1.0F, NBT_RESISTANCE,   6.0F, NBT_ACIDPROOF, F), "h y", "P P", " P ", 'P', OP.plate.dat(aMat));
+        // 碳化铌钛模具 // MARK ID 1094 -> 1095
+        aClass = MultiTileEntityMold.class;
+        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1093, RegType.GT6U, "Mold ("                          +aMat.getLocal()+")", "Molds"                               ,  1095,  1072, aClass, aMat.mToolQuality, 16, aUtilMetal       , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   1.0F, NBT_RESISTANCE,   6.0F, NBT_ACIDPROOF, F), "h y", "P P", "PPP", 'P', OP.plate.dat(aMat));
+        // 碳化铌钛浇筑盆 // MARK ID 1794 -> 1795
+        aClass = MultiTileEntityBasin.class;
+        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1793, RegType.GT6U, "Basin ("                         +aMat.getLocal()+")", "Molds"                               ,  1795,  1072, aClass, aMat.mToolQuality, 16, aMetal           , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   9.0F, NBT_RESISTANCE,   9.0F, NBT_ACIDPROOF, F), "PhP", "PyP", " P ", 'P', OP.plate.dat(aMat));
+        // 碳化铌钛十字 // MARK ID  1894 -> 1895
+        aClass = MultiTileEntityCrossing.class;
+        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1893, RegType.GT6U, "Crucible Crossing ("             +aMat.getLocal()+")", "Molds"                               ,  1895,  1072, aClass, aMat.mToolQuality, 16, aMetal           , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   9.0F, NBT_RESISTANCE,   9.0F, NBT_ACIDPROOF, F), "hPy", "PPP", " P ", 'P', OP.plate.dat(aMat));
+    }
+    @Override protected void crucibleFinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
+        /// 最后标记修改结束，并进行错误检测
+        aRegistry.MODIFYING_ADD_END();
+    }
+    
     
     // TODO 可能考虑成直读一个 json 文件后直接循环替换，而原本的结构用于在默认情况自动生成 json
+    // TODO 默认的修改改为硬编码的方式实现（提高可读性，添加和替换格式统一），将玩家自己修改在最上面优先度最高，例子放到说明文档（要成为 greg 了），为了方便修改，需要对小的修改有专门的 api
     @Override protected void unsorted1BeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
         /// 添加前将后续添加全部 hold
         aRegistry.MODIFYING_ADD_START();
         
+        /// 添加项
+        /* GT6U stuff */
+        // 碳化铌钛燃烧室 // MARK ID + 1; DOUBLE OUTPUT
+        aClass = MultiTileEntityGeneratorMetal.class;
+        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1109, RegType.GT6U, "Burning Box (Solid, "            +aMat.getLocal()+")", "Burning Boxes"                       ,  1111,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_FUELMAP, FM.Furnace,    NBT_EFFICIENCY, 10000, NBT_OUTPUT, 392, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "PwP", "BBB", 'B', Blocks.brick_block, 'P', OP.plate.dat(aMat), 'C', OP.plateDouble.dat(ANY.Cu));
+        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1159, RegType.GT6U, "Dense Burning Box (Solid, "      +aMat.getLocal()+")", "Burning Boxes"                       ,  1161,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_FUELMAP, FM.Furnace,    NBT_EFFICIENCY, 10000, NBT_OUTPUT,1536, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "PwP", "BBB", 'B', Blocks.brick_block, 'P', OP.plateQuintuple.dat(aMat), 'C', OP.plateDense.dat(ANY.Cu));
+        aClass = MultiTileEntityGeneratorLiquid.class;
+        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1409, RegType.GT6U, "Burning Box (Liquid, "           +aMat.getLocal()+")", "Burning Boxes"                       ,  1411,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_FUELMAP, FM.Burn,       NBT_EFFICIENCY, 10000, NBT_OUTPUT, 392, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "IwI", "BBB", 'B', Blocks.brick_block, 'P', OP.plate.dat(aMat), 'I', OP.pipeSmall.dat(aMat), 'C', OP.plateDouble.dat(ANY.Cu));
+        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1459, RegType.GT6U, "Dense Burning Box (Liquid, "     +aMat.getLocal()+")", "Burning Boxes"                       ,  1461,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_FUELMAP, FM.Burn,       NBT_EFFICIENCY, 10000, NBT_OUTPUT,1536, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "IwI", "BBB", 'B', Blocks.brick_block, 'P', OP.plateQuintuple.dat(aMat), 'I', OP.pipeLarge.dat(aMat), 'C', OP.plateDense.dat(ANY.Cu));
+        aClass = MultiTileEntityGeneratorGas.class;
+        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1609, RegType.GT6U, "Burning Box (Gas, "              +aMat.getLocal()+")", "Burning Boxes"                       ,  1611,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_FUELMAP, FM.Burn,       NBT_EFFICIENCY, 10000, NBT_OUTPUT, 392, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "BwB", "BIB", 'B', Blocks.brick_block, 'P', OP.plate.dat(aMat), 'I', OP.pipeSmall.dat(aMat), 'C', OP.plateDouble.dat(ANY.Cu));
+        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1659, RegType.GT6U, "Dense Burning Box (Gas, "        +aMat.getLocal()+")", "Burning Boxes"                       ,  1661,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_FUELMAP, FM.Burn,       NBT_EFFICIENCY, 10000, NBT_OUTPUT,1536, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "BwB", "BIB", 'B', Blocks.brick_block, 'P', OP.plateQuintuple.dat(aMat), 'I', OP.pipeLarge.dat(aMat), 'C', OP.plateDense.dat(ANY.Cu));
+        aClass = MultiTileEntityGeneratorFluidBed.class;
+        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(9009, RegType.GT6U, "Fluidized Bed Burning Box ("     +aMat.getLocal()+")", "Burning Boxes"                       ,  9011,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_FUELMAP, FM.FluidBed,   NBT_EFFICIENCY, 10000, NBT_OUTPUT, 768, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "UwU", "BXB", 'B', Blocks.brick_block, 'U', OP.plateCurved.dat(aMat), 'X', OP.rotor.dat(aMat), 'P', OP.plate.dat(aMat), 'C', OP.plateDouble.dat(ANY.Cu));
+        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(9059, RegType.GT6U, "Dense Fluidized Bed Burning Box ("+aMat.getLocal()+")","Burning Boxes"                       ,  9061,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_FUELMAP, FM.FluidBed,   NBT_EFFICIENCY, 10000, NBT_OUTPUT,3072, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "UwU", "BXB", 'B', Blocks.brick_block, 'U', OP.plateCurved.dat(aMat), 'X', OP.rotor.dat(aMat), 'P', OP.plateQuintuple.dat(aMat), 'C', OP.plateDense.dat(ANY.Cu));
+        
+        /// ID: 9140-9149 and 9190-9199 for Diesel Engine; 9160-9169 and 9180-9189 for Small Gas Turbine; (9150-9159 for Dense Heat Exchanger)
+        // 钨燃油引擎 // MARK ID 9199 -> 9190; 效率输出合成和 GTCH 统一
+        aClass = MultiTileEntityMotorLiquid.class;
+        aMat = ANY.W;                   aRegistry.appendAddAfter(9198, RegType.GT6U, "Diesel Engine ("                  +aMat.getLocal()+")", "Engines"                             ,  9190,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Engine, NBT_EFFICIENCY,  3500, NBT_OUTPUT,  256, NBT_PREHEAT_ENERGY,  256*1000, NBT_PREHEAT_RATE,  256*4, NBT_PREHEAT_COST,  256/16, NBT_COOLDOWN_RATE,  256, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeQuadruple.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        // 小燃气涡轮 // MARK ID CHANGED
+        aClass = MultiTileEntityMotorGas.class;
+        aMat = MT.Bronze;               aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9167,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  2750, NBT_OUTPUT,   32, NBT_PREHEAT_ENERGY,   32*4000, NBT_PREHEAT_RATE,   32*1, NBT_PREHEAT_COST,   32/16, NBT_COOLDOWN_RATE,   32, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = ANY.Steel;               aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9168,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  2500, NBT_OUTPUT,   64, NBT_PREHEAT_ENERGY,   64*4000, NBT_PREHEAT_RATE,   64*1, NBT_PREHEAT_COST,   64/16, NBT_COOLDOWN_RATE,   64, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = MT.Invar;                aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9169,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  3500, NBT_OUTPUT,  128, NBT_PREHEAT_ENERGY,  128*4000, NBT_PREHEAT_RATE,  128*1, NBT_PREHEAT_COST,  128/16, NBT_COOLDOWN_RATE,  128, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = MT.Ti;                   aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9187,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  2750, NBT_OUTPUT,  256, NBT_PREHEAT_ENERGY,  256*4000, NBT_PREHEAT_RATE,  256*1, NBT_PREHEAT_COST,  256/16, NBT_COOLDOWN_RATE,  256, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = MT.TungstenSteel;        aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9188,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  3000, NBT_OUTPUT,  512, NBT_PREHEAT_ENERGY,  512*4000, NBT_PREHEAT_RATE,  512*1, NBT_PREHEAT_COST,  512/16, NBT_COOLDOWN_RATE,  512, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = ANY.W;                   aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9180,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  3500, NBT_OUTPUT,  512, NBT_PREHEAT_ENERGY,  512*4000, NBT_PREHEAT_RATE,  512*1, NBT_PREHEAT_COST,  512/16, NBT_COOLDOWN_RATE,  512, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = MT.Ir;                   aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9189,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  3333, NBT_OUTPUT, 1024, NBT_PREHEAT_ENERGY, 1024*4000, NBT_PREHEAT_RATE, 1024*1, NBT_PREHEAT_COST, 1024/16, NBT_COOLDOWN_RATE, 1024, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        // TODO MARK
+        
         /// 修改项
+        /* GTCH stuff */
         // Burning Boxes
         aClass = MultiTileEntityGeneratorBrick.class;
         for (AttributesBurningBoxBrick_CH BURNING_BOX_BRICK : DATA_MACHINES_GENERATOR.BurningBoxBrick) {

@@ -20,7 +20,7 @@ public abstract class MTEC_MotorMainBase implements IMTEC_MotorTick {
     // the instance of MTEC_Motor
     protected final MTEC_Motor mCore;
     protected MTEC_MotorMainBase(MTEC_Motor aCore) {mCore = aCore; assert mCore.mD == this;}
-
+    
     /* main code */
     protected short mEfficiency = 1000;
     protected long mEnergy = 0, mRate = 16, mInRate = 16;
@@ -28,16 +28,16 @@ public abstract class MTEC_MotorMainBase implements IMTEC_MotorTick {
     protected long mPCost = 2, mCRate = 16; // preheat cost, cool-down rate
     protected long mInPCost = 4; // input preheat cost
     protected long mOutput = 0;
-
+    
     protected boolean mStopped = F;
     protected boolean mEmitsEnergy = F;
     protected boolean mActive = F, oActive = F;
     protected boolean mPreheat = F, oPreheat = F;
     protected boolean mCooldown = F, oCooldown = F;
     protected boolean mCounterClockwise = F, oCounterClockwise = F;
-
+    
     protected TagData mEnergyTypeEmitted = TD.Energy.RU;
-
+    
     // NBT读写
     public void init(NBTTagCompound aNBT) {
         if (aNBT.hasKey(NBT_ENERGY)) mEnergy = aNBT.getLong(NBT_ENERGY);
@@ -50,6 +50,7 @@ public abstract class MTEC_MotorMainBase implements IMTEC_MotorTick {
     public final void postInitRate(NBTTagCompound aNBT) {setOutRate(aNBT); setInRate(aNBT);}
     protected void setOutRate(NBTTagCompound aNBT) {
         if (aNBT.hasKey(NBT_PREHEAT_ENERGY)) mPEnergy = aNBT.getLong(NBT_PREHEAT_ENERGY);
+        mEnergy = Math.min(mEnergy, mPEnergy+getEnergySizeOutputMax(mEnergyTypeEmitted, SIDE_ANY)); // 避免预热能量阈值降低导致输出过高
         if (aNBT.hasKey(NBT_EFFICIENCY)) mEfficiency = (short) UT.Code.bind_(0, 10000, aNBT.getShort(NBT_EFFICIENCY));
         if (aNBT.hasKey(NBT_OUTPUT)) mRate = aNBT.getLong(NBT_OUTPUT);
         if (aNBT.hasKey(NBT_PREHEAT_COST)) mPCost = aNBT.getLong(NBT_PREHEAT_COST);
@@ -61,21 +62,21 @@ public abstract class MTEC_MotorMainBase implements IMTEC_MotorTick {
         mInPCost = UT.Code.units(mPCost, mEfficiency, 10000, T);
     }
     public void postInitTank() {}
-
+    
     public void writeToNBT(NBTTagCompound aNBT) {
         UT.NBT.setNumber(aNBT, NBT_ENERGY, mEnergy);
         UT.NBT.setBoolean(aNBT, NBT_STOPPED, mStopped);
         UT.NBT.setBoolean(aNBT, NBT_REVERSED, mCounterClockwise);
-
+        
         UT.NBT.setBoolean(aNBT, NBT_ACTIVE, mActive); // for OmniOcular usage
         UT.NBT.setBoolean(aNBT, NBT_ACTIVE_ENERGY, mEmitsEnergy); // for OmniOcular usage
         UT.NBT.setNumber(aNBT, NBT_OUTPUT_NOW, mOutput); // for OmniOcular usage
         UT.NBT.setBoolean(aNBT, NBT_PREHEAT, mPreheat); // for OmniOcular usage
         UT.NBT.setBoolean(aNBT, NBT_COOLDOWN_CH, mCooldown); // for OmniOcular usage
-
-        UT.NBT.setNumber(aNBT, NBT_PREHEAT_ENERGY, mPEnergy);
+        
+        UT.NBT.setNumber(aNBT, NBT_PREHEAT_ENERGY+".oo", mPEnergy); // for OmniOcular usage
     }
-
+    
     // Motor 基本方法
     @Override public boolean onTickStopCheck() {
         if (mStopped) {
@@ -127,7 +128,7 @@ public abstract class MTEC_MotorMainBase implements IMTEC_MotorTick {
             mEmitsEnergy = ITileEntityEnergy.Util.emitEnergyToNetwork(mEnergyTypeEmitted, mOutput, 1L, mCore.getEnergyEmitter()) > 0;
         }
     }
-
+    
     @Override public void onTickDoElse() {
         mActive = F;
         mPreheat = F;
@@ -144,22 +145,22 @@ public abstract class MTEC_MotorMainBase implements IMTEC_MotorTick {
     @Override public void onTickExplodeCheck(long aTimer) {
         if (ConfigForge_CH.DATA_MACHINES.motorExplodeCheck && (aTimer % 600 == 5) && (mActive || mPreheat)) mCore.mTE.doDefaultStructuralChecks();
     }
-
+    
     protected abstract long getRealEfficiency();
-
+    
     // tanks
     public IFluidTank getFluidTankFillable(byte aSide, FluidStack aFluidToFill) {return null;}
     public IFluidTank getFluidTankDrainable(byte aSide, FluidStack aFluidToDrain) {return null;}
     public IFluidTank[] getFluidTanks(byte aSide) {return ZL_FT;}
     public int funnelFill(byte aSide, FluidStack aFluid, boolean aDoFill) {return 0;}
     public FluidStack tapDrain(byte aSide, int aMaxDrain, boolean aDoDrain) {return null;}
-
+    
     public boolean canFillExtra(FluidStack aFluid) {return F;}
-
+    
     // inventory
     public ItemStack[] getDefaultInventory(NBTTagCompound aNBT) {return ZL_IS;}
     public boolean canDrop(int aInventorySlot) {return F;}
-
+    
     // energy interfaces
     public boolean allowCovers(byte aSide) {return T;}
     public boolean isEnergyType(TagData aEnergyType, byte aSide, boolean aEmitting) {return aEmitting && aEnergyType == mEnergyTypeEmitted;}
@@ -173,7 +174,7 @@ public abstract class MTEC_MotorMainBase implements IMTEC_MotorTick {
     public long getEnergySizeInputMin(TagData aEnergyType, byte aSide) {return mInRate/2;}
     public long getEnergySizeInputMax(TagData aEnergyType, byte aSide) {return mInRate*2;}
     public Collection<TagData> getEnergyTypes(byte aSide) {return mEnergyTypeEmitted.AS_LIST;}
-
+    
     public boolean getStateRunningPossible() {return T;}
     public boolean getStateRunningPassively() {return mPreheat || mActive;}
     public boolean getStateRunningActively() {return mEmitsEnergy;}

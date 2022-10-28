@@ -18,9 +18,7 @@ public class AttributesLargeGasTurbine_CH extends AttributesLargeMotor_CH {
         super.setEnergy(aLengthMin, aLengthMax, aLengthMid, aOutputMid, aEfficiencyMid);
         int tLm = aLengthMax - aLengthMin + 1;
         nbtPreheatRate = new long[tLm];
-        for (int i = 0; i < tLm; ++i) {
-            nbtPreheatRate[i] = nbtOutput[i] * 4;
-        }
+        System.arraycopy(nbtOutput, 0, nbtPreheatRate, 0, tLm); // 燃气涡轮不再具有加速预热功能
     }
 
     public AttributesLargeGasTurbine_CH() {}

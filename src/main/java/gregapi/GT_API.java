@@ -136,7 +136,7 @@ public class GT_API extends Abstract_Mod {
 		MT.init();
 		BI.BAROMETER.toString();
 		OP.ore.toString();
-		OP_CH.wireLPGt16.toString(); // GTCH stuff
+//		OP_CH.wireLPGt16.toString(); // GTCH stuff
 		TD_CH.init(); // GTCH stuff
 		MT.initLater(); // GTCH, 保证引用项正确初始化
 		

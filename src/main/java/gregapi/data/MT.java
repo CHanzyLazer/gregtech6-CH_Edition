@@ -1882,7 +1882,7 @@ public class MT {
 		DATA.Dye_Materials.getClass();
 		TECH.init();
 		ANY.init();
-		MT_CH.DATA.FIBERCABLES_04.getClass(); // GTCH stuff
+//		MT_CH.DATA.FIBERCABLES_04.getClass(); // GTCH stuff
 		MT_CH.TECH.init(); // GTCH stuff
 	}
 	

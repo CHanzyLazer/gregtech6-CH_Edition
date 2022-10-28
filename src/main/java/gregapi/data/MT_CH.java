@@ -145,31 +145,32 @@ public class MT_CH extends MT {
         }
     }
     public static class DATA {
-        public static final OreDictItemData[]
-        FIBERCABLES_04 = {
-            OP_CH.cableLPGt04.dat(Superconductor),
-            OP_CH.cableLPGt04.dat(Superconductor),
-            OP_CH.cableLPGt04.dat(Superconductor),
-            OP_CH.cableLPGt04.dat(Superconductor),
-            OP_CH.cableLPGt04.dat(Superconductor),
-            OP_CH.cableLPGt04.dat(Superconductor),
-            OP_CH.cableLPGt04.dat(Superconductor),
-            OP_CH.cableLPGt04.dat(Superconductor),
-            OP_CH.cableLPGt04.dat(Superconductor),
-            OP_CH.cableLPGt04.dat(Superconductor)
-        },
-    
-        FIBERCABLES_01 = {
-            OP_CH.cableLPGt01.dat(Superconductor),
-            OP_CH.cableLPGt01.dat(Superconductor),
-            OP_CH.cableLPGt01.dat(Superconductor),
-            OP_CH.cableLPGt01.dat(Superconductor),
-            OP_CH.cableLPGt01.dat(Superconductor),
-            OP_CH.cableLPGt01.dat(Superconductor),
-            OP_CH.cableLPGt01.dat(Superconductor),
-            OP_CH.cableLPGt01.dat(Superconductor),
-            OP_CH.cableLPGt01.dat(Superconductor),
-            OP_CH.cableLPGt01.dat(Superconductor)
-        };
+        /// 由于相关设备已经移除，这里不再进行注册
+//        public static final OreDictItemData[]
+//        FIBERCABLES_04 = {
+//            OP_CH.cableLPGt04.dat(Superconductor),
+//            OP_CH.cableLPGt04.dat(Superconductor),
+//            OP_CH.cableLPGt04.dat(Superconductor),
+//            OP_CH.cableLPGt04.dat(Superconductor),
+//            OP_CH.cableLPGt04.dat(Superconductor),
+//            OP_CH.cableLPGt04.dat(Superconductor),
+//            OP_CH.cableLPGt04.dat(Superconductor),
+//            OP_CH.cableLPGt04.dat(Superconductor),
+//            OP_CH.cableLPGt04.dat(Superconductor),
+//            OP_CH.cableLPGt04.dat(Superconductor)
+//        },
+//
+//        FIBERCABLES_01 = {
+//            OP_CH.cableLPGt01.dat(Superconductor),
+//            OP_CH.cableLPGt01.dat(Superconductor),
+//            OP_CH.cableLPGt01.dat(Superconductor),
+//            OP_CH.cableLPGt01.dat(Superconductor),
+//            OP_CH.cableLPGt01.dat(Superconductor),
+//            OP_CH.cableLPGt01.dat(Superconductor),
+//            OP_CH.cableLPGt01.dat(Superconductor),
+//            OP_CH.cableLPGt01.dat(Superconductor),
+//            OP_CH.cableLPGt01.dat(Superconductor),
+//            OP_CH.cableLPGt01.dat(Superconductor)
+//        };
     }
 }

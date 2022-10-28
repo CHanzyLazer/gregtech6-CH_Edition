@@ -46,7 +46,7 @@ public class MTEC_LargeMotorSteam extends MTEC_LargeMotor {
     }
     @Override
     public void toolTipsUseful(List<String> aList) {
-        data().toolTipsUseful(aList);
+        data().toolTipsUseful_overclock(aList);
         super.toolTipsUseful(aList);
     }
     @Override

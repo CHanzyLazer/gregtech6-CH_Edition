@@ -33,18 +33,18 @@ public class MTEC_LargeMotorGas extends MTEC_LargeMotor {
     @Override protected void postInitTank() {super.postInitTank(); for (FluidTankGT tTank : mTanksOutput) tTank.setCapacity(mD.mInRate * 16);} // core 不进行容量大小设定
 
     // tooltips
-    @Override public void toolTipsRecipe(List<String> aList) {data().toolTipsRecipe(aList);}
+    @Override public void toolTipsRecipe(List<String> aList) {data().toolTipsRecipe_burn(aList);}
     @Override protected void toolTipsEnergy2(List<String> aList) {
         aList.add(LH.Chat.RED      + LH.get(LH.ENERGY_OUTPUT) + ": " + LH.Chat.WHITE + mDL.mRateArray[mDL.mMidLength-mDL.mMinLength] + " " + mD.mEnergyTypeEmitted.getLocalisedChatNameShort() + LH.Chat.WHITE + "/t");
     }
     @Override public void toolTipsImportant(List<String> aList) {
-        data().toolTipsImportant(aList);
+        data().toolTipsImportant_igniteFire(aList);
         super.toolTipsImportant(aList);
     }
     @Override public void toolTipsOther(List<String> aList, ItemStack aStack, boolean aF3_H) {
         aList.add(LH.Chat.DGRAY   + LH_CH.get("gtch.tooltip.multiblock.gasturbine.4"));
         super.toolTipsOther(aList, aStack, aF3_H);
-        data().toolTipsOther(aList);
+        data().toolTipsOther_sneakMagnify(aList);
     }
     @Override protected void toolTipsMultiblock2(List<String> aList) {
         aList.add(LH.Chat.WHITE    + LH_CH.get("gtch.tooltip.multiblock.gasturbine.1"));
@@ -64,11 +64,11 @@ public class MTEC_LargeMotorGas extends MTEC_LargeMotor {
     // 工具右键
     @Override
     public long onToolClick(String aTool, long aRemainingDurability, long aQuality, Entity aPlayer, List<String> aChatReturn, IInventory aPlayerInventory, boolean aSneaking, ItemStack aStack, byte aSide, float aHitX, float aHitY, float aHitZ) {
-        long tReturn = data().onToolClickFirst(aTool, aChatReturn, aSneaking);
+        long tReturn = data().onToolClickFirst_sneakMagnify(aTool, aChatReturn, aSneaking);
         if (tReturn > 0) return tReturn;
         tReturn = super.onToolClick(aTool, aRemainingDurability, aQuality, aPlayer, aChatReturn, aPlayerInventory, aSneaking, aStack, aSide, aHitX, aHitY, aHitZ);
         if (tReturn > 0) return tReturn;
-        tReturn = data().onToolClickLast(aTool, aChatReturn, aSneaking);
+        tReturn = data().onToolClickLast_plungerIgniterExtinguisher(aTool, aChatReturn, aSneaking);
         if (tReturn > 0) return tReturn;
         return 0;
     }

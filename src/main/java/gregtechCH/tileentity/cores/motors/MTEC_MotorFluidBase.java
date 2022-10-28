@@ -1,7 +1,6 @@
 package gregtechCH.tileentity.cores.motors;
 
 import gregapi.data.CS;
-import gregapi.data.LH;
 import gregapi.tileentity.base.TileEntityBase09FacingSingle;
 import gregtechCH.tileentity.cores.IMTEC_Texture;
 import net.minecraft.entity.Entity;
@@ -29,28 +28,26 @@ public abstract class MTEC_MotorFluidBase extends MTEC_Motor {
     abstract protected void postInitTank2();
     
     // tooltips
-    @Override public void toolTipsRecipe(List<String> aList) {data().toolTipsRecipe(aList);}
+    @Override public void toolTipsRecipe(List<String> aList) {data().toolTipsRecipe_burn(aList);}
     @Override public final void toolTipsImportant(List<String> aList) {
-        data().toolTipsImportant(aList);
+        data().toolTipsImportant_igniteFire(aList);
         toolTipsImportant2(aList);
         super.toolTipsImportant(aList);
     }
-    protected void toolTipsImportant2(List<String> aList) {
-        aList.add(LH.Chat.ORANGE   + LH.get(LH.NO_GUI_FUNNEL_TAP_TO_TANK));
-    }
+    protected abstract void toolTipsImportant2(List<String> aList);
     @Override public void toolTipsOther(List<String> aList, ItemStack aStack, boolean aF3_H) {
         super.toolTipsOther(aList, aStack, aF3_H);
-        data().toolTipsOther(aList);
+        data().toolTipsOther_sneakMagnify(aList);
     }
     
     // 工具右键
     @Override
     public long onToolClick(String aTool, long aRemainingDurability, long aQuality, Entity aPlayer, List<String> aChatReturn, IInventory aPlayerInventory, boolean aSneaking, ItemStack aStack, byte aSide, float aHitX, float aHitY, float aHitZ) {
-        long tReturn = data().onToolClickFirst(aTool, aChatReturn, aSneaking);
+        long tReturn = data().onToolClickFirst_sneakMagnify(aTool, aChatReturn, aSneaking);
         if (tReturn > 0) return tReturn;
         tReturn = super.onToolClick(aTool, aRemainingDurability, aQuality, aPlayer, aChatReturn, aPlayerInventory, aSneaking, aStack, aSide, aHitX, aHitY, aHitZ);
         if (tReturn > 0) return tReturn;
-        tReturn = data().onToolClickLast(aTool, aChatReturn, aSneaking);
+        tReturn = data().onToolClickLast_plungerIgniterExtinguisher(aTool, aChatReturn, aSneaking);
         if (tReturn > 0) return tReturn;
         return 0;
     }

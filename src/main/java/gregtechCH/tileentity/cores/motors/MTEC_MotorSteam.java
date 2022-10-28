@@ -62,7 +62,7 @@ public class MTEC_MotorSteam extends MTEC_Motor {
         LH.addEnergyToolTips((ITileEntityEnergy)mTE, aList, data().mEnergyTypeAccepted, data().mEnergyTypeEmitted, getLocalisedInputSide(), getLocalisedOutputSide());
     }
     @Override public void toolTipsUseful(List<String> aList) {
-        data().toolTipsUseful(aList);
+        data().toolTipsUseful_overclock(aList);
         super.toolTipsUseful(aList);
     }
     @Override public void toolTipsImportant(List<String> aList) {

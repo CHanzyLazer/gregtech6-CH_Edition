@@ -92,9 +92,9 @@ public class MTEC_MotorMainFluidBurner extends MTEC_MotorMainBase {
                     int tParallel = tRecipe.isRecipeInputEqual(tMax, mCTanks.mTanksInput, ZL_IS);
                     if (tParallel > 0) {
                         mEnergyHU += tParallel * tRecipeEnergy;
-                        for (int i = 0; i < tRecipe.mFluidOutputs.length; ++i) {
+                        for (int i = 0; i < tRecipe.mFluidOutputs.length; ++i) if (i < mCTanks.mTanksOutput.length) { // 超出输出 tank 的废气种类不会用于填充
                             // 填充废气，并且判断是否填充成功
-                            if (i >= mCTanks.mTanksOutput.length || !mCTanks.mTanksOutput[i].fillAll(tRecipe.mFluidOutputs[i], tParallel)) {
+                            if (!mCTanks.mTanksOutput[i].fillAll(tRecipe.mFluidOutputs[i], tParallel)) {
                                 // 废气清空速度不够，停止燃烧（主要是种类检测）
                                 mBurning = F;
                                 // 因为可能会 VoidExceed，所以不放入垃圾桶里（防止刷物品）
@@ -208,17 +208,17 @@ public class MTEC_MotorMainFluidBurner extends MTEC_MotorMainBase {
 
 
     // 重复的接口实现消除
-    public void toolTipsRecipe(List<String> aList) {aList.add(LH.Chat.CYAN + LH.get(LH.RECIPES) + ": " + LH.Chat.WHITE + LH.get(mRecipes.mNameInternal));}
-    public void toolTipsImportant(List<String> aList) {aList.add(LH.Chat.ORANGE + LH.get(LH.REQUIREMENT_IGNITE_FIRE) + " (" + LH.get(LH.FACE_ANY) + ")");}
-    public void toolTipsOther(List<String> aList) {aList.add(LH.Chat.DGRAY + LH_CH.get(LH_CH.TOOL_TO_DETAIL_MAGNIFYINGGLASS_SNEAK));}
-    public long onToolClickFirst(String aTool, List<String> aChatReturn, boolean aSneaking) {
+    public void toolTipsRecipe_burn(List<String> aList) {aList.add(LH.Chat.CYAN + LH.get(LH.RECIPES) + ": " + LH.Chat.WHITE + LH.get(mRecipes.mNameInternal));}
+    public void toolTipsImportant_igniteFire(List<String> aList) {aList.add(LH.Chat.ORANGE + LH.get(LH.REQUIREMENT_IGNITE_FIRE) + " (" + LH.get(LH.FACE_ANY) + ")");}
+    public void toolTipsOther_sneakMagnify(List<String> aList) {aList.add(LH.Chat.DGRAY + LH_CH.get(LH_CH.TOOL_TO_DETAIL_MAGNIFYINGGLASS_SNEAK));}
+    public long onToolClickFirst_sneakMagnify(String aTool, List<String> aChatReturn, boolean aSneaking) {
         if (aTool.equals(TOOL_magnifyingglass) && aSneaking) {
             if (aChatReturn != null) mCTanks.onMagnifyingGlass(aChatReturn);
             return 1;
         }
         return 0;
     }
-    public long onToolClickLast(String aTool, List<String> aChatReturn, boolean aSneakingZ) {
+    public long onToolClickLast_plungerIgniterExtinguisher(String aTool, List<String> aChatReturn, boolean aSneakingZ) {
         if (aTool.equals(TOOL_plunger)) {
             if (aChatReturn != null) mCTanks.onPlunger(aChatReturn);
             return 11;

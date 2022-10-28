@@ -175,7 +175,7 @@ public class MTEC_MotorMainSteam extends MTEC_MotorMainBase {
     }
 
     // 重复的接口实现消除
-    public void toolTipsUseful(List<String> aList) {aList.add(LH.Chat.YELLOW + LH_CH.get(LH_CH.OVERCLOCK_GENERATOR) + " (" + LH_CH.getToolTipEfficiencySimple(mEfficiencyOverclock) + ")");}
+    public void toolTipsUseful_overclock(List<String> aList) {aList.add(LH.Chat.YELLOW + LH_CH.get(LH_CH.OVERCLOCK_GENERATOR) + " (" + LH_CH.getToolTipEfficiencySimple(mEfficiencyOverclock) + ")");}
     @Override public long getRealEfficiency() {return UT.Code.units(10000 * STEAM_PER_EU, mInputSU, mOutput, F);}
     @Override public IFluidTank getFluidTankFillable(byte aSide, FluidStack aFluidToFill) {return !mCore.mD.mStopped && FL.steam(aFluidToFill) ? mTankSteam : null;}
     @Override public IFluidTank getFluidTankDrainable(byte aSide, FluidStack aFluidToDrain) {return mCTanks.getFluidTankDrainable(aSide, aFluidToDrain);}

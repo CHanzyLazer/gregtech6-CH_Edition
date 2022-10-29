@@ -1,8 +1,10 @@
 package gregtechCH.tileentity.cores.motors;
 
 import gregapi.data.FM;
+import gregapi.data.LH;
 import gregapi.fluid.FluidTankGT;
 import gregapi.tileentity.base.TileEntityBase09FacingSingle;
+import gregtechCH.data.LH_CH;
 import gregtechCH.tileentity.cores.IMTEC_Texture;
 
 import java.util.List;
@@ -22,5 +24,13 @@ public final class MTEC_MotorGas extends MTEC_MotorFluidBase {
     @Override protected void postInitTank2() {mTankOutput.setCapacity(data().mRate * 10);} // core 不进行容量设定
     
     // tooltips
+    @Override public void toolTipsUseful(List<String> aList) {
+        super.toolTipsUseful(aList);
+        aList.add(LH.Chat.GREEN + LH_CH.get("gtch.tooltip.motor_gas.useful.1"));
+    }
     @Override protected void toolTipsImportant2(List<String> aList) {/* 燃气涡轮不能手动加燃料 */}
+    
+    static {
+        LH_CH.add("gtch.tooltip.motor_gas.useful.1", "Turbines have a higher output but requires longer preheating");
+    }
 }

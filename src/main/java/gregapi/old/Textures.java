@@ -25,6 +25,7 @@ import gregapi.render.IIconContainer;
 import gregapi.render.ITexture;
 import gregapi.render.IconContainerCopied;
 import gregapi.util.UT;
+import gregtechCH.data.CS_CH;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.init.Blocks;
@@ -672,7 +673,7 @@ public class Textures {
 			LONG_DIST_PIPE_FLUID,
 			LONG_DIST_PIPE_FLUID,
 		},
-		// [axis][aSide][mRotationDir]
+		// [axis][aSide][mRotationDir] TODO 等轴的 fast 模式出现时一起修改
 		AXLES[][] = {{
 			{AXLE_HORIZONTAL, AXLE_LEFT            	, AXLE_RIGHT            },
 			{AXLE_HORIZONTAL, AXLE_LEFT             , AXLE_RIGHT            },
@@ -698,40 +699,6 @@ public class Textures {
 			{AXLE           , AXLE_COUNTERCLOCKWISE , AXLE_CLOCKWISE        },
 			{VOID           , VOID                  , VOID                  }
 		}},
-		// GTCH, 用于指明管道方向 [Mode][aSide][mFluidDir]
-		ARROWS[][] = {{
-				{VOID, 			VOID, 		VOID, 			VOID, 			VOID, 			VOID,			VOID},
-				{VOID, 			VOID, 		VOID, 			VOID, 			VOID, 			VOID,			VOID},
-				{VOID, 			VOID, 		VOID, 			VOID, 			VOID, 			VOID,			VOID},
-				{VOID, 			VOID, 		VOID, 			VOID, 			VOID, 			VOID,			VOID},
-				{VOID, 			VOID, 		VOID, 			VOID,			VOID, 			VOID,			VOID},
-				{VOID, 			VOID, 		VOID,			VOID, 			VOID, 			VOID,			VOID},
-				{VOID, 			VOID, 		VOID, 			VOID, 			VOID, 			VOID,			VOID}
-			},{
-				{VOID, 			VOID, 		ARROW_UP, 		ARROW_DOWN, 	ARROW_RIGHT, 	ARROW_LEFT,		VOID},
-				{VOID, 			VOID, 		ARROW_UP, 		ARROW_DOWN, 	ARROW_LEFT, 	ARROW_RIGHT,	VOID},
-				{ARROW_DOWN, 	ARROW_UP, 	VOID, 			VOID, 			ARROW_RIGHT,	ARROW_LEFT, 	VOID},
-				{ARROW_DOWN, 	ARROW_UP, 	VOID, 			VOID, 			ARROW_LEFT, 	ARROW_RIGHT,	VOID},
-				{ARROW_DOWN, 	ARROW_UP, 	ARROW_LEFT, 	ARROW_RIGHT,	VOID, 			VOID,			VOID},
-				{ARROW_DOWN, 	ARROW_UP, 	ARROW_RIGHT,	ARROW_LEFT, 	VOID, 			VOID,			VOID},
-				{VOID, 			VOID, 		VOID, 			VOID, 			VOID, 			VOID,			VOID}
-			},{
-				{VOID, 			VOID, 		ARROW2_UP, 		ARROW2_DOWN, 	ARROW2_RIGHT, 	ARROW2_LEFT,	VOID},
-				{VOID, 			VOID, 		ARROW2_UP, 		ARROW2_DOWN, 	ARROW2_LEFT, 	ARROW2_RIGHT,	VOID},
-				{ARROW2_DOWN, 	ARROW2_UP, 	VOID, 			VOID, 			ARROW2_RIGHT,	ARROW2_LEFT, 	VOID},
-				{ARROW2_DOWN, 	ARROW2_UP, 	VOID, 			VOID, 			ARROW2_LEFT, 	ARROW2_RIGHT,	VOID},
-				{ARROW2_DOWN, 	ARROW2_UP, 	ARROW2_LEFT, 	ARROW2_RIGHT,	VOID, 			VOID,			VOID},
-				{ARROW2_DOWN, 	ARROW2_UP, 	ARROW2_RIGHT,	ARROW2_LEFT, 	VOID, 			VOID,			VOID},
-				{VOID, 			VOID, 		VOID, 			VOID, 			VOID, 			VOID,			VOID}
-			},{
-				{VOID, 			VOID, 		ARROW3_UP, 		ARROW3_DOWN, 	ARROW3_RIGHT, 	ARROW3_LEFT,	VOID},
-				{VOID, 			VOID, 		ARROW3_UP, 		ARROW3_DOWN, 	ARROW3_LEFT, 	ARROW3_RIGHT,	VOID},
-				{ARROW3_DOWN, 	ARROW3_UP, 	VOID, 			VOID, 			ARROW3_RIGHT,	ARROW3_LEFT, 	VOID},
-				{ARROW3_DOWN, 	ARROW3_UP, 	VOID, 			VOID, 			ARROW3_LEFT, 	ARROW3_RIGHT,	VOID},
-				{ARROW3_DOWN, 	ARROW3_UP, 	ARROW3_LEFT, 	ARROW3_RIGHT,	VOID, 			VOID,			VOID},
-				{ARROW3_DOWN, 	ARROW3_UP, 	ARROW3_RIGHT,	ARROW3_LEFT, 	VOID, 			VOID,			VOID},
-				{VOID, 			VOID, 		VOID, 			VOID, 			VOID, 			VOID,			VOID}
-		}},
 		
 		GLASSES_CLEAR = UT.Code.fill(GLASS_CLEAR, new IIconContainer[16]),
 		ASPHALTS = UT.Code.fill(ASPHALT, new IIconContainer[16]),
@@ -739,6 +706,22 @@ public class Textures {
 		CFOAMS_FRESH = UT.Code.fill(CFOAM_FRESH, new IIconContainer[16]),
 		CONCRETES = UT.Code.fill(CONCRETE, new IIconContainer[16]),
 		CONCRETES_REINFORCED = UT.Code.fill(CONCRETE_REINFORCED, new IIconContainer[16]);
+		
+		// GTCH, 还是统一使用 switch 来实现, 用于指明管道方向
+		public static BlockIcons getArrow(CS_CH.IconType aIconType, CS_CH.Mode aMode) {
+			switch (aIconType) {
+			case SIDE_UP:
+				switch (aMode) {case LIMIT: return ARROW_UP; case PRIORITY: return ARROW2_UP; case DIVIDE: return ARROW3_UP; case DEFAULT: default: return VOID;}
+			case SIDE_DOWN:
+				switch (aMode) {case LIMIT: return ARROW_DOWN; case PRIORITY: return ARROW2_DOWN; case DIVIDE: return ARROW3_DOWN; case DEFAULT: default: return VOID;}
+			case SIDE_LEFT:
+				switch (aMode) {case LIMIT: return ARROW_LEFT; case PRIORITY: return ARROW2_LEFT; case DIVIDE: return ARROW3_LEFT; case DEFAULT: default: return VOID;}
+			case SIDE_RIGHT:
+				switch (aMode) {case LIMIT: return ARROW_RIGHT; case PRIORITY: return ARROW2_RIGHT; case DIVIDE: return ARROW3_RIGHT; case DEFAULT: default: return VOID;}
+			case VOID: case FRONT: case BACK: default:
+				return VOID;
+			}
+		}
 		
 		public static class CustomIcon implements IIconContainer, Runnable {
 			protected IIcon mIcon;

@@ -20,6 +20,7 @@
 package gregapi.tileentity.connectors;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -282,11 +283,11 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 	
 	@Override public ArrayList<String> getDebugInfo(int aScanLevel) {return aScanLevel > 0 ? new ArrayListNoNulls<>(F, "Transferred Power: " + mTransferredEnergy) : null;}
 	
-	@Override public ITexture getTextureSide                (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {return BlockTextureMulti.get(BlockTextureDefault.get(Textures.BlockIcons.AXLES[(mConnections & 12) != 0 ? 0 : (mConnections & 48) != 0 ? 2 : 1][aSide][mRotationDir], mRGBa), BlockTextureDefault.get(Textures.BlockIcons.ARROWS[1][aSide][mEnergyDir], mRGBaMark));}
+	@Override public ITexture getTextureSide                (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {return BlockTextureMulti.get(BlockTextureDefault.get(Textures.BlockIcons.AXLES[(mConnections & 12) != 0 ? 0 : (mConnections & 48) != 0 ? 2 : 1][aSide][mRotationDir], mRGBa), BlockTextureDefault.get(Textures.BlockIcons.getArrow(DIR_ICON[aSide][mEnergyDir], Mode.LIMIT), mRGBaMark));}
 	@Override public ITexture getTextureConnected           (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {return BlockTextureDefault.get(Textures.BlockIcons.AXLES[(mConnections & 12) != 0 ? 0 : (mConnections & 48) != 0 ? 2 : 1][aSide][mRotationDir], mRGBa);}
 	@Override
 	public ITexture getTextureCFoamDry(byte aSide, byte aConnections, float aDiameter, int aRenderPass) {
-		if (mOutMark) return BlockTextureMulti.get(BlockTextureDefault.get(mOwnable?Textures.BlockIcons.CFOAM_HARDENED_OWNED:Textures.BlockIcons.CFOAM_HARDENED, mRGBaFoam), BlockTextureDefault.get(Textures.BlockIcons.ARROWS[1][aSide][mEnergyDir], UT_CH.Code.getMarkRGB(mRGBaFoam)));
+		if (mOutMark) return BlockTextureMulti.get(BlockTextureDefault.get(mOwnable?Textures.BlockIcons.CFOAM_HARDENED_OWNED:Textures.BlockIcons.CFOAM_HARDENED, mRGBaFoam), BlockTextureDefault.get(Textures.BlockIcons.getArrow(DIR_ICON[aSide][mEnergyDir], Mode.LIMIT), UT_CH.Code.getMarkRGB(mRGBaFoam)));
 		return BlockTextureDefault.get(mOwnable?Textures.BlockIcons.CFOAM_HARDENED_OWNED:Textures.BlockIcons.CFOAM_HARDENED, mRGBaFoam);
 	}
 	@Override public Collection<TagData> getConnectorTypes  (byte aSide) {return TD.Connectors.AXLE_ROTATION.AS_LIST;}

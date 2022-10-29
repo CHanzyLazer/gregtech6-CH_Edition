@@ -1273,7 +1273,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		ITexture tRubber = null;
 		// 合法部分才做 mark 和 rubber
 		if (aRenderPass <= 6) {
-			tMark = BlockTextureDefault.get(Textures.BlockIcons.ARROWS[mFluidMode.ordinal()][aSide][mFluidDir], mRGBaMark, mIsGlowing);
+			tMark = BlockTextureDefault.get(Textures.BlockIcons.getArrow(DIR_ICON[aSide][mFluidDir], mFluidMode), mRGBaMark, mIsGlowing);
 			if (mFlowControl && mAllowSwitchFC) {
 				// 专门处理干掉的情况，干掉时不再需要侧边的橡胶材质
 				if (isFoamDried()) tRubber = getTextureRubber(aDiameter);
@@ -1314,7 +1314,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	@Override public int getIconIndexConnected              (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {return mTanks.length>=9?OP.pipeNonuple.mIconIndexBlock:mTanks.length>=4?OP.pipeQuadruple.mIconIndexBlock:aDiameter<0.37F?OP.pipeTiny.mIconIndexBlock:aDiameter<0.49F?OP.pipeSmall.mIconIndexBlock:aDiameter<0.74F?OP.pipeMedium.mIconIndexBlock:aDiameter<0.99F?OP.pipeLarge.mIconIndexBlock:OP.pipeHuge.mIconIndexBlock;}
 	@Override
 	public ITexture getTextureCFoamDry(byte aSide, byte aConnections, float aDiameter, int aRenderPass) {
-		if (mOutMark) return BlockTextureMulti.get(BlockTextureDefault.get(mOwnable?Textures.BlockIcons.CFOAM_HARDENED_OWNED:Textures.BlockIcons.CFOAM_HARDENED, mRGBaFoam), BlockTextureDefault.get(Textures.BlockIcons.ARROWS[mFluidMode.ordinal()][aSide][mFluidDir], UT_CH.Code.getMarkRGB(mRGBaFoam)));
+		if (mOutMark) return BlockTextureMulti.get(BlockTextureDefault.get(mOwnable?Textures.BlockIcons.CFOAM_HARDENED_OWNED:Textures.BlockIcons.CFOAM_HARDENED, mRGBaFoam), BlockTextureDefault.get(Textures.BlockIcons.getArrow(DIR_ICON[aSide][mFluidDir], mFluidMode), UT_CH.Code.getMarkRGB(mRGBaFoam)));
 		return BlockTextureDefault.get(mOwnable?Textures.BlockIcons.CFOAM_HARDENED_OWNED:Textures.BlockIcons.CFOAM_HARDENED, mRGBaFoam);
 	}
 

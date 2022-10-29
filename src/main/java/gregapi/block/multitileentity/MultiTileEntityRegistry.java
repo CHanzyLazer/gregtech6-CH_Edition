@@ -156,6 +156,7 @@ public class MultiTileEntityRegistry {
 	// GTCH, 通过添加时检测 ID 是否处于替换 Map 中来进行“完美”的替换或删除
 	// 不允许一个 ID 被添加，然后移除，然后又添加这种情况。（移除必须要在添加之前）
 	public ItemStack add(String aLocalised, String aCategoricalName, MultiTileEntityClassContainer aClassContainer, Object... aRecipe) {
+		mLastRegisteredID = aClassContainer.mID; // 仅 add 方法会修改此值，并且要最先修改以免 return 掉
 		AddObject tAddObject = new AddObject(aLocalised, aCategoricalName, aClassContainer, aRecipe);
 		if (!mIsModifyingAdd) return tAddObject.addSelf();
 		/// 先检测替换和移除
@@ -317,7 +318,6 @@ public class MultiTileEntityRegistry {
 			else LH_CH.add(aClassContainer.mRegType, mNameInternal+"."+ aClassContainer.mID+".name", aLocalised);
 			
 			mRegistry.put(aClassContainer.mID, aClassContainer);
-			mLastRegisteredID = aClassContainer.mID;
 			mRegistrations.add(aClassContainer);
 			if (!mCreativeTabs.containsKey(aClassContainer.mCreativeTabID)) mCreativeTabs.put(aClassContainer.mCreativeTabID, new CreativeTab(mNameInternal+"."+ aClassContainer.mCreativeTabID, aCategoricalName, Item.getItemFromBlock(mBlock), aClassContainer.mCreativeTabID));
 			if (sRegisteredTileEntities.add(aClassContainer.mCanonicalTileEntity.getClass())) {
@@ -350,6 +350,7 @@ public class MultiTileEntityRegistry {
 	
 	public short mLastRegisteredID = W;
 	
+	/* 不要轻易使用，为了避免后续修改影响原本的逻辑，仅 add 方法会修改 mLastRegisteredID，因此除了 add 方法的其余方法不要使用 getItem() */
 	public ItemStack getItem() {return getItem(mLastRegisteredID, 1, null);}
 	public ItemStack getItem(NBTTagCompound aNBT) {return getItem(mLastRegisteredID, 1, aNBT);}
 	public ItemStack getItem(int aID) {return getItem(aID, 1, null);}

@@ -8,6 +8,7 @@ import gregapi.tileentity.connectors.MultiTileEntityAxle;
 import gregapi.tileentity.machines.MultiTileEntityBasicMachine;
 import gregapi.util.UT;
 import gregtech.loaders.b.Loader_MultiTileEntities;
+import gregtech.tileentity.batteries.eu.MultiTileEntityBatteryEU2048;
 import gregtech.tileentity.batteries.eu.MultiTileEntityPowerCell;
 import gregtech.tileentity.energy.converters.*;
 import gregtech.tileentity.energy.generators.*;
@@ -23,6 +24,8 @@ import gregtechCH.config.machine.multiblock.AttributesLargeBoilerTank_CH;
 import gregtechCH.config.machine.multiblock.AttributesLargeGasTurbine_CH;
 import gregtechCH.config.machine.multiblock.AttributesLargeSteamTurbine_CH;
 import gregtechCH.config.machine.steam.*;
+import gregtechCH.tileentity.batteries.eu.MultiTileEntityBatteryAdvEU8192;
+import gregtechCH.tileentity.batteries.eu.MultiTileEntityBatteryEU8192;
 import gregtechCH.tileentity.energy.MultiTileEntityMotorGas;
 import gregtechCH.tileentity.sensors.*;
 import net.minecraft.init.Blocks;
@@ -125,7 +128,7 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         aMat = MT.TungstenSteel;        aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9188,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  3000, NBT_OUTPUT,  512, NBT_PREHEAT_ENERGY,  512*4000, NBT_PREHEAT_RATE,  512*1, NBT_PREHEAT_COST,  512/16, NBT_COOLDOWN_RATE,  512, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
         aMat = ANY.W;                   aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9180,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  3500, NBT_OUTPUT,  512, NBT_PREHEAT_ENERGY,  512*4000, NBT_PREHEAT_RATE,  512*1, NBT_PREHEAT_COST,  512/16, NBT_COOLDOWN_RATE,  512, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
         aMat = MT.Ir;                   aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9189,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  3333, NBT_OUTPUT, 1024, NBT_PREHEAT_ENERGY, 1024*4000, NBT_PREHEAT_RATE, 1024*1, NBT_PREHEAT_COST, 1024/16, NBT_COOLDOWN_RATE, 1024, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
-        // TODO MARK
+        
         
         /// 修改项
         /* GTCH stuff */
@@ -275,6 +278,16 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         aRegistry.replaceAdd("Power Cell (Hydrogen)"                          , "Portable Power Cells"                , 14701, 14700, MultiTileEntityPowerCell.class, 0, 16, aUtilMetal, UT.NBT.make(NBT_HARDNESS, 0.5F, NBT_RESISTANCE, 1.0F, NBT_ENERGY_ACCEPTED, TD.Energy.EU, NBT_COLOR_BOTTOM, UT.Code.getRGBInt(MT.H  .fRGBaGas), NBT_INPUT_MIN, 1, NBT_INPUT, V[3], NBT_INPUT_MAX, V   [3], NBT_CAPACITY,         3_200_000L));
         
         /// 添加项
+        /* GT6U stuff */
+        // IV 电池
+        aRegistry.appendAddAfter(14004, RegType.GT6U, "Lead-Acid Battery ("                 +VN[5]+")", "Batteries"                         , 14005, 14013, MultiTileEntityBatteryEU8192.class,     0, 16, aUtilMetal , UT.NBT.make(NBT_HARDNESS,   0.5F, NBT_RESISTANCE,   3.0F, NBT_COLOR, DYES_INT[DYE_INDEX_Orange] , NBT_INPUT, V[5], NBT_CAPACITY, V[4] *   2000, NBT_ENERGY_ACCEPTED, TD.Energy.EU), "WPW", "BCB", "BBB", 'P', OP.plate.dat(MT.BatteryAlloy), 'B', IL.Battery_Lead_Acid_Cell_Filled, 'W', MT.DATA.CABLES_01[5], 'C', OD_CIRCUITS[5]);
+        aRegistry.appendAddAfter(14014, RegType.GT6U, "Alkaline Battery ("                  +VN[5]+")", "Batteries"                         , 14015, 14013, MultiTileEntityBatteryEU8192.class,     0, 16, aUtilMetal , UT.NBT.make(NBT_HARDNESS,   0.5F, NBT_RESISTANCE,   3.0F, NBT_COLOR, DYES_INT[DYE_INDEX_Blue]   , NBT_INPUT, V[5], NBT_CAPACITY, V[4] *   4000, NBT_ENERGY_ACCEPTED, TD.Energy.EU), "WPW", "BCB", "BBB", 'P', OP.plate.dat(MT.BatteryAlloy), 'B', IL.Battery_Alkaline_Cell_Filled, 'W', MT.DATA.CABLES_01[5], 'C', OD_CIRCUITS[5]);
+        aRegistry.appendAddAfter(14024, RegType.GT6U, "Nickel-Cadmium Battery ("            +VN[5]+")", "Batteries"                         , 14025, 14013, MultiTileEntityBatteryEU8192.class,     0, 16, aUtilMetal , UT.NBT.make(NBT_HARDNESS,   0.5F, NBT_RESISTANCE,   3.0F, NBT_COLOR, DYES_INT[DYE_INDEX_Lime]   , NBT_INPUT, V[5], NBT_CAPACITY, V[4] *   4000, NBT_ENERGY_ACCEPTED, TD.Energy.EU), "WPW", "BCB", "BBB", 'P', OP.plate.dat(MT.BatteryAlloy), 'B', IL.Battery_NiCd_Cell_Filled, 'W', MT.DATA.CABLES_01[5], 'C', OD_CIRCUITS[5]);
+        aRegistry.appendAddAfter(14034, RegType.GT6U, "Lithium-Cobalt Battery ("            +VN[5]+")", "Batteries"                         , 14035, 14013, MultiTileEntityBatteryAdvEU8192.class , 0, 16, aUtilMetal , UT.NBT.make(NBT_HARDNESS,   0.5F, NBT_RESISTANCE,   3.0F, NBT_COLOR, DYES_INT[DYE_INDEX_Blue]   , NBT_INPUT, V[5], NBT_CAPACITY, V[4] *  64000, NBT_ENERGY_ACCEPTED, TD.Energy.EU), "WPW", "BCB", "BBB", 'P', OP.plate.dat(MT.BatteryAlloy), 'B', IL.Battery_LiCoO2_Cell_Filled, 'W', MT.DATA.CABLES_01[5], 'C', OD_CIRCUITS[6]);
+        aRegistry.appendAddAfter(14044, RegType.GT6U, "Lithium-Manganese Battery ("         +VN[5]+")", "Batteries"                         , 14045, 14013, MultiTileEntityBatteryAdvEU8192.class , 0, 16, aUtilMetal , UT.NBT.make(NBT_HARDNESS,   0.5F, NBT_RESISTANCE,   3.0F, NBT_COLOR, DYES_INT[DYE_INDEX_Green]  , NBT_INPUT, V[5], NBT_CAPACITY, V[4] * 128000, NBT_ENERGY_ACCEPTED, TD.Energy.EU), "WPW", "BCB", "BBB", 'P', OP.plate.dat(MT.BatteryAlloy), 'B', IL.Battery_LiMn_Cell_Filled, 'W', MT.DATA.CABLES_01[5], 'C', OD_CIRCUITS[6]);
+        
+        
+        /* GTCH stuff */
         // Dynamos
         aClass = MultiTileEntityDynamoElectric.class;
         aMat = MT.DATA.Electric_T[0];   aRegistry.appendAddBefore(10111, "Electric Dynamo ("              +VN[0]+")", "Dynamos"                             , 10110, 10111, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   4.0F, NBT_RESISTANCE,   4.0F, NBT_INPUT,   14, NBT_OUTPUT,    8, NBT_WASTE_ENERGY, T, NBT_ENERGY_ACCEPTED, TD.Energy.RU, NBT_ENERGY_EMITTED, TD.Energy.EU), "TGT", "CMC", "TId", 'M', OP.casingMachineDouble.dat(aMat), 'T', OP.screw.dat(aMat), 'G', OP.gearGt.dat(aMat), 'I', OP.stickLong.dat(MT.IronMagnetic     ), 'C', OP.wireGt01.dat(ANY.Cu));
@@ -282,6 +295,15 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
     @Override protected void unsorted2FinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
         /// 最后释放这些修改后的添加
         aRegistry.MODIFYING_ADD_END();
+        
+        /// 附加修改部分
+        /* GT6U stuff */
+        // IV 电池的 IL 设定
+        IL.Battery_Lead_Acid_IV .set(aRegistry.getItem(14005), null, "gt:re-battery5");
+        IL.Battery_Alkaline_IV  .set(aRegistry.getItem(14015), null, "gt:re-battery5");
+        IL.Battery_NiCd_IV      .set(aRegistry.getItem(14025), null, "gt:re-battery5");
+        IL.Battery_LiCoO2_IV    .set(aRegistry.getItem(14035), null, "gt:re-battery5");
+        IL.Battery_LiMn_IV      .set(aRegistry.getItem(14045), null, "gt:re-battery5");
     }
     
     

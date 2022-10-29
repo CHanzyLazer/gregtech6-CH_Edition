@@ -474,6 +474,10 @@ public enum IL implements IItemContainer {
 	Battery_Hull_HV, Battery_SU_HV_SulfuricAcid, Battery_SU_HV_Mercury, Battery_RE_HV_Sodium, Battery_RE_HV_Cadmium, Battery_RE_HV_Lithium, Battery_RE_HV_Redstone, Battery_RE_HV_Nikolite, Battery_RE_HV_Teslatite, Battery_RE_HV_Electrotine,
 	EnergyCrystal_RE_LV_Energium, EnergyCrystal_RE_MV_Energium, EnergyCrystal_RE_HV_Energium, EnergyCrystal_RE_EV_Energium, EnergyCrystal_RE_IV_Energium,
 	
+	/* 由于枚举类不能继承，因此只能全部放在一起。这里仅进行罗列因此顺序不重要，将 GT6U GTCH 的部分和原版分开来方便合并 */
+	/* GT6U stuff START */
+	Battery_Lead_Acid_IV, Battery_Alkaline_IV, Battery_NiCd_IV, Battery_LiCoO2_IV, Battery_LiMn_IV,
+	/* GT6U stuff END */
 	NULL;
 	
 	public static final IL[]

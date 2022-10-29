@@ -19,14 +19,6 @@
 
 package gregapi.tileentity.multiblocks;
 
-import static gregapi.data.CS.*;
-import static gregtechCH.data.CS_CH.IconType.OVERLAY_ENERGY_RU;
-import static gregtechCH.data.CS_CH.IconType.OVERLAY_FLUID;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
 import gregapi.GT_API;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_BreakBlock;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_OnBlockAdded;
@@ -53,18 +45,10 @@ import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.tileentity.energy.ITileEntityEnergyDataCapacitor;
 import gregapi.tileentity.logistics.ITileEntityLogistics;
-import gregapi.tileentity.machines.ITileEntityCrucible;
-import gregapi.tileentity.machines.ITileEntityMold;
-import gregapi.tileentity.machines.ITileEntityRunningActively;
-import gregapi.tileentity.machines.ITileEntityRunningPassively;
-import gregapi.tileentity.machines.ITileEntityRunningPossible;
-import gregapi.tileentity.machines.ITileEntityRunningSuccessfully;
-import gregapi.tileentity.machines.ITileEntitySwitchableMode;
-import gregapi.tileentity.machines.ITileEntitySwitchableOnOff;
+import gregapi.tileentity.machines.*;
 import gregapi.tileentity.notick.TileEntityBase05Paintable;
 import gregapi.util.UT;
 import gregapi.util.WD;
-import gregtechCH.data.CS_CH;
 import gregtechCH.fluid.IFluidHandler_CH;
 import gregtechCH.tileentity.connectors.ITEInterceptAutoConnectFluid;
 import gregtechCH.tileentity.connectors.ITEInterceptAutoConnectItem;
@@ -85,6 +69,12 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import static gregapi.data.CS.*;
 
 /**
  * @author Gregorius Techneticies
@@ -305,21 +295,14 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 	protected ITexture getStructurePartTexture(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
 		if (aShouldSideBeRendered[aSide]) {
 			switch (mDesign) {
-				case ENERGY_EMITTER_RU:
-					return (aSide == mPartFacing) ? BlockTextureDefault.get(getIIconContainer(OVERLAY_ENERGY_RU)) : null;
-				case FLUID_EMITTER :
-					return (aSide == mPartFacing) ? BlockTextureDefault.get(getIIconContainer(OVERLAY_FLUID)) : null;
-				default: return null;
+			case ENERGY_EMITTER_RU:
+				return (aSide == mPartFacing) ? BlockTextureDefault.get(mTextures[3][3]) : null;
+			case FLUID_EMITTER :
+				return (aSide == mPartFacing) ? BlockTextureDefault.get(mTextures[1][3]) : null;
+			default: return null;
 			}
 		}
 		return null;
-	}
-	protected IIconContainer getIIconContainer(CS_CH.IconType aIconType) {
-		switch (aIconType) {
-			case OVERLAY_ENERGY_RU: return mTextures[3][3];
-			case OVERLAY_FLUID: return mTextures[1][3];
-			default: return null;
-		}
 	}
 
 

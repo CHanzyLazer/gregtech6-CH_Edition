@@ -672,6 +672,7 @@ public class Textures {
 			LONG_DIST_PIPE_FLUID,
 			LONG_DIST_PIPE_FLUID,
 		},
+		// [axis][aSide][mRotationDir]
 		AXLES[][] = {{
 			{AXLE_HORIZONTAL, AXLE_LEFT            	, AXLE_RIGHT            },
 			{AXLE_HORIZONTAL, AXLE_LEFT             , AXLE_RIGHT            },

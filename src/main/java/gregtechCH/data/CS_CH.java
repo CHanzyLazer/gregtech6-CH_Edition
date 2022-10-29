@@ -4,7 +4,6 @@ import com.google.common.collect.Sets;
 import gregapi.block.multitileentity.MultiTileEntityRegistry;
 import gregapi.config.Config;
 import gregapi.data.MT;
-import gregapi.fluid.FluidGT;
 import gregapi.oredict.OreDictPrefix;
 import gregapi.util.UT;
 import gregtechCH.util.UT_CH;
@@ -15,6 +14,7 @@ import java.util.Set;
 
 import static gregapi.data.CS.*;
 import static gregapi.data.OP.*;
+
 
 public class CS_CH {
     // 各种注册表的引用，为了避免不必要的问题会在其第一次初始化后有效
@@ -82,6 +82,16 @@ public class CS_CH {
             {4,5,2,6,6,6}, {4,5,0,2,6,6}, {4,5,1,2,6,6}, {4,5,0,1,2,6},
             {4,5,3,6,6,6}, {4,5,0,3,6,6}, {4,5,1,3,6,6}, {4,5,0,1,3,6},
             {4,5,2,3,6,6}, {4,5,0,2,3,6}, {4,5,1,2,3,6}, {4,5,0,1,2,3}
+    };
+    // 用于指明带有方向的方块材质每个面的方向 [aSide][mDir]
+    public static final IconType[][] DIR_ICON = {
+        {IconType.FRONT,        IconType.BACK,      IconType.SIDE_UP,       IconType.SIDE_DOWN,     IconType.SIDE_RIGHT,    IconType.SIDE_LEFT,     IconType.VOID},
+        {IconType.BACK,         IconType.FRONT,     IconType.SIDE_UP,       IconType.SIDE_DOWN,     IconType.SIDE_LEFT,     IconType.SIDE_RIGHT,    IconType.VOID},
+        {IconType.SIDE_DOWN,    IconType.SIDE_UP,   IconType.FRONT,         IconType.BACK,          IconType.SIDE_RIGHT,    IconType.SIDE_LEFT,     IconType.VOID},
+        {IconType.SIDE_DOWN,    IconType.SIDE_UP,   IconType.BACK,          IconType.FRONT,         IconType.SIDE_LEFT,     IconType.SIDE_RIGHT,    IconType.VOID},
+        {IconType.SIDE_DOWN,    IconType.SIDE_UP,   IconType.SIDE_LEFT,     IconType.SIDE_RIGHT,    IconType.FRONT,         IconType.BACK,          IconType.VOID},
+        {IconType.SIDE_DOWN,    IconType.SIDE_UP,   IconType.SIDE_RIGHT,    IconType.SIDE_LEFT,     IconType.BACK,          IconType.FRONT,         IconType.VOID},
+        {IconType.VOID,         IconType.VOID,      IconType.VOID,          IconType.VOID,          IconType.VOID,          IconType.VOID,          IconType.VOID}
     };
     
     // 用于统计哪些 prefix 是可以做覆盖板的
@@ -170,23 +180,6 @@ public class CS_CH {
         OTHER;
     }
     
-    public enum IconType {
-        COLORED,
-        OVERLAY,
-        OVERLAY_ACTIVE,
-        OVERLAY_ACTIVE_L,
-        OVERLAY_ACTIVE_R,
-        OVERLAY_ACTIVE_LS,
-        OVERLAY_ACTIVE_LF,
-        OVERLAY_ACTIVE_RS,
-        OVERLAY_ACTIVE_RF,
-        OVERLAY_PREHEAT,
-        OVERLAY_PREHEAT_L,
-        OVERLAY_PREHEAT_R,
-        OVERLAY_ENERGY_RU,
-        OVERLAY_FLUID;
-    }
-    
     // 管道尺寸
     public enum Size {
         SMALL,
@@ -217,5 +210,16 @@ public class CS_CH {
         SLEEP,
         MAIN,
         AROUND
+    }
+    
+    // 有方向的方块的材质类型
+    public enum IconType {
+        VOID,
+        FRONT,
+        BACK,
+        SIDE_UP,
+        SIDE_DOWN,
+        SIDE_LEFT,
+        SIDE_RIGHT
     }
 }

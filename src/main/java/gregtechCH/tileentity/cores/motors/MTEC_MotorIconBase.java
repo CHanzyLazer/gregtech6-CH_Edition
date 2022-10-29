@@ -8,21 +8,42 @@ import gregtechCH.data.CS_CH;
 import gregtechCH.tileentity.cores.IMTEC_Texture;
 import net.minecraft.block.Block;
 
-import static gregapi.data.CS.OPOS;
-import static gregtechCH.data.CS_CH.IconType.*;
-import static gregtechCH.data.CS_CH.IconType.OVERLAY;
+import static gregtechCH.data.CS_CH.DIR_ICON;
 
 // 管理涡轮的图像
 public abstract class MTEC_MotorIconBase implements IMTEC_Texture {
     // the reference of MTEC_Motor
     protected final MTEC_Motor mCore;
     protected MTEC_MotorIconBase(MTEC_Motor aCore) {mCore = aCore; assert mCore.mDI == this;}
-
-    protected abstract IIconContainer[] getIIconContainers(CS_CH.IconType aIconType);
-    @Override
-    public ITexture getTexture(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
+    
+    protected IIconContainer getIIconContainerOverlay(CS_CH.IconType aIconType) {
+        switch (aIconType) {
+            case FRONT:
+                return getOverlayFrontIcon();
+            case BACK:
+                return getOverlayBackIcon();
+            case SIDE_UP:
+                return getOverlaySideUpIcon();
+            case SIDE_DOWN:
+                return getOverlaySideDownIcon();
+            case SIDE_LEFT:
+                return getOverlaySideLeftIcon();
+            case SIDE_RIGHT:
+                return getOverlaySideRightIcon();
+            case VOID: default:
+                return null;
+        }
+    }
+    protected abstract IIconContainer getColoredIcon            (byte aSide);
+    protected abstract IIconContainer getOverlayFrontIcon       ();
+    protected abstract IIconContainer getOverlayBackIcon        ();
+    protected abstract IIconContainer getOverlaySideUpIcon      ();
+    protected abstract IIconContainer getOverlaySideDownIcon    ();
+    protected abstract IIconContainer getOverlaySideLeftIcon    ();
+    protected abstract IIconContainer getOverlaySideRightIcon   ();
+    
+    @Override public ITexture getTexture(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
         if (!aShouldSideBeRendered[aSide]) return null;
-        int aIndex = aSide==mCore.mTE.mFacing?0:aSide==OPOS[mCore.mTE.mFacing]?1:2;
-        return BlockTextureMulti.get(BlockTextureDefault.get(getIIconContainers(COLORED)[aIndex], mCore.mTE.getRGBa()), BlockTextureDefault.get(((mCore.mD.mPreheat||mCore.mD.mCooldown)?(mCore.mD.mCounterClockwise?getIIconContainers(OVERLAY_PREHEAT_L):getIIconContainers(OVERLAY_PREHEAT_R)):(mCore.mD.mActive?(mCore.mD.mCounterClockwise?getIIconContainers(OVERLAY_ACTIVE_L):getIIconContainers(OVERLAY_ACTIVE_R)):getIIconContainers(OVERLAY)))[aIndex]));
+        return BlockTextureMulti.get(BlockTextureDefault.get(getColoredIcon(aSide), mCore.mTE.getRGBa()), BlockTextureDefault.get(getIIconContainerOverlay(DIR_ICON[aSide][mCore.mTE.mFacing])));
     }
 }

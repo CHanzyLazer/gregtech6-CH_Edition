@@ -24,5 +24,5 @@ public abstract class MTEC_MultiBlockMachine {
     public abstract DelegatorTileEntity<IFluidHandler> getFluidInputTarget(byte aSide);
     public abstract DelegatorTileEntity<IFluidHandler> getFluidOutputTarget(byte aSide, Fluid aOutput);
 
-    public abstract String getTileEntityNameCompat();
+    public String getTileEntityNameCompat() {return null;}
 }

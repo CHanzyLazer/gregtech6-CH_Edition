@@ -75,7 +75,10 @@ public abstract class TileEntityBase04MultiTileEntities extends TileEntityBase03
 	
 	@Override
 	public void onRegistrationFirst(MultiTileEntityRegistry aRegistry, short aID) {
-		if (this instanceof ITileEntityNameCompat) GameRegistry.registerTileEntity(getClass(), ((ITileEntityNameCompat)this).getTileEntityNameCompat()); // 注册旧的名称来兼容旧版 GTCH
+		if (this instanceof ITileEntityNameCompat) {
+			String tNameC = ((ITileEntityNameCompat)this).getTileEntityNameCompat();
+			if (tNameC != null) GameRegistry.registerTileEntity(getClass(), tNameC); // 注册旧的名称来兼容旧版 GTCH
+		}
 		GameRegistry.registerTileEntity(getClass(), getTileEntityName());
 	}
 	

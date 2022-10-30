@@ -1,13 +1,13 @@
 package gregtechCH.data;
 
-import gregapi.data.TC;
 import gregapi.oredict.OreDictPrefix;
 
-import static gregapi.data.CS.*;
-import static gregapi.data.TD.Prefix.*;
+import static gregapi.data.TD.Prefix.PREFIX_UNUSED;
 import static gregtechCH.data.CS_CH.RegType;
 
-/* 额外添加的 Prefixes 统一放在这里 */
+/**
+ * 额外添加的 Prefixes 统一放在这里
+ **/
 public class OP_CH {
     // 提供指明注册 mod 的接口
     private static OreDictPrefix create(RegType aRegType, String aName, String aCategory, String aPreMaterial, String aPostMaterial) {return OreDictPrefix.createPrefix(aRegType, aName).setCategoryName(aCategory).setLocalPrefixName(aCategory).setLocalItemName(aPreMaterial, aPostMaterial);}

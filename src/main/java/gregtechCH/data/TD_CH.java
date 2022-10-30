@@ -2,13 +2,8 @@ package gregtechCH.data;
 
 
 import gregapi.code.TagData;
-import gregapi.data.LH;
 
-import static gregapi.data.TD.Energy.ALL;
-import static gregapi.data.TD.Energy.ALL_NEGATIVE_ALLOWED;
-import static gregtechCH.data.CS_CH.RegType;
 
-// TODO 查看这些 TD 的使用
 /**
  * 额外添加的 Tag Data 统一放在这里
  **/

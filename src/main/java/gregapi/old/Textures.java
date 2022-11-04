@@ -57,6 +57,8 @@ public class Textures {
 		, ARROW2_UP, ARROW2_DOWN, ARROW2_LEFT, ARROW2_RIGHT
 		, ARROW3_UP, ARROW3_DOWN, ARROW3_LEFT, ARROW3_RIGHT
 		, INSULATION_AROUND, INSULATION_QUADRUPLE, INSULATION_NONUPLE
+		// GTCH
+		, AXLE_CLOCKWISE_FAST, AXLE_COUNTERCLOCKWISE_FAST, AXLE_DOWN_FAST, AXLE_UP_FAST, AXLE_LEFT_FAST, AXLE_RIGHT_FAST
 
 		, AXLE, AXLE_CLOCKWISE, AXLE_COUNTERCLOCKWISE, AXLE_VERTICAL, AXLE_DOWN, AXLE_UP, AXLE_HORIZONTAL, AXLE_LEFT, AXLE_RIGHT
 		, GEAR, GEAR_CLOCKWISE, GEAR_COUNTERCLOCKWISE, GEARBOX, GEARBOX_AXLE
@@ -673,32 +675,6 @@ public class Textures {
 			LONG_DIST_PIPE_FLUID,
 			LONG_DIST_PIPE_FLUID,
 		},
-		// [axis][aSide][mRotationDir] TODO 等轴的 fast 模式出现时一起修改
-		AXLES[][] = {{
-			{AXLE_HORIZONTAL, AXLE_LEFT            	, AXLE_RIGHT            },
-			{AXLE_HORIZONTAL, AXLE_LEFT             , AXLE_RIGHT            },
-			{AXLE           , AXLE_CLOCKWISE        , AXLE_COUNTERCLOCKWISE },
-			{AXLE           , AXLE_COUNTERCLOCKWISE , AXLE_CLOCKWISE        },
-			{AXLE_VERTICAL  , AXLE_DOWN             , AXLE_UP               },
-			{AXLE_VERTICAL  , AXLE_UP               , AXLE_DOWN             },
-			{VOID           , VOID                  , VOID                  }
-		},{
-			{AXLE           , AXLE_CLOCKWISE        , AXLE_COUNTERCLOCKWISE },
-			{AXLE           , AXLE_COUNTERCLOCKWISE , AXLE_CLOCKWISE        },
-			{AXLE_HORIZONTAL, AXLE_RIGHT            , AXLE_LEFT             },
-			{AXLE_HORIZONTAL, AXLE_RIGHT            , AXLE_LEFT             },
-			{AXLE_HORIZONTAL, AXLE_RIGHT            , AXLE_LEFT             },
-			{AXLE_HORIZONTAL, AXLE_RIGHT            , AXLE_LEFT             },
-			{VOID           , VOID                  , VOID                  }
-		},{
-			{AXLE_VERTICAL  , AXLE_UP             	, AXLE_DOWN             },
-			{AXLE_VERTICAL  , AXLE_DOWN             , AXLE_UP               },
-			{AXLE_VERTICAL  , AXLE_UP               , AXLE_DOWN             },
-			{AXLE_VERTICAL  , AXLE_DOWN             , AXLE_UP               },
-			{AXLE           , AXLE_CLOCKWISE        , AXLE_COUNTERCLOCKWISE },
-			{AXLE           , AXLE_COUNTERCLOCKWISE , AXLE_CLOCKWISE        },
-			{VOID           , VOID                  , VOID                  }
-		}},
 		
 		GLASSES_CLEAR = UT.Code.fill(GLASS_CLEAR, new IIconContainer[16]),
 		ASPHALTS = UT.Code.fill(ASPHALT, new IIconContainer[16]),
@@ -708,7 +684,7 @@ public class Textures {
 		CONCRETES_REINFORCED = UT.Code.fill(CONCRETE_REINFORCED, new IIconContainer[16]);
 		
 		// GTCH, 还是统一使用 switch 来实现, 用于指明管道方向
-		public static BlockIcons getArrow(CS_CH.IconType aIconType, CS_CH.Mode aMode) {
+		public static BlockIcons getArrow(CS_CH.IconType aIconType, CS_CH.PipeMode aMode) {
 			switch (aIconType) {
 			case SIDE_UP:
 				switch (aMode) {case LIMIT: return ARROW_UP; case PRIORITY: return ARROW2_UP; case DIVIDE: return ARROW3_UP; case DEFAULT: default: return VOID;}
@@ -720,6 +696,25 @@ public class Textures {
 				switch (aMode) {case LIMIT: return ARROW_RIGHT; case PRIORITY: return ARROW2_RIGHT; case DIVIDE: return ARROW3_RIGHT; case DEFAULT: default: return VOID;}
 			case VOID: case FRONT: case BACK: default:
 				return VOID;
+			}
+		}
+		// GTCH, 还是统一使用 switch 来实现, 用于指明轴的材质
+		public static BlockIcons getAxle(CS_CH.IconType aIconType, boolean aStop, boolean aCounterClockwise, boolean aFast) {
+			switch (aIconType) {
+				case SIDE_UP:
+					return aStop ? AXLE_HORIZONTAL : (aCounterClockwise ? (aFast ? AXLE_RIGHT_FAST : AXLE_RIGHT) : (aFast ? AXLE_LEFT_FAST : AXLE_LEFT));
+				case SIDE_DOWN:
+					return aStop ? AXLE_HORIZONTAL : (aCounterClockwise ? (aFast ? AXLE_LEFT_FAST : AXLE_LEFT) : (aFast ? AXLE_RIGHT_FAST : AXLE_RIGHT));
+				case SIDE_LEFT:
+					return aStop ? AXLE_VERTICAL : (aCounterClockwise ? (aFast ? AXLE_UP_FAST : AXLE_UP) : (aFast ? AXLE_DOWN_FAST : AXLE_DOWN));
+				case SIDE_RIGHT:
+					return aStop ? AXLE_VERTICAL : (aCounterClockwise ? (aFast ? AXLE_DOWN_FAST : AXLE_DOWN) : (aFast ? AXLE_UP_FAST : AXLE_UP));
+				case FRONT:
+					return aStop ? AXLE : (aCounterClockwise ? (aFast ? AXLE_COUNTERCLOCKWISE_FAST : AXLE_COUNTERCLOCKWISE) : (aFast ? AXLE_CLOCKWISE_FAST : AXLE_CLOCKWISE));
+				case BACK:
+					return aStop ? AXLE : (aCounterClockwise ? (aFast ? AXLE_CLOCKWISE_FAST : AXLE_CLOCKWISE) : (aFast ? AXLE_COUNTERCLOCKWISE_FAST : AXLE_COUNTERCLOCKWISE));
+				case VOID: default:
+					return VOID;
 			}
 		}
 		

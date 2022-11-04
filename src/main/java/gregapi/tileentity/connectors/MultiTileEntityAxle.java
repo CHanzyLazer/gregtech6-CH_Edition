@@ -62,7 +62,9 @@ import net.minecraft.tileentity.TileEntity;
 public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight implements ITileEntityQuickObstructionCheck, ITileEntityEnergy, ITileEntityEnergyDataConductor, ITileEntityProgress, IMTE_GetDebugInfo {
 	public long mTransferredPower = 0, mTransferredSpeed = 0, mTransferredEnergy = 0, mTransferredLast = 0, mPower = 1, mSpeed = 32;
 	public byte mRotationDir = 0, oRotationDir = 0;
-
+	
+	// GTCH，指示轴是否是快速转动的
+	protected boolean mFast = F, oFast = F;
 	// GTCH，用来实现轴的单向传递能量，避免一些问题
 	public byte mEnergyDir = SIDE_ANY, oEnergyDir = SIDE_ANY;
 	public byte oConnections = 0;
@@ -77,6 +79,7 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 	public void readFromNBT2(NBTTagCompound aNBT) {
 		super.readFromNBT2(aNBT);
 		if (aNBT.hasKey(NBT_ACTIVE_DATA)) mRotationDir = aNBT.getByte(NBT_ACTIVE_DATA);
+		if (aNBT.hasKey(NBT_FAST)) mFast = aNBT.getBoolean(NBT_FAST);
 		if (aNBT.hasKey(NBT_ENERGY_EMITTED_SIDES)) mEnergyDir = (byte) UT_CH.NBT.getItemNumber(aNBT.getByte(NBT_ENERGY_EMITTED_SIDES));
 		if (aNBT.hasKey(NBT_PIPESIZE)) mSpeed = Math.max(1, aNBT.getLong(NBT_PIPESIZE));
 		if (aNBT.hasKey(NBT_PIPEBANDWIDTH)) mPower = Math.max(1, aNBT.getLong(NBT_PIPEBANDWIDTH));
@@ -86,6 +89,7 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 	public void writeToNBT2(NBTTagCompound aNBT) {
 		super.writeToNBT2(aNBT);
 		aNBT.setByte(NBT_ACTIVE_DATA, mRotationDir);
+		aNBT.setBoolean(NBT_FAST, mFast);
 		// 默认值不为零（或者可能不为零）的需要专门设置
 		if (SIDES_VALID[mEnergyDir]) aNBT.setByte(NBT_ENERGY_EMITTED_SIDES, mEnergyDir);
 	}
@@ -165,7 +169,9 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 			if (mTransferredSpeed == 0 && aTimer > 5) mRotationDir = 0;
 			mTransferredLast = mTransferredEnergy;
 			mTransferredEnergy = mTransferredSpeed = 0;
-
+			
+			// GTCH, 检测是否是快速的
+			mFast = Math.abs(mStateSpeed) * 2 > mSpeed;
 			// GTCH, 用于放大镜显示
 			mSpeedLast = mStateSpeed;
 			mPowerLast = mTransferredPower;
@@ -187,19 +193,21 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 		return super.getRenderPasses3(aBlock, aShouldSideBeRendered);
 	}
 	
-	@Override public boolean onTickCheck(long aTimer) {return mRotationDir != oRotationDir || mEnergyDir != oEnergyDir || mOutMark != oOutMark || super.onTickCheck(aTimer);}
+	@Override public boolean onTickCheck(long aTimer) {return mRotationDir != oRotationDir || mFast != oFast || mEnergyDir != oEnergyDir || mOutMark != oOutMark || super.onTickCheck(aTimer);}
 	@Override public void onTickResetChecks(long aTimer, boolean aIsServerSide) {
 		super.onTickResetChecks(aTimer, aIsServerSide);
 		oRotationDir = mRotationDir;
+		oFast = mFast;
 		oEnergyDir = mEnergyDir;
 		oOutMark = mOutMark;
 	}
 	@Override public void setVisualData(byte aData) {
 		mRotationDir = (byte)(aData & 3);
-		mOutMark = ((aData & 4) != 0);
-		mEnergyDir = (byte)((aData >> 3) & 7);
+		mFast = ((aData & 4) != 0);
+		mOutMark = ((aData & 8) != 0);
+		mEnergyDir = (byte)((aData >> 4) & 7);
 	}
-	@Override public byte getVisualData() {return (byte)((mRotationDir & 3) | (mOutMark?4:0) | ((mEnergyDir & 7) << 3));}
+	@Override public byte getVisualData() {return (byte)((mRotationDir & 3) | (mFast?4:0) | (mOutMark?8:0) | ((mEnergyDir & 7) << 4));}
 
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
@@ -283,11 +291,11 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 	
 	@Override public ArrayList<String> getDebugInfo(int aScanLevel) {return aScanLevel > 0 ? new ArrayListNoNulls<>(F, "Transferred Power: " + mTransferredEnergy) : null;}
 	
-	@Override public ITexture getTextureSide                (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {return BlockTextureMulti.get(BlockTextureDefault.get(Textures.BlockIcons.AXLES[(mConnections & 12) != 0 ? 0 : (mConnections & 48) != 0 ? 2 : 1][aSide][mRotationDir], mRGBa), BlockTextureDefault.get(Textures.BlockIcons.getArrow(DIR_ICON[aSide][mEnergyDir], Mode.LIMIT), mRGBaMark));}
-	@Override public ITexture getTextureConnected           (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {return BlockTextureDefault.get(Textures.BlockIcons.AXLES[(mConnections & 12) != 0 ? 0 : (mConnections & 48) != 0 ? 2 : 1][aSide][mRotationDir], mRGBa);}
+	@Override public ITexture getTextureSide                (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {return BlockTextureMulti.get(BlockTextureDefault.get(Textures.BlockIcons.getAxle(DIR_ICON[aSide][(mConnections&12)!=0?2:(mConnections&48)!=0?4:0], mRotationDir==0, mRotationDir==2, mFast), mRGBa), BlockTextureDefault.get(Textures.BlockIcons.getArrow(DIR_ICON[aSide][mEnergyDir], PipeMode.LIMIT), mRGBaMark));}
+	@Override public ITexture getTextureConnected           (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {return BlockTextureDefault.get(Textures.BlockIcons.getAxle(DIR_ICON[aSide][(mConnections&12)!=0?2:(mConnections&48)!=0?4:0], mRotationDir==0, mRotationDir==2, mFast), mRGBa);}
 	@Override
 	public ITexture getTextureCFoamDry(byte aSide, byte aConnections, float aDiameter, int aRenderPass) {
-		if (mOutMark) return BlockTextureMulti.get(BlockTextureDefault.get(mOwnable?Textures.BlockIcons.CFOAM_HARDENED_OWNED:Textures.BlockIcons.CFOAM_HARDENED, mRGBaFoam), BlockTextureDefault.get(Textures.BlockIcons.getArrow(DIR_ICON[aSide][mEnergyDir], Mode.LIMIT), UT_CH.Code.getMarkRGB(mRGBaFoam)));
+		if (mOutMark) return BlockTextureMulti.get(BlockTextureDefault.get(mOwnable?Textures.BlockIcons.CFOAM_HARDENED_OWNED:Textures.BlockIcons.CFOAM_HARDENED, mRGBaFoam), BlockTextureDefault.get(Textures.BlockIcons.getArrow(DIR_ICON[aSide][mEnergyDir], PipeMode.LIMIT), UT_CH.Code.getMarkRGB(mRGBaFoam)));
 		return BlockTextureDefault.get(mOwnable?Textures.BlockIcons.CFOAM_HARDENED_OWNED:Textures.BlockIcons.CFOAM_HARDENED, mRGBaFoam);
 	}
 	@Override public Collection<TagData> getConnectorTypes  (byte aSide) {return TD.Connectors.AXLE_ROTATION.AS_LIST;}

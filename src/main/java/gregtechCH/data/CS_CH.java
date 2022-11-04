@@ -103,54 +103,56 @@ public class CS_CH {
     
     public static final String
               NBT_CANFILL_STEAM             = "gtch.canfill.steam"          // Boolean, Is this machine can fill steam. CHanzy
-
+            
             , NBT_EFFICIENCY_CH             = "gtch.eff"                    // Short from 0 to 10000 describing the global Efficiency, or just for OmniOcular usage. CHanzy
             , NBT_EFFICIENCY_WATER          = "gtch.eff.water"              // Short from 0 to 10000 describing the water Efficiency. CHanzy
             , NBT_EFFICIENCY_OC             = "gtch.eff.oc"                 // Short from 0 to 10000 describing the overclocking Efficiency. CHanzy
-
+            
             , NBT_ENERGY_EFF                = "gtch.energy.eff"             // Long, The effective energy of boiler. CHanzy
             , NBT_ENERGY_PRE                = "gtch.energy.pre"             // Long, The previous energy of boiler. CHanzy
             , NBT_ENERGY_SU_PRE             = "gtch.energy.su.pre"          // Long, The previous steam of turbines. CHanzy
-
+            
             , NBT_INPUT_REC                 = "gtch.input.rec"              // Long, Recommend input energy, for OmniOcular usage. CHanzy
             , NBT_INPUT_NOW                 = "gtch.input.now"              // Long, Current input energy, for OmniOcular usage. CHanzy
             , NBT_INPUT_BUFFER              = "gtch.input.buffer"           // Long, Input Buffer to let output smooth. CHanzy
             , NBT_OUTPUT_REC                = "gtch.output.rec"             // Long, Recommend output energy, for OmniOcular usage. CHanzy
             , NBT_OUTPUT_NOW                = "gtch.output.now"             // Long, Current output energy, for OmniOcular usage. CHanzy
             , NBT_OUTPUT_SELF               = "gtch.output.self"            // Boolean, Is the main multiblock output energy self. CHanzy
-
+            
+            , NBT_FAST                      = "gtch.fast"                   // Boolean, Is fast animation. CHanzy
+            
             , NBT_PREHEAT                   = "gtch.preheat"                // Boolean, Is machine preheating, for OmniOcular usage. CHanzy
             , NBT_PREHEAT_ENERGY            = "gtch.preheat.energy"         // Long, Energy required for preheating. CHanzy
             , NBT_PREHEAT_RATE              = "gtch.preheat.rate"           // Long, Rate in preheating. CHanzy
             , NBT_PREHEAT_COST              = "gtch.preheat.cost"           // Long, Energy cost Rate in preheating. CHanzy
-
+            
             , NBT_PROGRESS_RATE             = "gtch.progress.rate"          // Long, Rate of progress of machine. CHanzy
-
+            
             , NBT_COOLDOWN_CH               = "gtch.cooldown"               // Boolean, Is machine cooldown, for OmniOcular usage. CHanzy
             , NBT_COOLDOWN_RATE             = "gtch.cooldown.rate"          // Long, Rate of cooldown. CHanzy
             , NBT_COOLDOWN_COUNTER          = "gtch.cooldown.counter"       // Byte, counter of cooldown. CHanzy
-
+            
             , NBT_BURNING                   = "gtch.burning"                // Boolean, Is machine burning, for mechine need burning and preheat. CHanzy
-
+            
             , NBT_LENGTH_MIN                = "gtch.length.min"             // Integer, The minimum length of turbines. CHanzy
             , NBT_LENGTH_MAX                = "gtch.length.max"             // Integer, The maximum length of turbines. CHanzy
             , NBT_LENGTH_MID                = "gtch.length.mid"             // Integer, The middle length of turbines. CHanzy
             , NBT_LENGTH                    = "gtch.length"                 // Integer, The current length of turbines. CHanzy
             , NBT_LENGTH_PRE                = "gtch.length.pre"             // Integer, The previous length of turbines. CHanzy
-
+            
             , NBT_LIGHT_VALUE               = "gtch.light.value"            // Byte, The light value of block. CHanzy
             , NBT_LIGHT_OPACITY             = "gtch.light.opacity"          // Short, The light opacity of block. CHanzy
-
+            
             , NBT_BEGIN                     = "gtch.begin"                  // Byte
             , NBT_END                       = "gtch.end"                    // Byte
-
+            
             , NBT_TICK                      = "gtch.tick"                   // Byte
-
+            
             , NBT_COLOR_BOTTOM              = "gtch.color.bottom"           // Integer, The bottom (or base) color of paint. CHanzy
             , NBT_COLOR_ORIGIN              = "gtch.color.origin"           // Integer, The origin color of painted block. CHanzy
-
+            
             , NBT_IDMETA                    = "gtch.idmeta"                 // Integer, Containing the combination of the id and meta, CHanzy
-
+            
             , NBT_ADD_BOOL                  = "gtch.add.bool"               // Boolean, The additional boolean information that have random name, CHanzy
             , NBT_ADD_BYTE                  = "gtch.add.byte"               // Byte, The additional byte information that have random name, CHanzy
             , NBT_ADD_SHORT                 = "gtch.add.short"              // Short, The additional byte information that have random name, CHanzy
@@ -189,7 +191,7 @@ public class CS_CH {
     }
     
     // 管道模式
-    public enum Mode {
+    public enum PipeMode {
         DEFAULT,
         LIMIT,
         PRIORITY,

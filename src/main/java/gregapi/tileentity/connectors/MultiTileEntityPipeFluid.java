@@ -91,7 +91,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 
 	// GTCH，用来实现限制方向传递流体
 	public byte mFluidDir = SIDE_ANY, oFluidDir = SIDE_ANY;
-	public Mode mFluidMode = Mode.DEFAULT, oFluidMode = Mode.DEFAULT;
+	public PipeMode mFluidMode = PipeMode.DEFAULT, oFluidMode = PipeMode.DEFAULT;
 	// GTCH，用来限制流量（通过限制容量）
 	public byte mCapacityLimit = 0;
 	public final static byte MAX_LIMIT = 8;
@@ -138,7 +138,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	public void readFromNBT2(NBTTagCompound aNBT) {
 		super.readFromNBT2(aNBT);
 		if (aNBT.hasKey(NBT_ADD_BYTE + ".dir")) mFluidDir = (byte) UT_CH.NBT.getItemNumber(aNBT.getByte(NBT_ADD_BYTE + ".dir"));
-		if (aNBT.hasKey(NBT_ADD_BYTE + ".mode")) mFluidMode = Mode.values()[(byte) UT_CH.NBT.getItemNumber(aNBT.getByte(NBT_ADD_BYTE + ".mode"))];
+		if (aNBT.hasKey(NBT_ADD_BYTE + ".mode")) mFluidMode = PipeMode.values()[(byte) UT_CH.NBT.getItemNumber(aNBT.getByte(NBT_ADD_BYTE + ".mode"))];
 		if (aNBT.hasKey(NBT_ADD_BYTE + ".limit")) mCapacityLimit = aNBT.getByte(NBT_ADD_BYTE + ".limit");
 		if (aNBT.hasKey(NBT_ADD_BOOL + ".fc")) mFlowControl = aNBT.getBoolean(NBT_ADD_BOOL + ".fc");
 
@@ -208,7 +208,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		super.writeToNBT2(aNBT);
 		// 默认值不为零（或者可能不为零）的需要专门设置
 		if (SIDES_VALID[mFluidDir]) aNBT.setByte(NBT_ADD_BYTE + ".dir", mFluidDir);
-		if (mFluidMode != Mode.DEFAULT) aNBT.setByte(NBT_ADD_BYTE + ".mode", (byte)mFluidMode.ordinal());
+		if (mFluidMode != PipeMode.DEFAULT) aNBT.setByte(NBT_ADD_BYTE + ".mode", (byte)mFluidMode.ordinal());
 		UT.NBT.setNumber(aNBT, NBT_ADD_BYTE + ".limit", mCapacityLimit);
 		UT.NBT.setBoolean(aNBT, NBT_ADD_BOOL + ".fc", mFlowControl);
 		for (int i = 0; i < mInBuffers.size(); i++) UT_CH.NBT.setNumberArray(aNBT, NBT_INPUT_BUFFER +"."+i, Longs.toArray(mInBuffers.get(i)));
@@ -231,7 +231,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 			UT.NBT.setNumber(aNBT, NBT_ADD_BYTE + ".dir", mFluidDir);
 			// 默认值不为零（或者可能不为零）的需要专门设置
 			if (SIDES_VALID[mFluidDir]) aNBT.setByte(NBT_ADD_BYTE + ".dir", (byte) UT_CH.NBT.toItemNumber(mFluidDir));
-			if (mFluidMode != Mode.DEFAULT) aNBT.setByte(NBT_ADD_BYTE + ".mode", (byte) UT_CH.NBT.toItemNumber(mFluidMode.ordinal()));
+			if (mFluidMode != PipeMode.DEFAULT) aNBT.setByte(NBT_ADD_BYTE + ".mode", (byte) UT_CH.NBT.toItemNumber(mFluidMode.ordinal()));
 		}
 		return super.writeItemNBT2(aNBT);
 	}
@@ -422,24 +422,24 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		// 先让模式合法
 		checkConnection();
 		// 切换模式
-		if (mFluidDir == aTargetSide && mFluidMode == Mode.LIMIT) {
+		if (mFluidDir == aTargetSide && mFluidMode == PipeMode.LIMIT) {
 			if (aReverse)
-				mFluidMode = Mode.PRIORITY;
+				mFluidMode = PipeMode.PRIORITY;
 			else {
 				mFluidDir = SIDE_ANY;
-				mFluidMode = Mode.DEFAULT;
+				mFluidMode = PipeMode.DEFAULT;
 			}
 		} else
-		if (mFluidDir == aTargetSide && mFluidMode == Mode.PRIORITY) {
+		if (mFluidDir == aTargetSide && mFluidMode == PipeMode.PRIORITY) {
 			if (aReverse) {
 				mFluidDir = SIDE_ANY;
-				mFluidMode = Mode.DEFAULT;
+				mFluidMode = PipeMode.DEFAULT;
 			}
 			else
-				mFluidMode = Mode.LIMIT;
+				mFluidMode = PipeMode.LIMIT;
 		} else {
 			mFluidDir = aTargetSide;
-			mFluidMode = aReverse?Mode.LIMIT:Mode.PRIORITY;
+			mFluidMode = aReverse? PipeMode.LIMIT: PipeMode.PRIORITY;
 		}
 	}
 
@@ -500,12 +500,12 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	protected void checkConnection() {
 		if (!modeValid()) {
 			mFluidDir = SIDE_ANY;
-			mFluidMode = Mode.DEFAULT;
+			mFluidMode = PipeMode.DEFAULT;
 			for (FluidTankGT tTank : mTanks) resetOutputSoft(tTank);
 		}
 	}
 	protected boolean modeValid() {
-		return (mFluidDir == SIDE_ANY && mFluidMode == Mode.DEFAULT) || (mFluidDir != SIDE_ANY && connected(mFluidDir) && (mFluidMode == Mode.LIMIT || mFluidMode == Mode.PRIORITY));
+		return (mFluidDir == SIDE_ANY && mFluidMode == PipeMode.DEFAULT) || (mFluidDir != SIDE_ANY && connected(mFluidDir) && (mFluidMode == PipeMode.LIMIT || mFluidMode == PipeMode.PRIORITY));
 	}
 
 	@Override
@@ -714,7 +714,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	protected void distributeLimit(FluidTankGT aTank, DelegatorTileEntity<MultiTileEntityPipeFluid>[] aAdjacentPipes, DelegatorTileEntity<IFluidHandler>[] aAdjacentTanks, DelegatorTileEntity<TileEntity>[] aAdjacentOther) {
 		// 由于限制方向输出，相邻的只有一个，为了格式一致还是都采用数组的形式
 		// 非法调用回到默认模式
-		if (mFluidDir == SIDE_ANY || mFluidMode != Mode.LIMIT) {distribute(aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther); return;}
+		if (mFluidDir == SIDE_ANY || mFluidMode != PipeMode.LIMIT) {distribute(aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther); return;}
 		// 如果覆盖版禁止了直接退出，由于只有一个面不考虑开销问题
 		if (coverCheck(mFluidDir, aTank.get())) return;
 		// 同样还是先考虑炼药锅的情况
@@ -768,7 +768,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	// GTCH，优先方向输出，没有流速控制。优先方向输出可以对代码进行一定简化，所以重新写了一份
 	protected void distributePriority(FluidTankGT aTank, DelegatorTileEntity<MultiTileEntityPipeFluid>[] aAdjacentPipes, DelegatorTileEntity<IFluidHandler>[] aAdjacentTanks, DelegatorTileEntity<TileEntity>[] aAdjacentOther) {
 		// 非法调用回到默认模式
-		if (mFluidDir == SIDE_ANY || mFluidMode != Mode.PRIORITY) {distribute(aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther); return;}
+		if (mFluidDir == SIDE_ANY || mFluidMode != PipeMode.PRIORITY) {distribute(aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther); return;}
 		// 如果覆盖版禁止了直接进入内部的没有流速控制的默认模式
 		if (coverCheck(mFluidDir, aTank.get())) {distributeDefault_(ALL_SIDES_VALID_BUT[mFluidDir], aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther); return;}
 		// 同样还是先考虑炼药锅的情况
@@ -922,7 +922,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	protected void distributeLimitFC(FluidTankGT aTank, DelegatorTileEntity<MultiTileEntityPipeFluid>[] aAdjacentPipes, DelegatorTileEntity<IFluidHandler>[] aAdjacentTanks, DelegatorTileEntity<TileEntity>[] aAdjacentOther) {
 		// 由于限制方向输出，相邻的只有一个，为了格式一致还是都采用数组的形式
 		// 非法调用回到默认模式
-		if (mFluidDir == SIDE_ANY || mFluidMode != Mode.LIMIT) {distributeFC(aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther); return;}
+		if (mFluidDir == SIDE_ANY || mFluidMode != PipeMode.LIMIT) {distributeFC(aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther); return;}
 		if (!mFlowControl) {distributeLimit(aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther); return;}
 		// 如果覆盖版禁止了直接退出，由于只有一个面不考虑开销问题
 		if (coverCheck(mFluidDir, aTank.get())) return;
@@ -971,7 +971,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	// GTCH，优先方向输出，有流速控制
 	protected void distributePriorityFC(FluidTankGT aTank, DelegatorTileEntity<MultiTileEntityPipeFluid>[] aAdjacentPipes, DelegatorTileEntity<IFluidHandler>[] aAdjacentTanks, DelegatorTileEntity<TileEntity>[] aAdjacentOther) {
 		// 非法调用回到默认模式
-		if (mFluidDir == SIDE_ANY || mFluidMode != Mode.PRIORITY) {distributeFC(aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther); return;}
+		if (mFluidDir == SIDE_ANY || mFluidMode != PipeMode.PRIORITY) {distributeFC(aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther); return;}
 		if (!mFlowControl) {distributePriority(aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther); return;}
 		// 如果覆盖版禁止了直接进入内部的没有流速控制的默认模式
 		if (coverCheck(mFluidDir, aTank.get())) {distributeDefaultFC_(ALL_SIDES_VALID_BUT[mFluidDir], aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther); return;}
@@ -1245,10 +1245,10 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 
 	// GTCH，根据状态修改是否可以输入输出
 	public boolean canEmitFluidsTo(byte aSide) {
-		return (mFluidMode == Mode.LIMIT) ? (SIDES_EQUAL[aSide][mFluidDir] && connected(aSide)) : connected(aSide);
+		return (mFluidMode == PipeMode.LIMIT) ? (SIDES_EQUAL[aSide][mFluidDir] && connected(aSide)) : connected(aSide);
 	}
 	public boolean canAcceptFluidsFrom(byte aSide) {
-		if (mFluidMode == Mode.DEFAULT) {
+		if (mFluidMode == PipeMode.DEFAULT) {
 			return connected(aSide);
 		} else {
 			return SIDES_ANY_BUT[aSide][mFluidDir] && connected(aSide);
@@ -1327,7 +1327,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	@Override public boolean onTickCheck(long aTimer) {return mFluidDir != oFluidDir || mFluidMode != oFluidMode || mFlowControl != oFlowControl || mOutMark != oOutMark || super.onTickCheck(aTimer);}
 	@Override public void onTickResetChecks(long aTimer, boolean aIsServerSide) {super.onTickResetChecks(aTimer, aIsServerSide); oFluidDir = mFluidDir; oFluidMode = mFluidMode; oFlowControl = mFlowControl; oOutMark = mOutMark; }
 	@Override public void setVisualData(byte aData) {
-		mFluidMode = Mode.values()[(byte)(aData & 3)];
+		mFluidMode = PipeMode.values()[(byte)(aData & 3)];
 		mFlowControl = ((aData & 4) != 0);
 		mOutMark = ((aData & 8) != 0);
 		mFluidDir = (byte)((aData >> 4) & 7);

@@ -111,19 +111,19 @@ public class MTEC_MultiBlockPyrolyseOven extends MTEC_MultiBlockMachine {
     }
     
     static {
-        LH_CH.add(RegType.GT6U, "gt.tooltip.multiblock.pyrolyseoven.1", "5x5x3 'Basin' of 72 Stainless Steel Walls");
-        LH_CH.add(RegType.GT6U, "gt.tooltip.multiblock.pyrolyseoven.2", "3x3x2 with 27 Nichrome Coils inside the 5x5x4");
-        LH_CH.add(RegType.GT6U, "gt.tooltip.multiblock.pyrolyseoven.3", "Main Block centered on Side-Bottom and facing outwards");
-        LH_CH.add(RegType.GT6U, "gt.tooltip.multiblock.pyrolyseoven.4", "Stuff can go in and out on any of the Stainless Steel Walls, Energy input at bottom layer");
+        LH_CH.add(RegType.GT6U, "gt6u.tooltip.multiblock.pyrolyseoven.1", "5x5x3 'Basin' of 72 Stainless Steel Walls");
+        LH_CH.add(RegType.GT6U, "gt6u.tooltip.multiblock.pyrolyseoven.2", "3x3x2 with 27 Nichrome Coils inside the 5x5x4");
+        LH_CH.add(RegType.GT6U, "gt6u.tooltip.multiblock.pyrolyseoven.3", "Main Block centered on Side-Bottom and facing outwards");
+        LH_CH.add(RegType.GT6U, "gt6u.tooltip.multiblock.pyrolyseoven.4", "Stuff can go in and out on any of the Stainless Steel Walls, Energy input at bottom layer");
     }
     
     @Override
     public void toolTipsMultiblock(List<String> aList) {
         aList.add(LH.Chat.CYAN  + LH.get(LH.STRUCTURE) + ":");
-        aList.add(LH.Chat.WHITE + LH_CH.get("gt.tooltip.multiblock.pyrolyseoven.1"));
-        aList.add(LH.Chat.WHITE + LH_CH.get("gt.tooltip.multiblock.pyrolyseoven.2"));
-        aList.add(LH.Chat.WHITE + LH_CH.get("gt.tooltip.multiblock.pyrolyseoven.3"));
-        aList.add(LH.Chat.WHITE + LH_CH.get("gt.tooltip.multiblock.pyrolyseoven.4"));
+        aList.add(LH.Chat.WHITE + LH_CH.get("gt6u.tooltip.multiblock.pyrolyseoven.1"));
+        aList.add(LH.Chat.WHITE + LH_CH.get("gt6u.tooltip.multiblock.pyrolyseoven.2"));
+        aList.add(LH.Chat.WHITE + LH_CH.get("gt6u.tooltip.multiblock.pyrolyseoven.3"));
+        aList.add(LH.Chat.WHITE + LH_CH.get("gt6u.tooltip.multiblock.pyrolyseoven.4"));
     }
     
     @Override

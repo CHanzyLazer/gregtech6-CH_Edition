@@ -476,7 +476,16 @@ public enum IL implements IItemContainer {
 	
 	/* 由于枚举类不能继承，因此只能全部放在一起。这里仅进行罗列因此顺序不重要，将 GT6U GTCH 的部分和原版分开来方便合并 */
 	/* GT6U stuff START */
+	ircuit_Plate_Empty_Phenolic, Circuit_Plate_Empty_Epoxid, Circuit_Plate_Empty_Multilayer, Circuit_plate_Empty_Crystal,
+	Perforated_Bushing, Glass_Fiber,
 	Battery_Lead_Acid_IV, Battery_Alkaline_IV, Battery_NiCd_IV, Battery_LiCoO2_IV, Battery_LiMn_IV,
+	// Physics
+	Proton, Anti_Proton, Electron, Positron, Neutron, Alpha_Particle, Neutrino, Anti_Neutrino, Higgs_Boson,
+	Kerr_Blackhole,
+	// Biology
+	ulture_Dish_Empty,Culture_Dish_MSC,Culture_Dish_Stem_Cell_Embryonic,Culture_Dish_Stem_Cell_Somatic,dust_Inorganic_Salt_Mixture,dust_Tiny_Inorganic_Salt_Mixture,
+	dust_Glucose,Stem_Cell,Neuron_Cell,Unformed_Embryo,Precision_Manipulator,Lauryl_Sulfate,SDS,Culture_Dish_Biomass_Flora,Mixing_Rod,
+	Culture_Dish_Yeast,Culture_Dish_Methanogens,Culture_Dish_Bacillus,Culture_Dish_Clostridia,Protein_Sample, Gene_Samples,
 	/* GT6U stuff END */
 	NULL;
 	

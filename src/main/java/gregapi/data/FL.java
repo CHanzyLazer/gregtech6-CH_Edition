@@ -31,7 +31,6 @@ import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.UT.Code;
 import gregapi.util.UT.NBT;
-import gregtechCH.data.CS_CH;
 import gregtechCH.data.LH_CH;
 import gregtechCH.fluid.IFluidHandler_CH;
 import net.minecraft.block.Block;
@@ -48,6 +47,7 @@ import java.util.*;
 import static gregapi.data.CS.*;
 import static gregapi.data.CS.FluidsGT.*;
 import static gregtechCH.config.ConfigForge_CH.DATA_GTCH.disableAllStoragePowerconducting;
+import static gregtechCH.data.CS_CH.NULL_FLUID;
 import static gregtechCH.data.CS_CH.RegType;
 
 /**
@@ -1295,7 +1295,7 @@ public enum FL {
 			sAppendingCreateBeforeList.remove(aName); // 添加后移除此项
 		}
 		/// 进行添加
-		Fluid tOut = (tCreateObject!=null) ? tCreateObject.createSelf() : CS_CH.NF; // 用于防止返回 null 导致后续 set 出错
+		Fluid tOut = (tCreateObject!=null) ? tCreateObject.createSelf() : NULL_FLUID; // 用于防止返回 null 导致后续 set 出错
 		/// 检测之后添加
 		tAppendList = sAppendingCreateAfterList.get(aName);
 		if (tAppendList != null) {

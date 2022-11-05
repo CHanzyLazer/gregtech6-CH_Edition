@@ -25,7 +25,7 @@ public class CS_CH {
     public static final byte SIDE_NUMBER = (byte)ALL_SIDES_VALID.length;
     public static final byte[][] ZL_BI_BYTE = new byte[0][0];
     public static final long[][] ZL_BI_LONG = new long[0][0];
-    public static final Fluid NF = new Fluid("null"); // 用于替代 null 作为被移除的 create 的返回避免空指针错误
+    public static final Fluid NULL_FLUID = new Fluid("null"); // 用于替代 null 作为被移除的 create 的返回避免空指针错误
     
     // 只有 RGB 值的转为 RGBa 加上此值可以比较保险
     public static final int ALPHA_COLOR = 0xff000000;

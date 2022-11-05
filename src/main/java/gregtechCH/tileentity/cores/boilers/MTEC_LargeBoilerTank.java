@@ -24,6 +24,19 @@ public class MTEC_LargeBoilerTank extends MTEC_BoilerTank {
     public MTEC_LargeBoilerTank(TileEntityBase10MultiBlockBase aTE) {super(aTE);}
     
     /* main code */
+    static {
+        LH.add("gt.tooltip.multiblock.largeboiler.1", "3x3 Base of Heat Transmitters");
+        LH.add("gt.tooltip.multiblock.largeboiler.2", "3x3x3 Hollow of the Block you crafted this one with");
+        LH.add("gt.tooltip.multiblock.largeboiler.3", "Main centered on Side-Bottom of Boiler facing outwards");
+        LH.add("gt.tooltip.multiblock.largeboiler.4", "Input only possible at Bottom Layer of Boiler");
+    }
+    @Override public void toolTipsMultiblock(List<String> aList) {
+        aList.add(LH.Chat.CYAN     + LH.get(LH.STRUCTURE) + ":");
+        aList.add(LH.Chat.WHITE    + LH.get("gt.tooltip.multiblock.largeboiler.1"));
+        aList.add(LH.Chat.WHITE    + LH.get("gt.tooltip.multiblock.largeboiler.2"));
+        aList.add(LH.Chat.WHITE    + LH.get("gt.tooltip.multiblock.largeboiler.3"));
+        aList.add(LH.Chat.WHITE    + LH.get("gt.tooltip.multiblock.largeboiler.4"));
+    }
     @Override
     public void toolTipsEnergy(List<String> aList) {
         aList.add(LH.getToolTipEfficiency(mEfficiencyCH));
@@ -47,11 +60,11 @@ public class MTEC_LargeBoilerTank extends MTEC_BoilerTank {
 
             @SuppressWarnings("unchecked")
             DelegatorTileEntity<TileEntity>[] tDelegators = new DelegatorTileEntity[] {
-                    WD.te(mTE.getWorldObj(), mTE.getOffsetXN(mTE.mFacing, 1)  , mTE.yCoord+3, mTE.getOffsetZN(mTE.mFacing, 1)  , SIDE_Y_NEG, F)
-                    , WD.te(mTE.getWorldObj(), mTE.getOffsetXN(mTE.mFacing, 1)-2, mTE.yCoord+1, mTE.getOffsetZN(mTE.mFacing, 1)  , SIDE_X_POS, F)
-                    , WD.te(mTE.getWorldObj(), mTE.getOffsetXN(mTE.mFacing, 1)+2, mTE.yCoord+1, mTE.getOffsetZN(mTE.mFacing, 1)  , SIDE_X_NEG, F)
-                    , WD.te(mTE.getWorldObj(), mTE.getOffsetXN(mTE.mFacing, 1)  , mTE.yCoord+1, mTE.getOffsetZN(mTE.mFacing, 1)-2, SIDE_Z_POS, F)
-                    , WD.te(mTE.getWorldObj(), mTE.getOffsetXN(mTE.mFacing, 1)  , mTE.yCoord+1, mTE.getOffsetZN(mTE.mFacing, 1)+2, SIDE_Z_NEG, F)
+                  WD.te(mTE.getWorldObj(), mTE.getOffsetXN(mTE.mFacing, 1)  , mTE.yCoord+3, mTE.getOffsetZN(mTE.mFacing, 1)  , SIDE_Y_NEG, F)
+                , WD.te(mTE.getWorldObj(), mTE.getOffsetXN(mTE.mFacing, 1)-2, mTE.yCoord+1, mTE.getOffsetZN(mTE.mFacing, 1)  , SIDE_X_POS, F)
+                , WD.te(mTE.getWorldObj(), mTE.getOffsetXN(mTE.mFacing, 1)+2, mTE.yCoord+1, mTE.getOffsetZN(mTE.mFacing, 1)  , SIDE_X_NEG, F)
+                , WD.te(mTE.getWorldObj(), mTE.getOffsetXN(mTE.mFacing, 1)  , mTE.yCoord+1, mTE.getOffsetZN(mTE.mFacing, 1)-2, SIDE_Z_POS, F)
+                , WD.te(mTE.getWorldObj(), mTE.getOffsetXN(mTE.mFacing, 1)  , mTE.yCoord+1, mTE.getOffsetZN(mTE.mFacing, 1)+2, SIDE_Z_NEG, F)
             };
 
             long[] tTargetAmounts = new long[tDelegators.length];

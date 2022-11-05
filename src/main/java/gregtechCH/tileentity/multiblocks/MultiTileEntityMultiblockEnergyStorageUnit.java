@@ -226,7 +226,7 @@ public class MultiTileEntityMultiblockEnergyStorageUnit extends TileEntityBase11
     
     @Override
     public boolean isInput(byte aSide) {
-        return aSide == OPPOSITES[mFacing];
+        return aSide == OPOS[mFacing];
     }
     
     @Override

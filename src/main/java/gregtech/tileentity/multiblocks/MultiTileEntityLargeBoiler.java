@@ -61,7 +61,7 @@ import net.minecraftforge.fluids.IFluidTank;
 /**
  * @author Gregorius Techneticies
  */
-public class MultiTileEntityLargeBoiler extends TileEntityBase10MultiBlockBase implements IMTEC_ToolTips, ITileEntityEnergy, ITileEntityGibbl, ITileEntityEnergyDataCapacitor, IMultiBlockEnergy, IMultiBlockFluidHandler, IFluidHandler, IMTE_RemovedByPlayer {
+public class MultiTileEntityLargeBoiler extends TileEntityBase10MultiBlockBase implements ITileEntityEnergy, ITileEntityGibbl, ITileEntityEnergyDataCapacitor, IMultiBlockEnergy, IMultiBlockFluidHandler, IFluidHandler, IMTE_RemovedByPlayer {
 	protected MTEC_BoilerTank_Greg mCore;
 
 	public short mBoilerWalls = 18002;
@@ -128,38 +128,23 @@ public class MultiTileEntityLargeBoiler extends TileEntityBase10MultiBlockBase i
 		}
 		return isStructureOkay();
 	}
-
-	@Override public final void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {IMTEC_ToolTips.Util.addToolTips(this, aList, aStack, aF3_H); super.addToolTips(aList, aStack, aF3_H);}
-	@Override public void toolTipsMultiblock(List<String> aList) {
-		aList.add(Chat.CYAN     + LH.get(LH.STRUCTURE) + ":");
-		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.largeboiler.1"));
-		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.largeboiler.2"));
-		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.largeboiler.3"));
-		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.largeboiler.4"));
-	}
-	@Override public void toolTipsRecipe(List<String> aList) {mCore.toolTipsRecipe(aList);}
-	@Override public void toolTipsEnergy(List<String> aList) {mCore.toolTipsEnergy(aList);}
-	@Override public void addToolTipsSided(List<String> aList, ItemStack aStack, boolean aF3_H) {mCore.addToolTipsSided(aList, aStack, aF3_H);}
-	@Override public void toolTipsUseful(List<String> aList) {mCore.toolTipsUseful(aList);}
-	@Override public void toolTipsImportant(List<String> aList) {mCore.toolTipsImportant(aList);}
-	@Override public void toolTipsHazard(List<String> aList) {mCore.toolTipsHazard(aList);}
-	@Override public void toolTipsOther(List<String> aList, ItemStack aStack, boolean aF3_H) {mCore.toolTipsOther(aList, aStack, aF3_H);}
-
-
+	@Override public final void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {IMTEC_ToolTips.Util.addToolTips(mCore, aList, aStack, aF3_H); super.addToolTips(aList, aStack, aF3_H);}
+	
+	
 	@Override
 	public boolean isInsideStructure(int aX, int aY, int aZ) {
 		int tX = getOffsetXN(mFacing), tY = yCoord, tZ = getOffsetZN(mFacing);
 		return aX >= tX - 1 && aY >= tY - 1 && aZ >= tZ - 1 && aX <= tX + 1 && aY <= tY + 2 && aZ <= tZ + 1;
 	}
-
+	
 	@Override
 	public void onTick2(long aTimer, boolean aIsServerSide) {
 		super.onTick2(aTimer, aIsServerSide);
 		onTick3(aTimer, aIsServerSide);
 	}
-
+	
 	protected void onTick3(long aTimer, boolean aIsServerSide) {if (aIsServerSide) IMTEC_BoilerTank.Util.onTick(mCore);}
-
+	
 	@Override
 	public long onToolClick2(String aTool, long aRemainingDurability, long aQuality, Entity aPlayer, List<String> aChatReturn, IInventory aPlayerInventory, boolean aSneaking, ItemStack aStack, byte aSide, float aHitX, float aHitY, float aHitZ) {
 		long rReturn = super.onToolClick2(aTool, aRemainingDurability, aQuality, aPlayer, aChatReturn, aPlayerInventory, aSneaking, aStack, aSide, aHitX, aHitY, aHitZ);
@@ -169,45 +154,45 @@ public class MultiTileEntityLargeBoiler extends TileEntityBase10MultiBlockBase i
 
 		return mCore.onToolClick(aTool, aRemainingDurability, aQuality, aPlayer, aChatReturn, aPlayerInventory, aSneaking, aStack, aSide, aHitX, aHitY, aHitZ);
 	}
-
+	
 	@Override
 	public void onMagnifyingGlass2(List<String> aChatReturn) {
 		mCore.onMagnifyingGlass(aChatReturn);
 	}
-
+	
 	@Override
 	public boolean removedByPlayer(World aWorld, EntityPlayer aPlayer, boolean aWillHarvest) {
 		mCore.onRemovedByPlayer(aWorld, aPlayer, aWillHarvest);
 		return worldObj.setBlockToAir(xCoord, yCoord, zCoord);
 	}
-
+	
 	@Override
 	public void onExploded(Explosion aExplosion) {
 		super.onExploded(aExplosion);
 		mCore.onExploded(aExplosion);
 	}
-
+	
 	@Override
 	public void explode(boolean aInstant) {
 		mCore.explode(aInstant, 1000.0);
 	}
-
+	
 	@Override
 	public boolean onTickCheck(long aTimer) {
 		return mCore.onTickCheck(aTimer) || super.onTickCheck(aTimer);
 	}
-
+	
 	@Override
 	public void onTickResetChecks(long aTimer, boolean aIsServerSide) {
 		super.onTickResetChecks(aTimer, aIsServerSide);
 		mCore.onTickResetChecks(aTimer, aIsServerSide);
 	}
-
+	
 	@Override
 	public void setVisualData(byte aData) {
 		mCore.setVisualData(aData);
 	}
-
+	
 	// Icons
 	public static IIconContainer sColoreds[] = new IIconContainer[] {
 			new Textures.BlockIcons.CustomIcon("machines/tanks/boiler_steam/colored/bottom"),
@@ -218,17 +203,17 @@ public class MultiTileEntityLargeBoiler extends TileEntityBase10MultiBlockBase i
 			new Textures.BlockIcons.CustomIcon("machines/tanks/boiler_steam/overlay/top"),
 			new Textures.BlockIcons.CustomIcon("machines/tanks/boiler_steam/overlay/side")
 	};
-
+	
 	@Override
 	public ITexture getTexture2(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
 		ITexture rTexture = super.getTexture2(aBlock, aRenderPass, aSide, aShouldSideBeRendered);
 		return aSide != mFacing || rTexture == null ? rTexture : BlockTextureMulti.get(rTexture, BlockTextureDefault.get(BI.BAROMETER), BlockTextureDefault.get(BI.BAROMETER_SCALE[mCore.getBarometer()], CA_RED_64));
 	}
-
+	
 	@Override public byte getVisualData() {return mCore.getVisualData();}
 	@Override public byte getDefaultSide() {return SIDE_FRONT;}
 	@Override public boolean[] getValidSides() {return SIDES_HORIZONTAL;}
-
+	
 	@Override public boolean isEnergyType(TagData aEnergyType, byte aSide, boolean aEmitting) {return mCore.isEnergyType(aEnergyType, aSide, aEmitting);}
 	@Override public boolean isEnergyAcceptingFrom(TagData aEnergyType, byte aSide, boolean aTheoretical) {return mCore.isEnergyAcceptingFrom(aEnergyType, aSide, aTheoretical);}
 	@Override public boolean isEnergyCapacitorType(TagData aEnergyType, byte aSide) {return mCore.isEnergyCapacitorType(aEnergyType, aSide);}
@@ -241,18 +226,18 @@ public class MultiTileEntityLargeBoiler extends TileEntityBase10MultiBlockBase i
 	@Override public long getEnergyCapacity(TagData aEnergyType, byte aSide) {return mCore.getEnergyCapacity(aEnergyType, aSide);}
 	@Override public Collection<TagData> getEnergyTypes(byte aSide) {return mCore.getEnergyTypes(aSide);}
 	@Override public Collection<TagData> getEnergyCapacitorTypes(byte aSide) {return mCore.getEnergyCapacitorTypes(aSide);}
-
+	
 	@Override protected IFluidTank getFluidTankFillable(MultiTileEntityMultiBlockPart aPart, byte aSide, FluidStack aFluidToFill) {return mCore.getFluidTankFillable(aSide, aFluidToFill);}
 	@Override protected IFluidTank getFluidTankDrainable(MultiTileEntityMultiBlockPart aPart, byte aSide, FluidStack aFluidToDrain) {return mCore.getFluidTankDrainable(aSide, aFluidToDrain);}
 	@Override protected IFluidTank[] getFluidTanks(MultiTileEntityMultiBlockPart aPart, byte aSide) {return mCore.getFluidTanks(aSide);}
 	@Override protected IFluidTank getFluidTankFillable2(byte aSide, FluidStack aFluidToFill) {return mCore.getFluidTankFillable(aSide, aFluidToFill);}
 	@Override protected IFluidTank getFluidTankDrainable2(byte aSide, FluidStack aFluidToDrain) {return mCore.getFluidTankDrainable(aSide, aFluidToDrain);}
 	@Override protected IFluidTank[] getFluidTanks2(byte aSide) {return mCore.getFluidTanks(aSide);}
-
+	
 	@Override public long getGibblValue(byte aSide) {return mCore.getGibblValue(aSide);}
 	@Override public long getGibblMax(byte aSide) {return mCore.getGibblMax(aSide);}
-
+	
 	@Override public boolean canDrop(int aInventorySlot) {return F;}
-
+	
 	@Override public String getTileEntityName() {return "gt.multitileentity.multiblock.boiler.steam";}
 }

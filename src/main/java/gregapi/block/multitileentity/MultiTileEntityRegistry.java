@@ -43,10 +43,7 @@ import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.MinecraftForgeClient;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static gregapi.data.CS.*;
 import static gregtechCH.data.CS_CH.*;
@@ -183,39 +180,19 @@ public class MultiTileEntityRegistry {
 	}
 	
 	/* 提供一些修改 adds 的一些接口 */
-	// 修改原有的条目（已弃用，请使用重复代码更少的版本）
-	@Deprecated public void replaceAdd(String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
-		replaceAdd(aLocalised, aCategoricalName, new MultiTileEntityClassContainer(RegType.GREG, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
-	}
-	@Deprecated public void replaceAdd(RegType aRegType, String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
-		replaceAdd(aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aRegType, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
-	}
-	@Deprecated public void replaceAdd(String aLocalised, String aCategoricalName, MultiTileEntityClassContainer aClassContainer, Object... aRecipe) {
-		AddObject tAddObject = new AddObject(aLocalised, aCategoricalName, aClassContainer, aRecipe);
-		if (mReplacingAddList.containsKey(aClassContainer.mID)) {
-			ERR.println("MTE REGISTRY WARNING: The ID \"" + aClassContainer.mID + "\" is already on the replace list, replace fail!"); // TODO 后续为了配置文件修改，可以不进行此报错
-			return;
-		}
-		mReplacingAddList.put(aClassContainer.mID, new AddReplacer().regType(aClassContainer.mRegType).localised(aLocalised).categoricalName(aCategoricalName).recipe(aRecipe).creativeTabID(aClassContainer.mCreativeTabID).te(aClassContainer.mClass).toolQuality(aClassContainer.mBlockMetaData).stackSize(aClassContainer.mStackSize).block(aClassContainer.mBlock));
-	}
-	
+	// 修改原有的条目
 	public AddReplacer addReplacer(int aID) {
-		AddReplacer tAddReplacer = new AddReplacer();
-		if (mReplacingAddList.containsKey((short)aID)) {
-			ERR.println("MTE REGISTRY WARNING: The ID \"" + aID + "\" is already on the replace list, replace fail!"); // TODO 后续为了配置文件修改，可以不进行此报错
-			return tAddReplacer;
+		AddReplacer tAddReplacer = mReplacingAddList.get((short)aID);
+		if (tAddReplacer == null) {
+			tAddReplacer = new AddReplacer();
+			mReplacingAddList.put((short)aID, tAddReplacer);
 		}
-		mReplacingAddList.put((short)aID, tAddReplacer);
 		return tAddReplacer;
 	}
 	
 	// 删除指定条目
 	public void removeAdds(int aID) {
-		if (mReplacingAddList.containsKey((short)aID)) {
-			ERR.println("MTE REGISTRY WARNING: The ID \"" + aID + "\" is already on the replace list, remove fail!"); // TODO 后续为了配置文件修改，可以不进行此报错
-			return;
-		}
-		mReplacingAddList.put((short)aID, new AddReplacer().remove());
+		addReplacer(aID).remove();
 	}
 	// 在指定位置之前添加条目（添加项默认是 gtch）
 	public void appendAddBefore(int aBeforeID, String aLocalised, String aCategoricalName, int aID, int aCreativeTabID, Class<? extends TileEntity> aClass, int aBlockMetaData, int aStackSize, MultiTileEntityBlock aBlock, NBTTagCompound aParameters, Object... aRecipe) {
@@ -358,7 +335,7 @@ public class MultiTileEntityRegistry {
 			return getItem(aClassContainer.mID);
 		}
 	}
-	private class AddReplacer {
+	public class AddReplacer {
 		private boolean mRemoved = F;
 		private RegType mRegType = null;
 		private String mLocalised = null;
@@ -368,36 +345,68 @@ public class MultiTileEntityRegistry {
 		private Integer mBlockMetaData = null;
 		private Integer mStackSize = null;
 		private MultiTileEntityBlock mBlock = null;
-		private NBTTagCompound mParametersMerge = null; // 需要合并的参数，如果有相同的项目会直接替换
-		private String[] mParametersRemove = null; // 需要删除的参数，由于 NBT 的机制没有不会进行警告
+		private final NBTTagCompound mParametersMerge = UT.NBT.make(); // 需要合并的参数，如果有相同的项目会直接替换
+		private final List<String> mParametersRemove = new LinkedList<>(); // 需要删除的参数，由于 NBT 的机制没有不会进行警告
+		private final NBTTagCompound mParametersMergeLast = UT.NBT.make(); // User use only, 用来保证用户添加的参数能够添加回我删除的参数，而用户删除的能够删除我添加的
 		private Object[] mRecipe = null;
+		private AddReplacer() {}
 		
 		// 返回替换后的 AddObject
 		public AddObject doReplace(AddObject oAddObject) {
 			if (mRemoved) return null;
 			
 			NBTTagCompound rParameters = (NBTTagCompound)oAddObject.aClassContainer.mParameters.copy();
-			if (mParametersMerge !=null) for (Object tKey : mParametersMerge.func_150296_c()) rParameters.setTag(tKey.toString(), mParametersMerge.getTag(tKey.toString()));
-			if (mParametersRemove !=null) for (String tKey : mParametersRemove) rParameters.removeTag(tKey);
+			for (Object tKey : mParametersMerge.func_150296_c()) rParameters.setTag(tKey.toString(), mParametersMerge.getTag(tKey.toString()));
+			for (String tKey : mParametersRemove) rParameters.removeTag(tKey);
+			for (Object tKey : mParametersMergeLast.func_150296_c()) rParameters.setTag(tKey.toString(), mParametersMergeLast.getTag(tKey.toString()));
 			
 			return new AddObject(
 			mLocalised ==null?oAddObject.aLocalised: mLocalised, mCategoricalName ==null?oAddObject.aCategoricalName: mCategoricalName, new MultiTileEntityClassContainer(
 			mRegType ==null?oAddObject.aClassContainer.mRegType: mRegType, oAddObject.aClassContainer.mID, mCreativeTabID ==null?oAddObject.aClassContainer.mCreativeTabID: mCreativeTabID, mClass ==null?oAddObject.aClassContainer.mClass: mClass, mBlockMetaData ==null?oAddObject.aClassContainer.mBlockMetaData: mBlockMetaData, mStackSize ==null?oAddObject.aClassContainer.mStackSize: mStackSize, mBlock ==null?oAddObject.aClassContainer.mBlock: mBlock, rParameters), mRecipe ==null?oAddObject.aRecipe: mRecipe);
 		}
 		
-		/* 用于链式调用修改的接口 */
-		public AddReplacer remove() {mRemoved = T; return this;}
-		public AddReplacer regType(RegType aRegType) {mRegType = aRegType; return this;}
-		public AddReplacer localised(String aLocalised) {mLocalised = aLocalised; return this;}
-		public AddReplacer categoricalName(String aCategoricalName) {mCategoricalName = aCategoricalName; return this;}
-		public AddReplacer creativeTabID(int aCreativeTabID) {mCreativeTabID = aCreativeTabID; return this;}
-		public AddReplacer te(Class<? extends TileEntity> aClass) {mClass = aClass; return this;}
-		public AddReplacer toolQuality(int aBlockMetaData) {mBlockMetaData = aBlockMetaData; return this;}
-		public AddReplacer stackSize(int aStackSize) {mStackSize = aStackSize; return this;}
-		public AddReplacer block(MultiTileEntityBlock aBlock) {mBlock = aBlock; return this;}
-		public AddReplacer mergeParameters(String aFirstKey, Object aFirstValue, Object... aTags) {mParametersMerge = UT.NBT.make(aFirstKey, aFirstValue, aTags); return this;}
-		public AddReplacer removeParameters(String... aRemovedKeys) {mParametersRemove = aRemovedKeys; return this;}
-		public AddReplacer recipe(Object... aRecipe) {mRecipe = aRecipe; return this;}
+		/* 用于链式调用修改的接口，保证重复修改后保留第一次的修改 */
+		public AddReplacer remove() 								{mRemoved = T; return this;}
+		public AddReplacer regType(RegType aRegType) 				{if (mRegType==null) mRegType = aRegType; return this;}
+		public AddReplacer localised(String aLocalised) 			{if (mLocalised==null) mLocalised = aLocalised; return this;}
+		public AddReplacer categoricalName(String aCategoricalName) {if (mCategoricalName==null) mCategoricalName = aCategoricalName; return this;}
+		public AddReplacer creativeTabID(int aCreativeTabID) 		{if (mCreativeTabID==null) mCreativeTabID = aCreativeTabID; return this;}
+		public AddReplacer te(Class<? extends TileEntity> aClass) 	{if (mClass==null) mClass = aClass; return this;}
+		public AddReplacer toolQuality(int aBlockMetaData) 			{if (mBlockMetaData==null) mBlockMetaData = aBlockMetaData; return this;}
+		public AddReplacer stackSize(int aStackSize) 				{if (mStackSize==null) mStackSize = aStackSize; return this;}
+		public AddReplacer block(MultiTileEntityBlock aBlock) 		{if (mBlock==null) mBlock = aBlock; return this;}
+		public AddReplacer recipe(Object... aRecipe) 				{if (mRecipe==null) mRecipe = aRecipe; return this;}
+		
+		// 如果有相同的项需要保留旧值
+		public AddReplacer setParameters(String aFirstKey, Object aFirstValue, Object... aTags) {
+			NBTTagCompound tParameters = UT.NBT.make(aFirstKey, aFirstValue, aTags);
+			for (Object tKey : tParameters.func_150296_c()) if (!mParametersMerge.hasKey(tKey.toString())) mParametersMerge.setTag(tKey.toString(), tParameters.getTag(tKey.toString()));
+			return this;
+		}
+		// 提供直接传入数组的接口
+		public AddReplacer setParameterArray(String aKey, long... aValues) {
+			for (int i = 0; i < aValues.length; ++i) {
+				String tIdxKey = aKey+"."+i;
+				if (!mParametersMerge.hasKey(tIdxKey)) UT.NBT.setNumber(mParametersMerge, tIdxKey, aValues[i]);
+			}
+			return this;
+		}
+		// 如果有相同的项需要保留旧值
+		public AddReplacer setParametersLast(String aFirstKey, Object aFirstValue, Object... aTags) {
+			NBTTagCompound tParameters = UT.NBT.make(aFirstKey, aFirstValue, aTags);
+			for (Object tKey : tParameters.func_150296_c()) if (!mParametersMergeLast.hasKey(tKey.toString())) mParametersMergeLast.setTag(tKey.toString(), tParameters.getTag(tKey.toString()));
+			return this;
+		}
+		// 提供直接传入数组的接口
+		public AddReplacer setParameterLastArray(String aKey, long... aValues) {
+			for (int i = 0; i < aValues.length; ++i) {
+				String tIdxKey = aKey+"."+i;
+				if (!mParametersMergeLast.hasKey(tIdxKey)) UT.NBT.setNumber(mParametersMergeLast, tIdxKey, aValues[i]);
+			}
+			return this;
+		}
+		// 直接添加
+		public AddReplacer removeParameters(String... aRemovedKeys) {mParametersRemove.addAll(Arrays.asList(aRemovedKeys)); return this;}
 	}
 	
 	public short mLastRegisteredID = W;

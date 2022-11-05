@@ -240,7 +240,7 @@ public class MultiTileEntityTransformerRotation extends TileEntityBase09FacingSi
     
     // Icons
     public final static IIconContainer
-        sColoredFront 		= new Textures.BlockIcons.CustomIcon("machines/transformers/transformer_rotation/colored/front")
+          sColoredFront 		= new Textures.BlockIcons.CustomIcon("machines/transformers/transformer_rotation/colored/front")
         , sColoredBack  		= new Textures.BlockIcons.CustomIcon("machines/transformers/transformer_rotation/colored/back")
         , sColoredSide  		= new Textures.BlockIcons.CustomIcon("machines/transformers/transformer_rotation/colored/side")
         , sColoredFrontActiveR 	= new Textures.BlockIcons.CustomIcon("machines/transformers/transformer_rotation/colored_active_r/front")

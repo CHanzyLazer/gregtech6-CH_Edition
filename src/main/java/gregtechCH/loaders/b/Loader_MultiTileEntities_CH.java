@@ -12,18 +12,17 @@ import gregapi.util.ST;
 import gregapi.util.UT;
 import gregtech.loaders.b.Loader_MultiTileEntities;
 import gregtech.tileentity.batteries.eu.MultiTileEntityPowerCell;
-import gregtech.tileentity.energy.converters.*;
+import gregtech.tileentity.energy.converters.MultiTileEntityDynamoElectric;
+import gregtech.tileentity.energy.converters.MultiTileEntityEngineRotation;
 import gregtech.tileentity.energy.generators.*;
 import gregtech.tileentity.energy.transformers.MultiTileEntityGearBox;
 import gregtech.tileentity.energy.transformers.MultiTileEntityTransformerRotation;
 import gregtech.tileentity.multiblocks.*;
 import gregtech.tileentity.tools.*;
-import gregtechCH.config.machine.generator.*;
 import gregtechCH.config.machine.kinetic.*;
 import gregtechCH.config.machine.multiblock.AttributesLargeBoilerTank_CH;
 import gregtechCH.config.machine.multiblock.AttributesLargeGasTurbine_CH;
 import gregtechCH.config.machine.multiblock.AttributesLargeSteamTurbine_CH;
-import gregtechCH.config.machine.steam.*;
 import gregtechCH.data.RM_CH;
 import gregtechCH.tileentity.batteries.eu.MultiTileEntityBatteryAdvEU8192;
 import gregtechCH.tileentity.batteries.eu.MultiTileEntityBatteryEU8192;
@@ -35,10 +34,9 @@ import net.minecraft.init.Items;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
-import java.util.Objects;
-
 import static gregapi.data.CS.*;
-import static gregtechCH.config.ConfigJson_CH.*;
+import static gregtechCH.config.ConfigJson_CH.DATA_MACHINES_KINETIC;
+import static gregtechCH.config.ConfigJson_CH.DATA_MACHINES_MULTIBLOCK;
 import static gregtechCH.data.CS_CH.*;
 
 
@@ -47,6 +45,7 @@ import static gregtechCH.data.CS_CH.*;
  * 由于后续 greg 还有比较激进的添加，因此不按照 mod 来分划 id 使用区域
  * TODO 想方法完善 id 改变时能够找到正确的新 id 的方法
  **/
+@SuppressWarnings({"PointlessArithmeticExpression", "ConstantConditions"})
 public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
     /* FORMAT:
     @Override protected void xxxBeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
@@ -96,140 +95,192 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
     
     
     // TODO 可能考虑成直读一个 json 文件后直接循环替换，而原本的结构用于在默认情况自动生成 json
-    // TODO 默认的修改改为硬编码的方式实现（提高可读性，添加和替换格式统一），将玩家自己修改在最上面优先度最高，例子放到说明文档（要成为 greg 了），为了方便修改，需要对小的修改有专门的 api
+    // TODO 默认的修改改为硬编码的方式实现（提高可读性，添加和替换格式统一），将玩家自己修改在最上面优先度最高，例子放到说明文档
     @Override protected void unsorted1BeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
         /// 添加前将后续添加全部 hold
         aRegistry.MODIFYING_ADD_START();
         
         /// 修改项
         /* GTCH stuff */
-        // Burning Boxes
-        aClass = MultiTileEntityGeneratorBrick.class;
-        for (AttributesBurningBoxBrick_CH BURNING_BOX_BRICK : DATA_MACHINES_GENERATOR.BurningBoxBrick) {
-            aMat = BURNING_BOX_BRICK.material;
-            aRegistry.replaceAdd("Brick Burning Box (Solid)",                      "Burning Boxes",  BURNING_BOX_BRICK.ID,         1104, aClass, aMat.mToolQuality, BURNING_BOX_BRICK.stackSize,           aStone,
-                UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   BURNING_BOX_BRICK.nbtHardness,          NBT_RESISTANCE,   BURNING_BOX_BRICK.nbtResistance,          NBT_FUELMAP, FM.Furnace, NBT_EFFICIENCY,  BURNING_BOX_BRICK.nbtEfficiency,          NBT_OUTPUT,  BURNING_BOX_BRICK.nbtOutput,           NBT_ENERGY_EMITTED, TD.Energy.HU),
-                BURNING_BOX_BRICK.recipeObject);
-        }
-        aClass = MultiTileEntityGeneratorMetal.class;
-        for (AttributesBurningBoxSolid_CH BURNING_BOX_SOLID : DATA_MACHINES_GENERATOR.BurningBoxSolid) {
-            aMat = BURNING_BOX_SOLID.material;
-            aRegistry.replaceAdd("Burning Box (Solid, "+aMat.getLocal()+")",       "Burning Boxes",  BURNING_BOX_SOLID.ID,         1104, aClass, aMat.mToolQuality, BURNING_BOX_SOLID.stackSize,           aMachine,
-                UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   BURNING_BOX_SOLID.nbtHardness,          NBT_RESISTANCE,   BURNING_BOX_SOLID.nbtResistance,          NBT_FUELMAP, FM.Furnace, NBT_EFFICIENCY,  BURNING_BOX_SOLID.nbtEfficiency,          NBT_OUTPUT,  BURNING_BOX_SOLID.nbtOutput,           NBT_ENERGY_EMITTED, TD.Energy.HU),
-                BURNING_BOX_SOLID.recipeObject);
-        }
-        for (AttributesDenseBurningBoxSolid_CH DENSE_BURNING_BOX_SOLID : DATA_MACHINES_GENERATOR.DenseBurningBoxSolid) {
-            aMat = DENSE_BURNING_BOX_SOLID.material;
-            aRegistry.replaceAdd("Dense Burning Box (Solid, "+aMat.getLocal()+")", "Burning Boxes",  DENSE_BURNING_BOX_SOLID.ID,   1104, aClass, aMat.mToolQuality, DENSE_BURNING_BOX_SOLID.stackSize,     aMachine,
-                UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   DENSE_BURNING_BOX_SOLID.nbtHardness,    NBT_RESISTANCE,   DENSE_BURNING_BOX_SOLID.nbtResistance,    NBT_FUELMAP, FM.Furnace, NBT_EFFICIENCY,  DENSE_BURNING_BOX_SOLID.nbtEfficiency,    NBT_OUTPUT,  DENSE_BURNING_BOX_SOLID.nbtOutput,     NBT_ENERGY_EMITTED, TD.Energy.HU),
-                DENSE_BURNING_BOX_SOLID.recipeObject);
-        }
+        // Burning Boxes 输出翻倍，部分效率调整
+        aRegistry.addReplacer(1199).setParameters(NBT_OUTPUT,    16, NBT_EFFICIENCY,  2500); // Solid brick 不做修改
+        aRegistry.addReplacer(1100).setParameters(NBT_OUTPUT,  16*2, NBT_EFFICIENCY,  5000); // Solid Lead
+        aRegistry.addReplacer(1101).setParameters(NBT_OUTPUT,  20*2, NBT_EFFICIENCY,  4500); // Solid Bismuth
+        aRegistry.addReplacer(1102).setParameters(NBT_OUTPUT,  24*2, NBT_EFFICIENCY,  7500); // Solid Bronze
+        aRegistry.addReplacer(1103).setParameters(NBT_OUTPUT,  16*2, NBT_EFFICIENCY, 10000); // Solid Invar
+        aRegistry.addReplacer(1104).setParameters(NBT_OUTPUT,  32*2, NBT_EFFICIENCY,  6500); // Solid AnyIronSteel
+        aRegistry.addReplacer(1105).setParameters(NBT_OUTPUT, 112*2, NBT_EFFICIENCY,  8000); // Solid Chromium
+        aRegistry.addReplacer(1106).setParameters(NBT_OUTPUT,  96*2, NBT_EFFICIENCY,  8000); // Solid Titanium
+        aRegistry.addReplacer(1110).setParameters(NBT_OUTPUT,  96*2, NBT_EFFICIENCY,  9000); // Solid Netherite
+        aRegistry.addReplacer(1107).setParameters(NBT_OUTPUT, 128*2, NBT_EFFICIENCY, 10000); // Solid AnyTungsten
+        aRegistry.addReplacer(1108).setParameters(NBT_OUTPUT, 128*2, NBT_EFFICIENCY,  9000); // Solid Tungstensteel
+        aRegistry.addReplacer(1109).setParameters(NBT_OUTPUT, 256*2, NBT_EFFICIENCY,  9500); // Solid TantalumHafniumCarbide
         
-        // Steam Boilers
-        aClass = MultiTileEntityBoilerTank.class;
-        for (AttributesSteamBoilerTank_CH STEAM_BOILER_TANK : DATA_MACHINES_STEAM.SteamBoilerTank) {
-            aMat = STEAM_BOILER_TANK.material;
-            aRegistry.replaceAdd("Steam Boiler Tank ("+aMat.getLocal()+")",        "Steam Boilers", STEAM_BOILER_TANK.ID,         1204, aClass, aMat.mToolQuality,STEAM_BOILER_TANK.stackSize,           aMachine,
-                UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   STEAM_BOILER_TANK.nbtHardness,          NBT_RESISTANCE,   STEAM_BOILER_TANK.nbtResistance,          NBT_CAPACITY, STEAM_BOILER_TANK.nbtCapacity,        NBT_CAPACITY_SU, STEAM_BOILER_TANK.nbtCapacity_SU,          NBT_INPUT, STEAM_BOILER_TANK.nbtInput,            NBT_EFFICIENCY_CH,STEAM_BOILER_TANK.nbtEfficiency_CH,           NBT_ENERGY_ACCEPTED, TD.Energy.HU,    NBT_OUTPUT_SU,  STEAM_BOILER_TANK.nbtInput*STEAM_PER_EU),
-                STEAM_BOILER_TANK.recipeObject);
-        }
-        for (AttributesStrongSteamBoilerTank_CH STRONG_STEAM_BOILER_TANK : DATA_MACHINES_STEAM.StrongSteamBoilerTank) {
-            aMat = STRONG_STEAM_BOILER_TANK.material;
-            aRegistry.replaceAdd("Steam Boiler Tank ("+aMat.getLocal()+")",        "Steam Boilers",  STRONG_STEAM_BOILER_TANK.ID,   1204, aClass, aMat.mToolQuality, STRONG_STEAM_BOILER_TANK.stackSize,     aMachine,
-                UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   STRONG_STEAM_BOILER_TANK.nbtHardness,   NBT_RESISTANCE,   STRONG_STEAM_BOILER_TANK.nbtResistance,   NBT_CAPACITY, STRONG_STEAM_BOILER_TANK.nbtCapacity, NBT_CAPACITY_SU, STRONG_STEAM_BOILER_TANK.nbtCapacity_SU,   NBT_INPUT,  STRONG_STEAM_BOILER_TANK.nbtInput,    NBT_EFFICIENCY_CH, STRONG_STEAM_BOILER_TANK.nbtEfficiency_CH,   NBT_ENERGY_ACCEPTED, TD.Energy.HU,    NBT_OUTPUT_SU,  STRONG_STEAM_BOILER_TANK.nbtInput*STEAM_PER_EU),
-                STRONG_STEAM_BOILER_TANK.recipeObject);
-        }
+        aRegistry.addReplacer(1150).setParameters(NBT_OUTPUT,  16*8, NBT_EFFICIENCY,  5000); // Solid Dense Lead
+        aRegistry.addReplacer(1151).setParameters(NBT_OUTPUT,  20*8, NBT_EFFICIENCY,  4500); // Solid Dense Bismuth
+        aRegistry.addReplacer(1152).setParameters(NBT_OUTPUT,  24*8, NBT_EFFICIENCY,  7500); // Solid Dense Bronze
+        aRegistry.addReplacer(1153).setParameters(NBT_OUTPUT,  16*8, NBT_EFFICIENCY, 10000); // Solid Dense Invar
+        aRegistry.addReplacer(1154).setParameters(NBT_OUTPUT,  32*8, NBT_EFFICIENCY,  6500); // Solid Dense AnyIronSteel
+        aRegistry.addReplacer(1155).setParameters(NBT_OUTPUT, 112*8, NBT_EFFICIENCY,  8000); // Solid Dense Chromium
+        aRegistry.addReplacer(1156).setParameters(NBT_OUTPUT,  96*8, NBT_EFFICIENCY,  8000); // Solid Dense Titanium
+        aRegistry.addReplacer(1160).setParameters(NBT_OUTPUT,  96*8, NBT_EFFICIENCY,  9000); // Solid Dense Netherite
+        aRegistry.addReplacer(1157).setParameters(NBT_OUTPUT, 128*8, NBT_EFFICIENCY, 10000); // Solid Dense AnyTungsten
+        aRegistry.addReplacer(1158).setParameters(NBT_OUTPUT, 128*8, NBT_EFFICIENCY,  9000); // Solid Dense Tungstensteel
+        aRegistry.addReplacer(1159).setParameters(NBT_OUTPUT, 256*8, NBT_EFFICIENCY,  9500); // Solid Dense TantalumHafniumCarbide
         
-        // Steam Engines
-        aClass = MultiTileEntityEngineSteam.class;
-        for (AttributesSteamEngine_CH STEAM_ENGINE : DATA_MACHINES_STEAM.SteamEngine) {
-            aMat = STEAM_ENGINE.material;
-            aRegistry.replaceAdd("Steam Engine ("+aMat.getLocal()+")",             "Engines",        STEAM_ENGINE.ID,             1304, aClass, aMat.mToolQuality, STEAM_ENGINE.stackSize,               Objects.equals(aMat, MT.IronWood) ? aWooden : aMachine,
-                UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   STEAM_ENGINE.nbtHardness,              NBT_RESISTANCE,   STEAM_ENGINE.nbtResistance,              NBT_EFFICIENCY, STEAM_ENGINE.nbtEfficiency,        NBT_CAPACITY,    STEAM_ENGINE.nbtCapacity,                 NBT_OUTPUT,    STEAM_ENGINE.nbtOutput,              NBT_EFFICIENCY_WATER, STEAM_ENGINE.nbtEfficiencyWater,             NBT_ENERGY_EMITTED, TD.Energy.KU),
-                STEAM_ENGINE.recipeObject);
-        }
-        for (AttributesStrongSteamEngine_CH STRONG_STEAM_ENGINE : DATA_MACHINES_STEAM.StrongSteamEngine) {
-            aMat = STRONG_STEAM_ENGINE.material;
-            aRegistry.replaceAdd("Strong Steam Engine ("+aMat.getLocal()+")",      "Engines",        STRONG_STEAM_ENGINE.ID,       1304, aClass, aMat.mToolQuality, STRONG_STEAM_ENGINE.stackSize,         Objects.equals(aMat, MT.IronWood) ? aWooden : aMachine,
-                UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   STRONG_STEAM_ENGINE.nbtHardness,        NBT_RESISTANCE,   STRONG_STEAM_ENGINE.nbtResistance,        NBT_EFFICIENCY, STRONG_STEAM_ENGINE.nbtEfficiency,  NBT_CAPACITY,    STRONG_STEAM_ENGINE.nbtCapacity,           NBT_OUTPUT,    STRONG_STEAM_ENGINE.nbtOutput,   NBT_EFFICIENCY_WATER, STRONG_STEAM_ENGINE.nbtEfficiencyWater,       NBT_ENERGY_EMITTED, TD.Energy.KU),
-                STRONG_STEAM_ENGINE.recipeObject);
-        }
+        aRegistry.addReplacer(1402).setParameters(NBT_OUTPUT,  24*2, NBT_EFFICIENCY,  7500); // Liquid Bronze
+        aRegistry.addReplacer(1403).setParameters(NBT_OUTPUT,  16*2, NBT_EFFICIENCY, 10000); // Liquid Invar
+        aRegistry.addReplacer(1404).setParameters(NBT_OUTPUT,  32*2, NBT_EFFICIENCY,  6500); // Liquid AnyIronSteel
+        aRegistry.addReplacer(1405).setParameters(NBT_OUTPUT, 112*2, NBT_EFFICIENCY,  8000); // Liquid Chromium
+        aRegistry.addReplacer(1406).setParameters(NBT_OUTPUT,  96*2, NBT_EFFICIENCY,  8000); // Liquid Titanium
+        aRegistry.addReplacer(1410).setParameters(NBT_OUTPUT,  96*2, NBT_EFFICIENCY,  9000); // Liquid Netherite
+        aRegistry.addReplacer(1407).setParameters(NBT_OUTPUT, 128*2, NBT_EFFICIENCY, 10000); // Liquid AnyTungsten
+        aRegistry.addReplacer(1408).setParameters(NBT_OUTPUT, 128*2, NBT_EFFICIENCY,  9000); // Liquid Tungstensteel
+        aRegistry.addReplacer(1409).setParameters(NBT_OUTPUT, 256*2, NBT_EFFICIENCY,  9500); // Liquid TantalumHafniumCarbide
         
-        // Burning Boxes Liquid
-        aClass = MultiTileEntityGeneratorLiquid.class;
-        for (AttributesBurningBoxLiquid_CH BURNING_BOX_LIQUID : DATA_MACHINES_GENERATOR.BurningBoxLiquid) {
-            aMat = BURNING_BOX_LIQUID.material;
-            aRegistry.replaceAdd("Burning Box (Liquid, "+aMat.getLocal()+")",       "Burning Boxes",  BURNING_BOX_LIQUID.ID,       1104, aClass, aMat.mToolQuality, BURNING_BOX_LIQUID.stackSize,         aMachine,
-                UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   BURNING_BOX_LIQUID.nbtHardness,        NBT_RESISTANCE,   BURNING_BOX_LIQUID.nbtResistance,        NBT_FUELMAP, FM.Burn, NBT_EFFICIENCY,  BURNING_BOX_LIQUID.nbtEfficiency,        NBT_OUTPUT,  BURNING_BOX_LIQUID.nbtOutput,         NBT_ENERGY_EMITTED, TD.Energy.HU),
-                BURNING_BOX_LIQUID.recipeObject);
-        }
-        for (AttributesDenseBurningBoxLiquid_CH DENSE_BURNING_BOX_LIQUID : DATA_MACHINES_GENERATOR.DenseBurningBoxLiquid) {
-            aMat = DENSE_BURNING_BOX_LIQUID.material;
-            aRegistry.replaceAdd("Dense Burning Box (Liquid, "+aMat.getLocal()+")",       "Burning Boxes",  DENSE_BURNING_BOX_LIQUID.ID,       1104, aClass, aMat.mToolQuality, DENSE_BURNING_BOX_LIQUID.stackSize,         aMachine,
-                UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   DENSE_BURNING_BOX_LIQUID.nbtHardness,        NBT_RESISTANCE,   DENSE_BURNING_BOX_LIQUID.nbtResistance,        NBT_FUELMAP, FM.Burn, NBT_EFFICIENCY,  DENSE_BURNING_BOX_LIQUID.nbtEfficiency,        NBT_OUTPUT,  DENSE_BURNING_BOX_LIQUID.nbtOutput,         NBT_ENERGY_EMITTED, TD.Energy.HU),
-                DENSE_BURNING_BOX_LIQUID.recipeObject);
-        }
-        // Burning Boxes Gas
-        aClass = MultiTileEntityGeneratorGas.class;
-        for (AttributesBurningBoxGas_CH BURNING_BOX_GAS : DATA_MACHINES_GENERATOR.BurningBoxGas) {
-            aMat = BURNING_BOX_GAS.material;
-            aRegistry.replaceAdd("Burning Box (Gas, "+aMat.getLocal()+")",       "Burning Boxes",  BURNING_BOX_GAS.ID,       1104, aClass, aMat.mToolQuality, BURNING_BOX_GAS.stackSize,         aMachine,
-                UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   BURNING_BOX_GAS.nbtHardness,        NBT_RESISTANCE,   BURNING_BOX_GAS.nbtResistance,        NBT_FUELMAP, FM.Burn, NBT_EFFICIENCY,  BURNING_BOX_GAS.nbtEfficiency,        NBT_OUTPUT,  BURNING_BOX_GAS.nbtOutput,         NBT_ENERGY_EMITTED, TD.Energy.HU),
-                BURNING_BOX_GAS.recipeObject);
-        }
-        for (AttributesDenseBurningBoxGas_CH DENSE_BURNING_BOX_GAS : DATA_MACHINES_GENERATOR.DenseBurningBoxGas) {
-            aMat = DENSE_BURNING_BOX_GAS.material;
-            aRegistry.replaceAdd("Dense Burning Box (Gas, "+aMat.getLocal()+")",       "Burning Boxes",  DENSE_BURNING_BOX_GAS.ID,       1104, aClass, aMat.mToolQuality, DENSE_BURNING_BOX_GAS.stackSize,         aMachine,
-                UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   DENSE_BURNING_BOX_GAS.nbtHardness,        NBT_RESISTANCE,   DENSE_BURNING_BOX_GAS.nbtResistance,        NBT_FUELMAP, FM.Burn, NBT_EFFICIENCY,  DENSE_BURNING_BOX_GAS.nbtEfficiency,        NBT_OUTPUT,  DENSE_BURNING_BOX_GAS.nbtOutput,         NBT_ENERGY_EMITTED, TD.Energy.HU),
-                DENSE_BURNING_BOX_GAS.recipeObject);
-        }
-        // Burning Boxes Fluidized Bed
-        aClass = MultiTileEntityGeneratorFluidBed.class;
-        for (AttributesBurningBoxFluidizedBed_CH BURNING_BOX_FLUIDIZED_BED : DATA_MACHINES_GENERATOR.BurningBoxFluidizedBed) {
-            aMat = BURNING_BOX_FLUIDIZED_BED.material;
-            aRegistry.replaceAdd("Fluidized Bed Burning Box ("+aMat.getLocal()+")",       "Burning Boxes",  BURNING_BOX_FLUIDIZED_BED.ID,       1104, aClass, aMat.mToolQuality, BURNING_BOX_FLUIDIZED_BED.stackSize,         aMachine,
-                UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   BURNING_BOX_FLUIDIZED_BED.nbtHardness,        NBT_RESISTANCE,   BURNING_BOX_FLUIDIZED_BED.nbtResistance,        NBT_FUELMAP, FM.FluidBed, NBT_EFFICIENCY,  BURNING_BOX_FLUIDIZED_BED.nbtEfficiency,        NBT_OUTPUT,  BURNING_BOX_FLUIDIZED_BED.nbtOutput,         NBT_ENERGY_EMITTED, TD.Energy.HU),
-                BURNING_BOX_FLUIDIZED_BED.recipeObject);
-        }
-        for (AttributesDenseBurningBoxFluidizedBed_CH DENSE_BURNING_BOX_FLUIDIZED_BED : DATA_MACHINES_GENERATOR.DenseBurningBoxFluidizedBed) {
-            aMat = DENSE_BURNING_BOX_FLUIDIZED_BED.material;
-            aRegistry.replaceAdd("Dense Fluidized Bed Burning Box ("+aMat.getLocal()+")",       "Burning Boxes",  DENSE_BURNING_BOX_FLUIDIZED_BED.ID,       1104, aClass, aMat.mToolQuality, DENSE_BURNING_BOX_FLUIDIZED_BED.stackSize,         aMachine,
-                UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   DENSE_BURNING_BOX_FLUIDIZED_BED.nbtHardness,        NBT_RESISTANCE,   DENSE_BURNING_BOX_FLUIDIZED_BED.nbtResistance,        NBT_FUELMAP, FM.FluidBed, NBT_EFFICIENCY,  DENSE_BURNING_BOX_FLUIDIZED_BED.nbtEfficiency,        NBT_OUTPUT,  DENSE_BURNING_BOX_FLUIDIZED_BED.nbtOutput,         NBT_ENERGY_EMITTED, TD.Energy.HU),
-                DENSE_BURNING_BOX_FLUIDIZED_BED.recipeObject);
-        }
+        aRegistry.addReplacer(1452).setParameters(NBT_OUTPUT,  24*8, NBT_EFFICIENCY,  7500); // Liquid Dense Bronze
+        aRegistry.addReplacer(1453).setParameters(NBT_OUTPUT,  16*8, NBT_EFFICIENCY, 10000); // Liquid Dense Invar
+        aRegistry.addReplacer(1454).setParameters(NBT_OUTPUT,  32*8, NBT_EFFICIENCY,  6500); // Liquid Dense AnyIronSteel
+        aRegistry.addReplacer(1455).setParameters(NBT_OUTPUT, 112*8, NBT_EFFICIENCY,  8000); // Liquid Dense Chromium
+        aRegistry.addReplacer(1456).setParameters(NBT_OUTPUT,  96*8, NBT_EFFICIENCY,  8000); // Liquid Dense Titanium
+        aRegistry.addReplacer(1460).setParameters(NBT_OUTPUT,  96*8, NBT_EFFICIENCY,  9000); // Liquid Dense Netherite
+        aRegistry.addReplacer(1457).setParameters(NBT_OUTPUT, 128*8, NBT_EFFICIENCY, 10000); // Liquid Dense AnyTungsten
+        aRegistry.addReplacer(1458).setParameters(NBT_OUTPUT, 128*8, NBT_EFFICIENCY,  9000); // Liquid Dense Tungstensteel
+        aRegistry.addReplacer(1459).setParameters(NBT_OUTPUT, 256*8, NBT_EFFICIENCY,  9500); // Liquid Dense TantalumHafniumCarbide
         
-        // Heat Exchangers
-        aClass = MultiTileEntityGeneratorHotFluid.class;
-        for (AttributesHeatExchanger_CH HEAT_EXCHANGER : DATA_MACHINES_GENERATOR.HeatExchanger) {
-            aMat = HEAT_EXCHANGER.material;
-            aRegistry.replaceAdd("Heat Exchanger ("+aMat.getLocal()+")",       "Burning Boxes",  HEAT_EXCHANGER.ID,       9103, aClass, aMat.mToolQuality, HEAT_EXCHANGER.stackSize,         aMachine,
-                UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   HEAT_EXCHANGER.nbtHardness,        NBT_RESISTANCE,   HEAT_EXCHANGER.nbtResistance,        NBT_FUELMAP, FM.Hot, NBT_EFFICIENCY,  HEAT_EXCHANGER.nbtEfficiency,        NBT_OUTPUT,  HEAT_EXCHANGER.nbtOutput,         NBT_ENERGY_EMITTED, TD.Energy.HU),
-                HEAT_EXCHANGER.recipeObject);
-        }
-        for (AttributesDenseHeatExchanger_CH DENSE_HEAT_EXCHANGER : DATA_MACHINES_GENERATOR.DenseHeatExchanger) {
-            aMat = DENSE_HEAT_EXCHANGER.material;
-            aRegistry.replaceAdd("Dense Heat Exchanger ("+aMat.getLocal()+")",       "Burning Boxes",  DENSE_HEAT_EXCHANGER.ID,       9103, aClass, aMat.mToolQuality, DENSE_HEAT_EXCHANGER.stackSize,         aMachine,
-                UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   DENSE_HEAT_EXCHANGER.nbtHardness,        NBT_RESISTANCE,   DENSE_HEAT_EXCHANGER.nbtResistance,        NBT_FUELMAP, FM.Hot, NBT_EFFICIENCY,  DENSE_HEAT_EXCHANGER.nbtEfficiency,        NBT_OUTPUT,  DENSE_HEAT_EXCHANGER.nbtOutput,         NBT_ENERGY_EMITTED, TD.Energy.HU),
-                DENSE_HEAT_EXCHANGER.recipeObject);
-        }
-        // Diesel Engines
-        aClass = MultiTileEntityMotorLiquid.class;
-        for (AttributesDieselEngine_CH DIESEL_ENGINE : DATA_MACHINES_GENERATOR.DieselEngine) {
-            aMat = DIESEL_ENGINE.material;
-            aRegistry.replaceAdd("Diesel Engine ("+aMat.getLocal()+")", "Engines", DIESEL_ENGINE.ID, 1304, aClass, aMat.mToolQuality, DIESEL_ENGINE.stackSize, aMachine,
-                UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, DIESEL_ENGINE.nbtHardness, NBT_RESISTANCE, DIESEL_ENGINE.nbtResistance, NBT_FUELMAP, FM.Engine, NBT_EFFICIENCY,  DIESEL_ENGINE.nbtEfficiency, NBT_OUTPUT, DIESEL_ENGINE.nbtOutput, NBT_PREHEAT_ENERGY,  DIESEL_ENGINE.nbtPreheatEnergy, NBT_PREHEAT_RATE ,  DIESEL_ENGINE.nbtPreheatRate, NBT_PREHEAT_COST,   DIESEL_ENGINE.nbtPreheatCost, NBT_COOLDOWN_RATE,   DIESEL_ENGINE.nbtCooldownRate, NBT_ENERGY_EMITTED, TD.Energy.RU),
-                DIESEL_ENGINE.recipeObject);
-        }
+        aRegistry.addReplacer(1602).setParameters(NBT_OUTPUT,  24*2, NBT_EFFICIENCY,  7500); // Gas Bronze
+        aRegistry.addReplacer(1603).setParameters(NBT_OUTPUT,  16*2, NBT_EFFICIENCY, 10000); // Gas Invar
+        aRegistry.addReplacer(1604).setParameters(NBT_OUTPUT,  32*2, NBT_EFFICIENCY,  6500); // Gas AnyIronSteel
+        aRegistry.addReplacer(1605).setParameters(NBT_OUTPUT, 112*2, NBT_EFFICIENCY,  8000); // Gas Chromium
+        aRegistry.addReplacer(1606).setParameters(NBT_OUTPUT,  96*2, NBT_EFFICIENCY,  8000); // Gas Titanium
+        aRegistry.addReplacer(1610).setParameters(NBT_OUTPUT,  96*2, NBT_EFFICIENCY,  9000); // Gas Netherite
+        aRegistry.addReplacer(1607).setParameters(NBT_OUTPUT, 128*2, NBT_EFFICIENCY, 10000); // Gas AnyTungsten
+        aRegistry.addReplacer(1608).setParameters(NBT_OUTPUT, 128*2, NBT_EFFICIENCY,  9000); // Gas Tungstensteel
+        aRegistry.addReplacer(1609).setParameters(NBT_OUTPUT, 256*2, NBT_EFFICIENCY,  9500); // Gas TantalumHafniumCarbide
         
-        // Steam Turbines
-        aClass = MultiTileEntityTurbineSteam.class;
-        for (AttributesSteamTurbine_CH STEAM_TURBINE : DATA_MACHINES_STEAM.SteamTurbine) {
-            aMat = STEAM_TURBINE.material;
-            aRegistry.replaceAdd("Steam Turbine ("+STEAM_TURBINE.rotorMaterial.getLocal()+")" , "Turbines",  STEAM_TURBINE.ID,  1538, aClass, aMat.mToolQuality, STEAM_TURBINE.stackSize, aMachine,
-                UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   STEAM_TURBINE.nbtHardness, NBT_RESISTANCE,   STEAM_TURBINE.nbtResistance, NBT_OUTPUT,   STEAM_TURBINE.nbtOutput, NBT_EFFICIENCY, STEAM_TURBINE.nbtEfficiency, NBT_PREHEAT_ENERGY,  STEAM_TURBINE.nbtPreheatEnergy, NBT_PREHEAT_COST,   STEAM_TURBINE.nbtPreheatCost, NBT_COOLDOWN_RATE,   STEAM_TURBINE.nbtCooldownRate, NBT_EFFICIENCY_WATER, STEAM_TURBINE.nbtEfficiencyWater, NBT_EFFICIENCY_OC, STEAM_TURBINE.nbtEfficiencyOC, NBT_ENERGY_ACCEPTED, TD.Energy.STEAM, NBT_ENERGY_EMITTED, TD.Energy.RU
-                    , NBT_INPUT,   UT.Code.units(STEAM_TURBINE.nbtOutput, STEAM_TURBINE.nbtEfficiency, 10000, T) * STEAM_PER_EU, NBT_WASTE_ENERGY, T),
-                STEAM_TURBINE.recipeObject);
-        }
+        aRegistry.addReplacer(1652).setParameters(NBT_OUTPUT,  24*8, NBT_EFFICIENCY,  7500); // Gas Dense Bronze
+        aRegistry.addReplacer(1653).setParameters(NBT_OUTPUT,  16*8, NBT_EFFICIENCY, 10000); // Gas Dense Invar
+        aRegistry.addReplacer(1654).setParameters(NBT_OUTPUT,  32*8, NBT_EFFICIENCY,  6500); // Gas Dense AnyIronSteel
+        aRegistry.addReplacer(1655).setParameters(NBT_OUTPUT, 112*8, NBT_EFFICIENCY,  8000); // Gas Dense Chromium
+        aRegistry.addReplacer(1656).setParameters(NBT_OUTPUT,  96*8, NBT_EFFICIENCY,  8000); // Gas Dense Titanium
+        aRegistry.addReplacer(1660).setParameters(NBT_OUTPUT,  96*8, NBT_EFFICIENCY,  9000); // Gas Dense Netherite
+        aRegistry.addReplacer(1657).setParameters(NBT_OUTPUT, 128*8, NBT_EFFICIENCY, 10000); // Gas Dense AnyTungsten
+        aRegistry.addReplacer(1658).setParameters(NBT_OUTPUT, 128*8, NBT_EFFICIENCY,  9000); // Gas Dense Tungstensteel
+        aRegistry.addReplacer(1659).setParameters(NBT_OUTPUT, 256*8, NBT_EFFICIENCY,  9500); // Gas Dense TantalumHafniumCarbide
+        
+        aRegistry.addReplacer(9000).setParameters(NBT_OUTPUT,  16*4, NBT_EFFICIENCY,  5000); // FluidizedBed Lead
+        aRegistry.addReplacer(9001).setParameters(NBT_OUTPUT,  20*4, NBT_EFFICIENCY,  4500); // FluidizedBed Bismuth
+        aRegistry.addReplacer(9002).setParameters(NBT_OUTPUT,  24*4, NBT_EFFICIENCY,  7500); // FluidizedBed Bronze
+        aRegistry.addReplacer(9003).setParameters(NBT_OUTPUT,  16*4, NBT_EFFICIENCY, 10000); // FluidizedBed Invar
+        aRegistry.addReplacer(9004).setParameters(NBT_OUTPUT,  32*4, NBT_EFFICIENCY,  6500); // FluidizedBed AnyIronSteel
+        aRegistry.addReplacer(9005).setParameters(NBT_OUTPUT, 112*4, NBT_EFFICIENCY,  8000); // FluidizedBed Chromium
+        aRegistry.addReplacer(9006).setParameters(NBT_OUTPUT,  96*4, NBT_EFFICIENCY,  8000); // FluidizedBed Titanium
+        aRegistry.addReplacer(9010).setParameters(NBT_OUTPUT,  96*4, NBT_EFFICIENCY,  9000); // FluidizedBed Netherite
+        aRegistry.addReplacer(9007).setParameters(NBT_OUTPUT, 128*4, NBT_EFFICIENCY, 10000); // FluidizedBed AnyTungsten
+        aRegistry.addReplacer(9008).setParameters(NBT_OUTPUT, 128*4, NBT_EFFICIENCY,  9000); // FluidizedBed Tungstensteel
+        aRegistry.addReplacer(9009).setParameters(NBT_OUTPUT, 256*4, NBT_EFFICIENCY,  9500); // FluidizedBed TantalumHafniumCarbide
+        
+        aRegistry.addReplacer(9050).setParameters(NBT_OUTPUT, 16*16, NBT_EFFICIENCY,  5000); // FluidizedBed Dense Lead
+        aRegistry.addReplacer(9051).setParameters(NBT_OUTPUT, 20*16, NBT_EFFICIENCY,  4500); // FluidizedBed Dense Bismuth
+        aRegistry.addReplacer(9052).setParameters(NBT_OUTPUT, 24*16, NBT_EFFICIENCY,  7500); // FluidizedBed Dense Bronze
+        aRegistry.addReplacer(9053).setParameters(NBT_OUTPUT, 16*16, NBT_EFFICIENCY, 10000); // FluidizedBed Dense Invar
+        aRegistry.addReplacer(9054).setParameters(NBT_OUTPUT, 32*16, NBT_EFFICIENCY,  6500); // FluidizedBed Dense AnyIronSteel
+        aRegistry.addReplacer(9055).setParameters(NBT_OUTPUT,112*16, NBT_EFFICIENCY,  8000); // FluidizedBed Dense Chromium
+        aRegistry.addReplacer(9056).setParameters(NBT_OUTPUT, 96*16, NBT_EFFICIENCY,  8000); // FluidizedBed Dense Titanium
+        aRegistry.addReplacer(9060).setParameters(NBT_OUTPUT, 96*16, NBT_EFFICIENCY,  9000); // FluidizedBed Dense Netherite
+        aRegistry.addReplacer(9057).setParameters(NBT_OUTPUT,128*16, NBT_EFFICIENCY, 10000); // FluidizedBed Dense AnyTungsten
+        aRegistry.addReplacer(9058).setParameters(NBT_OUTPUT,128*16, NBT_EFFICIENCY,  9000); // FluidizedBed Dense Tungstensteel
+        aRegistry.addReplacer(9059).setParameters(NBT_OUTPUT,256*16, NBT_EFFICIENCY,  9500); // FluidizedBed Dense TantalumHafniumCarbide
+        
+        // Heat Exchangers 输出翻倍
+        aRegistry.addReplacer(9103).setParameters(NBT_OUTPUT,  16*2); // Invar
+        aRegistry.addReplacer(9107).setParameters(NBT_OUTPUT, 128*2); // AnyTungsten
+        aRegistry.addReplacer(9108).setParameters(NBT_OUTPUT, 128*2); // Tungstensteel
+        aRegistry.addReplacer(9109).setParameters(NBT_OUTPUT, 256*2); // TantalumHafniumCarbide
+        
+        aRegistry.addReplacer(9153).setParameters(NBT_OUTPUT,  16*8); // Dense Invar
+        aRegistry.addReplacer(9157).setParameters(NBT_OUTPUT, 128*8); // Dense AnyTungsten
+        aRegistry.addReplacer(9158).setParameters(NBT_OUTPUT, 128*8); // Dense Tungstensteel
+        aRegistry.addReplacer(9159).setParameters(NBT_OUTPUT, 256*8); // Dense TantalumHafniumCarbide
+        
+        // Diesel Engines 效率降低，合成变贵，增加预热相关
+        aMat = MT.Bronze;           aRegistry.addReplacer(9147).setParameters(NBT_OUTPUT,  16, NBT_EFFICIENCY, 2750, NBT_PREHEAT_ENERGY,  16*1000, NBT_PREHEAT_RATE ,  16*4, NBT_PREHEAT_COST,  16/16, NBT_COOLDOWN_RATE,  16).recipe("PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeQuadruple.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = ANY.Steel;           aRegistry.addReplacer(9148).setParameters(NBT_OUTPUT,  32, NBT_EFFICIENCY, 2500, NBT_PREHEAT_ENERGY,  32*1000, NBT_PREHEAT_RATE ,  32*4, NBT_PREHEAT_COST,  32/16, NBT_COOLDOWN_RATE,  32).recipe("PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeQuadruple.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = MT.Invar;            aRegistry.addReplacer(9149).setParameters(NBT_OUTPUT,  64, NBT_EFFICIENCY, 3500, NBT_PREHEAT_ENERGY,  64*1000, NBT_PREHEAT_RATE ,  64*4, NBT_PREHEAT_COST,  64/16, NBT_COOLDOWN_RATE,  64).recipe("PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeQuadruple.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = MT.Ti;               aRegistry.addReplacer(9197).setParameters(NBT_OUTPUT, 128, NBT_EFFICIENCY, 2750, NBT_PREHEAT_ENERGY, 128*1000, NBT_PREHEAT_RATE , 128*4, NBT_PREHEAT_COST, 128/16, NBT_COOLDOWN_RATE, 128).recipe("PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeQuadruple.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = MT.TungstenSteel;    aRegistry.addReplacer(9198).setParameters(NBT_OUTPUT, 256, NBT_EFFICIENCY, 3000, NBT_PREHEAT_ENERGY, 256*1000, NBT_PREHEAT_RATE , 256*4, NBT_PREHEAT_COST, 256/16, NBT_COOLDOWN_RATE, 256).recipe("PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeQuadruple.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = MT.Ir;               aRegistry.addReplacer(9199).setParameters(NBT_OUTPUT, 512, NBT_EFFICIENCY, 3333, NBT_PREHEAT_ENERGY, 512*1000, NBT_PREHEAT_RATE , 512*4, NBT_PREHEAT_COST, 512/16, NBT_COOLDOWN_RATE, 512).recipe("PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeQuadruple.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        
+        // Steam Boilers 增加效率参数，输入调整
+        aRegistry.addReplacer(1200).setParameters(NBT_INPUT,  16*2, NBT_EFFICIENCY_CH, 4500, NBT_CAPACITY,  16*1000, NBT_CAPACITY_SU,  16*10000).removeParameters(NBT_OUTPUT_SU); // Lead
+        aRegistry.addReplacer(1201).setParameters(NBT_INPUT,  20*2, NBT_EFFICIENCY_CH, 4333, NBT_CAPACITY,  20*1000, NBT_CAPACITY_SU,  20*10000).removeParameters(NBT_OUTPUT_SU); // Bismuth
+        aRegistry.addReplacer(1202).setParameters(NBT_INPUT,  24*2, NBT_EFFICIENCY_CH, 5000, NBT_CAPACITY,  24*1000, NBT_CAPACITY_SU,  24*10000).removeParameters(NBT_OUTPUT_SU); // Bronze
+        aRegistry.addReplacer(1203).setParameters(NBT_INPUT,  16*2, NBT_EFFICIENCY_CH, 5666, NBT_CAPACITY,  16*1000, NBT_CAPACITY_SU,  16*10000).removeParameters(NBT_OUTPUT_SU); // Invar
+        aRegistry.addReplacer(1204).setParameters(NBT_INPUT,  32*2, NBT_EFFICIENCY_CH, 4750, NBT_CAPACITY,  32*1000, NBT_CAPACITY_SU,  32*10000).removeParameters(NBT_OUTPUT_SU); // AnyIronSteel
+        aRegistry.addReplacer(1205).setParameters(NBT_INPUT,  96*2, NBT_EFFICIENCY_CH, 5000, NBT_CAPACITY,  96*1000, NBT_CAPACITY_SU,  96*10000).removeParameters(NBT_OUTPUT_SU); // Chromium
+        aRegistry.addReplacer(1206).setParameters(NBT_INPUT, 112*2, NBT_EFFICIENCY_CH, 5000, NBT_CAPACITY, 112*1000, NBT_CAPACITY_SU, 112*10000).removeParameters(NBT_OUTPUT_SU); // Titanium
+        aRegistry.addReplacer(1209).setParameters(NBT_INPUT, 112*2, NBT_EFFICIENCY_CH, 5250, NBT_CAPACITY, 112*1000, NBT_CAPACITY_SU, 112*10000).removeParameters(NBT_OUTPUT_SU); // Netherite
+        aRegistry.addReplacer(1207).setParameters(NBT_INPUT, 128*2, NBT_EFFICIENCY_CH, 5500, NBT_CAPACITY, 128*1000, NBT_CAPACITY_SU, 128*10000).removeParameters(NBT_OUTPUT_SU); // AnyTungsten
+        aRegistry.addReplacer(1208).setParameters(NBT_INPUT, 128*2, NBT_EFFICIENCY_CH, 5250, NBT_CAPACITY, 128*1000, NBT_CAPACITY_SU, 128*10000).removeParameters(NBT_OUTPUT_SU); // Tungstensteel
+        
+        aRegistry.addReplacer(1250).setParameters(NBT_INPUT,  16*8, NBT_EFFICIENCY_CH, 5500, NBT_CAPACITY,  16*4000, NBT_CAPACITY_SU,  16*40000).removeParameters(NBT_OUTPUT_SU); // Strong Lead
+        aRegistry.addReplacer(1251).setParameters(NBT_INPUT,  20*8, NBT_EFFICIENCY_CH, 5333, NBT_CAPACITY,  20*4000, NBT_CAPACITY_SU,  20*40000).removeParameters(NBT_OUTPUT_SU); // Strong Bismuth
+        aRegistry.addReplacer(1252).setParameters(NBT_INPUT,  24*8, NBT_EFFICIENCY_CH, 6000, NBT_CAPACITY,  24*4000, NBT_CAPACITY_SU,  24*40000).removeParameters(NBT_OUTPUT_SU); // Strong Bronze
+        aRegistry.addReplacer(1253).setParameters(NBT_INPUT,  16*8, NBT_EFFICIENCY_CH, 6666, NBT_CAPACITY,  16*4000, NBT_CAPACITY_SU,  16*40000).removeParameters(NBT_OUTPUT_SU); // Strong Invar
+        aRegistry.addReplacer(1254).setParameters(NBT_INPUT,  32*8, NBT_EFFICIENCY_CH, 5750, NBT_CAPACITY,  32*4000, NBT_CAPACITY_SU,  32*40000).removeParameters(NBT_OUTPUT_SU); // Strong AnyIronSteel
+        aRegistry.addReplacer(1255).setParameters(NBT_INPUT,  96*8, NBT_EFFICIENCY_CH, 6000, NBT_CAPACITY,  96*4000, NBT_CAPACITY_SU,  96*40000).removeParameters(NBT_OUTPUT_SU); // Strong Chromium
+        aRegistry.addReplacer(1256).setParameters(NBT_INPUT, 112*8, NBT_EFFICIENCY_CH, 6000, NBT_CAPACITY, 112*4000, NBT_CAPACITY_SU, 112*40000).removeParameters(NBT_OUTPUT_SU); // Strong Titanium
+        aRegistry.addReplacer(1259).setParameters(NBT_INPUT, 112*8, NBT_EFFICIENCY_CH, 6250, NBT_CAPACITY, 112*4000, NBT_CAPACITY_SU, 112*40000).removeParameters(NBT_OUTPUT_SU); // Strong Netherite
+        aRegistry.addReplacer(1257).setParameters(NBT_INPUT, 128*8, NBT_EFFICIENCY_CH, 6500, NBT_CAPACITY, 128*4000, NBT_CAPACITY_SU, 128*40000).removeParameters(NBT_OUTPUT_SU); // Strong AnyTungsten
+        aRegistry.addReplacer(1258).setParameters(NBT_INPUT, 128*8, NBT_EFFICIENCY_CH, 6250, NBT_CAPACITY, 128*4000, NBT_CAPACITY_SU, 128*40000).removeParameters(NBT_OUTPUT_SU); // Strong Tungstensteel
+        
+        // Steam Engines 效率调整，其他保留
+        aRegistry.addReplacer(1300).setParameters(NBT_OUTPUT,    16/STEAM_PER_EU, NBT_EFFICIENCY, 2500, NBT_CAPACITY,  16*1000, NBT_EFFICIENCY_WATER, 8000); // Lead
+        aRegistry.addReplacer(1301).setParameters(NBT_OUTPUT,    20/STEAM_PER_EU, NBT_EFFICIENCY, 3000, NBT_CAPACITY,  20*1000, NBT_EFFICIENCY_WATER, 8000); // TinAlloy
+        aRegistry.addReplacer(1302).setParameters(NBT_OUTPUT,    24/STEAM_PER_EU, NBT_EFFICIENCY, 3333, NBT_CAPACITY,  24*1000, NBT_EFFICIENCY_WATER, 8000); // Bronze
+        aRegistry.addReplacer(1309).setParameters(NBT_OUTPUT,    24/STEAM_PER_EU, NBT_EFFICIENCY, 3333, NBT_CAPACITY,  24*1000, NBT_EFFICIENCY_WATER, 8000); // Brass
+        aRegistry.addReplacer(1303).setParameters(NBT_OUTPUT,    16/STEAM_PER_EU, NBT_EFFICIENCY, 4500, NBT_CAPACITY,  16*1000, NBT_EFFICIENCY_WATER, 8000); // Invar
+        aRegistry.addReplacer(1310).setParameters(NBT_OUTPUT,    16/STEAM_PER_EU, NBT_EFFICIENCY, 4666, NBT_CAPACITY,  16*1000, NBT_EFFICIENCY_WATER, 8000); // Ironwood
+        aRegistry.addReplacer(1304).setParameters(NBT_OUTPUT,    32/STEAM_PER_EU, NBT_EFFICIENCY, 3000, NBT_CAPACITY,  32*1000, NBT_EFFICIENCY_WATER, 8000); // AnyIronSteel
+        aRegistry.addReplacer(1311).setParameters(NBT_OUTPUT,    64/STEAM_PER_EU, NBT_EFFICIENCY, 4333, NBT_CAPACITY,  64*1000, NBT_EFFICIENCY_WATER, 8000); // FierySteel
+        aRegistry.addReplacer(1305).setParameters(NBT_OUTPUT,    96/STEAM_PER_EU, NBT_EFFICIENCY, 3500, NBT_CAPACITY,  96*1000, NBT_EFFICIENCY_WATER, 8000); // Chromium
+        aRegistry.addReplacer(1306).setParameters(NBT_OUTPUT,   112/STEAM_PER_EU, NBT_EFFICIENCY, 3500, NBT_CAPACITY, 112*1000, NBT_EFFICIENCY_WATER, 8000); // Titanium
+        aRegistry.addReplacer(1307).setParameters(NBT_OUTPUT,   128/STEAM_PER_EU, NBT_EFFICIENCY, 4333, NBT_CAPACITY, 128*1000, NBT_EFFICIENCY_WATER, 8000); // AnyTungsten
+        aRegistry.addReplacer(1308).setParameters(NBT_OUTPUT,   128/STEAM_PER_EU, NBT_EFFICIENCY, 3750, NBT_CAPACITY, 128*1000, NBT_EFFICIENCY_WATER, 8000); // Tungstensteel
+        
+        aRegistry.addReplacer(1350).setParameters(NBT_OUTPUT,  16*4/STEAM_PER_EU, NBT_EFFICIENCY, 2500, NBT_CAPACITY,  16*4000, NBT_EFFICIENCY_WATER, 8000); // Strong Lead
+        aRegistry.addReplacer(1351).setParameters(NBT_OUTPUT,  20*4/STEAM_PER_EU, NBT_EFFICIENCY, 3000, NBT_CAPACITY,  20*4000, NBT_EFFICIENCY_WATER, 8000); // Strong TinAlloy
+        aRegistry.addReplacer(1352).setParameters(NBT_OUTPUT,  24*4/STEAM_PER_EU, NBT_EFFICIENCY, 3333, NBT_CAPACITY,  24*4000, NBT_EFFICIENCY_WATER, 8000); // Strong Bronze
+        aRegistry.addReplacer(1359).setParameters(NBT_OUTPUT,  24*4/STEAM_PER_EU, NBT_EFFICIENCY, 3333, NBT_CAPACITY,  24*4000, NBT_EFFICIENCY_WATER, 8000); // Strong Brass
+        aRegistry.addReplacer(1353).setParameters(NBT_OUTPUT,  16*4/STEAM_PER_EU, NBT_EFFICIENCY, 4500, NBT_CAPACITY,  16*4000, NBT_EFFICIENCY_WATER, 8000); // Strong Invar
+        aRegistry.addReplacer(1360).setParameters(NBT_OUTPUT,  16*4/STEAM_PER_EU, NBT_EFFICIENCY, 4666, NBT_CAPACITY,  16*4000, NBT_EFFICIENCY_WATER, 8000); // Strong Ironwood
+        aRegistry.addReplacer(1354).setParameters(NBT_OUTPUT,  32*4/STEAM_PER_EU, NBT_EFFICIENCY, 3000, NBT_CAPACITY,  32*4000, NBT_EFFICIENCY_WATER, 8000); // Strong AnyIronSteel
+        aRegistry.addReplacer(1361).setParameters(NBT_OUTPUT,  64*4/STEAM_PER_EU, NBT_EFFICIENCY, 4333, NBT_CAPACITY,  64*4000, NBT_EFFICIENCY_WATER, 8000); // Strong FierySteel
+        aRegistry.addReplacer(1355).setParameters(NBT_OUTPUT,  96*4/STEAM_PER_EU, NBT_EFFICIENCY, 3500, NBT_CAPACITY,  96*4000, NBT_EFFICIENCY_WATER, 8000); // Strong Chromium
+        aRegistry.addReplacer(1356).setParameters(NBT_OUTPUT, 112*4/STEAM_PER_EU, NBT_EFFICIENCY, 3500, NBT_CAPACITY, 112*4000, NBT_EFFICIENCY_WATER, 8000); // Strong Titanium
+        aRegistry.addReplacer(1357).setParameters(NBT_OUTPUT, 128*4/STEAM_PER_EU, NBT_EFFICIENCY, 4333, NBT_CAPACITY, 128*4000, NBT_EFFICIENCY_WATER, 8000); // Strong AnyTungsten
+        aRegistry.addReplacer(1358).setParameters(NBT_OUTPUT, 128*4/STEAM_PER_EU, NBT_EFFICIENCY, 3750, NBT_CAPACITY, 128*4000, NBT_EFFICIENCY_WATER, 8000); // Strong Tungstensteel
+    
+        // Steam Turbines 效率调整，预热相关
+        aRegistry.addReplacer(1512).setParameters(NBT_OUTPUT,   16, NBT_EFFICIENCY, 3500, NBT_PREHEAT_ENERGY,   16*4000, NBT_PREHEAT_COST,   16/16, NBT_COOLDOWN_RATE,   16, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // Bronze BronzeRotor
+        aRegistry.addReplacer(1515).setParameters(NBT_OUTPUT,   24, NBT_EFFICIENCY, 3500, NBT_PREHEAT_ENERGY,   24*4000, NBT_PREHEAT_COST,   24/16, NBT_COOLDOWN_RATE,   24, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // Bronze BrassRotor
+        aRegistry.addReplacer(1518).setParameters(NBT_OUTPUT,   32, NBT_EFFICIENCY, 4000, NBT_PREHEAT_ENERGY,   32*4000, NBT_PREHEAT_COST,   32/16, NBT_COOLDOWN_RATE,   32, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // Bronze InvarRotor
+        
+        aRegistry.addReplacer(1522).setParameters(NBT_OUTPUT,   64, NBT_EFFICIENCY, 3000, NBT_PREHEAT_ENERGY,   64*4000, NBT_PREHEAT_COST,   64/16, NBT_COOLDOWN_RATE,   64, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // AnyIronSteel AnyIronSteelRotor
+        aRegistry.addReplacer(1525).setParameters(NBT_OUTPUT,   96, NBT_EFFICIENCY, 4000, NBT_PREHEAT_ENERGY,   96*4000, NBT_PREHEAT_COST,   96/16, NBT_COOLDOWN_RATE,   96, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // AnyIronSteel ChromiumRotor
+        aRegistry.addReplacer(1527).setParameters(NBT_OUTPUT,  128, NBT_EFFICIENCY, 4750, NBT_PREHEAT_ENERGY,  128*4000, NBT_PREHEAT_COST,  128/16, NBT_COOLDOWN_RATE,  128, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // AnyIronSteel IronwoodRotor
+        aRegistry.addReplacer(1528).setParameters(NBT_OUTPUT,  128, NBT_EFFICIENCY, 4500, NBT_PREHEAT_ENERGY,  128*4000, NBT_PREHEAT_COST,  128/16, NBT_COOLDOWN_RATE,  128, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // AnyIronSteel SteeleafRotor
+        aRegistry.addReplacer(1529).setParameters(NBT_OUTPUT,  128, NBT_EFFICIENCY, 4000, NBT_PREHEAT_ENERGY,  128*4000, NBT_PREHEAT_COST,  128/16, NBT_COOLDOWN_RATE,  128, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // AnyIronSteel ThaumiumRotor
+        
+        aRegistry.addReplacer(1530).setParameters(NBT_OUTPUT,  256, NBT_EFFICIENCY, 4500, NBT_PREHEAT_ENERGY,  256*4000, NBT_PREHEAT_COST,  256/16, NBT_COOLDOWN_RATE,  256, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // Titanium TitaniumRotor
+        aRegistry.addReplacer(1531).setParameters(NBT_OUTPUT,  256, NBT_EFFICIENCY, 3500, NBT_PREHEAT_ENERGY,  256*4000, NBT_PREHEAT_COST,  256/16, NBT_COOLDOWN_RATE,  256, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // Titanium FierySteelRotor
+        aRegistry.addReplacer(1535).setParameters(NBT_OUTPUT,  384, NBT_EFFICIENCY, 5000, NBT_PREHEAT_ENERGY,  384*4000, NBT_PREHEAT_COST,  384/16, NBT_COOLDOWN_RATE,  384, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // Titanium AluminiumRotor
+        aRegistry.addReplacer(1538).setParameters(NBT_OUTPUT,  512, NBT_EFFICIENCY, 5250, NBT_PREHEAT_ENERGY,  512*4000, NBT_PREHEAT_COST,  512/16, NBT_COOLDOWN_RATE,  512, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // Titanium MagnaliumRotor
+        
+        aRegistry.addReplacer(1540).setParameters(NBT_OUTPUT,  768, NBT_EFFICIENCY, 5750, NBT_PREHEAT_ENERGY,  768*4000, NBT_PREHEAT_COST,  768/16, NBT_COOLDOWN_RATE,  768, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // Tungstensteel VoidMetalRotor
+        aRegistry.addReplacer(1545).setParameters(NBT_OUTPUT, 1024, NBT_EFFICIENCY, 5250, NBT_PREHEAT_ENERGY, 1024*4000, NBT_PREHEAT_COST, 1024/16, NBT_COOLDOWN_RATE, 1024, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // Tungstensteel TrinitaniumRotor
+        aRegistry.addReplacer(1548).setParameters(NBT_OUTPUT, 2048, NBT_EFFICIENCY, 5250, NBT_PREHEAT_ENERGY, 2048*4000, NBT_PREHEAT_COST, 2048/16, NBT_COOLDOWN_RATE, 2048, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // Tungstensteel GrapheneRotor
+        
         
         /// 删除项
 //        aRegistry.removeHolding(9220); // TEST REMOVE
@@ -276,7 +327,9 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         aRegistry.MODIFYING_ADD_START();
         
         /// 修改项
-        aRegistry.replaceAdd("Power Cell (Hydrogen)"                          , "Portable Power Cells"                , 14701, 14700, MultiTileEntityPowerCell.class, 0, 16, aUtilMetal, UT.NBT.make(NBT_HARDNESS, 0.5F, NBT_RESISTANCE, 1.0F, NBT_ENERGY_ACCEPTED, TD.Energy.EU, NBT_COLOR_BOTTOM, UT.Code.getRGBInt(MT.H  .fRGBaGas), NBT_INPUT_MIN, 1, NBT_INPUT, V[3], NBT_INPUT_MAX, V   [3], NBT_CAPACITY,         3_200_000L));
+        // 修改 Power Cell (Hydrogen) 的 NBT_COLOR 改成 NBT_COLOR_BOTTOM
+        aRegistry.addReplacer(14701).setParameters(NBT_COLOR_BOTTOM, UT.Code.getRGBInt(MT.H.fRGBaGas)).removeParameters(NBT_COLOR);
+        
         
         /// 添加项
         /* GT6U stuff */
@@ -315,75 +368,50 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         /// 修改项
         /* GT6U stuff */
         // 蒸馏塔设置最低输入
-        aMat = MT.StainlessSteel;       aRegistry.replaceAdd("Distillation Tower"                                  , "Multiblock Machines", 17101, 17101, MultiTileEntityDistillationTower.class    , aMat.mToolQuality, 16, aMachine   , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_TEXTURE, "distillationtower"        , NBT_INPUT,  512, NBT_INPUT_MIN,   16, NBT_INPUT_MAX,     1024                       , NBT_ENERGY_ACCEPTED, TD.Energy.HU, NBT_RECIPEMAP, RM.DistillationTower    , NBT_INV_SIDE_AUTO_OUT, SIDE_BACK  , NBT_TANK_SIDE_AUTO_OUT, SIDE_BACK  , NBT_CHEAP_OVERCLOCKING, T                  ), "PPP", "PMP", "PPP", 'M', aRegistry.getItem(18102), 'P', OP.pipeNonuple.dat(aMat));
+        aRegistry.addReplacer(17101).setParameters(NBT_INPUT_MIN, 16);
         // 低温蒸馏塔设置最低输入，并且替换核心方块，材料替换
-        aMat = MT.Al;                   aRegistry.replaceAdd("Cryo Distillation Tower"                             , "Multiblock Machines", 17111, 17101, MultiTileEntityCryoDistillationTower.class, aMat.mToolQuality, 16, aMachine   , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_TEXTURE, "cryodistillationtower"    , NBT_INPUT,  512, NBT_INPUT_MIN,   16, NBT_INPUT_MAX,     1024                       , NBT_ENERGY_ACCEPTED, TD.Energy.CU, NBT_RECIPEMAP, RM.CryoDistillationTower, NBT_INV_SIDE_AUTO_OUT, SIDE_BACK  , NBT_TANK_SIDE_AUTO_OUT, SIDE_BACK  , NBT_CHEAP_OVERCLOCKING, T                  ), "PPP", "PMP", "PPP", 'M', aRegistry.getItem(18112), 'P', OP.pipeNonuple.dat(ANY.Cu));
+        aRegistry.addReplacer(17111).setParameters(NBT_INPUT_MIN, 16, NBT_MATERIAL, MT.Al).recipe("PPP", "PMP", "PPP", 'M', aRegistry.getItem(18112), 'P', OP.pipeNonuple.dat(ANY.Cu));
         // MARK 内爆压缩机不需要输入电力，莫名其妙，并且也没有对聚爆压缩机的类进行任何修改 TODO 材质的修改检查
         // MARK 大型高压釜不再需要输入电力，莫名其妙，TODO 类的修改检查，材质的修改检查
         // MARK 大电炉的合成不再修改
         // 大型物质制造机，合成需要的 FIELD_GENERATORS 从 5 调整到 6
-        aMat = MT.Pb;                   aRegistry.replaceAdd("Large Matter Fabricator"                             , "Multiblock Machines", 17199, 17101, MultiTileEntityMatterFabricator.class     , aMat.mToolQuality, 16, aMachine   , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_TEXTURE, "largemassfab"             , NBT_INPUT,    1, NBT_INPUT_MIN,    1, NBT_INPUT_MAX,  2097152                       , NBT_ENERGY_ACCEPTED, TD.Energy.QU, NBT_RECIPEMAP, RM.Massfab              , NBT_INV_SIDE_AUTO_OUT, SIDE_BOTTOM, NBT_TANK_SIDE_AUTO_OUT, SIDE_BOTTOM, NBT_CHEAP_OVERCLOCKING, T, NBT_PARALLEL,  64, NBT_PARALLEL_DURATION, T, NBT_NO_CONSTANT_POWER, T), "FFF", "FMF", "FFF", 'M', aRegistry.getItem(18031), 'F', IL.FIELD_GENERATORS[6]);
+        aRegistry.addReplacer(17199).recipe("FFF", "FMF", "FFF", 'M', aRegistry.getItem(18031), 'F', IL.FIELD_GENERATORS[6]);
         // 聚变反应堆改名为 MkI，且语言文件放入 GT6U 部分；目前不对输入输出做任何调整
-        aMat = MT.SteelGalvanized;      aRegistry.replaceAdd(RegType.GT6U, "Fusion Reactor MkI"           , "Multiblock Machines", 17198, 17101, MultiTileEntityFusionReactor.class        , aMat.mToolQuality, 16, aMachine   , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_TEXTURE, "fusionreactor"           , NBT_INPUT, 8192, NBT_INPUT_MIN,    1, NBT_INPUT_MAX,    16384                       , NBT_ENERGY_ACCEPTED, TD.Energy.TU, NBT_RECIPEMAP, RM.Fusion               , NBT_ENERGY_ACCEPTED_2, TD.Energy.LU, NBT_ENERGY_EMITTED, TD.Energy.EU, NBT_SPECIAL_IS_START_ENERGY, T, NBT_NO_CONSTANT_POWER, T), "FFF", "FMF", "FFF", 'M', aRegistry.getItem(18003), 'F', IL.FIELD_GENERATORS[5]);
-        // 钨热交换器部件改为 gt6u 的热部件 MARK output 32768 -> 16384 （不改变原版的输出效率）
-        aMat = ANY.W;                   aRegistry.replaceAdd(RegType.GT6U, "Large Heat Exchanger(Tungsten)","Multiblock Machines", 17197, 17101, MultiTileEntityLargeHeatExchanger.class   , aMat.mToolQuality, 16, aMachine   , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_TEXTURE, "largeheatexchanger"      , NBT_DESIGN, 18110, NBT_OUTPUT, 16384, NBT_FUELMAP, FM.Hot, NBT_ENERGY_EMITTED, TD.Energy.HU), "DDD", "PMP", "DDD", 'M', aRegistry.getItem(18024), 'D', OP.plateDense.dat(MT.AnnealedCopper), 'P', OP.pipeHuge.dat(ANY.Cu));
+        aRegistry.addReplacer(17198).regType(RegType.GT6U).localised("Fusion Reactor MkI");
+        // 钨热交换器部件改为 gt6u 的热部件 MARK output 32768 -> 16384 （不改变原版的输出效率） TODO 大型热交换器增加效率
+        aRegistry.addReplacer(17197).regType(RegType.GT6U).localised("Large Heat Exchanger (Tungsten)").setParameters(NBT_OUTPUT, 16384, NBT_DESIGN, 18110, NBT_EFFICIENCY, 10000);
+        
         
         /* GTCH stuff */
         // 一般机器改为通过并行提高效率
-        aMat = MT.TungstenSteel;        aRegistry.replaceAdd("Large Centrifuge"                                    , "Multiblock Machines", 17100, 17101, MultiTileEntityCentrifuge.class           , aMat.mToolQuality, 16, aMachine   , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_TEXTURE, "largecentrifuge"          , NBT_INPUT,  512, NBT_INPUT_MIN,  512, NBT_INPUT_MAX,     4096, NBT_EFFICIENCY,  5000, NBT_ENERGY_ACCEPTED, TD.Energy.RU, NBT_RECIPEMAP, RM.Centrifuge           , NBT_INV_SIDE_AUTO_OUT, SIDE_BOTTOM, NBT_TANK_SIDE_AUTO_OUT, SIDE_BOTTOM, NBT_PARALLEL,  16                          ), "CMC", "RCR"       , 'M', aRegistry.getItem(18100), 'R', IL.Processor_Crystal_Ruby, 'C', OD_CIRCUITS[6]);
-        aMat = MT.StainlessSteel;       aRegistry.replaceAdd("Large Electrolyzer"                                  , "Multiblock Machines", 17103, 17101, MultiTileEntityElectrolyzer.class         , aMat.mToolQuality, 16, aMachine   , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_TEXTURE, "largeelectrolyzer"        , NBT_INPUT,  512, NBT_INPUT_MIN,  512, NBT_INPUT_MAX,     4096, NBT_EFFICIENCY,  5000, NBT_ENERGY_ACCEPTED, TD.Energy.EU, NBT_RECIPEMAP, RM.Electrolyzer         , NBT_INV_SIDE_AUTO_OUT, SIDE_BOTTOM, NBT_TANK_SIDE_AUTO_OUT, SIDE_BOTTOM, NBT_PARALLEL,  16                          ), "CMC", "RCR"       , 'M', aRegistry.getItem(18105), 'R', IL.Processor_Crystal_Ruby, 'C', OD_CIRCUITS[6]);
-        aMat = MT.StainlessSteel;       aRegistry.replaceAdd("Large Batch Mixer"                                   , "Multiblock Machines", 17102, 17101, MultiTileEntityMixer.class                , aMat.mToolQuality, 16, aMachine   , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_TEXTURE, "largemixer"               , NBT_INPUT,  512, NBT_INPUT_MIN,  512, NBT_INPUT_MAX,     4096                       , NBT_ENERGY_ACCEPTED, TD.Energy.RU, NBT_RECIPEMAP, RM.Mixer                , NBT_INV_SIDE_AUTO_OUT, SIDE_BOTTOM, NBT_TANK_SIDE_AUTO_OUT, SIDE_BOTTOM, NBT_PARALLEL, 256                          ), "PSP", "PSP", "RMC", 'M', aRegistry.getItem(18002), 'R', IL.Processor_Crystal_Ruby, 'C', OD_CIRCUITS[6], 'P', OP.plateDense.dat(aMat), 'S', OP.stickLong.dat(aMat));
-        aMat = MT.StainlessSteel;       aRegistry.replaceAdd("Large Fermenter"                                     , "Multiblock Machines", 17113, 17101, MultiTileEntityFermenter.class            , aMat.mToolQuality, 16, aMachine   , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_TEXTURE, "largefermenter"           , NBT_INPUT,  512, NBT_INPUT_MIN,    1, NBT_INPUT_MAX,     4096                       , NBT_ENERGY_ACCEPTED, TD.Energy.HU, NBT_RECIPEMAP, RM.Fermenter            , NBT_INV_SIDE_AUTO_OUT, SIDE_BACK  , NBT_TANK_SIDE_AUTO_OUT, SIDE_BACK  , NBT_PARALLEL, 256                          ), "PPP", "CRC", "PMP", 'M', aRegistry.getItem(18002), 'R', IL.Processor_Crystal_Ruby, 'C', OD_CIRCUITS[6], 'P', OP.plateDense.dat(aMat));
-        aMat = MT.Invar;                aRegistry.replaceAdd("Large Electric Oven"                                 , "Multiblock Machines", 17106, 17101, MultiTileEntityOven.class                 , aMat.mToolQuality, 16, aMachine   , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_TEXTURE, "largeoven"                , NBT_INPUT,  512, NBT_INPUT_MIN,  512, NBT_INPUT_MAX,     4096, NBT_EFFICIENCY,  2500, NBT_ENERGY_ACCEPTED, TD.Energy.EU, NBT_RECIPEMAP, RM.Furnace              , NBT_INV_SIDE_AUTO_OUT, SIDE_BOTTOM, NBT_TANK_SIDE_AUTO_OUT, SIDE_BOTTOM, NBT_PARALLEL,  64                          ), "PPP", "PwP", "RMC", 'M', aRegistry.getItem(18007), 'R', IL.Processor_Crystal_Ruby, 'C', OD_CIRCUITS[6], 'P', OP.plateDense.dat(aMat));
-        aMat = MT.Ti;                   aRegistry.replaceAdd("Large Sluice"                                        , "Multiblock Machines", 17107, 17101, MultiTileEntitySluice.class               , aMat.mToolQuality, 16, aMachine   , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   9.0F, NBT_RESISTANCE,   9.0F, NBT_TEXTURE, "largesluice"              , NBT_INPUT,  512, NBT_INPUT_MIN,  512, NBT_INPUT_MAX,     4096, NBT_EFFICIENCY,  5000, NBT_ENERGY_ACCEPTED, TD.Energy.RU, NBT_RECIPEMAP, RM.Sluice               , NBT_INV_SIDE_AUTO_OUT, SIDE_BOTTOM, NBT_TANK_SIDE_AUTO_OUT, SIDE_BOTTOM, NBT_PARALLEL,  64                          ), "GGG", "SwS", "RMC", 'M', aRegistry.getItem(18006), 'R', IL.Processor_Crystal_Ruby, 'C', OD_CIRCUITS[6], 'G', OP.gearGt.dat(aMat), 'S', OP.stick.dat(aMat));
-        aMat = MT.TungstenSteel;        aRegistry.replaceAdd("Large Crusher"                                       , "Multiblock Machines", 17108, 17101, MultiTileEntityCrusher.class              , aMat.mToolQuality, 16, aMachine   , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_TEXTURE, "largecrusher"             , NBT_INPUT,  512, NBT_INPUT_MIN,  512, NBT_INPUT_MAX,     4096, NBT_EFFICIENCY,  5000, NBT_ENERGY_ACCEPTED, TD.Energy.RU, NBT_RECIPEMAP, RM.Crusher              , NBT_INV_SIDE_AUTO_OUT, SIDE_BOTTOM, NBT_TANK_SIDE_AUTO_OUT, SIDE_BOTTOM, NBT_PARALLEL,  64, NBT_NO_CONSTANT_POWER, T), "GSG", "SGS", "RMC", 'M', aRegistry.getItem(18003), 'R', IL.Processor_Crystal_Ruby, 'C', OD_CIRCUITS[6], 'G', OP.gearGt.dat(aMat), 'S', OP.gearGtSmall.dat(aMat));
-        aMat = MT.TungstenSteel;        aRegistry.replaceAdd("Large Shredder"                                      , "Multiblock Machines", 17109, 17101, MultiTileEntityShredder.class             , aMat.mToolQuality, 16, aMachine   , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_TEXTURE, "largeshredder"            , NBT_INPUT,  512, NBT_INPUT_MIN,  512, NBT_INPUT_MAX,     4096, NBT_EFFICIENCY,  5000, NBT_ENERGY_ACCEPTED, TD.Energy.RU, NBT_RECIPEMAP, RM.Shredder             , NBT_INV_SIDE_AUTO_OUT, SIDE_BOTTOM, NBT_TANK_SIDE_AUTO_OUT, SIDE_BOTTOM, NBT_PARALLEL,  64, NBT_NO_CONSTANT_POWER, T), "SGS", "GSG", "RMC", 'M', aRegistry.getItem(18003), 'R', IL.Processor_Crystal_Ruby, 'C', OD_CIRCUITS[6], 'G', OP.gearGt.dat(aMat), 'S', OP.gearGtSmall.dat(aMat));
-        aMat = ANY.Steel;               aRegistry.replaceAdd("Large Squeezer"                                      , "Multiblock Machines", 17114, 17101, MultiTileEntitySqueezer.class             , aMat.mToolQuality, 16, aMachine   , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_TEXTURE, "largesqueezer"            , NBT_INPUT,  512, NBT_INPUT_MIN,  512, NBT_INPUT_MAX,     4096, NBT_EFFICIENCY,  5000, NBT_ENERGY_ACCEPTED, TD.Energy.RU, NBT_RECIPEMAP, RM.Squeezer             , NBT_INV_SIDE_AUTO_OUT, SIDE_BOTTOM, NBT_TANK_SIDE_AUTO_OUT, SIDE_BOTTOM, NBT_PARALLEL,  64, NBT_NO_CONSTANT_POWER, T), "GSG", "GSG", "RMC", 'M', aRegistry.getItem(18009), 'R', IL.Processor_Crystal_Ruby, 'C', OD_CIRCUITS[6], 'G', OP.gearGt.dat(aMat), 'S', OP.gearGtSmall.dat(aMat));
+        aRegistry.addReplacer(17100).removeParameters(NBT_CHEAP_OVERCLOCKING, NBT_PARALLEL_DURATION).setParameters(NBT_PARALLEL, 64);
+        aRegistry.addReplacer(17103).removeParameters(NBT_CHEAP_OVERCLOCKING, NBT_PARALLEL_DURATION).setParameters(NBT_PARALLEL, 64);
+        aRegistry.addReplacer(17102).removeParameters(NBT_CHEAP_OVERCLOCKING, NBT_PARALLEL_DURATION);
+        aRegistry.addReplacer(17113).removeParameters(NBT_CHEAP_OVERCLOCKING, NBT_PARALLEL_DURATION);
+        aRegistry.addReplacer(17106).removeParameters(NBT_CHEAP_OVERCLOCKING, NBT_PARALLEL_DURATION);
+        aRegistry.addReplacer(17107).removeParameters(NBT_CHEAP_OVERCLOCKING, NBT_PARALLEL_DURATION);
+        aRegistry.addReplacer(17108).removeParameters(NBT_CHEAP_OVERCLOCKING, NBT_PARALLEL_DURATION);
+        aRegistry.addReplacer(17109).removeParameters(NBT_CHEAP_OVERCLOCKING, NBT_PARALLEL_DURATION);
+        aRegistry.addReplacer(17114).removeParameters(NBT_CHEAP_OVERCLOCKING, NBT_PARALLEL_DURATION);
         
-        // Boilers
-        aClass = MultiTileEntityLargeBoiler.class;
-        for (AttributesLargeBoilerTank_CH BOILER_TANK : DATA_MACHINES_MULTIBLOCK.LargeBoilerTank) {
-            aMat = BOILER_TANK.material;
-            aRegistry.replaceAdd(aMat.getLocal() + "Stainless Steel" + " Boiler Main Barometer" , "Multiblock Machines", BOILER_TANK.ID, 17101, aClass, aMat.mToolQuality, BOILER_TANK.stackSize, aMachine,
-                UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   BOILER_TANK.nbtHardness, NBT_RESISTANCE,   BOILER_TANK.nbtResistance, NBT_TEXTURE, "largeboiler", NBT_DESIGN, BOILER_TANK.nbtDesign, NBT_CAPACITY,  BOILER_TANK.nbtCapacity, NBT_CAPACITY_SU,  BOILER_TANK.nbtCapacity_SU, NBT_INPUT,  BOILER_TANK.nbtInput,   NBT_EFFICIENCY_CH, BOILER_TANK.nbtEfficiency_CH, NBT_OUTPUT_SU,  BOILER_TANK.nbtInput*STEAM_PER_EU),
-                BOILER_TANK.recipeObject);
-        }
+        // Boilers 增加效率参数，输入调整
+        aRegistry.addReplacer(17201).setParameters(NBT_INPUT,   4096, NBT_EFFICIENCY_CH, 8000, NBT_CAPACITY,   4096*1000, NBT_CAPACITY_SU,    4096*40000).removeParameters(NBT_OUTPUT_SU); // StainlessSteel
+        aRegistry.addReplacer(17205).setParameters(NBT_INPUT,   4096, NBT_EFFICIENCY_CH, 8000, NBT_CAPACITY,   4096*1000, NBT_CAPACITY_SU,    4096*40000).removeParameters(NBT_OUTPUT_SU); // Invar
+        aRegistry.addReplacer(17202).setParameters(NBT_INPUT,   8192, NBT_EFFICIENCY_CH, 8000, NBT_CAPACITY,   8192*1000, NBT_CAPACITY_SU,    8192*40000).removeParameters(NBT_OUTPUT_SU); // Titanium
+        aRegistry.addReplacer(17203).setParameters(NBT_INPUT,  16384, NBT_EFFICIENCY_CH, 8000, NBT_CAPACITY,  16384*1000, NBT_CAPACITY_SU,   16384*40000).removeParameters(NBT_OUTPUT_SU); // Tungstensteel
+        aRegistry.addReplacer(17204).setParameters(NBT_INPUT, 131072, NBT_EFFICIENCY_CH, 8000, NBT_CAPACITY, 131072*1000, NBT_CAPACITY_SU,131072L*40000L).removeParameters(NBT_OUTPUT_SU); // Adamantium
         
-        // Steam Turbines
-        NBTTagCompound tNBT;
-        aClass = MultiTileEntityLargeTurbineSteam.class;
-        for (AttributesLargeSteamTurbine_CH STEAM_TURBINE : DATA_MACHINES_MULTIBLOCK.LargeSteamTurbine) {
-            aMat = STEAM_TURBINE.material;
-            tNBT = UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, STEAM_TURBINE.nbtHardness, NBT_RESISTANCE, STEAM_TURBINE.nbtResistance, NBT_TEXTURE, "largeturbine", NBT_DESIGN, STEAM_TURBINE.nbtDesign, NBT_EFFICIENCY_WATER, STEAM_TURBINE.nbtEfficiencyWater, NBT_LENGTH_MIN, STEAM_TURBINE.nbtLengthMin, NBT_LENGTH_MAX, STEAM_TURBINE.nbtLengthMax, NBT_LENGTH_MID, STEAM_TURBINE.nbtLengthMid, NBT_EFFICIENCY_OC, STEAM_TURBINE.nbtEfficiencyOC, NBT_ENERGY_ACCEPTED, TD.Energy.STEAM, NBT_ENERGY_EMITTED, TD.Energy.RU
-                , NBT_OUTPUT, STEAM_TURBINE.nbtOutput[STEAM_TURBINE.nbtLengthMid-STEAM_TURBINE.nbtLengthMin], NBT_EFFICIENCY, STEAM_TURBINE.nbtEfficiency[STEAM_TURBINE.nbtLengthMid-STEAM_TURBINE.nbtLengthMin], NBT_INPUT, UT.Code.units(STEAM_TURBINE.nbtOutput[STEAM_TURBINE.nbtLengthMid-STEAM_TURBINE.nbtLengthMin], STEAM_TURBINE.nbtEfficiency[STEAM_TURBINE.nbtLengthMid-STEAM_TURBINE.nbtLengthMin], 10000, T) * STEAM_PER_EU, NBT_WASTE_ENERGY, T);
-            for (int i = 0; i < STEAM_TURBINE.nbtLengthMax-STEAM_TURBINE.nbtLengthMin + 1; ++i) {
-                UT.NBT.setNumber(tNBT, NBT_EFFICIENCY+"."+i, STEAM_TURBINE.nbtEfficiency[i]);
-                UT.NBT.setNumber(tNBT, NBT_OUTPUT+"."+i, STEAM_TURBINE.nbtOutput[i]);
-                UT.NBT.setNumber(tNBT, NBT_PREHEAT_ENERGY+"."+i, STEAM_TURBINE.nbtPreheatEnergy[i]);
-                UT.NBT.setNumber(tNBT, NBT_PREHEAT_COST+"."+i, STEAM_TURBINE.nbtPreheatCost[i]);
-                UT.NBT.setNumber(tNBT, NBT_COOLDOWN_RATE+"."+i, STEAM_TURBINE.nbtCooldownRate[i]);
-            }
-            aRegistry.replaceAdd(STEAM_TURBINE.rotorMaterial.getLocal() + " Steam Turbine Main Housing", "Multiblock Machines", STEAM_TURBINE.ID, 17101, aClass  , aMat.mToolQuality, STEAM_TURBINE.stackSize, aMachine,
-                tNBT, STEAM_TURBINE.recipeObject);
-        }
+        // Steam Turbines 各长度的参数，增加预热相关
+        aRegistry.addReplacer(17211).setParameters(NBT_EFFICIENCY_WATER, 9500, NBT_EFFICIENCY_OC, 5000, NBT_LENGTH_MIN, 1, NBT_LENGTH_MAX, 10, NBT_LENGTH_MID, 4).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY).setParameterArray(NBT_OUTPUT,  1365, 2560,  3431,  4096,  4618,  5041,  5389,  5681,  5930,  6144).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY,  24576000,  49152000,   73728000,   98304000,  122880000,  147456000,  172032000,  196608000,  221184000,  245760000).setParameterArray(NBT_PREHEAT_COST,  11, 22,  32,  43,  54,  64,  75,  86,  96, 107).setParameterArray(NBT_COOLDOWN_RATE,  1024, 2048, 3072,  4096,  5120,  6144,  7168,  8192,  9216, 10240); // StainlessSteel
+        aRegistry.addReplacer(17212).setParameters(NBT_EFFICIENCY_WATER, 9500, NBT_EFFICIENCY_OC, 5000, NBT_LENGTH_MIN, 1, NBT_LENGTH_MAX, 10, NBT_LENGTH_MID, 4).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY).setParameterArray(NBT_OUTPUT,  2730, 5120,  6863,  8192,  9237, 10082, 10778, 11363, 11860, 12288).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY,  49152000,  98304000,  147456000,  196608000,  245760000,  294912000,  344064000,  393216000,  442368000,  491520000).setParameterArray(NBT_PREHEAT_COST,  22, 43,  64,  86, 107, 128, 150, 171, 192, 214).setParameterArray(NBT_COOLDOWN_RATE,  2048, 4096, 6144,  8192, 10240, 12288, 14336, 16384, 18432, 20480); // Titanium
+        aRegistry.addReplacer(17213).setParameters(NBT_EFFICIENCY_WATER, 9500, NBT_EFFICIENCY_OC, 5000, NBT_LENGTH_MIN, 1, NBT_LENGTH_MAX, 10, NBT_LENGTH_MID, 4).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY).setParameterArray(NBT_OUTPUT,  5461,10240, 13727, 16384, 18475, 20164, 21557, 22726, 23720, 24576).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY,  98304000, 196608000,  294912000,  393216000,  491520000,  589824000,  688128000,  786432000,  884736000,  983040000).setParameterArray(NBT_PREHEAT_COST,  43, 86, 128, 171, 214, 256, 299, 342, 384, 427).setParameterArray(NBT_COOLDOWN_RATE,  4096, 8192,12288, 16384, 20480, 24576, 28672, 32768, 36864, 40960); // Tungstensteel
+        aRegistry.addReplacer(17214).setParameters(NBT_EFFICIENCY_WATER, 9500, NBT_EFFICIENCY_OC, 5000, NBT_LENGTH_MIN, 1, NBT_LENGTH_MAX, 10, NBT_LENGTH_MID, 4).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY).setParameterArray(NBT_OUTPUT, 43690,81920,109817,131072,147804,161319,172463,181809,189760,196608).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY, 786432000,1572864000,2359296000L,3145728000L,3932160000L,4718592000L,5505024000L,6291456000L,7077888000L,7864320000L).setParameterArray(NBT_PREHEAT_COST, 342,683,1024,1366,1707,2048,2390,2731,3072,3414).setParameterArray(NBT_COOLDOWN_RATE, 32768,65536,98304,131072,163840,196608,229376,262144,294912,327680); // Adamantium
         
-        // Gas Turbines
-        aClass = MultiTileEntityLargeTurbineGas.class;
-        for (AttributesLargeGasTurbine_CH GAS_TURBINE : DATA_MACHINES_MULTIBLOCK.LargeGasTurbine) {
-            aMat = GAS_TURBINE.material;
-            tNBT = UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   GAS_TURBINE.nbtHardness, NBT_RESISTANCE,   GAS_TURBINE.nbtResistance, NBT_TEXTURE, "gasturbine", NBT_DESIGN, GAS_TURBINE.nbtDesign, NBT_LENGTH_MIN, GAS_TURBINE.nbtLengthMin, NBT_LENGTH_MAX, GAS_TURBINE.nbtLengthMax, NBT_LENGTH_MID, GAS_TURBINE.nbtLengthMid, NBT_ENERGY_EMITTED, TD.Energy.RU, NBT_FUELMAP, FM.Gas
-                , NBT_OUTPUT,   GAS_TURBINE.nbtOutput[GAS_TURBINE.nbtLengthMid-GAS_TURBINE.nbtLengthMin], NBT_EFFICIENCY, GAS_TURBINE.nbtEfficiency[GAS_TURBINE.nbtLengthMid-GAS_TURBINE.nbtLengthMin], NBT_INPUT, GAS_TURBINE.nbtOutput[GAS_TURBINE.nbtLengthMid-GAS_TURBINE.nbtLengthMin], NBT_WASTE_ENERGY, F, NBT_LIMIT_CONSUMPTION, T, NBT_ENERGY_ACCEPTED, TD.Energy.HU);
-            for (int i = 0; i < GAS_TURBINE.nbtLengthMax-GAS_TURBINE.nbtLengthMin + 1; ++i) {
-                UT.NBT.setNumber(tNBT, NBT_EFFICIENCY+"."+i, GAS_TURBINE.nbtEfficiency[i]);
-                UT.NBT.setNumber(tNBT, NBT_OUTPUT+"."+i, GAS_TURBINE.nbtOutput[i]);
-                UT.NBT.setNumber(tNBT, NBT_PREHEAT_ENERGY+"."+i, GAS_TURBINE.nbtPreheatEnergy[i]);
-                UT.NBT.setNumber(tNBT, NBT_PREHEAT_COST+"."+i, GAS_TURBINE.nbtPreheatCost[i]);
-                UT.NBT.setNumber(tNBT, NBT_COOLDOWN_RATE+"."+i, GAS_TURBINE.nbtCooldownRate[i]);
-                UT.NBT.setNumber(tNBT, NBT_PREHEAT_RATE+"."+i, GAS_TURBINE.nbtPreheatRate[i]);
-            }
-            aRegistry.replaceAdd(GAS_TURBINE.rotorMaterial.getLocal() + " Gas Turbine Main Housing", "Multiblock Machines", GAS_TURBINE.ID, 17101, aClass  , aMat.mToolQuality, GAS_TURBINE.stackSize, aMachine,
-                tNBT, GAS_TURBINE.recipeObject);
-        }
+        // Gas Turbines 合成变贵，各长度的参数，增加预热相关
+        aRegistry.addReplacer(17231).setParameters(NBT_LENGTH_MIN, 3, NBT_LENGTH_MAX, 12, NBT_LENGTH_MID, 6).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY, NBT_LIMIT_CONSUMPTION, NBT_ENERGY_ACCEPTED).setParameterArray(NBT_OUTPUT,  1365, 2560,  3431,  4096,  4618,  5041,  5389,  5681,  5930,  6144).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY,  24576000,  49152000,   73728000,   98304000,  122880000,  147456000,  172032000,  196608000,  221184000,  245760000).setParameterArray(NBT_PREHEAT_RATE,  1365, 2560,  3431,  4096,  4618,  5041,  5389,  5681,  5930,  6144).setParameterArray(NBT_PREHEAT_COST,  11, 22,  32,  43,  54,  64,  75,  86,  96, 107).setParameterArray(NBT_COOLDOWN_RATE,  1024, 2048, 3072,  4096,  5120,  6144,  7168,  8192,  9216, 10240).recipe("PwP", "BMC", "PEP", 'M', aRegistry.getItem(17211), 'B', "gt:re-battery1", 'C', IL.Processor_Crystal_Diamond, 'E', IL.MOTORS[1], 'P', OP.plateDense.dat(MT.Invar));         // StainlessSteel
+        aRegistry.addReplacer(17232).setParameters(NBT_LENGTH_MIN, 3, NBT_LENGTH_MAX, 12, NBT_LENGTH_MID, 6).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY, NBT_LIMIT_CONSUMPTION, NBT_ENERGY_ACCEPTED).setParameterArray(NBT_OUTPUT,  2730, 5120,  6863,  8192,  9237, 10082, 10778, 11363, 11860, 12288).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY,  49152000,  98304000,  147456000,  196608000,  245760000,  294912000,  344064000,  393216000,  442368000,  491520000).setParameterArray(NBT_PREHEAT_RATE,  2730, 5120,  6863,  8192,  9237, 10082, 10778, 11363, 11860, 12288).setParameterArray(NBT_PREHEAT_COST,  22, 43,  64,  86, 107, 128, 150, 171, 192, 214).setParameterArray(NBT_COOLDOWN_RATE,  2048, 4096, 6144,  8192, 10240, 12288, 14336, 16384, 18432, 20480).recipe("PwP", "BMC", "PEP", 'M', aRegistry.getItem(17212), 'B', "gt:re-battery2", 'C', IL.Processor_Crystal_Diamond, 'E', IL.MOTORS[2], 'P', OP.plateDense.dat(MT.TungstenSteel)); // Titanium
+        aRegistry.addReplacer(17233).setParameters(NBT_LENGTH_MIN, 3, NBT_LENGTH_MAX, 12, NBT_LENGTH_MID, 6).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY, NBT_LIMIT_CONSUMPTION, NBT_ENERGY_ACCEPTED).setParameterArray(NBT_OUTPUT,  5461,10240, 13727, 16384, 18475, 20164, 21557, 22726, 23720, 24576).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY,  98304000, 196608000,  294912000,  393216000,  491520000,  589824000,  688128000,  786432000,  884736000,  983040000).setParameterArray(NBT_PREHEAT_RATE,  5461,10240, 13727, 16384, 18475, 20164, 21557, 22726, 23720, 24576).setParameterArray(NBT_PREHEAT_COST,  43, 86, 128, 171, 214, 256, 299, 342, 384, 427).setParameterArray(NBT_COOLDOWN_RATE,  4096, 8192,12288, 16384, 20480, 24576, 28672, 32768, 36864, 40960).recipe("PwP", "BMC", "PEP", 'M', aRegistry.getItem(17213), 'B', "gt:re-battery3", 'C', IL.Processor_Crystal_Diamond, 'E', IL.MOTORS[3], 'P', OP.plateDense.dat(MT.W));             // Tungstensteel
+        aRegistry.addReplacer(17234).setParameters(NBT_LENGTH_MIN, 3, NBT_LENGTH_MAX, 12, NBT_LENGTH_MID, 6).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY, NBT_LIMIT_CONSUMPTION, NBT_ENERGY_ACCEPTED).setParameterArray(NBT_OUTPUT, 43690,81920,109817,131072,147804,161319,172463,181809,189760,196608).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY, 786432000,1572864000,2359296000L,3145728000L,3932160000L,4718592000L,5505024000L,6291456000L,7077888000L,7864320000L).setParameterArray(NBT_PREHEAT_RATE, 43690,81920,109817,131072,147804,161319,172463,181809,189760,196608).setParameterArray(NBT_PREHEAT_COST, 342,683,1024,1366,1707,2048,2390,2731,3072,3414).setParameterArray(NBT_COOLDOWN_RATE, 32768,65536,98304,131072,163840,196608,229376,262144,294912,327680).recipe("PwP", "BMC", "PEP", 'M', aRegistry.getItem(17214), 'B', "gt:re-battery4", 'C', IL.Processor_Crystal_Diamond, 'E', IL.MOTORS[4], 'P', OP.plateDense.dat(MT.Ad));            // Adamantium
         
         
         /// 添加项
@@ -488,9 +516,9 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         aMat = MT.Rubber;               aRegistry.appendAddAfter (17198, RegType.GT6U, "Ionizer"                                            , "Multiblock Machines", 17315, 17101, MultiTileEntityIonizer.class            , aMat.mToolQuality, 16, aMachine   , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  10.0F, NBT_RESISTANCE,  10.0F, NBT_TEXTURE, "ionizer"                 , NBT_INPUT, 2048, NBT_INPUT_MIN, 1024, NBT_INPUT_MAX,   524288                        , NBT_ENERGY_ACCEPTED, TD.Energy.EU, NBT_RECIPEMAP, RM_CH.Ionizer         , NBT_INV_SIDE_AUTO_OUT, SIDE_BOTTOM, NBT_TANK_SIDE_AUTO_OUT, SIDE_BOTTOM, NBT_CHEAP_OVERCLOCKING, T, NBT_PARALLEL,  64, NBT_PARALLEL_DURATION, T                          ),  "GGG", "SwS", "RMC", 'M', aRegistry.getItem(18115), 'R', IL.Processor_Crystal_Ruby, 'C', OD_CIRCUITS[6], 'G', OP.wireGt16.dat(MT.VanadiumGallium), 'S', OP.stickLong.dat(MT.VanadiumGallium));
         // 圆形正负电子对撞机 MARK GT6U 已注释，这里直接移除
         
-        // 更多大型热交换器 MARK 输出功率调低
-        aMat = MT.TungstenSteel;        aRegistry.appendAddBefore(17197, RegType.GT6U, "Large Heat Exchanger(TungstenSteel)"                , "Multiblock Machines", 18301, 17101, MultiTileEntityLargeHeatExchanger.class  , aMat.mToolQuality, 16, aMachine   , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_TEXTURE, "largeheatexchanger"     , NBT_DESIGN, 18109, NBT_OUTPUT, 4096, NBT_FUELMAP, FM.Hot, NBT_ENERGY_EMITTED, TD.Energy.HU), "DDD", "PMP", "DDD", 'M', aRegistry.getItem(18023), 'D', OP.plateDense.dat(MT.AnnealedCopper), 'P', OP.pipeHuge.dat(ANY.Cu));
-        aMat = MT.Ta4HfC5;              aRegistry.appendAddAfter (17197, RegType.GT6U, "Large Heat Exchanger(Tantalum Hafnium Carbide)"     , "Multiblock Machines", 18304, 17101, MultiTileEntityLargeHeatExchanger.class  , aMat.mToolQuality, 16, aMachine   , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_TEXTURE, "largeheatexchanger"     , NBT_DESIGN, 18111, NBT_OUTPUT,65536, NBT_FUELMAP, FM.Hot, NBT_ENERGY_EMITTED, TD.Energy.HU), "DDD", "PMP", "DDD", 'M', aRegistry.getItem(18032), 'D', OP.plateDense.dat(MT.AnnealedCopper), 'P', OP.pipeHuge.dat(ANY.Cu));
+        // 更多大型热交换器 MARK 输出功率调低 TODO 增加殷钢的
+        aMat = MT.TungstenSteel;        aRegistry.appendAddBefore(17197, RegType.GT6U, "Large Heat Exchanger (TungstenSteel)"               , "Multiblock Machines", 18301, 17101, MultiTileEntityLargeHeatExchanger.class  , aMat.mToolQuality, 16, aMachine   , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_TEXTURE, "largeheatexchanger"     , NBT_DESIGN, 18109, NBT_EFFICIENCY,  9000, NBT_OUTPUT, 16384, NBT_FUELMAP, FM.Hot, NBT_ENERGY_EMITTED, TD.Energy.HU), "DDD", "PMP", "DDD", 'M', aRegistry.getItem(18023), 'D', OP.plateDense.dat(MT.AnnealedCopper), 'P', OP.pipeHuge.dat(ANY.Cu));
+        aMat = MT.Ta4HfC5;              aRegistry.appendAddAfter (17197, RegType.GT6U, "Large Heat Exchanger (Tantalum Hafnium Carbide)"    , "Multiblock Machines", 18304, 17101, MultiTileEntityLargeHeatExchanger.class  , aMat.mToolQuality, 16, aMachine   , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_TEXTURE, "largeheatexchanger"     , NBT_DESIGN, 18111, NBT_EFFICIENCY,  9500, NBT_OUTPUT, 32768, NBT_FUELMAP, FM.Hot, NBT_ENERGY_EMITTED, TD.Energy.HU), "DDD", "PMP", "DDD", 'M', aRegistry.getItem(18032), 'D', OP.plateDense.dat(MT.AnnealedCopper), 'P', OP.pipeHuge.dat(ANY.Cu));
         
         // 大型干燥器
         aMat = MT.TungstenSteel;        aRegistry.appendAddAfter (17197, RegType.GT6U, "Large TungstenSteel Dryer"                          , "Multiblock Machines", 17316, 17101, MultiTileEntityDryer.class               , aMat.mToolQuality, 16, aMachine   , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_TEXTURE, "largedryer"             , NBT_DESIGN, 18023, NBT_INPUT, 1024,   NBT_INPUT_MIN,     512, NBT_INPUT_MAX,    4096, NBT_ENERGY_ACCEPTED, TD.Energy.HU, NBT_RECIPEMAP, RM.Drying              , NBT_INV_SIDE_AUTO_OUT, SIDE_BOTTOM, NBT_TANK_SIDE_AUTO_OUT, SIDE_BOTTOM, NBT_CHEAP_OVERCLOCKING, T, NBT_PARALLEL,  64, NBT_PARALLEL_DURATION, T                          ),  "GGG", "SwS", "RMC", 'M', aRegistry.getItem(18023), 'R', IL.Processor_Crystal_Ruby, 'C', OD_CIRCUITS[6], 'G', OP.gearGt.dat(aMat), 'S', OP.stick.dat(aMat));
@@ -532,17 +560,16 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
     }
     
     
-    // TODO 这些微小修改提供专门的 api 来进一步减少重复代码
     @Override protected void machines1BeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
         /// 添加前将后续添加全部 hold
         aRegistry.MODIFYING_ADD_START();
         
         /// 修改项
-        aClass = MultiTileEntityBasicMachine.class;
-        aMat = MT.DATA.Heat_T[1];       aRegistry.replaceAdd("Oven ("                          +aMat.getLocal()+")", "Basic Machines"                      , 20001, 20001, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_INPUT,   32, NBT_TEXTURE, "oven", NBT_ENERGY_ACCEPTED, TD.Energy.HU, NBT_RECIPEMAP, RM.Furnace, NBT_INV_SIDE_IN, SBIT_L, NBT_INV_SIDE_AUTO_IN, SIDE_LEFT, NBT_INV_SIDE_OUT, SBIT_R, NBT_INV_SIDE_AUTO_OUT, SIDE_RIGHT, NBT_TANK_SIDE_OUT, 63, NBT_ENERGY_ACCEPTED_SIDES, SBIT_D, NBT_PARALLEL, 4, NBT_PARALLEL_DURATION, T), "wMh", "BCB", 'M', OP.casingMachine.dat(aMat), 'C', OP.plateDouble.dat(ANY.Cu), 'B', Blocks.brick_block);
-        aMat = MT.DATA.Heat_T[2];       aRegistry.replaceAdd("Oven ("                          +aMat.getLocal()+")", "Basic Machines"                      , 20002, 20001, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   4.0F, NBT_RESISTANCE,   4.0F, NBT_INPUT,  128, NBT_TEXTURE, "oven", NBT_ENERGY_ACCEPTED, TD.Energy.HU, NBT_RECIPEMAP, RM.Furnace, NBT_INV_SIDE_IN, SBIT_L, NBT_INV_SIDE_AUTO_IN, SIDE_LEFT, NBT_INV_SIDE_OUT, SBIT_R, NBT_INV_SIDE_AUTO_OUT, SIDE_RIGHT, NBT_TANK_SIDE_OUT, 63, NBT_ENERGY_ACCEPTED_SIDES, SBIT_D, NBT_PARALLEL, 8, NBT_PARALLEL_DURATION, T), "wMh", "BCB", 'M', OP.casingMachine.dat(aMat), 'C', OP.plateDouble.dat(ANY.Cu), 'B', Blocks.brick_block);
-        aMat = MT.DATA.Heat_T[3];       aRegistry.replaceAdd("Oven ("                          +aMat.getLocal()+")", "Basic Machines"                      , 20003, 20001, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   9.0F, NBT_RESISTANCE,   9.0F, NBT_INPUT,  512, NBT_TEXTURE, "oven", NBT_ENERGY_ACCEPTED, TD.Energy.HU, NBT_RECIPEMAP, RM.Furnace, NBT_INV_SIDE_IN, SBIT_L, NBT_INV_SIDE_AUTO_IN, SIDE_LEFT, NBT_INV_SIDE_OUT, SBIT_R, NBT_INV_SIDE_AUTO_OUT, SIDE_RIGHT, NBT_TANK_SIDE_OUT, 63, NBT_ENERGY_ACCEPTED_SIDES, SBIT_D, NBT_PARALLEL,16, NBT_PARALLEL_DURATION, T), "wMh", "BCB", 'M', OP.casingMachine.dat(aMat), 'C', OP.plateDouble.dat(ANY.Cu), 'B', Blocks.brick_block);
-        aMat = MT.DATA.Heat_T[4];       aRegistry.replaceAdd("Oven ("                          +aMat.getLocal()+")", "Basic Machines"                      , 20004, 20001, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_INPUT, 2048, NBT_TEXTURE, "oven", NBT_ENERGY_ACCEPTED, TD.Energy.HU, NBT_RECIPEMAP, RM.Furnace, NBT_INV_SIDE_IN, SBIT_L, NBT_INV_SIDE_AUTO_IN, SIDE_LEFT, NBT_INV_SIDE_OUT, SBIT_R, NBT_INV_SIDE_AUTO_OUT, SIDE_RIGHT, NBT_TANK_SIDE_OUT, 63, NBT_ENERGY_ACCEPTED_SIDES, SBIT_D, NBT_PARALLEL,32, NBT_PARALLEL_DURATION, T), "wMh", "BCB", 'M', OP.casingMachine.dat(aMat), 'C', OP.plateDouble.dat(ANY.Cu), 'B', Blocks.brick_block);
+        // Oven 增加并行避免卡 1 tick
+        aRegistry.addReplacer(20001).setParameters(NBT_PARALLEL,  4, NBT_PARALLEL_DURATION, T);
+        aRegistry.addReplacer(20002).setParameters(NBT_PARALLEL,  8, NBT_PARALLEL_DURATION, T);
+        aRegistry.addReplacer(20003).setParameters(NBT_PARALLEL, 16, NBT_PARALLEL_DURATION, T);
+        aRegistry.addReplacer(20004).setParameters(NBT_PARALLEL, 32, NBT_PARALLEL_DURATION, T);
     }
     @Override protected void machines1FinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
         /// 最后释放这些修改后的添加
@@ -555,11 +582,11 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         aRegistry.MODIFYING_ADD_START();
         
         /// 修改项
-        aClass = MultiTileEntityBasicMachine.class;
-        aMat = MT.DATA.Heat_T[1];       aRegistry.replaceAdd("Steam Cracker ("                 +aMat.getLocal()+")", "Basic Machines"                      , 20491, 20001, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_INPUT,   32, NBT_TEXTURE, "steamcracker", NBT_ENERGY_ACCEPTED, TD.Energy.HU, NBT_RECIPEMAP, RM.SteamCracking, NBT_INV_SIDE_IN, SBIT_U|SBIT_L, NBT_INV_SIDE_AUTO_IN, SIDE_TOP, NBT_INV_SIDE_OUT, SBIT_R|SBIT_B, NBT_INV_SIDE_AUTO_OUT, SIDE_BACK, NBT_TANK_SIDE_IN, SBIT_U|SBIT_L, NBT_TANK_SIDE_AUTO_IN, SIDE_LEFT, NBT_TANK_SIDE_OUT, SBIT_R|SBIT_B, NBT_TANK_SIDE_AUTO_OUT, SIDE_RIGHT, NBT_ENERGY_ACCEPTED_SIDES, SBIT_D, NBT_CANFILL_STEAM, T), "IwI", "PMP", "ICI", 'M', OP.casingMachineDouble.dat(aMat), 'C', OP.plateDouble   .dat(ANY.Cu), 'I', OP.plateDouble   .dat(MT.Invar), 'P', OP.pipeMedium.dat(aMat));
-        aMat = MT.DATA.Heat_T[2];       aRegistry.replaceAdd("Steam Cracker ("                 +aMat.getLocal()+")", "Basic Machines"                      , 20492, 20001, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   4.0F, NBT_RESISTANCE,   4.0F, NBT_INPUT,  128, NBT_TEXTURE, "steamcracker", NBT_ENERGY_ACCEPTED, TD.Energy.HU, NBT_RECIPEMAP, RM.SteamCracking, NBT_INV_SIDE_IN, SBIT_U|SBIT_L, NBT_INV_SIDE_AUTO_IN, SIDE_TOP, NBT_INV_SIDE_OUT, SBIT_R|SBIT_B, NBT_INV_SIDE_AUTO_OUT, SIDE_BACK, NBT_TANK_SIDE_IN, SBIT_U|SBIT_L, NBT_TANK_SIDE_AUTO_IN, SIDE_LEFT, NBT_TANK_SIDE_OUT, SBIT_R|SBIT_B, NBT_TANK_SIDE_AUTO_OUT, SIDE_RIGHT, NBT_ENERGY_ACCEPTED_SIDES, SBIT_D, NBT_CANFILL_STEAM, T), "IwI", "PMP", "ICI", 'M', OP.casingMachineDouble.dat(aMat), 'C', OP.plateTriple   .dat(ANY.Cu), 'I', OP.plateTriple   .dat(MT.Invar), 'P', OP.pipeMedium.dat(aMat));
-        aMat = MT.DATA.Heat_T[3];       aRegistry.replaceAdd("Steam Cracker ("                 +aMat.getLocal()+")", "Basic Machines"                      , 20493, 20001, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   9.0F, NBT_RESISTANCE,   9.0F, NBT_INPUT,  512, NBT_TEXTURE, "steamcracker", NBT_ENERGY_ACCEPTED, TD.Energy.HU, NBT_RECIPEMAP, RM.SteamCracking, NBT_INV_SIDE_IN, SBIT_U|SBIT_L, NBT_INV_SIDE_AUTO_IN, SIDE_TOP, NBT_INV_SIDE_OUT, SBIT_R|SBIT_B, NBT_INV_SIDE_AUTO_OUT, SIDE_BACK, NBT_TANK_SIDE_IN, SBIT_U|SBIT_L, NBT_TANK_SIDE_AUTO_IN, SIDE_LEFT, NBT_TANK_SIDE_OUT, SBIT_R|SBIT_B, NBT_TANK_SIDE_AUTO_OUT, SIDE_RIGHT, NBT_ENERGY_ACCEPTED_SIDES, SBIT_D, NBT_CANFILL_STEAM, T), "IwI", "PMP", "ICI", 'M', OP.casingMachineDouble.dat(aMat), 'C', OP.plateQuadruple.dat(ANY.Cu), 'I', OP.plateQuadruple.dat(MT.Invar), 'P', OP.pipeMedium.dat(aMat));
-        aMat = MT.DATA.Heat_T[4];       aRegistry.replaceAdd("Steam Cracker ("                 +aMat.getLocal()+")", "Basic Machines"                      , 20494, 20001, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_INPUT, 2048, NBT_TEXTURE, "steamcracker", NBT_ENERGY_ACCEPTED, TD.Energy.HU, NBT_RECIPEMAP, RM.SteamCracking, NBT_INV_SIDE_IN, SBIT_U|SBIT_L, NBT_INV_SIDE_AUTO_IN, SIDE_TOP, NBT_INV_SIDE_OUT, SBIT_R|SBIT_B, NBT_INV_SIDE_AUTO_OUT, SIDE_BACK, NBT_TANK_SIDE_IN, SBIT_U|SBIT_L, NBT_TANK_SIDE_AUTO_IN, SIDE_LEFT, NBT_TANK_SIDE_OUT, SBIT_R|SBIT_B, NBT_TANK_SIDE_AUTO_OUT, SIDE_RIGHT, NBT_ENERGY_ACCEPTED_SIDES, SBIT_D, NBT_CANFILL_STEAM, T), "IwI", "PMP", "ICI", 'M', OP.casingMachineDouble.dat(aMat), 'C', OP.plateQuintuple.dat(ANY.Cu), 'I', OP.plateQuintuple.dat(MT.Invar), 'P', OP.pipeMedium.dat(aMat));
+        // Steam Cracker 增加可以填充蒸汽
+        aRegistry.addReplacer(20491).setParameters(NBT_CANFILL_STEAM, T);
+        aRegistry.addReplacer(20492).setParameters(NBT_CANFILL_STEAM, T);
+        aRegistry.addReplacer(20493).setParameters(NBT_CANFILL_STEAM, T);
+        aRegistry.addReplacer(20494).setParameters(NBT_CANFILL_STEAM, T);
     }
     @Override protected void machines3FinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
         /// 最后释放这些修改后的添加
@@ -572,9 +599,9 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         aRegistry.MODIFYING_ADD_START();
         
         /// 修改项
-        aClass = MultiTileEntityBasicMachine.class;
-        aMat = MT.StainlessSteel;       aRegistry.replaceAdd("Bath"                                                , "Basic Machines"                      , 22002, 20001, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_INPUT, 1, NBT_TEXTURE, "bath"          , NBT_ENERGY_ACCEPTED, TD.Energy.TU, NBT_NO_CONSTANT_POWER, T, NBT_RECIPEMAP, RM.Bath         , NBT_INV_SIDE_IN, SBIT_U|SBIT_L    , NBT_INV_SIDE_AUTO_IN, SIDE_LEFT   , NBT_INV_SIDE_OUT, SBIT_D|SBIT_R   , NBT_INV_SIDE_AUTO_OUT, SIDE_RIGHT     , NBT_TANK_SIDE_IN, SBIT_U|SBIT_L   , NBT_TANK_SIDE_AUTO_IN, SIDE_TOP   , NBT_TANK_SIDE_OUT, SBIT_D|SBIT_R  , NBT_TANK_SIDE_AUTO_OUT, SIDE_BOTTOM   , NBT_ENERGY_ACCEPTED_SIDES, SBIT_B                                     , NBT_CANFILL_STEAM, T), "CwC", "PMP", "PPP", 'M', OP.casingMachine.dat(aMat), 'C', OP.casingSmall.dat(aMat), 'P', OP.plate.dat(aMat));
-        aMat = MT.StainlessSteel;       aRegistry.replaceAdd("Autoclave"                                           , "Basic Machines"                      , 22004, 20001, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_INPUT, 1, NBT_TEXTURE, "autoclave"     , NBT_ENERGY_ACCEPTED, TD.Energy.TU, NBT_NO_CONSTANT_POWER, T, NBT_RECIPEMAP, RM.Autoclave    , NBT_INV_SIDE_IN, SBIT_U|SBIT_L    , NBT_INV_SIDE_AUTO_IN, SIDE_LEFT   , NBT_INV_SIDE_OUT, SBIT_B|SBIT_R   , NBT_INV_SIDE_AUTO_OUT, SIDE_RIGHT     , NBT_TANK_SIDE_IN, SBIT_D|SBIT_L   , NBT_TANK_SIDE_AUTO_IN, SIDE_BOTTOM, NBT_TANK_SIDE_OUT, SBIT_B|SBIT_R  , NBT_TANK_SIDE_AUTO_OUT, SIDE_BACK     , NBT_ENERGY_ACCEPTED_SIDES, SBIT_B                                     , NBT_CANFILL_STEAM, T), "CwC", "PMP", "GPG", 'M', OP.casingMachineQuadruple.dat(aMat), 'C', OP.casingSmall.dat(aMat), 'G', OP.gearGtSmall.dat(aMat), 'P', OP.pipeSmall.dat(aMat));
+        // Bath 和 Autoclave 增加可以填充蒸汽
+        aRegistry.addReplacer(22002).setParameters(NBT_CANFILL_STEAM, T);
+        aRegistry.addReplacer(22004).setParameters(NBT_CANFILL_STEAM, T);
     }
     @Override protected void machines4FinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
         /// 最后释放这些修改后的添加
@@ -587,60 +614,93 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         aRegistry.MODIFYING_ADD_START();
         
         /// 修改项
-        // Axles
-        aClass = MultiTileEntityAxle.class;
-        for (AttributesAxleWood_CH AXLE : DATA_MACHINES_KINETIC.AxleWood) {
-            aMat = AXLE.material;
-            aRegistry.replaceAdd(AXLE.sizeName + "Wooden Axle", "Axles and Gearboxes", AXLE.ID, 24819, aClass, aMat.mToolQuality, AXLE.stackSize, aWooden ,
-                UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, AXLE.nbtHardness, NBT_RESISTANCE, AXLE.nbtResistance, NBT_FLAMMABILITY, AXLE.nbtFlammability, NBT_PIPESIZE, AXLE.nbtSpeedLimit, NBT_PIPEBANDWIDTH, AXLE.nbtPowerLimit, NBT_DIAMETER, AXLE.nbtDiameter),
-                AXLE.recipeObject);
-        }
-        for (AttributesAxle_CH AXLE : DATA_MACHINES_KINETIC.Axle) {
-            aMat = AXLE.material;
-            aRegistry.replaceAdd(AXLE.sizeName + aMat.mNameLocal + " Axle", "Axles and Gearboxes", AXLE.ID, 24819, aClass, aMat.mToolQuality, AXLE.stackSize, aMachine,
-                UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, AXLE.nbtHardness, NBT_RESISTANCE, AXLE.nbtResistance, NBT_PIPESIZE, AXLE.nbtSpeedLimit, NBT_PIPEBANDWIDTH, AXLE.nbtPowerLimit, NBT_DIAMETER, AXLE.nbtDiameter),
-                AXLE.recipeObject);
-        }
-        // Engine rotations
-        for (AttributesEngineRotationWood_CH ENGINE_ROTATION : DATA_MACHINES_KINETIC.EngineRotationWood) {
-            aMat = ENGINE_ROTATION.material;
-            aRegistry.replaceAdd("Wooden Rotation Engine", "Axles and Gearboxes", ENGINE_ROTATION.ID, 24819, MultiTileEntityEngineRotation.class, aMat.mToolQuality, ENGINE_ROTATION.stackSize, aWooden ,
-                UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, ENGINE_ROTATION.nbtHardness, NBT_RESISTANCE, ENGINE_ROTATION.nbtResistance, NBT_FLAMMABILITY, ENGINE_ROTATION.nbtFlammability, NBT_INPUT, ENGINE_ROTATION.nbtInput, NBT_OUTPUT, ENGINE_ROTATION.nbtOutput, NBT_WASTE_ENERGY, ENGINE_ROTATION.nbtWasteEnergy, NBT_ENERGY_ACCEPTED, TD.Energy.RU, NBT_ENERGY_EMITTED, TD.Energy.KU),
-                ENGINE_ROTATION.recipeObject);
-        }
-        for (AttributesEngineRotation_CH ENGINE_ROTATION : DATA_MACHINES_KINETIC.EngineRotation) {
-            aMat = ENGINE_ROTATION.material;
-            aRegistry.replaceAdd(aMat.mNameLocal + " Rotation Engine", "Axles and Gearboxes", ENGINE_ROTATION.ID, 24819, MultiTileEntityEngineRotation.class     , aMat.mToolQuality, ENGINE_ROTATION.stackSize, aMachine,
-                UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, ENGINE_ROTATION.nbtHardness, NBT_RESISTANCE, ENGINE_ROTATION.nbtResistance, NBT_INPUT, ENGINE_ROTATION.nbtInput, NBT_OUTPUT, ENGINE_ROTATION.nbtOutput, NBT_WASTE_ENERGY, ENGINE_ROTATION.nbtWasteEnergy, NBT_ENERGY_ACCEPTED, TD.Energy.RU, NBT_ENERGY_EMITTED, TD.Energy.KU),
-                ENGINE_ROTATION.recipeObject);
-        }
-        // Transformer rotations
-        aClass = MultiTileEntityTransformerRotation.class;
-        for (AttributesTransformerRotationWood_CH TRANSFORMER : DATA_MACHINES_KINETIC.TransformerRotationWood) {
-            aMat = TRANSFORMER.material;
-            aRegistry.replaceAdd("Wooden Transformer Gearbox", "Axles and Gearboxes", TRANSFORMER.ID, 24819, aClass, aMat.mToolQuality, TRANSFORMER.stackSize, aWooden ,
-                UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, TRANSFORMER.nbtHardness, NBT_RESISTANCE, TRANSFORMER.nbtResistance, NBT_FLAMMABILITY, TRANSFORMER.nbtFlammability, NBT_OUTPUT, TRANSFORMER.nbtOutput, NBT_MULTIPLIER, TRANSFORMER.nbtMultiplier, NBT_ENERGY_ACCEPTED, TD.Energy.RU, NBT_ENERGY_EMITTED, TD.Energy.RU),
-                TRANSFORMER.recipeObject);
-        }
-        for (AttributesTransformerRotation_CH TRANSFORMER : DATA_MACHINES_KINETIC.TransformerRotation) {
-            aMat = TRANSFORMER.material;
-            aRegistry.replaceAdd(aMat.mNameLocal + " Transformer Gearbox", "Axles and Gearboxes", TRANSFORMER.ID, 24819, aClass, aMat.mToolQuality, TRANSFORMER.stackSize, aMachine,
-                UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, TRANSFORMER.nbtHardness, NBT_RESISTANCE, TRANSFORMER.nbtResistance, NBT_OUTPUT, TRANSFORMER.nbtOutput, NBT_MULTIPLIER, TRANSFORMER.nbtMultiplier, NBT_ENERGY_ACCEPTED, TD.Energy.RU, NBT_ENERGY_EMITTED, TD.Energy.RU),
-                TRANSFORMER.recipeObject);
-        }
-        // Gear boxes
-        for (AttributesGearBoxWood_CH GEAR_BOX : DATA_MACHINES_KINETIC.GearBoxWood) {
-            aMat = GEAR_BOX.material;
-            aRegistry.replaceAdd("Custom Wooden Gearbox", "Axles and Gearboxes", GEAR_BOX.ID, 24819, MultiTileEntityGearBox.class, aMat.mToolQuality, GEAR_BOX.stackSize, aWooden ,
-                UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, GEAR_BOX.nbtHardness, NBT_RESISTANCE, GEAR_BOX.nbtResistance, NBT_FLAMMABILITY, GEAR_BOX.nbtFlammability, NBT_INPUT   , GEAR_BOX.nbtInput),
-                GEAR_BOX.recipeObject);
-        }
-        for (AttributesGearBox_CH GEAR_BOX : DATA_MACHINES_KINETIC.GearBox) {
-            aMat = GEAR_BOX.material;
-            aRegistry.replaceAdd("Custom " + aMat.mNameLocal + " Gearbox", "Axles and Gearboxes", GEAR_BOX.ID, 24819, MultiTileEntityGearBox.class, aMat.mToolQuality, GEAR_BOX.stackSize, aMachine,
-                UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, GEAR_BOX.nbtHardness, NBT_RESISTANCE, GEAR_BOX.nbtResistance, NBT_INPUT   , GEAR_BOX.nbtInput),
-                GEAR_BOX.recipeObject);
-        }
+        // Axles 调整功率限制
+        // Wood
+        aRegistry.addReplacer(24800).setParameters(NBT_PIPEBANDWIDTH,  1);
+        aRegistry.addReplacer(24801).setParameters(NBT_PIPEBANDWIDTH,  4);
+        aRegistry.addReplacer(24802).setParameters(NBT_PIPEBANDWIDTH, 16);
+        aRegistry.addReplacer(24803).setParameters(NBT_PIPEBANDWIDTH, 64);
+        // Bronze
+        aRegistry.addReplacer(24810).setParameters(NBT_PIPEBANDWIDTH,  1);
+        aRegistry.addReplacer(24811).setParameters(NBT_PIPEBANDWIDTH,  4);
+        aRegistry.addReplacer(24812).setParameters(NBT_PIPEBANDWIDTH, 16);
+        aRegistry.addReplacer(24813).setParameters(NBT_PIPEBANDWIDTH, 64);
+        // AnyIronSteel
+        aRegistry.addReplacer(24820).setParameters(NBT_PIPEBANDWIDTH,  1);
+        aRegistry.addReplacer(24821).setParameters(NBT_PIPEBANDWIDTH,  4);
+        aRegistry.addReplacer(24822).setParameters(NBT_PIPEBANDWIDTH, 16);
+        aRegistry.addReplacer(24823).setParameters(NBT_PIPEBANDWIDTH, 64);
+        // Titanium
+        aRegistry.addReplacer(24830).setParameters(NBT_PIPEBANDWIDTH,  1);
+        aRegistry.addReplacer(24831).setParameters(NBT_PIPEBANDWIDTH,  4);
+        aRegistry.addReplacer(24832).setParameters(NBT_PIPEBANDWIDTH, 16);
+        aRegistry.addReplacer(24833).setParameters(NBT_PIPEBANDWIDTH, 64);
+        // Tungstensteel
+        aRegistry.addReplacer(24840).setParameters(NBT_PIPEBANDWIDTH,  1);
+        aRegistry.addReplacer(24841).setParameters(NBT_PIPEBANDWIDTH,  4);
+        aRegistry.addReplacer(24842).setParameters(NBT_PIPEBANDWIDTH, 16);
+        aRegistry.addReplacer(24843).setParameters(NBT_PIPEBANDWIDTH, 64);
+        // Iridium
+        aRegistry.addReplacer(24850).setParameters(NBT_PIPEBANDWIDTH,  1);
+        aRegistry.addReplacer(24851).setParameters(NBT_PIPEBANDWIDTH,  4);
+        aRegistry.addReplacer(24852).setParameters(NBT_PIPEBANDWIDTH, 16);
+        aRegistry.addReplacer(24853).setParameters(NBT_PIPEBANDWIDTH, 64);
+        // TitaniumIridium
+        aRegistry.addReplacer(24860).setParameters(NBT_PIPEBANDWIDTH,  1);
+        aRegistry.addReplacer(24861).setParameters(NBT_PIPEBANDWIDTH,  4);
+        aRegistry.addReplacer(24862).setParameters(NBT_PIPEBANDWIDTH, 16);
+        aRegistry.addReplacer(24863).setParameters(NBT_PIPEBANDWIDTH, 64);
+        // Trinitanium
+        aRegistry.addReplacer(24870).setParameters(NBT_PIPEBANDWIDTH,  1);
+        aRegistry.addReplacer(24871).setParameters(NBT_PIPEBANDWIDTH,  4);
+        aRegistry.addReplacer(24872).setParameters(NBT_PIPEBANDWIDTH, 16);
+        aRegistry.addReplacer(24873).setParameters(NBT_PIPEBANDWIDTH, 64);
+        // Trinaquadalloy
+        aRegistry.addReplacer(24880).setParameters(NBT_PIPEBANDWIDTH,  1);
+        aRegistry.addReplacer(24881).setParameters(NBT_PIPEBANDWIDTH,  4);
+        aRegistry.addReplacer(24882).setParameters(NBT_PIPEBANDWIDTH, 16);
+        aRegistry.addReplacer(24883).setParameters(NBT_PIPEBANDWIDTH, 64);
+        // Adamantium
+        aRegistry.addReplacer(24890).setParameters(NBT_PIPEBANDWIDTH,  1);
+        aRegistry.addReplacer(24891).setParameters(NBT_PIPEBANDWIDTH,  4);
+        aRegistry.addReplacer(24892).setParameters(NBT_PIPEBANDWIDTH, 16);
+        aRegistry.addReplacer(24893).setParameters(NBT_PIPEBANDWIDTH, 64);
+        
+        // Engine rotations 降低造价
+        aMat = MT.WoodTreated;      aRegistry.addReplacer(24807).recipe("PSP", "wAL", "GAG", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'P', OP.plate        .dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24800));
+        aMat = MT.Bronze;           aRegistry.addReplacer(24817).recipe("SAS", "wML", "GAG", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24810));
+        aMat = ANY.Steel;           aRegistry.addReplacer(24827).recipe("SAS", "wML", "GAG", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24820));
+        aMat = MT.Ti;               aRegistry.addReplacer(24837).recipe("SAS", "wML", "GAG", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24830));
+        aMat = MT.TungstenSteel;    aRegistry.addReplacer(24847).recipe("SAS", "wML", "GAG", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24840));
+        aMat = MT.Ir;               aRegistry.addReplacer(24857).recipe("SAS", "wML", "GAG", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24850));
+        aMat = MT.Iritanium;        aRegistry.addReplacer(24867).recipe("SAS", "wML", "GAG", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24860));
+        aMat = MT.Trinitanium;      aRegistry.addReplacer(24877).recipe("SAS", "wML", "GAG", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24870));
+        aMat = MT.Trinaquadalloy;   aRegistry.addReplacer(24887).recipe("SAS", "wML", "GAG", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24880));
+        aMat = MT.Ad;               aRegistry.addReplacer(24897).recipe("SAS", "wML", "GAG", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24890));
+        
+        // Transformer rotations 降低造价
+        aMat = MT.WoodTreated;      aRegistry.addReplacer(24808).recipe("ASL", "SGS", "PSA", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'P', OP.plate        .dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24800));
+        aMat = MT.Bronze;           aRegistry.addReplacer(24818).recipe("ASL", "SGS", "MSA", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24810));
+        aMat = ANY.Steel;           aRegistry.addReplacer(24828).recipe("ASL", "SGS", "MSA", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24820));
+        aMat = MT.Ti;               aRegistry.addReplacer(24838).recipe("ASL", "SGS", "MSA", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24830));
+        aMat = MT.TungstenSteel;    aRegistry.addReplacer(24848).recipe("ASL", "SGS", "MSA", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24840));
+        aMat = MT.Ir;               aRegistry.addReplacer(24858).recipe("ASL", "SGS", "MSA", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24850));
+        aMat = MT.Iritanium;        aRegistry.addReplacer(24868).recipe("ASL", "SGS", "MSA", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24860));
+        aMat = MT.Trinitanium;      aRegistry.addReplacer(24878).recipe("ASL", "SGS", "MSA", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24870));
+        aMat = MT.Trinaquadalloy;   aRegistry.addReplacer(24888).recipe("ASL", "SGS", "MSA", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24880));
+        aMat = MT.Ad;               aRegistry.addReplacer(24898).recipe("ASL", "SGS", "MSA", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24890));
+        
+        // Gear boxes 降低造价
+        aMat = MT.WoodTreated;      aRegistry.addReplacer(24809).recipe("PsP", "ALA", "PAP"                                                         , 'P', OP.plate        .dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24800));
+        aMat = MT.Bronze;           aRegistry.addReplacer(24819).recipe("wAL", "AMA"                                                                , 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24810));
+        aMat = ANY.Steel;           aRegistry.addReplacer(24829).recipe("wAL", "AMA"                                                                , 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24820));
+        aMat = MT.Ti;               aRegistry.addReplacer(24839).recipe("wAL", "AMA"                                                                , 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24830));
+        aMat = MT.TungstenSteel;    aRegistry.addReplacer(24849).recipe("wAL", "AMA"                                                                , 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24840));
+        aMat = MT.Ir;               aRegistry.addReplacer(24859).recipe("wAL", "AMA"                                                                , 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24850));
+        aMat = MT.Iritanium;        aRegistry.addReplacer(24869).recipe("wAL", "AMA"                                                                , 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24860));
+        aMat = MT.Trinitanium;      aRegistry.addReplacer(24879).recipe("wAL", "AMA"                                                                , 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24870));
+        aMat = MT.Trinaquadalloy;   aRegistry.addReplacer(24889).recipe("wAL", "AMA"                                                                , 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24880));
+        aMat = MT.Ad;               aRegistry.addReplacer(24899).recipe("wAL", "AMA"                                                                , 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24890));
     }
     @Override protected void kineticFinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
         /// 最后释放这些修改后的添加

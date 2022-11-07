@@ -93,6 +93,16 @@ public class CS_CH {
         {IconType.SIDE_DOWN,    IconType.SIDE_UP,   IconType.SIDE_RIGHT,    IconType.SIDE_LEFT,     IconType.BACK,          IconType.FRONT,         IconType.VOID},
         {IconType.VOID,         IconType.VOID,      IconType.VOID,          IconType.VOID,          IconType.VOID,          IconType.VOID,          IconType.VOID}
     };
+    // [facing][side] -> 0-6; up -> right -> down -> left -> front -> back -> invalid
+    public static final byte[][] FACE_TO_ORDER = {
+        {4, 5, 1, 3, 2, 0, 6},
+        {5, 4, 0, 2, 3, 1, 6},
+        {2, 0, 4, 5, 1, 3, 6},
+        {2, 0, 5, 4, 3, 1, 6},
+        {2, 0, 3, 1, 4, 5, 6},
+        {2, 0, 1, 3, 5, 4, 6},
+        {6, 6, 6, 6, 6, 6, 6}
+    };
     
     // 用于统计哪些 prefix 是可以做覆盖板的
     public static final Set<OreDictPrefix> ALL_COVER_PREFIX = Sets.newHashSet(plate, plateDouble, plateTriple, plateQuadruple, plateQuintuple, plateDense, plateCurved, plateGem, sheetGt, foil);

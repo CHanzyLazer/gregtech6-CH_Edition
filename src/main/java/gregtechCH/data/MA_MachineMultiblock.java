@@ -1,6 +1,7 @@
 package gregtechCH.data;
 
 import gregapi.data.MT;
+import gregapi.data.MT_CH;
 import gregapi.oredict.OreDictMaterial;
 
 import java.util.HashMap;
@@ -35,6 +36,7 @@ public class MA_MachineMultiblock extends HashMap<String, MA_MachineMultiblock.G
         put(MT.TungstenSteel.mNameInternal,     new GeneralAttributes(3,     16,    12.5F,  12.5F, 0,   16384,  16384,  (short)18023, MT.W));
         put(MT.Ad.mNameInternal,                new GeneralAttributes(4,     16,    100.0F, 100.0F,0,   131072, 131072, (short)18025, MT.Ad));
         put(MT.Invar.mNameInternal,             new GeneralAttributes(5,     16,    6.0F,   6.0F,  0,   4096,   4096,   (short)18027, MT.Invar));
+        put(MT_CH.Nb2Ti3C5.mNameInternal,       new GeneralAttributes(6,     16,    12.5F,  12.5F, 0,   32768,  32768,  (short)18033, MT.Ta4HfC5));
     }
 
     public GeneralAttributes get(OreDictMaterial aMat) {

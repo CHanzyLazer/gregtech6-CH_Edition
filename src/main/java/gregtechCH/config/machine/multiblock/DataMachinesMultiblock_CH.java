@@ -2,6 +2,7 @@ package gregtechCH.config.machine.multiblock;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import gregapi.data.MT;
+import gregapi.data.MT_CH;
 import gregapi.oredict.OreDictMaterial;
 import gregtechCH.config.DataJson_CH;
 
@@ -25,17 +26,18 @@ public class DataMachinesMultiblock_CH extends DataJson_CH {
         OreDictMaterial[] availableMaterials;
         // Boilers
         availableMaterials = new OreDictMaterial[] {
-                MT.StainlessSteel, MT.Invar, MT.Ti, MT.TungstenSteel, MT.Ad};
+                MT.StainlessSteel, MT.Invar, MT.Ti, MT.TungstenSteel, MT_CH.Nb2Ti3C5, MT.Ad};
         LargeBoilerTank.clear();
         for (OreDictMaterial aMat : availableMaterials){
             LargeBoilerTank.add(new AttributesLargeBoilerTank_CH(aMat));
         }
         // Turbines
         availableMaterials = new OreDictMaterial[] {
-                MT.StainlessSteel, MT.Ti, MT.TungstenSteel, MT.Ad};
+                MT.StainlessSteel, MT.Ti, MT.TungstenSteel, MT_CH.Nb2Ti3C5, MT.Ad};
         OreDictMaterial[][] availableRotorMaterials = {
                 {MT.Magnalium},
                 {MT.Trinitanium},
+                {MT.Graphene},
                 {MT.Graphene},
                 {MT.Vibramantium}};
         LargeSteamTurbine.clear();

@@ -153,7 +153,7 @@ public class MultiTileEntityRegistry {
 	// GTCH, 通过添加时检测 ID 是否处于替换 Map 中来进行“完美”的替换或删除
 	// 不允许一个 ID 被添加，然后移除，然后又添加这种情况。（移除必须要在添加之前）
 	public ItemStack add(String aLocalised, String aCategoricalName, MultiTileEntityClassContainer aClassContainer, Object... aRecipe) {
-		mLastRegisteredID = aClassContainer.mID; // 仅 add 方法会修改此值，并且要最先修改以免 return 掉
+		mLastRegisteredID = aClassContainer.mID; // 所有 add 方法都会修改此值，并且要最先修改以免 return 掉
 		AddObject tAddObject = new AddObject(aLocalised, aCategoricalName, aClassContainer, aRecipe);
 		if (!mIsModifyingAdd) return tAddObject.addSelf();
 		/// 先检测替换和移除，保证只有存在的项才会设置，而不会都变成 null
@@ -202,6 +202,7 @@ public class MultiTileEntityRegistry {
 		appendAddBefore(aBeforeID, aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aRegType, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
 	}
 	public void appendAddBefore(int aBeforeID, String aLocalised, String aCategoricalName, MultiTileEntityClassContainer aClassContainer, Object... aRecipe) {
+		mLastRegisteredID = aClassContainer.mID; // 所有 add 方法都会修改此值，并且要最先修改以免 return 掉
 		AddObject tAddObject = new AddObject(aLocalised, aCategoricalName, aClassContainer, aRecipe);
 		if (!mAppendingAddBeforeList.containsKey((short)aBeforeID)) mAppendingAddBeforeList.put((short)aBeforeID, new LinkedList<AddObject>());
 		// replace 也可以影响 append 操作
@@ -219,6 +220,7 @@ public class MultiTileEntityRegistry {
 		appendAddAfter(aAfterID, aLocalised, aCategoricalName, new MultiTileEntityClassContainer(aRegType, aID, aCreativeTabID, aClass, aBlockMetaData, aStackSize, aBlock, aParameters), aRecipe);
 	}
 	public void appendAddAfter(int aAfterID, String aLocalised, String aCategoricalName, MultiTileEntityClassContainer aClassContainer, Object... aRecipe) {
+		mLastRegisteredID = aClassContainer.mID; // 所有 add 方法都会修改此值，并且要最先修改以免 return 掉
 		AddObject tAddObject = new AddObject(aLocalised, aCategoricalName, aClassContainer, aRecipe);
 		if (!mAppendingAddAfterList.containsKey((short)aAfterID)) mAppendingAddAfterList.put((short)aAfterID, new LinkedList<AddObject>());
 		// replace 也可以影响 append 操作
@@ -411,7 +413,7 @@ public class MultiTileEntityRegistry {
 	
 	public short mLastRegisteredID = W;
 	
-	/* 不要轻易使用，为了避免后续修改影响原本的逻辑，仅 add 方法会修改 mLastRegisteredID，因此除了 add 方法的其余方法不要使用 getItem() */
+	/* 为了避免后续修改影响原本的逻辑，虽然所有 add 方都会修改 mLastRegisteredID，但在 addself 中不会修改，从而保证此值的局域性*/
 	public ItemStack getItem() {return getItem(mLastRegisteredID, 1, null);}
 	public ItemStack getItem(NBTTagCompound aNBT) {return getItem(mLastRegisteredID, 1, aNBT);}
 	public ItemStack getItem(int aID) {return getItem(aID, 1, null);}

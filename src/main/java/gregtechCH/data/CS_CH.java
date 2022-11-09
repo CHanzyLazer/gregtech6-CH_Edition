@@ -117,6 +117,7 @@ public class CS_CH {
             , NBT_EFFICIENCY_CH             = "gtch.eff"                    // Short from 0 to 10000 describing the global Efficiency, or just for OmniOcular usage. CHanzy
             , NBT_EFFICIENCY_WATER          = "gtch.eff.water"              // Short from 0 to 10000 describing the water Efficiency. CHanzy
             , NBT_EFFICIENCY_OC             = "gtch.eff.oc"                 // Short from 0 to 10000 describing the overclocking Efficiency. CHanzy
+            , NBT_EFFICIENCY_NUM            = "gtch.eff.numerical"          // Short from 0 to 10000 describing the numerical Efficiency. CHanzy
             
             , NBT_ENERGY_EFF                = "gtch.energy.eff"             // Long, The effective energy of boiler. CHanzy
             , NBT_ENERGY_PRE                = "gtch.energy.pre"             // Long, The previous energy of boiler. CHanzy

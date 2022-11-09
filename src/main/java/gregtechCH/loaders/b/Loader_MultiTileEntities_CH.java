@@ -329,7 +329,14 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         /// 修改项
         // 修改 Power Cell (Hydrogen) 的 NBT_COLOR 改成 NBT_COLOR_BOTTOM
         aRegistry.addReplacer(14701).setParameters(NBT_COLOR_BOTTOM, UT.Code.getRGBInt(MT.H.fRGBaGas)).removeParameters(NBT_COLOR);
-        
+    
+        // Dynamos 小发电机效率改为 60%
+        aRegistry.addReplacer(10110).setParameters(NBT_OUTPUT,    8, NBT_EFFICIENCY_NUM, 6000).removeParameters(NBT_INPUT);
+        aRegistry.addReplacer(10111).setParameters(NBT_OUTPUT,   32, NBT_EFFICIENCY_NUM, 6000).removeParameters(NBT_INPUT);
+        aRegistry.addReplacer(10112).setParameters(NBT_OUTPUT,  128, NBT_EFFICIENCY_NUM, 6000).removeParameters(NBT_INPUT);
+        aRegistry.addReplacer(10113).setParameters(NBT_OUTPUT,  512, NBT_EFFICIENCY_NUM, 6000).removeParameters(NBT_INPUT);
+        aRegistry.addReplacer(10114).setParameters(NBT_OUTPUT, 2048, NBT_EFFICIENCY_NUM, 6000).removeParameters(NBT_INPUT);
+        aRegistry.addReplacer(10115).setParameters(NBT_OUTPUT, 8192, NBT_EFFICIENCY_NUM, 6000).removeParameters(NBT_INPUT);
         
         /// 添加项
         /* GT6U stuff */
@@ -416,6 +423,12 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         aRegistry.addReplacer(17235).setParameters(NBT_LENGTH_MIN, 3, NBT_LENGTH_MAX, 12, NBT_LENGTH_MID, 6).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY, NBT_LIMIT_CONSUMPTION, NBT_ENERGY_ACCEPTED).setParameterArray(NBT_OUTPUT, 10922,20480, 27454, 32768, 36951, 40329, 43115, 45452, 47440, 49152).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY, 196608000, 393216000,  589824000,  786432000,  983040000, 1179648000, 1376256000, 1572864000, 1769472000, 1966080000).setParameterArray(NBT_PREHEAT_RATE, 10922,20480, 27454, 32768, 36951, 40329, 43115, 45452, 47440, 49152).setParameterArray(NBT_PREHEAT_COST,  86,171, 256, 342, 427, 512, 598, 683, 768, 854).setParameterArray(NBT_COOLDOWN_RATE,  8192,16384,24576, 32768, 40960, 49152, 57344, 65536, 73728, 81920).recipe("PwP", "BMC", "PEP", 'M', aRegistry.getItem(17215), 'B', "gt:re-battery4", 'C', IL.Processor_Crystal_Diamond, 'E', IL.MOTORS[4], 'P', OP.plateDense.dat(MT.Ta4HfC5));       // Titanium Niobium Carbide
         aRegistry.addReplacer(17234).setParameters(NBT_LENGTH_MIN, 3, NBT_LENGTH_MAX, 12, NBT_LENGTH_MID, 6).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY, NBT_LIMIT_CONSUMPTION, NBT_ENERGY_ACCEPTED).setParameterArray(NBT_OUTPUT, 43690,81920,109817,131072,147804,161319,172463,181809,189760,196608).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY, 786432000,1572864000,2359296000L,3145728000L,3932160000L,4718592000L,5505024000L,6291456000L,7077888000L,7864320000L).setParameterArray(NBT_PREHEAT_RATE, 43690,81920,109817,131072,147804,161319,172463,181809,189760,196608).setParameterArray(NBT_PREHEAT_COST, 342,683,1024,1366,1707,2048,2390,2731,3072,3414).setParameterArray(NBT_COOLDOWN_RATE, 32768,65536,98304,131072,163840,196608,229376,262144,294912,327680).recipe("PwP", "BMC", "PEP", 'M', aRegistry.getItem(17214), 'B', "gt:re-battery5", 'C', IL.Processor_Crystal_Diamond, 'E', IL.MOTORS[5], 'P', OP.plateDense.dat(MT.Ad));            // Adamantium
         
+        // Dynamo 大型发电机效率调整为 95%
+        aRegistry.addReplacer(17221).setParameters(NBT_OUTPUT,   4096, NBT_EFFICIENCY_NUM, 9500).removeParameters(NBT_INPUT);
+        aRegistry.addReplacer(17222).setParameters(NBT_OUTPUT,   8192, NBT_EFFICIENCY_NUM, 9500).removeParameters(NBT_INPUT);
+        aRegistry.addReplacer(17223).setParameters(NBT_OUTPUT,  16384, NBT_EFFICIENCY_NUM, 9500).removeParameters(NBT_INPUT);
+        aRegistry.addReplacer(17225).setParameters(NBT_OUTPUT,  32768, NBT_EFFICIENCY_NUM, 9500).removeParameters(NBT_INPUT);
+        aRegistry.addReplacer(17224).setParameters(NBT_OUTPUT, 131072, NBT_EFFICIENCY_NUM, 9500).removeParameters(NBT_INPUT);
         
         /// 添加项
         /* GT6U stuff */

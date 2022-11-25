@@ -636,7 +636,7 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
         mCRDataUpdated = F;
     }
     // 相邻方块改变，需要更新渲染数据
-    @Override public void onAdjacentBlockChange2(int aTileX, int aTileY, int aTileZ) {if (isClientSide()) mCRDataUpdated = F;}
+    @Override public void onAdjacentBlockChange2(int aTileX, int aTileY, int aTileZ) {super.onAdjacentBlockChange2(aTileX, aTileY, aTileZ); if (isClientSide()) mCRDataUpdated = F;}
 	
     @Override public float getSurfaceSize           (byte aSide) {return (mFoam || mFoamDried) ? 1.0F : mDiameter;}
     @Override public float getSurfaceSizeAttachable (byte aSide) {return mDiameter;}

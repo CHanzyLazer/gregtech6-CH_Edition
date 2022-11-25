@@ -43,46 +43,43 @@ public class MTEC_ElectricWiresPool {
         public boolean full() {return mEnergy >= mVoltage*mAmperage;}
     }
     // 输入类和输出类以及通用部分（输入或输出的 core 和方向以及对应的 TE）
-    private abstract class IOObject {
+    private static class IOObject {
         protected final MTEC_ElectricWireBase mIOCore;
         protected final byte mIOSide;
         protected final TileEntity mIOTE;
         
-        private IOObject(MTEC_ElectricWireBase aIOCore, byte aIOSide, TileEntity aIOTE) {mIOCore = aIOCore; mIOSide = aIOSide; mIOTE = aIOTE; assert valid();}
-        public boolean valid() {return mIOCore.mPoolUpdated && mIOCore.mPool==MTEC_ElectricWiresPool.this && mIOCore.mTE.getAdjacentTileEntity(mIOSide).mTileEntity == mIOTE;}
+        private IOObject(MTEC_ElectricWireBase aIOCore, byte aIOSide, TileEntity aIOTE) {mIOCore = aIOCore; mIOSide = aIOSide; mIOTE = aIOTE;}
+        public boolean valid(MTEC_ElectricWiresPool aPool) {return mIOCore.mPool == aPool && mIOCore.mTE.getAdjacentTileEntity(mIOSide).mTileEntity == mIOTE;}
         
         // 重写 equals 和 hashCode 来使其作为 key 时可以按照我希望的方式运行
-        @Override public boolean equals(Object aRHS) {
-            return aRHS instanceof IOObject ? equals((IOObject) aRHS) : F;
-        }
-        public boolean equals(IOObject aRHS) {
-            return mIOCore==aRHS.mIOCore && mIOSide==aRHS.mIOSide;
-        }
+        @Override public boolean equals(Object aRHS) {return aRHS instanceof IOObject ? equals((IOObject) aRHS) : F;}
+        public boolean equals(IOObject aRHS) {return mIOCore==aRHS.mIOCore && mIOSide==aRHS.mIOSide;}
         @Override public int hashCode() {return (mIOCore.hashCode()) ^ (mIOSide<<24);}
     }
     // 输入需要暂存电压电流用来统计此 tick 所有的输入，buffer 能量来比较简单实现能量守恒
-    private class InputObject extends IOObject {
+    private static class InputObject extends IOObject {
         protected final EnergyBuffer mEnergyBuffer = new EnergyBuffer();
         private InputObject(MTEC_ElectricWireBase aInputCore, byte aInputSide, TileEntity aInputTE) {super(aInputCore, aInputSide, aInputTE);}
-        private InputObject(MTEC_ElectricWireBase aInputCore, byte aInputSide) {super(aInputCore, aInputSide, aInputCore.mTE.getAdjacentTileEntity(aInputSide).mTileEntity);}
+        private InputObject(MTEC_ElectricWireBase aInputCore, byte aInputSide) {this(aInputCore, aInputSide, aInputCore.mTE.getAdjacentTileEntity(aInputSide).mTileEntity);}
         
         // 返回成功输入的电流
         public long doInput(long aVoltage, long aAmperage) {return mEnergyBuffer.injectUtilFull(aVoltage, aAmperage);}
         // 是否可以输出
         public boolean active() {return mEnergyBuffer.full();}
         // 检测是否合理，并且处理不合理部分
-        @Override public boolean valid() {
-            if (!super.valid()) {mEnergyBuffer.mEnergy = 0; return F;}
+        @Override public boolean valid(MTEC_ElectricWiresPool aPool) {
+            if (!super.valid(aPool)) {mEnergyBuffer.mEnergy = 0; return F;}
             return T;
         }
     }
     // 输出需要 buffer 所有的能量，用来保证可以预知输出是否成功，由于有多输入以及电阻，输出会有多组电压电流和对应的 buffer
-    private class OutputObject extends IOObject {
+    private static class OutputObject extends IOObject {
         protected final Map<InputObject, EnergyBuffer> mInputList = new LinkedHashMap<>(); // linked 用于加速遍历
         private OutputObject(MTEC_ElectricWireBase aOutputCore, byte aOutputSide, TileEntity aOutputTE) {super(aOutputCore, aOutputSide, aOutputTE);}
         
         // 注入能量，一定成功（需要外部注入之前进行判断是否可以注入，而注入一定成功）
         public void injectEnergy(InputObject aInputObject, long aVoltage, long aAmperage) {
+            if (equals(aInputObject)) return; // 无论如何都不需要自己的输入
             EnergyBuffer tEnergyBuffer = mInputList.get(aInputObject);
             if (tEnergyBuffer == null) {
                 tEnergyBuffer = new EnergyBuffer();
@@ -102,18 +99,19 @@ public class MTEC_ElectricWiresPool {
         }
         // 是否需要输入
         public boolean active(InputObject aInputObject) {
+            if (equals(aInputObject)) return F; // 无论如何都不需要自己的输入
             EnergyBuffer tEnergyBuffer = mInputList.get(aInputObject);
             if (tEnergyBuffer == null) return T;
             return !tEnergyBuffer.full(); // 没有 full 都接受输入
         }
         // 检测是否合理，并且处理不合理部分
-        @Override public boolean valid() {
-            if (!super.valid()) {mInputList.clear(); return F;}
+        @Override public boolean valid(MTEC_ElectricWiresPool aPool) {
+            if (!super.valid(aPool)) {mInputList.clear(); return F;}
             // 遍历清除非法元素，注意需要使用迭代器来清除
             Iterator<InputObject> keyIt = mInputList.keySet().iterator();
             while (keyIt.hasNext()) {
                 InputObject tKey = keyIt.next();
-                if (!tKey.valid()) keyIt.remove();
+                if (!aPool.mInputs.containsKey(tKey) || !tKey.valid(aPool)) keyIt.remove();
             }
             return T;
         }
@@ -125,9 +123,20 @@ public class MTEC_ElectricWiresPool {
     
     // 合并 pool
     public void mergePool(MTEC_ElectricWiresPool aPoolToMerge) {
-        if (aPoolToMerge.mInited) {
-            mInputs.putAll(aPoolToMerge.mInputs);
-            mOutputs.putAll(aPoolToMerge.mOutputs);
+        if (!mInited && aPoolToMerge.mInited) {
+            // 仅已存在的并且 te 相同的，能够继承旧的能量数据
+            for (InputObject tInput : aPoolToMerge.mInputs.values()) {
+                IOObject existIO = mOutputs.get(tInput);
+                if (existIO != null && existIO.mIOTE == tInput.mIOTE) {
+                    mInputs.put(tInput, tInput);
+                }
+            }
+            for (OutputObject tOutput : aPoolToMerge.mOutputs.values()) {
+                IOObject existIO = mOutputs.get(tOutput);
+                if (existIO != null && existIO.mIOTE == tOutput.mIOTE) {
+                    mOutputs.put(tOutput, tOutput);
+                }
+            }
         }
     }
     // 更新 pool，移除过时的输入输出
@@ -136,12 +145,12 @@ public class MTEC_ElectricWiresPool {
         Iterator<InputObject> inputIt = mInputs.values().iterator();
         while (inputIt.hasNext()) {
             InputObject tInput = inputIt.next();
-            if (!tInput.valid()) inputIt.remove();
+            if (!tInput.valid(this)) inputIt.remove();
         }
         Iterator<OutputObject> outputIt = mOutputs.values().iterator();
         while (outputIt.hasNext()) {
             OutputObject tOutput = outputIt.next();
-            if (!tOutput.valid()) outputIt.remove();
+            if (!tOutput.valid(this)) outputIt.remove();
         }
         mInited = T;
     }
@@ -159,6 +168,7 @@ public class MTEC_ElectricWiresPool {
         mTimer = SERVER_TIME;
         
         // 每 tick 分配输入进行输出
+        Integer tRestIdx = null; // 用来保证多个输入会接着上一个输入进行分配
         for (InputObject tInput : mInputs.values()) {
             // 对于每个输入，统计所有需要的输出，并且将其放入 list 中
             List<OutputObject> tActiveOutputs = new LinkedList<>();
@@ -169,14 +179,18 @@ public class MTEC_ElectricWiresPool {
             int tRest = (int)tInput.mEnergyBuffer.mAmperage % tActiveOutputs.size();
             if (tAmperage > 0) for (OutputObject tOutput : tActiveOutputs) tOutput.injectEnergy(tInput, tInput.mEnergyBuffer.mVoltage, tAmperage);
             if (tRest > 0) {
-                // 从随机位置开始遍历
+                // 从上一个结束的位置开始遍历，如果没有则随机位置开始
                 Iterator<OutputObject> outputIt = tActiveOutputs.iterator();
-                for (int i = 0; i < RNGSUS.nextInt(tActiveOutputs.size()); ++i) {outputIt.next();}
+                if (tRestIdx == null) tRestIdx = RNGSUS.nextInt(tActiveOutputs.size());
+                if (tRestIdx >= tActiveOutputs.size()) tRestIdx %= tActiveOutputs.size();
+                for (int i = 0; i < tRestIdx; ++i) {outputIt.next();}
                 int tInjected = 0;
                 while (tInjected < tRest) {
                     if (!outputIt.hasNext()) outputIt = tActiveOutputs.iterator();
                     (outputIt.next()).injectEnergy(tInput, tInput.mEnergyBuffer.mVoltage, 1);
                     ++tInjected;
+                    ++tRestIdx;
+                    if (tRestIdx == tActiveOutputs.size()) tRestIdx = 0;
                 }
             }
         }

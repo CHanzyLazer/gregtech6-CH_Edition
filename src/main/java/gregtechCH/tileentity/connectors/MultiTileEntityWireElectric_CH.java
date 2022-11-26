@@ -69,8 +69,8 @@ public class MultiTileEntityWireElectric_CH extends TileEntityBase10ConnectorRen
         super.addToolTips(aList, aStack, aF3_H);
     }
     
-    @Override public void onConnectionChange(byte aPreviousConnections) {super.onConnectionChange(aPreviousConnections); mCore.updatePool();}
-    @Override public void onAdjacentBlockChange2(int aTileX, int aTileY, int aTileZ) {super.onAdjacentBlockChange2(aTileX, aTileY, aTileZ); mCore.updatePool();}
+    @Override public void onConnectionChange(byte aPreviousConnections) {super.onConnectionChange(aPreviousConnections); mCore.updateManager();}
+    @Override public void onAdjacentBlockChange2(int aTileX, int aTileY, int aTileZ) {super.onAdjacentBlockChange2(aTileX, aTileY, aTileZ); mCore.updateManager();}
     
     @Override
     public void onTick2(long aTimer, boolean aIsServerSide) {

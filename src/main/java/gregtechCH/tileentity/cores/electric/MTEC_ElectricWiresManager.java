@@ -14,7 +14,7 @@ import static gregapi.data.CS.*;
  * 电网的公用类，用来接受和输出能量
  * 根据输入来调整上限，并且存储输入用于最近搜索
  */
-public class MTEC_ElectricWiresPool {
+public class MTEC_ElectricWiresManager {
     protected long mTimer = 0; // 用来保证每 tick 只会 tick 一次
     
     // 通用电力 buffer，标记电压电流和能量
@@ -49,7 +49,7 @@ public class MTEC_ElectricWiresPool {
         protected final TileEntity mIOTE;
         
         private IOObject(MTEC_ElectricWireBase aIOCore, byte aIOSide, TileEntity aIOTE) {mIOCore = aIOCore; mIOSide = aIOSide; mIOTE = aIOTE;}
-        public boolean valid(MTEC_ElectricWiresPool aPool) {return mIOCore.mPool == aPool && mIOCore.mTE.getAdjacentTileEntity(mIOSide).mTileEntity == mIOTE;}
+        public boolean valid(MTEC_ElectricWiresManager aManager) {return mIOCore.mManager == aManager && mIOCore.mTE.getAdjacentTileEntity(mIOSide).mTileEntity == mIOTE;}
         
         // 重写 equals 和 hashCode 来使其作为 key 时可以按照我希望的方式运行
         @Override public boolean equals(Object aRHS) {return aRHS instanceof IOObject ? equals((IOObject) aRHS) : F;}
@@ -67,8 +67,8 @@ public class MTEC_ElectricWiresPool {
         // 是否可以输出
         public boolean active() {return mEnergyBuffer.full();}
         // 检测是否合理，并且处理不合理部分
-        @Override public boolean valid(MTEC_ElectricWiresPool aPool) {
-            if (!super.valid(aPool)) {mEnergyBuffer.mEnergy = 0; return F;}
+        @Override public boolean valid(MTEC_ElectricWiresManager aManager) {
+            if (!super.valid(aManager)) {mEnergyBuffer.mEnergy = 0; return F;}
             return T;
         }
     }
@@ -105,13 +105,13 @@ public class MTEC_ElectricWiresPool {
             return !tEnergyBuffer.full(); // 没有 full 都接受输入
         }
         // 检测是否合理，并且处理不合理部分
-        @Override public boolean valid(MTEC_ElectricWiresPool aPool) {
-            if (!super.valid(aPool)) {mInputList.clear(); return F;}
+        @Override public boolean valid(MTEC_ElectricWiresManager aManager) {
+            if (!super.valid(aManager)) {mInputList.clear(); return F;}
             // 遍历清除非法元素，注意需要使用迭代器来清除
             Iterator<InputObject> keyIt = mInputList.keySet().iterator();
             while (keyIt.hasNext()) {
                 InputObject tKey = keyIt.next();
-                if (!aPool.mInputs.containsKey(tKey) || !tKey.valid(aPool)) keyIt.remove();
+                if (!aManager.mInputs.containsKey(tKey) || !tKey.valid(aManager)) keyIt.remove();
             }
             return T;
         }
@@ -121,17 +121,17 @@ public class MTEC_ElectricWiresPool {
     protected final Map<IOObject, InputObject> mInputs = new LinkedHashMap<>(); // linked 用于加速遍历
     protected final Map<IOObject, OutputObject> mOutputs = new LinkedHashMap<>(); // linked 用于加速遍历
     
-    // 合并 pool
-    public void mergePool(MTEC_ElectricWiresPool aPoolToMerge) {
-        if (!mInited && aPoolToMerge.mInited) {
+    // 合并 Manager
+    public void mergeManager(MTEC_ElectricWiresManager aManagerToMerge) {
+        if (!mInited && aManagerToMerge.mInited) {
             // 仅已存在的并且 te 相同的，能够继承旧的能量数据
-            for (InputObject tInput : aPoolToMerge.mInputs.values()) {
+            for (InputObject tInput : aManagerToMerge.mInputs.values()) {
                 IOObject existIO = mOutputs.get(tInput);
                 if (existIO != null && existIO.mIOTE == tInput.mIOTE) {
                     mInputs.put(tInput, tInput);
                 }
             }
-            for (OutputObject tOutput : aPoolToMerge.mOutputs.values()) {
+            for (OutputObject tOutput : aManagerToMerge.mOutputs.values()) {
                 IOObject existIO = mOutputs.get(tOutput);
                 if (existIO != null && existIO.mIOTE == tOutput.mIOTE) {
                     mOutputs.put(tOutput, tOutput);
@@ -139,7 +139,7 @@ public class MTEC_ElectricWiresPool {
             }
         }
     }
-    // 更新 pool，移除过时的输入输出
+    // 更新 Manager，移除过时的输入输出
     public void update() {
         // 遍历清除非法元素，注意需要使用迭代器来清除
         Iterator<InputObject> inputIt = mInputs.values().iterator();
@@ -156,7 +156,7 @@ public class MTEC_ElectricWiresPool {
     }
     
     /* main code */
-    // ticking，由拥有此 pool 的 core 竞争 tick 即可
+    // ticking，由拥有此 Manager 的 core 竞争 tick 即可
     public final void onTick() {
         if (mTimer == SERVER_TIME) return; // 直接和 server_time 比较保证只会 tick 一次
         // 使用序列化的方法保证一次一定只会有一个线程调用

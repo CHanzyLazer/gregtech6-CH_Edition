@@ -400,9 +400,13 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
             if (aRenderPass == 0) {
                 if (connected(aSide)) {
                     if (tSideShrink) return getTextureSide(aSide, mConnections, mDiameter, aRenderPass);
-                    // 由于有合并，所以连接面可能可以不用渲染
-                    if (!aShouldSideBeRendered[aSide]) return null;
-                    return getTextureConnected(aSide, mConnections, mDiameter, aRenderPass); // 优化后小管道连接处没有外套层，需要渲染
+                    // 根据合并数分情况讨论
+                    if (mMergeCount == 0) return null;
+                    if ((mMergeCount == 1 && aSide == mCSides[0]) || (mMergeCount == 2 && (aSide == mCSides[0] || aSide == mCSides[1]))) {
+                        if (!aShouldSideBeRendered[aSide]) return null;
+                        return getTextureConnected(aSide, mConnections, mDiameter, aRenderPass);
+                    }
+                    return getTextureSide(aSide, mConnections, mDiameter, aRenderPass);
                 }
                 if (mConnections == 0) return getTextureConnected(aSide, mConnections, mDiameter, aRenderPass);
                 return getTextureSide(aSide, mConnections, mDiameter, aRenderPass);

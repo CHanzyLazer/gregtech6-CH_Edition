@@ -31,6 +31,7 @@ import gregtechCH.tileentity.connectors.MultiTileEntityWireElectric_CH;
 import gregtechCH.tileentity.energy.MultiTileEntityMotorGas;
 import gregtechCH.tileentity.multiblocks.*;
 import gregtechCH.tileentity.sensors.*;
+import gregtechCH.util.UT_CH;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.nbt.NBTTagCompound;
@@ -714,14 +715,12 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
     @Override protected void connectorsBeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
         /// 添加前将后续添加全部 hold
         aRegistry.MODIFYING_ADD_START();
-        
-        /// 修改项
-        aRegistry.addReplacer(29950).te(MultiTileEntityWireElectric_CH.class);
-        /// 删除项
-        
-        /// 添加项（插入到指定位置后或者直接添加到最前）
     }
     @Override protected void connectorsFinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
+        /// 添加项
+        aMat = MT.Superconductor; // 随便选个材料
+        aRegistry.add(RegType.GTCH, "New Wire (WIP)" , "Electric Wires", 29903, 28366, MultiTileEntityWireElectric_CH.class, aMat.mToolQuality, 64/4, aMetalWires, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, DYE_INT_Red, NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 6], NBT_PIPESIZE, 32768, NBT_PIPEBANDWIDTH, 4, NBT_CONTACTDAMAGE, F, NBT_PIPELOSS, 0));
+        
         /// 最后释放这些修改后的添加
         aRegistry.MODIFYING_ADD_END();
     }

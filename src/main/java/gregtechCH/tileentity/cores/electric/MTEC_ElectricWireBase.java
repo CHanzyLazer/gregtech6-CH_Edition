@@ -19,8 +19,8 @@ public class MTEC_ElectricWireBase {
     protected MTEC_ElectricWiresManager mManager = null; // reference of Manager
     protected final TileEntityBase01Root mTE; // reference of te
     
-    public MTEC_ElectricWireBase(TileEntityBase01Root aTE) {assert aTE instanceof IMTEC_HasElectricCore; mTE = aTE;}
-    protected IMTEC_HasElectricCore te() {return (IMTEC_HasElectricCore)mTE;}
+    public MTEC_ElectricWireBase(TileEntityBase01Root aTE) {assert aTE instanceof IMTEC_HasElectricWire; mTE = aTE;}
+    protected IMTEC_HasElectricWire te() {return (IMTEC_HasElectricWire)mTE;}
     
     /* main code */
     protected boolean mManagerUpdated = F; // 用于在第一次放置时，连接发生改变或者近邻更改时设置为 F，然后通过 ticking 来进行更新
@@ -43,8 +43,8 @@ public class MTEC_ElectricWireBase {
         if (!te().connected(aSide)) return null;
         DelegatorTileEntity<TileEntity> tDelegator = mTE.getAdjacentTileEntity(aSide);
         // 保证相邻的也是这个 core，并且也连接了这个方向
-        if (tDelegator.mTileEntity instanceof IMTEC_HasElectricCore && ((IMTEC_HasElectricCore)tDelegator.mTileEntity).connected(tDelegator.mSideOfTileEntity))
-            return ((IMTEC_HasElectricCore)tDelegator.mTileEntity).core();
+        if (tDelegator.mTileEntity instanceof IMTEC_HasElectricWire && ((IMTEC_HasElectricWire)tDelegator.mTileEntity).connected(tDelegator.mSideOfTileEntity))
+            return ((IMTEC_HasElectricWire)tDelegator.mTileEntity).core();
         // 如果不是 core，并且有 te，则添加到输出
         if (tDelegator.mTileEntity != null) aManager.putOutput(this, aSide, tDelegator.mTileEntity);
         return null;

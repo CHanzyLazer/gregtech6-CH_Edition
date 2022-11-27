@@ -1,46 +1,67 @@
 package gregtechCH.tileentity.multiblocks;
 
-import gregapi.block.multitileentity.MultiTileEntityRegistry;
 import gregapi.data.LH;
 import gregapi.tileentity.ITileEntityUnloadable;
 import gregapi.tileentity.multiblocks.ITileEntityMultiBlockController;
 import gregapi.tileentity.multiblocks.MultiTileEntityMultiBlockPart;
+import gregapi.util.UT;
+import gregtechCH.data.LH_CH;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
 import java.util.List;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.*;
 
 /**
- * @author YueSha
+ * @author YueSha, CHanzy
  * stuff from GT6U
- * TODO 注意存在各种 bug
  */
 public class MultiTileEntityMultiblockEnergyStorageUnit extends TileEntityBase11MultiBlockEnergyStorage {
     
-    MultiTileEntityRegistry tRegistry = MultiTileEntityRegistry.getRegistry("gt.multitileentity");
+    public static final short mBatteryCasing = 18122;
     
-    public short mBatteryCasing = 18122;
+    public static final long mCore0Cap = V[5]*3600;
+    public static final long mCore1Cap = V[5]*7200;
+    public static final long mCore2Cap = V[5]*7200;
+    public static final long mCore3Cap = V[5]*115200;
+    public static final long mCore4Cap = V[5]*230400;
+    public static final long mCore5Cap = V[5]*345600;
     
-    public long mCore0Cap = V[5]*3600;
-    public long mCore1Cap = V[5]*7200;
-    public long mCore2Cap = V[5]*7200;
-    public long mCore3Cap = V[5]*115200;
-    public long mCore4Cap = V[5]*230400;
-    public long mCore5Cap = V[5]*345600;
-    
-    public short[] aBatteryCores = {18124,18125,18126,18127,18128,18129};
+    public static final short[] aBatteryCores = {18124,18125,18126,18127,18128,18129};
     public byte mMaintenanceCostPerCore = 6;
     public int mBatteryCoreLength = 1;
     public int mSyncBatteryCoreLength = 1;
     public int mSyncBatteryCoreWidth = 0;
     public byte mSyncBatteryCoreType = 0;
-    public long mSyncBatteryCoreCapacity = 0;
     
-    public short[] aElectrodes = {18120, 18121};
+    public static final short[] aElectrodes = {18120, 18121};
     public byte mSyncElectrodeType = 0;
     
+    @Override
+    public void readFromNBT3(NBTTagCompound aNBT) {
+        super.readFromNBT3(aNBT);
+        // 读取长度暂存的长度
+        if (aNBT.hasKey(NBT_LENGTH)) mSyncBatteryCoreLength = aNBT.getInteger(NBT_LENGTH);
+        if (aNBT.hasKey(NBT_WIDTH)) mSyncBatteryCoreWidth = aNBT.getInteger(NBT_WIDTH);
+        if (aNBT.hasKey("gtch.type")) mSyncBatteryCoreType = aNBT.getByte("gtch.type");
+        setCapacityFromLength();
+    }
+    @Override
+    public void writeToNBT2(NBTTagCompound aNBT) {
+        super.writeToNBT2(aNBT);
+        UT.NBT.setNumber(aNBT, NBT_LENGTH, mSyncBatteryCoreLength);
+        UT.NBT.setNumber(aNBT, NBT_WIDTH, mSyncBatteryCoreWidth);
+        UT.NBT.setNumber(aNBT, "gtch.type", mSyncBatteryCoreType);
+    }
+    
+    public void setCapacityFromLength() {
+        core().setOutputSize(getBatteryInputVoltage()).setOutputAmountMax(32).setInputSizeRec(getBatteryInputVoltage()).setInputAmountMax(32).setCapacity(mSyncBatteryCoreLength * mSyncBatteryCoreWidth * mSyncBatteryCoreWidth * getBatteryCoreCapacity());
+    }
+    
+    // TODO 大改检测逻辑，结构破坏发生爆炸并损失所有能量等等
     @Override
     public boolean checkStructure2() {
         
@@ -75,9 +96,11 @@ public class MultiTileEntityMultiblockEnergyStorageUnit extends TileEntityBase11
                 
                 if (!tSuccess) {
                     if (coreLength == 8) {
-                        mBatteryCoreLength = 1;}
+                        mBatteryCoreLength = 1;
+                    }
                     else {
-                        mBatteryCoreLength = coreLength + 1;}
+                        mBatteryCoreLength = coreLength + 1;
+                    }
                     continue;
                 } else {
                     mSyncBatteryCoreType = coreIterator;
@@ -86,12 +109,7 @@ public class MultiTileEntityMultiblockEnergyStorageUnit extends TileEntityBase11
                     mSyncBatteryCoreWidth = halfCoreWidth*2+1;
                     mSyncBatteryCoreLength = mBatteryCoreLength;
                     
-                    mSyncBatteryCoreCapacity = this.getBatteryCoreCapacity();
-                    mStorage.mCapacity = mSyncBatteryCoreLength * mSyncBatteryCoreWidth * mSyncBatteryCoreWidth * mSyncBatteryCoreCapacity;
-                    
-                    mEnergyIN.mRec = mEnergyOUT.mRec = this.getBatteryInputVoltage();
-                    mEnergyIN.mMax = mEnergyOUT.mMax = this.getBatteryInputVoltage()*2;
-                    mEnergyOUT.mMin = this.getBatteryInputVoltage();
+                    setCapacityFromLength();
                 }
                 
                 return tSuccess;
@@ -119,46 +137,45 @@ public class MultiTileEntityMultiblockEnergyStorageUnit extends TileEntityBase11
     }
     
     static {
-        LH.add("gt.tooltip.multiblock.multiblockenergystorageunit.1", "Casing Structure: 3x5x3 to 7x12x7 hollow cube of MESU Casings");
-        LH.add("gt.tooltip.multiblock.multiblockenergystorageunit.2", "Core Structure: 1x3x1 to 5x10x5 cube filled inside Casing");
-        LH.add("gt.tooltip.multiblock.multiblockenergystorageunit.3", "The Core consists Battery Cores between two plates of Electrode Parts");
-        LH.add("gt.tooltip.multiblock.multiblockenergystorageunit.4", "Main Block centered on Side parallel to electrode plate and facing outwards");
-        LH.add("gt.tooltip.multiblock.multiblockenergystorageunit.5", "Energy output at Main Block, input at the opposite face of the Casing");
-        LH.add("gt.tooltip.multiblock.multiblockenergystorageunit.6", "Type and amount of Battery Core used affects its capacity");
-        LH.add("gt.tooltip.multiblock.multiblockenergystorageunit.7", "Type of Electrode Part used affects its voltage per block");
-        LH.add("gt.tooltip.multiblock.multiblockenergystorageunit.8", "Longer Core (excludes Electrodes) has greater voltage");
-        LH.add("gt.tooltip.multiblock.multiblockenergystorageunit.9", "See energy properties with a magnifying glass");
-        LH.add("gt.tooltip.multiblock.multiblockenergystorageunit.10","Change output current with a screwdriver (sneak to toggle larger value)");
-        LH.add("gt.tooltip.multiblock.multiblockenergystorageunit.11","Have AT LEAST 7 blocks in all directions between two MESU Mainblocks");
-        LH.add("gt.tooltip.multiblock.multiblockenergystorageunit.12","Maintenance Cost per battery core");
+        LH_CH.add(RegType.GT6U, "gt.tooltip.multiblock.multiblockenergystorageunit.1", "Casing Structure: 3x5x3 to 7x12x7 hollow cube of MESU Casings");
+        LH_CH.add(RegType.GT6U, "gt.tooltip.multiblock.multiblockenergystorageunit.2", "Core Structure: 1x3x1 to 5x10x5 cube filled inside Casing");
+        LH_CH.add(RegType.GT6U, "gt.tooltip.multiblock.multiblockenergystorageunit.3", "The Core consists Battery Cores between two plates of Electrode Parts");
+        LH_CH.add(RegType.GT6U, "gt.tooltip.multiblock.multiblockenergystorageunit.4", "Main Block centered on Side parallel to electrode plate and facing outwards");
+        LH_CH.add(RegType.GT6U, "gt.tooltip.multiblock.multiblockenergystorageunit.5", "Energy output at Main Block, input at the opposite face of the Casing");
+        LH_CH.add(RegType.GT6U, "gt.tooltip.multiblock.multiblockenergystorageunit.6", "Type and amount of Battery Core used affects its capacity");
+        LH_CH.add(RegType.GT6U, "gt.tooltip.multiblock.multiblockenergystorageunit.7", "Type of Electrode Part used affects its voltage per block");
+        LH_CH.add(RegType.GT6U, "gt.tooltip.multiblock.multiblockenergystorageunit.8", "Longer Core (excludes Electrodes) has greater voltage");
+        LH_CH.add(RegType.GT6U, "gt.tooltip.multiblock.multiblockenergystorageunit.9", "See energy properties with a magnifying glass");
+        LH_CH.add(RegType.GT6U, "gt.tooltip.multiblock.multiblockenergystorageunit.10","Change output current with a screwdriver (sneak to toggle larger value)");
+        LH_CH.add(RegType.GT6U, "gt.tooltip.multiblock.multiblockenergystorageunit.11","Have AT LEAST 7 blocks in all directions between two MESU Mainblocks");
+        LH_CH.add(RegType.GT6U, "gt.tooltip.multiblock.multiblockenergystorageunit.12","Maintenance Cost per battery core");
     }
     
     @Override
     public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
         aList.add(LH.Chat.CYAN     + LH.get(LH.STRUCTURE) + ":");
-        aList.add(LH.Chat.WHITE    + LH.get("gt.tooltip.multiblock.multiblockenergystorageunit.1"));
-        aList.add(LH.Chat.WHITE    + LH.get("gt.tooltip.multiblock.multiblockenergystorageunit.2"));
-        aList.add(LH.Chat.WHITE    + LH.get("gt.tooltip.multiblock.multiblockenergystorageunit.3"));
-        aList.add(LH.Chat.WHITE    + LH.get("gt.tooltip.multiblock.multiblockenergystorageunit.4"));
-        aList.add(LH.Chat.WHITE    + LH.get("gt.tooltip.multiblock.multiblockenergystorageunit.5"));
-        aList.add(LH.Chat.WHITE    + LH.get("gt.tooltip.multiblock.multiblockenergystorageunit.6"));
-        aList.add(LH.Chat.WHITE    + LH.get("gt.tooltip.multiblock.multiblockenergystorageunit.7"));
-        aList.add(LH.Chat.WHITE    + LH.get("gt.tooltip.multiblock.multiblockenergystorageunit.8"));
-        aList.add(LH.Chat.GRAY     + LH.get("gt.tooltip.multiblock.multiblockenergystorageunit.9"));
-        aList.add(LH.Chat.GRAY     + LH.get("gt.tooltip.multiblock.multiblockenergystorageunit.10"));
-        aList.add(LH.Chat.RED      + LH.get("gt.tooltip.multiblock.multiblockenergystorageunit.11"));
-        aList.add(LH.Chat.GREEN    + LH.get(LH.ENERGY_INPUT) + ": " + LH.Chat.WHITE + 1 + " - " + 65536 + " " + mEnergyOUT.mType.getChatFormat() + mEnergyOUT.mType.getLocalisedNameShort() + LH.Chat.WHITE + "/t depending on structure");
-        aList.add(LH.Chat.GREEN    + LH.get(LH.ENERGY_OUTPUT) + ": " + LH.Chat.WHITE + 2048 + " - " + 65536 + " " + mEnergyOUT.mType.getChatFormat() + mEnergyOUT.mType.getLocalisedNameShort() + LH.Chat.WHITE + "/t (up to 32 Amps) depending on structure");
-        aList.add(LH.Chat.GREEN    + LH.get(LH.ENERGY_CAPACITY) + " per core: " + LH.Chat.WHITE + mCore0Cap + " - " + mCore5Cap + " " + mEnergyOUT.mType.getChatFormat() + mEnergyOUT.mType.getLocalisedNameShort() +  LH.Chat.WHITE + " depending on type");
-        aList.add(LH.Chat.ORANGE   + LH.get("gt.tooltip.multiblock.multiblockenergystorageunit.12") + ": " + LH.Chat.WHITE + mMaintenanceCostPerCore+ " " + mEnergyOUT.mType.getChatFormat() + mEnergyOUT.mType.getLocalisedNameShort() + LH.Chat.WHITE + "/t");
+        aList.add(LH.Chat.WHITE    + LH_CH.get("gt.tooltip.multiblock.multiblockenergystorageunit.1"));
+        aList.add(LH.Chat.WHITE    + LH_CH.get("gt.tooltip.multiblock.multiblockenergystorageunit.2"));
+        aList.add(LH.Chat.WHITE    + LH_CH.get("gt.tooltip.multiblock.multiblockenergystorageunit.3"));
+        aList.add(LH.Chat.WHITE    + LH_CH.get("gt.tooltip.multiblock.multiblockenergystorageunit.4"));
+        aList.add(LH.Chat.WHITE    + LH_CH.get("gt.tooltip.multiblock.multiblockenergystorageunit.5"));
+        aList.add(LH.Chat.WHITE    + LH_CH.get("gt.tooltip.multiblock.multiblockenergystorageunit.6"));
+        aList.add(LH.Chat.WHITE    + LH_CH.get("gt.tooltip.multiblock.multiblockenergystorageunit.7"));
+        aList.add(LH.Chat.WHITE    + LH_CH.get("gt.tooltip.multiblock.multiblockenergystorageunit.8"));
+        aList.add(LH.Chat.GRAY     + LH_CH.get("gt.tooltip.multiblock.multiblockenergystorageunit.9"));
+        aList.add(LH.Chat.GRAY     + LH_CH.get("gt.tooltip.multiblock.multiblockenergystorageunit.10"));
+        aList.add(LH.Chat.RED      + LH_CH.get("gt.tooltip.multiblock.multiblockenergystorageunit.11"));
+        aList.add(LH.Chat.GREEN    + LH.get(LH.ENERGY_INPUT) + ": " + LH.Chat.WHITE + 1 + " - " + 65536 + " " + core().mEnergyType.getChatFormat() + core().mEnergyType.getLocalisedNameShort() + LH.Chat.WHITE + "/t depending on structure");
+        aList.add(LH.Chat.GREEN    + LH.get(LH.ENERGY_OUTPUT) + ": " + LH.Chat.WHITE + 2048 + " - " + 65536 + " " + core().mEnergyType.getChatFormat() + core().mEnergyType.getLocalisedNameShort() + LH.Chat.WHITE + "/t (up to 32 Amps) depending on structure");
+        aList.add(LH.Chat.GREEN    + LH.get(LH.ENERGY_CAPACITY) + " per core: " + LH.Chat.WHITE + mCore0Cap + " - " + mCore5Cap + " " + core().mEnergyType.getChatFormat() + core().mEnergyType.getLocalisedNameShort() +  LH.Chat.WHITE + " depending on type");
+        aList.add(LH.Chat.ORANGE   + LH_CH.get("gt.tooltip.multiblock.multiblockenergystorageunit.12") + ": " + LH.Chat.WHITE + mMaintenanceCostPerCore+ " " + core().mEnergyType.getChatFormat() + core().mEnergyType.getLocalisedNameShort() + LH.Chat.WHITE + "/t");
         super.addToolTips(aList, aStack, aF3_H);
     }
     
     @Override
     public void onTickEnergy(long aTimer) {
         super.onTickEnergy(aTimer);
-        int mCoreAmount = mSyncBatteryCoreLength * mSyncBatteryCoreWidth * mSyncBatteryCoreWidth;
-        mStorage.mEnergy = Math.max(0, mStorage.mEnergy - Math.max(mCoreAmount*mMaintenanceCostPerCore, 1));
+        core().costEnergy((long)mMaintenanceCostPerCore * mSyncBatteryCoreLength * mSyncBatteryCoreWidth * mSyncBatteryCoreWidth);
     }
     
     @Override
@@ -184,28 +201,29 @@ public class MultiTileEntityMultiblockEnergyStorageUnit extends TileEntityBase11
         String mElectrodeName = this.getElectodeName();
         aChatReturn.add("Core Type: " + mBatteryCoreName);
         aChatReturn.add("Electrode Type: " + mElectrodeName);
-        aChatReturn.add("Voltage: " + mEnergyOUT.mRec + " Volts");
-        aChatReturn.add("Current: " + mBufferConverter.mMultiplier + " Amps");
+        aChatReturn.add("Voltage: " + core().getOutputSize() + " Volts");
+        aChatReturn.add("Current: " + core().getOutputAmountMax() + " Amps");
         aChatReturn.add("Core Amount: " + mSyncBatteryCoreWidth * mSyncBatteryCoreWidth * mSyncBatteryCoreLength);
-        aChatReturn.add("Energy Stored: " + mStorage.mEnergy + mEnergyIN.mType.getLocalisedNameShort() + "/" + mStorage.mCapacity + mEnergyIN.mType.getLocalisedNameShort());
+        aChatReturn.add("Energy Stored: " + core().getEnergy() + "/" + core().getCapacity() + core().mEnergyType.getLocalisedNameShort());
     }
     
-    @Override
-    public void onScrewdriver(List<String> aChatReturn) {
-        super.onScrewdriver(aChatReturn);
-        if (mBufferConverter.mMultiplier == 32) mBufferConverter.mMultiplier = 1;
-        else mBufferConverter.mMultiplier += 1;
-        aChatReturn.add("Output Current: " + mBufferConverter.mMultiplier + "A");
-    }
-    
-    @Override
-    public void onScrewdriverSneaking(List<String> aChatReturn) {
-        super.onScrewdriverSneaking(aChatReturn);
-        if (mBufferConverter.mMultiplier < 32 && mBufferConverter.mMultiplier > 28)  mBufferConverter.mMultiplier = 32;
-        if (mBufferConverter.mMultiplier == 32) mBufferConverter.mMultiplier = 1;
-        else mBufferConverter.mMultiplier += 4;
-        aChatReturn.add("Output Current: " + mBufferConverter.mMultiplier + "A");
-    }
+    // TODO 需要处理螺丝刀调整电流和覆盖版调整的兼容性
+//    @Override
+//    public void onScrewdriver(List<String> aChatReturn) {
+//        super.onScrewdriver(aChatReturn);
+//        if (mBufferConverter.mMultiplier == 32) mBufferConverter.mMultiplier = 1;
+//        else mBufferConverter.mMultiplier += 1;
+//        aChatReturn.add("Output Current: " + mBufferConverter.mMultiplier + "A");
+//    }
+//
+//    @Override
+//    public void onScrewdriverSneaking(List<String> aChatReturn) {
+//        super.onScrewdriverSneaking(aChatReturn);
+//        if (mBufferConverter.mMultiplier < 32 && mBufferConverter.mMultiplier > 28)  mBufferConverter.mMultiplier = 32;
+//        if (mBufferConverter.mMultiplier == 32) mBufferConverter.mMultiplier = 1;
+//        else mBufferConverter.mMultiplier += 4;
+//        aChatReturn.add("Output Current: " + mBufferConverter.mMultiplier + "A");
+//    }
     
     public ITileEntityUnloadable mEmitter = null;
     
@@ -250,12 +268,12 @@ public class MultiTileEntityMultiblockEnergyStorageUnit extends TileEntityBase11
     }
     
     public String getBatteryCoreName() {
-        if (tRegistry.getLocal(aBatteryCores[mSyncBatteryCoreType]) != null) return tRegistry.getLocal(aBatteryCores[mSyncBatteryCoreType]);
+        if (REG_GREG.getLocal(aBatteryCores[mSyncBatteryCoreType]) != null) return REG_GREG.getLocal(aBatteryCores[mSyncBatteryCoreType]);
         return "No Battery Core!";
     }
     
     public String getElectodeName() {
-        if (tRegistry.getLocal(aElectrodes[mSyncElectrodeType]) != null) return tRegistry.getLocal(aElectrodes[mSyncElectrodeType]);
+        if (REG_GREG.getLocal(aElectrodes[mSyncElectrodeType]) != null) return REG_GREG.getLocal(aElectrodes[mSyncElectrodeType]);
         return "No Electrode!";
     }
     

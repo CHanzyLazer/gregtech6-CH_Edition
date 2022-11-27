@@ -145,11 +145,17 @@ public class CS_CH {
             
             , NBT_BURNING                   = "gtch.burning"                // Boolean, Is machine burning, for mechine need burning and preheat. CHanzy
             
-            , NBT_LENGTH_MIN                = "gtch.length.min"             // Integer, The minimum length of turbines. CHanzy
-            , NBT_LENGTH_MAX                = "gtch.length.max"             // Integer, The maximum length of turbines. CHanzy
-            , NBT_LENGTH_MID                = "gtch.length.mid"             // Integer, The middle length of turbines. CHanzy
-            , NBT_LENGTH                    = "gtch.length"                 // Integer, The current length of turbines. CHanzy
-            , NBT_LENGTH_PRE                = "gtch.length.pre"             // Integer, The previous length of turbines. CHanzy
+            , NBT_LENGTH_MIN                = "gtch.length.min"             // Integer, The minimum length of turbines or something else. CHanzy
+            , NBT_LENGTH_MAX                = "gtch.length.max"             // Integer, The maximum length of turbines or something else. CHanzy
+            , NBT_LENGTH_MID                = "gtch.length.mid"             // Integer, The middle length of turbines or something else. CHanzy
+            , NBT_LENGTH                    = "gtch.length"                 // Integer, The current length of turbines or something else. CHanzy
+            , NBT_LENGTH_PRE                = "gtch.length.pre"             // Integer, The previous length of turbines or something else. CHanzy
+    
+            , NBT_WIDTH_MIN                = "gtch.width.min"             // Integer, The minimum width of turbines or something else. CHanzy
+            , NBT_WIDTH_MAX                = "gtch.width.max"             // Integer, The maximum width of turbines or something else. CHanzy
+            , NBT_WIDTH_MID                = "gtch.width.mid"             // Integer, The middle width of turbines or something else. CHanzy
+            , NBT_WIDTH                    = "gtch.width"                 // Integer, The current width of turbines or something else. CHanzy
+            , NBT_WIDTH_PRE                = "gtch.width.pre"             // Integer, The previous width of turbines or something else. CHanzy
             
             , NBT_LIGHT_VALUE               = "gtch.light.value"            // Byte, The light value of block. CHanzy
             , NBT_LIGHT_OPACITY             = "gtch.light.opacity"          // Short, The light opacity of block. CHanzy

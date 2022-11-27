@@ -23,7 +23,7 @@ import gregapi.tileentity.energy.EnergyCompat;
 import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.tileentity.energy.ITileEntityEnergyDataConductor;
 import gregapi.util.UT;
-import gregtechCH.tileentity.cores.electric.IMTEC_HasElectricCore;
+import gregtechCH.tileentity.cores.electric.IMTEC_HasElectricWire;
 import gregtechCH.tileentity.cores.electric.MTEC_ElectricWireBase;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -40,7 +40,7 @@ import static gregapi.data.CS.*;
  * WIP
  * 符合欧姆定律的新电线
  */
-public class MultiTileEntityWireElectric_CH extends TileEntityBase10ConnectorRendered implements IMTEC_HasElectricCore, ITileEntityQuickObstructionCheck, ITileEntityEnergy, ITileEntityEnergyDataConductor, ITileEntityProgress, IMultiTileEntity.IMTE_GetDebugInfo, IMultiTileEntity.IMTE_GetCollisionBoundingBoxFromPool, IMultiTileEntity.IMTE_OnEntityCollidedWithBlock {
+public class MultiTileEntityWireElectric_CH extends TileEntityBase10ConnectorRendered implements IMTEC_HasElectricWire, ITileEntityQuickObstructionCheck, ITileEntityEnergy, ITileEntityEnergyDataConductor, ITileEntityProgress, IMultiTileEntity.IMTE_GetDebugInfo, IMultiTileEntity.IMTE_GetCollisionBoundingBoxFromPool, IMultiTileEntity.IMTE_OnEntityCollidedWithBlock {
     public long mLoss = 1, mVoltage = 0, mAmperage = 0;
     public byte mRenderType = 0;
     private final MTEC_ElectricWireBase mCore = new MTEC_ElectricWireBase(this);
@@ -67,6 +67,7 @@ public class MultiTileEntityWireElectric_CH extends TileEntityBase10ConnectorRen
         aList.add(LH.Chat.CYAN     + LH.get(LH.WIRE_STATS_LOSS) + mLoss + " " + TD.Energy.EU.getLocalisedNameShort() + "/m");
         if (mContactDamage) aList.add(LH.Chat.DRED     + LH.get(LH.HAZARD_CONTACT));
         super.addToolTips(aList, aStack, aF3_H);
+        aList.add(LH.Chat.RAINBOW  + "This Wire is WIP");
     }
     
     @Override public void onConnectionChange(byte aPreviousConnections) {super.onConnectionChange(aPreviousConnections); mCore.updateManager();}

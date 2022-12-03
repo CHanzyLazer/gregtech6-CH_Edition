@@ -7,6 +7,7 @@ import gregapi.tileentity.multiblocks.ITileEntityMultiBlockController;
 import gregapi.tileentity.multiblocks.MultiTileEntityMultiBlockPart;
 import gregapi.util.UT;
 import gregtechCH.config.ConfigForge_CH;
+import gregtechCH.util.UT_CH;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
@@ -21,7 +22,7 @@ import static gregtechCH.data.CS_CH.*;
 public class MTEC_MultiBlockMotorBase {
     // reference of MTEC_LargeMotor for some call use
     protected final MTEC_LargeMotor mCore;
-    protected MTEC_MultiBlockMotorBase(MTEC_LargeMotor aCore) {mCore = aCore; assert mCore.mDL == this;}
+    protected MTEC_MultiBlockMotorBase(MTEC_LargeMotor aCore) {mCore = aCore;}
 
     /* main code */
     protected short mTurbineWalls = 18022;

@@ -5,6 +5,7 @@ import gregapi.data.TD;
 import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.util.UT;
 import gregtechCH.config.ConfigForge_CH;
+import gregtechCH.util.UT_CH;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
@@ -19,7 +20,7 @@ import static gregtechCH.data.CS_CH.*;
 public abstract class MTEC_MotorMainBase implements IMTEC_MotorTick {
     // the instance of MTEC_Motor
     protected final MTEC_Motor mCore;
-    protected MTEC_MotorMainBase(MTEC_Motor aCore) {mCore = aCore; assert mCore.mD == this;}
+    protected MTEC_MotorMainBase(MTEC_Motor aCore) {mCore = aCore;}
     
     /* main code */
     protected short mEfficiency = 1000;

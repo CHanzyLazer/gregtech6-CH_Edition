@@ -4,6 +4,7 @@ import gregapi.code.TagData;
 import gregapi.data.TD;
 import gregapi.tileentity.base.TileEntityBase01Root;
 import gregapi.util.UT;
+import gregtechCH.util.UT_CH;
 import net.minecraft.nbt.NBTTagCompound;
 
 import static gregapi.data.CS.*;
@@ -16,7 +17,7 @@ import static gregapi.data.CS.*;
 public class MTEC_ElectricStorage {
     protected final TileEntityBase01Root mTE; // reference of te
     
-    public MTEC_ElectricStorage(TileEntityBase01Root aTE) {assert aTE instanceof IMTEC_HasElectricStorage; mTE = aTE;}
+    public MTEC_ElectricStorage(TileEntityBase01Root aTE) {UT_CH.Debug.assertWhenDebug(aTE instanceof IMTEC_HasElectricStorage); mTE = aTE;}
     protected IMTEC_HasElectricStorage te() {return (IMTEC_HasElectricStorage)mTE;}
     
     /* main code */
@@ -102,7 +103,7 @@ public class MTEC_ElectricStorage {
     public void emitEnergy(long aAmount) {
         if (aAmount <= 0) return;
         mEnergy -= aAmount*getOutputSize();
-        assert mEnergy >= 0;
+        UT_CH.Debug.assertWhenDebug(mEnergy >= 0);
     }
     // 损失能量（用于自动损耗）
     public void costEnergy(long aEnergy) {

@@ -7,6 +7,7 @@ import gregapi.tileentity.connectors.MultiTileEntityWireElectric;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.tileentity.energy.EnergyCompat;
 import gregapi.tileentity.machines.MultiTileEntitySensorTE;
+import gregtech.tileentity.sensors.MultiTileEntityElectrometer;
 import gregtechCH.data.LH_CH;
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.NodeStats;
@@ -17,39 +18,18 @@ import static gregapi.data.CS.CA_RED_255;
 import static gregapi.data.CS.V;
 
 
-public class MultiTileEntityElectrometerKilo extends MultiTileEntitySensorTE {
+public class MultiTileEntityElectrometerKilo extends MultiTileEntityElectrometer {
 	static {LH_CH.add("gt.tooltip.sensor.electrometerkilo", "Measures Electricity Flow (In Kilo-EU)");}
 	@Override public String getSensorDescription() {return LH_CH.get("gt.tooltip.sensor.electrometerkilo");}
 	
 	@Override
 	public long getCurrentValue(DelegatorTileEntity<TileEntity> aDelegator) {
-		if (aDelegator.mTileEntity instanceof MultiTileEntityWireElectric) return ((MultiTileEntityWireElectric)aDelegator.mTileEntity).mWattageLast/1000;
-		
-		if (EnergyCompat.IC_ENERGY && EnergyNet.instance != null) {
-			TileEntity tTileEntity = EnergyNet.instance.getTileEntity(aDelegator.mWorld, aDelegator.mX, aDelegator.mY, aDelegator.mZ);
-			if (tTileEntity != null) {
-				NodeStats tStats = EnergyNet.instance.getNodeStats(tTileEntity);
-				if (tStats != null) {
-					if (tTileEntity instanceof IEnergyConductor ) return (long)tStats.getEnergyOut()/1000;
-					if (tTileEntity instanceof IEnergyEmitter   ) return (long)tStats.getEnergyOut()/1000;
-					if (tTileEntity instanceof IEnergyAcceptor  ) return (long)tStats.getEnergyIn()/1000;
-				}
-			}
-		}
-		return 0;
+		return super.getCurrentValue(aDelegator)/1000;
 	}
 	
 	@Override
 	public long getCurrentMax(DelegatorTileEntity<TileEntity> aDelegator) {
-		if (aDelegator.mTileEntity instanceof MultiTileEntityWireElectric) return ((MultiTileEntityWireElectric)aDelegator.mTileEntity).mAmperage * ((MultiTileEntityWireElectric)aDelegator.mTileEntity).mVoltage/1000;
-		
-		if (EnergyCompat.IC_ENERGY) {
-			TileEntity tTileEntity = aDelegator.mTileEntity instanceof IEnergyTile || EnergyNet.instance == null ? aDelegator.mTileEntity : EnergyNet.instance.getTileEntity(aDelegator.mWorld, aDelegator.mX, aDelegator.mY, aDelegator.mZ);
-			if (tTileEntity instanceof IEnergyConductor ) return (long)((IEnergyConductor)tTileEntity).getConductorBreakdownEnergy()/1000;
-			if (tTileEntity instanceof IEnergySink      ) return V[((IEnergySink)tTileEntity).getSinkTier()]/1000;
-			if (tTileEntity instanceof IEnergySource    ) return V[((IEnergySource)tTileEntity).getSourceTier()]/1000;
-		}
-		return 0;
+		return super.getCurrentMax(aDelegator)/1000;
 	}
 	
 	@Override public short[] getSymbolColor() {return CA_RED_255;}

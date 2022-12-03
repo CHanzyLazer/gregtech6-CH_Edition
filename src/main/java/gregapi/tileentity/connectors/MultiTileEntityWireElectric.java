@@ -54,6 +54,7 @@ import gregapi.tileentity.energy.EnergyCompat;
 import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.tileentity.energy.ITileEntityEnergyDataConductor;
 import gregapi.util.UT;
+import gregtechCH.tileentity.data.ITileEntityElectric;
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.tile.IEnergySource;
 import ic2.api.energy.tile.IEnergyTile;
@@ -65,7 +66,7 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * @author Gregorius Techneticies
  */
-public class MultiTileEntityWireElectric extends TileEntityBase10ConnectorRendered implements ITileEntityQuickObstructionCheck, ITileEntityEnergy, ITileEntityEnergyDataConductor, ITileEntityProgress, IMTE_GetDebugInfo, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnEntityCollidedWithBlock {
+public class MultiTileEntityWireElectric extends TileEntityBase10ConnectorRendered implements ITileEntityElectric, ITileEntityQuickObstructionCheck, ITileEntityEnergy, ITileEntityEnergyDataConductor, ITileEntityProgress, IMTE_GetDebugInfo, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnEntityCollidedWithBlock {
 	public long mTransferredAmperes = 0, mTransferredWattage = 0, mWattageLast = 0, mLoss = 1, mAmperage = 1, mVoltage = 32;
 	public byte mRenderType = 0, mBurnCounter = 0;
 	
@@ -225,6 +226,13 @@ public class MultiTileEntityWireElectric extends TileEntityBase10ConnectorRender
 	
 	@Override public long getProgressValue                  (byte aSide) {return mTransferredAmperes;}
 	@Override public long getProgressMax                    (byte aSide) {return mAmperage;}
+	
+	public long getWattageValue                             (byte aSide) {return mWattageLast;}
+	public long getWattageMax                               (byte aSide) {return mAmperage*mVoltage;}
+	public long getVoltageValue                             (byte aSide) {return mTransferredWattage/mTransferredAmperes;}
+	public long getVoltageMax                               (byte aSide) {return mVoltage;}
+	public long getAmperageValue                            (byte aSide) {return mTransferredAmperes;}
+	public long getAmperageMax                              (byte aSide) {return mAmperage;}
 	
 	@Override public ArrayList<String> getDebugInfo(int aScanLevel) {return aScanLevel > 0 ? new ArrayListNoNulls<>(F, "Transferred Power: " + mWattageLast) : null;}
 

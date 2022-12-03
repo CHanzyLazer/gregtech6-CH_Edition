@@ -10,6 +10,7 @@ import gregapi.util.UT;
 import gregtechCH.data.LH_CH;
 import gregtechCH.tileentity.cores.IMTEC_Texture;
 import gregtechCH.tileentity.cores.IMTEC_ToolTips;
+import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -33,7 +34,7 @@ public abstract class MTEC_Motor implements IMTEC_MotorTick, IMTEC_ToolTips {
     protected MTEC_MotorMainBase mD; // Data Motor
     // the instance of IMTEC_Texture
     protected IMTEC_Texture mDI; // Data icon
-    protected MTEC_Motor(TileEntityBase09FacingSingle aTE) {assert aTE instanceof ITileEntityEnergy; mTE = aTE;}
+    protected MTEC_Motor(TileEntityBase09FacingSingle aTE) {UT_CH.Debug.assertWhenDebug(aTE instanceof ITileEntityEnergy); mTE = aTE;}
 
     /* stuff to override */
     protected abstract MTEC_MotorMainBase getNewCoreMain();

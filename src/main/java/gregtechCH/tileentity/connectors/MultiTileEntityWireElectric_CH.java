@@ -41,7 +41,6 @@ import static gregapi.data.CS.*;
  * 符合欧姆定律的新电线
  */
 public class MultiTileEntityWireElectric_CH extends TileEntityBase10ConnectorRendered implements IMTEC_HasElectricWire, ITileEntityQuickObstructionCheck, ITileEntityEnergy, ITileEntityEnergyDataConductor, ITileEntityProgress, IMultiTileEntity.IMTE_GetDebugInfo, IMultiTileEntity.IMTE_GetCollisionBoundingBoxFromPool, IMultiTileEntity.IMTE_OnEntityCollidedWithBlock {
-    public long mLoss = 1, mVoltage = 0, mAmperage = 0;
     public byte mRenderType = 0;
     private final MTEC_ElectricWireBase mCore = new MTEC_ElectricWireBase(this);
     @Override public MTEC_ElectricWireBase core() {return mCore;}
@@ -50,9 +49,7 @@ public class MultiTileEntityWireElectric_CH extends TileEntityBase10ConnectorRen
     public void readFromNBT2(NBTTagCompound aNBT) {
         if (aNBT.hasKey(NBT_PIPERENDER)) mRenderType = aNBT.getByte(NBT_PIPERENDER);
         super.readFromNBT2(aNBT);
-        if (aNBT.hasKey(NBT_PIPELOSS)) mLoss = Math.max(1, aNBT.getLong(NBT_PIPELOSS));
-        if (aNBT.hasKey(NBT_PIPESIZE)) mVoltage = Math.max(1, aNBT.getLong(NBT_PIPESIZE));
-        if (aNBT.hasKey(NBT_PIPEBANDWIDTH)) mAmperage = Math.max(1, aNBT.getLong(NBT_PIPEBANDWIDTH));
+        mCore.readFromNBT(aNBT);
     }
     
     @Override
@@ -62,9 +59,7 @@ public class MultiTileEntityWireElectric_CH extends TileEntityBase10ConnectorRen
     
     @Override
     public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
-        aList.add(LH.Chat.CYAN     + LH.get(LH.WIRE_STATS_VOLTAGE) + mVoltage + " " + TD.Energy.EU.getLocalisedNameShort() + " (" + VN[UT.Code.tierMin(mVoltage)] + ")");
-        aList.add(LH.Chat.CYAN     + LH.get(LH.WIRE_STATS_AMPERAGE) + mAmperage);
-        aList.add(LH.Chat.CYAN     + LH.get(LH.WIRE_STATS_LOSS) + mLoss + " " + TD.Energy.EU.getLocalisedNameShort() + "/m");
+        mCore.addToolTips(aList);
         if (mContactDamage) aList.add(LH.Chat.DRED     + LH.get(LH.HAZARD_CONTACT));
         super.addToolTips(aList, aStack, aF3_H);
         aList.add(LH.Chat.RAINBOW  + "This Wire is WIP");
@@ -77,13 +72,12 @@ public class MultiTileEntityWireElectric_CH extends TileEntityBase10ConnectorRen
     public void onTick2(long aTimer, boolean aIsServerSide) {
         super.onTick2(aTimer, aIsServerSide);
         mCore.onTick(aTimer, aIsServerSide);
-        // TODO 兼容输入
     }
     
     
     @Override public boolean canConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator) {return EnergyCompat.canConnectElectricity(this, aDelegator.mTileEntity, aDelegator.mSideOfTileEntity);}
     
-    @Override public void onEntityCollidedWithBlock(Entity aEntity) {if (mContactDamage && !isFoamDried()) UT.Entities.applyElectricityDamage(aEntity, mCore.mVoltage*mCore.mAmperage);}
+    @Override public void onEntityCollidedWithBlock(Entity aEntity) {if (mContactDamage && !isFoamDried()) UT.Entities.applyElectricityDamage(aEntity, mCore.getVoltage()*mCore.getAmperage());}
     
     @Override public boolean isEnergyType(TagData aEnergyType, byte aSide, boolean aEmitting) {return aEnergyType == TD.Energy.EU;}
     @Override public Collection<TagData> getEnergyTypes(byte aSide) {return TD.Energy.EU.AS_LIST;}
@@ -92,30 +86,37 @@ public class MultiTileEntityWireElectric_CH extends TileEntityBase10ConnectorRen
     @Override public boolean isEnergyAcceptingFrom(TagData aEnergyType, byte aSide, boolean aTheoretical) {return isEnergyType(aEnergyType, aSide, F) && canAcceptEnergyFrom(aSide);}
     @Override public synchronized long doEnergyExtraction(TagData aEnergyType, byte aSide, long aSize, long aAmount, boolean aDoExtract) {return 0;}
     @Override public synchronized long doEnergyInjection (TagData aEnergyType, byte aSide, long aSize, long aAmount, boolean aDoInject ) {return mCore.doEnergyInjection(aEnergyType, aSide, aSize, aAmount, aDoInject);}
-    @Override public long getEnergySizeOutputRecommended(TagData aEnergyType, byte aSide) {return mVoltage;}
+    @Override public long getEnergySizeOutputRecommended(TagData aEnergyType, byte aSide) {return mCore.getMaxVoltage();}
     @Override public long getEnergySizeOutputMin(TagData aEnergyType, byte aSide) {return 0;}
-    @Override public long getEnergySizeOutputMax(TagData aEnergyType, byte aSide) {return mVoltage;}
-    @Override public long getEnergySizeInputRecommended(TagData aEnergyType, byte aSide) {return mVoltage;}
+    @Override public long getEnergySizeOutputMax(TagData aEnergyType, byte aSide) {return mCore.getMaxVoltage();}
+    @Override public long getEnergySizeInputRecommended(TagData aEnergyType, byte aSide) {return mCore.getMaxVoltage();}
     @Override public long getEnergySizeInputMin(TagData aEnergyType, byte aSide) {return 0;}
-    @Override public long getEnergySizeInputMax(TagData aEnergyType, byte aSide) {return mVoltage;}
+    @Override public long getEnergySizeInputMax(TagData aEnergyType, byte aSide) {return mCore.getMaxVoltage();}
     
     @Override public boolean canDrop(int aInventorySlot) {return F;}
     @Override public boolean isObstructingBlockAt2(byte aSide) {return F;} // Btw, Wires have this but Pipes don't. This is because Wires are flexible, while Pipes aren't.
     
     @Override public boolean isEnergyConducting(TagData aEnergyType) {return aEnergyType == TD.Energy.EU;}
-    @Override public long getEnergyMaxSize(TagData aEnergyType) {return aEnergyType == TD.Energy.EU ? mVoltage : 0;}
-    @Override public long getEnergyMaxPackets(TagData aEnergyType) {return aEnergyType == TD.Energy.EU ? mAmperage : 0;}
-    @Override public long getEnergyLossPerMeter(TagData aEnergyType) {return aEnergyType == TD.Energy.EU ? mLoss : 0;}
+    @Override public long getEnergyMaxSize(TagData aEnergyType) {return aEnergyType == TD.Energy.EU ? mCore.getMaxVoltage() : 0;}
+    @Override public long getEnergyMaxPackets(TagData aEnergyType) {return aEnergyType == TD.Energy.EU ? mCore.getMaxAmperage() : 0;}
+    @Override public long getEnergyLossPerMeter(TagData aEnergyType) {return aEnergyType == TD.Energy.EU ? mCore.getLoss() : 0;}
     @Override public OreDictMaterial getEnergyConductorMaterial() {return mMaterial;}
     @Override public OreDictMaterial getEnergyConductorInsulation() {return isInsulated() ? MT.Rubber : MT.NULL;}
     
     public boolean canEmitEnergyTo                          (byte aSide) {return connected(aSide);}
     public boolean canAcceptEnergyFrom                      (byte aSide) {return connected(aSide);}
     
-    @Override public long getProgressValue                  (byte aSide) {return mCore.mAmperage;}
-    @Override public long getProgressMax                    (byte aSide) {return mAmperage;}
+    @Override public long getProgressValue                  (byte aSide) {return mCore.getAmperage();}
+    @Override public long getProgressMax                    (byte aSide) {return mCore.getMaxAmperage();}
     
-    @Override public ArrayList<String> getDebugInfo(int aScanLevel) {return aScanLevel > 0 ? new ArrayListNoNulls<>(F, "Transferred Power: " + mCore.mVoltage*mCore.mAmperage) : null;}
+    public long getWattageValue                             (byte aSide) {return mCore.getAmperage()*mCore.getVoltage();}
+    public long getWattageMax                               (byte aSide) {return mCore.getMaxAmperage()*mCore.getMaxVoltage();}
+    public long getVoltageValue                             (byte aSide) {return mCore.getVoltage();}
+    public long getVoltageMax                               (byte aSide) {return mCore.getMaxVoltage();}
+    public long getAmperageValue                            (byte aSide) {return mCore.getAmperage();}
+    public long getAmperageMax                              (byte aSide) {return mCore.getMaxAmperage();}
+    
+    @Override public ArrayList<String> getDebugInfo(int aScanLevel) {return aScanLevel > 0 ? new ArrayListNoNulls<>(F, "Transferred Power: " + mCore.getVoltage()*mCore.getAmperage()) : null;}
     
     // 绝缘线缆不会改变半径
     @Override public float getConnectorDiameter(byte aConnectorSide, DelegatorTileEntity<TileEntity> aDelegator) {

@@ -18,6 +18,8 @@ import java.util.LinkedList;
  */
 public class ConfigForge_CH {
     public static class DATA_GTCH {
+        public static boolean debugging;
+        
         public static boolean enableChangeLoader_Fluids;
         
         public static boolean enableChangeLoader_MTEStorages;
@@ -77,6 +79,8 @@ public class ConfigForge_CH {
         ConfigsGTCH.REACTORS    = new Config(DirectoriesGTCH.CONFIG_GTCH, "Reactors.cfg");
         ConfigsGTCH.MACHINES    = new Config(DirectoriesGTCH.CONFIG_GTCH, "Machines.cfg");
         ConfigsGTCH.GTCH        = new Config(DirectoriesGTCH.CONFIG_GTCH, "GTCH.cfg");
+        
+        DATA_GTCH.debugging = ConfigsGTCH.GTCH.get(ConfigCategories_CH.general, "debugging_(gt6_false)", F);
         
         DATA_GTCH.enableChangeLoader_Fluids = ConfigsGTCH.GTCH.get(ConfigCategories_CH.loader, "enableChangeLoader_fluids_(gt6_false)", T);
         

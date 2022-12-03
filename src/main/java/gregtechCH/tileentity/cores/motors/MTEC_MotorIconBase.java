@@ -5,6 +5,7 @@ import gregapi.render.BlockTextureMulti;
 import gregapi.render.IIconContainer;
 import gregapi.render.ITexture;
 import gregtechCH.tileentity.cores.IMTEC_Texture;
+import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
 
 import static gregapi.data.CS.*;
@@ -13,7 +14,7 @@ import static gregapi.data.CS.*;
 public abstract class MTEC_MotorIconBase implements IMTEC_Texture {
     // the reference of MTEC_Motor
     protected final MTEC_Motor mCore;
-    protected MTEC_MotorIconBase(MTEC_Motor aCore) {mCore = aCore; assert mCore.mDI == this;}
+    protected MTEC_MotorIconBase(MTEC_Motor aCore) {mCore = aCore;}
     
     protected abstract IIconContainer getColoredIcon        (byte aSide);
     protected abstract IIconContainer getOverlayFrontIcon   ();

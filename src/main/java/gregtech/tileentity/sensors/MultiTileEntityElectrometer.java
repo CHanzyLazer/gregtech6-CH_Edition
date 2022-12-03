@@ -29,6 +29,7 @@ import gregapi.tileentity.connectors.MultiTileEntityWireElectric;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.tileentity.energy.EnergyCompat;
 import gregapi.tileentity.machines.MultiTileEntitySensorTE;
+import gregtechCH.tileentity.data.ITileEntityElectric;
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.NodeStats;
 import ic2.api.energy.tile.IEnergyAcceptor;
@@ -48,7 +49,7 @@ public class MultiTileEntityElectrometer extends MultiTileEntitySensorTE {
 	
 	@Override
 	public long getCurrentValue(DelegatorTileEntity<TileEntity> aDelegator) {
-		if (aDelegator.mTileEntity instanceof MultiTileEntityWireElectric) return ((MultiTileEntityWireElectric)aDelegator.mTileEntity).mWattageLast;
+		if (aDelegator.mTileEntity instanceof ITileEntityElectric) return ((ITileEntityElectric)aDelegator.mTileEntity).getWattageValue(aDelegator.mSideOfTileEntity);
 		
 		if (EnergyCompat.IC_ENERGY && EnergyNet.instance != null) {
 			TileEntity tTileEntity = EnergyNet.instance.getTileEntity(aDelegator.mWorld, aDelegator.mX, aDelegator.mY, aDelegator.mZ);
@@ -66,7 +67,7 @@ public class MultiTileEntityElectrometer extends MultiTileEntitySensorTE {
 	
 	@Override
 	public long getCurrentMax(DelegatorTileEntity<TileEntity> aDelegator) {
-		if (aDelegator.mTileEntity instanceof MultiTileEntityWireElectric) return ((MultiTileEntityWireElectric)aDelegator.mTileEntity).mAmperage * ((MultiTileEntityWireElectric)aDelegator.mTileEntity).mVoltage;
+		if (aDelegator.mTileEntity instanceof ITileEntityElectric) return ((ITileEntityElectric)aDelegator.mTileEntity).getWattageMax(aDelegator.mSideOfTileEntity);
 		
 		if (EnergyCompat.IC_ENERGY) {
 			TileEntity tTileEntity = aDelegator.mTileEntity instanceof IEnergyTile || EnergyNet.instance == null ? aDelegator.mTileEntity : EnergyNet.instance.getTileEntity(aDelegator.mWorld, aDelegator.mX, aDelegator.mY, aDelegator.mZ);

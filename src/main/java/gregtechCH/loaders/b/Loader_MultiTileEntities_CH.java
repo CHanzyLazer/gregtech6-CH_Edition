@@ -719,8 +719,8 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
     @Override protected void connectorsFinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
         /// 添加项
         aMat = MT.Superconductor; // 随便选个材料
-        aRegistry.add(RegType.GTCH, "New Wire (WIP)" , "Electric Wires", 29903, 28366, MultiTileEntityWireElectric_CH.class, aMat.mToolQuality, 64/4, aMetalWires, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, DYE_INT_Red, NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 6], NBT_PIPESIZE, 32768, NBT_PIPEBANDWIDTH, 4, NBT_CONTACTDAMAGE, F, NBT_PIPELOSS, 0));
-        
+        aRegistry.add(RegType.GTCH, "New Wire (WIP)" , "Electric Wires", 29903, 28366, MultiTileEntityWireElectric_CH.class, aMat.mToolQuality, 64/4, aMetalWires, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, DYE_INT_Red,   NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 6], NBT_PIPESIZE, 512, NBT_PIPEBANDWIDTH, 8, NBT_CONTACTDAMAGE, F, NBT_RESISTANCE+".electric", U));
+        aRegistry.add(RegType.GTCH, "New Wire (WIP)" , "Electric Wires", 29904, 28366, MultiTileEntityWireElectric_CH.class, aMat.mToolQuality, 64/4, aMetalWires, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, DYE_INT_Green, NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 6], NBT_PIPESIZE, 512, NBT_PIPEBANDWIDTH, 8, NBT_CONTACTDAMAGE, F, NBT_RESISTANCE+".electric", U8));
         /// 最后释放这些修改后的添加
         aRegistry.MODIFYING_ADD_END();
     }
@@ -742,6 +742,9 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         /// 添加项
         aRegistry.add(RegType.GTCH, "Flow-O-Meter Sensor"                      , "Sensors"                             , 31030, 31015, MultiTileEntityFlowometer.class                      ,                 1, 16, aUtilMetal     , null, "WYW", "ZXZ", "WPW", 'P', OP.plateDouble.dat(MT.TinAlloy), 'W', OP.wireFine.dat(MT.RedAlloy), 'R', OD.itemRedstone, 'G', OD.blockGlassColorless, 'B', OP.bolt.dat(MT.TinAlloy), 'C', Items.comparator, 'X', OD.pressurePlateGold, 'Y', OP.rotor.dat(MT.TinAlloy), 'Z', OP.ring.dat(MT.Rubber));
         aRegistry.add(RegType.GTCH, "Bucket Flow-O-Meter Sensor"               , "Sensors"                             , 31031, 31015, MultiTileEntityFlowometerBucket.class                ,                 1, 16, aUtilMetal     , null, "WYW", "ZXZ", "WPW", 'P', OP.plateDouble.dat(MT.TinAlloy), 'W', OP.wireFine.dat(MT.RedAlloy), 'R', OD.itemRedstone, 'G', OD.blockGlassColorless, 'B', OP.bolt.dat(MT.TinAlloy), 'C', Items.comparator, 'X', OD.pressurePlateIron, 'Y', OP.rotor.dat(MT.TinAlloy), 'Z', OP.ring.dat(MT.Rubber));
+        // TODO 暂时没有合成
+        aRegistry.add(RegType.GTCH, "Voltage-O-Meter Sensor"                   , "Sensors"                             , 31032, 31015, MultiTileEntityVoltageometer.class                   ,                 1, 16, aUtilMetal     , null);
+        aRegistry.add(RegType.GTCH, "Amperage-O-Meter Sensor"                  , "Sensors"                             , 31034, 31015, MultiTileEntityAmperageometer.class                  ,                 1, 16, aUtilMetal     , null);
         
         /// 最后释放这些修改后的添加
         aRegistry.MODIFYING_ADD_END();

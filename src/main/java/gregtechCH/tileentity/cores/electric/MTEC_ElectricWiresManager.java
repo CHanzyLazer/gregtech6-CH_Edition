@@ -3,6 +3,8 @@ package gregtechCH.tileentity.cores.electric;
 import gregapi.data.TD;
 import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.util.UT;
+import gregtechCH.code.Pair;
+import gregtechCH.util.UT_CH;
 import net.minecraft.tileentity.TileEntity;
 
 import java.util.*;
@@ -19,29 +21,18 @@ public class MTEC_ElectricWiresManager {
     
     // 通用电力 buffer，标记电压电流和能量
     private static class EnergyBuffer {
-        public long mVoltage = 128, mAmperage = 1, mEnergy = 0;
-        
-        // 注入能量直到满，输出成功注入的电流值（用于 input 注入能量）
-        public long injectUtilFull(long aVoltage, long aAmperage) {
-            mAmperage = aAmperage;
-            mVoltage = aVoltage;
-            long tInEnergy = aAmperage*aVoltage;
-            if (mEnergy >= tInEnergy) return 0;
-            long tInAmperage = UT.Code.divup(tInEnergy-mEnergy, aVoltage);
-            mEnergy += tInAmperage*aVoltage;
-            return tInAmperage;
-        }
-        // 无论如何都要注入能量（用于 output 注入能量）
-        public void injectAny(long aVoltage, long aAmperage) {
-            mAmperage = aAmperage;
-            mVoltage = aVoltage;
-            mEnergy += aAmperage*aVoltage;
-        }
+        public long mVoltage = 128, mAmperage = 1, mEnergy = 0; // 为了让代码简洁，保证实际 buffer 的电流都大于等于 1
         // 消耗电流量的能量
-        public void emit(long aAmperage) {mEnergy -= mVoltage*aAmperage;}
+        public void emit(long aAmperage) {
+            mEnergy -= mVoltage*aAmperage;
+            UT_CH.Debug.assertWhenDebug(mEnergy >= 0);
+        }
         public long stdEnergy() {return mVoltage*mAmperage;}
-        public boolean full() {return mEnergy >= mVoltage*mAmperage;}
+        public boolean full() {return mEnergy >= stdEnergy();}
+        public long outputAmperage() {return Math.min(mEnergy/mVoltage, mAmperage);}
+        public long neededAmperage() {long tEnergyNeed = stdEnergy()-mEnergy; return tEnergyNeed > 0 ? UT.Code.divup(tEnergyNeed, mVoltage) : 0;}
     }
+    
     // 输入类和输出类以及通用部分（输入或输出的 core 和方向以及对应的 TE）
     private static class IOObject {
         protected final MTEC_ElectricWireBase mIOCore;
@@ -57,13 +48,20 @@ public class MTEC_ElectricWiresManager {
         @Override public int hashCode() {return (mIOCore.hashCode()) ^ (mIOSide<<24);}
     }
     // 输入需要暂存电压电流用来统计此 tick 所有的输入，buffer 能量来比较简单实现能量守恒
-    private static class InputObject extends IOObject {
+    static class InputObject extends IOObject {
         protected final EnergyBuffer mEnergyBuffer = new EnergyBuffer();
         private InputObject(MTEC_ElectricWireBase aInputCore, byte aInputSide, TileEntity aInputTE) {super(aInputCore, aInputSide, aInputTE);}
         private InputObject(MTEC_ElectricWireBase aInputCore, byte aInputSide) {this(aInputCore, aInputSide, aInputCore.mTE.getAdjacentTileEntity(aInputSide).mTileEntity);}
         
-        // 返回成功输入的电流
-        public long doInput(long aVoltage, long aAmperage) {return mEnergyBuffer.injectUtilFull(aVoltage, aAmperage);}
+        // 注入能量直到满, 返回成功输入的电流（零或输入电流），为了避免注入能量和调用输出的顺序问题，这里允许 buffer 达到两倍的容量
+        public long doInput(long aVoltage, long aAmperage) {
+            mEnergyBuffer.mAmperage = aAmperage;
+            mEnergyBuffer.mVoltage = aVoltage;
+            long tInEnergy = aAmperage*aVoltage;
+            if (mEnergyBuffer.mEnergy >= tInEnergy * 2) return 0;
+            mEnergyBuffer.mEnergy += tInEnergy;
+            return aAmperage;
+        }
         // 是否可以输出
         public boolean active() {return mEnergyBuffer.full();}
         // 检测是否合理，并且处理不合理部分
@@ -74,48 +72,161 @@ public class MTEC_ElectricWiresManager {
     }
     // 输出需要 buffer 所有的能量，用来保证可以预知输出是否成功，由于有多输入以及电阻，输出会有多组电压电流和对应的 buffer
     private static class OutputObject extends IOObject {
-        protected final Map<InputObject, EnergyBuffer> mInputList = new LinkedHashMap<>(); // linked 用于加速遍历
+        // 不再限制电流，不容易实现并且会有更多的问题，导线熔断判断时注意添加持续时间考虑（或后期直接使用温度和散热）
+        protected final Map<InputObject, Long> mInputAmperages = new LinkedHashMap<>(); // linked 用于加速遍历，用来暂存注入时需要的电流值
+        
+        protected final Map<InputObject, EnergyBuffer> mInputBuffers = new LinkedHashMap<>(); // linked 用于加速遍历
+        protected final Map<InputObject, LinkedList<MTEC_ElectricWireBase>> mInputPaths = new LinkedHashMap<>(); // linked 用于加速遍历
         private OutputObject(MTEC_ElectricWireBase aOutputCore, byte aOutputSide, TileEntity aOutputTE) {super(aOutputCore, aOutputSide, aOutputTE);}
         
-        // 注入能量，一定成功（需要外部注入之前进行判断是否可以注入，而注入一定成功）
-        public void injectEnergy(InputObject aInputObject, long aVoltage, long aAmperage) {
-            if (equals(aInputObject)) return; // 无论如何都不需要自己的输入
-            EnergyBuffer tEnergyBuffer = mInputList.get(aInputObject);
+        // 获取对应输入需要注入的电流量
+        public long getNeededAmperage(InputObject aInputObject) {
+            if (equals(aInputObject)) return 0; // 无论如何都不需要自己的输入
+            EnergyBuffer tEnergyBuffer = mInputBuffers.get(aInputObject);
             if (tEnergyBuffer == null) {
                 tEnergyBuffer = new EnergyBuffer();
-                mInputList.put(aInputObject, tEnergyBuffer);
+                mInputBuffers.put(aInputObject, tEnergyBuffer);
+                tEnergyBuffer.mAmperage = 1; // 仅保证和初值无关
             }
+            return tEnergyBuffer.neededAmperage();
+        }
+        // 为路径注入电流，如果没有路径需要进行初始化，一定会成功
+        public void injectAmperageToPath(InputObject aInputObject, long aAmperage) {
+            LinkedList<MTEC_ElectricWireBase> tPath = mInputPaths.get(aInputObject);
+            if (tPath == null) {
+                tPath = new LinkedList<>();
+                boolean tOut = getPath(aInputObject, this, tPath);
+                UT_CH.Debug.assertWhenDebug(tOut);
+                mInputPaths.put(aInputObject, tPath);
+            }
+            for (MTEC_ElectricWireBase tCore : tPath) {
+                tCore.appendAmperage(aInputObject, aAmperage);
+            }
+            Long tAmperage = mInputAmperages.get(aInputObject);
+            mInputAmperages.put(aInputObject, tAmperage == null ? aAmperage : tAmperage + aAmperage);
+        }
+        // 注入能量，一定成功（需要外部注入之前进行判断是否可以注入，而注入一定成功）
+        public void injectEnergy(InputObject aInputObject, long aVoltage, long aAmperage) {
+            UT_CH.Debug.assertWhenDebug(mInputAmperages.get(aInputObject) == aAmperage);
+            if (equals(aInputObject)) return; // 无论如何都不需要自己的输入
+            EnergyBuffer tEnergyBuffer = mInputBuffers.get(aInputObject);
             aInputObject.mEnergyBuffer.emit(aAmperage);
-            tEnergyBuffer.injectAny(aVoltage, aAmperage);
-            assert aInputObject.mEnergyBuffer.mEnergy >= 0;
+            // 直接注入 buffer 即可
+            tEnergyBuffer.mVoltage = aVoltage;
+            tEnergyBuffer.mEnergy += aAmperage*aVoltage;
         }
         // 执行输出，需要遍历 mInputList 来输出，保证过高电压一定会导致爆炸之类的
         public void doOutput() {
-            for (EnergyBuffer tEnergyBuffer : mInputList.values()) if (tEnergyBuffer.full()) {
-                long tInserted = ITileEntityEnergy.Util.insertEnergyInto(TD.Energy.EU, OPOS[mIOSide], tEnergyBuffer.mVoltage, tEnergyBuffer.mAmperage, mIOCore.mTE, mIOTE);
-                tEnergyBuffer.emit(tInserted);
-                assert tEnergyBuffer.mEnergy >= 0;
+            for (Map.Entry<InputObject, EnergyBuffer> tEntry : mInputBuffers.entrySet()) {
+                long tOutputAmperage = tEntry.getValue().outputAmperage();
+                if (tOutputAmperage > 0 ) {
+                    long tInserted = ITileEntityEnergy.Util.insertEnergyInto(TD.Energy.EU, OPOS[mIOSide], tEntry.getValue().mVoltage, tOutputAmperage, mIOCore.mTE, mIOTE);
+                    tEntry.getValue().emit(tInserted);
+                    // 如果刚好消耗完了目前电流量，并且没有剩余电流，则增大电流
+                    if (tInserted == tEntry.getValue().mAmperage && tEntry.getValue().mEnergy < tEntry.getValue().mVoltage) tEntry.getValue().mAmperage *= 2;
+                    tEntry.getValue().mAmperage = Math.min(tEntry.getValue().mAmperage, tEntry.getKey().mEnergyBuffer.mAmperage);
+                }
             }
-        }
-        // 是否需要输入
-        public boolean active(InputObject aInputObject) {
-            if (equals(aInputObject)) return F; // 无论如何都不需要自己的输入
-            EnergyBuffer tEnergyBuffer = mInputList.get(aInputObject);
-            if (tEnergyBuffer == null) return T;
-            return !tEnergyBuffer.full(); // 没有 full 都接受输入
+            // 每次输出完成重置这些变量
+            mInputAmperages.clear();
         }
         // 检测是否合理，并且处理不合理部分
         @Override public boolean valid(MTEC_ElectricWiresManager aManager) {
-            if (!super.valid(aManager)) {mInputList.clear(); return F;}
+            if (!super.valid(aManager)) {mInputBuffers.clear(); mInputAmperages.clear(); mInputPaths.clear(); return F;}
             // 遍历清除非法元素，注意需要使用迭代器来清除
-            Iterator<InputObject> keyIt = mInputList.keySet().iterator();
+            Iterator<InputObject> keyIt = mInputBuffers.keySet().iterator();
             while (keyIt.hasNext()) {
                 InputObject tKey = keyIt.next();
                 if (!aManager.mInputs.containsKey(tKey) || !tKey.valid(aManager)) keyIt.remove();
             }
+            // 清空缓存的一些变量
+            mInputAmperages.clear();
+            // 清空原本缓存的路径
+            mInputPaths.clear();
             return T;
         }
     }
+    
+    // 获取最短路径 A* 算法，用于得到电流的流过路径，返回是否成功找到
+    private static boolean getPath(InputObject aInputObject, OutputObject aOutputObject, LinkedList<MTEC_ElectricWireBase> rPath) {
+        rPath.clear();
+        TreeMap<Integer, LinkedList<Node>> openSetWithValue = new TreeMap<>();
+        Set<Node> openSet = new HashSet<>();
+        Set<Node> closeSet = new HashSet<>();
+        // 添加起始节点
+        {
+            Node tInitNode = new Node(aInputObject.mIOCore, null);
+            openSet.add(tInitNode);
+            openSetWithValue.put(0, UT_CH.STL.newLinkedList(tInitNode));
+        }
+        // 最终节点，未找到则为 null
+        Node endNode = null;
+        // 开始算法
+        while (true) {
+            Map.Entry<Integer, LinkedList<Node>> tEntry = openSetWithValue.firstEntry();
+            if (tEntry == null) break;
+            // 从头挑选，并且顺便将其从 openset 放入 closeset
+            Node tNextNode = tEntry.getValue().pollLast(); // 采用先进先出的原则，模拟深度优先搜索来加速退出
+            if (tNextNode == null) {openSetWithValue.remove(tEntry.getKey()); continue;} // 如果对应的队列为空则清除此 key，重新寻找
+            // 如果为终点，则退出循环，已经找到
+            if (tNextNode.equalToCore(aOutputObject.mIOCore)) {endNode = tNextNode; break;}
+            // 否则更新 openset 和 closeset
+            openSet.remove(tNextNode);
+            closeSet.add(tNextNode);
+            // 获取近邻，加入到 openset 以便下一次循环
+            for (byte tSide : ALL_SIDES) {
+                Node tNode = tNextNode.getAdjacentNode(tSide);
+                if (tNode != null) {
+                    if (closeSet.contains(tNode) || openSet.contains(tNode)) continue;
+                    openSet.add(tNode);
+                    int tValue = tNode.mDistance + tNode.getDistanceToEnd(aOutputObject.mIOCore);
+                    LinkedList<Node> tNodeList = openSetWithValue.get(tValue);
+                    if (tNodeList == null) {
+                        tNodeList = new LinkedList<>();
+                        openSetWithValue.put(tValue, tNodeList);
+                    }
+                    tNodeList.addLast(tNode); // 采用先进先出的原则，模拟深度优先搜索来加速退出
+                }
+            }
+        }
+        // 根据最终节点获取路径
+        if (endNode == null) return F;
+    
+        rPath.addFirst(endNode.mCore);
+        while (endNode.mParent != null) {
+            endNode = endNode.mParent;
+            rPath.addFirst(endNode.mCore); // 保证构造后顺序是从 input 到 output
+        }
+        return T;
+    }
+    // 用于实现 A* 算法的 Node，提供周围搜索，父节点记录，等
+    private static class Node {
+        public final MTEC_ElectricWireBase mCore;
+        public final Node mParent; // null 表示起始节点
+        public final int mDistance; // 表示距离起点的距离
+        private Node(MTEC_ElectricWireBase aCore, Node aParent) {
+            mCore = aCore; mParent = aParent;
+            if (aParent == null) mDistance = 0;
+            else mDistance = mParent.mDistance + 1;
+        }
+        // 获取近邻
+        public Node getAdjacentNode(byte aSide) {
+            MTEC_ElectricWireBase tCore = mCore.getAdjacentCore(aSide);
+            if (tCore == null) return null;
+            return new Node(tCore, this);
+        }
+        // 直接选用曼哈顿距离来估计距离终点的距离
+        public int getDistanceToEnd(MTEC_ElectricWireBase aCore) {
+            return Math.abs(mCore.mTE.xCoord - aCore.mTE.xCoord) + Math.abs(mCore.mTE.yCoord - aCore.mTE.yCoord) + Math.abs(mCore.mTE.zCoord - aCore.mTE.zCoord);
+        }
+        // 重写 equals 和 hashCode 来使其作为 key 时可以按照我希望的方式运行
+        @Override public boolean equals(Object aRHS) {return aRHS instanceof Node ? equals((Node) aRHS) : F;}
+        public boolean equals(Node aRHS) {return mCore==aRHS.mCore;}
+        @Override public int hashCode() {return mCore.hashCode();}
+        // 自用方法
+        public boolean equalToCore(MTEC_ElectricWireBase aCore) {return mCore==aCore;}
+    }
+    
     
     protected boolean mInited = F;
     protected final Map<IOObject, InputObject> mInputs = new LinkedHashMap<>(); // linked 用于加速遍历
@@ -168,38 +279,71 @@ public class MTEC_ElectricWiresManager {
         mTimer = SERVER_TIME;
         
         // 每 tick 分配输入进行输出
+        // 电流分配
         Integer tRestIdx = null; // 用来保证多个输入会接着上一个输入进行分配
-        for (InputObject tInput : mInputs.values()) {
-            // 对于每个输入，统计所有需要的输出，并且将其放入 list 中
-            List<OutputObject> tActiveOutputs = new LinkedList<>();
-            for (OutputObject tOutput : mOutputs.values()) if (tOutput.active(tInput)) tActiveOutputs.add(tOutput);
-            // 根据输入获取每个输出分配的电流，这里可以直接注入
-            if (tActiveOutputs.isEmpty()) continue;
-            long tAmperage = tInput.mEnergyBuffer.mAmperage / tActiveOutputs.size();
-            int tRest = (int)tInput.mEnergyBuffer.mAmperage % tActiveOutputs.size();
-            if (tAmperage > 0) for (OutputObject tOutput : tActiveOutputs) tOutput.injectEnergy(tInput, tInput.mEnergyBuffer.mVoltage, tAmperage);
-            if (tRest > 0) {
-                // 从上一个结束的位置开始遍历，如果没有则随机位置开始
-                Iterator<OutputObject> outputIt = tActiveOutputs.iterator();
-                if (tRestIdx == null) tRestIdx = RNGSUS.nextInt(tActiveOutputs.size());
-                if (tRestIdx >= tActiveOutputs.size()) tRestIdx %= tActiveOutputs.size();
-                for (int i = 0; i < tRestIdx; ++i) {outputIt.next();}
-                int tInjected = 0;
-                while (tInjected < tRest) {
-                    if (!outputIt.hasNext()) outputIt = tActiveOutputs.iterator();
-                    (outputIt.next()).injectEnergy(tInput, tInput.mEnergyBuffer.mVoltage, 1);
-                    ++tInjected;
-                    ++tRestIdx;
-                    if (tRestIdx == tActiveOutputs.size()) tRestIdx = 0;
+        List<Pair<OutputObject, Long>> tActiveOutputs = new LinkedList<>();
+        for (InputObject tInput : mInputs.values()) if (tInput.active()) {
+            // 对于每个输入，统计所有需要的输出，并且将其放入 list 中，并存储每个输出需要的电流数
+            tActiveOutputs.clear();
+            for (OutputObject tOutput : mOutputs.values()) {
+                long tNeedA = tOutput.getNeededAmperage(tInput);
+                if (tNeedA > 0) tActiveOutputs.add(new Pair<>(tOutput, tNeedA));
+            }
+            int tRestActiveNum = tActiveOutputs.size();
+            long tTotalAmperage = tInput.mEnergyBuffer.mAmperage;
+            // 根据输入获取每个输出分配的电流，直到没有需要分配的目标或者没有剩余的电流
+            while (tRestActiveNum > 0 && tTotalAmperage >= tRestActiveNum) {
+                long tAmperage = tTotalAmperage / tRestActiveNum;
+                for (Pair<OutputObject, Long> tPair : tActiveOutputs) if (tPair.second > 0) {
+                    tTotalAmperage -= assignAmperage(tInput, tPair, tAmperage);
+                    if (tPair.second == 0) --tRestActiveNum;
                 }
             }
+            // 剩下不能均分的从上一个结束的位置开始遍历，如果没有则随机位置开始
+            if (tRestActiveNum == 0 || tTotalAmperage == 0) continue;
+            Iterator<Pair<OutputObject, Long>> outputIt = tActiveOutputs.iterator();
+            if (tRestIdx == null) tRestIdx = RNGSUS.nextInt(tActiveOutputs.size());
+            if (tRestIdx >= tActiveOutputs.size()) tRestIdx %= tActiveOutputs.size();
+            for (int i = 0; i < tRestIdx; ++i) outputIt.next();
+            while (tRestActiveNum > 0 && tTotalAmperage > 0) {
+                if (!outputIt.hasNext()) outputIt = tActiveOutputs.iterator();
+                Pair<OutputObject, Long> tPair = outputIt.next();
+                if (tPair.second > 0) {
+                    tTotalAmperage -= assignAmperage(tInput, tPair, 1);
+                    if (tPair.second == 0) --tRestActiveNum;
+                }
+                ++tRestIdx;
+                if (tRestIdx == tActiveOutputs.size()) tRestIdx = 0;
+            }
+        }
+        // 根据分配的电流计算路径的电压值
+        for (OutputObject tOutput : mOutputs.values()) for (Map.Entry<InputObject, LinkedList<MTEC_ElectricWireBase>> tEntry : tOutput.mInputPaths.entrySet()) {
+            Pair<Long, Long> tLastVoltage = new Pair<>(tEntry.getKey().mEnergyBuffer.mVoltage, 0L);
+            for (MTEC_ElectricWireBase tCore : tEntry.getValue()) {
+                tLastVoltage = tCore.setAndGetVoltageFromSourceVoltage(tEntry.getKey(), tLastVoltage);
+            }
+        }
+        // 根据终端的电压值进行注入
+        for (OutputObject tOutput : mOutputs.values()) for (Map.Entry<InputObject, Long> tEntry : tOutput.mInputAmperages.entrySet()) {
+            tOutput.injectEnergy(tEntry.getKey(), tOutput.mIOCore.getOutputVoltage(tEntry.getKey()), tEntry.getValue());
         }
         // 输入完成后遍历进行输出
         for (OutputObject tOutput : mOutputs.values()) tOutput.doOutput();
     }
     
+    // 分配电流需要进行的操作，这里暂时同时直接注入，返回成功分配是数目
+    public long assignAmperage(InputObject aInput, Pair<OutputObject, Long> rPairToAssign, long aAmperage) {
+        aAmperage = Math.min(aAmperage, rPairToAssign.second);
+        rPairToAssign.second -= aAmperage;
+        rPairToAssign.first.injectAmperageToPath(aInput, aAmperage);
+        return aAmperage;
+    }
+    
     // 能量注入，标记输入，并获取成功注入的电流量
     public synchronized long doEnergyInjection(MTEC_ElectricWireBase aInputCore, byte aInputSide, long aVoltage, long aAmperage) {
+        // 严格起见，需要保证网络已经初始化
+        if (!mInited) return 0;
+        aVoltage = Math.abs(aVoltage);
         InputObject tInput = new InputObject(aInputCore, aInputSide);
         InputObject existInput = mInputs.get(tInput);
         if (existInput == null || existInput.mIOTE != tInput.mIOTE) mInputs.put(tInput, tInput); // 如果已有的 input 的 te 不同，也需要进行重置更新

@@ -26,6 +26,7 @@ import gregapi.util.UT;
 import gregtechCH.tileentity.cores.electric.IMTEC_HasElectricWire;
 import gregtechCH.tileentity.cores.electric.MTEC_ElectricWireBase;
 import net.minecraft.entity.Entity;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -74,6 +75,13 @@ public class MultiTileEntityWireElectric_CH extends TileEntityBase10ConnectorRen
         mCore.onTick(aTimer, aIsServerSide);
     }
     
+    @Override
+    public long onToolClick2(String aTool, long aRemainingDurability, long aQuality, Entity aPlayer, List<String> aChatReturn, IInventory aPlayerInventory, boolean aSneaking, ItemStack aStack, byte aSide, float aHitX, float aHitY, float aHitZ) {
+        long rReturn = super.onToolClick2(aTool, aRemainingDurability, aQuality, aPlayer, aChatReturn, aPlayerInventory, aSneaking, aStack, aSide, aHitX, aHitY, aHitZ);
+        if (rReturn > 0) return rReturn;
+        if (isClientSide()) return 0;
+        return mCore.onToolClick(aTool, aRemainingDurability, aQuality, aPlayer, aChatReturn, aPlayerInventory, aSneaking, aStack, aSide, aHitX, aHitY, aHitZ);
+    }
     
     @Override public boolean canConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator) {return EnergyCompat.canConnectElectricity(this, aDelegator.mTileEntity, aDelegator.mSideOfTileEntity);}
     
@@ -131,7 +139,7 @@ public class MultiTileEntityWireElectric_CH extends TileEntityBase10ConnectorRen
     @Override public int getBottomRGB() {return isInsulated() ? UT.Code.getRGBInt(64, 64, 64) : super.getBottomRGB();}
     // GTCH, 绝缘时返回绝缘层颜色
     @SideOnly(Side.CLIENT) @Override protected int colorMultiplier2() {
-        if (isInsulated()) return isPainted()?mRGBa: getBottomRGB();
+        if (isInsulated()) return isPainted() ? mRGBa : getBottomRGB();
         return super.colorMultiplier2();
     }
     

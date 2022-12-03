@@ -9,6 +9,9 @@ import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.util.UT;
 import gregtechCH.code.Pair;
 import gregtechCH.util.UT_CH;
+import net.minecraft.entity.Entity;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import org.jetbrains.annotations.NotNull;
@@ -19,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.config.ConfigForge_CH.*;
 
 /**
  * WIP
@@ -38,8 +42,15 @@ public class MTEC_ElectricWireBase {
     private final Map<MTEC_ElectricWiresManager.InputObject, Pair<Long, Long>> mVoltageList = new LinkedHashMap<>(); // linked 用于加速遍历，后一项为小数部分
     private final Map<MTEC_ElectricWiresManager.InputObject, Long> mAmperageList = new LinkedHashMap<>(); // linked 用于加速遍历
     private final Pair<Long, Long> mVoltage = new Pair<>(0L, 0L); // 暂存这个电线的电压值
-    private long mAmperage = 0; // 暂存这个电线的电流值
+    private long mAmperage = 0L; // 暂存这个电线的电流值
     // 提供这些接口来方便的修改电压电流值
+    protected void clearTemporary() {
+        // 清空临时变量值，在修改前统一调用保证永远都是正确值
+        mVoltage.first = 0L; mVoltage.second = 0L;
+        mVoltageList.clear();
+        mAmperage = 0L;
+        mAmperageList.clear();
+    }
     protected void appendAmperage(MTEC_ElectricWiresManager.InputObject aInputObject, long aAmperage) {
         Long tAmperage = mAmperageList.get(aInputObject);
         mAmperageList.put(aInputObject, tAmperage == null ? aAmperage : tAmperage + aAmperage);
@@ -48,10 +59,14 @@ public class MTEC_ElectricWireBase {
     protected Pair<Long, Long> setAndGetVoltageFromSourceVoltage(MTEC_ElectricWiresManager.InputObject aInputObject, Pair<Long, Long> aSourceVoltage) {
         // 只会也只需要设置一次电压
         if (mVoltageList.containsKey(aInputObject)) return mVoltageList.get(aInputObject);
+        if (aSourceVoltage.first == 0 && aSourceVoltage.second == 0) {
+            Pair<Long, Long> tVoltage = new Pair<>(0L, 0L); mVoltageList.put(aInputObject, tVoltage); return tVoltage;
+        }
         long tVoltageCost = UT.Code.divup(mAmperage * mResistance, U);
         long tVoltageRest = aSourceVoltage.second + tVoltageCost * U - mAmperage * mResistance;
         long tVoltageMain = aSourceVoltage.first  - tVoltageCost + tVoltageRest / U;
         tVoltageRest %= U;
+        if (tVoltageMain < 0) {tVoltageMain = 0; tVoltageRest = 0;}
         Pair<Long, Long> tVoltage = new Pair<>(tVoltageMain, tVoltageRest);
         mVoltageList.put(aInputObject, tVoltage);
         if (tVoltage.first >= mVoltage.first) {
@@ -88,7 +103,10 @@ public class MTEC_ElectricWireBase {
     public void onTick(long aTimer, boolean aIsServerSide) {
         if (aIsServerSide) {
             // 熔毁检测
-            if (mBurnCounter >= 16) {mTE.setToFire(); return;}
+            if (mBurnCounter >= 8) {
+                if (RNGSUS.nextInt(4) == 0) {mTE.setToFire(); return;} // 改为随机熔毁
+                else mBurnCounter = 0;
+            }
             // 更新 Manager
             if (aTimer > 2 && !mManagerUpdated) updateNetworkManager();
             // TODO 兼容输入
@@ -97,14 +115,11 @@ public class MTEC_ElectricWireBase {
             if (mManager != null) mManager.onTick();
             // 更新属性用于检测以及下一 tick 的累计统计
             mLastVoltage = mVoltage.first + (RNGSUS.nextInt((int)U) < mVoltage.second ? 1 : 0); // 电压小数部分随机取值
-            mVoltage.first = 0L; mVoltage.second = 0L;
-            mVoltageList.clear();
             mLastAmperage = mAmperage;
-            mAmperage = 0L;
-            mAmperageList.clear();
+            clearTemporary();
             // 熔毁计数
             if (mLastAmperage > mMaxAmperage || mLastVoltage > mMaxVoltage) ++mBurnCounter;
-            if (aTimer % 512 == 2 && mBurnCounter > 0) mBurnCounter--;
+            if (aTimer % 32 == (2 + RNGSUS.nextInt(16)) && mBurnCounter > 0) mBurnCounter--;
         }
     }
     
@@ -113,6 +128,29 @@ public class MTEC_ElectricWireBase {
         aList.add(LH.Chat.CYAN     + LH.get(LH.WIRE_STATS_VOLTAGE)  + mMaxVoltage + " " + TD.Energy.EU.getLocalisedNameShort() + " (" + VN[UT.Code.tierMin(mMaxVoltage)] + ")");
         aList.add(LH.Chat.CYAN     + LH.get(LH.WIRE_STATS_AMPERAGE) + mMaxAmperage);
         aList.add(LH.Chat.CYAN     + LH.get(LH.WIRE_STATS_LOSS)     + LH.numberU(mResistance) + " " + "Ω/m");
+    }
+    
+    // toolclick
+    public long onToolClick(String aTool, long aRemainingDurability, long aQuality, Entity aPlayer, List<String> aChatReturn, IInventory aPlayerInventory, boolean aSneaking, ItemStack aStack, byte aSide, float aHitX, float aHitY, float aHitZ) {
+        if (DATA_GTCH.debugging && aTool.equals(TOOL_magnifyingglass)) {
+            if (aChatReturn != null) {
+                aChatReturn.add("===========DEBUG INFO===========");
+                if (mManager != null) {
+                    aChatReturn.add("INPUT: ");
+                    for (MTEC_ElectricWiresManager.InputObject tInput : mManager.mInputs.values()) {
+                        aChatReturn.add(String.format("  At: (%d, %d, %d)", tInput.mIOTE.xCoord, tInput.mIOTE.yCoord, tInput.mIOTE.zCoord) + "; Energy: " + tInput.mEnergyBuffer.mEnergy);
+                    }
+                    aChatReturn.add("OUTPUT: ");
+                    for (MTEC_ElectricWiresManager.OutputObject tOutput : mManager.mOutputs.values()) {
+                        aChatReturn.add(String.format("  At: (%d, %d, %d)", tOutput.mIOTE.xCoord, tOutput.mIOTE.yCoord, tOutput.mIOTE.zCoord));
+                        for (MTEC_ElectricWiresManager.EnergyBuffer tBuffer : tOutput.mInputBuffers.values()) aChatReturn.add("    Energy: " + tBuffer.mEnergy);
+                    }
+                }
+                aChatReturn.add("=========DEBUG INFO END=========");
+            }
+            return 1;
+        }
+        return 0;
     }
     
     // 为了减少重复代码，获取一个方向的 core，如果不是 core 则返回 null，如果是 te 则添加到输出列表中

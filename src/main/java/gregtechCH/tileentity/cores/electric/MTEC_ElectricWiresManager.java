@@ -1,10 +1,13 @@
 package gregtechCH.tileentity.cores.electric;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.data.TD;
 import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.util.UT;
 import gregtechCH.code.Pair;
 import gregtechCH.util.UT_CH;
+import gregtechCH.util.WD_CH;
 import net.minecraft.tileentity.TileEntity;
 
 import java.util.*;
@@ -20,7 +23,7 @@ public class MTEC_ElectricWiresManager {
     protected long mTimer = 0; // 用来保证每 tick 只会 tick 一次
     
     // 通用电力 buffer，标记电压电流和能量
-    private static class EnergyBuffer {
+    static class EnergyBuffer {
         public long mVoltage = 128, mAmperage = 1, mEnergy = 0; // 为了让代码简洁，保证实际 buffer 的电流都大于等于 1
         // 消耗电流量的能量
         public void emit(long aAmperage) {
@@ -34,7 +37,7 @@ public class MTEC_ElectricWiresManager {
     }
     
     // 输入类和输出类以及通用部分（输入或输出的 core 和方向以及对应的 TE）
-    private static class IOObject {
+    static class IOObject {
         protected final MTEC_ElectricWireBase mIOCore;
         protected final byte mIOSide;
         protected final TileEntity mIOTE;
@@ -55,6 +58,7 @@ public class MTEC_ElectricWiresManager {
         
         // 注入能量直到满, 返回成功输入的电流（零或输入电流），为了避免注入能量和调用输出的顺序问题，这里允许 buffer 达到两倍的容量
         public long doInput(long aVoltage, long aAmperage) {
+            if (aVoltage == 0 || aAmperage == 0) return 0;
             mEnergyBuffer.mAmperage = aAmperage;
             mEnergyBuffer.mVoltage = aVoltage;
             long tInEnergy = aAmperage*aVoltage;
@@ -71,7 +75,7 @@ public class MTEC_ElectricWiresManager {
         }
     }
     // 输出需要 buffer 所有的能量，用来保证可以预知输出是否成功，由于有多输入以及电阻，输出会有多组电压电流和对应的 buffer
-    private static class OutputObject extends IOObject {
+    static class OutputObject extends IOObject {
         // 不再限制电流，不容易实现并且会有更多的问题，导线熔断判断时注意添加持续时间考虑（或后期直接使用温度和散热）
         protected final Map<InputObject, Long> mInputAmperages = new LinkedHashMap<>(); // linked 用于加速遍历，用来暂存注入时需要的电流值
         
@@ -92,11 +96,18 @@ public class MTEC_ElectricWiresManager {
         }
         // 为路径注入电流，如果没有路径需要进行初始化，一定会成功
         public void injectAmperageToPath(InputObject aInputObject, long aAmperage) {
+            if (aAmperage == 0) return;
             LinkedList<MTEC_ElectricWireBase> tPath = mInputPaths.get(aInputObject);
             if (tPath == null) {
                 tPath = new LinkedList<>();
-                boolean tOut = getPath(aInputObject, this, tPath);
-                UT_CH.Debug.assertWhenDebug(tOut);
+                boolean tSuccess = getPath(aInputObject, this, tPath);
+//                UT_CH.Debug.assertWhenDebug(tSuccess);
+                // 总会有各种原因导致网络意外失效，标记需要更新然后退出
+                if (!tSuccess) {
+                    aInputObject.mIOCore.updateManager();
+                    this.mIOCore.updateManager();
+                    return;
+                }
                 mInputPaths.put(aInputObject, tPath);
             }
             for (MTEC_ElectricWireBase tCore : tPath) {
@@ -109,8 +120,9 @@ public class MTEC_ElectricWiresManager {
         public void injectEnergy(InputObject aInputObject, long aVoltage, long aAmperage) {
             UT_CH.Debug.assertWhenDebug(mInputAmperages.get(aInputObject) == aAmperage);
             if (equals(aInputObject)) return; // 无论如何都不需要自己的输入
+            aInputObject.mEnergyBuffer.emit(aAmperage); // 无论电压是否为零，输入都需要损失电流
+            if (aVoltage == 0 || aAmperage == 0) return;
             EnergyBuffer tEnergyBuffer = mInputBuffers.get(aInputObject);
-            aInputObject.mEnergyBuffer.emit(aAmperage);
             // 直接注入 buffer 即可
             tEnergyBuffer.mVoltage = aVoltage;
             tEnergyBuffer.mEnergy += aAmperage*aVoltage;
@@ -269,16 +281,20 @@ public class MTEC_ElectricWiresManager {
     /* main code */
     // ticking，由拥有此 Manager 的 core 竞争 tick 即可
     public final void onTick() {
-        if (mTimer == SERVER_TIME) return; // 直接和 server_time 比较保证只会 tick 一次
-        // 使用序列化的方法保证一次一定只会有一个线程调用
+        if (mTimer == SERVER_TIME || !mInited) return; // 直接和 server_time 比较保证只会 tick 一次
+        // 使用序列化的方法保证一次一定只会有一个线程调用，并且是一定要初始化后才会调用
         onTickSy();
     }
     
     protected synchronized void onTickSy() {
-        if (mTimer == SERVER_TIME) return; // 考虑到有可能平行执行，因此需要在这里再次进行判断
+        if (mTimer == SERVER_TIME || !mInited) return; // 考虑到有可能并行执行，因此需要在这里再次进行判断
         mTimer = SERVER_TIME;
         
         // 每 tick 分配输入进行输出
+        // 电流电压分配前先清空路径的临时值（还没有初始化路径的也不需要清空路径的暂存值）
+        for (OutputObject tOutput : mOutputs.values()) for (LinkedList<MTEC_ElectricWireBase> tPath : tOutput.mInputPaths.values()) for (MTEC_ElectricWireBase tCore : tPath) {
+            tCore.clearTemporary();
+        }
         // 电流分配
         Integer tRestIdx = null; // 用来保证多个输入会接着上一个输入进行分配
         List<Pair<OutputObject, Long>> tActiveOutputs = new LinkedList<>();
@@ -316,8 +332,8 @@ public class MTEC_ElectricWiresManager {
                 if (tRestIdx == tActiveOutputs.size()) tRestIdx = 0;
             }
         }
-        // 根据分配的电流计算路径的电压值
-        for (OutputObject tOutput : mOutputs.values()) for (Map.Entry<InputObject, LinkedList<MTEC_ElectricWireBase>> tEntry : tOutput.mInputPaths.entrySet()) {
+        // 根据分配的电流计算路径的电压值，必须要求这个输出有电流（在工作）才会计算对应电压
+        for (OutputObject tOutput : mOutputs.values()) for (Map.Entry<InputObject, LinkedList<MTEC_ElectricWireBase>> tEntry : tOutput.mInputPaths.entrySet()) if (tOutput.mInputAmperages.containsKey(tEntry.getKey()) && tOutput.mInputAmperages.get(tEntry.getKey()) > 0) {
             Pair<Long, Long> tLastVoltage = new Pair<>(tEntry.getKey().mEnergyBuffer.mVoltage, 0L);
             for (MTEC_ElectricWireBase tCore : tEntry.getValue()) {
                 tLastVoltage = tCore.setAndGetVoltageFromSourceVoltage(tEntry.getKey(), tLastVoltage);
@@ -339,10 +355,21 @@ public class MTEC_ElectricWiresManager {
         return aAmperage;
     }
     
+    // 一些并行处理时等待初始化的方法（注意仅服务端调用来避免卡顿）
+    public boolean waitUtilInited(int aMaxWait) throws InterruptedException {
+        if (mInited) return T;
+        for (int i = 0; i < aMaxWait; ++i) {
+            Thread.sleep(10);
+            if (mInited) return T;
+        }
+        return F;
+    }
+    
     // 能量注入，标记输入，并获取成功注入的电流量
     public synchronized long doEnergyInjection(MTEC_ElectricWireBase aInputCore, byte aInputSide, long aVoltage, long aAmperage) {
         // 严格起见，需要保证网络已经初始化
-        if (!mInited) return 0;
+        try {if (aInputCore.mTE.isServerSide() && !waitUtilInited(100)) return 0;} catch (InterruptedException e) {/**/}
+        if (aVoltage == 0 || aAmperage == 0) return 0;
         aVoltage = Math.abs(aVoltage);
         InputObject tInput = new InputObject(aInputCore, aInputSide);
         InputObject existInput = mInputs.get(tInput);

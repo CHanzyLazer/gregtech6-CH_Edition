@@ -1,13 +1,10 @@
 package gregtechCH.tileentity.cores.electric;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.data.TD;
 import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.util.UT;
 import gregtechCH.code.Pair;
 import gregtechCH.util.UT_CH;
-import gregtechCH.util.WD_CH;
 import net.minecraft.tileentity.TileEntity;
 
 import java.util.*;
@@ -20,8 +17,6 @@ import static gregapi.data.CS.*;
  * 根据输入来调整上限，并且存储输入用于最近搜索
  */
 public class MTEC_ElectricWiresManager {
-    protected long mTimer = 0; // 用来保证每 tick 只会 tick 一次
-    
     // 通用电力 buffer，标记电压电流和能量
     static class EnergyBuffer {
         public long mVoltage = 128, mAmperage = 1, mEnergy = 0; // 为了让代码简洁，保证实际 buffer 的电流都大于等于 1
@@ -101,13 +96,7 @@ public class MTEC_ElectricWiresManager {
             if (tPath == null) {
                 tPath = new LinkedList<>();
                 boolean tSuccess = getPath(aInputObject, this, tPath);
-//                UT_CH.Debug.assertWhenDebug(tSuccess);
-                // 总会有各种原因导致网络意外失效，标记需要更新然后退出
-                if (!tSuccess) {
-                    aInputObject.mIOCore.updateManager();
-                    this.mIOCore.updateManager();
-                    return;
-                }
+                if (!tSuccess) {mIOCore.mManager.mValid = F; return;} // 总会有各种原因导致网络意外失效，标记对应的 manager 非法然后退出
                 mInputPaths.put(aInputObject, tPath);
             }
             for (MTEC_ElectricWireBase tCore : tPath) {
@@ -167,9 +156,9 @@ public class MTEC_ElectricWiresManager {
         Set<Node> closeSet = new HashSet<>();
         // 添加起始节点
         {
-            Node tInitNode = new Node(aInputObject.mIOCore, null);
-            openSet.add(tInitNode);
-            openSetWithValue.put(0, UT_CH.STL.newLinkedList(tInitNode));
+        Node tInitNode = new Node(aInputObject.mIOCore, null);
+        openSet.add(tInitNode);
+        openSetWithValue.put(0, UT_CH.STL.newLinkedList(tInitNode));
         }
         // 最终节点，未找到则为 null
         Node endNode = null;
@@ -239,8 +228,8 @@ public class MTEC_ElectricWiresManager {
         public boolean equalToCore(MTEC_ElectricWireBase aCore) {return mCore==aCore;}
     }
     
-    
-    protected boolean mInited = F;
+    protected long mTimer = 0; // 用来保证每 tick 只会 tick 一次
+    protected boolean mInited = F, mValid = F;
     protected final Map<IOObject, InputObject> mInputs = new LinkedHashMap<>(); // linked 用于加速遍历
     protected final Map<IOObject, OutputObject> mOutputs = new LinkedHashMap<>(); // linked 用于加速遍历
     
@@ -275,7 +264,8 @@ public class MTEC_ElectricWiresManager {
             OutputObject tOutput = outputIt.next();
             if (!tOutput.valid(this)) outputIt.remove();
         }
-        mInited = T;
+        mCoresActive.clear();
+        mValid = mInited = T;
     }
     
     /* main code */
@@ -286,16 +276,18 @@ public class MTEC_ElectricWiresManager {
         onTickSy();
     }
     
+    private final Set<MTEC_ElectricWireBase> mCoresActive = new LinkedHashSet<>(); // linked 用于加速遍历，临时变量暂存上一步的结果
     protected synchronized void onTickSy() {
         if (mTimer == SERVER_TIME || !mInited) return; // 考虑到有可能并行执行，因此需要在这里再次进行判断
         mTimer = SERVER_TIME;
         
         // 每 tick 分配输入进行输出
-        // 电流电压分配前先清空路径的临时值（还没有初始化路径的也不需要清空路径的暂存值）
-        for (OutputObject tOutput : mOutputs.values()) for (LinkedList<MTEC_ElectricWireBase> tPath : tOutput.mInputPaths.values()) for (MTEC_ElectricWireBase tCore : tPath) {
+        // 电流电压分配前先清空路径的临时值（上一步没有激活的 core 也不需要清空路径的暂存值）
+        for (MTEC_ElectricWireBase tCore : mCoresActive) {
             tCore.clearTemporary();
         }
         // 电流分配
+        {
         Integer tRestIdx = null; // 用来保证多个输入会接着上一个输入进行分配
         List<Pair<OutputObject, Long>> tActiveOutputs = new LinkedList<>();
         for (InputObject tInput : mInputs.values()) if (tInput.active()) {
@@ -332,12 +324,38 @@ public class MTEC_ElectricWiresManager {
                 if (tRestIdx == tActiveOutputs.size()) tRestIdx = 0;
             }
         }
+        }
         // 根据分配的电流计算路径的电压值，必须要求这个输出有电流（在工作）才会计算对应电压
         for (OutputObject tOutput : mOutputs.values()) for (Map.Entry<InputObject, LinkedList<MTEC_ElectricWireBase>> tEntry : tOutput.mInputPaths.entrySet()) if (tOutput.mInputAmperages.containsKey(tEntry.getKey()) && tOutput.mInputAmperages.get(tEntry.getKey()) > 0) {
             Pair<Long, Long> tLastVoltage = new Pair<>(tEntry.getKey().mEnergyBuffer.mVoltage, 0L);
             for (MTEC_ElectricWireBase tCore : tEntry.getValue()) {
                 tLastVoltage = tCore.setAndGetVoltageFromSourceVoltage(tEntry.getKey(), tLastVoltage);
             }
+        }
+        // 加速原本的一些算法，统一构造所有需要更新的 core
+        mCoresActive.clear();
+        for (OutputObject tOutput : mOutputs.values()) for (Map.Entry<InputObject, LinkedList<MTEC_ElectricWireBase>> tEntry : tOutput.mInputPaths.entrySet()) if (tOutput.mInputAmperages.containsKey(tEntry.getKey()) && tOutput.mInputAmperages.get(tEntry.getKey()) > 0) {
+            mCoresActive.addAll(tEntry.getValue());
+        }
+        // 熔毁检测放到这里，整个电网会随机熔毁掉一个然后其余的进行冷却
+        {
+        Set<MTEC_ElectricWireBase> tCoresToBurn = new HashSet<>(); // set 保证同类的只会保留一个
+        for (MTEC_ElectricWireBase tCore : mCoresActive) {
+            if (tCore.willBurn()) tCoresToBurn.add(tCore);
+        }
+        if (!tCoresToBurn.isEmpty()) {
+            Iterator<MTEC_ElectricWireBase> coreIt = tCoresToBurn.iterator();
+            int tIdx = 0;
+            int tBurnIdx = RNGSUS.nextInt(tCoresToBurn.size());
+            while (coreIt.hasNext()) {
+                MTEC_ElectricWireBase tCore = coreIt.next();
+                if (tIdx == tBurnIdx) tCore.mTE.setToFire();
+                else tCore.cooldown();
+                ++tIdx;
+            }
+            mValid = F; // 标记非法，包含此的 core 需要更新
+            // 依旧执行完此 tick
+        }
         }
         // 根据终端的电压值进行注入
         for (OutputObject tOutput : mOutputs.values()) for (Map.Entry<InputObject, Long> tEntry : tOutput.mInputAmperages.entrySet()) {

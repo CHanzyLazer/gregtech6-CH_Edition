@@ -229,7 +229,7 @@ public class MultiTileEntityWireElectric extends TileEntityBase10ConnectorRender
 	
 	public long getWattageValue                             (byte aSide) {return mWattageLast;}
 	public long getWattageMax                               (byte aSide) {return mAmperage*mVoltage;}
-	public long getVoltageValue                             (byte aSide) {return mTransferredWattage/mTransferredAmperes;}
+	public long getVoltageValue                             (byte aSide) {return mTransferredAmperes > 0 ? mTransferredWattage/mTransferredAmperes : 0;}
 	public long getVoltageMax                               (byte aSide) {return mVoltage;}
 	public long getAmperageValue                            (byte aSide) {return mTransferredAmperes;}
 	public long getAmperageMax                              (byte aSide) {return mAmperage;}

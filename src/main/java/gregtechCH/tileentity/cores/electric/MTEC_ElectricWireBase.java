@@ -89,7 +89,12 @@ public class MTEC_ElectricWireBase {
     public long getMaxVoltage() {return mMaxVoltage;}
     public long getMaxAmperage() {return mMaxAmperage;}
     public long getLoss() {return UT.Code.divup(mResistance, U);}
-    public byte mBurnCounter = 0;
+    private byte mBurnCounter = 0;
+    public boolean willBurn() {return mBurnCounter >= 16;}
+    public void cooldown() {mBurnCounter -= 4;}
+    
+    // 方块破坏后需要标记 manager 非法
+    public void onBreakBlock() {if (mManager != null) mManager.mValid = F;}
     
     // NBT 读写
     public void readFromNBT(NBTTagCompound aNBT) {
@@ -99,27 +104,24 @@ public class MTEC_ElectricWireBase {
         if (aNBT.hasKey(NBT_PIPEBANDWIDTH)) mMaxAmperage = Math.max(1, aNBT.getLong(NBT_PIPEBANDWIDTH));
     }
     
+    private int tickOrder(int aMax) {return hashCode()%aMax;}
     // ticking
     public void onTick(long aTimer, boolean aIsServerSide) {
         if (aIsServerSide) {
-            // 熔毁检测
-            if (mBurnCounter >= 8) {
-                if (RNGSUS.nextInt(4) == 0) {mTE.setToFire(); return;} // 改为随机熔毁
-                else mBurnCounter = 0;
-            }
             // 更新 Manager
-            if (aTimer > 2 && !mManagerUpdated) updateNetworkManager();
+            if (mManager != null && !mManager.mValid) updateManager(); // 在 tick 之前，对于非法的 manager 需要进行更新
+            if (aTimer % 8 == (2+tickOrder(6)) && !mManagerUpdated) updateNetworkManager(); // 不那么积极的更新网络，因为 setfire 等操作存在较大延迟
             // TODO 兼容输入
             
             // tick Manager
-            if (mManager != null) mManager.onTick();
+            if (mManagerUpdated && mManager != null) mManager.onTick();
             // 更新属性用于检测以及下一 tick 的累计统计
             mLastVoltage = mVoltage.first + (RNGSUS.nextInt((int)U) < mVoltage.second ? 1 : 0); // 电压小数部分随机取值
             mLastAmperage = mAmperage;
             clearTemporary();
             // 熔毁计数
-            if (mLastAmperage > mMaxAmperage || mLastVoltage > mMaxVoltage) ++mBurnCounter;
-            if (aTimer % 32 == (2 + RNGSUS.nextInt(16)) && mBurnCounter > 0) mBurnCounter--;
+            if (mLastAmperage > mMaxAmperage || mLastVoltage > mMaxVoltage) if (mBurnCounter < 16) ++mBurnCounter;
+            if (aTimer % 512 == (2+tickOrder(510)) && mBurnCounter > 0) mBurnCounter--;
         }
     }
     
@@ -174,9 +176,8 @@ public class MTEC_ElectricWireBase {
     }
     
     // 更新 Manager，注意由于存在拆开网络的情况，无论如何都需要使用新的 Manager 来覆盖旧的，并且注意需要串行执行
-    // TODO 应该可以对于小改动进行优化，这里没有很好的思路（对于更新进行延迟，保证连续的修改结构后只在停止修改时进行最后一次更新之类的）
     protected synchronized void updateNetworkManager() {
-        if (mManagerUpdated) return; // 考虑到有可能平行执行，因此需要在这里再次进行判断
+        if (mManagerUpdated) return; // 考虑到有可能并行执行，因此需要在这里再次进行判断
         Set<MTEC_ElectricWiresManager> tManagersToMerge = new HashSetNoNulls<>();
         
         if (mTE.getTimer() < 2) return; // 此时近邻未加载，直接退出
@@ -185,6 +186,7 @@ public class MTEC_ElectricWireBase {
         // 无论如何都需要使用新的 Manager
         mManager = new MTEC_ElectricWiresManager();
         mManagerUpdated = T;
+        clearTemporary(); // 更新 manager 后需要清空临时的数据，保证第一次 tick 的电压电流也是正确的
         // 获取周围连接的 core，同样设置 Manager
         for (byte tSide : ALL_SIDES) {
             MTEC_ElectricWireBase tCore = getAdjacentCoreAndPutOutput(tSide, mManager);
@@ -204,6 +206,7 @@ public class MTEC_ElectricWireBase {
         // 设置自身的 Manager，如果不为 null 则需要放入 aManagersToMerge 用于合并
         if (mManager != null) aManagersToMerge.add(mManager);
         mManager = aManager; mManagerUpdated = T;
+        clearTemporary(); // 更新 manager 后需要清空临时的数据，保证第一次 tick 的电压电流也是正确的
         // 获取周围连接的 core，同样设置 Manager
         for (byte tSide : ALL_SIDES) {
             MTEC_ElectricWireBase tCore = getAdjacentCoreAndPutOutput(tSide, aManager);

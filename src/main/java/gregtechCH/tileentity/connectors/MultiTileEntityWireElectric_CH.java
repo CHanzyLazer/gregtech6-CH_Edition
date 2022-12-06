@@ -66,9 +66,9 @@ public class MultiTileEntityWireElectric_CH extends TileEntityBase10ConnectorRen
         aList.add(LH.Chat.RAINBOW  + "This Wire is WIP");
     }
     
-    @Override public boolean breakBlock() {mCore.onBreakBlock(); return super.breakBlock();}
-    @Override public void onConnectionChange(byte aPreviousConnections) {super.onConnectionChange(aPreviousConnections); mCore.updateManager();}
-    @Override public void onAdjacentBlockChange2(int aTileX, int aTileY, int aTileZ) {super.onAdjacentBlockChange2(aTileX, aTileY, aTileZ); mCore.updateManager();}
+    @Override public boolean breakBlock() {mCore.markUpdateManager(); return super.breakBlock();}
+    @Override public void onConnectionChange(byte aPreviousConnections) {super.onConnectionChange(aPreviousConnections); mCore.markUpdateManager();}
+    @Override public void onAdjacentBlockChange2(int aTileX, int aTileY, int aTileZ) {super.onAdjacentBlockChange2(aTileX, aTileY, aTileZ); mCore.markUpdateManager();}
     
     @Override
     public void onTick2(long aTimer, boolean aIsServerSide) {

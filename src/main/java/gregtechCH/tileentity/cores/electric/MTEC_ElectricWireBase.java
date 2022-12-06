@@ -36,8 +36,8 @@ public class MTEC_ElectricWireBase {
     protected IMTEC_HasElectricWire te() {return (IMTEC_HasElectricWire)mTE;}
     
     /* main code */
-    protected boolean mManagerUpdated = F; // 用于在第一次放置时，连接发生改变或者近邻更改时设置为 F，然后通过 ticking 来进行更新
-    public void updateManager() {mManagerUpdated = F;}
+    private boolean mManagerUpdated = F; // 用于在第一次放置时，连接发生改变或者近邻更改时设置为 F，然后通过 ticking 来进行更新
+    public void markUpdateManager() {if (mManager != null) mManager.setInvalid(); else mManagerUpdated = F;} // 优先通过网络标记需要更新
     
     private final Map<MTEC_ElectricWiresManager.InputObject, Pair<Long, Long>> mVoltageList = new LinkedHashMap<>(); // linked 用于加速遍历，后一项为小数部分
     private final Map<MTEC_ElectricWiresManager.InputObject, Long> mAmperageList = new LinkedHashMap<>(); // linked 用于加速遍历
@@ -93,9 +93,6 @@ public class MTEC_ElectricWireBase {
     public boolean willBurn() {return mBurnCounter >= 16;}
     public void cooldown() {mBurnCounter -= 4;}
     
-    // 方块破坏后需要标记 manager 非法
-    public void onBreakBlock() {if (mManager != null) mManager.mValid = F;}
-    
     // NBT 读写
     public void readFromNBT(NBTTagCompound aNBT) {
         if (aNBT.hasKey(NBT_PIPELOSS)) mResistance = Math.max(0, aNBT.getLong(NBT_PIPELOSS)) * U;
@@ -109,12 +106,12 @@ public class MTEC_ElectricWireBase {
     public void onTick(long aTimer, boolean aIsServerSide) {
         if (aIsServerSide) {
             // 更新 Manager
-            if (mManager != null && !mManager.mValid) updateManager(); // 在 tick 之前，对于非法的 manager 需要进行更新
-            if (aTimer % 8 == (2+tickOrder(6)) && !mManagerUpdated) updateNetworkManager(); // 不那么积极的更新网络，因为 setfire 等操作存在较大延迟
+            if (mManager == null || mManager.needUpdate()) mManagerUpdated = F; // 在 tick 之前，对于非法的 manager 需要进行更新
+            if (aTimer % 8 == (2+tickOrder(6)) && !mManagerUpdated) updateNetworkManager(); // 不那么积极的更新网络
             // TODO 兼容输入
             
             // tick Manager
-            if (mManagerUpdated && mManager != null) mManager.onTick();
+            if (mManagerUpdated && mManager != null) mManager.onTick(); // 非法的网络依旧会进行 tick，进行 counter 但是不会输出
             // 更新属性用于检测以及下一 tick 的累计统计
             mLastVoltage = mVoltage.first + (RNGSUS.nextInt((int)U) < mVoltage.second ? 1 : 0); // 电压小数部分随机取值
             mLastAmperage = mAmperage;
@@ -176,28 +173,36 @@ public class MTEC_ElectricWireBase {
     }
     
     // 更新 Manager，注意由于存在拆开网络的情况，无论如何都需要使用新的 Manager 来覆盖旧的，并且注意需要串行执行
-    protected synchronized void updateNetworkManager() {
-        if (mManagerUpdated) return; // 考虑到有可能并行执行，因此需要在这里再次进行判断
-        Set<MTEC_ElectricWiresManager> tManagersToMerge = new HashSetNoNulls<>();
-        
-        if (mTE.getTimer() < 2) return; // 此时近邻未加载，直接退出
-        // 如果自身不为 null 则需要加入合并
-        if (mManager != null) tManagersToMerge.add(mManager);
-        // 无论如何都需要使用新的 Manager
-        mManager = new MTEC_ElectricWiresManager();
-        mManagerUpdated = T;
-        clearTemporary(); // 更新 manager 后需要清空临时的数据，保证第一次 tick 的电压电流也是正确的
-        // 获取周围连接的 core，同样设置 Manager
-        for (byte tSide : ALL_SIDES) {
-            MTEC_ElectricWireBase tCore = getAdjacentCoreAndPutOutput(tSide, mManager);
-            if (tCore == null) continue;
-            tCore.setNetworkManager(mManager, tManagersToMerge);
+    @SuppressWarnings("SynchronizeOnNonFinalField")
+    protected void updateNetworkManager() {
+        Set<MTEC_ElectricWiresManager> tManagersToMerge;
+        // 需要对所有的对象都串行执行，因为其他的 core 会因为这个 core 更新完成后不再需要进行进行更新
+        synchronized(MTEC_ElectricWireBase.class) {
+            if (mManagerUpdated) return; // 考虑到有可能并行执行，因此需要在这里再次进行判断
+            tManagersToMerge = new HashSetNoNulls<>();
+    
+            if (mTE.getTimer() < 2) return; // 此时近邻未加载，直接退出
+            // 如果自身不为 null 则需要加入合并
+            if (mManager != null) tManagersToMerge.add(mManager);
+            // 无论如何都需要使用新的 Manager
+            mManager = new MTEC_ElectricWiresManager();
+            mManagerUpdated = T;
+            clearTemporary(); // 更新 manager 后需要清空临时的数据，保证第一次 tick 的电压电流也是正确的
+            // 获取周围连接的 core，同样设置 Manager
+            for (byte tSide : ALL_SIDES) {
+                MTEC_ElectricWireBase tCore = getAdjacentCoreAndPutOutput(tSide, mManager);
+                if (tCore == null) continue;
+                tCore.setNetworkManager(mManager, tManagersToMerge);
+            }
         }
-        
-        // 处理合并 Manager
-        for (MTEC_ElectricWiresManager tManager : tManagersToMerge) mManager.mergeManager(tManager);
-        // 更新 Manager，表示已经初始化
-        mManager.update();
+        // 此部分不需要串行，对不同的 mManager 可以并行；增加对 mManager 的锁保险
+        synchronized(mManager) {
+            if (mManager.valid()) return;
+            // 处理合并 Manager
+            for (MTEC_ElectricWiresManager tManager : tManagersToMerge) mManager.mergeManager(tManager);
+            // 更新 Manager，表示已经初始化
+            mManager.update();
+        }
     }
     // 向周围传递的方式来初始化 Manager，递归实现
     private void setNetworkManager(@NotNull MTEC_ElectricWiresManager aManager, @NotNull Set<MTEC_ElectricWiresManager> aManagersToMerge) {

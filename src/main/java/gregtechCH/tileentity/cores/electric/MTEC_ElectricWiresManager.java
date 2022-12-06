@@ -96,7 +96,7 @@ public class MTEC_ElectricWiresManager {
             if (tPath == null) {
                 tPath = new LinkedList<>();
                 boolean tSuccess = getPath(aInputObject, this, tPath);
-                if (!tSuccess) {mIOCore.mManager.mValid = F; return;} // 总会有各种原因导致网络意外失效，标记对应的 manager 非法然后退出
+                if (!tSuccess) {mIOCore.mManager.setInvalid(); return;} // 总会有各种原因导致网络意外失效，标记对应的 manager 非法然后退出
                 mInputPaths.put(aInputObject, tPath);
             }
             for (MTEC_ElectricWireBase tCore : tPath) {
@@ -228,8 +228,12 @@ public class MTEC_ElectricWiresManager {
         public boolean equalToCore(MTEC_ElectricWireBase aCore) {return mCore==aCore;}
     }
     
-    protected long mTimer = 0; // 用来保证每 tick 只会 tick 一次
-    protected boolean mInited = F, mValid = F;
+    private long mTimer = 0; // 用来保证每 tick 只会 tick 一次
+    private boolean mInited = F, mValid = T; // 初始一定合法，非法后一定需要创建新的 manager 来进行替代
+    private int mValidCounter = 0; // 设置非法后用于计数延迟更新
+    public void setInvalid() {mValid = F; mValidCounter = 4;}
+    public boolean needUpdate() {return !mValid && mValidCounter == 0;}
+    public boolean valid() {return mInited && mValid;}
     protected final Map<IOObject, InputObject> mInputs = new LinkedHashMap<>(); // linked 用于加速遍历
     protected final Map<IOObject, OutputObject> mOutputs = new LinkedHashMap<>(); // linked 用于加速遍历
     
@@ -265,7 +269,7 @@ public class MTEC_ElectricWiresManager {
             if (!tOutput.valid(this)) outputIt.remove();
         }
         mCoresActive.clear();
-        mValid = mInited = T;
+        mInited = T;
     }
     
     /* main code */
@@ -277,9 +281,14 @@ public class MTEC_ElectricWiresManager {
     }
     
     private final Set<MTEC_ElectricWireBase> mCoresActive = new LinkedHashSet<>(); // linked 用于加速遍历，临时变量暂存上一步的结果
+    // java 的非静态 synchronized 不会影响不同对象之间的并行
     protected synchronized void onTickSy() {
         if (mTimer == SERVER_TIME || !mInited) return; // 考虑到有可能并行执行，因此需要在这里再次进行判断
         mTimer = SERVER_TIME;
+        
+        // 每 tick 进行 counter 计数
+        if (mValidCounter > 0) --mValidCounter;
+        if (!mValid) return; // 非法 manager 不进行输出
         
         // 每 tick 分配输入进行输出
         // 电流电压分配前先清空路径的临时值（上一步没有激活的 core 也不需要清空路径的暂存值）
@@ -353,7 +362,7 @@ public class MTEC_ElectricWiresManager {
                 else tCore.cooldown();
                 ++tIdx;
             }
-            mValid = F; // 标记非法，包含此的 core 需要更新
+            setInvalid(); // 标记非法，包含此的 core 需要更新
             // 依旧执行完此 tick
         }
         }

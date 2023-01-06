@@ -4,26 +4,15 @@ import gregapi.block.multitileentity.MultiTileEntityBlock;
 import gregapi.block.multitileentity.MultiTileEntityRegistry;
 import gregapi.data.*;
 import gregapi.oredict.OreDictMaterial;
-import gregapi.tileentity.connectors.MultiTileEntityAxle;
-import gregapi.tileentity.connectors.MultiTileEntityWireElectric;
-import gregapi.tileentity.machines.MultiTileEntityBasicMachine;
 import gregapi.tileentity.multiblocks.MultiTileEntityMultiBlockPart;
 import gregapi.util.OM;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregtech.loaders.b.Loader_MultiTileEntities;
-import gregtech.tileentity.batteries.eu.MultiTileEntityPowerCell;
 import gregtech.tileentity.energy.converters.MultiTileEntityDynamoElectric;
-import gregtech.tileentity.energy.converters.MultiTileEntityEngineRotation;
 import gregtech.tileentity.energy.generators.*;
-import gregtech.tileentity.energy.transformers.MultiTileEntityGearBox;
-import gregtech.tileentity.energy.transformers.MultiTileEntityTransformerRotation;
 import gregtech.tileentity.multiblocks.*;
 import gregtech.tileentity.tools.*;
-import gregtechCH.config.machine.kinetic.*;
-import gregtechCH.config.machine.multiblock.AttributesLargeBoilerTank_CH;
-import gregtechCH.config.machine.multiblock.AttributesLargeGasTurbine_CH;
-import gregtechCH.config.machine.multiblock.AttributesLargeSteamTurbine_CH;
 import gregtechCH.data.RM_CH;
 import gregtechCH.tileentity.batteries.eu.MultiTileEntityBatteryAdvEU8192;
 import gregtechCH.tileentity.batteries.eu.MultiTileEntityBatteryEU8192;
@@ -31,15 +20,12 @@ import gregtechCH.tileentity.connectors.MultiTileEntityWireElectric_CH;
 import gregtechCH.tileentity.energy.MultiTileEntityMotorGas;
 import gregtechCH.tileentity.multiblocks.*;
 import gregtechCH.tileentity.sensors.*;
-import gregtechCH.util.UT_CH;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
 import static gregapi.data.CS.*;
-import static gregtechCH.config.ConfigJson_CH.DATA_MACHINES_KINETIC;
-import static gregtechCH.config.ConfigJson_CH.DATA_MACHINES_MULTIBLOCK;
+import static gregtechCH.config.ConfigForge_CH.DATA_GTCH;
 import static gregtechCH.data.CS_CH.*;
 
 
@@ -50,62 +36,11 @@ import static gregtechCH.data.CS_CH.*;
  **/
 @SuppressWarnings({"PointlessArithmeticExpression", "ConstantConditions"})
 public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
-    /* FORMAT:
-    @Override protected void xxxBeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
-        /// 修改前标记修改开始
-        aRegistry.MODIFYING_ADD_START();
-        
-        /// 修改项
-        
-        /// 删除项
-        
-        /// 添加项（插入到指定位置后或者直接添加到最前）
-        
-    }
-   @Override protected void xxxFinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
-        /// 添加项（直接添加到最后）
-        
-        /// 最后标记修改结束，并进行错误检测
-        aRegistry.MODIFYING_ADD_END();
-    }
-    **/
-    
-    @Override protected void crucibleBeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
-        /// 修改前标记修改开始
-        aRegistry.MODIFYING_ADD_START();
-        
-        /// 添加项
-        /* GT6U stuff */
-        // 碳化铌钛坩埚 // MARK ID 1044 -> 1045
-        aClass = MultiTileEntitySmeltery.class;
-        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1043, RegType.GT6U, "Smelting Crucible ("             +aMat.getLocal()+")", "Smelting Crucibles"                  ,  1045,  1022, aClass, aMat.mToolQuality, 16, aMetal           , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   9.0F, NBT_RESISTANCE,   9.0F, NBT_RECIPEMAP, RM.CrucibleAlloying , NBT_ENERGY_ACCEPTED, TD.Energy.HU, NBT_ACIDPROOF, F), "PhP", "PwP", "PPP", 'P', OP.plate.dat(aMat));
-        // 碳化铌钛浇筑口 // MARK ID 1795 -> 1745
-        aClass = MultiTileEntityFaucet.class;
-        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1743, RegType.GT6U, "Crucible Faucet ("               +aMat.getLocal()+")", "Crucibles Faucets"                   ,  1745,  1722, aClass, aMat.mToolQuality, 16, aUtilMetal       , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   1.0F, NBT_RESISTANCE,   6.0F, NBT_ACIDPROOF, F), "h y", "P P", " P ", 'P', OP.plate.dat(aMat));
-        // 碳化铌钛模具 // MARK ID 1094 -> 1095
-        aClass = MultiTileEntityMold.class;
-        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1093, RegType.GT6U, "Mold ("                          +aMat.getLocal()+")", "Molds"                               ,  1095,  1072, aClass, aMat.mToolQuality, 16, aUtilMetal       , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   1.0F, NBT_RESISTANCE,   6.0F, NBT_ACIDPROOF, F), "h y", "P P", "PPP", 'P', OP.plate.dat(aMat));
-        // 碳化铌钛浇筑盆 // MARK ID 1794 -> 1795
-        aClass = MultiTileEntityBasin.class;
-        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1793, RegType.GT6U, "Basin ("                         +aMat.getLocal()+")", "Molds"                               ,  1795,  1072, aClass, aMat.mToolQuality, 16, aMetal           , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   9.0F, NBT_RESISTANCE,   9.0F, NBT_ACIDPROOF, F), "PhP", "PyP", " P ", 'P', OP.plate.dat(aMat));
-        // 碳化铌钛十字 // MARK ID  1894 -> 1895
-        aClass = MultiTileEntityCrossing.class;
-        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1893, RegType.GT6U, "Crucible Crossing ("             +aMat.getLocal()+")", "Molds"                               ,  1895,  1072, aClass, aMat.mToolQuality, 16, aMetal           , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   9.0F, NBT_RESISTANCE,   9.0F, NBT_ACIDPROOF, F), "hPy", "PPP", " P ", 'P', OP.plate.dat(aMat));
-    }
-    @Override protected void crucibleFinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
-        /// 最后标记修改结束，并进行错误检测
-        aRegistry.MODIFYING_ADD_END();
-    }
-    
     
     // TODO 可能考虑成直读一个 json 文件后直接循环替换，而原本的结构用于在默认情况自动生成 json
     // TODO 默认的修改改为硬编码的方式实现（提高可读性，添加和替换格式统一），将玩家自己修改在最上面优先度最高，例子放到说明文档
     @Override protected void unsorted1BeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
-        /// 添加前将后续添加全部 hold
-        aRegistry.MODIFYING_ADD_START();
-        
         /// 修改项
-        /* GTCH stuff */
         // Burning Boxes 输出翻倍，部分效率调整
         aRegistry.addReplacer(1199).setParameters(NBT_OUTPUT,    16, NBT_EFFICIENCY,  2500); // Solid brick 不做修改
         aRegistry.addReplacer(1100).setParameters(NBT_OUTPUT,  16*2, NBT_EFFICIENCY,  5000); // Solid Lead
@@ -289,47 +224,10 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         /// 删除项
 //        aRegistry.removeHolding(9220); // TEST REMOVE
 //        aRegistry.removeHolding(9320); // TEST REMOVE
-    
-        /// 添加项
-        /* GT6U stuff */
-        // 碳化铌钛燃烧室 // MARK ID + 1; DOUBLE OUTPUT
-        aClass = MultiTileEntityGeneratorMetal.class;
-        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1109, RegType.GT6U, "Burning Box (Solid, "            +aMat.getLocal()+")", "Burning Boxes"                       ,  1111,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_FUELMAP, FM.Furnace,    NBT_EFFICIENCY, 10000, NBT_OUTPUT, 392, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "PwP", "BBB", 'B', Blocks.brick_block, 'P', OP.plate.dat(aMat), 'C', OP.plateDouble.dat(ANY.Cu));
-        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1159, RegType.GT6U, "Dense Burning Box (Solid, "      +aMat.getLocal()+")", "Burning Boxes"                       ,  1161,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_FUELMAP, FM.Furnace,    NBT_EFFICIENCY, 10000, NBT_OUTPUT,1536, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "PwP", "BBB", 'B', Blocks.brick_block, 'P', OP.plateQuintuple.dat(aMat), 'C', OP.plateDense.dat(ANY.Cu));
-        aClass = MultiTileEntityGeneratorLiquid.class;
-        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1409, RegType.GT6U, "Burning Box (Liquid, "           +aMat.getLocal()+")", "Burning Boxes"                       ,  1411,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_FUELMAP, FM.Burn,       NBT_EFFICIENCY, 10000, NBT_OUTPUT, 392, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "IwI", "BBB", 'B', Blocks.brick_block, 'P', OP.plate.dat(aMat), 'I', OP.pipeSmall.dat(aMat), 'C', OP.plateDouble.dat(ANY.Cu));
-        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1459, RegType.GT6U, "Dense Burning Box (Liquid, "     +aMat.getLocal()+")", "Burning Boxes"                       ,  1461,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_FUELMAP, FM.Burn,       NBT_EFFICIENCY, 10000, NBT_OUTPUT,1536, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "IwI", "BBB", 'B', Blocks.brick_block, 'P', OP.plateQuintuple.dat(aMat), 'I', OP.pipeLarge.dat(aMat), 'C', OP.plateDense.dat(ANY.Cu));
-        aClass = MultiTileEntityGeneratorGas.class;
-        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1609, RegType.GT6U, "Burning Box (Gas, "              +aMat.getLocal()+")", "Burning Boxes"                       ,  1611,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_FUELMAP, FM.Burn,       NBT_EFFICIENCY, 10000, NBT_OUTPUT, 392, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "BwB", "BIB", 'B', Blocks.brick_block, 'P', OP.plate.dat(aMat), 'I', OP.pipeSmall.dat(aMat), 'C', OP.plateDouble.dat(ANY.Cu));
-        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1659, RegType.GT6U, "Dense Burning Box (Gas, "        +aMat.getLocal()+")", "Burning Boxes"                       ,  1661,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_FUELMAP, FM.Burn,       NBT_EFFICIENCY, 10000, NBT_OUTPUT,1536, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "BwB", "BIB", 'B', Blocks.brick_block, 'P', OP.plateQuintuple.dat(aMat), 'I', OP.pipeLarge.dat(aMat), 'C', OP.plateDense.dat(ANY.Cu));
-        aClass = MultiTileEntityGeneratorFluidBed.class;
-        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(9009, RegType.GT6U, "Fluidized Bed Burning Box ("     +aMat.getLocal()+")", "Burning Boxes"                       ,  9011,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_FUELMAP, FM.FluidBed,   NBT_EFFICIENCY, 10000, NBT_OUTPUT, 768, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "UwU", "BXB", 'B', Blocks.brick_block, 'U', OP.plateCurved.dat(aMat), 'X', OP.rotor.dat(aMat), 'P', OP.plate.dat(aMat), 'C', OP.plateDouble.dat(ANY.Cu));
-        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(9059, RegType.GT6U, "Dense Fluidized Bed Burning Box ("+aMat.getLocal()+")","Burning Boxes"                       ,  9061,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_FUELMAP, FM.FluidBed,   NBT_EFFICIENCY, 10000, NBT_OUTPUT,3072, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "UwU", "BXB", 'B', Blocks.brick_block, 'U', OP.plateCurved.dat(aMat), 'X', OP.rotor.dat(aMat), 'P', OP.plateQuintuple.dat(aMat), 'C', OP.plateDense.dat(ANY.Cu));
-    
-        /// ID: 9140-9149 and 9190-9199 for Diesel Engine; 9160-9169 and 9180-9189 for Small Gas Turbine; (9150-9159 for Dense Heat Exchanger)
-        // 钨燃油引擎 // MARK ID 9199 -> 9190; 效率输出合成和 GTCH 统一
-        aClass = MultiTileEntityMotorLiquid.class;
-        aMat = ANY.W;                   aRegistry.appendAddAfter(9198, RegType.GT6U, "Diesel Engine ("                  +aMat.getLocal()+")", "Engines"                             ,  9190,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Engine, NBT_EFFICIENCY,  3500, NBT_OUTPUT,  256, NBT_PREHEAT_ENERGY,  256*1000, NBT_PREHEAT_RATE,  256*4, NBT_PREHEAT_COST,  256/16, NBT_COOLDOWN_RATE,  256, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeQuadruple.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
-        // 小燃气涡轮 // MARK ID CHANGED
-        aClass = MultiTileEntityMotorGas.class;
-        aMat = MT.Bronze;               aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9167,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  2750, NBT_OUTPUT,   32, NBT_PREHEAT_ENERGY,   32*4000, NBT_PREHEAT_RATE,   32*1, NBT_PREHEAT_COST,   32/16, NBT_COOLDOWN_RATE,   32, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
-        aMat = ANY.Steel;               aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9168,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  2500, NBT_OUTPUT,   64, NBT_PREHEAT_ENERGY,   64*4000, NBT_PREHEAT_RATE,   64*1, NBT_PREHEAT_COST,   64/16, NBT_COOLDOWN_RATE,   64, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
-        aMat = MT.Invar;                aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9169,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  3500, NBT_OUTPUT,  128, NBT_PREHEAT_ENERGY,  128*4000, NBT_PREHEAT_RATE,  128*1, NBT_PREHEAT_COST,  128/16, NBT_COOLDOWN_RATE,  128, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
-        aMat = MT.Ti;                   aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9187,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  2750, NBT_OUTPUT,  256, NBT_PREHEAT_ENERGY,  256*4000, NBT_PREHEAT_RATE,  256*1, NBT_PREHEAT_COST,  256/16, NBT_COOLDOWN_RATE,  256, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
-        aMat = MT.TungstenSteel;        aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9188,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  3000, NBT_OUTPUT,  512, NBT_PREHEAT_ENERGY,  512*4000, NBT_PREHEAT_RATE,  512*1, NBT_PREHEAT_COST,  512/16, NBT_COOLDOWN_RATE,  512, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
-        aMat = ANY.W;                   aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9180,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  3500, NBT_OUTPUT,  512, NBT_PREHEAT_ENERGY,  512*4000, NBT_PREHEAT_RATE,  512*1, NBT_PREHEAT_COST,  512/16, NBT_COOLDOWN_RATE,  512, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
-        aMat = MT.Ir;                   aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9189,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  3333, NBT_OUTPUT, 1024, NBT_PREHEAT_ENERGY, 1024*4000, NBT_PREHEAT_RATE, 1024*1, NBT_PREHEAT_COST, 1024/16, NBT_COOLDOWN_RATE, 1024, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
-    }
-    @Override protected void unsorted1FinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
-        /// 最后释放这些修改后的添加
-        aRegistry.MODIFYING_ADD_END();
     }
     
     
     @Override protected void unsorted2BeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
-        /// 添加前将后续添加全部 hold
-        aRegistry.MODIFYING_ADD_START();
-        
         /// 修改项
         // 修改 Power Cell (Hydrogen) 的 NBT_COLOR 改成 NBT_COLOR_BOTTOM
         aRegistry.addReplacer(14701).setParameters(NBT_COLOR_BOTTOM, UT.Code.getRGBInt(MT.H.fRGBaGas)).removeParameters(NBT_COLOR);
@@ -343,57 +241,14 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         aRegistry.addReplacer(10115).setParameters(NBT_OUTPUT, 8192, NBT_EFFICIENCY_NUM, 6000).removeParameters(NBT_INPUT);
         
         /// 添加项
-        /* GT6U stuff */
-        // IV 电池
-        aRegistry.appendAddAfter(14004, RegType.GT6U, "Lead-Acid Battery ("                 +VN[5]+")", "Batteries"                         , 14005, 14013, MultiTileEntityBatteryEU8192.class,     0, 16, aUtilMetal , UT.NBT.make(NBT_HARDNESS,   0.5F, NBT_RESISTANCE,   3.0F, NBT_COLOR, DYES_INT[DYE_INDEX_Orange] , NBT_INPUT, V[5], NBT_CAPACITY, V[4] *   2000, NBT_ENERGY_ACCEPTED, TD.Energy.EU), "WPW", "BCB", "BBB", 'P', OP.plate.dat(MT.BatteryAlloy), 'B', IL.Battery_Lead_Acid_Cell_Filled, 'W', MT.DATA.CABLES_01[5], 'C', OD_CIRCUITS[5]);
-        aRegistry.appendAddAfter(14014, RegType.GT6U, "Alkaline Battery ("                  +VN[5]+")", "Batteries"                         , 14015, 14013, MultiTileEntityBatteryEU8192.class,     0, 16, aUtilMetal , UT.NBT.make(NBT_HARDNESS,   0.5F, NBT_RESISTANCE,   3.0F, NBT_COLOR, DYES_INT[DYE_INDEX_Blue]   , NBT_INPUT, V[5], NBT_CAPACITY, V[4] *   4000, NBT_ENERGY_ACCEPTED, TD.Energy.EU), "WPW", "BCB", "BBB", 'P', OP.plate.dat(MT.BatteryAlloy), 'B', IL.Battery_Alkaline_Cell_Filled, 'W', MT.DATA.CABLES_01[5], 'C', OD_CIRCUITS[5]);
-        aRegistry.appendAddAfter(14024, RegType.GT6U, "Nickel-Cadmium Battery ("            +VN[5]+")", "Batteries"                         , 14025, 14013, MultiTileEntityBatteryEU8192.class,     0, 16, aUtilMetal , UT.NBT.make(NBT_HARDNESS,   0.5F, NBT_RESISTANCE,   3.0F, NBT_COLOR, DYES_INT[DYE_INDEX_Lime]   , NBT_INPUT, V[5], NBT_CAPACITY, V[4] *   4000, NBT_ENERGY_ACCEPTED, TD.Energy.EU), "WPW", "BCB", "BBB", 'P', OP.plate.dat(MT.BatteryAlloy), 'B', IL.Battery_NiCd_Cell_Filled, 'W', MT.DATA.CABLES_01[5], 'C', OD_CIRCUITS[5]);
-        aRegistry.appendAddAfter(14034, RegType.GT6U, "Lithium-Cobalt Battery ("            +VN[5]+")", "Batteries"                         , 14035, 14013, MultiTileEntityBatteryAdvEU8192.class , 0, 16, aUtilMetal , UT.NBT.make(NBT_HARDNESS,   0.5F, NBT_RESISTANCE,   3.0F, NBT_COLOR, DYES_INT[DYE_INDEX_Blue]   , NBT_INPUT, V[5], NBT_CAPACITY, V[4] *  64000, NBT_ENERGY_ACCEPTED, TD.Energy.EU), "WPW", "BCB", "BBB", 'P', OP.plate.dat(MT.BatteryAlloy), 'B', IL.Battery_LiCoO2_Cell_Filled, 'W', MT.DATA.CABLES_01[5], 'C', OD_CIRCUITS[6]);
-        aRegistry.appendAddAfter(14044, RegType.GT6U, "Lithium-Manganese Battery ("         +VN[5]+")", "Batteries"                         , 14045, 14013, MultiTileEntityBatteryAdvEU8192.class , 0, 16, aUtilMetal , UT.NBT.make(NBT_HARDNESS,   0.5F, NBT_RESISTANCE,   3.0F, NBT_COLOR, DYES_INT[DYE_INDEX_Green]  , NBT_INPUT, V[5], NBT_CAPACITY, V[4] * 128000, NBT_ENERGY_ACCEPTED, TD.Energy.EU), "WPW", "BCB", "BBB", 'P', OP.plate.dat(MT.BatteryAlloy), 'B', IL.Battery_LiMn_Cell_Filled, 'W', MT.DATA.CABLES_01[5], 'C', OD_CIRCUITS[6]);
-        
-        
-        /* GTCH stuff */
         // Dynamos
         aClass = MultiTileEntityDynamoElectric.class;
         aMat = MT.DATA.Electric_T[0];   aRegistry.appendAddBefore(10111, "Electric Dynamo ("              +VN[0]+")", "Dynamos"                             , 10110, 10111, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   4.0F, NBT_RESISTANCE,   4.0F, NBT_INPUT,   14, NBT_OUTPUT,    8, NBT_WASTE_ENERGY, T, NBT_ENERGY_ACCEPTED, TD.Energy.RU, NBT_ENERGY_EMITTED, TD.Energy.EU), "TGT", "CMC", "TId", 'M', OP.casingMachineDouble.dat(aMat), 'T', OP.screw.dat(aMat), 'G', OP.gearGt.dat(aMat), 'I', OP.stickLong.dat(MT.IronMagnetic     ), 'C', OP.wireGt01.dat(ANY.Cu));
     }
-    @Override protected void unsorted2FinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
-        /// 最后释放这些修改后的添加
-        aRegistry.MODIFYING_ADD_END();
-        
-        /// 附加修改部分
-        /* GT6U stuff */
-        // IV 电池的 IL 设定
-        IL.Battery_Lead_Acid_IV .set(aRegistry.getItem(14005), null, "gt:re-battery5");
-        IL.Battery_Alkaline_IV  .set(aRegistry.getItem(14015), null, "gt:re-battery5");
-        IL.Battery_NiCd_IV      .set(aRegistry.getItem(14025), null, "gt:re-battery5");
-        IL.Battery_LiCoO2_IV    .set(aRegistry.getItem(14035), null, "gt:re-battery5");
-        IL.Battery_LiMn_IV      .set(aRegistry.getItem(14045), null, "gt:re-battery5");
-    }
     
     
     @Override protected void multiblocksBeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
-        /// 添加前将后续添加全部 hold
-        aRegistry.MODIFYING_ADD_START();
-        
         /// 修改项
-        /* GT6U stuff */
-        // 蒸馏塔设置最低输入
-        aRegistry.addReplacer(17101).setParameters(NBT_INPUT_MIN, 16);
-        // 低温蒸馏塔设置最低输入，并且替换核心方块，材料替换
-        aRegistry.addReplacer(17111).setParameters(NBT_INPUT_MIN, 16, NBT_MATERIAL, MT.Al).recipe("PPP", "PMP", "PPP", 'M', aRegistry.getItem(18112), 'P', OP.pipeNonuple.dat(ANY.Cu));
-        // MARK 内爆压缩机不需要输入电力，莫名其妙，并且也没有对聚爆压缩机的类进行任何修改 TODO 材质的修改检查
-        // MARK 大型高压釜不再需要输入电力，莫名其妙，TODO 类的修改检查，材质的修改检查
-        // MARK 大电炉的合成不再修改
-        // 大型物质制造机，合成需要的 FIELD_GENERATORS 从 5 调整到 6
-        aRegistry.addReplacer(17199).recipe("FFF", "FMF", "FFF", 'M', aRegistry.getItem(18031), 'F', IL.FIELD_GENERATORS[6]);
-        // 聚变反应堆改名为 MkI，且语言文件放入 GT6U 部分；目前不对输入输出做任何调整
-        aRegistry.addReplacer(17198).regType(RegType.GT6U).localised("Fusion Reactor MkI");
-        // 钨热交换器部件改为 gt6u 的热部件 MARK output 32768 -> 16384 （不改变原版的输出效率） TODO 大型热交换器增加效率
-        aRegistry.addReplacer(17197).regType(RegType.GT6U).localised("Large Heat Exchanger (Tungsten)").setParameters(NBT_OUTPUT, 16384, NBT_DESIGN, 18110, NBT_EFFICIENCY, 10000);
-        
-        
-        /* GTCH stuff */
         // 一般机器改为通过并行提高效率
         aRegistry.addReplacer(17100).removeParameters(NBT_CHEAP_OVERCLOCKING, NBT_PARALLEL_DURATION).setParameters(NBT_PARALLEL, 64);
         aRegistry.addReplacer(17103).removeParameters(NBT_CHEAP_OVERCLOCKING, NBT_PARALLEL_DURATION).setParameters(NBT_PARALLEL, 64);
@@ -433,9 +288,257 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         aRegistry.addReplacer(17223).setParameters(NBT_OUTPUT,  16384, NBT_EFFICIENCY_NUM, 9500).removeParameters(NBT_INPUT);
         aRegistry.addReplacer(17225).setParameters(NBT_OUTPUT,  32768, NBT_EFFICIENCY_NUM, 9500).removeParameters(NBT_INPUT);
         aRegistry.addReplacer(17224).setParameters(NBT_OUTPUT, 131072, NBT_EFFICIENCY_NUM, 9500).removeParameters(NBT_INPUT);
+    }
+    
+    
+    @Override protected void machines1BeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
+        /// 修改项
+        // Oven 增加并行避免卡 1 tick
+        aRegistry.addReplacer(20001).setParameters(NBT_PARALLEL,  4, NBT_PARALLEL_DURATION, T);
+        aRegistry.addReplacer(20002).setParameters(NBT_PARALLEL,  8, NBT_PARALLEL_DURATION, T);
+        aRegistry.addReplacer(20003).setParameters(NBT_PARALLEL, 16, NBT_PARALLEL_DURATION, T);
+        aRegistry.addReplacer(20004).setParameters(NBT_PARALLEL, 32, NBT_PARALLEL_DURATION, T);
+    }
+    
+    
+    @Override protected void machines3BeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
+        /// 修改项
+        // Steam Cracker 增加可以填充蒸汽
+        aRegistry.addReplacer(20491).setParameters(NBT_CANFILL_STEAM, T);
+        aRegistry.addReplacer(20492).setParameters(NBT_CANFILL_STEAM, T);
+        aRegistry.addReplacer(20493).setParameters(NBT_CANFILL_STEAM, T);
+        aRegistry.addReplacer(20494).setParameters(NBT_CANFILL_STEAM, T);
+    }
+    
+    
+    @Override protected void machines4BeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
+        /// 修改项
+        // Bath 和 Autoclave 增加可以填充蒸汽
+        aRegistry.addReplacer(22002).setParameters(NBT_CANFILL_STEAM, T);
+        aRegistry.addReplacer(22004).setParameters(NBT_CANFILL_STEAM, T);
+    }
+    
+    
+    @Override protected void kineticBeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
+        /// 修改项
+        // Axles 调整功率限制
+        // Wood
+        aRegistry.addReplacer(24800).setParameters(NBT_PIPEBANDWIDTH,  1);
+        aRegistry.addReplacer(24801).setParameters(NBT_PIPEBANDWIDTH,  4);
+        aRegistry.addReplacer(24802).setParameters(NBT_PIPEBANDWIDTH, 16);
+        aRegistry.addReplacer(24803).setParameters(NBT_PIPEBANDWIDTH, 64);
+        // Bronze
+        aRegistry.addReplacer(24810).setParameters(NBT_PIPEBANDWIDTH,  1);
+        aRegistry.addReplacer(24811).setParameters(NBT_PIPEBANDWIDTH,  4);
+        aRegistry.addReplacer(24812).setParameters(NBT_PIPEBANDWIDTH, 16);
+        aRegistry.addReplacer(24813).setParameters(NBT_PIPEBANDWIDTH, 64);
+        // AnyIronSteel
+        aRegistry.addReplacer(24820).setParameters(NBT_PIPEBANDWIDTH,  1);
+        aRegistry.addReplacer(24821).setParameters(NBT_PIPEBANDWIDTH,  4);
+        aRegistry.addReplacer(24822).setParameters(NBT_PIPEBANDWIDTH, 16);
+        aRegistry.addReplacer(24823).setParameters(NBT_PIPEBANDWIDTH, 64);
+        // Titanium
+        aRegistry.addReplacer(24830).setParameters(NBT_PIPEBANDWIDTH,  1);
+        aRegistry.addReplacer(24831).setParameters(NBT_PIPEBANDWIDTH,  4);
+        aRegistry.addReplacer(24832).setParameters(NBT_PIPEBANDWIDTH, 16);
+        aRegistry.addReplacer(24833).setParameters(NBT_PIPEBANDWIDTH, 64);
+        // Tungstensteel
+        aRegistry.addReplacer(24840).setParameters(NBT_PIPEBANDWIDTH,  1);
+        aRegistry.addReplacer(24841).setParameters(NBT_PIPEBANDWIDTH,  4);
+        aRegistry.addReplacer(24842).setParameters(NBT_PIPEBANDWIDTH, 16);
+        aRegistry.addReplacer(24843).setParameters(NBT_PIPEBANDWIDTH, 64);
+        // Iridium
+        aRegistry.addReplacer(24850).setParameters(NBT_PIPEBANDWIDTH,  1);
+        aRegistry.addReplacer(24851).setParameters(NBT_PIPEBANDWIDTH,  4);
+        aRegistry.addReplacer(24852).setParameters(NBT_PIPEBANDWIDTH, 16);
+        aRegistry.addReplacer(24853).setParameters(NBT_PIPEBANDWIDTH, 64);
+        // TitaniumIridium
+        aRegistry.addReplacer(24860).setParameters(NBT_PIPEBANDWIDTH,  1);
+        aRegistry.addReplacer(24861).setParameters(NBT_PIPEBANDWIDTH,  4);
+        aRegistry.addReplacer(24862).setParameters(NBT_PIPEBANDWIDTH, 16);
+        aRegistry.addReplacer(24863).setParameters(NBT_PIPEBANDWIDTH, 64);
+        // Trinitanium
+        aRegistry.addReplacer(24870).setParameters(NBT_PIPEBANDWIDTH,  1);
+        aRegistry.addReplacer(24871).setParameters(NBT_PIPEBANDWIDTH,  4);
+        aRegistry.addReplacer(24872).setParameters(NBT_PIPEBANDWIDTH, 16);
+        aRegistry.addReplacer(24873).setParameters(NBT_PIPEBANDWIDTH, 64);
+        // Trinaquadalloy
+        aRegistry.addReplacer(24880).setParameters(NBT_PIPEBANDWIDTH,  1);
+        aRegistry.addReplacer(24881).setParameters(NBT_PIPEBANDWIDTH,  4);
+        aRegistry.addReplacer(24882).setParameters(NBT_PIPEBANDWIDTH, 16);
+        aRegistry.addReplacer(24883).setParameters(NBT_PIPEBANDWIDTH, 64);
+        // Adamantium
+        aRegistry.addReplacer(24890).setParameters(NBT_PIPEBANDWIDTH,  1);
+        aRegistry.addReplacer(24891).setParameters(NBT_PIPEBANDWIDTH,  4);
+        aRegistry.addReplacer(24892).setParameters(NBT_PIPEBANDWIDTH, 16);
+        aRegistry.addReplacer(24893).setParameters(NBT_PIPEBANDWIDTH, 64);
+        
+        // Engine rotations 降低造价
+        aMat = MT.WoodTreated;      aRegistry.addReplacer(24807).recipe("PSP", "wAL", "GAG", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'P', OP.plate        .dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24800));
+        aMat = MT.Bronze;           aRegistry.addReplacer(24817).recipe("SAS", "wML", "GAG", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24810));
+        aMat = ANY.Steel;           aRegistry.addReplacer(24827).recipe("SAS", "wML", "GAG", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24820));
+        aMat = MT.Ti;               aRegistry.addReplacer(24837).recipe("SAS", "wML", "GAG", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24830));
+        aMat = MT.TungstenSteel;    aRegistry.addReplacer(24847).recipe("SAS", "wML", "GAG", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24840));
+        aMat = MT.Ir;               aRegistry.addReplacer(24857).recipe("SAS", "wML", "GAG", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24850));
+        aMat = MT.Iritanium;        aRegistry.addReplacer(24867).recipe("SAS", "wML", "GAG", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24860));
+        aMat = MT.Trinitanium;      aRegistry.addReplacer(24877).recipe("SAS", "wML", "GAG", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24870));
+        aMat = MT.Trinaquadalloy;   aRegistry.addReplacer(24887).recipe("SAS", "wML", "GAG", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24880));
+        aMat = MT.Ad;               aRegistry.addReplacer(24897).recipe("SAS", "wML", "GAG", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24890));
+        
+        // Transformer rotations 降低造价
+        aMat = MT.WoodTreated;      aRegistry.addReplacer(24808).recipe("ASL", "SGS", "PSA", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'P', OP.plate        .dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24800));
+        aMat = MT.Bronze;           aRegistry.addReplacer(24818).recipe("ASL", "SGS", "MSA", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24810));
+        aMat = ANY.Steel;           aRegistry.addReplacer(24828).recipe("ASL", "SGS", "MSA", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24820));
+        aMat = MT.Ti;               aRegistry.addReplacer(24838).recipe("ASL", "SGS", "MSA", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24830));
+        aMat = MT.TungstenSteel;    aRegistry.addReplacer(24848).recipe("ASL", "SGS", "MSA", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24840));
+        aMat = MT.Ir;               aRegistry.addReplacer(24858).recipe("ASL", "SGS", "MSA", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24850));
+        aMat = MT.Iritanium;        aRegistry.addReplacer(24868).recipe("ASL", "SGS", "MSA", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24860));
+        aMat = MT.Trinitanium;      aRegistry.addReplacer(24878).recipe("ASL", "SGS", "MSA", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24870));
+        aMat = MT.Trinaquadalloy;   aRegistry.addReplacer(24888).recipe("ASL", "SGS", "MSA", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24880));
+        aMat = MT.Ad;               aRegistry.addReplacer(24898).recipe("ASL", "SGS", "MSA", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24890));
+        
+        // Gear boxes 降低造价
+        aMat = MT.WoodTreated;      aRegistry.addReplacer(24809).recipe("PsP", "ALA", "PAP"                                                         , 'P', OP.plate        .dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24800));
+        aMat = MT.Bronze;           aRegistry.addReplacer(24819).recipe("wAL", "AMA"                                                                , 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24810));
+        aMat = ANY.Steel;           aRegistry.addReplacer(24829).recipe("wAL", "AMA"                                                                , 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24820));
+        aMat = MT.Ti;               aRegistry.addReplacer(24839).recipe("wAL", "AMA"                                                                , 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24830));
+        aMat = MT.TungstenSteel;    aRegistry.addReplacer(24849).recipe("wAL", "AMA"                                                                , 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24840));
+        aMat = MT.Ir;               aRegistry.addReplacer(24859).recipe("wAL", "AMA"                                                                , 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24850));
+        aMat = MT.Iritanium;        aRegistry.addReplacer(24869).recipe("wAL", "AMA"                                                                , 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24860));
+        aMat = MT.Trinitanium;      aRegistry.addReplacer(24879).recipe("wAL", "AMA"                                                                , 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24870));
+        aMat = MT.Trinaquadalloy;   aRegistry.addReplacer(24889).recipe("wAL", "AMA"                                                                , 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24880));
+        aMat = MT.Ad;               aRegistry.addReplacer(24899).recipe("wAL", "AMA"                                                                , 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24890));
+    }
+    
+    
+    @Override protected void connectorsBeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
+    }
+    @Override protected void connectorsFinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
+        /// 添加项
+        aMat = MT.Superconductor; // 随便选个材料
+        aRegistry.add(RegType.GTCH, "New Wire (WIP)" , "Electric Wires", 29903, 28366, MultiTileEntityWireElectric_CH.class, aMat.mToolQuality, 64/4, aMetalWires, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, DYE_INT_Red,   NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 6], NBT_PIPESIZE, 512, NBT_PIPEBANDWIDTH, 8, NBT_CONTACTDAMAGE, F, NBT_RESISTANCE+".electric", U));
+        aRegistry.add(RegType.GTCH, "New Wire (WIP)" , "Electric Wires", 29904, 28366, MultiTileEntityWireElectric_CH.class, aMat.mToolQuality, 64/4, aMetalWires, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, DYE_INT_Green, NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 6], NBT_PIPESIZE, 512, NBT_PIPEBANDWIDTH, 8, NBT_CONTACTDAMAGE, F, NBT_RESISTANCE+".electric", U8));
+    }
+    
+    
+    @Override protected void sensorsBeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
+        /// 添加项
+        aRegistry.appendAddAfter(31001, "Large Range Gibbl-O-Meter Sensor"         , "Sensors"                             , 31040, 31015, MultiTileEntityGibblometerKilo.class                    ,                 1, 16, aUtilMetal     , null, "WPW", "BXB", "WPW", 'P', OP.plateDouble.dat(MT.TinAlloy), 'W', OP.wireFine.dat(MT.RedAlloy), 'R', OD.itemRedstone, 'G', OD.blockGlassColorless, 'B', OP.bolt.dat(MT.TinAlloy), 'C', Items.comparator, 'X', OP.plateGem.dat(ANY.SiO2));
+        aRegistry.appendAddAfter(31020, "Large Range Geiger Counter Sensor"        , "Sensors"                             , 31041, 31015, MultiTileEntityGeigerCounterKilo.class                  ,                 1, 16, aUtilMetal     , null, "WGW", "YXY", "WPW", 'P', OP.plateDouble.dat(MT.TinAlloy), 'W', OP.wireFine.dat(MT.RedAlloy), 'R', OD.itemRedstone, 'G', OD.blockGlassColorless, 'B', OP.bolt.dat(MT.TinAlloy), 'C', Items.comparator, 'X', IL.Geiger_Counter, 'Y', OP.plateDense.dat(MT.Pb));
+        aRegistry.appendAddAfter(31015, "Large Range Electrometer Sensor"          , "Sensors"                             , 31042, 31015, MultiTileEntityElectrometerKilo.class                   ,                 1, 16, aUtilMetal     , null, "WGW", "YXY", "WPW", 'P', OP.plateDouble.dat(MT.TinAlloy), 'W', OP.wireFine.dat(MT.RedAlloy), 'R', OD.itemRedstone, 'G', OD.blockGlassColorless, 'B', OP.bolt.dat(MT.TinAlloy), 'C', Items.comparator, 'X', OD.lever, 'Y', OP.wireFine.dat(MT.Au));
+        aRegistry.appendAddAfter(31019, "Large Range Tachometer Sensor"            , "Sensors"                             , 31043, 31015, MultiTileEntityTachometerKilo.class                     ,                 1, 16, aUtilMetal     , null, "WGW", "YXY", "WPW", 'P', OP.plateDouble.dat(MT.TinAlloy), 'W', OP.wireFine.dat(MT.RedAlloy), 'R', OD.itemRedstone, 'G', OD.blockGlassColorless, 'B', OP.bolt.dat(MT.TinAlloy), 'C', Items.comparator, 'X', OP.gearGt.dat(MT.RoseGold), 'Y', OP.gearGtSmall.dat(MT.RoseGold));
+        aRegistry.appendAddAfter(31021, "Large Range Laser-O-Meter Sensor"         , "Sensors"                             , 31044, 31015, MultiTileEntityLaserometerKilo.class                    ,                 1, 16, aUtilMetal     , null, "WGW", "YXY", "WPW", 'P', OP.plateDouble.dat(MT.TinAlloy), 'W', OP.wireFine.dat(MT.RedAlloy), 'R', OD.itemRedstone, 'G', OD.blockGlassColorless, 'B', OP.bolt.dat(MT.TinAlloy), 'C', Items.comparator, 'X', IL.SENSORS[3], 'Y', OP.wireFine.dat(MT.Au));
+    }
+    @Override protected void sensorsFinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
+        /// 添加项
+        aRegistry.add(RegType.GTCH, "Flow-O-Meter Sensor"                      , "Sensors"                             , 31030, 31015, MultiTileEntityFlowometer.class                      ,                 1, 16, aUtilMetal     , null, "WYW", "ZXZ", "WPW", 'P', OP.plateDouble.dat(MT.TinAlloy), 'W', OP.wireFine.dat(MT.RedAlloy), 'R', OD.itemRedstone, 'G', OD.blockGlassColorless, 'B', OP.bolt.dat(MT.TinAlloy), 'C', Items.comparator, 'X', OD.pressurePlateGold, 'Y', OP.rotor.dat(MT.TinAlloy), 'Z', OP.ring.dat(MT.Rubber));
+        aRegistry.add(RegType.GTCH, "Bucket Flow-O-Meter Sensor"               , "Sensors"                             , 31031, 31015, MultiTileEntityFlowometerBucket.class                ,                 1, 16, aUtilMetal     , null, "WYW", "ZXZ", "WPW", 'P', OP.plateDouble.dat(MT.TinAlloy), 'W', OP.wireFine.dat(MT.RedAlloy), 'R', OD.itemRedstone, 'G', OD.blockGlassColorless, 'B', OP.bolt.dat(MT.TinAlloy), 'C', Items.comparator, 'X', OD.pressurePlateIron, 'Y', OP.rotor.dat(MT.TinAlloy), 'Z', OP.ring.dat(MT.Rubber));
+        // TODO 暂时没有合成
+        aRegistry.add(RegType.GTCH, "Voltage-O-Meter Sensor"                   , "Sensors"                             , 31032, 31015, MultiTileEntityVoltageometer.class                   ,                 1, 16, aUtilMetal     , null);
+        aRegistry.add(RegType.GTCH, "Amperage-O-Meter Sensor"                  , "Sensors"                             , 31034, 31015, MultiTileEntityAmperageometer.class                  ,                 1, 16, aUtilMetal     , null);
+    }
+    
+    
+    /* GT6U stuff */
+    @Override protected void crucibleBeforeLoadGT6U(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
+        if (!DATA_GTCH.enableGT6U) return;
         
         /// 添加项
-        /* GT6U stuff */
+        // 碳化铌钛坩埚 // MARK ID 1044 -> 1045
+        aClass = MultiTileEntitySmeltery.class;
+        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1043, RegType.GT6U, "Smelting Crucible ("             +aMat.getLocal()+")", "Smelting Crucibles"                  ,  1045,  1022, aClass, aMat.mToolQuality, 16, aMetal           , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   9.0F, NBT_RESISTANCE,   9.0F, NBT_RECIPEMAP, RM.CrucibleAlloying , NBT_ENERGY_ACCEPTED, TD.Energy.HU, NBT_ACIDPROOF, F), "PhP", "PwP", "PPP", 'P', OP.plate.dat(aMat));
+        // 碳化铌钛浇筑口 // MARK ID 1795 -> 1745
+        aClass = MultiTileEntityFaucet.class;
+        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1743, RegType.GT6U, "Crucible Faucet ("               +aMat.getLocal()+")", "Crucibles Faucets"                   ,  1745,  1722, aClass, aMat.mToolQuality, 16, aUtilMetal       , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   1.0F, NBT_RESISTANCE,   6.0F, NBT_ACIDPROOF, F), "h y", "P P", " P ", 'P', OP.plate.dat(aMat));
+        // 碳化铌钛模具 // MARK ID 1094 -> 1095
+        aClass = MultiTileEntityMold.class;
+        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1093, RegType.GT6U, "Mold ("                          +aMat.getLocal()+")", "Molds"                               ,  1095,  1072, aClass, aMat.mToolQuality, 16, aUtilMetal       , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   1.0F, NBT_RESISTANCE,   6.0F, NBT_ACIDPROOF, F), "h y", "P P", "PPP", 'P', OP.plate.dat(aMat));
+        // 碳化铌钛浇筑盆 // MARK ID 1794 -> 1795
+        aClass = MultiTileEntityBasin.class;
+        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1793, RegType.GT6U, "Basin ("                         +aMat.getLocal()+")", "Molds"                               ,  1795,  1072, aClass, aMat.mToolQuality, 16, aMetal           , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   9.0F, NBT_RESISTANCE,   9.0F, NBT_ACIDPROOF, F), "PhP", "PyP", " P ", 'P', OP.plate.dat(aMat));
+        // 碳化铌钛十字 // MARK ID  1894 -> 1895
+        aClass = MultiTileEntityCrossing.class;
+        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1893, RegType.GT6U, "Crucible Crossing ("             +aMat.getLocal()+")", "Molds"                               ,  1895,  1072, aClass, aMat.mToolQuality, 16, aMetal           , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   9.0F, NBT_RESISTANCE,   9.0F, NBT_ACIDPROOF, F), "hPy", "PPP", " P ", 'P', OP.plate.dat(aMat));
+    }
+    
+    
+    @Override protected void unsorted1BeforeLoadGT6U(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
+        if (!DATA_GTCH.enableGT6U) return;
+        
+        /// 添加项
+        // 碳化铌钛燃烧室 // MARK ID + 1; DOUBLE OUTPUT
+        aClass = MultiTileEntityGeneratorMetal.class;
+        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1109, RegType.GT6U, "Burning Box (Solid, "            +aMat.getLocal()+")", "Burning Boxes"                       ,  1111,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_FUELMAP, FM.Furnace,    NBT_EFFICIENCY, 10000, NBT_OUTPUT, 392, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "PwP", "BBB", 'B', Blocks.brick_block, 'P', OP.plate.dat(aMat), 'C', OP.plateDouble.dat(ANY.Cu));
+        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1159, RegType.GT6U, "Dense Burning Box (Solid, "      +aMat.getLocal()+")", "Burning Boxes"                       ,  1161,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_FUELMAP, FM.Furnace,    NBT_EFFICIENCY, 10000, NBT_OUTPUT,1536, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "PwP", "BBB", 'B', Blocks.brick_block, 'P', OP.plateQuintuple.dat(aMat), 'C', OP.plateDense.dat(ANY.Cu));
+        aClass = MultiTileEntityGeneratorLiquid.class;
+        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1409, RegType.GT6U, "Burning Box (Liquid, "           +aMat.getLocal()+")", "Burning Boxes"                       ,  1411,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_FUELMAP, FM.Burn,       NBT_EFFICIENCY, 10000, NBT_OUTPUT, 392, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "IwI", "BBB", 'B', Blocks.brick_block, 'P', OP.plate.dat(aMat), 'I', OP.pipeSmall.dat(aMat), 'C', OP.plateDouble.dat(ANY.Cu));
+        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1459, RegType.GT6U, "Dense Burning Box (Liquid, "     +aMat.getLocal()+")", "Burning Boxes"                       ,  1461,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_FUELMAP, FM.Burn,       NBT_EFFICIENCY, 10000, NBT_OUTPUT,1536, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "IwI", "BBB", 'B', Blocks.brick_block, 'P', OP.plateQuintuple.dat(aMat), 'I', OP.pipeLarge.dat(aMat), 'C', OP.plateDense.dat(ANY.Cu));
+        aClass = MultiTileEntityGeneratorGas.class;
+        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1609, RegType.GT6U, "Burning Box (Gas, "              +aMat.getLocal()+")", "Burning Boxes"                       ,  1611,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_FUELMAP, FM.Burn,       NBT_EFFICIENCY, 10000, NBT_OUTPUT, 392, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "BwB", "BIB", 'B', Blocks.brick_block, 'P', OP.plate.dat(aMat), 'I', OP.pipeSmall.dat(aMat), 'C', OP.plateDouble.dat(ANY.Cu));
+        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(1659, RegType.GT6U, "Dense Burning Box (Gas, "        +aMat.getLocal()+")", "Burning Boxes"                       ,  1661,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_FUELMAP, FM.Burn,       NBT_EFFICIENCY, 10000, NBT_OUTPUT,1536, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "BwB", "BIB", 'B', Blocks.brick_block, 'P', OP.plateQuintuple.dat(aMat), 'I', OP.pipeLarge.dat(aMat), 'C', OP.plateDense.dat(ANY.Cu));
+        aClass = MultiTileEntityGeneratorFluidBed.class;
+        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(9009, RegType.GT6U, "Fluidized Bed Burning Box ("     +aMat.getLocal()+")", "Burning Boxes"                       ,  9011,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_FUELMAP, FM.FluidBed,   NBT_EFFICIENCY, 10000, NBT_OUTPUT, 768, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "UwU", "BXB", 'B', Blocks.brick_block, 'U', OP.plateCurved.dat(aMat), 'X', OP.rotor.dat(aMat), 'P', OP.plate.dat(aMat), 'C', OP.plateDouble.dat(ANY.Cu));
+        aMat = MT_CH.Nb2Ti3C5;          aRegistry.appendAddBefore(9059, RegType.GT6U, "Dense Fluidized Bed Burning Box ("+aMat.getLocal()+")","Burning Boxes"                       ,  9061,  1104, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_FUELMAP, FM.FluidBed,   NBT_EFFICIENCY, 10000, NBT_OUTPUT,3072, NBT_ENERGY_EMITTED, TD.Energy.HU), "PCP", "UwU", "BXB", 'B', Blocks.brick_block, 'U', OP.plateCurved.dat(aMat), 'X', OP.rotor.dat(aMat), 'P', OP.plateQuintuple.dat(aMat), 'C', OP.plateDense.dat(ANY.Cu));
+        
+        /// ID: 9140-9149 and 9190-9199 for Diesel Engine; 9160-9169 and 9180-9189 for Small Gas Turbine; (9150-9159 for Dense Heat Exchanger)
+        // 钨燃油引擎 // MARK ID 9199 -> 9190; 效率输出合成和 GTCH 统一
+        aClass = MultiTileEntityMotorLiquid.class;
+        aMat = ANY.W;                   aRegistry.appendAddAfter(9198, RegType.GT6U, "Diesel Engine ("                  +aMat.getLocal()+")", "Engines"                             ,  9190,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Engine, NBT_EFFICIENCY,  3500, NBT_OUTPUT,  256, NBT_PREHEAT_ENERGY,  256*1000, NBT_PREHEAT_RATE,  256*4, NBT_PREHEAT_COST,  256/16, NBT_COOLDOWN_RATE,  256, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeQuadruple.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        // 小燃气涡轮 // MARK ID CHANGED
+        aClass = MultiTileEntityMotorGas.class;
+        aMat = MT.Bronze;               aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9167,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  2750, NBT_OUTPUT,   32, NBT_PREHEAT_ENERGY,   32*4000, NBT_PREHEAT_RATE,   32*1, NBT_PREHEAT_COST,   32/16, NBT_COOLDOWN_RATE,   32, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = ANY.Steel;               aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9168,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  2500, NBT_OUTPUT,   64, NBT_PREHEAT_ENERGY,   64*4000, NBT_PREHEAT_RATE,   64*1, NBT_PREHEAT_COST,   64/16, NBT_COOLDOWN_RATE,   64, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = MT.Invar;                aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9169,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  3500, NBT_OUTPUT,  128, NBT_PREHEAT_ENERGY,  128*4000, NBT_PREHEAT_RATE,  128*1, NBT_PREHEAT_COST,  128/16, NBT_COOLDOWN_RATE,  128, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = MT.Ti;                   aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9187,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  2750, NBT_OUTPUT,  256, NBT_PREHEAT_ENERGY,  256*4000, NBT_PREHEAT_RATE,  256*1, NBT_PREHEAT_COST,  256/16, NBT_COOLDOWN_RATE,  256, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = MT.TungstenSteel;        aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9188,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  3000, NBT_OUTPUT,  512, NBT_PREHEAT_ENERGY,  512*4000, NBT_PREHEAT_RATE,  512*1, NBT_PREHEAT_COST,  512/16, NBT_COOLDOWN_RATE,  512, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = ANY.W;                   aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9180,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  3500, NBT_OUTPUT,  512, NBT_PREHEAT_ENERGY,  512*4000, NBT_PREHEAT_RATE,  512*1, NBT_PREHEAT_COST,  512/16, NBT_COOLDOWN_RATE,  512, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = MT.Ir;                   aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9189,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  3333, NBT_OUTPUT, 1024, NBT_PREHEAT_ENERGY, 1024*4000, NBT_PREHEAT_RATE, 1024*1, NBT_PREHEAT_COST, 1024/16, NBT_COOLDOWN_RATE, 1024, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+    }
+    
+    
+    @Override protected void unsorted2BeforeLoadGT6U(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
+        if (!DATA_GTCH.enableGT6U) return;
+        
+        /// 添加项
+        // IV 电池
+        aRegistry.appendAddAfter(14004, RegType.GT6U, "Lead-Acid Battery ("                 +VN[5]+")", "Batteries"                         , 14005, 14013, MultiTileEntityBatteryEU8192.class,     0, 16, aUtilMetal , UT.NBT.make(NBT_HARDNESS,   0.5F, NBT_RESISTANCE,   3.0F, NBT_COLOR, DYES_INT[DYE_INDEX_Orange] , NBT_INPUT, V[5], NBT_CAPACITY, V[4] *   2000, NBT_ENERGY_ACCEPTED, TD.Energy.EU), "WPW", "BCB", "BBB", 'P', OP.plate.dat(MT.BatteryAlloy), 'B', IL.Battery_Lead_Acid_Cell_Filled, 'W', MT.DATA.CABLES_01[5], 'C', OD_CIRCUITS[5]);
+        aRegistry.appendAddAfter(14014, RegType.GT6U, "Alkaline Battery ("                  +VN[5]+")", "Batteries"                         , 14015, 14013, MultiTileEntityBatteryEU8192.class,     0, 16, aUtilMetal , UT.NBT.make(NBT_HARDNESS,   0.5F, NBT_RESISTANCE,   3.0F, NBT_COLOR, DYES_INT[DYE_INDEX_Blue]   , NBT_INPUT, V[5], NBT_CAPACITY, V[4] *   4000, NBT_ENERGY_ACCEPTED, TD.Energy.EU), "WPW", "BCB", "BBB", 'P', OP.plate.dat(MT.BatteryAlloy), 'B', IL.Battery_Alkaline_Cell_Filled, 'W', MT.DATA.CABLES_01[5], 'C', OD_CIRCUITS[5]);
+        aRegistry.appendAddAfter(14024, RegType.GT6U, "Nickel-Cadmium Battery ("            +VN[5]+")", "Batteries"                         , 14025, 14013, MultiTileEntityBatteryEU8192.class,     0, 16, aUtilMetal , UT.NBT.make(NBT_HARDNESS,   0.5F, NBT_RESISTANCE,   3.0F, NBT_COLOR, DYES_INT[DYE_INDEX_Lime]   , NBT_INPUT, V[5], NBT_CAPACITY, V[4] *   4000, NBT_ENERGY_ACCEPTED, TD.Energy.EU), "WPW", "BCB", "BBB", 'P', OP.plate.dat(MT.BatteryAlloy), 'B', IL.Battery_NiCd_Cell_Filled, 'W', MT.DATA.CABLES_01[5], 'C', OD_CIRCUITS[5]);
+        aRegistry.appendAddAfter(14034, RegType.GT6U, "Lithium-Cobalt Battery ("            +VN[5]+")", "Batteries"                         , 14035, 14013, MultiTileEntityBatteryAdvEU8192.class , 0, 16, aUtilMetal , UT.NBT.make(NBT_HARDNESS,   0.5F, NBT_RESISTANCE,   3.0F, NBT_COLOR, DYES_INT[DYE_INDEX_Blue]   , NBT_INPUT, V[5], NBT_CAPACITY, V[4] *  64000, NBT_ENERGY_ACCEPTED, TD.Energy.EU), "WPW", "BCB", "BBB", 'P', OP.plate.dat(MT.BatteryAlloy), 'B', IL.Battery_LiCoO2_Cell_Filled, 'W', MT.DATA.CABLES_01[5], 'C', OD_CIRCUITS[6]);
+        aRegistry.appendAddAfter(14044, RegType.GT6U, "Lithium-Manganese Battery ("         +VN[5]+")", "Batteries"                         , 14045, 14013, MultiTileEntityBatteryAdvEU8192.class , 0, 16, aUtilMetal , UT.NBT.make(NBT_HARDNESS,   0.5F, NBT_RESISTANCE,   3.0F, NBT_COLOR, DYES_INT[DYE_INDEX_Green]  , NBT_INPUT, V[5], NBT_CAPACITY, V[4] * 128000, NBT_ENERGY_ACCEPTED, TD.Energy.EU), "WPW", "BCB", "BBB", 'P', OP.plate.dat(MT.BatteryAlloy), 'B', IL.Battery_LiMn_Cell_Filled, 'W', MT.DATA.CABLES_01[5], 'C', OD_CIRCUITS[6]);
+    }
+    @Override protected void unsorted2FinishLoadGT6U(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
+        if (!DATA_GTCH.enableGT6U) return;
+        
+        /// 附加修改部分
+        // IV 电池的 IL 设定
+        IL.Battery_Lead_Acid_IV .set(aRegistry.getItem(14005), null, "gt:re-battery5");
+        IL.Battery_Alkaline_IV  .set(aRegistry.getItem(14015), null, "gt:re-battery5");
+        IL.Battery_NiCd_IV      .set(aRegistry.getItem(14025), null, "gt:re-battery5");
+        IL.Battery_LiCoO2_IV    .set(aRegistry.getItem(14035), null, "gt:re-battery5");
+        IL.Battery_LiMn_IV      .set(aRegistry.getItem(14045), null, "gt:re-battery5");
+    }
+    
+    
+    @Override protected void multiblocksBeforeLoadGT6U(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
+        if (!DATA_GTCH.enableGT6U) return;
+        
+        /// 修改项
+        // 蒸馏塔设置最低输入
+        aRegistry.addReplacer(17101).setParameters(NBT_INPUT_MIN, 16);
+        // 低温蒸馏塔设置最低输入，并且替换核心方块，材料替换
+        aRegistry.addReplacer(17111).setParameters(NBT_INPUT_MIN, 16, NBT_MATERIAL, MT.Al).recipe("PPP", "PMP", "PPP", 'M', aRegistry.getItem(18112), 'P', OP.pipeNonuple.dat(ANY.Cu));
+        // MARK 内爆压缩机不需要输入电力，莫名其妙，并且也没有对聚爆压缩机的类进行任何修改 TODO 材质的修改检查
+        // MARK 大型高压釜不再需要输入电力，莫名其妙，TODO 类的修改检查，材质的修改检查
+        // MARK 大电炉的合成不再修改
+        // 大型物质制造机，合成需要的 FIELD_GENERATORS 从 5 调整到 6
+        aRegistry.addReplacer(17199).recipe("FFF", "FMF", "FFF", 'M', aRegistry.getItem(18031), 'F', IL.FIELD_GENERATORS[6]);
+        // 聚变反应堆改名为 MkI，且语言文件放入 GT6U 部分；目前不对输入输出做任何调整
+        aRegistry.addReplacer(17198).regType(RegType.GT6U).localised("Fusion Reactor MkI");
+        // 钨热交换器部件改为 gt6u 的热部件 MARK output 32768 -> 16384 （不改变原版的输出效率） TODO 大型热交换器增加效率
+        aRegistry.addReplacer(17197).regType(RegType.GT6U).localised("Large Heat Exchanger (Tungsten)").setParameters(NBT_OUTPUT, 16384, NBT_DESIGN, 18110, NBT_EFFICIENCY, 10000);
+        
+        /// 添加项
         // 添加一些多方快部件
         // Wall
         aClass = MultiTileEntityMultiBlockPart.class;
@@ -557,196 +660,5 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         // MARK 不修改燃气涡轮的合成
         // MARK 移除大型燃油引擎
         // MARK 暂不添加大型等离子涡轮
-    }
-    @Override protected void multiblocksFinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
-        /// 最后释放这些修改后的添加
-        aRegistry.MODIFYING_ADD_END();
-    }
-    
-    
-    @Override protected void machines1BeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
-        /// 添加前将后续添加全部 hold
-        aRegistry.MODIFYING_ADD_START();
-        
-        /// 修改项
-        // Oven 增加并行避免卡 1 tick
-        aRegistry.addReplacer(20001).setParameters(NBT_PARALLEL,  4, NBT_PARALLEL_DURATION, T);
-        aRegistry.addReplacer(20002).setParameters(NBT_PARALLEL,  8, NBT_PARALLEL_DURATION, T);
-        aRegistry.addReplacer(20003).setParameters(NBT_PARALLEL, 16, NBT_PARALLEL_DURATION, T);
-        aRegistry.addReplacer(20004).setParameters(NBT_PARALLEL, 32, NBT_PARALLEL_DURATION, T);
-    }
-    @Override protected void machines1FinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
-        /// 最后释放这些修改后的添加
-        aRegistry.MODIFYING_ADD_END();
-    }
-    
-    
-    @Override protected void machines3BeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
-        /// 添加前将后续添加全部 hold
-        aRegistry.MODIFYING_ADD_START();
-        
-        /// 修改项
-        // Steam Cracker 增加可以填充蒸汽
-        aRegistry.addReplacer(20491).setParameters(NBT_CANFILL_STEAM, T);
-        aRegistry.addReplacer(20492).setParameters(NBT_CANFILL_STEAM, T);
-        aRegistry.addReplacer(20493).setParameters(NBT_CANFILL_STEAM, T);
-        aRegistry.addReplacer(20494).setParameters(NBT_CANFILL_STEAM, T);
-    }
-    @Override protected void machines3FinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
-        /// 最后释放这些修改后的添加
-        aRegistry.MODIFYING_ADD_END();
-    }
-    
-    
-    @Override protected void machines4BeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
-        /// 添加前将后续添加全部 hold
-        aRegistry.MODIFYING_ADD_START();
-        
-        /// 修改项
-        // Bath 和 Autoclave 增加可以填充蒸汽
-        aRegistry.addReplacer(22002).setParameters(NBT_CANFILL_STEAM, T);
-        aRegistry.addReplacer(22004).setParameters(NBT_CANFILL_STEAM, T);
-    }
-    @Override protected void machines4FinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
-        /// 最后释放这些修改后的添加
-        aRegistry.MODIFYING_ADD_END();
-    }
-    
-    
-    @Override protected void kineticBeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
-        /// 添加前将后续添加全部 hold
-        aRegistry.MODIFYING_ADD_START();
-        
-        /// 修改项
-        // Axles 调整功率限制
-        // Wood
-        aRegistry.addReplacer(24800).setParameters(NBT_PIPEBANDWIDTH,  1);
-        aRegistry.addReplacer(24801).setParameters(NBT_PIPEBANDWIDTH,  4);
-        aRegistry.addReplacer(24802).setParameters(NBT_PIPEBANDWIDTH, 16);
-        aRegistry.addReplacer(24803).setParameters(NBT_PIPEBANDWIDTH, 64);
-        // Bronze
-        aRegistry.addReplacer(24810).setParameters(NBT_PIPEBANDWIDTH,  1);
-        aRegistry.addReplacer(24811).setParameters(NBT_PIPEBANDWIDTH,  4);
-        aRegistry.addReplacer(24812).setParameters(NBT_PIPEBANDWIDTH, 16);
-        aRegistry.addReplacer(24813).setParameters(NBT_PIPEBANDWIDTH, 64);
-        // AnyIronSteel
-        aRegistry.addReplacer(24820).setParameters(NBT_PIPEBANDWIDTH,  1);
-        aRegistry.addReplacer(24821).setParameters(NBT_PIPEBANDWIDTH,  4);
-        aRegistry.addReplacer(24822).setParameters(NBT_PIPEBANDWIDTH, 16);
-        aRegistry.addReplacer(24823).setParameters(NBT_PIPEBANDWIDTH, 64);
-        // Titanium
-        aRegistry.addReplacer(24830).setParameters(NBT_PIPEBANDWIDTH,  1);
-        aRegistry.addReplacer(24831).setParameters(NBT_PIPEBANDWIDTH,  4);
-        aRegistry.addReplacer(24832).setParameters(NBT_PIPEBANDWIDTH, 16);
-        aRegistry.addReplacer(24833).setParameters(NBT_PIPEBANDWIDTH, 64);
-        // Tungstensteel
-        aRegistry.addReplacer(24840).setParameters(NBT_PIPEBANDWIDTH,  1);
-        aRegistry.addReplacer(24841).setParameters(NBT_PIPEBANDWIDTH,  4);
-        aRegistry.addReplacer(24842).setParameters(NBT_PIPEBANDWIDTH, 16);
-        aRegistry.addReplacer(24843).setParameters(NBT_PIPEBANDWIDTH, 64);
-        // Iridium
-        aRegistry.addReplacer(24850).setParameters(NBT_PIPEBANDWIDTH,  1);
-        aRegistry.addReplacer(24851).setParameters(NBT_PIPEBANDWIDTH,  4);
-        aRegistry.addReplacer(24852).setParameters(NBT_PIPEBANDWIDTH, 16);
-        aRegistry.addReplacer(24853).setParameters(NBT_PIPEBANDWIDTH, 64);
-        // TitaniumIridium
-        aRegistry.addReplacer(24860).setParameters(NBT_PIPEBANDWIDTH,  1);
-        aRegistry.addReplacer(24861).setParameters(NBT_PIPEBANDWIDTH,  4);
-        aRegistry.addReplacer(24862).setParameters(NBT_PIPEBANDWIDTH, 16);
-        aRegistry.addReplacer(24863).setParameters(NBT_PIPEBANDWIDTH, 64);
-        // Trinitanium
-        aRegistry.addReplacer(24870).setParameters(NBT_PIPEBANDWIDTH,  1);
-        aRegistry.addReplacer(24871).setParameters(NBT_PIPEBANDWIDTH,  4);
-        aRegistry.addReplacer(24872).setParameters(NBT_PIPEBANDWIDTH, 16);
-        aRegistry.addReplacer(24873).setParameters(NBT_PIPEBANDWIDTH, 64);
-        // Trinaquadalloy
-        aRegistry.addReplacer(24880).setParameters(NBT_PIPEBANDWIDTH,  1);
-        aRegistry.addReplacer(24881).setParameters(NBT_PIPEBANDWIDTH,  4);
-        aRegistry.addReplacer(24882).setParameters(NBT_PIPEBANDWIDTH, 16);
-        aRegistry.addReplacer(24883).setParameters(NBT_PIPEBANDWIDTH, 64);
-        // Adamantium
-        aRegistry.addReplacer(24890).setParameters(NBT_PIPEBANDWIDTH,  1);
-        aRegistry.addReplacer(24891).setParameters(NBT_PIPEBANDWIDTH,  4);
-        aRegistry.addReplacer(24892).setParameters(NBT_PIPEBANDWIDTH, 16);
-        aRegistry.addReplacer(24893).setParameters(NBT_PIPEBANDWIDTH, 64);
-        
-        // Engine rotations 降低造价
-        aMat = MT.WoodTreated;      aRegistry.addReplacer(24807).recipe("PSP", "wAL", "GAG", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'P', OP.plate        .dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24800));
-        aMat = MT.Bronze;           aRegistry.addReplacer(24817).recipe("SAS", "wML", "GAG", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24810));
-        aMat = ANY.Steel;           aRegistry.addReplacer(24827).recipe("SAS", "wML", "GAG", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24820));
-        aMat = MT.Ti;               aRegistry.addReplacer(24837).recipe("SAS", "wML", "GAG", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24830));
-        aMat = MT.TungstenSteel;    aRegistry.addReplacer(24847).recipe("SAS", "wML", "GAG", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24840));
-        aMat = MT.Ir;               aRegistry.addReplacer(24857).recipe("SAS", "wML", "GAG", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24850));
-        aMat = MT.Iritanium;        aRegistry.addReplacer(24867).recipe("SAS", "wML", "GAG", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24860));
-        aMat = MT.Trinitanium;      aRegistry.addReplacer(24877).recipe("SAS", "wML", "GAG", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24870));
-        aMat = MT.Trinaquadalloy;   aRegistry.addReplacer(24887).recipe("SAS", "wML", "GAG", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24880));
-        aMat = MT.Ad;               aRegistry.addReplacer(24897).recipe("SAS", "wML", "GAG", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24890));
-        
-        // Transformer rotations 降低造价
-        aMat = MT.WoodTreated;      aRegistry.addReplacer(24808).recipe("ASL", "SGS", "PSA", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'P', OP.plate        .dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24800));
-        aMat = MT.Bronze;           aRegistry.addReplacer(24818).recipe("ASL", "SGS", "MSA", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24810));
-        aMat = ANY.Steel;           aRegistry.addReplacer(24828).recipe("ASL", "SGS", "MSA", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24820));
-        aMat = MT.Ti;               aRegistry.addReplacer(24838).recipe("ASL", "SGS", "MSA", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24830));
-        aMat = MT.TungstenSteel;    aRegistry.addReplacer(24848).recipe("ASL", "SGS", "MSA", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24840));
-        aMat = MT.Ir;               aRegistry.addReplacer(24858).recipe("ASL", "SGS", "MSA", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24850));
-        aMat = MT.Iritanium;        aRegistry.addReplacer(24868).recipe("ASL", "SGS", "MSA", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24860));
-        aMat = MT.Trinitanium;      aRegistry.addReplacer(24878).recipe("ASL", "SGS", "MSA", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24870));
-        aMat = MT.Trinaquadalloy;   aRegistry.addReplacer(24888).recipe("ASL", "SGS", "MSA", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24880));
-        aMat = MT.Ad;               aRegistry.addReplacer(24898).recipe("ASL", "SGS", "MSA", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24890));
-        
-        // Gear boxes 降低造价
-        aMat = MT.WoodTreated;      aRegistry.addReplacer(24809).recipe("PsP", "ALA", "PAP"                                                         , 'P', OP.plate        .dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24800));
-        aMat = MT.Bronze;           aRegistry.addReplacer(24819).recipe("wAL", "AMA"                                                                , 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24810));
-        aMat = ANY.Steel;           aRegistry.addReplacer(24829).recipe("wAL", "AMA"                                                                , 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24820));
-        aMat = MT.Ti;               aRegistry.addReplacer(24839).recipe("wAL", "AMA"                                                                , 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24830));
-        aMat = MT.TungstenSteel;    aRegistry.addReplacer(24849).recipe("wAL", "AMA"                                                                , 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24840));
-        aMat = MT.Ir;               aRegistry.addReplacer(24859).recipe("wAL", "AMA"                                                                , 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24850));
-        aMat = MT.Iritanium;        aRegistry.addReplacer(24869).recipe("wAL", "AMA"                                                                , 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24860));
-        aMat = MT.Trinitanium;      aRegistry.addReplacer(24879).recipe("wAL", "AMA"                                                                , 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24870));
-        aMat = MT.Trinaquadalloy;   aRegistry.addReplacer(24889).recipe("wAL", "AMA"                                                                , 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24880));
-        aMat = MT.Ad;               aRegistry.addReplacer(24899).recipe("wAL", "AMA"                                                                , 'M', OP.casingMachine.dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24890));
-    }
-    @Override protected void kineticFinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
-        /// 最后释放这些修改后的添加
-        aRegistry.MODIFYING_ADD_END();
-    }
-    
-    
-    @Override protected void connectorsBeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
-        /// 添加前将后续添加全部 hold
-        aRegistry.MODIFYING_ADD_START();
-    }
-    @Override protected void connectorsFinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
-        /// 添加项
-        aMat = MT.Superconductor; // 随便选个材料
-        aRegistry.add(RegType.GTCH, "New Wire (WIP)" , "Electric Wires", 29903, 28366, MultiTileEntityWireElectric_CH.class, aMat.mToolQuality, 64/4, aMetalWires, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, DYE_INT_Red,   NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 6], NBT_PIPESIZE, 512, NBT_PIPEBANDWIDTH, 8, NBT_CONTACTDAMAGE, F, NBT_RESISTANCE+".electric", U));
-        aRegistry.add(RegType.GTCH, "New Wire (WIP)" , "Electric Wires", 29904, 28366, MultiTileEntityWireElectric_CH.class, aMat.mToolQuality, 64/4, aMetalWires, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, DYE_INT_Green, NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 6], NBT_PIPESIZE, 512, NBT_PIPEBANDWIDTH, 8, NBT_CONTACTDAMAGE, F, NBT_RESISTANCE+".electric", U8));
-        /// 最后释放这些修改后的添加
-        aRegistry.MODIFYING_ADD_END();
-    }
-    
-    
-    
-    @Override protected void sensorsBeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
-        /// 添加前将后续添加全部 hold
-        aRegistry.MODIFYING_ADD_START();
-        
-        /// 添加项
-        aRegistry.appendAddAfter(31001, "Large Range Gibbl-O-Meter Sensor"         , "Sensors"                             , 31040, 31015, MultiTileEntityGibblometerKilo.class                    ,                 1, 16, aUtilMetal     , null, "WPW", "BXB", "WPW", 'P', OP.plateDouble.dat(MT.TinAlloy), 'W', OP.wireFine.dat(MT.RedAlloy), 'R', OD.itemRedstone, 'G', OD.blockGlassColorless, 'B', OP.bolt.dat(MT.TinAlloy), 'C', Items.comparator, 'X', OP.plateGem.dat(ANY.SiO2));
-        aRegistry.appendAddAfter(31020, "Large Range Geiger Counter Sensor"        , "Sensors"                             , 31041, 31015, MultiTileEntityGeigerCounterKilo.class                  ,                 1, 16, aUtilMetal     , null, "WGW", "YXY", "WPW", 'P', OP.plateDouble.dat(MT.TinAlloy), 'W', OP.wireFine.dat(MT.RedAlloy), 'R', OD.itemRedstone, 'G', OD.blockGlassColorless, 'B', OP.bolt.dat(MT.TinAlloy), 'C', Items.comparator, 'X', IL.Geiger_Counter, 'Y', OP.plateDense.dat(MT.Pb));
-        aRegistry.appendAddAfter(31015, "Large Range Electrometer Sensor"          , "Sensors"                             , 31042, 31015, MultiTileEntityElectrometerKilo.class                   ,                 1, 16, aUtilMetal     , null, "WGW", "YXY", "WPW", 'P', OP.plateDouble.dat(MT.TinAlloy), 'W', OP.wireFine.dat(MT.RedAlloy), 'R', OD.itemRedstone, 'G', OD.blockGlassColorless, 'B', OP.bolt.dat(MT.TinAlloy), 'C', Items.comparator, 'X', OD.lever, 'Y', OP.wireFine.dat(MT.Au));
-        aRegistry.appendAddAfter(31019, "Large Range Tachometer Sensor"            , "Sensors"                             , 31043, 31015, MultiTileEntityTachometerKilo.class                     ,                 1, 16, aUtilMetal     , null, "WGW", "YXY", "WPW", 'P', OP.plateDouble.dat(MT.TinAlloy), 'W', OP.wireFine.dat(MT.RedAlloy), 'R', OD.itemRedstone, 'G', OD.blockGlassColorless, 'B', OP.bolt.dat(MT.TinAlloy), 'C', Items.comparator, 'X', OP.gearGt.dat(MT.RoseGold), 'Y', OP.gearGtSmall.dat(MT.RoseGold));
-        aRegistry.appendAddAfter(31021, "Large Range Laser-O-Meter Sensor"         , "Sensors"                             , 31044, 31015, MultiTileEntityLaserometerKilo.class                    ,                 1, 16, aUtilMetal     , null, "WGW", "YXY", "WPW", 'P', OP.plateDouble.dat(MT.TinAlloy), 'W', OP.wireFine.dat(MT.RedAlloy), 'R', OD.itemRedstone, 'G', OD.blockGlassColorless, 'B', OP.bolt.dat(MT.TinAlloy), 'C', Items.comparator, 'X', IL.SENSORS[3], 'Y', OP.wireFine.dat(MT.Au));
-    }
-    @Override protected void sensorsFinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
-        /// 添加项
-        aRegistry.add(RegType.GTCH, "Flow-O-Meter Sensor"                      , "Sensors"                             , 31030, 31015, MultiTileEntityFlowometer.class                      ,                 1, 16, aUtilMetal     , null, "WYW", "ZXZ", "WPW", 'P', OP.plateDouble.dat(MT.TinAlloy), 'W', OP.wireFine.dat(MT.RedAlloy), 'R', OD.itemRedstone, 'G', OD.blockGlassColorless, 'B', OP.bolt.dat(MT.TinAlloy), 'C', Items.comparator, 'X', OD.pressurePlateGold, 'Y', OP.rotor.dat(MT.TinAlloy), 'Z', OP.ring.dat(MT.Rubber));
-        aRegistry.add(RegType.GTCH, "Bucket Flow-O-Meter Sensor"               , "Sensors"                             , 31031, 31015, MultiTileEntityFlowometerBucket.class                ,                 1, 16, aUtilMetal     , null, "WYW", "ZXZ", "WPW", 'P', OP.plateDouble.dat(MT.TinAlloy), 'W', OP.wireFine.dat(MT.RedAlloy), 'R', OD.itemRedstone, 'G', OD.blockGlassColorless, 'B', OP.bolt.dat(MT.TinAlloy), 'C', Items.comparator, 'X', OD.pressurePlateIron, 'Y', OP.rotor.dat(MT.TinAlloy), 'Z', OP.ring.dat(MT.Rubber));
-        // TODO 暂时没有合成
-        aRegistry.add(RegType.GTCH, "Voltage-O-Meter Sensor"                   , "Sensors"                             , 31032, 31015, MultiTileEntityVoltageometer.class                   ,                 1, 16, aUtilMetal     , null);
-        aRegistry.add(RegType.GTCH, "Amperage-O-Meter Sensor"                  , "Sensors"                             , 31034, 31015, MultiTileEntityAmperageometer.class                  ,                 1, 16, aUtilMetal     , null);
-        
-        /// 最后释放这些修改后的添加
-        aRegistry.MODIFYING_ADD_END();
     }
 }

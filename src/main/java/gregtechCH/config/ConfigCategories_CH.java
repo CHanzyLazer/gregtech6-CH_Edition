@@ -2,6 +2,7 @@ package gregtechCH.config;
 
 public enum ConfigCategories_CH {
     general,
+    gameplay,
     loader,
     nbt,
     colour,

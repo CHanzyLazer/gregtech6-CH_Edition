@@ -20,23 +20,10 @@ public class ConfigForge_CH {
     public static class DATA_GTCH {
         public static boolean debugging;
         
-        public static boolean enableChangeLoader_Fluids;
+        public static boolean enableGT6U;
         
-        public static boolean enableChangeLoader_MTEStorages;
-        public static boolean enableChangeLoader_MTECrucible;
-        public static boolean enableChangeLoader_MTEUnsorted1;
-        public static boolean enableChangeLoader_MTEUnsorted2;
-        public static boolean enableChangeLoader_MTEComputer;
-        public static boolean enableChangeLoader_MTEMultiblocks;
-        public static boolean enableChangeLoader_MTEMachines1;
-        public static boolean enableChangeLoader_MTEMachines2;
-        public static boolean enableChangeLoader_MTEMachines3;
-        public static boolean enableChangeLoader_MTEMachines4;
-        public static boolean enableChangeLoader_MTEKinetic;
-        public static boolean enableChangeLoader_MTEConnectors;
-        public static boolean enableChangeLoader_MTEExtenders;
-        public static boolean enableChangeLoader_MTESensors;
-        public static boolean enableChangeLoader_MTEMisc;
+        public static boolean enableChangeLoader_Fluids;
+        public static boolean enableChangeLoader_MultiTileEntities;
         
         public static boolean sneakingMountCover;
         public static boolean itemNBTSensor;
@@ -82,23 +69,10 @@ public class ConfigForge_CH {
         
         DATA_GTCH.debugging = ConfigsGTCH.GTCH.get(ConfigCategories_CH.general, "debugging_(gt6_false)", F);
         
-        DATA_GTCH.enableChangeLoader_Fluids = ConfigsGTCH.GTCH.get(ConfigCategories_CH.loader, "enableChangeLoader_fluids_(gt6_false)", T);
+        DATA_GTCH.enableGT6U = ConfigsGTCH.GTCH.get(ConfigCategories_CH.gameplay, "enableGT6U_(gt6_false)", F);
         
-        DATA_GTCH.enableChangeLoader_MTEStorages = ConfigsGTCH.GTCH.get(ConfigCategories_CH.loader, "enableChangeLoader_MTE_storages_(gt6_false)",  T);
-        DATA_GTCH.enableChangeLoader_MTECrucible = ConfigsGTCH.GTCH.get(ConfigCategories_CH.loader, "enableChangeLoader_MTE_crucible_(gt6_false)",  T);
-        DATA_GTCH.enableChangeLoader_MTEUnsorted1 = ConfigsGTCH.GTCH.get(ConfigCategories_CH.loader, "enableChangeLoader_MTE_unsorted1_(gt6_false)",  T);
-        DATA_GTCH.enableChangeLoader_MTEUnsorted2 = ConfigsGTCH.GTCH.get(ConfigCategories_CH.loader, "enableChangeLoader_MTE_unsorted2_(gt6_false)",  T);
-        DATA_GTCH.enableChangeLoader_MTEComputer = ConfigsGTCH.GTCH.get(ConfigCategories_CH.loader, "enableChangeLoader_MTE_computer_(gt6_false)", T);
-        DATA_GTCH.enableChangeLoader_MTEMultiblocks = ConfigsGTCH.GTCH.get(ConfigCategories_CH.loader, "enableChangeLoader_MTE_multiblocks_(gt6_false)", T);
-        DATA_GTCH.enableChangeLoader_MTEMachines1 = ConfigsGTCH.GTCH.get(ConfigCategories_CH.loader, "enableChangeLoader_MTE_machines1_(gt6_false)", T);
-        DATA_GTCH.enableChangeLoader_MTEMachines2 = ConfigsGTCH.GTCH.get(ConfigCategories_CH.loader, "enableChangeLoader_MTE_machines2_(gt6_false)", T);
-        DATA_GTCH.enableChangeLoader_MTEMachines3 = ConfigsGTCH.GTCH.get(ConfigCategories_CH.loader, "enableChangeLoader_MTE_machines3_(gt6_false)", T);
-        DATA_GTCH.enableChangeLoader_MTEMachines4 = ConfigsGTCH.GTCH.get(ConfigCategories_CH.loader, "enableChangeLoader_MTE_machines4_(gt6_false)", T);
-        DATA_GTCH.enableChangeLoader_MTEKinetic = ConfigsGTCH.GTCH.get(ConfigCategories_CH.loader, "enableChangeLoader_MTE_kinetic_(gt6_false)", T);
-        DATA_GTCH.enableChangeLoader_MTEConnectors = ConfigsGTCH.GTCH.get(ConfigCategories_CH.loader, "enableChangeLoader_MTE_connectors_(gt6_false)", T);
-        DATA_GTCH.enableChangeLoader_MTEExtenders = ConfigsGTCH.GTCH.get(ConfigCategories_CH.loader, "enableChangeLoader_MTE_extenders_(gt6_false)", T);
-        DATA_GTCH.enableChangeLoader_MTESensors = ConfigsGTCH.GTCH.get(ConfigCategories_CH.loader, "enableChangeLoader_MTE_sensors_(gt6_false)", T);
-        DATA_GTCH.enableChangeLoader_MTEMisc = ConfigsGTCH.GTCH.get(ConfigCategories_CH.loader, "enableChangeLoader_MTE_misc_(gt6_false)", T);
+        DATA_GTCH.enableChangeLoader_Fluids = ConfigsGTCH.GTCH.get(ConfigCategories_CH.loader, "enableChangeLoader_fluids_(gt6_false)", T);
+        DATA_GTCH.enableChangeLoader_MultiTileEntities = ConfigsGTCH.GTCH.get(ConfigCategories_CH.loader, "enableChangeLoader_MultiTileEntities_(gt6_false)",  T);
         
         DATA_GTCH.sneakingMountCover = ConfigsGTCH.GTCH.get(ConfigCategories_CH.general, "sneaking_mount_cover_(gt6_false)", T);
         DATA_GTCH.itemNBTSensor = ConfigsGTCH.GTCH.get(ConfigCategories_CH.nbt, "item_nbt_sensor_(gt6_true)", F);

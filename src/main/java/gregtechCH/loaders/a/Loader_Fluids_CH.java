@@ -15,17 +15,28 @@ import static gregtechCH.data.CS_CH.RegType;
 public class Loader_Fluids_CH extends Loader_Fluids {
     /* 采用和 MTE 类似的方法实现不直接修改文件的添加流体 */
     @Override public final void run() {
-        if (DATA_GTCH.enableChangeLoader_Fluids) fluidBeforeLoad();
-        super.run();
-        if (DATA_GTCH.enableChangeLoader_Fluids) fluidFinishLoad();
-    }
-    
-    protected void fluidBeforeLoad() {
+        if (!DATA_GTCH.enableChangeLoader_Fluids) {super.run(); return;}
+        
         /// 修改前标记修改开始
         FL.MODIFYING_CREATE_START();
         
+        fluidBeforeLoad();
+        fluidBeforeLoadGT6U();
+        super.run();
+        fluidFinishLoadGT6U();
+        fluidFinishLoad();
         
-        /* GT6U stuff */
+        /// 最后标记修改结束，并进行错误检测
+        FL.MODIFYING_CREATE_END();
+    }
+    
+    protected void fluidBeforeLoad() {}
+    protected void fluidFinishLoad() {}
+    
+    
+    protected void fluidBeforeLoadGT6U() {
+        if (!DATA_GTCH.enableGT6U) return;
+        
         /// 修改项
 //        FL.replaceCreate(                                                "HeliumPlasma"             , "Helium Plasma"       , MT.He                 , STATE_PLASMA, 1000, 4000);
 //        FL.replaceCreate(                                                "NitrogenPlasma"           , "Nitrogen Plasma"     , MT.N                  , STATE_PLASMA, 1000, 4000);
@@ -189,7 +200,9 @@ public class Loader_Fluids_CH extends Loader_Fluids {
         FL.removeCreate("Propylene");
     }
     
-    protected void fluidFinishLoad() {
+    protected void fluidFinishLoadGT6U() {
+        if (!DATA_GTCH.enableGT6U) return;
+        
         /// 不考虑顺序的最后添加
         for (OreDictMaterial tMaterial : MT.ALL_MATERIALS_REGISTERED_HERE) {
             if (tMaterial.contains(TD_CH.ItemGenerator.LIQUID_CH)) FL.createLiquid(RegType.GTCH, tMaterial);
@@ -204,9 +217,6 @@ public class Loader_Fluids_CH extends Loader_Fluids {
             if (tMaterial.contains(TD_CH.ItemGenerator.VAPORS_6U)) FL.createVapour(RegType.GT6U, tMaterial);
             if (tMaterial.contains(TD_CH.ItemGenerator.PLASMA_6U)) FL.createPlasma(RegType.GT6U, tMaterial);
         }
-        
-        /// 最后标记修改结束，并进行错误检测
-        FL.MODIFYING_CREATE_END();
         
         /// 附加属性
         Fluid

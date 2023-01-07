@@ -110,6 +110,7 @@ public class GT_ASM implements IFMLLoadingPlugin {
 			transformers.put(Minecraft_BlockParticleFix_CH.class.getName(), true);
 			transformers.put(Journeymap_BlockGTColorFix_CH.class.getName(), true);
 			transformers.put(BuildCraft_PipeAutoConnectFix_CH.class.getName(), true);
+			transformers.put(NEI_ItemListLoaderCrashFix_CH.class.getName(), true);
 
 			mclocation = new File(mclocation, "/config/gregtech");
 			mclocation.mkdirs();
@@ -223,13 +224,19 @@ public class GT_ASM implements IFMLLoadingPlugin {
 	}
 	
 	public static byte[] writeByteArray(ClassNode aClassNode) {
-		ClassWriter rWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+		return writeByteArray(aClassNode, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+	}
+	public static byte[] writeByteArray(ClassNode aClassNode, final int aFlags) {
+		ClassWriter rWriter = new ClassWriter(aFlags);
 		aClassNode.accept(rWriter);
 		return rWriter.toByteArray();
 	}
-
+	
 	public static byte[] writeByteArraySelfReferenceFixup(ClassNode aClassNode) {
-		ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES) {
+		return writeByteArraySelfReferenceFixup(aClassNode, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+	}
+	public static byte[] writeByteArraySelfReferenceFixup(ClassNode aClassNode, final int aFlags) {
+		ClassWriter writer = new ClassWriter(aFlags) {
 			// Have to override this method because of Forge's classloader stuff, this one grabs the wrong one..
 			// And can't even use the correct classloader here because the forge remapping hadn't been done yet.
 			// Forge's classloader doesn't seem to like loading and transforming a type while transforming another...

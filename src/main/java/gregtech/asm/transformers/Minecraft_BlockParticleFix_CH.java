@@ -7,6 +7,7 @@ import org.objectweb.asm.tree.*;
 
 import static gregtech.asm.GT_ASM_UT.Name.*;
 import static gregtech.asm.GT_ASM_UT.isObfuscated;
+import static gregtech.asm.GT_ASM_UT.removeLine;
 
 /**
  * @author CHanzy
@@ -50,21 +51,8 @@ public class Minecraft_BlockParticleFix_CH implements IClassTransformer  {
 					return GT_ASM.writeByteArraySelfReferenceFixup(classNode);
 				}
 				// 直接移除整行的代码
-				// 删除前的代码
-				AbstractInsnNode at1 = at.getPrevious();
-				while (at1 != null && !(at1 instanceof LineNumberNode)) {
-					AbstractInsnNode tAt1 = at1.getPrevious();
-					m.instructions.remove(at1); // 注意 remove 会使这个节点失效
-					at1 = tAt1;
-				}
-				// 删除后的代码
-				at1 = at.getNext();
-				while (at1 != null && !(at1 instanceof LabelNode)) {
-					AbstractInsnNode tAt1 = at1.getNext();
-					m.instructions.remove(at1); // 注意 remove 会使这个节点失效
-					at1 = tAt1;
-				}
-				// 在 at 前插入我需要的代码
+				at = removeLine(m.instructions, at);
+				// 在 at 后插入我需要的代码
 				InsnList insert = new InsnList();
 				insert.add(new VarInsnNode(Opcodes.ALOAD, 0)); 			// Load entity
 				insert.add(new VarInsnNode(Opcodes.ALOAD, 0)); 			// Load this
@@ -74,15 +62,13 @@ public class Minecraft_BlockParticleFix_CH implements IClassTransformer  {
 				insert.add(new VarInsnNode(Opcodes.ILOAD, tIIdx)); 		// Load i
 				insert.add(new VarInsnNode(Opcodes.ILOAD, tKIdx)); 		// Load k
 				insert.add(M_spawnSprintingParticle.staticInvocation(isObfuscated()));
-				m.instructions.insertBefore(at, insert);
-				// 最后删除不必要的 at
-				m.instructions.remove(at);
+				m.instructions.insert(at, insert);
 			}
 //			GT_ASM.writePrettyPrintedOpCodesToFile(classNode, "C_Entity_Modified"); // DEBUG
 
 			return GT_ASM.writeByteArraySelfReferenceFixup(classNode);
 		}
-
+		
 		// 修复摔落时的粒子效果
 		if (transformedName.equals(C_RenderGlobal.clazzPath)) {
 			ClassNode classNode = GT_ASM.makeNodes(basicClass);
@@ -152,21 +138,8 @@ public class Minecraft_BlockParticleFix_CH implements IClassTransformer  {
 				}
 				int tD6Idx = ((VarInsnNode)at2).var;
 				// 直接移除整行的代码
-				// 删除前的代码
-				AbstractInsnNode at1 = at.getPrevious();
-				while (at1 != null && !(at1 instanceof LineNumberNode)) {
-					AbstractInsnNode tAt1 = at1.getPrevious();
-					m.instructions.remove(at1); // 注意 remove 会使这个节点失效
-					at1 = tAt1;
-				}
-				// 删除后的代码
-				at1 = at.getNext();
-				while (at1 != null && !(at1 instanceof LabelNode)) {
-					AbstractInsnNode tAt1 = at1.getNext();
-					m.instructions.remove(at1); // 注意 remove 会使这个节点失效
-					at1 = tAt1;
-				}
-				// 在 at 前插入我需要的代码
+				at = removeLine(m.instructions, at);
+				// 在 at 后插入我需要的代码
 				InsnList insert = new InsnList();
 				insert.add(new VarInsnNode(Opcodes.ALOAD, 0)); 			// Load this
 				insert.add(F_theWorld.virtualGet(isObfuscated())); 					// Load theWorld
@@ -178,15 +151,13 @@ public class Minecraft_BlockParticleFix_CH implements IClassTransformer  {
 				insert.add(new VarInsnNode(Opcodes.DLOAD, tD6Idx)); 	// Load d6
 				insert.add(new VarInsnNode(Opcodes.DLOAD, tD8Idx)); 	// Load d8
 				insert.add(M_spawnFallParticle.staticInvocation(isObfuscated()));
-				m.instructions.insertBefore(at, insert);
-				// 最后删除不必要的 at
-				m.instructions.remove(at);
+				m.instructions.insert(at, insert);
 			}
 //			GT_ASM.writePrettyPrintedOpCodesToFile(classNode, "C_RenderGlobal_Modified"); // DEBUG
-
+			
 			return GT_ASM.writeByteArraySelfReferenceFixup(classNode);
 		}
-
+		
 		return basicClass;
 	}
 }

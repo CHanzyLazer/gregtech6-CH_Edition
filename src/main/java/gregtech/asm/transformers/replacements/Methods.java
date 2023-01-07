@@ -1,4 +1,4 @@
-package gregtech.asm.transformers.minecraft;
+package gregtech.asm.transformers.replacements;
 
 import gregapi.block.BlockBase;
 import gregapi.block.multitileentity.MultiTileEntityBlock;
@@ -22,16 +22,19 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.Random;
 
-import static gregapi.data.CS.*;
+import static gregapi.data.CS.OPOS;
+import static gregapi.data.CS.RNGSUS;
 import static gregtech.interfaces.asm.LO_CH.*;
+import static gregtech.interfaces.asm.LO_CH.initLightOpacityNA;
 
-/* This is a separate file so it class loads *while* minecraft loads,
+
+/* This is a separate file, so it class loads *while* minecraft loads,
    if we accessed world in the main transformer then we can miss out
    on the transformations.  Not an issue when accessing MC classes
    while transforming other mods though.
-   GTCH, 我的修改统一放到另一个文件
+   GTCH, 用于 asm 注入的方法
  */
-public class Replacements_CH {
+public class Methods {
     // 提供的实用接口
     public static void setLightOpacityData(ExtendedBlockStorage aEBS, byte[] aData) {
         initLightOpacityNA(aEBS, createLightOpacityNA(aData));
@@ -88,8 +91,8 @@ public class Replacements_CH {
         }
         return aOffset;
     }
-
-
+    
+    
     public static Random getRand(Entity aEntity) {
         if (aEntity instanceof EntityLivingBase) return ((EntityLivingBase)aEntity).getRNG();
         return RNGSUS;
@@ -146,12 +149,12 @@ public class Replacements_CH {
             aWorld.spawnParticle("blockdust_" + Block.getIdFromBlock(aBlock) + "_" + aWorld.getBlockMetadata(aX, aY, aZ), tX, tY, tZ, aVelX, aVelY, aVelZ);
         }
     }
-
+    
     // 使用这些方法来间接获取 class
     public static Class<MultiTileEntityBlock> getMultiTileEntityBlock() {return MultiTileEntityBlock.class;}
     public static Class<PrefixBlock> getPrefixBlock() {return PrefixBlock.class;}
     public static Class<BlockBase> getBlockBase() {return BlockBase.class;}
-
+    
     // 插入自己的判断，这里在 bc 中，side 是 tile 相对 bc 管道的方向，和 GT 的方向相反
     public static boolean interceptModConnectItem(TileEntity aTile, ForgeDirection aSide) {
         if (aTile instanceof ITEInterceptModConnectItem) return ((ITEInterceptModConnectItem)aTile).interceptModConnectItem(OPOS[UT.Code.side(aSide)]);

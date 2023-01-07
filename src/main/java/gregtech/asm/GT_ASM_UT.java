@@ -7,7 +7,7 @@ import org.objectweb.asm.tree.*;
 
 // 这里提供一些通用接口，部分借鉴 NotEnoughIDs 的写法
 public class GT_ASM_UT {
-
+    
     // 检测当前的的 mc 是否是混淆的，仅在直接获取失效时使用
     public static Boolean OBFUSCATED = null;
     public static boolean isObfuscated() {
@@ -21,7 +21,7 @@ public class GT_ASM_UT {
         }
         return OBFUSCATED;
     }
-
+    
     // 修改 method 行内硬编码数值的方法
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean transformInlinedNumberMethod(MethodNode aMethod, int aOldValue, int aNewValue) {
@@ -55,7 +55,7 @@ public class GT_ASM_UT {
         }
         return aFound;
     }
-
+    
     // 修改 method 行内硬编码 bool 值的方法
     public static boolean transformInlinedBoolMethod(MethodNode aMethod, boolean aOldValue, boolean aNewValue) {
         AbstractInsnNode at = aMethod.instructions.getFirst();
@@ -72,18 +72,45 @@ public class GT_ASM_UT {
         }
         return aFound;
     }
-
+    
+    // 清空 node 所在的整行代码，返回行开头的 node
+    public static AbstractInsnNode removeLine(InsnList aInsnList, AbstractInsnNode aNode) {
+        // 删除前的代码
+        AbstractInsnNode at = aNode.getPrevious();
+        while (at != null) {
+            if (at instanceof LineNumberNode) break;
+            AbstractInsnNode tAt = at.getPrevious();
+            aInsnList.remove(at); // 注意 remove 会使这个节点失效
+            at = tAt;
+        }
+        // 删除后的代码
+        at = aNode.getNext();
+        while (at != null) {
+            // 注意需要区分行尾的 label 和其他跳转的 label
+            if (at instanceof LabelNode && (at.getNext() instanceof LineNumberNode)) break;
+            AbstractInsnNode tAt = at.getNext();
+            aInsnList.remove(at); // 注意 remove 会使这个节点失效
+            at = tAt;
+        }
+        at = aNode.getPrevious();
+        aInsnList.remove(aNode); // 移除本 node
+        return at; // 返回 LINENUMBER 的节点（如果为 null 则说明移除出现问题，但不为 null 不能保证移除是成功的）
+    }
+    
     // copy from NotEnoughIDs
     @SuppressWarnings("ConstantConditions")
     public enum Name {
         // C_: Class, M_: Method, F_: Field
-
+    
+        C_Object("java/lang/Object"),
         C_Class("java/lang/Class"),
+        C_List("java/util/List"),
         C_ACL("net/minecraft/world/chunk/storage/AnvilChunkLoader", "aqk"),
         C_Block("net/minecraft/block/Block", "aji"),
         C_Chunk("net/minecraft/world/chunk/Chunk", "apx"),
         C_EBS("net/minecraft/world/chunk/storage/ExtendedBlockStorage", "apz"),
         C_IChunkProvider("net/minecraft/world/chunk/IChunkProvider", "apu"),
+        C_Item("net/minecraft/item/Item", "adb"),
         C_NBT("net/minecraft/nbt/NBTTagCompound", "dh"),
         C_NetClient("net/minecraft/client/network/NetHandlerPlayClient", "bjb"),
         C_NA("net/minecraft/world/chunk/NibbleArray", "apv"),
@@ -110,21 +137,32 @@ public class GT_ASM_UT {
         C_BC_IPipe("buildcraft/api/transport/IPipeTile"),
         C_BC_PipeItem("buildcraft/transport/PipeTransportItems"),
         C_BC_PipeFluid("buildcraft/transport/PipeTransportFluids"),
-
+        C_NEI_ItemList("codechicken/nei/ItemList"),
+        C_NEI_RestartableTask("codechicken/nei/RestartableTask"),
+        C_NEI_ThreadOperationTimer("codechicken/nei/ThreadOperationTimer"),
+        
+        M_NEI_ItemListConstInit(C_NEI_ItemList, "<clinit>", null, null, "()V"),
+        M_NEI_damageSearch(null, "damageSearch", null, null, "("+toDesc(C_Item, C_List)+")V"), // 属于匿名类，这里的 api 暂不支持对匿名类做高级操作
+        M_NEI_execute(null, "execute", null, null, "()V"), // 属于匿名类，这里的 api 暂不支持对匿名类做高级操作
+        M_NEI_getTimer(C_NEI_RestartableTask, "getTimer", null, null, "(I)"+toDesc(C_NEI_ThreadOperationTimer)),
+        M_NEI_setLimit(C_NEI_ThreadOperationTimer, "setLimit", null, null, "(I)V"),
+        M_NEI_reset_object(C_NEI_ThreadOperationTimer, "reset", null, null, "("+toDesc(C_Object)+")V"),
+        M_NEI_reset(C_NEI_ThreadOperationTimer, "reset", null, null, "()V"),
+        
         M_BC_canPipeConnect(C_BC_Pipe, "canPipeConnect", null, null, "("+toDesc(C_TileEntity, C_ForgeDirection)+")Z"),
-
+        
         M_JM_preInitialize(C_JM_VanillaBlockHandler, "preInitialize", null, null, "()V"),
         M_JM_setFlags(C_JM_VanillaBlockHandler, "setFlags", null, null, "("+toDesc(C_Class)+"["+toDesc(C_JM_Flag)+")V"),
         F_JM_CustomBiomeColor(C_JM_Flag, "CustomBiomeColor", null, null, toDesc(C_JM_Flag)),
-
+        
         M_onEntityUpdate(C_Entity, "onEntityUpdate", "C", "func_70030_z", "()V"),
         F_worldObj(C_Entity, "worldObj", "o", "field_70170_p", toDesc(C_World)),
-
+        
         M_getBlock(C_World, "getBlock", "a", "func_147439_a", "(III)"+toDesc(C_Block)),
         M_WC_getBlock(C_WorldClient, "getBlock", "a", "func_147439_a", "(III)"+toDesc(C_Block)),
         M_playAuxSFX(C_RenderGlobal, "playAuxSFX", "a", "func_72706_a", "("+toDesc(C_Player)+"IIIII)V"),
         F_theWorld(C_RenderGlobal, "theWorld", "r", "field_72769_h", toDesc(C_WorldClient)),
-
+        
         M_EBS_getBlock(C_EBS, "getBlockByExtId", "a", "func_150819_a", "(III)"+toDesc(C_Block)),
         M_EBS_setBlock(C_EBS, "func_150818_a", "a", null, "(III"+toDesc(C_Block)+")V"),
         M_getBlockLSBArray(C_EBS, "getBlockLSBArray", "g", "func_76658_g", "()[B"),
@@ -134,15 +172,15 @@ public class GT_ASM_UT {
         M_removeInvalidBlocks(C_EBS, "removeInvalidBlocks", "e", "func_76672_e", "()V"),
         F_blockRefCount(C_EBS, "blockRefCount", "b", "field_76682_b", "I"),
         F_tickRefCount(C_EBS, "tickRefCount", "c", "field_76683_c", "I"),
-
+        
         M_writeChunkToNBT(C_ACL, "writeChunkToNBT", "a", "func_75820_a", "("+toDesc(C_Chunk, C_World, C_NBT)+")V"),
         M_readChunkFromNBT(C_ACL, "readChunkFromNBT", "a", "func_75823_a", "("+toDesc(C_World, C_NBT)+")"+toDesc(C_Chunk)),
-
+        
         M_fillChunk(C_Chunk, "fillChunk", "a", "func_76607_a", "([BIIZ)V"),
         M_getBlockStorageArray(C_Chunk, "getBlockStorageArray", "i", "func_76587_i", "()["+toDesc(C_EBS)),
         F_storageArrays(C_Chunk, "storageArrays", "u", "field_76652_q", "["+toDesc(C_EBS)),
         F_blockBiomeArray(C_Chunk, "blockBiomeArray", "v", "field_76651_r", "[B"),
-
+        
         M_readPacketData(C_Packet, "readPacketData", "a", "func_148837_a", "("+toDesc(C_PacketBuffer)+")V"),
         M_writePacketData(C_Packet, "writePacketData", "b", "func_148840_b", "("+toDesc(C_PacketBuffer)+")V"),
         M_func_149275_c(C_PacketS21, "func_149275_c", "c", null, "()I"),
@@ -150,7 +188,11 @@ public class GT_ASM_UT {
         F_field_150282_a(C_PackedS21Ex, "field_150282_a", "a", null, "[B"),
         // my hooks
         C_GTASM_LO("gregtech/interfaces/asm/LO_CH"),
-        C_GTASM_R("gregtech/asm/transformers/minecraft/Replacements_CH"),
+        C_GTASM_R("gregtech/asm/transformers/replacements/Methods"),
+        C_Timer("gregtech/asm/transformers/replacements/Timer"),
+        M_Timer_init(C_Timer, "<init>", null, null, "()V"),
+        M_Timer_reset(C_Timer, "reset", null, null, "()V"),
+        M_Timer_check(C_Timer, "check", null, null, "("+toDesc(C_Object)+")V"),
         M_enabledLO(C_GTASM_LO, "isEnableAsmBlockGtLightOpacity", null, null, "()Z"),
         M_getLO(C_GTASM_LO, "getLightOpacityNA", null, null, "("+toDesc(C_EBS)+")"+toDesc(C_NA)),
         M_initLO(C_GTASM_LO, "initLightOpacityNA", null, null, "("+toDesc(C_EBS, C_NA)+")V"),
@@ -167,7 +209,7 @@ public class GT_ASM_UT {
         M_interceptModConnectItem(C_GTASM_R, "interceptModConnectItem", null, null, "("+toDesc(C_TileEntity, C_ForgeDirection)+")Z"),
         M_interceptModConnectFluid(C_GTASM_R, "interceptModConnectFluid", null, null, "("+toDesc(C_TileEntity, C_ForgeDirection)+")Z"),
         F_GTLO(C_EBS, "blockGTLightOpacityArray", null, null, toDesc(C_NA));
-
+        
         public final Name clazz; // 所属类
         public final String clazzPath; // 类的路径（以"."分割）
         public final String deobf; // 反混淆名称
@@ -175,11 +217,11 @@ public class GT_ASM_UT {
         public final String srg; // srg 混淆名称
         public final String desc; // 类型
         public String obfDesc; // 混淆类型
-
+        
         Name(String deobf) {
             this(deobf, deobf);
         }
-
+        
         Name(String deobf, String obf) {
             this.clazz = null;
             this.deobf = deobf;
@@ -188,7 +230,7 @@ public class GT_ASM_UT {
             this.srg = deobf;
             this.desc = null;
         }
-
+        
         Name(Name clazz, String deobf, String obf, String srg, String desc) {
             this.clazz = clazz;
             this.deobf = deobf;
@@ -206,13 +248,13 @@ public class GT_ASM_UT {
         public String toDesc() {return "L"+this.deobf+";";}
         // 用于输出
         @Override public String toString() {return this.clazzPath;}
-
+        
         public boolean matches(MethodNode m) {assert  this.desc.startsWith("("); return (this.obf.equals(m.name) && this.obfDesc.equals(m.desc)) || (this.srg.equals(m.name) && this.desc.equals(m.desc)) || (this.deobf.equals(m.name) && this.desc.equals(m.desc));}
         public boolean matches(FieldNode  f) {assert !this.desc.startsWith("("); return (this.obf.equals(f.name) && this.obfDesc.equals(f.desc)) || (this.srg.equals(f.name) && this.desc.equals(f.desc)) || (this.deobf.equals(f.name) && this.desc.equals(f.desc));}
-
+        
         public boolean matches(MethodInsnNode m) {assert  this.desc.startsWith("("); return (this.clazz.obf.equals(m.owner) && this.obf.equals(m.name) && this.obfDesc.equals(m.desc)) || (this.clazz.srg.equals(m.owner) && this.srg.equals(m.name) && this.desc.equals(m.desc)) || (this.clazz.deobf.equals(m.owner) && this.deobf.equals(m.name) && this.desc.equals(m.desc));}
         public boolean matches(FieldInsnNode  f) {assert !this.desc.startsWith("("); return (this.clazz.obf.equals(f.owner) && this.obf.equals(f.name) && this.obfDesc.equals(f.desc)) || (this.clazz.srg.equals(f.owner) && this.srg.equals(f.name) && this.desc.equals(f.desc)) || (this.clazz.deobf.equals(f.owner) && this.deobf.equals(f.name) && this.desc.equals(f.desc));}
-
+        
         // 由于 forge 的存在，注入只需要 srg 混淆即可（即注入的代码可以不进行混淆）
         public MethodInsnNode staticInvocation (boolean obfuscated) {assert  this.desc.startsWith("("); return obfuscated ? new MethodInsnNode(Opcodes.INVOKESTATIC,  this.clazz.srg, this.srg, this.desc, false) : new MethodInsnNode(Opcodes.INVOKESTATIC,  this.clazz.deobf, this.deobf, this.desc, false);}
         public MethodInsnNode virtualInvocation(boolean obfuscated) {assert  this.desc.startsWith("("); return obfuscated ? new MethodInsnNode(Opcodes.INVOKEVIRTUAL, this.clazz.srg, this.srg, this.desc, false) : new MethodInsnNode(Opcodes.INVOKEVIRTUAL, this.clazz.deobf, this.deobf, this.desc, false);}
@@ -221,14 +263,14 @@ public class GT_ASM_UT {
         public FieldInsnNode  virtualGet       (boolean obfuscated) {assert !this.desc.startsWith("("); return obfuscated ? new FieldInsnNode (Opcodes.GETFIELD,      this.clazz.srg, this.srg, this.desc)           : new FieldInsnNode (Opcodes.GETFIELD,      this.clazz.deobf, this.deobf, this.desc);}
         public FieldInsnNode  staticSet        (boolean obfuscated) {assert !this.desc.startsWith("("); return obfuscated ? new FieldInsnNode (Opcodes.PUTSTATIC,     this.clazz.srg, this.srg, this.desc)           : new FieldInsnNode (Opcodes.PUTSTATIC,     this.clazz.deobf, this.deobf, this.desc);}
         public FieldInsnNode  virtualSet       (boolean obfuscated) {assert !this.desc.startsWith("("); return obfuscated ? new FieldInsnNode (Opcodes.PUTFIELD,      this.clazz.srg, this.srg, this.desc)           : new FieldInsnNode (Opcodes.PUTFIELD,      this.clazz.deobf, this.deobf, this.desc);}
-
+        
         // 将反混淆的 desc 转换为混淆的
         private static void translateDescs() {
             StringBuilder sb = new StringBuilder();
             for (Name name : values()) {
                 if (name.desc != null) {
                     int pos = 0;
-
+                    
                     int endPos;
                     for (endPos = -1; (pos = name.desc.indexOf(76, pos)) != -1; pos = endPos + 1) {
                         sb.append(name.desc, endPos + 1, pos);
@@ -242,7 +284,7 @@ public class GT_ASM_UT {
                         }
                         sb.append('L').append(cName).append(';');
                     }
-
+                    
                     sb.append(name.desc, endPos + 1, name.desc.length());
                     name.obfDesc = sb.toString();
                     sb.setLength(0);

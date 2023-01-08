@@ -165,9 +165,9 @@ public class NEI_ItemListLoaderCrashFix_CH implements IClassTransformer  {
                 insert.add(M_Timer_check.virtualInvocation(isObfuscated()));
                 m.instructions.insert(at, insert);
             }
-//            GT_ASM.writePrettyPrintedOpCodesToFile(tModifiedNode, "C_NEI_ItemList$"+i+"_Modified"); // DEBUG
+//            GT_ASM.writePrettyPrintedOpCodesToFile(classNode, "C_NEI_ItemList$"+i+"_Modified"); // DEBUG
             
-            return GT_ASM.writeByteArraySelfReferenceFixup(classNode, 0);
+            return GT_ASM.writeByteArraySelfReferenceFixup(classNode);
         }
         return basicClass;
     }

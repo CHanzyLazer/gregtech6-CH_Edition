@@ -8,7 +8,7 @@ import codechicken.nei.NEIServerConfig;
 public class Timer {
     private final int mLimit;
     private long mBeginTime;
-    public Timer() {mLimit = 500;} // 默认依旧定为 500（注意这个版本的 asm 不支持添加 SIPUSH 和 LDA 等节点）
+    public Timer() {mLimit = 100;} // 修改为 100 ms（注意这个版本的 asm 不支持添加 SIPUSH 和 LDA 等节点）
     
     public void reset() {mBeginTime = System.currentTimeMillis();}
     

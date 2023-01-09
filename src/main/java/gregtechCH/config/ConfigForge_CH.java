@@ -89,7 +89,7 @@ public class ConfigForge_CH {
         DATA_GTCH.rerenderAll               = ConfigsGTCH.GTCH.get(ConfigCategories_CH.optimize, "rerender_all_(gt6_true)",  F);
         DATA_GTCH.rerenderMainTick          = UT.Code.bind7(ConfigsGTCH.GTCH.get(ConfigCategories_CH.optimize, "rerender_main_tick_(gt6_?)",  2));
         DATA_GTCH.rerenderAroundTick        = UT.Code.bind7(ConfigsGTCH.GTCH.get(ConfigCategories_CH.optimize, "rerender_around_tick_(gt6_?)",  1));
-        DATA_GTCH.rerenderSleepTick         = UT.Code.bind7(ConfigsGTCH.GTCH.get(ConfigCategories_CH.optimize, "rerender_sleep_tick_(gt6_?)",  6));
+        DATA_GTCH.rerenderSleepTick         = UT.Code.bind7(ConfigsGTCH.GTCH.get(ConfigCategories_CH.optimize, "rerender_sleep_tick_(gt6_?)",  0));
         DATA_GTCH.rerenderChunkPerTick      = UT.Code.bind7(ConfigsGTCH.GTCH.get(ConfigCategories_CH.optimize, "rerender_chunk_per_tick_(gt6_?)",  1));
         DATA_GTCH.rerenderMainLength        = UT.Code.bind7(ConfigsGTCH.GTCH.get(ConfigCategories_CH.optimize, "rerender_main_length_(gt6_?)",  4));
         DATA_GTCH.rerenderAroundLength      = UT.Code.bind7(ConfigsGTCH.GTCH.get(ConfigCategories_CH.optimize, "rerender_around_length_(gt6_?)",  1));

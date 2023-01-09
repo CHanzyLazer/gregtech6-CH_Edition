@@ -13,6 +13,7 @@ import gregtech.tileentity.energy.converters.MultiTileEntityDynamoElectric;
 import gregtech.tileentity.energy.generators.*;
 import gregtech.tileentity.multiblocks.*;
 import gregtech.tileentity.tools.*;
+import gregtechCH.config.data.DataMultiTileEntity_CH;
 import gregtechCH.data.RM_CH;
 import gregtechCH.tileentity.batteries.eu.MultiTileEntityBatteryAdvEU8192;
 import gregtechCH.tileentity.batteries.eu.MultiTileEntityBatteryEU8192;
@@ -26,6 +27,7 @@ import net.minecraft.tileentity.TileEntity;
 
 import static gregapi.data.CS.*;
 import static gregtechCH.config.ConfigForge_CH.DATA_GTCH;
+import static gregtechCH.config.ConfigJson_CH.DATA_MULTITILEENTITY;
 import static gregtechCH.data.CS_CH.*;
 
 
@@ -37,8 +39,51 @@ import static gregtechCH.data.CS_CH.*;
 @SuppressWarnings({"PointlessArithmeticExpression", "ConstantConditions"})
 public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
     
-    // TODO 可能考虑成直读一个 json 文件后直接循环替换，而原本的结构用于在默认情况自动生成 json
-    // TODO 默认的修改改为硬编码的方式实现（提高可读性，添加和替换格式统一），将玩家自己修改在最上面优先度最高，例子放到说明文档
+    private static MultiTileEntityBlock getBlock(String aBlockName, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool) {
+        if (aBlockName == null) return null;
+        switch (aBlockName) {
+            case "metal":       return aMetal;
+            case "metalChips":  return aMetalChips;
+            case "metalWires":  return aMetalWires;
+            case "machine":     return aMachine;
+            case "wooden":      return aWooden;
+            case "bush":        return aBush;
+            case "stone":       return aStone;
+            case "wool":        return aWool;
+            case "TNT":         return aTNT;
+            case "utilMetal":   return aUtilMetal;
+            case "utilStone":   return aUtilStone;
+            case "utilWood":    return aUtilWood;
+            case "utilWool":    return aUtilWool;
+            case "hive":        return aHive;
+        }
+        return null;
+    }
+    
+    // 用户自定义修改部分
+    @Override protected void userConfigLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
+        /// 修改项
+        for (DataMultiTileEntity_CH.ReplaceObject tReplace : DATA_MULTITILEENTITY.replace) {
+            aRegistry.addReplacer(tReplace.ID).localised(tReplace.localised).categoricalName(tReplace.categoricalName).creativeTabID(tReplace.creativeTabID).te(tReplace.teClass).toolQuality(tReplace.blockMetaData).stackSize(tReplace.stackSize)
+                    .block(getBlock(tReplace.block, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool))
+                    .setParametersMergeLast(tReplace.parametersMerge).removeParametersRemoveLast(tReplace.parametersRemove).recipe(tReplace.recipe);
+        }
+        /// 删除项
+        for (int tID : DATA_MULTITILEENTITY.remove) {
+            aRegistry.removeAdds(tID);
+        }
+        /// 添加项
+        for (DataMultiTileEntity_CH.AppendBeforeObject tAppend : DATA_MULTITILEENTITY.appendBefore) {
+            MultiTileEntityBlock tBlock = getBlock(tAppend.block, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool);
+            aRegistry.appendAddBefore(tAppend.beforeID, tAppend.localised, tAppend.categoricalName, tAppend.ID, tAppend.creativeTabID, tAppend.teClass, tAppend.blockMetaData, tAppend.stackSize, tBlock, tAppend.parameters, tAppend.recipe);
+        }
+        for (DataMultiTileEntity_CH.AppendAfterObject tAppend : DATA_MULTITILEENTITY.appendAfter) {
+            MultiTileEntityBlock tBlock = getBlock(tAppend.block, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool);
+            aRegistry.appendAddAfter(tAppend.afterID, tAppend.localised, tAppend.categoricalName, tAppend.ID, tAppend.creativeTabID, tAppend.teClass, tAppend.blockMetaData, tAppend.stackSize, tBlock, tAppend.parameters, tAppend.recipe);
+        }
+    }
+    
+    
     @Override protected void unsorted1BeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
         /// 修改项
         // Burning Boxes 输出翻倍，部分效率调整
@@ -265,28 +310,24 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         aRegistry.addReplacer(17205).setParameters(NBT_INPUT,   4096, NBT_EFFICIENCY_CH, 8000, NBT_CAPACITY,   4096*1000, NBT_CAPACITY_SU,    4096*40000).removeParameters(NBT_OUTPUT_SU); // Invar
         aRegistry.addReplacer(17202).setParameters(NBT_INPUT,   8192, NBT_EFFICIENCY_CH, 8000, NBT_CAPACITY,   8192*1000, NBT_CAPACITY_SU,    8192*40000).removeParameters(NBT_OUTPUT_SU); // Titanium
         aRegistry.addReplacer(17203).setParameters(NBT_INPUT,  16384, NBT_EFFICIENCY_CH, 8000, NBT_CAPACITY,  16384*1000, NBT_CAPACITY_SU,   16384*40000).removeParameters(NBT_OUTPUT_SU); // Tungstensteel
-        aRegistry.addReplacer(17206).setParameters(NBT_INPUT,  32768, NBT_EFFICIENCY_CH, 8000, NBT_CAPACITY,  32768*1000, NBT_CAPACITY_SU,   32768*40000).removeParameters(NBT_OUTPUT_SU); // Titanium Niobium Carbide
         aRegistry.addReplacer(17204).setParameters(NBT_INPUT, 131072, NBT_EFFICIENCY_CH, 8000, NBT_CAPACITY, 131072*1000, NBT_CAPACITY_SU,131072L*40000L).removeParameters(NBT_OUTPUT_SU); // Adamantium
         
         // Steam Turbines 各长度的参数，增加预热相关
         aRegistry.addReplacer(17211).setParameters(NBT_EFFICIENCY_WATER, 9500, NBT_EFFICIENCY_OC, 5000, NBT_LENGTH_MIN, 1, NBT_LENGTH_MAX, 10, NBT_LENGTH_MID, 4).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY).setParameterArray(NBT_OUTPUT,  1365, 2560,  3431,  4096,  4618,  5041,  5389,  5681,  5930,  6144).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY,  24576000,  49152000,   73728000,   98304000,  122880000,  147456000,  172032000,  196608000,  221184000,  245760000).setParameterArray(NBT_PREHEAT_COST,  11, 22,  32,  43,  54,  64,  75,  86,  96, 107).setParameterArray(NBT_COOLDOWN_RATE,  1024, 2048, 3072,  4096,  5120,  6144,  7168,  8192,  9216, 10240); // StainlessSteel
         aRegistry.addReplacer(17212).setParameters(NBT_EFFICIENCY_WATER, 9500, NBT_EFFICIENCY_OC, 5000, NBT_LENGTH_MIN, 1, NBT_LENGTH_MAX, 10, NBT_LENGTH_MID, 4).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY).setParameterArray(NBT_OUTPUT,  2730, 5120,  6863,  8192,  9237, 10082, 10778, 11363, 11860, 12288).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY,  49152000,  98304000,  147456000,  196608000,  245760000,  294912000,  344064000,  393216000,  442368000,  491520000).setParameterArray(NBT_PREHEAT_COST,  22, 43,  64,  86, 107, 128, 150, 171, 192, 214).setParameterArray(NBT_COOLDOWN_RATE,  2048, 4096, 6144,  8192, 10240, 12288, 14336, 16384, 18432, 20480); // Titanium
         aRegistry.addReplacer(17213).setParameters(NBT_EFFICIENCY_WATER, 9500, NBT_EFFICIENCY_OC, 5000, NBT_LENGTH_MIN, 1, NBT_LENGTH_MAX, 10, NBT_LENGTH_MID, 4).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY).setParameterArray(NBT_OUTPUT,  5461,10240, 13727, 16384, 18475, 20164, 21557, 22726, 23720, 24576).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY,  98304000, 196608000,  294912000,  393216000,  491520000,  589824000,  688128000,  786432000,  884736000,  983040000).setParameterArray(NBT_PREHEAT_COST,  43, 86, 128, 171, 214, 256, 299, 342, 384, 427).setParameterArray(NBT_COOLDOWN_RATE,  4096, 8192,12288, 16384, 20480, 24576, 28672, 32768, 36864, 40960); // Tungstensteel
-        aRegistry.addReplacer(17215).setParameters(NBT_EFFICIENCY_WATER, 9500, NBT_EFFICIENCY_OC, 5000, NBT_LENGTH_MIN, 1, NBT_LENGTH_MAX, 10, NBT_LENGTH_MID, 4).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY).setParameterArray(NBT_OUTPUT, 10922,20480, 27454, 32768, 36951, 40329, 43115, 45452, 47440, 49152).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY, 196608000, 393216000,  589824000,  786432000,  983040000, 1179648000, 1376256000, 1572864000, 1769472000, 1966080000).setParameterArray(NBT_PREHEAT_COST,  86,171, 256, 342, 427, 512, 598, 683, 768, 854).setParameterArray(NBT_COOLDOWN_RATE,  8192,16384,24576, 32768, 40960, 49152, 57344, 65536, 73728, 81920); // Titanium Niobium Carbide
         aRegistry.addReplacer(17214).setParameters(NBT_EFFICIENCY_WATER, 9500, NBT_EFFICIENCY_OC, 5000, NBT_LENGTH_MIN, 1, NBT_LENGTH_MAX, 10, NBT_LENGTH_MID, 4).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY).setParameterArray(NBT_OUTPUT, 43690,81920,109817,131072,147804,161319,172463,181809,189760,196608).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY, 786432000,1572864000,2359296000L,3145728000L,3932160000L,4718592000L,5505024000L,6291456000L,7077888000L,7864320000L).setParameterArray(NBT_PREHEAT_COST, 342,683,1024,1366,1707,2048,2390,2731,3072,3414).setParameterArray(NBT_COOLDOWN_RATE, 32768,65536,98304,131072,163840,196608,229376,262144,294912,327680); // Adamantium
         
         // Gas Turbines 合成变贵，各长度的参数，增加预热相关
         aRegistry.addReplacer(17231).setParameters(NBT_LENGTH_MIN, 3, NBT_LENGTH_MAX, 12, NBT_LENGTH_MID, 6).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY, NBT_LIMIT_CONSUMPTION, NBT_ENERGY_ACCEPTED).setParameterArray(NBT_OUTPUT,  1365, 2560,  3431,  4096,  4618,  5041,  5389,  5681,  5930,  6144).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY,  24576000,  49152000,   73728000,   98304000,  122880000,  147456000,  172032000,  196608000,  221184000,  245760000).setParameterArray(NBT_PREHEAT_RATE,  1365, 2560,  3431,  4096,  4618,  5041,  5389,  5681,  5930,  6144).setParameterArray(NBT_PREHEAT_COST,  11, 22,  32,  43,  54,  64,  75,  86,  96, 107).setParameterArray(NBT_COOLDOWN_RATE,  1024, 2048, 3072,  4096,  5120,  6144,  7168,  8192,  9216, 10240).recipe("PwP", "BMC", "PEP", 'M', aRegistry.getItem(17211), 'B', "gt:re-battery1", 'C', IL.Processor_Crystal_Diamond, 'E', IL.MOTORS[1], 'P', OP.plateDense.dat(MT.Invar));         // StainlessSteel
         aRegistry.addReplacer(17232).setParameters(NBT_LENGTH_MIN, 3, NBT_LENGTH_MAX, 12, NBT_LENGTH_MID, 6).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY, NBT_LIMIT_CONSUMPTION, NBT_ENERGY_ACCEPTED).setParameterArray(NBT_OUTPUT,  2730, 5120,  6863,  8192,  9237, 10082, 10778, 11363, 11860, 12288).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY,  49152000,  98304000,  147456000,  196608000,  245760000,  294912000,  344064000,  393216000,  442368000,  491520000).setParameterArray(NBT_PREHEAT_RATE,  2730, 5120,  6863,  8192,  9237, 10082, 10778, 11363, 11860, 12288).setParameterArray(NBT_PREHEAT_COST,  22, 43,  64,  86, 107, 128, 150, 171, 192, 214).setParameterArray(NBT_COOLDOWN_RATE,  2048, 4096, 6144,  8192, 10240, 12288, 14336, 16384, 18432, 20480).recipe("PwP", "BMC", "PEP", 'M', aRegistry.getItem(17212), 'B', "gt:re-battery2", 'C', IL.Processor_Crystal_Diamond, 'E', IL.MOTORS[2], 'P', OP.plateDense.dat(MT.TungstenSteel)); // Titanium
         aRegistry.addReplacer(17233).setParameters(NBT_LENGTH_MIN, 3, NBT_LENGTH_MAX, 12, NBT_LENGTH_MID, 6).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY, NBT_LIMIT_CONSUMPTION, NBT_ENERGY_ACCEPTED).setParameterArray(NBT_OUTPUT,  5461,10240, 13727, 16384, 18475, 20164, 21557, 22726, 23720, 24576).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY,  98304000, 196608000,  294912000,  393216000,  491520000,  589824000,  688128000,  786432000,  884736000,  983040000).setParameterArray(NBT_PREHEAT_RATE,  5461,10240, 13727, 16384, 18475, 20164, 21557, 22726, 23720, 24576).setParameterArray(NBT_PREHEAT_COST,  43, 86, 128, 171, 214, 256, 299, 342, 384, 427).setParameterArray(NBT_COOLDOWN_RATE,  4096, 8192,12288, 16384, 20480, 24576, 28672, 32768, 36864, 40960).recipe("PwP", "BMC", "PEP", 'M', aRegistry.getItem(17213), 'B', "gt:re-battery3", 'C', IL.Processor_Crystal_Diamond, 'E', IL.MOTORS[3], 'P', OP.plateDense.dat(MT.W));             // Tungstensteel
-        aRegistry.addReplacer(17235).setParameters(NBT_LENGTH_MIN, 3, NBT_LENGTH_MAX, 12, NBT_LENGTH_MID, 6).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY, NBT_LIMIT_CONSUMPTION, NBT_ENERGY_ACCEPTED).setParameterArray(NBT_OUTPUT, 10922,20480, 27454, 32768, 36951, 40329, 43115, 45452, 47440, 49152).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY, 196608000, 393216000,  589824000,  786432000,  983040000, 1179648000, 1376256000, 1572864000, 1769472000, 1966080000).setParameterArray(NBT_PREHEAT_RATE, 10922,20480, 27454, 32768, 36951, 40329, 43115, 45452, 47440, 49152).setParameterArray(NBT_PREHEAT_COST,  86,171, 256, 342, 427, 512, 598, 683, 768, 854).setParameterArray(NBT_COOLDOWN_RATE,  8192,16384,24576, 32768, 40960, 49152, 57344, 65536, 73728, 81920).recipe("PwP", "BMC", "PEP", 'M', aRegistry.getItem(17215), 'B', "gt:re-battery4", 'C', IL.Processor_Crystal_Diamond, 'E', IL.MOTORS[4], 'P', OP.plateDense.dat(MT.Ta4HfC5));       // Titanium Niobium Carbide
         aRegistry.addReplacer(17234).setParameters(NBT_LENGTH_MIN, 3, NBT_LENGTH_MAX, 12, NBT_LENGTH_MID, 6).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY, NBT_LIMIT_CONSUMPTION, NBT_ENERGY_ACCEPTED).setParameterArray(NBT_OUTPUT, 43690,81920,109817,131072,147804,161319,172463,181809,189760,196608).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY, 786432000,1572864000,2359296000L,3145728000L,3932160000L,4718592000L,5505024000L,6291456000L,7077888000L,7864320000L).setParameterArray(NBT_PREHEAT_RATE, 43690,81920,109817,131072,147804,161319,172463,181809,189760,196608).setParameterArray(NBT_PREHEAT_COST, 342,683,1024,1366,1707,2048,2390,2731,3072,3414).setParameterArray(NBT_COOLDOWN_RATE, 32768,65536,98304,131072,163840,196608,229376,262144,294912,327680).recipe("PwP", "BMC", "PEP", 'M', aRegistry.getItem(17214), 'B', "gt:re-battery5", 'C', IL.Processor_Crystal_Diamond, 'E', IL.MOTORS[5], 'P', OP.plateDense.dat(MT.Ad));            // Adamantium
         
         // Dynamo 大型发电机效率调整为 95%
         aRegistry.addReplacer(17221).setParameters(NBT_OUTPUT,   4096, NBT_EFFICIENCY_NUM, 9500).removeParameters(NBT_INPUT);
         aRegistry.addReplacer(17222).setParameters(NBT_OUTPUT,   8192, NBT_EFFICIENCY_NUM, 9500).removeParameters(NBT_INPUT);
         aRegistry.addReplacer(17223).setParameters(NBT_OUTPUT,  16384, NBT_EFFICIENCY_NUM, 9500).removeParameters(NBT_INPUT);
-        aRegistry.addReplacer(17225).setParameters(NBT_OUTPUT,  32768, NBT_EFFICIENCY_NUM, 9500).removeParameters(NBT_INPUT);
         aRegistry.addReplacer(17224).setParameters(NBT_OUTPUT, 131072, NBT_EFFICIENCY_NUM, 9500).removeParameters(NBT_INPUT);
     }
     
@@ -537,6 +578,16 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         aRegistry.addReplacer(17198).regType(RegType.GT6U).localised("Fusion Reactor MkI");
         // 钨热交换器部件改为 gt6u 的热部件 MARK output 32768 -> 16384 （不改变原版的输出效率） TODO 大型热交换器增加效率
         aRegistry.addReplacer(17197).regType(RegType.GT6U).localised("Large Heat Exchanger (Tungsten)").setParameters(NBT_OUTPUT, 16384, NBT_DESIGN, 18110, NBT_EFFICIENCY, 10000);
+        
+        // GTCH 的通用改动
+        // Boilers 增加效率参数，输入调整
+        aRegistry.addReplacer(17206).setParameters(NBT_INPUT,  32768, NBT_EFFICIENCY_CH, 8000, NBT_CAPACITY,  32768*1000, NBT_CAPACITY_SU,   32768*40000).removeParameters(NBT_OUTPUT_SU); // Titanium Niobium Carbide
+        // Turbines 各长度的参数，增加预热相关
+        aRegistry.addReplacer(17215).setParameters(NBT_EFFICIENCY_WATER, 9500, NBT_EFFICIENCY_OC, 5000, NBT_LENGTH_MIN, 1, NBT_LENGTH_MAX, 10, NBT_LENGTH_MID, 4).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY).setParameterArray(NBT_OUTPUT, 10922,20480, 27454, 32768, 36951, 40329, 43115, 45452, 47440, 49152).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY, 196608000, 393216000,  589824000,  786432000,  983040000, 1179648000, 1376256000, 1572864000, 1769472000, 1966080000).setParameterArray(NBT_PREHEAT_COST,  86,171, 256, 342, 427, 512, 598, 683, 768, 854).setParameterArray(NBT_COOLDOWN_RATE,  8192,16384,24576, 32768, 40960, 49152, 57344, 65536, 73728, 81920); // Titanium Niobium Carbide
+        aRegistry.addReplacer(17235).setParameters(NBT_LENGTH_MIN, 3, NBT_LENGTH_MAX, 12, NBT_LENGTH_MID, 6).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY, NBT_LIMIT_CONSUMPTION, NBT_ENERGY_ACCEPTED).setParameterArray(NBT_OUTPUT, 10922,20480, 27454, 32768, 36951, 40329, 43115, 45452, 47440, 49152).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY, 196608000, 393216000,  589824000,  786432000,  983040000, 1179648000, 1376256000, 1572864000, 1769472000, 1966080000).setParameterArray(NBT_PREHEAT_RATE, 10922,20480, 27454, 32768, 36951, 40329, 43115, 45452, 47440, 49152).setParameterArray(NBT_PREHEAT_COST,  86,171, 256, 342, 427, 512, 598, 683, 768, 854).setParameterArray(NBT_COOLDOWN_RATE,  8192,16384,24576, 32768, 40960, 49152, 57344, 65536, 73728, 81920).recipe("PwP", "BMC", "PEP", 'M', aRegistry.getItem(17215), 'B', "gt:re-battery4", 'C', IL.Processor_Crystal_Diamond, 'E', IL.MOTORS[4], 'P', OP.plateDense.dat(MT.Ta4HfC5));       // Titanium Niobium Carbide
+        // Dynamo 大型发电机效率调整为 95%
+        aRegistry.addReplacer(17225).setParameters(NBT_OUTPUT,  32768, NBT_EFFICIENCY_NUM, 9500).removeParameters(NBT_INPUT);
+        
         
         /// 添加项
         // 添加一些多方快部件

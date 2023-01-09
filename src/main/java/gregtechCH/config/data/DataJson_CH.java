@@ -1,4 +1,4 @@
-package gregtechCH.config;
+package gregtechCH.config.data;
 
 import com.alibaba.fastjson.JSON;
 import gregtechCH.data.CS_CH;

@@ -25,8 +25,8 @@ public class RecipeObjectDeserializer_CH implements ObjectDeserializer {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T deserialze(DefaultJSONParser parser, Type type, Object fieldName) {
-        List<String> recipeList = new ArrayList<>();
-        parser.parseArray(recipeList);
+        List<String> recipeList = parser.parseArray(String.class);
+        if (recipeList == null) return null;
         return (T) get(recipeList.toArray(new String[0]));
     }
 
@@ -34,6 +34,7 @@ public class RecipeObjectDeserializer_CH implements ObjectDeserializer {
     public int getFastMatchToken() {return 0;}
 
     public Object[] get(String[] aRecipeName) {
+        if (aRecipeName == null) return null;
         String[] tRecipePair;
         // 先判断字母索引有多长，顺便可以直接排除不合理的合成表
         int recipeSize = 0;

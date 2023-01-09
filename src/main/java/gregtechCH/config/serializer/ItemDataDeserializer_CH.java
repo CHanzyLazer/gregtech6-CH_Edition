@@ -1,5 +1,6 @@
 package gregtechCH.config.serializer;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.DefaultJSONParser;
 import com.alibaba.fastjson.parser.deserializer.ObjectDeserializer;
 import gregapi.oredict.OreDictItemData;
@@ -17,8 +18,8 @@ public class ItemDataDeserializer_CH implements ObjectDeserializer {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T deserialze(DefaultJSONParser parser, Type type, Object fieldName) {
-        List<String> materialList = new ArrayList<>();
-        parser.parseArray(materialList);
+        List<String> materialList = parser.parseArray(String.class);
+        if (materialList == null) return null;
         // ["Lead:5", "Wood:1.2"]
         return (T) get(materialList.toArray(new String[0]));
     }
@@ -27,6 +28,7 @@ public class ItemDataDeserializer_CH implements ObjectDeserializer {
     public int getFastMatchToken() {return 0;}
 
     public static OreDictItemData get(String[] aDataName) {
+        if (aDataName == null) return null;
         if (aDataName.length >= 1) {
             OreDictMaterialStack materialStackF = null;
             OreDictMaterialStack[] materialStacks = new OreDictMaterialStack[aDataName.length - 1];

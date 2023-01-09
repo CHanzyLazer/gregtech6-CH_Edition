@@ -19,6 +19,7 @@ public class ItemDeserializer_CH implements ObjectDeserializer {
     public int getFastMatchToken() {return 0;}
 
     public static ItemStack get(String aItemName) {
+        if (aItemName == null) return null;
         String[] itemNamePair = aItemName.split(":", 3);
         return ST.make(new ModData(itemNamePair[0], ""), itemNamePair[1], 1,
                 itemNamePair.length >= 3 ? Integer.parseInt(itemNamePair[2]) : 0);

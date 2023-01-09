@@ -349,7 +349,8 @@ public class MultiTileEntityRegistry {
 		private MultiTileEntityBlock mBlock = null;
 		private final NBTTagCompound mParametersMerge = UT.NBT.make(); // 需要合并的参数，如果有相同的项目会直接替换
 		private final List<String> mParametersRemove = new LinkedList<>(); // 需要删除的参数，由于 NBT 的机制没有不会进行警告
-		private final NBTTagCompound mParametersMergeLast = UT.NBT.make(); // User use only, 用来保证用户添加的参数能够添加回我删除的参数，而用户删除的能够删除我添加的
+		private NBTTagCompound mParametersMergeLast = UT.NBT.make(); // User use only, 用来保证用户添加的参数能够添加回我删除的参数，而用户删除的能够删除我添加的
+		private List<String> mParametersRemoveLast = new LinkedList<>(); // User use only, 用来保证用户添加的参数能够添加回我删除的参数，而用户删除的能够删除我添加的
 		private Object[] mRecipe = null;
 		private AddReplacer() {}
 		
@@ -361,6 +362,7 @@ public class MultiTileEntityRegistry {
 			for (Object tKey : mParametersMerge.func_150296_c()) rParameters.setTag(tKey.toString(), mParametersMerge.getTag(tKey.toString()));
 			for (String tKey : mParametersRemove) rParameters.removeTag(tKey);
 			for (Object tKey : mParametersMergeLast.func_150296_c()) rParameters.setTag(tKey.toString(), mParametersMergeLast.getTag(tKey.toString()));
+			for (String tKey : mParametersRemoveLast) rParameters.removeTag(tKey);
 			
 			return new AddObject(
 			mLocalised ==null?oAddObject.aLocalised: mLocalised, mCategoricalName ==null?oAddObject.aCategoricalName: mCategoricalName, new MultiTileEntityClassContainer(
@@ -372,10 +374,10 @@ public class MultiTileEntityRegistry {
 		public AddReplacer regType(RegType aRegType) 				{if (mRegType==null) mRegType = aRegType; return this;}
 		public AddReplacer localised(String aLocalised) 			{if (mLocalised==null) mLocalised = aLocalised; return this;}
 		public AddReplacer categoricalName(String aCategoricalName) {if (mCategoricalName==null) mCategoricalName = aCategoricalName; return this;}
-		public AddReplacer creativeTabID(int aCreativeTabID) 		{if (mCreativeTabID==null) mCreativeTabID = aCreativeTabID; return this;}
+		public AddReplacer creativeTabID(Integer aCreativeTabID) 	{if (mCreativeTabID==null) mCreativeTabID = aCreativeTabID; return this;}
 		public AddReplacer te(Class<? extends TileEntity> aClass) 	{if (mClass==null) mClass = aClass; return this;}
-		public AddReplacer toolQuality(int aBlockMetaData) 			{if (mBlockMetaData==null) mBlockMetaData = aBlockMetaData; return this;}
-		public AddReplacer stackSize(int aStackSize) 				{if (mStackSize==null) mStackSize = aStackSize; return this;}
+		public AddReplacer toolQuality(Integer aBlockMetaData) 		{if (mBlockMetaData==null) mBlockMetaData = aBlockMetaData; return this;}
+		public AddReplacer stackSize(Integer aStackSize) 			{if (mStackSize==null) mStackSize = aStackSize; return this;}
 		public AddReplacer block(MultiTileEntityBlock aBlock) 		{if (mBlock==null) mBlock = aBlock; return this;}
 		public AddReplacer recipe(Object... aRecipe) 				{if (mRecipe==null) mRecipe = aRecipe; return this;}
 		
@@ -393,12 +395,6 @@ public class MultiTileEntityRegistry {
 			}
 			return this;
 		}
-		// 如果有相同的项需要保留旧值
-		public AddReplacer setParametersLast(String aFirstKey, Object aFirstValue, Object... aTags) {
-			NBTTagCompound tParameters = UT.NBT.make(aFirstKey, aFirstValue, aTags);
-			for (Object tKey : tParameters.func_150296_c()) if (!mParametersMergeLast.hasKey(tKey.toString())) mParametersMergeLast.setTag(tKey.toString(), tParameters.getTag(tKey.toString()));
-			return this;
-		}
 		// 提供直接传入数组的接口
 		public AddReplacer setParameterLastArray(String aKey, long... aValues) {
 			for (int i = 0; i < aValues.length; ++i) {
@@ -409,6 +405,10 @@ public class MultiTileEntityRegistry {
 		}
 		// 直接添加
 		public AddReplacer removeParameters(String... aRemovedKeys) {mParametersRemove.addAll(Arrays.asList(aRemovedKeys)); return this;}
+		
+		// user use oly
+		public AddReplacer setParametersMergeLast(NBTTagCompound aParametersMergeLast) {if (aParametersMergeLast != null) mParametersMergeLast = aParametersMergeLast; return this;}
+		public AddReplacer removeParametersRemoveLast(List<String> aParametersRemoveLast) {if (aParametersRemoveLast != null) mParametersRemoveLast = aParametersRemoveLast; return this;}
 	}
 	
 	public short mLastRegisteredID = W;

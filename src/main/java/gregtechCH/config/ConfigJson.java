@@ -24,7 +24,7 @@ public class ConfigJson {
     }
     
     public static void readJsonFile() {
-        DATA_MULTITILEENTITY.initJsonFile("multiTiletEntity.json", DataMultiTileEntity.class);
+        DATA_MULTITILEENTITY.initJsonFile("multiTileEntity.json", DataMultiTileEntity.class);
         DATA_ITEM_MATERIAL.initJsonFile("materials.json", DataItemMaterial.class);
         for (DataItemMaterial.ItemMaterial IM : DATA_ITEM_MATERIAL.IM_Init) {
             OM.data(IM.item, IM.data);

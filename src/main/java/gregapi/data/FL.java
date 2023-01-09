@@ -46,7 +46,7 @@ import java.util.*;
 
 import static gregapi.data.CS.*;
 import static gregapi.data.CS.FluidsGT.*;
-import static gregtechCH.config.ConfigForge_CH.DATA_GTCH.disableAllStoragePowerconducting;
+import static gregtechCH.config.ConfigForge.DATA_GTCH.disableAllStoragePowerconducting;
 import static gregtechCH.data.CS_CH.NULL_FLUID;
 import static gregtechCH.data.CS_CH.RegType;
 

@@ -15,11 +15,11 @@ import static gregapi.data.CS.OUT;
 import static gregapi.data.CS.T;
 import static gregtechCH.GTCH_Main.getModNameForLog;
 
-public abstract class DataJson_CH {
+public abstract class DataJson {
     public abstract void initDefault();
-    protected abstract <Type extends DataJson_CH> void setMember(Type aData);
+    protected abstract <Type extends DataJson> void setMember(Type aData);
 
-    public <Type extends DataJson_CH> void initJsonFile(String aFileName, Class<Type> clazz) {
+    public <Type extends DataJson> void initJsonFile(String aFileName, Class<Type> clazz) {
         try {
             // read
             String jsonInput = ReadFromFile(CS_CH.DirectoriesGTCH.JSON_GTCH, aFileName);
@@ -36,7 +36,7 @@ public abstract class DataJson_CH {
         }
     }
 
-    public <Type extends DataJson_CH> void initJsonFileNoLog(String aFileName, Class<Type> clazz) {
+    public <Type extends DataJson> void initJsonFileNoLog(String aFileName, Class<Type> clazz) {
         try {
             // read
             String jsonInput = ReadFromFile(CS_CH.DirectoriesGTCH.JSON_GTCH, aFileName);

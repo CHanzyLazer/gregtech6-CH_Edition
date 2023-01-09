@@ -9,7 +9,7 @@ import net.minecraft.item.EnumAction;
 import net.minecraftforge.fluids.Fluid;
 
 import static gregapi.data.CS.*;
-import static gregtechCH.config.ConfigForge_CH.DATA_GTCH;
+import static gregtechCH.config.ConfigForge.DATA_GTCH;
 import static gregtechCH.data.CS_CH.RegType;
 
 public class Loader_Fluids_CH extends Loader_Fluids {

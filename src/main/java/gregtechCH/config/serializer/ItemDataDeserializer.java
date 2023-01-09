@@ -1,6 +1,5 @@
 package gregtechCH.config.serializer;
 
-import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.DefaultJSONParser;
 import com.alibaba.fastjson.parser.deserializer.ObjectDeserializer;
 import gregapi.oredict.OreDictItemData;
@@ -9,12 +8,11 @@ import gregapi.oredict.OreDictMaterialStack;
 import gregapi.util.OM;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
 import static gregapi.data.CS.U;
 
-public class ItemDataDeserializer_CH implements ObjectDeserializer {
+public class ItemDataDeserializer implements ObjectDeserializer {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T deserialze(DefaultJSONParser parser, Type type, Object fieldName) {

@@ -12,7 +12,7 @@ import static gregapi.data.TD.Processing.*;
 import static gregapi.data.TD.Properties.*;
 import static gregapi.render.TextureSet.*;
 import static gregtechCH.data.TD_CH.ItemGenerator.MOLTEN_6U;
-import static gregtechCH.config.ConfigForge_CH.*;
+import static gregtechCH.config.ConfigForge.*;
 
 /* 额外添加的材料统一放在这里
 * 使用原有的接口但是由于不希望改动访问权限因此只能放到同一 package 下

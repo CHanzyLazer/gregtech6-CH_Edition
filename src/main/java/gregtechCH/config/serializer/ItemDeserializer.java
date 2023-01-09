@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 
 import java.lang.reflect.Type;
 
-public class ItemDeserializer_CH implements ObjectDeserializer {
+public class ItemDeserializer implements ObjectDeserializer {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T deserialze(DefaultJSONParser parser, Type type, Object fieldName) {

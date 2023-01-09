@@ -22,7 +22,7 @@ import java.util.Map;
 
 import static gregapi.data.CS.*;
 import static gregtech.interfaces.asm.LO_CH.*;
-import static gregtechCH.config.ConfigForge_CH.DATA_GTCH;
+import static gregtechCH.config.ConfigForge.DATA_GTCH;
 import static gregtechCH.threads.ThreadPools.RENDER_THREAD;
 
 public class WD_CH {

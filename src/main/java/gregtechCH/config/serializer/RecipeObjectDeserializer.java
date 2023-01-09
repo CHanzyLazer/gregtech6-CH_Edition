@@ -8,20 +8,17 @@ import gregapi.data.OD;
 import gregapi.util.OM;
 import gregapi.util.ST;
 import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 import static gregapi.data.CS.OUT;
 
-public class RecipeObjectDeserializer_CH implements ObjectDeserializer {
+public class RecipeObjectDeserializer implements ObjectDeserializer {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T deserialze(DefaultJSONParser parser, Type type, Object fieldName) {

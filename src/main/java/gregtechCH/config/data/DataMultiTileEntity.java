@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class DataMultiTileEntity_CH extends DataJson_CH {
-    public static abstract class MTEObject extends DataHasRecipe_CH {
+public class DataMultiTileEntity extends DataJson {
+    public static abstract class MTEObject extends DataHasRecipe {
         @JSONField(ordinal = 3)
         public int ID;
         @JSONField(ordinal = 1)
@@ -78,7 +78,7 @@ public class DataMultiTileEntity_CH extends DataJson_CH {
     @JSONField(ordinal = 3)
     public List<AppendAfterObject> appendAfter = new ArrayList<>();
     
-    public DataMultiTileEntity_CH() {}
+    public DataMultiTileEntity() {}
     
     @Override
     public void initDefault() {
@@ -88,14 +88,14 @@ public class DataMultiTileEntity_CH extends DataJson_CH {
         appendAfter.clear();
     }
     
-    protected void setMember(DataMultiTileEntity_CH aData) {
+    protected void setMember(DataMultiTileEntity aData) {
         this.replace = aData.replace;
         this.remove = aData.remove;
         this.appendBefore = aData.appendBefore;
         this.appendAfter = aData.appendAfter;
     }
     @Override
-    protected <Type extends DataJson_CH> void setMember(Type aData) {
-        setMember((DataMultiTileEntity_CH)aData);
+    protected <Type extends DataJson> void setMember(Type aData) {
+        setMember((DataMultiTileEntity)aData);
     }
 }

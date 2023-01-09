@@ -91,7 +91,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.FluidStack;
 
 import static gregapi.data.CS.*;
-import static gregtechCH.config.ConfigForge_CH.*;
+import static gregtechCH.config.ConfigForge.*;
 
 public class Loader_MultiTileEntities implements Runnable {
 	@Override

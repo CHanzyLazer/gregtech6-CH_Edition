@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 
 
-public class MaterialSerializer_CH implements ObjectSerializer {
+public class MaterialSerializer implements ObjectSerializer {
     @Override
     public void write(JSONSerializer serializer, Object object, Object fieldName, Type fieldType, int features) throws IOException {
         SerializeWriter out = serializer.out;

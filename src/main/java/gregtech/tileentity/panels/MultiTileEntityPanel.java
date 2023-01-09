@@ -23,14 +23,10 @@ import static gregapi.data.CS.*;
 
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_DoesSneakBypassUse;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_CanPlace;
-import gregapi.cover.ITileEntityCoverable;
 import gregapi.tileentity.notick.TileEntityBase03MultiTileEntities;
-import gregapi.util.WD;
-import gregtechCH.config.ConfigForge_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 /**

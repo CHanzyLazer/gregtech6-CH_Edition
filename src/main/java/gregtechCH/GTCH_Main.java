@@ -1,7 +1,7 @@
 package gregtechCH;
 
 import gregapi.tileentity.ITileEntityErrorable;
-import gregtechCH.config.ConfigJson_CH;
+import gregtechCH.config.ConfigJson;
 import gregtechCH.data.CS_CH;
 import gregtechCH.threads.ThreadPools.ITaskNumberExecutor;
 import gregtechCH.tileentity.IMTEScheduledUpdate_CH;
@@ -28,7 +28,7 @@ public class GTCH_Main {
         OUT.println(getModNameForLog() + ": ======================");
         OUT.println(getModNameForLog() + ": PreInit-Phase started!");
         
-        ConfigJson_CH.initJsonFile();
+        ConfigJson.initJsonFile();
         
         OUT.println(getModNameForLog() + ": PreInit-Phase finished!");
         OUT.println(getModNameForLog() + ": ======================");
@@ -39,7 +39,7 @@ public class GTCH_Main {
         OUT.println(getModNameForLog() + ": Init-Phase started!");
     
         CS_CH.initCS_CH();
-        ConfigJson_CH.readJsonFile();
+        ConfigJson.readJsonFile();
         
         OUT.println(getModNameForLog() + ": Init-Phase finished!");
         OUT.println(getModNameForLog() + ": ======================");
@@ -49,7 +49,7 @@ public class GTCH_Main {
         OUT.println(getModNameForLog() + ": ======================");
         OUT.println(getModNameForLog() + ": PostInit-Phase started!");
         
-        ConfigJson_CH.readJsonFilePost();
+        ConfigJson.readJsonFilePost();
         PipeCompat.checkAvailabilities();
         
         OUT.println(getModNameForLog() + ": PostInit-Phase finished!");

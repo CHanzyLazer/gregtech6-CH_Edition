@@ -16,7 +16,7 @@ import java.util.LinkedList;
  *
  *  Manage the config data in forge style.
  */
-public class ConfigForge_CH {
+public class ConfigForge {
     public static class DATA_GTCH {
         public static boolean debugging;
         

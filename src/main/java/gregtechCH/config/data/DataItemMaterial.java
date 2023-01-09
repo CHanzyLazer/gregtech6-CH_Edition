@@ -1,24 +1,22 @@
 package gregtechCH.config.data;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import gregapi.data.MD;
-import gregapi.data.MT;
 import gregapi.oredict.OreDictItemData;
-import gregtechCH.config.serializer.ItemDataDeserializer_CH;
-import gregtechCH.config.serializer.ItemDeserializer_CH;
+import gregtechCH.config.serializer.ItemDataDeserializer;
+import gregtechCH.config.serializer.ItemDeserializer;
 import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataItemMaterial_CH extends DataJson_CH {
+public class DataItemMaterial extends DataJson {
     public static class ItemMaterial {
-        @JSONField(serialize = false, deserializeUsing = ItemDeserializer_CH.class)
+        @JSONField(serialize = false, deserializeUsing = ItemDeserializer.class)
         public ItemStack item;
         @JSONField(deserialize = false, name = "item")
         public String itemName;
         
-        @JSONField(serialize = false, deserializeUsing = ItemDataDeserializer_CH.class)
+        @JSONField(serialize = false, deserializeUsing = ItemDataDeserializer.class)
         public OreDictItemData data;
         @JSONField(deserialize = false, name = "data")
         public String[] dataName;
@@ -28,7 +26,7 @@ public class DataItemMaterial_CH extends DataJson_CH {
             item = aItem; itemName = aItemName; data = aData; dataName = aDataName;
         }
         public ItemMaterial(String aItemName, String[] aDataName) {
-            item = ItemDeserializer_CH.get(aItemName); itemName = aItemName; data = ItemDataDeserializer_CH.get(aDataName); dataName = aDataName;
+            item = ItemDeserializer.get(aItemName); itemName = aItemName; data = ItemDataDeserializer.get(aDataName); dataName = aDataName;
         }
     }
     // 在 Init 阶段给物品设置材料，后续添加都会无效化，用于自定义修改物品材料
@@ -36,7 +34,7 @@ public class DataItemMaterial_CH extends DataJson_CH {
     // 在 PostInit 阶段给物品设置材料，已有材料的物品会无效，用于安全的添加物品材料
     public List<ItemMaterial> IM_PostInit = new ArrayList<>();
     
-    public DataItemMaterial_CH() {}
+    public DataItemMaterial() {}
     
     @Override
     public void initDefault() {
@@ -44,12 +42,12 @@ public class DataItemMaterial_CH extends DataJson_CH {
         IM_Init.clear();
     }
     
-    protected void setMember(DataItemMaterial_CH aData) {
+    protected void setMember(DataItemMaterial aData) {
         this.IM_Init = aData.IM_Init;
         this.IM_PostInit = aData.IM_PostInit;
     }
     @Override
-    protected <Type extends DataJson_CH> void setMember(Type aData) {
-        setMember((DataItemMaterial_CH)aData);
+    protected <Type extends DataJson> void setMember(Type aData) {
+        setMember((DataItemMaterial)aData);
     }
 }

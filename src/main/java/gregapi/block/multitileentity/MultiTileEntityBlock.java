@@ -79,7 +79,7 @@ import vazkii.botania.api.mana.IManaTrigger;
 import java.util.*;
 
 import static gregapi.data.CS.*;
-import static gregtechCH.config.ConfigForge_CH.DATA_GTCH;
+import static gregtechCH.config.ConfigForge.DATA_GTCH;
 
 /**
  * @author Gregorius Techneticies

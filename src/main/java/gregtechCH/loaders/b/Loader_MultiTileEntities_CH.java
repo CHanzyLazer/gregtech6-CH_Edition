@@ -13,7 +13,7 @@ import gregtech.tileentity.energy.converters.MultiTileEntityDynamoElectric;
 import gregtech.tileentity.energy.generators.*;
 import gregtech.tileentity.multiblocks.*;
 import gregtech.tileentity.tools.*;
-import gregtechCH.config.data.DataMultiTileEntity_CH;
+import gregtechCH.config.data.DataMultiTileEntity;
 import gregtechCH.data.RM_CH;
 import gregtechCH.tileentity.batteries.eu.MultiTileEntityBatteryAdvEU8192;
 import gregtechCH.tileentity.batteries.eu.MultiTileEntityBatteryEU8192;
@@ -26,8 +26,8 @@ import net.minecraft.init.Items;
 import net.minecraft.tileentity.TileEntity;
 
 import static gregapi.data.CS.*;
-import static gregtechCH.config.ConfigForge_CH.DATA_GTCH;
-import static gregtechCH.config.ConfigJson_CH.DATA_MULTITILEENTITY;
+import static gregtechCH.config.ConfigForge.DATA_GTCH;
+import static gregtechCH.config.ConfigJson.DATA_MULTITILEENTITY;
 import static gregtechCH.data.CS_CH.*;
 
 
@@ -63,7 +63,7 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
     // 用户自定义修改部分
     @Override protected void userConfigLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
         /// 修改项
-        for (DataMultiTileEntity_CH.ReplaceObject tReplace : DATA_MULTITILEENTITY.replace) {
+        for (DataMultiTileEntity.ReplaceObject tReplace : DATA_MULTITILEENTITY.replace) {
             aRegistry.addReplacer(tReplace.ID).localised(tReplace.localised).categoricalName(tReplace.categoricalName).creativeTabID(tReplace.creativeTabID).te(tReplace.teClass).toolQuality(tReplace.blockMetaData).stackSize(tReplace.stackSize)
                     .block(getBlock(tReplace.block, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool))
                     .setParametersMergeLast(tReplace.parametersMerge).removeParametersRemoveLast(tReplace.parametersRemove).recipe(tReplace.recipe);
@@ -73,11 +73,11 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
             aRegistry.removeAdds(tID);
         }
         /// 添加项
-        for (DataMultiTileEntity_CH.AppendBeforeObject tAppend : DATA_MULTITILEENTITY.appendBefore) {
+        for (DataMultiTileEntity.AppendBeforeObject tAppend : DATA_MULTITILEENTITY.appendBefore) {
             MultiTileEntityBlock tBlock = getBlock(tAppend.block, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool);
             aRegistry.appendAddBefore(tAppend.beforeID, tAppend.localised, tAppend.categoricalName, tAppend.ID, tAppend.creativeTabID, tAppend.teClass, tAppend.blockMetaData, tAppend.stackSize, tBlock, tAppend.parameters, tAppend.recipe);
         }
-        for (DataMultiTileEntity_CH.AppendAfterObject tAppend : DATA_MULTITILEENTITY.appendAfter) {
+        for (DataMultiTileEntity.AppendAfterObject tAppend : DATA_MULTITILEENTITY.appendAfter) {
             MultiTileEntityBlock tBlock = getBlock(tAppend.block, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool);
             aRegistry.appendAddAfter(tAppend.afterID, tAppend.localised, tAppend.categoricalName, tAppend.ID, tAppend.creativeTabID, tAppend.teClass, tAppend.blockMetaData, tAppend.stackSize, tBlock, tAppend.parameters, tAppend.recipe);
         }

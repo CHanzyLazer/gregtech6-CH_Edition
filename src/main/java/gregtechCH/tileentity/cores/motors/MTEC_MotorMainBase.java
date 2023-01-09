@@ -4,8 +4,7 @@ import gregapi.code.TagData;
 import gregapi.data.TD;
 import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.util.UT;
-import gregtechCH.config.ConfigForge_CH;
-import gregtechCH.util.UT_CH;
+import gregtechCH.config.ConfigForge;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
@@ -144,7 +143,7 @@ public abstract class MTEC_MotorMainBase implements IMTEC_MotorTick {
         mEnergy = 0;
     }
     @Override public void onTickExplodeCheck(long aTimer) {
-        if (ConfigForge_CH.DATA_MACHINES.motorExplodeCheck && (aTimer % 600 == 5) && (mActive || mPreheat)) mCore.mTE.doDefaultStructuralChecks();
+        if (ConfigForge.DATA_MACHINES.motorExplodeCheck && (aTimer % 600 == 5) && (mActive || mPreheat)) mCore.mTE.doDefaultStructuralChecks();
     }
     
     protected abstract long getRealEfficiency();

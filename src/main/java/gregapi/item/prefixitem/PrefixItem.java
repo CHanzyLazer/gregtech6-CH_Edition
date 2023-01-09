@@ -35,7 +35,7 @@ import gregapi.util.OM;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
-import gregtechCH.config.ConfigForge_CH.DATA_GTCH;
+import gregtechCH.config.ConfigForge.DATA_GTCH;
 import gregtechCH.data.LH_CH;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;

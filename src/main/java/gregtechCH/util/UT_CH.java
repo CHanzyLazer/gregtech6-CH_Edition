@@ -33,7 +33,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static gregapi.data.CS.*;
-import static gregtechCH.config.ConfigForge_CH.DATA_GTCH;
+import static gregtechCH.config.ConfigForge.DATA_GTCH;
 import static gregtechCH.data.CS_CH.REG_GREG;
 
 public class UT_CH {

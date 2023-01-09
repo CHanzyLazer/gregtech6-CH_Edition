@@ -46,7 +46,7 @@ import gregapi.render.IRenderedBlockObjectSideCheck;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
-import gregtechCH.config.ConfigForge_CH;
+import gregtechCH.config.ConfigForge;
 import gregtechCH.tileentity.ITEAfterUpdateRender;
 import gregtechCH.tileentity.ITileEntityNameCompat;
 import gregtechCH.util.UT_CH;
@@ -272,7 +272,7 @@ public abstract class TileEntityBase04MultiTileEntities extends TileEntityBase03
 	@Override public void onTickResetChecks(long aTimer, boolean aIsServerSide) {super.onTickResetChecks(aTimer, aIsServerSide); if (aIsServerSide) willRerendImmediate = F;} // 对于 ticking 的需要在这里恢复标记
 	@Override
 	public final void doAfterUpdateRender_CH(IBlockAccess aWorld, int aX, int aY, int aZ) {
-		if (!ConfigForge_CH.DATA_GTCH.rerenderAll && (willRerendImmediate || willRerendImmediateAny())) WD_CH.updateRender(aWorld, aX, aY, aZ, T, F);
+		if (!ConfigForge.DATA_GTCH.rerenderAll && (willRerendImmediate || willRerendImmediateAny())) WD_CH.updateRender(aWorld, aX, aY, aZ, T, F);
 		willRerendImmediate = F;
 	}
 	public boolean willRerendImmediateAny() {return F;} // 也可重写此方法，在不用 sendAll 的情况下立刻重新渲染

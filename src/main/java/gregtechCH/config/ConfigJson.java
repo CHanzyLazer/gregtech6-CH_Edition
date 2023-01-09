@@ -4,8 +4,8 @@ import static gregapi.data.CS.*;
 import static gregtechCH.data.CS_CH.*;
 
 import gregapi.util.OM;
-import gregtechCH.config.data.DataItemMaterial_CH;
-import gregtechCH.config.data.DataMultiTileEntity_CH;
+import gregtechCH.config.data.DataItemMaterial;
+import gregtechCH.config.data.DataMultiTileEntity;
 
 import java.io.File;
 
@@ -14,9 +14,9 @@ import java.io.File;
  *
  * Manage the config data in json style.
  */
-public class ConfigJson_CH {
-    public static DataMultiTileEntity_CH DATA_MULTITILEENTITY = new DataMultiTileEntity_CH();
-    public static DataItemMaterial_CH DATA_ITEM_MATERIAL = new DataItemMaterial_CH();
+public class ConfigJson {
+    public static DataMultiTileEntity DATA_MULTITILEENTITY = new DataMultiTileEntity();
+    public static DataItemMaterial DATA_ITEM_MATERIAL = new DataItemMaterial();
     
     public static void initJsonFile() {
         DirectoriesGTCH.JSON_GTCH = new File(DirectoriesGT.CONFIG, "GregTechCH");
@@ -24,15 +24,15 @@ public class ConfigJson_CH {
     }
     
     public static void readJsonFile() {
-        DATA_MULTITILEENTITY.initJsonFile("multiTiletEntity.json", DataMultiTileEntity_CH.class);
-        DATA_ITEM_MATERIAL.initJsonFile("materials.json", DataItemMaterial_CH.class);
-        for (DataItemMaterial_CH.ItemMaterial IM : DATA_ITEM_MATERIAL.IM_Init) {
+        DATA_MULTITILEENTITY.initJsonFile("multiTiletEntity.json", DataMultiTileEntity.class);
+        DATA_ITEM_MATERIAL.initJsonFile("materials.json", DataItemMaterial.class);
+        for (DataItemMaterial.ItemMaterial IM : DATA_ITEM_MATERIAL.IM_Init) {
             OM.data(IM.item, IM.data);
         }
     }
     
     public static void readJsonFilePost() {
-        for (DataItemMaterial_CH.ItemMaterial IM : ConfigJson_CH.DATA_ITEM_MATERIAL.IM_PostInit) {
+        for (DataItemMaterial.ItemMaterial IM : ConfigJson.DATA_ITEM_MATERIAL.IM_PostInit) {
             OM.data(IM.item, IM.data);
         }
     }

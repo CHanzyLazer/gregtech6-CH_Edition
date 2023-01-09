@@ -71,7 +71,7 @@ import gregapi.tileentity.data.ITileEntitySurface;
 import gregapi.tileentity.render.ITileEntityOnDrawBlockHighlight;
 import gregapi.util.ST;
 import gregapi.util.UT;
-import gregtechCH.config.ConfigForge_CH.DATA_GTCH;
+import gregtechCH.config.ConfigForge.DATA_GTCH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;

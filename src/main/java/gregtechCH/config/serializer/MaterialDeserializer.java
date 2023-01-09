@@ -6,7 +6,7 @@ import gregapi.oredict.OreDictMaterial;
 
 import java.lang.reflect.Type;
 
-public class MaterialDeserializer_CH implements ObjectDeserializer {
+public class MaterialDeserializer implements ObjectDeserializer {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T deserialze(DefaultJSONParser parser, Type type, Object fieldName) {

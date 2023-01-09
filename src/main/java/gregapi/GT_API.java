@@ -78,14 +78,11 @@ import gregapi.render.ITexture;
 import gregapi.render.TextureSet;
 import gregapi.tileentity.energy.EnergyCompat;
 import gregapi.util.CR;
-import gregapi.util.OM;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.worldgen.GT6WorldGenerator;
-import gregtechCH.config.ConfigForge_CH;
-import gregtechCH.config.ConfigJson_CH;
+import gregtechCH.config.ConfigForge;
 import gregtechCH.data.LH_CH;
-import gregtechCH.data.OP_CH;
 import gregtechCH.data.TD_CH;
 import gregtechCH.lang.LanguageHandler_CH;
 import net.minecraft.block.Block;
@@ -243,7 +240,7 @@ public class GT_API extends Abstract_Mod {
 		DirectoriesGT.CONFIG_GT = new File(DirectoriesGT.CONFIG, "GregTech");
 		if (!DirectoriesGT.CONFIG_GT.exists()) DirectoriesGT.CONFIG_GT = new File(DirectoriesGT.CONFIG, "gregtech");
 
-		ConfigForge_CH.initFile(); // init GTCH config file in forge
+		ConfigForge.initFile(); // init GTCH config file in forge
 
 		DirectoriesGT.CONFIG_RECIPES = new File(DirectoriesGT.CONFIG, "Recipes");
 		if (!DirectoriesGT.CONFIG_RECIPES.exists()) DirectoriesGT.CONFIG_RECIPES = new File(DirectoriesGT.CONFIG, "recipes");
@@ -305,7 +302,7 @@ public class GT_API extends Abstract_Mod {
 		ConfigsGT.OVERPOWERED = ConfigsGT.MACHINES = ConfigsGT.SPECIAL = ConfigsGT.GREGTECH;
 
 		//CH config init config
-		ConfigForge_CH.initConfig();
+		ConfigForge.initConfig();
 
 		tFile = new File(DirectoriesGT.CONFIG_GT, "Stacksizes.cfg");
 		if (!tFile.exists()) tFile = new File(DirectoriesGT.CONFIG_GT, "stacksizes.cfg");

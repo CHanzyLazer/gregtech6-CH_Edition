@@ -8,7 +8,7 @@ import gregtechCH.recipes.maps.RecipeMapFuelCleaner;
 
 import static gregapi.data.CS.*;
 import static gregtechCH.data.CS_CH.RegType;
-import static gregtechCH.config.ConfigForge_CH.*;
+import static gregtechCH.config.ConfigForge.*;
 
 /**
  * 额外添加的 Recipe Maps 统一放在这里

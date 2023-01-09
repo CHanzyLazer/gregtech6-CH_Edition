@@ -20,7 +20,7 @@
 package gregtech.tileentity.energy.reactors;
 
 import static gregapi.data.CS.*;
-import static gregtechCH.config.ConfigForge_CH.*;
+import static gregtechCH.config.ConfigForge.*;
 
 import java.util.List;
 

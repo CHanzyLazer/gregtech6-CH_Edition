@@ -6,8 +6,7 @@ import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.tileentity.multiblocks.ITileEntityMultiBlockController;
 import gregapi.tileentity.multiblocks.MultiTileEntityMultiBlockPart;
 import gregapi.util.UT;
-import gregtechCH.config.ConfigForge_CH;
-import gregtechCH.util.UT_CH;
+import gregtechCH.config.ConfigForge;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
@@ -241,7 +240,7 @@ public class MTEC_MultiBlockMotorBase {
         mCore.postInitTank(); // 需要重置容器的容量
     }
     protected boolean checkExplodeByLength() {
-        return (ConfigForge_CH.DATA_MACHINES.motorExplodeByLength && (UT.Code.units(mCore.mD.mEnergy, mCore.mD.mPEnergy, 16, F) > 4));
+        return (ConfigForge.DATA_MACHINES.motorExplodeByLength && (UT.Code.units(mCore.mD.mEnergy, mCore.mD.mPEnergy, 16, F) > 4));
     }
     protected void doExplodeByLength() {mCore.mTE.explode(F);}
     protected void stopByLength() {mCore.mD.stop();}

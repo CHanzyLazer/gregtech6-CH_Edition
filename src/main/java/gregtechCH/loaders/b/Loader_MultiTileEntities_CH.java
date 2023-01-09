@@ -64,9 +64,9 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
     @Override protected void userConfigLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
         /// 修改项
         for (DataMultiTileEntity.ReplaceObject tReplace : DATA_MULTITILEENTITY.replace) {
-            aRegistry.addReplacer(tReplace.ID).localised(tReplace.localised).categoricalName(tReplace.categoricalName).creativeTabID(tReplace.creativeTabID).te(tReplace.teClass).toolQuality(tReplace.blockMetaData).stackSize(tReplace.stackSize)
+            aRegistry.addReplacer(tReplace.ID).localised(tReplace.localised).categoricalName(tReplace.categoricalName).creativeTabID(tReplace.creativeTabID).te(tReplace.clazz()).toolQuality(tReplace.blockMetaData).stackSize(tReplace.stackSize)
                     .block(getBlock(tReplace.block, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool))
-                    .setParametersMergeLast(tReplace.parametersMerge).removeParametersRemoveLast(tReplace.parametersRemove).recipe(tReplace.recipe);
+                    .setParametersMergeLast(tReplace.parametersMerge).removeParametersRemoveLast(tReplace.parametersRemove).recipe(tReplace.recipe());
         }
         /// 删除项
         for (int tID : DATA_MULTITILEENTITY.remove) {
@@ -75,11 +75,11 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         /// 添加项
         for (DataMultiTileEntity.AppendBeforeObject tAppend : DATA_MULTITILEENTITY.appendBefore) {
             MultiTileEntityBlock tBlock = getBlock(tAppend.block, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool);
-            aRegistry.appendAddBefore(tAppend.beforeID, tAppend.localised, tAppend.categoricalName, tAppend.ID, tAppend.creativeTabID, tAppend.teClass, tAppend.blockMetaData, tAppend.stackSize, tBlock, tAppend.parameters, tAppend.recipe);
+            aRegistry.appendAddBefore(tAppend.beforeID, tAppend.localised, tAppend.categoricalName, tAppend.ID, tAppend.creativeTabID, tAppend.clazz(), tAppend.blockMetaData, tAppend.stackSize, tBlock, tAppend.parameters, tAppend.recipe());
         }
         for (DataMultiTileEntity.AppendAfterObject tAppend : DATA_MULTITILEENTITY.appendAfter) {
             MultiTileEntityBlock tBlock = getBlock(tAppend.block, aMetal, aMetalChips, aMetalWires, aMachine, aWooden, aBush, aStone, aWool, aTNT, aHive, aUtilMetal, aUtilStone, aUtilWood, aUtilWool);
-            aRegistry.appendAddAfter(tAppend.afterID, tAppend.localised, tAppend.categoricalName, tAppend.ID, tAppend.creativeTabID, tAppend.teClass, tAppend.blockMetaData, tAppend.stackSize, tBlock, tAppend.parameters, tAppend.recipe);
+            aRegistry.appendAddAfter(tAppend.afterID, tAppend.localised, tAppend.categoricalName, tAppend.ID, tAppend.creativeTabID, tAppend.clazz(), tAppend.blockMetaData, tAppend.stackSize, tBlock, tAppend.parameters, tAppend.recipe());
         }
     }
     

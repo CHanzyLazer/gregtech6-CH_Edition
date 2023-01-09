@@ -62,11 +62,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.*;
-import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.*;
 import net.minecraft.nbt.NBTBase.NBTPrimitive;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.stats.AchievementList;
@@ -90,6 +87,7 @@ import java.util.Map.Entry;
 
 import static gregapi.data.CS.*;
 import static gregtechCH.threads.ThreadPools.SOUND_THREAD;
+import static gregtechCH.util.UT_CH.NBT.tag;
 
 /**
  * @author Gregorius Techneticies
@@ -1777,36 +1775,12 @@ public class UT {
 		public static NBTTagCompound make(String aFirstKey, Object aFirstValue, Object... aTags) {
 			NBTTagCompound rNBT = make();
 			
-			if (aFirstValue == null) {/* Nothing */}
-			else if (aFirstValue instanceof Boolean)           rNBT.setBoolean(aFirstKey, (Boolean)                aFirstValue);
-			else if (aFirstValue instanceof Byte)              rNBT.setByte(   aFirstKey, (Byte)                   aFirstValue);
-			else if (aFirstValue instanceof Short)             rNBT.setShort(  aFirstKey, (Short)                  aFirstValue);
-			else if (aFirstValue instanceof Integer)           rNBT.setInteger(aFirstKey, (Integer)                aFirstValue);
-			else if (aFirstValue instanceof Long)              rNBT.setLong(   aFirstKey, (Long)                   aFirstValue);
-			else if (aFirstValue instanceof Float)             rNBT.setFloat(  aFirstKey, (Float)                  aFirstValue);
-			else if (aFirstValue instanceof Double)            rNBT.setDouble( aFirstKey, (Double)                 aFirstValue);
-			else if (aFirstValue instanceof String)            rNBT.setString( aFirstKey, (String)                 aFirstValue);
-			else if (aFirstValue instanceof NBTBase)           rNBT.setTag(    aFirstKey, (NBTBase)                aFirstValue);
-			else if (aFirstValue instanceof FluidStack)        rNBT.setTag(    aFirstKey, FL.save((FluidStack)     aFirstValue));
-			else if (aFirstValue instanceof OreDictMaterial)   rNBT.setString( aFirstKey, ((OreDictMaterial)       aFirstValue).mNameInternal);
-			else if (aFirstValue instanceof RecipeMap)         rNBT.setString( aFirstKey, ((RecipeMap)             aFirstValue).mNameInternal);
-			else                                               rNBT.setString( aFirstKey, aFirstValue.toString());
+			NBTBase tTag = tag(aFirstValue);
+			if (tTag != null) rNBT.setTag(aFirstKey, tTag);
 			
 			for (int i = 1; i < aTags.length; i+=2) {
-				if (aTags[i] == null) {/* Nothing */}
-				else if (aTags[i] instanceof Boolean)          rNBT.setBoolean(aTags[i-1].toString(), (Boolean)                aTags[i]);
-				else if (aTags[i] instanceof Byte)             rNBT.setByte(   aTags[i-1].toString(), (Byte)                   aTags[i]);
-				else if (aTags[i] instanceof Short)            rNBT.setShort(  aTags[i-1].toString(), (Short)                  aTags[i]);
-				else if (aTags[i] instanceof Integer)          rNBT.setInteger(aTags[i-1].toString(), (Integer)                aTags[i]);
-				else if (aTags[i] instanceof Long)             rNBT.setLong(   aTags[i-1].toString(), (Long)                   aTags[i]);
-				else if (aTags[i] instanceof Float)            rNBT.setFloat(  aTags[i-1].toString(), (Float)                  aTags[i]);
-				else if (aTags[i] instanceof Double)           rNBT.setDouble( aTags[i-1].toString(), (Double)                 aTags[i]);
-				else if (aTags[i] instanceof String)           rNBT.setString( aTags[i-1].toString(), (String)                 aTags[i]);
-				else if (aTags[i] instanceof NBTBase)          rNBT.setTag(    aTags[i-1].toString(), (NBTBase)                aTags[i]);
-				else if (aTags[i] instanceof FluidStack)       rNBT.setTag(    aTags[i-1].toString(), FL.save((FluidStack)     aTags[i]));
-				else if (aTags[i] instanceof OreDictMaterial)  rNBT.setString( aTags[i-1].toString(), ((OreDictMaterial)       aTags[i]).mNameInternal);
-				else if (aTags[i] instanceof RecipeMap)        rNBT.setString( aTags[i-1].toString(), ((RecipeMap)             aTags[i]).mNameInternal);
-				else                                           rNBT.setString( aTags[i-1].toString(), aTags[i].toString());
+				tTag = tag(aTags[i]);
+				if (tTag != null) rNBT.setTag(aTags[i-1].toString(), tTag);
 			}
 			return rNBT;
 		}
@@ -1815,20 +1789,8 @@ public class UT {
 		public static NBTTagCompound make(NBTTagCompound aNBT, Object... aTags) {
 			if (aNBT == null) aNBT = make();
 			for (int i = 1; i < aTags.length; i+=2) {
-				if (aTags[i] == null) {/* Nothing */}
-				else if (aTags[i] instanceof Boolean)          aNBT.setBoolean(    aTags[i-1].toString(), (Boolean)                aTags[i]);
-				else if (aTags[i] instanceof Byte)             aNBT.setByte(       aTags[i-1].toString(), (Byte)                   aTags[i]);
-				else if (aTags[i] instanceof Short)            aNBT.setShort(      aTags[i-1].toString(), (Short)                  aTags[i]);
-				else if (aTags[i] instanceof Integer)          aNBT.setInteger(    aTags[i-1].toString(), (Integer)                aTags[i]);
-				else if (aTags[i] instanceof Long)             aNBT.setLong(       aTags[i-1].toString(), (Long)                   aTags[i]);
-				else if (aTags[i] instanceof Float)            aNBT.setFloat(      aTags[i-1].toString(), (Float)                  aTags[i]);
-				else if (aTags[i] instanceof Double)           aNBT.setDouble(     aTags[i-1].toString(), (Double)                 aTags[i]);
-				else if (aTags[i] instanceof String)           aNBT.setString(     aTags[i-1].toString(), (String)                 aTags[i]);
-				else if (aTags[i] instanceof NBTBase)          aNBT.setTag(        aTags[i-1].toString(), (NBTBase)                aTags[i]);
-				else if (aTags[i] instanceof FluidStack)       aNBT.setTag(        aTags[i-1].toString(), FL.save((FluidStack)     aTags[i]));
-				else if (aTags[i] instanceof OreDictMaterial)  aNBT.setString(     aTags[i-1].toString(), ((OreDictMaterial)       aTags[i]).mNameInternal);
-				else if (aTags[i] instanceof RecipeMap)        aNBT.setString(     aTags[i-1].toString(), ((RecipeMap)             aTags[i]).mNameInternal);
-				else                                           aNBT.setString(     aTags[i-1].toString(), aTags[i].toString());
+				NBTBase tTag = tag(aTags[i]);
+				if (tTag != null) aNBT.setTag(aTags[i-1].toString(), tTag);
 			}
 			return aNBT;
 		}

@@ -1,6 +1,7 @@
 package gregtechCH.data;
 
 import com.google.common.collect.Sets;
+import com.google.gson.Gson;
 import gregapi.block.multitileentity.MultiTileEntityRegistry;
 import gregapi.config.Config;
 import gregapi.data.MT;
@@ -17,6 +18,9 @@ import static gregapi.data.OP.*;
 
 
 public class CS_CH {
+    // Gson stuff
+    public static final Gson GSON = new Gson();
+    
     // 各种注册表的引用，为了避免不必要的问题会在其第一次初始化后有效
     public static MultiTileEntityRegistry REG_GREG;
 //    public static Short REG_GREG_ID; // TODO 可能在跨版本的存档中会失效！！！

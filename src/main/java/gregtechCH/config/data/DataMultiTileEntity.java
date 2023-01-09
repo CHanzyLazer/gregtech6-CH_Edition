@@ -1,12 +1,12 @@
 package gregtechCH.config.data;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.SerializedName;
 import gregapi.tileentity.machines.MultiTileEntityBasicMachine;
 import gregapi.util.UT;
-import gregtechCH.config.serializer.ClassDeserializer;
-import gregtechCH.config.serializer.ClassSerializer;
-import gregtechCH.config.serializer.ParametersDeserializer;
-import gregtechCH.config.serializer.ParametersSerializer;
+import gregtechCH.config.adapter.ClazzAdapter;
+import gregtechCH.config.adapter.ParametersAdapter;
+import gregtechCH.config.adapter.RecipeAdapter;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
@@ -15,67 +15,70 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class DataMultiTileEntity extends DataJson {
-    public static abstract class MTEObject extends DataHasRecipe {
-        @JSONField(ordinal = 3)
+    
+    public static class Recipe {
+        public Object[] value = null;
+        public String[] name = null;
+    }
+    public static class Clazz {
+        public Class<?> value = null;
+    }
+    
+    public abstract static class MTEObject {
         public int ID;
-        @JSONField(ordinal = 1)
         public String localised = null;
-        @JSONField(ordinal = 2)
         public String categoricalName = null;
-        @JSONField(ordinal = 4)
         public Integer creativeTabID = null;
-        @JSONField(ordinal = 5, name = "class", deserializeUsing = ClassDeserializer.class, serializeUsing = ClassSerializer.class)
-        public Class<? extends TileEntity> teClass = null;
-        @JSONField(ordinal = 6)
+        @SerializedName("class")
+        public Clazz clazz = null;
         public Integer blockMetaData = null;
-        @JSONField(ordinal = 7)
         public Integer stackSize = null;
-        @JSONField(ordinal = 8)
         public String block = null;
+        public Recipe recipe = null;
+        
+        public Object[] recipe() {return recipe == null ? null : recipe.value;}
+        @SuppressWarnings("unchecked")
+        public Class<? extends TileEntity> clazz() {return clazz == null ? null : (Class<? extends TileEntity>)clazz.value;}
     }
     
     public static class ReplaceObject extends MTEObject {
-        @JSONField(ordinal = 9, deserializeUsing = ParametersDeserializer.class, serializeUsing = ParametersSerializer.class)
         public NBTTagCompound parametersMerge = UT.NBT.make();
-        @JSONField(ordinal = 10)
         public List<String> parametersRemove = new LinkedList<>();
-        
-        public ReplaceObject() {}
     }
     public static class AppendObject extends MTEObject {
-        @JSONField(ordinal = 9, deserializeUsing = ParametersDeserializer.class, serializeUsing = ParametersSerializer.class)
         public NBTTagCompound parameters = null;
         
         public AppendObject() {
             // 提供必要的默认值避免空指针错误
             creativeTabID = 20001;
-            teClass = MultiTileEntityBasicMachine.class;
+            clazz = new Clazz();
+            clazz.value = MultiTileEntityBasicMachine.class;
             blockMetaData = 0;
             stackSize = 64;
             block = "machine";
         }
     }
     public static class AppendBeforeObject extends AppendObject {
-        @JSONField(ordinal = 0)
         public int beforeID;
-    
-        public AppendBeforeObject() {}
     }
     public static class AppendAfterObject extends AppendObject {
-        @JSONField(ordinal = 0)
         public int afterID;
+    }
     
-        public AppendAfterObject() {}
+    // 指定需要的序列化和反序列化器
+    @Override
+    public GsonBuilder getGsonBuilder() {
+        return super.getGsonBuilder()
+                .registerTypeAdapter(Clazz.class, new ClazzAdapter())
+                .registerTypeAdapter(NBTTagCompound.class, new ParametersAdapter())
+                .registerTypeAdapter(Recipe.class, new RecipeAdapter())
+                ;
     }
     
     // DATA
-    @JSONField(ordinal = 0)
     public List<ReplaceObject> replace = new ArrayList<>();
-    @JSONField(ordinal = 1)
     public List<Integer> remove = new ArrayList<>();
-    @JSONField(ordinal = 2)
     public List<AppendBeforeObject> appendBefore = new ArrayList<>();
-    @JSONField(ordinal = 3)
     public List<AppendAfterObject> appendAfter = new ArrayList<>();
     
     public DataMultiTileEntity() {}

@@ -1,11 +1,17 @@
 package gregtechCH.util;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.block.multitileentity.MultiTileEntityClassContainer;
+import gregapi.data.FL;
 import gregapi.oredict.OreDictMaterial;
 import gregapi.oredict.OreDictPrefix;
+import gregapi.recipes.Recipe;
 import gregapi.render.BlockTextureDefault;
 import gregapi.render.IIconContainer;
 import gregapi.util.UT;
@@ -16,7 +22,7 @@ import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.*;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MathHelper;
@@ -25,12 +31,15 @@ import net.minecraft.world.ChunkCache;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import static gregapi.data.CS.*;
 import static gregtechCH.config.ConfigForge.DATA_GTCH;
@@ -464,6 +473,96 @@ public class UT_CH {
                 tValues = new long[tBytes.length-1];
                 for (int i = 0; i < tValues.length; ++i) tValues[i] = tBytes[i];
                 return tValues;
+            }
+        }
+        
+        /* 判断 Object 的类型生成 NBT tag，减少原本的重复代码 */
+        public static NBTBase tag(Object aValue) {
+            if (aValue == null) return null; // 注意需要交给 make 来排除整个 key 和 tag
+            if (aValue instanceof Boolean)          return new NBTTagByte((byte) ((Boolean)aValue ? 1 : 0));
+            if (aValue instanceof Byte)             return new NBTTagByte(((Byte)aValue));
+            if (aValue instanceof Short)            return new NBTTagShort(((Short)aValue));
+            if (aValue instanceof Integer)          return new NBTTagInt(((Integer)aValue));
+            if (aValue instanceof Long)             return new NBTTagLong(((Long)aValue));
+            if (aValue instanceof Float)            return new NBTTagFloat(((Float)aValue));
+            if (aValue instanceof Double)           return new NBTTagDouble(((Double)aValue));
+            if (aValue instanceof String)           return new NBTTagString(((String)aValue));
+            if (aValue instanceof NBTBase)          return (NBTBase)aValue;
+            if (aValue instanceof FluidStack)       return FL.save((FluidStack)aValue);
+            if (aValue instanceof OreDictMaterial)  return new NBTTagString(((OreDictMaterial)aValue).mNameInternal);
+            if (aValue instanceof Recipe.RecipeMap)        return new NBTTagString(((Recipe.RecipeMap)aValue).mNameInternal);
+            return new NBTTagString(aValue.toString());
+        }
+        
+        /* NBT 和 json 相互转换 */
+        @Nullable
+        public static NBTBase json2NBT(@NotNull JsonElement aJson) {
+            if (aJson.isJsonPrimitive()) {
+                JsonPrimitive tJson = aJson.getAsJsonPrimitive();
+                return tag(tJson.isString() ? tJson.getAsString() : (tJson.isBoolean() ? tJson.getAsBoolean() : tJson.getAsNumber()));
+            }
+            if (aJson.isJsonObject()) {
+                JsonObject tJson = aJson.getAsJsonObject();
+                NBTTagCompound nbt = new NBTTagCompound();
+                for (Map.Entry<String, JsonElement> entry : tJson.entrySet()) {
+                    NBTBase tTag = json2NBT(entry.getValue());
+                    if (tTag != null) nbt.setTag(entry.getKey(), tTag);
+                }
+                return nbt;
+            }
+            // 不考虑 byte list 和 int list 等结构
+            if (aJson.isJsonArray()) {
+                JsonArray tJson = aJson.getAsJsonArray();
+                NBTTagList nbt = new NBTTagList();
+                for (JsonElement value : tJson) {
+                    NBTBase tTag = json2NBT(value);
+                    if (tTag != null) nbt.appendTag(tTag);
+                }
+                return nbt;
+            }
+            return null;
+        }
+        @Nullable
+        public static JsonElement NBT2Json(@NotNull NBTBase aNBT) {
+            switch (NBTBase.NBTTypes[aNBT.getId()]) {
+                case "END":   {return null;}
+                case "BYTE":  {return new JsonPrimitive(((NBTBase.NBTPrimitive)aNBT).func_150290_f());} // 不支持 0 或 1 的 byte 转为 bool
+                case "SHORT": {return new JsonPrimitive(((NBTBase.NBTPrimitive)aNBT).func_150289_e());}
+                case "INT":   {return new JsonPrimitive(((NBTBase.NBTPrimitive)aNBT).func_150287_d());}
+                case "LONG":  {return new JsonPrimitive(((NBTBase.NBTPrimitive)aNBT).func_150291_c());}
+                case "FLOAT": {return new JsonPrimitive(((NBTBase.NBTPrimitive)aNBT).func_150288_h());}
+                case "DOUBLE": {return new JsonPrimitive(((NBTBase.NBTPrimitive)aNBT).func_150286_g());}
+                case "BYTE[]": {
+                    JsonArray tJson = new JsonArray();
+                    byte[] tValue = ((NBTTagByteArray)aNBT).func_150292_c();
+                    for (byte tNumber : tValue) tJson.add(new JsonPrimitive(tNumber));
+                    return tJson;
+                }
+                case "STRING": {return new JsonPrimitive(((NBTTagString)aNBT).func_150285_a_());}
+                case "LIST": {
+                    JsonArray tJson = new JsonArray();
+                    for(int i = 0; i < ((NBTTagList)aNBT).tagCount(); ++i) {
+                        JsonElement tElement = NBT2Json(((NBTTagList)aNBT).getCompoundTagAt(i));
+                        if (tElement != null) tJson.add(tElement);
+                    }
+                    return tJson;
+                }
+                case "COMPOUND": {
+                    JsonObject tJson = new JsonObject();
+                    for(Object obj : ((NBTTagCompound)aNBT).func_150296_c()) {
+                        String key = (String)obj;
+                        JsonElement tElement = NBT2Json(((NBTTagCompound)aNBT).getCompoundTag(key));
+                        if (tElement != null) tJson.add(key, tElement);
+                    }
+                    return tJson;
+                }
+                case "INT[]": {
+                    JsonArray tJson = new JsonArray();
+                    int[] tValue = ((NBTTagIntArray)aNBT).func_150302_c();
+                    for (int tNumber : tValue) tJson.add(new JsonPrimitive(tNumber));
+                    return tJson;
+                }
+                default: return null;
             }
         }
     }

@@ -135,7 +135,7 @@ public class MultiTileEntityMiniPortalTwilight extends MultiTileEntityMiniPortal
 	@Override public ITexture getPortalTexture() {return sTwilightPortal;}
 	@Override public ITexture getFrameTexture() {return sTwilightPortalFrame;}
 	@Override public ITexture getInactiveTexture() {return sTwilightPortalInactive;}
-
+	
 	@SideOnly(Side.CLIENT) @Override public int colorMultiplier() {return COLOR_GRASS;}
 	
 	@Override public String getTileEntityName() {return "gt.multitileentity.portal.twilight";}

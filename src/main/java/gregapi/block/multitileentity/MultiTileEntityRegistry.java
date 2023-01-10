@@ -433,7 +433,7 @@ public class MultiTileEntityRegistry {
 		UT.NBT.set(rStack, aNBT);
 		return rStack;
 	}
-
+	
 	// get 由于是共用的一个语言 map 所以可以不用改
 	public String getLocal(int aID) {return LH.get(mNameInternal+"."+aID+".name");}
 	

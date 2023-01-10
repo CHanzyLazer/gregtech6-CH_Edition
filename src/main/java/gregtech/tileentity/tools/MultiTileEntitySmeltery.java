@@ -551,7 +551,7 @@ public class MultiTileEntitySmeltery extends TileEntityBase07Paintable implement
 		oDisplayedFluid = mDisplayedFluid;
 		oDisplayedHeight = mDisplayedHeight;
 	}
-
+	
 	// GTCH, 重写这个方法保证和原本的逻辑一致
 	@Override
 	public IPacket getClientDataPacketNoSendAll(boolean aSendAll) {

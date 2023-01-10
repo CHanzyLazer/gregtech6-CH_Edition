@@ -52,7 +52,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fluids.IFluidTank;
 
 public class MultiTileEntityEngineSteam extends TileEntityBase09FacingSingle implements ITileEntityAdjacentOnOff, ITileEntityEnergyFluxHandler, ITileEntityRunningActively, IFluidHandler_CH {
@@ -81,10 +80,10 @@ public class MultiTileEntityEngineSteam extends TileEntityBase09FacingSingle imp
 		if (aNBT.hasKey(NBT_OUTPUT)) mOutput = aNBT.getLong(NBT_OUTPUT);
 		if (aNBT.hasKey(NBT_EFFICIENCY)) mEfficiency = (short)UT.Code.bind_(0, 10000, aNBT.getShort(NBT_EFFICIENCY));
 		if (aNBT.hasKey(NBT_ENERGY_EMITTED)) mEnergyTypeEmitted = TagData.createTagData(aNBT.getString(NBT_ENERGY_EMITTED));
-
+		
 		if (aNBT.hasKey(NBT_EFFICIENCY_WATER)) mEfficiencyWater = (short)UT.Code.bind_(0, 10000, aNBT.getShort(NBT_EFFICIENCY_WATER));
 		STEAM_PER_WATER_SELF = mEfficiencyWater < 100 ? -1 : (int)UT.Code.units(STEAM_PER_WATER, mEfficiencyWater, 10000, T);
-
+		
 		mTank.readFromNBT(aNBT, NBT_TANK+"."+0).setCapacity(400 * mOutput);
 	}
 	
@@ -146,7 +145,7 @@ public class MultiTileEntityEngineSteam extends TileEntityBase09FacingSingle imp
 						mEnergy += UT.Code.units(tConversions / STEAM_PER_EU, 10000, mEfficiency, F);
 					}
 				}
-
+				
 			}
 			
 			// Set State
@@ -312,7 +311,7 @@ public class MultiTileEntityEngineSteam extends TileEntityBase09FacingSingle imp
 	};
 	
 	@Override public String getTileEntityName() {return "gt.multitileentity.engine.kinetic_steam";}
-
+	
 	@Override
 	public boolean canFillExtra(FluidStack aFluid) {
 		return T;

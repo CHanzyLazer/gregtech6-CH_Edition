@@ -130,7 +130,7 @@ public class MultiTileEntityCFoam extends TileEntityBase07Paintable implements I
 		updateClientData();
 		return T;
 	}
-
+	
 	
 	@Override
 	public boolean removeFoam(byte aSide, Entity aPlayer) {

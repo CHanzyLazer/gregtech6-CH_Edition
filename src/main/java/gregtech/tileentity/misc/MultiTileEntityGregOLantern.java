@@ -55,7 +55,7 @@ public class MultiTileEntityGregOLantern extends TileEntityBase09FacingSingle im
 	@Override public boolean canDrop(int aSlot) {return F;}
 	@Override public boolean[] getValidSides() {return SIDES_HORIZONTAL;}
 	@Override public byte getDefaultSide() {return SIDE_FRONT;}
-
+	
 	@SideOnly(Side.CLIENT) @Override public int colorMultiplier() {
 		return UT_CH.Code.getOverlayedRGB(COLOR_GREG_O_LANTERN, getPaint());
 	}

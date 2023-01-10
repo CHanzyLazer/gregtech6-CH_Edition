@@ -46,12 +46,12 @@ public abstract class TileEntityBase11ConnectorStraight extends TileEntityBase10
 			}
 		}
 	}
-
+	
 	@Override
 	protected int getRenderPasses3(Block aBlock, boolean[] aShouldSideBeRendered) {
 		return (isFoam() || isFoamDried()) ? 2 : 1;
 	}
-
+	
 	@Override
 	public ITexture getTexture2(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
 		if (aRenderPass == 1) return (aShouldSideBeRendered[aSide] && (isFoam() || isFoamDried())) ? (isFoamDried() ? getTextureCFoamDry(aSide, mConnections, mDiameter, aRenderPass) : getTextureCFoam(aSide, mConnections, mDiameter, aRenderPass)) : null;
@@ -64,12 +64,12 @@ public abstract class TileEntityBase11ConnectorStraight extends TileEntityBase10
 		}
 		return null;
 	}
-
+	
 	@Override
 	public boolean setBlockBounds2(Block aBlock, int aRenderPass, boolean[] aShouldSideBeRendered) {
 		return aRenderPass == 0 && mDiameter < 1.0F && setBlockBoundsStraight(aBlock);
 	}
-
+	
 	// 重写这个方法使得在有建筑泡沫时时只在建筑泡沫上渲染覆盖板，因为 renderpass 改变了
 	@Override
 	public boolean isCoverSurface(byte aSide, int aRenderpass) {
@@ -84,7 +84,7 @@ public abstract class TileEntityBase11ConnectorStraight extends TileEntityBase10
 		}
 		return tCSurface;
 	}
-
+	
 	@Override public boolean usesRenderPass2(int aRenderPass, boolean[] aShouldSideBeRendered) {return T;}
 	@Override public void addCollisionBoxesToList2(AxisAlignedBB aAABB, List<AxisAlignedBB> aList, Entity aEntity) {if (!addDefaultCollisionBoxToList()) box(aAABB, aList, FACE_CONNECTED[SIDE_X_NEG][mConnections] ? 0 : (1.0F-mDiameter)/2.0F, FACE_CONNECTED[SIDE_Y_NEG][mConnections] ? 0 : (1.0F-mDiameter)/2.0F, FACE_CONNECTED[SIDE_Z_NEG][mConnections] ? 0 : (1.0F-mDiameter)/2.0F, FACE_CONNECTED[SIDE_X_POS][mConnections] ? 1 : 1-(1.0F-mDiameter)/2.0F, FACE_CONNECTED[SIDE_Y_POS][mConnections] ? 1 : 1-(1.0F-mDiameter)/2.0F, FACE_CONNECTED[SIDE_Z_POS][mConnections] ? 1 : 1-(1.0F-mDiameter)/2.0F);}
 	

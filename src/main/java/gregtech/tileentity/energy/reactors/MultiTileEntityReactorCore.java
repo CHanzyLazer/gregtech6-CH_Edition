@@ -138,7 +138,7 @@ public abstract class MultiTileEntityReactorCore extends TileEntityBase10FacingD
 			}
 			if (mTanks[0].isHalf() && mSecondFacing != mFacing) FL.move(mTanks[0], getAdjacentTank(mSecondFacing), mTanks[0].amount() - mTanks[0].capacity() / 2);
 			if (mTanks[1].has()) FL.move(mTanks[1], getAdjacentTank(mFacing));
-
+			
 			if (mTanks[0].check()) updateClientData();
 		}
 	}
@@ -293,7 +293,7 @@ public abstract class MultiTileEntityReactorCore extends TileEntityBase10FacingD
 		updateInventory();
 		return mTanks[0].fill(aFluid, aDoFill);
 	}
-
+	
 	@Override
 	public final void updateInventory() {
 		super.updateInventory();
@@ -303,11 +303,11 @@ public abstract class MultiTileEntityReactorCore extends TileEntityBase10FacingD
 			inventoryChecked();
 		}
 	}
-
+	
 	protected boolean checkInventory() {return F;}
 	protected void inventoryChecked() {/**/}
-
-
+	
+	
 	@Override
 	public FluidStack tapDrain(byte aSide, int aMaxDrain, boolean aDoDrain) {
 		updateInventory();

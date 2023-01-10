@@ -209,7 +209,7 @@ public class MultiTileEntityWireElectric extends TileEntityBase10ConnectorRender
 	
 	@Override public boolean canDrop(int aInventorySlot) {return F;}
 	@Override public boolean isObstructingBlockAt2(byte aSide) {return F;} // Btw, Wires have this but Pipes don't. This is because Wires are flexible, while Pipes aren't.
-
+	
 	@Override public boolean isEnergyConducting(TagData aEnergyType) {return aEnergyType == TD.Energy.EU;}
 	@Override public long getEnergyMaxSize(TagData aEnergyType) {return aEnergyType == TD.Energy.EU ? mVoltage : 0;}
 	@Override public long getEnergyMaxPackets(TagData aEnergyType) {return aEnergyType == TD.Energy.EU ? mAmperage : 0;}
@@ -231,7 +231,7 @@ public class MultiTileEntityWireElectric extends TileEntityBase10ConnectorRender
 	public long getAmperageMax                              (byte aSide) {return mAmperage;}
 	
 	@Override public ArrayList<String> getDebugInfo(int aScanLevel) {return aScanLevel > 0 ? new ArrayListNoNulls<>(F, "Transferred Power: " + mWattageLast) : null;}
-
+	
 	// 绝缘线缆不会改变半径
 	@Override public float getConnectorDiameter(byte aConnectorSide, DelegatorTileEntity<TileEntity> aDelegator) {
 		// 绝缘线缆连接非绝缘线缆时不会收缩
@@ -240,7 +240,7 @@ public class MultiTileEntityWireElectric extends TileEntityBase10ConnectorRender
 	}
 	// GTCH, 用于减少重复代码
 	private boolean isInsulated() { return mRenderType == 1 || mRenderType == 2; }
-
+	
 	// GTCH, 返回绝缘层的颜色为原本颜色
 	@Override public int getBottomRGB() {return isInsulated() ? UT.Code.getRGBInt(64, 64, 64) : super.getBottomRGB();}
 	// GTCH, 绝缘时返回绝缘层颜色
@@ -248,7 +248,7 @@ public class MultiTileEntityWireElectric extends TileEntityBase10ConnectorRender
 		if (isInsulated()) return isPainted()?mRGBa: getBottomRGB();
 		return super.colorMultiplier2();
 	}
-
+	
 	@Override public ITexture getTextureSide                (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {return isInsulated() ? BlockTextureDefault.get(Textures.BlockIcons.INSULATION_FULL, isPainted()?mRGBa:getBottomRGB()) : BlockTextureDefault.get(mMaterial, getIconIndexSide(aSide, aConnections, aDiameter, aRenderPass), F, mRGBa);}
 	@Override public ITexture getTextureConnected           (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {return isInsulated() ? BlockTextureMulti.get(BlockTextureDefault.get(mMaterial, getIconIndexConnected(aSide, aConnections, aDiameter, aRenderPass), mIsGlowing), BlockTextureDefault.get(mRenderType==2?Textures.BlockIcons.INSULATION_BUNDLED:aDiameter<0.37F?Textures.BlockIcons.INSULATION_TINY:aDiameter<0.49F?Textures.BlockIcons.INSULATION_SMALL:aDiameter<0.74F?Textures.BlockIcons.INSULATION_MEDIUM:aDiameter<0.99F?Textures.BlockIcons.INSULATION_LARGE:Textures.BlockIcons.INSULATION_HUGE, isPainted()?mRGBa: getBottomRGB())) : BlockTextureDefault.get(mMaterial, getIconIndexConnected(aSide, aConnections, aDiameter, aRenderPass), mIsGlowing, mRGBa);}
 	
@@ -258,6 +258,6 @@ public class MultiTileEntityWireElectric extends TileEntityBase10ConnectorRender
 	@Override public Collection<TagData> getConnectorTypes  (byte aSide) {return TD.Connectors.WIRE_ELECTRIC.AS_LIST;}
 	
 	@Override public String getFacingTool                   () {return TOOL_cutter;}
-
+	
 	@Override public String getTileEntityName               () {return "gt.multitileentity.connector.wire.electric";}
 }

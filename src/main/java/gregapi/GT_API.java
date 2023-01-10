@@ -237,19 +237,19 @@ public class GT_API extends Abstract_Mod {
 	@Mod.EventHandler
 	public void onPreLoad(FMLPreInitializationEvent aEvent) {
 		DirectoriesGT.CONFIG = aEvent.getModConfigurationDirectory();
-
+		
 		DirectoriesGT.CONFIG_GT = new File(DirectoriesGT.CONFIG, "GregTech");
 		if (!DirectoriesGT.CONFIG_GT.exists()) DirectoriesGT.CONFIG_GT = new File(DirectoriesGT.CONFIG, "gregtech");
-
+		
 		ConfigForge.initFile(); // init GTCH config file in forge
-
+		
 		DirectoriesGT.CONFIG_RECIPES = new File(DirectoriesGT.CONFIG, "Recipes");
 		if (!DirectoriesGT.CONFIG_RECIPES.exists()) DirectoriesGT.CONFIG_RECIPES = new File(DirectoriesGT.CONFIG, "recipes");
 		
 		DirectoriesGT.MINECRAFT = DirectoriesGT.CONFIG.getParentFile();
 		
 		DirectoriesGT.LOGS = new File(DirectoriesGT.MINECRAFT, "logs");
-
+		
 		onModPreInit(aEvent);
 	}
 	
@@ -265,7 +265,7 @@ public class GT_API extends Abstract_Mod {
 				tMaterial.mHandleMaterial = OreDictMaterial.get(ConfigsGT.MATERIAL.get(tMaterial.mNameInternal, "ToolHandle", tMaterial.mHandleMaterial.mNameInternal));
 			}
 		}
-
+		
 		onModInit(aEvent);
 	}
 	
@@ -301,10 +301,10 @@ public class GT_API extends Abstract_Mod {
 		ConfigsGT.OREPROCESSING = new Config("OreProcessing.cfg");
 		// Deprecated Config Files.
 		ConfigsGT.OVERPOWERED = ConfigsGT.MACHINES = ConfigsGT.SPECIAL = ConfigsGT.GREGTECH;
-
+		
 		//CH config init config
 		ConfigForge.initConfig();
-
+		
 		tFile = new File(DirectoriesGT.CONFIG_GT, "Stacksizes.cfg");
 		if (!tFile.exists()) tFile = new File(DirectoriesGT.CONFIG_GT, "stacksizes.cfg");
 		Configuration tStackConfig = new Configuration(tFile);
@@ -700,7 +700,7 @@ public class GT_API extends Abstract_Mod {
 			tFile = new File(DirectoriesGT.MINECRAFT, "GregTech.lang");
 			if (!tFile.exists()) tFile = new File(DirectoriesGT.MINECRAFT, "gregtech.lang");
 			LanguageHandler.sLangFile = new Configuration(tFile);
-
+			
 			//CH lang
 			tFile = new File(DirectoriesGT.MINECRAFT, "GregTechCH.lang");
 			if (!tFile.exists()) tFile = new File(DirectoriesGT.MINECRAFT, "gregtechCH.lang");

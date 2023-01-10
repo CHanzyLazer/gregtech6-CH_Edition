@@ -3,6 +3,7 @@
 
 # Whitelist directories (directories with no tracked files don't get committed regardless)
 !**/
+.*/
 
 !/.gitignore
 !/.gitattributes
@@ -75,3 +76,6 @@
 
 # idea config
 /.idea/
+
+# gradle temps
+/.gradle/

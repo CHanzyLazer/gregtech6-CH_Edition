@@ -38,14 +38,14 @@ import java.util.List;
 	@Optional.Interface(iface = "ic2.api.tile.IWrenchable", modid = ModIDs.IC2)
 })
 public abstract class TileEntityBase08Directional extends TileEntityBase07Paintable implements ic2.api.tile.IWrenchable {
-
+	
 	// GTCH, 重写这个方法来扩展客户端数据
 	@Override
 	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
 		super.writeToClientDataPacketByteList(rList);
 		rList.add(4, getDirectionData());
 	}
-
+	
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		super.receiveDataByteArray(aData, aNetworkHandler);

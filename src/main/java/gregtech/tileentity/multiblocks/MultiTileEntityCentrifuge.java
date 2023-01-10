@@ -35,7 +35,7 @@ import static gregapi.data.CS.*;
  */
 public class MultiTileEntityCentrifuge extends TileEntityBase10MultiBlockMachine {
 	@Override protected MTEC_MultiBlockMachine getNewCoreMultiBlock() {return new MTEC_MultiBlockCentrifuge(this);}
-
+	
 	@Override
 	public void updateAdjacentToggleableEnergySources() {
 		DelegatorTileEntity<TileEntity>

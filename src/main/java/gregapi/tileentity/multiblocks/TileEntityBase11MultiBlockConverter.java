@@ -53,7 +53,7 @@ public abstract class TileEntityBase11MultiBlockConverter extends TileEntityBase
 	public TE_Behavior_Energy_Capacitor mStorage = null;
 	public TE_Behavior_Energy_Converter mConverter = null;
 	public TE_Behavior_Active_Trinary mActivity = null;
-
+	
 	protected short mEfficiency;
 	
 	@Override

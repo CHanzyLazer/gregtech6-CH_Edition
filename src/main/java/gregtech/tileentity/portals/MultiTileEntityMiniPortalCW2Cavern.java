@@ -132,8 +132,8 @@ public class MultiTileEntityMiniPortalCW2Cavern extends MultiTileEntityMiniPorta
 	public ITexture sCW2Portal = BlockTextureCopied.get(ST.block(MD.CW2, "cavern_portal", Blocks.portal), SIDE_ANY, 0, UNCOLOURED, F, T, T), sCW2PortalFrame = BlockTextureCopied.get(Blocks.mossy_cobblestone, SIDE_ANY, 0);
 	@Override public ITexture getPortalTexture() {return sCW2Portal;}
 	@Override public ITexture getFrameTexture() {return sCW2PortalFrame;}
-
+	
 	@SideOnly(Side.CLIENT) @Override public int colorMultiplier() {return COLOR_COBBLESTONE;}
-
+	
 	@Override public String getTileEntityName() {return "gt.multitileentity.portal.cavern";}
 }

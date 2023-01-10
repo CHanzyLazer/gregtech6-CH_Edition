@@ -247,7 +247,7 @@ public class MultiTileEntityGeneratorFluidBed extends TileEntityBase09FacingSing
 		updateInventory();
 		return mTank.fill(aFluid, aDoFill);
 	}
-
+	
 	@Override
 	public boolean breakBlock() {
 		if (isServerSide()) {
@@ -311,7 +311,7 @@ public class MultiTileEntityGeneratorFluidBed extends TileEntityBase09FacingSing
 	};
 	
 	@Override public String getTileEntityName() {return "gt.multitileentity.generator.burning_fluidbed";}
-
+	
 	//熔融方解石，可能会不允许存储
 	@Override
 	public boolean canFillExtra(FluidStack aFluid) {

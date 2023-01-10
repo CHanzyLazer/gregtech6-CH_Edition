@@ -285,8 +285,8 @@ public class MultiTileEntityBathingPot extends TileEntityBase07Paintable impleme
 		super.onTickResetChecks(aTimer, aIsServerSide);
 		oDisplay = mDisplay;
 	}
-
-
+	
+	
 	// GTCH, 重写这个方法保证和原本的逻辑一致
 	@Override
 	public IPacket getClientDataPacketNoSendAll(boolean aSendAll) {
@@ -298,14 +298,14 @@ public class MultiTileEntityBathingPot extends TileEntityBase07Paintable impleme
 		rList.add(0, UT.Code.toByteS(mDisplay, 0));
 		rList.add(1, UT.Code.toByteS(mDisplay, 1)); // 保持原本一致的顺序
 	}
-
+	
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		if (aData.length > 1)  mDisplay = UT.Code.combine(aData[0], aData[1]);
 		if (aData.length > 4) setRGBData(aData[2], aData[3], aData[4], aData[aData.length-1]);
 		return T;
 	}
-
+	
 	@Override
 	protected IFluidTank getFluidTankFillable2(byte aSide, FluidStack aFluidToFill) {
 		for (int i = 0; i < mTanksInput.length; i++) if (mTanksInput[i].contains(aFluidToFill)) return mTanksInput[i];
@@ -313,7 +313,7 @@ public class MultiTileEntityBathingPot extends TileEntityBase07Paintable impleme
 		for (int i = 0; i < mTanksInput.length; i++) if (mTanksInput[i].isEmpty()) return mTanksInput[i];
 		return null;
 	}
-
+	
 	@Override
 	protected IFluidTank getFluidTankDrainable2(byte aSide, FluidStack aFluidToDrain) {
 		if (aFluidToDrain == null) {
@@ -323,7 +323,7 @@ public class MultiTileEntityBathingPot extends TileEntityBase07Paintable impleme
 		}
 		return null;
 	}
-
+	
 	@Override
 	protected IFluidTank[] getFluidTanks2(byte aSide) {
 		IFluidTank[] rTanks = new IFluidTank[mTanksInput.length + mTanksOutput.length];
@@ -343,12 +343,12 @@ public class MultiTileEntityBathingPot extends TileEntityBase07Paintable impleme
 		GarbageGT.trash(mTanksOutput);
 		return super.breakBlock();
 	}
-
+	
 	@Override
 	public int getRenderPasses2(Block aBlock, boolean[] aShouldSideBeRendered) {
 		return 7;
 	}
-
+	
 	@Override
 	public boolean setBlockBounds2(Block aBlock, int aRenderPass, boolean[] aShouldSideBeRendered) {
 		switch(aRenderPass) {
@@ -362,7 +362,7 @@ public class MultiTileEntityBathingPot extends TileEntityBase07Paintable impleme
 		}
 		return F;
 	}
-
+	
 	public static IIconContainer
 	sTextureSides       = new Textures.BlockIcons.CustomIcon("machines/tools/bathing_pot/colored/sides"),
 	sTextureInsides     = new Textures.BlockIcons.CustomIcon("machines/tools/bathing_pot/colored/insides"),

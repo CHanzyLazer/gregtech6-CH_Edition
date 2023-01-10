@@ -188,7 +188,7 @@ public class MultiTileEntityJuicer extends TileEntityBase07Paintable implements 
 		super.onTickResetChecks(aTimer, aIsServerSide);
 		oDisplay = mDisplay;
 	}
-
+	
 	// GTCH, 重写这个方法保证和原本的逻辑一致
 	@Override
 	public IPacket getClientDataPacketNoSendAll(boolean aSendAll) {
@@ -200,7 +200,7 @@ public class MultiTileEntityJuicer extends TileEntityBase07Paintable implements 
 		rList.add(0, UT.Code.toByteS(mDisplay, 0));
 		rList.add(1, UT.Code.toByteS(mDisplay, 1)); // 保持原本一致的顺序
 	}
-
+	
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		if (aData.length > 1) mDisplay = UT.Code.combine(aData[0], aData[1]);

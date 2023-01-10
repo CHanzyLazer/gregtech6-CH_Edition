@@ -36,7 +36,7 @@ public abstract class MultiTileEntityPanel extends TileEntityBase03MultiTileEnti
 	@Override public boolean canPlace(ItemStack aStack, EntityPlayer aPlayer, World aWorld, int aX, int aY, int aZ, byte aSide, float aHitX, float aHitY, float aHitZ) {return F;}
 	@Override public boolean setBlockBounds(Block aBlock, int aRenderPass, boolean[] aShouldSideBeRendered) {box(aBlock, PX_P[0], PX_P[0], PX_P[7], PX_N[0], PX_N[0], PX_N[7]); return T;}
 	@Override public int getRenderPasses(Block aBlock, boolean[] aShouldSideBeRendered) {return 1;}
-
+	
 	// GTCH, 用来在作为覆盖板时潜行也能放置上
 	@Override public boolean doesSneakBypassUse(World aWorld, int aX, int aY, int aZ, EntityPlayer aPlayer) {return T;}
 }

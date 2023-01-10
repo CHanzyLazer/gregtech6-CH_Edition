@@ -88,7 +88,7 @@ public class MultiTileEntityChest extends TileEntityBase05Inventories implements
 	// 仅客户端有效
 	protected int mRGBa = UNCOLORED;
 	@Override public int getRGBa() {return mRGBa;}
-
+	
 	protected byte mFacing = 3, mUsingPlayers = 0, oUsingPlayers = 0;
 	protected float mLidAngle = 0, oLidAngle = 0, mHardness = 6, mResistance = 3;
 	protected OreDictMaterial mMaterial = MT.NULL;
@@ -109,7 +109,7 @@ public class MultiTileEntityChest extends TileEntityBase05Inventories implements
 		if (aNBT.hasKey(NBT_HARDNESS)) mHardness = aNBT.getFloat(NBT_HARDNESS);
 		if (aNBT.hasKey(NBT_RESISTANCE)) mResistance = aNBT.getFloat(NBT_RESISTANCE);
 		if (aNBT.hasKey(NBT_MATERIAL)) mMaterial = OreDictMaterial.get(aNBT.getString(NBT_MATERIAL));
-
+		
 		// 需要分情况讨论，考虑有不允许染色的，带有默认颜色的，并且不是材料颜色的方块
 		if (isPainted()) {
 			if (aNBT.hasKey(NBT_COLOR)) mRGBPaint = (int) UT_CH.NBT.getItemNumber(aNBT.getInteger(NBT_COLOR)); // mRGBaPaint 替代原本的 NBT_COLOR
@@ -246,7 +246,7 @@ public class MultiTileEntityChest extends TileEntityBase05Inventories implements
 		setRGBData(aData[3], aData[4], aData[5], aData[6]);
 		return T;
 	}
-
+	
 	// 用于在重写接受数据代码时调用简单的设置颜色
 	protected final void setRGBData(byte aR, byte aG, byte aB, byte aPaintData) {
 		setPaintData(aPaintData);
@@ -282,7 +282,7 @@ public class MultiTileEntityChest extends TileEntityBase05Inventories implements
 			return UT_CH.Code.getOverlayedRGB(COLOR_WOOD, getPaint());
 		return mRGBa;
 	}
-
+	
 	private static final float minX = 0.0625F, minY = 0F, minZ = 0.0625F, maxX = 0.9375F, maxY = 0.875F, maxZ = 0.9375F;
 	@Override public AxisAlignedBB getCollisionBoundingBoxFromPool() {return box(minX, minY, minZ, maxX, maxY, maxZ);}
 	@Override public AxisAlignedBB getSelectedBoundingBoxFromPool () {return box(minX, minY, minZ, maxX, maxY, maxZ);}
@@ -317,9 +317,9 @@ public class MultiTileEntityChest extends TileEntityBase05Inventories implements
 	public void onRegistrationClient(MultiTileEntityRegistry aRegistry, short aID) {
 		RENDERER.mResources.put(mTextureName, new ResourceLocation[] {new ResourceLocation(MD.GT.mID, TEX_DIR_MODEL + aRegistry.mNameInternal + "/" + mTextureName + ".colored.png"), new ResourceLocation(MD.GT.mID, TEX_DIR_MODEL + aRegistry.mNameInternal + "/" + mTextureName + ".plain.png")});
 	}
-
+	
 	@Override public int getLightOpacity() {return LIGHT_OPACITY_NONE;}
-
+	
 	@SideOnly(Side.CLIENT)
 	public static class MultiTileEntityRendererChest extends TileEntitySpecialRenderer {
 		private static final MultiTileEntityModelChest sModel = new MultiTileEntityModelChest();

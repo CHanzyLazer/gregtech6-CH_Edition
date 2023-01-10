@@ -129,7 +129,7 @@ public class MultiTileEntityMiniPortalAroma extends MultiTileEntityMiniPortal {
 	public ITexture sAromaPortal = BlockTextureCopied.get(ST.block(MD.A97_MINING, "aromicPortal", Blocks.portal), SIDE_ANY, 0, UNCOLOURED, F, T, T), sAromaPortalFrame = BlockTextureCopied.get(ST.block(MD.A97_MINING, "portalFrame", Blocks.stonebrick), SIDE_ANY, 0);
 	@Override public ITexture getPortalTexture() {return sAromaPortal;}
 	@Override public ITexture getFrameTexture() {return sAromaPortalFrame;}
-
+	
 	// TODO
 	
 	@Override public String getTileEntityName() {return "gt.multitileentity.portal.aroma";}

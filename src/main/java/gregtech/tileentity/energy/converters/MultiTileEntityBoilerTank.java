@@ -61,7 +61,7 @@ import static gregapi.data.CS.*;
  */
 public class MultiTileEntityBoilerTank extends TileEntityBase09FacingSingle implements ITileEntityEnergy, ITileEntityFunnelAccessible, ITileEntityGibbl, ITileEntityEnergyDataCapacitor, IFluidHandler, IMTE_RemovedByPlayer, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnEntityCollidedWithBlock {
 	protected MTEC_BoilerTank_Greg mCore;
-
+	
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {
 		// GTCH, core init
@@ -69,79 +69,79 @@ public class MultiTileEntityBoilerTank extends TileEntityBase09FacingSingle impl
 		super.readFromNBT2(aNBT);
 		mCore.readFromNBT(aNBT);
 	}
-
+	
 	@Override
 	public void writeToNBT2(NBTTagCompound aNBT) {
 		super.writeToNBT2(aNBT);
-
+		
 		// GTCH, core save
 		mCore.writeToNBT(aNBT);
 	}
-
+	
 	// tooltips
 	@Override public final void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {IMTEC_ToolTips.Util.addToolTips(mCore, aList, aStack, aF3_H); super.addToolTips(aList, aStack, aF3_H);}
 	// ticking
 	@Override public void onTick2(long aTimer, boolean aIsServerSide) {if (aIsServerSide) IMTEC_BoilerTank.Util.onTick(mCore);}
-
+	
 	@Override public boolean breakBlock() {mCore.onBreakBlock(); return super.breakBlock();}
-
+	
 	@Override
 	public long onToolClick2(String aTool, long aRemainingDurability, long aQuality, Entity aPlayer, List<String> aChatReturn, IInventory aPlayerInventory, boolean aSneaking, ItemStack aStack, byte aSide, float aHitX, float aHitY, float aHitZ) {
 		long rReturn = super.onToolClick2(aTool, aRemainingDurability, aQuality, aPlayer, aChatReturn, aPlayerInventory, aSneaking, aStack, aSide, aHitX, aHitY, aHitZ);
 		if (rReturn > 0) return rReturn;
-
+		
 		if (isClientSide()) return 0;
-
+		
 		return mCore.onToolClick(aTool, aRemainingDurability, aQuality, aPlayer, aChatReturn, aPlayerInventory, aSneaking, aStack, aSide, aHitX, aHitY, aHitZ);
 	}
-
+	
 	@Override
 	public boolean removedByPlayer(World aWorld, EntityPlayer aPlayer, boolean aWillHarvest) {
 		mCore.onRemovedByPlayer(aWorld, aPlayer, aWillHarvest);
 		return worldObj.setBlockToAir(xCoord, yCoord, zCoord);
 	}
-
+	
 	@Override
 	public void onExploded(Explosion aExplosion) {
 		super.onExploded(aExplosion);
 		mCore.onExploded(aExplosion);
 	}
-
+	
 	@Override
 	public void explode(boolean aInstant) {
 		mCore.explode(aInstant, 100.0);
 	}
-
+	
 	@Override
 	public boolean onTickCheck(long aTimer) {
 		return mCore.onTickCheck(aTimer) || super.onTickCheck(aTimer);
 	}
-
+	
 	@Override
 	public void onTickResetChecks(long aTimer, boolean aIsServerSide) {
 		super.onTickResetChecks(aTimer, aIsServerSide);
 		mCore.onTickResetChecks(aTimer, aIsServerSide);
 	}
-
+	
 	@Override
 	public void setVisualData(byte aData) {
 		mCore.setVisualData(aData);
 	}
-
+	
 	@Override
 	public int funnelFill(byte aSide, FluidStack aFluid, boolean aDoFill) {
 		return mCore.funnelFill(aSide, aFluid, aDoFill);
 	}
-
+	
 	@Override public ITexture getTexture2(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {return aShouldSideBeRendered[aSide] ? BlockTextureMulti.get(BlockTextureDefault.get(sColoreds[FACES_TBS[aSide]], mRGBa), BlockTextureDefault.get(sOverlays[FACES_TBS[aSide]]), aSide!=mFacing?null:BlockTextureDefault.get(BI.BAROMETER), aSide!=mFacing?null:BlockTextureDefault.get(BI.BAROMETER_SCALE[mCore.getBarometer()], CA_RED_64)) : null;}
-
+	
 	@Override public void onEntityCollidedWithBlock(Entity aEntity) {mCore.onEntityCollidedWithBlock(aEntity);}
 	@Override public AxisAlignedBB getCollisionBoundingBoxFromPool() {return box(PX_P[2], PX_P[2], PX_P[2], PX_N[2], PX_N[2], PX_N[2]);}
-
+	
 	@Override public byte getVisualData() {return mCore.getVisualData();}
 	@Override public byte getDefaultSide() {return SIDE_FRONT;}
 	@Override public boolean[] getValidSides() {return SIDES_HORIZONTAL;}
-
+	
 	@Override public boolean isEnergyType(TagData aEnergyType, byte aSide, boolean aEmitting) {return mCore.isEnergyType(aEnergyType, aSide, aEmitting);}
 	@Override public boolean isEnergyAcceptingFrom(TagData aEnergyType, byte aSide, boolean aTheoretical) {return mCore.isEnergyAcceptingFrom(aEnergyType, aSide, aTheoretical);}
 	@Override public boolean isEnergyCapacitorType(TagData aEnergyType, byte aSide) {return mCore.isEnergyCapacitorType(aEnergyType, aSide);}
@@ -154,16 +154,16 @@ public class MultiTileEntityBoilerTank extends TileEntityBase09FacingSingle impl
 	@Override public long getEnergyCapacity(TagData aEnergyType, byte aSide) {return mCore.getEnergyCapacity(aEnergyType, aSide);}
 	@Override public Collection<TagData> getEnergyTypes(byte aSide) {return mCore.getEnergyTypes(aSide);}
 	@Override public Collection<TagData> getEnergyCapacitorTypes(byte aSide) {return mCore.getEnergyCapacitorTypes(aSide);}
-
+	
 	@Override protected IFluidTank getFluidTankFillable2(byte aSide, FluidStack aFluidToFill) {return mCore.getFluidTankFillable(aSide, aFluidToFill);}
 	@Override protected IFluidTank getFluidTankDrainable2(byte aSide, FluidStack aFluidToDrain) {return mCore.getFluidTankDrainable(aSide, aFluidToDrain);}
 	@Override protected IFluidTank[] getFluidTanks2(byte aSide) {return mCore.getFluidTanks(aSide);}
-
+	
 	@Override public long getGibblValue(byte aSide) {return mCore.getGibblValue(aSide);}
 	@Override public long getGibblMax(byte aSide) {return mCore.getGibblMax(aSide);}
-
+	
 	@Override public boolean canDrop(int aInventorySlot) {return F;}
-
+	
 	// Icons
 	public static IIconContainer sColoreds[] = new IIconContainer[] {
 			new Textures.BlockIcons.CustomIcon("machines/tanks/boiler_steam/colored/bottom"),
@@ -174,6 +174,6 @@ public class MultiTileEntityBoilerTank extends TileEntityBase09FacingSingle impl
 			new Textures.BlockIcons.CustomIcon("machines/tanks/boiler_steam/overlay/top"),
 			new Textures.BlockIcons.CustomIcon("machines/tanks/boiler_steam/overlay/side")
 	};
-
+	
 	@Override public String getTileEntityName() {return "gt.multitileentity.tank.boiler_steam";}
 }

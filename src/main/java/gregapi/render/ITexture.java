@@ -287,11 +287,11 @@ public interface ITexture {
 			if (aChangedBlockBounds) {aRenderer.flipTexture = !aRenderer.flipTexture; aRenderer.field_152631_f = F;}
 			return T;
 		}
-
+		
 		// GTCH，重写所有面的渲染方法
 		public static void renderFixedNegativeYFacing(IIcon aIcon, RenderBlocks aRenderer, Block aBlock, int aX, int aY, int aZ) {
 			if (aRenderer.hasOverrideBlockTexture()) aIcon = aRenderer.overrideBlockTexture;
-
+			
 			// 重写这个部分，超过边界的进行平移（永远是拉伸中心，也就是底端材质不变）
 			double tRenderMinX = aRenderer.renderMinX;
 			double tRenderMaxX = aRenderer.renderMaxX;
@@ -321,7 +321,7 @@ public interface ITexture {
 				tRenderMaxZ -= tRenderMinZ;
 				tRenderMinZ = 0.0;
 			}
-
+			
 			double d3 = aIcon.getInterpolatedU(tRenderMinX * 16.0);
 			double d4 = aIcon.getInterpolatedU(tRenderMaxX * 16.0);
 			if (aRenderer.field_152631_f) {
@@ -331,18 +331,18 @@ public interface ITexture {
 			double d5 = aIcon.getInterpolatedV(tRenderMinZ * 16.0);
 			double d6 = aIcon.getInterpolatedV(tRenderMaxZ * 16.0);
 			double d7;
-
+			
 			if (aRenderer.flipTexture) {
 				d7 = d3;
 				d3 = d4;
 				d4 = d7;
 			}
-
+			
 			d7 = d4;
 			double d8 = d3;
 			double d9 = d5;
 			double d10 = d6;
-
+			
 			if (aRenderer.uvRotateBottom == 2) {
 				d3 = aIcon.getInterpolatedU(tRenderMinZ * 16.0);
 				d6 = aIcon.getInterpolatedV(16.0 - tRenderMaxX * 16.0);
@@ -377,7 +377,7 @@ public interface ITexture {
 				d9 = d5;
 				d10 = d6;
 			}
-
+			
 			double d11 = aX + aRenderer.renderMinX;
 			double d12 = aX + aRenderer.renderMaxX;
 			double d13 = aY + aRenderer.renderMinY;
@@ -409,10 +409,10 @@ public interface ITexture {
 				Tessellator.instance.addVertexWithUV(d12, d13, d15, d8, d10);
 			}
 		}
-
+		
 		public static void renderFixedPositiveYFacing(IIcon aIcon, RenderBlocks aRenderer, Block aBlock, int aX, int aY, int aZ) {
 			if (aRenderer.hasOverrideBlockTexture()) aIcon = aRenderer.overrideBlockTexture;
-
+			
 			// 重写这个部分，超过边界的进行平移（永远是拉伸中心，也就是底端材质不变）
 			double tRenderMinX = aRenderer.renderMinX;
 			double tRenderMaxX = aRenderer.renderMaxX;
@@ -442,17 +442,17 @@ public interface ITexture {
 				tRenderMaxZ -= tRenderMinZ;
 				tRenderMinZ = 0.0;
 			}
-
+			
 			double d3 = aIcon.getInterpolatedU(tRenderMinX * 16.0D);
 			double d4 = aIcon.getInterpolatedU(tRenderMaxX * 16.0D);
 			double d5 = aIcon.getInterpolatedV(tRenderMinZ * 16.0D);
 			double d6 = aIcon.getInterpolatedV(tRenderMaxZ * 16.0D);
-
+			
 			double d7 = d4;
 			double d8 = d3;
 			double d9 = d5;
 			double d10 = d6;
-
+			
 			if (aRenderer.uvRotateTop == 1) {
 				d3 = aIcon.getInterpolatedU(tRenderMinZ * 16.0D);
 				d5 = aIcon.getInterpolatedV(16.0D - tRenderMaxX * 16.0D);
@@ -487,18 +487,18 @@ public interface ITexture {
 				d9 = d5;
 				d10 = d6;
 			}
-
+			
 			double d11 = aX + aRenderer.renderMinX;
 			double d12 = aX + aRenderer.renderMaxX;
 			double d13 = aY + aRenderer.renderMaxY;
 			double d14 = aZ + aRenderer.renderMinZ;
 			double d15 = aZ + aRenderer.renderMaxZ;
-
+			
 			if (aRenderer.renderFromInside) {
 				d11 = aX + aRenderer.renderMaxX;
 				d12 = aX + aRenderer.renderMinX;
 			}
-
+			
 			if (aRenderer.enableAO) {
 				Tessellator.instance.setColorOpaque_F(aRenderer.colorRedTopLeft, aRenderer.colorGreenTopLeft, aRenderer.colorBlueTopLeft);
 				Tessellator.instance.setBrightness(aRenderer.brightnessTopLeft);
@@ -522,7 +522,7 @@ public interface ITexture {
 		
 		public static void renderFixedNegativeZFacing(IIcon aIcon, RenderBlocks aRenderer, Block aBlock, int aX, int aY, int aZ) {
 			if (aRenderer.hasOverrideBlockTexture()) aIcon = aRenderer.overrideBlockTexture;
-
+			
 			// 重写这个部分，超过边界的进行平移（永远是拉伸中心，也就是底端材质不变）
 			double tRenderMinX = aRenderer.renderMinX;
 			double tRenderMaxX = aRenderer.renderMaxX;
@@ -552,30 +552,30 @@ public interface ITexture {
 				tRenderMaxY -= tRenderMinY;
 				tRenderMinY = 0.0;
 			}
-
+			
 			double d3 = aIcon.getInterpolatedU(tRenderMinX * 16.0D);
 			double d4 = aIcon.getInterpolatedU(tRenderMaxX * 16.0D);
-
+			
 			if (aRenderer.field_152631_f) {
 				d4 = aIcon.getInterpolatedU((1.0D - tRenderMinX) * 16.0D);
 				d3 = aIcon.getInterpolatedU((1.0D - tRenderMaxX) * 16.0D);
 			}
-
+			
 			double d5 = aIcon.getInterpolatedV(16.0D - tRenderMaxY * 16.0D);
 			double d6 = aIcon.getInterpolatedV(16.0D - tRenderMinY * 16.0D);
 			double d7;
-
+			
 			if (aRenderer.flipTexture) {
 				d7 = d3;
 				d3 = d4;
 				d4 = d7;
 			}
-
+			
 			d7 = d4;
 			double d8 = d3;
 			double d9 = d5;
 			double d10 = d6;
-
+			
 			if (aRenderer.uvRotateEast == 2) {
 				d3 = aIcon.getInterpolatedU(tRenderMinY * 16.0D);
 				d4 = aIcon.getInterpolatedU(tRenderMaxY * 16.0D);
@@ -610,18 +610,18 @@ public interface ITexture {
 				d9 = d5;
 				d10 = d6;
 			}
-
+			
 			double d11 = aX + aRenderer.renderMinX;
 			double d12 = aX + aRenderer.renderMaxX;
 			double d13 = aY + aRenderer.renderMinY;
 			double d14 = aY + aRenderer.renderMaxY;
 			double d15 = aZ + aRenderer.renderMinZ;
-
+			
 			if (aRenderer.renderFromInside) {
 				d11 = aX + aRenderer.renderMaxX;
 				d12 = aX + aRenderer.renderMinX;
 			}
-
+			
 			if (aRenderer.enableAO) {
 				Tessellator.instance.setColorOpaque_F(aRenderer.colorRedTopLeft, aRenderer.colorGreenTopLeft, aRenderer.colorBlueTopLeft);
 				Tessellator.instance.setBrightness(aRenderer.brightnessTopLeft);
@@ -645,7 +645,7 @@ public interface ITexture {
 		
 		public static void renderFixedPositiveZFacing(IIcon aIcon, RenderBlocks aRenderer, Block aBlock, int aX, int aY, int aZ) {
 			if (aRenderer.hasOverrideBlockTexture()) aIcon = aRenderer.overrideBlockTexture;
-
+			
 			// 重写这个部分，超过边界的进行平移（永远是拉伸中心，也就是底端材质不变）
 			double tRenderMinX = aRenderer.renderMinX;
 			double tRenderMaxX = aRenderer.renderMaxX;
@@ -675,24 +675,24 @@ public interface ITexture {
 				tRenderMaxY -= tRenderMinY;
 				tRenderMinY = 0.0;
 			}
-
+			
 			double d3 = aIcon.getInterpolatedU(tRenderMinX * 16.0D);
 			double d4 = aIcon.getInterpolatedU(tRenderMaxX * 16.0D);
 			double d5 = aIcon.getInterpolatedV(16.0D - tRenderMaxY * 16.0D);
 			double d6 = aIcon.getInterpolatedV(16.0D - tRenderMinY * 16.0D);
 			double d7;
-
+			
 			if (aRenderer.flipTexture) {
 				d7 = d3;
 				d3 = d4;
 				d4 = d7;
 			}
-
+			
 			d7 = d4;
 			double d8 = d3;
 			double d9 = d5;
 			double d10 = d6;
-
+			
 			if (aRenderer.uvRotateWest == 1) {
 				d3 = aIcon.getInterpolatedU(tRenderMinY * 16.0D);
 				d6 = aIcon.getInterpolatedV(16.0D - tRenderMinX * 16.0D);
@@ -727,18 +727,18 @@ public interface ITexture {
 				d9 = d5;
 				d10 = d6;
 			}
-
+			
 			double d11 = aX + aRenderer.renderMinX;
 			double d12 = aX + aRenderer.renderMaxX;
 			double d13 = aY + aRenderer.renderMinY;
 			double d14 = aY + aRenderer.renderMaxY;
 			double d15 = aZ + aRenderer.renderMaxZ;
-
+			
 			if (aRenderer.renderFromInside) {
 				d11 = aX + aRenderer.renderMaxX;
 				d12 = aX + aRenderer.renderMinX;
 			}
-
+			
 			if (aRenderer.enableAO) {
 				Tessellator.instance.setColorOpaque_F(aRenderer.colorRedTopLeft, aRenderer.colorGreenTopLeft, aRenderer.colorBlueTopLeft);
 				Tessellator.instance.setBrightness(aRenderer.brightnessTopLeft);
@@ -762,7 +762,7 @@ public interface ITexture {
 		
 		public static void renderFixedNegativeXFacing(IIcon aIcon, RenderBlocks aRenderer, Block aBlock, int aX, int aY, int aZ) {
 			if (aRenderer.hasOverrideBlockTexture()) aIcon = aRenderer.overrideBlockTexture;
-
+			
 			// 重写这个部分，超过边界的进行平移（永远是拉伸中心，也就是底端材质不变）
 			double tRenderMinZ = aRenderer.renderMinZ;
 			double tRenderMaxZ = aRenderer.renderMaxZ;
@@ -792,24 +792,24 @@ public interface ITexture {
 				tRenderMaxY -= tRenderMinY;
 				tRenderMinY = 0.0;
 			}
-
+			
 			double d3 = aIcon.getInterpolatedU(tRenderMinZ * 16.0D);
 			double d4 = aIcon.getInterpolatedU(tRenderMaxZ * 16.0D);
 			double d5 = aIcon.getInterpolatedV(16.0D - tRenderMaxY * 16.0D);
 			double d6 = aIcon.getInterpolatedV(16.0D - tRenderMinY * 16.0D);
 			double d7;
-
+			
 			if (aRenderer.flipTexture) {
 				d7 = d3;
 				d3 = d4;
 				d4 = d7;
 			}
-
+			
 			d7 = d4;
 			double d8 = d3;
 			double d9 = d5;
 			double d10 = d6;
-
+			
 			if (aRenderer.uvRotateNorth == 1)
 			{
 				d3 = aIcon.getInterpolatedU(tRenderMinY * 16.0D);
@@ -845,18 +845,18 @@ public interface ITexture {
 				d9 = d5;
 				d10 = d6;
 			}
-
+			
 			double d11 = aX + aRenderer.renderMinX;
 			double d12 = aY + aRenderer.renderMinY;
 			double d13 = aY + aRenderer.renderMaxY;
 			double d14 = aZ + aRenderer.renderMinZ;
 			double d15 = aZ + aRenderer.renderMaxZ;
-
+			
 			if (aRenderer.renderFromInside) {
 				d14 = aZ + aRenderer.renderMaxZ;
 				d15 = aZ + aRenderer.renderMinZ;
 			}
-
+			
 			if (aRenderer.enableAO) {
 				Tessellator.instance.setColorOpaque_F(aRenderer.colorRedTopLeft, aRenderer.colorGreenTopLeft, aRenderer.colorBlueTopLeft);
 				Tessellator.instance.setBrightness(aRenderer.brightnessTopLeft);
@@ -880,7 +880,7 @@ public interface ITexture {
 		
 		public static void renderFixedPositiveXFacing(IIcon aIcon, RenderBlocks aRenderer, Block aBlock, int aX, int aY, int aZ) {
 			if (aRenderer.hasOverrideBlockTexture()) aIcon = aRenderer.overrideBlockTexture;
-
+			
 			// 重写这个部分，超过边界的进行平移（永远是拉伸中心，也就是底端材质不变）
 			double tRenderMinZ = aRenderer.renderMinZ;
 			double tRenderMaxZ = aRenderer.renderMaxZ;
@@ -910,30 +910,30 @@ public interface ITexture {
 				tRenderMaxY -= tRenderMinY;
 				tRenderMinY = 0.0;
 			}
-
+			
 			double d3 = aIcon.getInterpolatedU(tRenderMinZ * 16.0D);
 			double d4 = aIcon.getInterpolatedU(tRenderMaxZ * 16.0D);
-
+			
 			if (aRenderer.field_152631_f) {
 				d4 = aIcon.getInterpolatedU((1.0D - tRenderMinZ) * 16.0D);
 				d3 = aIcon.getInterpolatedU((1.0D - tRenderMaxZ) * 16.0D);
 			}
-
+			
 			double d5 = aIcon.getInterpolatedV(16.0D - tRenderMaxY * 16.0D);
 			double d6 = aIcon.getInterpolatedV(16.0D - tRenderMinY * 16.0D);
 			double d7;
-
+			
 			if (aRenderer.flipTexture) {
 				d7 = d3;
 				d3 = d4;
 				d4 = d7;
 			}
-
+			
 			d7 = d4;
 			double d8 = d3;
 			double d9 = d5;
 			double d10 = d6;
-
+			
 			if (aRenderer.uvRotateSouth == 2) {
 				d3 = aIcon.getInterpolatedU(tRenderMinY * 16.0D);
 				d5 = aIcon.getInterpolatedV(16.0D - tRenderMinZ * 16.0D);
@@ -968,18 +968,18 @@ public interface ITexture {
 				d9 = d5;
 				d10 = d6;
 			}
-
+			
 			double d11 = aX + aRenderer.renderMaxX;
 			double d12 = aY + aRenderer.renderMinY;
 			double d13 = aY + aRenderer.renderMaxY;
 			double d14 = aZ + aRenderer.renderMinZ;
 			double d15 = aZ + aRenderer.renderMaxZ;
-
+			
 			if (aRenderer.renderFromInside) {
 				d14 = aZ + aRenderer.renderMaxZ;
 				d15 = aZ + aRenderer.renderMinZ;
 			}
-
+			
 			if (aRenderer.enableAO) {
 				Tessellator.instance.setColorOpaque_F(aRenderer.colorRedTopLeft, aRenderer.colorGreenTopLeft, aRenderer.colorBlueTopLeft);
 				Tessellator.instance.setBrightness(aRenderer.brightnessTopLeft);

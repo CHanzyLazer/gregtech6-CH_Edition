@@ -98,7 +98,7 @@ import static gregapi.data.CS.*;
 })
 public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle implements IMTEC_ToolTips, ITileEntityNameCompat, ITEInterceptModConnectItem, ITEInterceptModConnectFluid, ITEInterceptAutoConnectItem, ITEInterceptAutoConnectFluid, IHasWork, ITileEntityFunnelAccessible, ITileEntityTapAccessible, ITileEntitySwitchableOnOff, ITileEntityRunningSuccessfully, ITileEntityAdjacentInventoryUpdatable, ITileEntityEnergy, ITileEntityProgress, ITileEntityGibbl, IFluidHandler_CH {
 	protected MTEC_BasicMachine_Greg mCore; // 暂时使用类而不是接口
-
+	
 	public boolean mSpecialIsStartEnergy = F, mNoConstantEnergy = F, mCheapOverclocking = F, mCouldUseRecipe = F, mStopped = F, oActive = F, oRunning = F, mStateNew = F, mStateOld = F, mDisabledItemInput = F, mDisabledItemOutput = F, mDisabledFluidInput = F, mDisabledFluidOutput = F, mRequiresIgnition = F, mParallelDuration = F, mCanUseOutputTanks = F;
 	public byte mEnergyInputs = 127, mEnergyOutput = SIDE_UNDEFINED, mOutputBlocked = 0, mMode = 0, mIgnited = 0;
 	public byte mItemInputs   = 127, mItemOutputs  = 127, mItemAutoInput  = SIDE_UNDEFINED, mItemAutoOutput  = SIDE_UNDEFINED;
@@ -123,7 +123,7 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 		// GTCH, core init
 		if (mCore == null) mCore = new MTEC_BasicMachine(this);
 		super.readFromNBT2(aNBT);
-
+		
 		mGUITexture = mRecipes.mGUIPath;
 		mEnergy = aNBT.getLong(NBT_ENERGY);
 		if (aNBT.hasKey(NBT_ACTIVE)) mCouldUseRecipe = mActive = aNBT.getBoolean(NBT_ACTIVE);
@@ -228,7 +228,7 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 		}
 		
 		updateAccessibleSlots();
-
+		
 		// GTCH, core init
 		mCore.readFromNBT(aNBT);
 	}
@@ -260,7 +260,7 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 		for (int i = 0; i < mTanksOutput .length; i++) mTanksOutput[i].writeToNBT(aNBT, NBT_TANK+".out."+i);
 		for (int i = 0; i < mOutputFluids.length; i++) FL.save(aNBT, NBT_TANK_OUT+"."+i, mOutputFluids[i]);
 		for (int i = 0; i < mOutputItems .length; i++) ST.save(aNBT, NBT_INV_OUT +"."+i, mOutputItems [i]);
-
+		
 		// GTCH, core save
 		mCore.writeToNBT(aNBT);
 	}
@@ -269,7 +269,7 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 	public NBTTagCompound writeItemNBT2(NBTTagCompound aNBT) {
 		// GTCH, core save
 		mCore.writeItemNBT(aNBT);
-
+		
 		UT.NBT.setNumber(aNBT, NBT_MODE, mMode);
 		UT.NBT.setBoolean(aNBT, NBT_INV_DISABLED_IN, mDisabledItemInput);
 		UT.NBT.setBoolean(aNBT, NBT_INV_DISABLED_OUT, mDisabledItemOutput);
@@ -277,7 +277,7 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 		UT.NBT.setBoolean(aNBT, NBT_TANK_DISABLED_OUT, mDisabledFluidOutput);
 		return super.writeItemNBT2(aNBT);
 	}
-
+	
 	// tooltips
 	@Override public final void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {IMTEC_ToolTips.Util.addToolTips(this, aList, aStack, aF3_H); super.addToolTips(aList, aStack, aF3_H);}
 	// 这种写法可以既让子类实体可以用额外的 core 来重写 tooltips，又可以让 core 的重写来补充 tooltips
@@ -289,8 +289,8 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 	@Override public void toolTipsHazard(List<String> aList) {mCore.toolTipsHazard(aList);}
 	@Override public void toolTipsOther(List<String> aList, ItemStack aStack, boolean aF3_H) {mCore.toolTipsOther(aList, aStack, aF3_H);}
 	@Override public void addToolTipsSided(List<String> aList, ItemStack aStack, boolean aF3_H) {mCore.addToolTipsSided(aList, aStack, aF3_H);}
-
-
+	
+	
 	public long onToolClick3(String aTool, long aRemainingDurability, long aQuality, Entity aPlayer, List<String> aChatReturn, IInventory aPlayerInventory, boolean aSneaking, ItemStack aStack, byte aSide, float aHitX, float aHitY, float aHitZ, ChunkCoordinates aFrom) {
 		return onToolClick2(aTool, aRemainingDurability, aQuality, aPlayer, aChatReturn, aPlayerInventory, aSneaking, aStack, aSide, aHitX, aHitY, aHitZ);
 	}
@@ -541,7 +541,7 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 	// GTCH, 不能输入和输出的面阻止 MOD 管道连接
 	@Override public boolean interceptModConnectItem(byte aSide)   {return mCore.interceptModConnectItem(aSide);}
 	@Override public boolean interceptModConnectFluid(byte aSide)  {return mCore.interceptModConnectFluid(aSide);}
-
+	
 	@Override
 	public boolean breakBlock() {
 		setStateOnOff(T);
@@ -688,7 +688,7 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 	@Override public boolean getStateRunningSuccessfully() {return mSuccessful;}
 	@Override public boolean setStateOnOff(boolean aOnOff) {if (mStopped == aOnOff) {mStopped = !aOnOff; updateAdjacentToggleableEnergySources();} return !mStopped;}
 	@Override public boolean getStateOnOff() {return !mStopped;}
-
+	
 	@Override public String getTileEntityNameCompat() {return "gtch.multitileentity.machine.basic";}
 	@Override public String getTileEntityName() {return "gt.multitileentity.machine.basic";}
 	
@@ -696,7 +696,7 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 	public void adjacentInventoryUpdated(byte aSide, IInventory aTileEntity) {
 		if (FACE_CONNECTED[FACING_ROTATIONS[mFacing][aSide]][mItemInputs|mItemOutputs]) updateInventory();
 	}
-
+	
 	// 虽然机器都只接受能合成的流体，但是还是以防万一进行白名单写法
 	@Override
 	public boolean canFillExtra(FluidStack aFluid) {return mCore.canFillExtra(aFluid);}

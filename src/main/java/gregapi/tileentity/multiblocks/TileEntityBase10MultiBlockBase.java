@@ -52,7 +52,7 @@ import net.minecraftforge.fluids.IFluidTank;
  */
 public abstract class TileEntityBase10MultiBlockBase extends TileEntityBase09FacingSingle implements ITileEntityMultiBlockController {
 	public boolean mStructureChanged = F;
-
+	
 	// 用 private 封装防止意料外的修改
 	private boolean mStructureOkay = F;
 	public final boolean isStructureOkay() {return mStructureOkay;}

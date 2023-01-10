@@ -78,14 +78,14 @@ public class BlockCFoam extends BlockColored implements IBlockFoamable {
 	public boolean driedFoam(World aWorld, int aX, int aY, int aZ, byte aSide) {
 		return T;
 	}
-
+	
 	// GTCH, 在这里加入材料的颜色属性
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int getRenderColor(int aMeta) {
 		return DYES_INT_CFoam[UT.Code.bind4(aMeta)];
 	}
-
+	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int colorMultiplier(IBlockAccess aWorld, int aX, int aY, int aZ) {

@@ -44,7 +44,7 @@ import static gregapi.data.CS.*;
  */
 public class LanguageHandler {
 	public static Configuration sLangFile;
-
+	
 	private static final HashMap<String, String> TEMPMAP = new HashMap<>();
 	private static final HashMap<String, String> BUFFERMAP = new HashMap<>();
 	protected static final HashMap<String, String> BACKUPMAP = new HashMap<>();

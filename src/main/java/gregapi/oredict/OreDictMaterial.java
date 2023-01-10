@@ -323,7 +323,7 @@ public final class OreDictMaterial implements ITagDataContainer<OreDictMaterial>
 		// GTCH
 		if (mID < 9999) mRegType = RegType.GREG; // 小于零的 id 也是 greg 的
 		else if (mID >= 15000 && mID < 15999) mRegType = RegType.GT6U;
-		else if (mID >= 16000 && mID < 16999) mRegType = RegType.GTCH;
+		else if (mID >= 17000 && mID < 17999) mRegType = RegType.GTCH;
 		else mRegType = RegType.OTHER;
 	}
 	

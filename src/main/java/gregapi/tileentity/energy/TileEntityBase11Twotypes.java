@@ -29,7 +29,6 @@ import gregapi.code.TagData;
 import gregapi.data.LH;
 import gregapi.data.LH.Chat;
 import gregapi.data.TD;
-import gregapi.tileentity.behavior.TE_Behavior_Energy_Converter;
 import gregapi.tileentity.behavior.TE_Behavior_Energy_Stats;
 import gregapi.tileentity.machines.ITileEntityAdjacentOnOff;
 import net.minecraft.item.ItemStack;
@@ -44,7 +43,7 @@ public abstract class TileEntityBase11Twotypes extends TileEntityBase10EnergyCon
 		super.readEnergyBehavior(aNBT);
 		mEnergyOUT2 = new TE_Behavior_Energy_Stats(this, aNBT, aNBT.hasKey(NBT_ENERGY_EMITTED_2) ? TagData.createTagData(aNBT.getString(NBT_ENERGY_EMITTED_2)) : TD.Energy.QU, mStorage, aNBT.getLong(NBT_OUTPUT) / 2, aNBT.getLong(NBT_OUTPUT), aNBT.getLong(NBT_OUTPUT) * 2);
 	}
-
+	
 	@Override
 	public void readEnergyConverter(NBTTagCompound aNBT) {
 		super.readEnergyConverter(aNBT);

@@ -302,7 +302,7 @@ public class LH {
 	}
 	
 	public static final String getToolTipEfficiency(long aEfficiency) {aEfficiency = Math.abs(aEfficiency); return Chat.YELLOW + get(EFFICIENCY) + ": " + Chat.WHITE + percent(aEfficiency) + "%";}
-
+	
 	//保留备份
 	public static final void addToolTipsEfficiency(List<String> aList, ItemStack aStack, boolean aF3_H, TE_Behavior_Energy_Converter aConverter) {
 		short tEfficiency = getEfficiencyConverter(aConverter);
@@ -323,7 +323,7 @@ public class LH {
 	public static final short getEfficiencyConverter(TE_Behavior_Energy_Converter aConverter) {
 		return getEfficiencyIO(aConverter.mEnergyIN, aConverter.mEnergyOUT, aConverter.mMultiplier);
 	}
-
+	
 	public static final short getEfficiencyIO(TE_Behavior_Energy_Stats aEnergyIN, TE_Behavior_Energy_Stats aEnergyOUT, long aMultiplier) {
 		short tEfficiency = -1;
 		if (TD.Energy.ALL_EU.contains(aEnergyIN.mType)) {

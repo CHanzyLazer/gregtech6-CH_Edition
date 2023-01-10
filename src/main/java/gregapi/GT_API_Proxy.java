@@ -239,7 +239,7 @@ public abstract class GT_API_Proxy extends Abstract_Proxy implements IGuiHandler
 			
 			if (aEvent.phase == Phase.START) {
 				SYNC_SECOND = (SERVER_TIME % 20 == 0);
-
+				
 				long pSERVER_TIME = SERVER_TIME;
 				GTCH_Main.UPDATE_SERVER_TIME();
 				if (pSERVER_TIME == 0) {

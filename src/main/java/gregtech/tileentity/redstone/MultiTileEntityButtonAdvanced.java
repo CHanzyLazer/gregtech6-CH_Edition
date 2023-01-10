@@ -244,7 +244,7 @@ public class MultiTileEntityButtonAdvanced extends TileEntityBase09FacingSingle 
 	public byte isProvidingStrongPower2(byte aSide) {
 		return aSide == mFacing && mActive && !mLampMode ? mStrength : 0;
 	}
-
+	
 	// GTCH, 重写这个方法来扩展客户端数据
 	@Override
 	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
@@ -252,7 +252,7 @@ public class MultiTileEntityButtonAdvanced extends TileEntityBase09FacingSingle 
 		rList.add(5, mType);
 		rList.add(6, mIndex);
 	}
-
+	
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		super.receiveDataByteArray(aData, aNetworkHandler);

@@ -9,7 +9,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 public class MultiTileEntityLargeTurbineGas extends TileEntityBase11LargeMotor implements IMultiBlockFluidHandler, IFluidHandler, ITileEntityNameCompat {
 	@Override protected MTEC_LargeMotor getNewCoreLargeMotor2() {return new MTEC_LargeMotorGas(this);}
-
+	
 	@Override public String getTileEntityName() {return "gt.multitileentity.multiblock.turbine.gas";}
 	@Override public String getTileEntityNameCompat() {return "gtch.multitileentity.multiblock.turbine.gas";}
 }

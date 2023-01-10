@@ -580,8 +580,8 @@ public enum FL {
 	//, antineutrinoP             ("antineutrinoplasma"                                       , PLASMA)
 	
 	// ionized plasmas
-	, HydrogenI					("ionizedhydrogen"											, GAS)
-	, HeliumI					("ionizedhelium"												, GAS)
+	, HydrogenI                 ("ionizedhydrogen"											, GAS)
+	, HeliumI                   ("ionizedhelium"												, GAS)
 	
 	//
 	, Iron                      ("iron"                                                     , LIQUID)
@@ -622,11 +622,11 @@ public enum FL {
 	, Tetrafluoroethylene       ("tetrafluoroethylene"                                      , SIMPLE, GAS)
 	
 	// Platinum Family Metal processing related fluids
-	, SolutionRichPtPa		    ("solutionrichptpa"                                         , SIMPLE, LIQUID)
+	, SolutionRichPtPa          ("solutionrichptpa"                                         , SIMPLE, LIQUID)
 	, SolutionRichPa            ("solutionrichpa"                                           , SIMPLE, LIQUID)
 	, MoltenSodiumBisulfate     ("moltensodiumbisulfate"                                    , SIMPLE, LIQUID)
 	, RhodiumSulfideSolution    ("rhodiumsulfidesolution"                                   , SIMPLE, LIQUID)
-	, PregnantSolutionOsRu		("pregnantsolutionosru"                                     , SIMPLE, LIQUID)
+	, PregnantSolutionOsRu      ("pregnantsolutionosru"                                     , SIMPLE, LIQUID)
 	, AbsorptionLiquidOsRu      ("absorptionliquidosru"                                     , SIMPLE, LIQUID)
 	, AbsorptionLiquidRu        ("absorptionliquidru"                                       , SIMPLE, LIQUID)
 	, RutheniumTetroxide        ("rutheniumtetroxide"                                       , SIMPLE, GAS)
@@ -903,17 +903,17 @@ public enum FL {
 	public static boolean heavier(IFluidTank aFluid)     {return aFluid != null && heavier(aFluid.getFluid());}
 	public static boolean heavier(FluidStack aFluid)     {return aFluid != null && aFluid.getFluid() != null && aFluid.getFluid().getDensity(aFluid) > 0;}
 	public static boolean heavier(Fluid aFluid)          {return aFluid != null && aFluid.getDensity(make(aFluid, 1000)) > 0;}
-
+	
 	// GTCH 判断是否属于默认的可以填充的流体，即全局白名单（使用黑名单的形式实现）
 	// 目前只排除了能量流体，后续考虑酸，熔融金属等都可以考虑
 	public static boolean canFillDefault(FluidStack aFluid) {return aFluid != null && canFillDefault_(aFluid);}
 	public static boolean canFillDefault_(FluidStack aFluid) {return !(disableAllStoragePowerconducting && powerconducting(aFluid));}
-
+	
 	// GTCH 通过流体类型和实体在 fill 失败时放出音频
 	public static boolean fillFailSound(FluidStack aFluid, TileEntity aTank) {
 		return UT.Sounds.send(aTank.getWorldObj(), SFX.MC_FIZZ, 1.0F, 1.0F, new ChunkCoordinates(aTank.xCoord, aTank.yCoord, aTank.zCoord));
 	}
-
+	
 	public static int dir(BlockFluidBase aFluid) {return lighter(aFluid) ? +1 : -1;}
 	public static int dir(IFluidTank aFluid)     {return lighter(aFluid) ? +1 : -1;}
 	public static int dir(FluidStack aFluid)     {return lighter(aFluid) ? +1 : -1;}
@@ -953,7 +953,7 @@ public enum FL {
 	
 	public static FluidStack mul(FluidStack aFluid, long aMultiplier) {return aFluid == null ? null : amount(aFluid, aFluid.amount * aMultiplier);}
 	public static FluidStack mul(FluidStack aFluid, long aMultiplier, long aDivider, boolean aRoundUp) {return aFluid == null ? null : amount(aFluid, Code.units(aFluid.amount, aDivider, aMultiplier, aRoundUp));}
-
+	
 	// GTCH 通过在 gt 自己的实体的 drain 和 FL 中的 fill （gt 实体 fill 其他实体）添加检测来实现白名单的效果
 	public static long fill (@SuppressWarnings("rawtypes") DelegatorTileEntity aDelegator, FluidStack aFluid, boolean aDoFill) {return aDelegator != null && aDelegator.mTileEntity instanceof IFluidHandler && aFluid != null ? fill_(aDelegator, aFluid, aDoFill) : 0;}
 	public static long fill_(@SuppressWarnings("rawtypes") DelegatorTileEntity aDelegator, FluidStack aFluid, boolean aDoFill) {return fill_((IFluidHandler)aDelegator.mTileEntity, aDelegator.mSideOfTileEntity, aFluid, aDoFill);}

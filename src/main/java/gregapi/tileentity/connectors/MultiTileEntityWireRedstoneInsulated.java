@@ -64,7 +64,7 @@ public class MultiTileEntityWireRedstoneInsulated extends TileEntityBase10Connec
 	public final static float ON_RATIO = 0.12F, OFF_RATIO = -0.16F;
 	private byte mState = 0;
 	public byte getState() {return mState;}
-
+	
 	// GTCH, 用于在状态切换后添加不透明度和亮度更新
 	protected void setState(byte aState) {
 		if (aState == mState) return;
@@ -73,7 +73,7 @@ public class MultiTileEntityWireRedstoneInsulated extends TileEntityBase10Connec
 		updateLightValue();
 		updateLightOpacity(tOldOpacity);
 	}
-
+	
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {
 		super.readFromNBT2(aNBT);
@@ -177,7 +177,7 @@ public class MultiTileEntityWireRedstoneInsulated extends TileEntityBase10Connec
 	public int getComparatorInputOverride(byte aSide) {
 		return UT.Code.bind4(mRedstone / MAX_RANGE);
 	}
-
+	
 	@Override
 	public float getConnectorDiameter(byte aConnectorSide, DelegatorTileEntity<TileEntity> aDelegator) {
 		// 绝缘线缆连接非绝缘线缆时不会收缩
@@ -212,15 +212,15 @@ public class MultiTileEntityWireRedstoneInsulated extends TileEntityBase10Connec
 	@Override public Collection<TagData> getConnectorTypes  (byte aSide) {return TD.Connectors.WIRE_REDSTONE.AS_LIST;}
 	
 	@Override public String getFacingTool                   () {return TOOL_cutter;}
-
+	
 	@Override
 	public void setVisualData(byte aData) {
 		if (aData != mState) setState(aData);
 	}
-
+	
 	@Override
 	public byte getVisualData() {return mState;}
-
+	
 	@Override
 	public boolean onTickCheck(long aTimer) {
 		byte tOldState = mState;
@@ -228,7 +228,7 @@ public class MultiTileEntityWireRedstoneInsulated extends TileEntityBase10Connec
 		if (tOldState != mState) return T;
 		return super.onTickCheck(aTimer);
 	}
-
+	
 	// 在这里进行更新颜色
 	@Override
 	public void onPaintChangeClient(int aPreviousRGBaPaint) {
@@ -237,12 +237,12 @@ public class MultiTileEntityWireRedstoneInsulated extends TileEntityBase10Connec
 		mRGBaRedstoneOFF = UT_CH.Code.getBrighterRGB(getRedstoneRGB(), OFF_RATIO);
 	}
 	public int getRedstoneRGB() {return UT.Code.getRGBInt(mMaterial.fRGBaSolid);}
-
+	
 	// GTCH, 返回绝缘层的颜色为原本颜色
 	@Override public int getBottomRGB() {return UT.Code.getRGBInt(96, 64, 64);}
 	// GTCH, 绝缘时返回绝缘层颜色
 	@SideOnly(Side.CLIENT) @Override protected int colorMultiplier2() {return isPainted()?mRGBa: getBottomRGB();}
-
+	
 	@Override public ITexture getTextureSide                (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {return BlockTextureDefault.get(Textures.BlockIcons.INSULATION_FULL, isPainted()?mRGBa: getBottomRGB());}
 	@Override public ITexture getTextureConnected           (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {return BlockTextureMulti.get(BlockTextureDefault.get(mMaterial, getIconIndexConnected(aSide, aConnections, aDiameter, aRenderPass), getState()>0, worldObj==null?getRedstoneRGB():(getState()>0?mRGBaRedstoneON:mRGBaRedstoneOFF)), BlockTextureDefault.get(aDiameter<0.37F?Textures.BlockIcons.INSULATION_TINY:aDiameter<0.49F?Textures.BlockIcons.INSULATION_SMALL:aDiameter<0.74F?Textures.BlockIcons.INSULATION_MEDIUM:aDiameter<0.99F?Textures.BlockIcons.INSULATION_LARGE:Textures.BlockIcons.INSULATION_HUGE, isPainted()?mRGBa: getBottomRGB()));}
 	

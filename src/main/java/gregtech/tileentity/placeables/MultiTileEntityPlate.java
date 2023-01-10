@@ -70,7 +70,7 @@ public class MultiTileEntityPlate extends MultiTileEntityPlaceable implements IM
 	@Override public ItemStack getStackFromBlock(byte aSide) {return OP.plate.mat(mMaterial, 1);}
 	
 	@Override public String getTileEntityName() {return "gt.multitileentity.plate";}
-
+	
 	// GTCH, 用来在作为覆盖板时禁用放置，现已经在 greg 的放置方法中更加灵活的禁用了放置，所以不需要这个方法了
 	@Override public boolean canPlace(ItemStack aStack, EntityPlayer aPlayer, World aWorld, int aX, int aY, int aZ, byte aSide, float aHitX, float aHitY, float aHitZ) {
 //		if (aPlayer == null) return T;

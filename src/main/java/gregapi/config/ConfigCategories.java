@@ -68,7 +68,7 @@ public enum ConfigCategories {
 		rockcrushing,
 		pulverization;
 	}
-
+	
 	public enum Fuels {
 		boilerfuels;
 	}

@@ -53,8 +53,8 @@ public class MT {
 	static OreDictMaterial unused       (String aNameOreDict) {return create(-1, aNameOreDict).put(UNUSED_MATERIAL, DONT_SHOW_THIS_COMPONENT);}
 	static OreDictMaterial deprecated   (String aNameOreDict) {return create(-1, aNameOreDict).put(UNUSED_MATERIAL, DONT_SHOW_THIS_COMPONENT);}
 	static OreDictMaterial invalid      (String aNameOreDict) {return create(-1, aNameOreDict).put(UNUSED_MATERIAL, DONT_SHOW_THIS_COMPONENT, INVALID_MATERIAL);}
-	/* 15000-15999 For GregTech6-Unofficial，16000-16999 For GregTech6-CH_Edition */
-	static OreDictMaterial create       (int aID, String aNameOreDict) {if (aID >= 17000) return null; if (aID >= 10000 && aID < 15000) return null; OreDictMaterial rMaterial = OreDictMaterial.createMaterial(aID, aNameOreDict, aNameOreDict); ALL_MATERIALS_REGISTERED_HERE.add(rMaterial); if (aID > 0) rMaterial.setOriginalMod(MD.GAPI); return rMaterial.handle(ANY.WoodPlastic);}
+	/* 15000-15999 For GregTech6-Unofficial，17000-17999 For GregTech6-CH_Edition */
+	static OreDictMaterial create       (int aID, String aNameOreDict) {if (aID >= 18000) return null; if (aID >= 10000 && aID < 15000) return null; if (aID >= 16000 && aID < 17000) return null; OreDictMaterial rMaterial = OreDictMaterial.createMaterial(aID, aNameOreDict, aNameOreDict); ALL_MATERIALS_REGISTERED_HERE.add(rMaterial); if (aID > 0) rMaterial.setOriginalMod(MD.GAPI); return rMaterial.handle(ANY.WoodPlastic);}
 	static OreDictMaterial create       (int aID, String aNameOreDict, TextureSet[] aSets) {return create(aID, aNameOreDict).setTextures(aSets);}
 	static OreDictMaterial create       (int aID, String aNameOreDict, TextureSet[] aSets, long aR, long aG, long aB, long aA, Object... aRandomData) {return create(aID, aNameOreDict, aSets).setRGBa(aR, aG, aB, aA).put(aRandomData, aR==256?UNUSED_MATERIAL:null).hide(aR==256);}
 	

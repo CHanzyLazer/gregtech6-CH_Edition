@@ -34,14 +34,12 @@ import gregapi.data.LH.Chat;
 import gregapi.data.OP;
 import gregapi.data.TD;
 import gregapi.network.INetworkHandler;
-import gregapi.network.IPacket;
 import gregapi.old.Textures;
 import gregapi.oredict.OreDictItemData;
 import gregapi.render.BlockTextureDefault;
 import gregapi.render.BlockTextureMulti;
 import gregapi.render.ITexture;
 import gregapi.tileentity.base.TileEntityBase07Paintable;
-import gregapi.tileentity.connectors.ITileEntityItemPipe;
 import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.tileentity.machines.ITileEntityRunningActively;
 import gregapi.tileentity.machines.ITileEntitySwitchableOnOff;
@@ -65,7 +63,7 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 	public long mMaxThroughPut = 64, mCurrentSpeed = 0, mCurrentPower = 0, mTransferredLast = 0;
 	public short mAxleGear = 0;
 	public byte mInputtedSides = 0, mOrder = 0, mRotationData = 0, oRotationData = 0, mIgnorePower = 0;
-
+	
 	// GTCH，用来限制齿轮箱的输入输出
 	public byte mDisabledOutputs = 0, mDisabledInputs = 0;
 	public long mPowerLast = 0, mSpeedLast = 0;
@@ -194,7 +192,7 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 			causeBlockUpdate();
 			return 10000;
 		}
-
+		
 		if (aTool.equals(TOOL_magnifyingglass) && aSneaking) {
 			mGearsWork = checkGears();
 			if (mGearsWork  && !mJammed) {
@@ -236,11 +234,11 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 			if (mJammed || !mGearsWork) mCurrentPower = 0;
 			
 			mTransferredLast = Math.abs(mCurrentPower * mCurrentSpeed);
-
+			
 			// GTCH，用于放大镜显示
 			mSpeedLast = mCurrentSpeed;
 			mPowerLast = mCurrentPower;
-
+			
 			if (mUsedGear && mCurrentPower > 0) {
 				boolean temp = T;
 				while (temp) {
@@ -367,14 +365,14 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 	@Override public void onTickResetChecks(long aTimer, boolean aIsServerSide) {super.onTickResetChecks(aTimer, aIsServerSide); oRotationData = mRotationData;}
 	@Override public void setVisualData(byte aData) {mRotationData = aData;}
 	@Override public byte getVisualData() {return mRotationData;}
-
+	
 	// GTCH, 重写这个方法来扩展客户端数据
 	@Override
 	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
 		super.writeToClientDataPacketByteList(rList);
 		rList.add(4, (byte)mAxleGear);
 	}
-
+	
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		super.receiveDataByteArray(aData, aNetworkHandler);
@@ -405,7 +403,7 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 		if (!isEnergyType(aEnergyType, aSide, F)) return 0;
 		// GTCH，限制输入
 		if (FACE_CONNECTED[aSide][mDisabledInputs]) return 0;
-
+		
 		if (!AXIS_XYZ[(mAxleGear >>> 6) & 3][aSide] && !FACE_CONNECTED[aSide][mAxleGear & 63]) return 0;
 		if (!aDoInject) return mIgnorePower == 0 ? aPower : 0;
 		

@@ -243,7 +243,7 @@ public class MultiTileEntityBookShelf extends TileEntityBase09FacingSingle imple
 	public byte isProvidingWeakPower2(byte aSide) {
 		return (byte)(mRedstoneDelay == 0 ? 0 : 15);
 	}
-
+	
 	// 保证和原本逻辑一样，无论怎样都全部 send
 	@Override
 	public boolean sendAny(boolean aSendAll) {return T;}

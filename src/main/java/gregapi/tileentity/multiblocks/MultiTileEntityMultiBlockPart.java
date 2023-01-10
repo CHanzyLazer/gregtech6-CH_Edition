@@ -86,7 +86,7 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 	public ITileEntityMultiBlockController mTarget = null;
 	
 	protected IIconContainer[][] mTextures = L1L6_IICONCONTAINER;
-
+	
 	// 用 private 封装防止意料外的修改
 	private short mDesign = 0;
 	// GTCH, 用于子类重写实现在结构改变时更新不透明度
@@ -97,7 +97,7 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 		if (tOldOpacity == getLightOpacity()) return;
 		updateLightOpacity(tOldOpacity); // 改为强制更新的版本来避免更新失效
 	}
-
+	
 	public int mMode = 0;
 	
 	public static final int
@@ -207,7 +207,7 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 			}
 		}
 	}
-
+	
 	@Override
 	public void adjacentInventoryUpdated(byte aSide, IInventory aTileEntity) {
 		ITileEntityMultiBlockController tTileEntity = getTarget(T);
@@ -237,7 +237,7 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 		mMode = aMode;
 		setDesign(aDesign);
 	}
-
+	
 	// 图像部分
 	// 技术原因所有图像情况还是只能都放在这里
 	public static final byte
@@ -245,7 +245,7 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 			, FLUID_EMITTER 		= -2	// 仅在主方块背面绘制的流体输出
 			, ENERGY_EMITTER_RU 	= -4	// 仅在主方块背面绘制的RU输出
 			;
-
+	
 	// GTCH, 需要在其是透明部件时设置透光
 	@Override public int getLightOpacity() {return mDesign == TRANSPARENT ? LIGHT_OPACITY_NONE : super.getLightOpacity();}
 	
@@ -257,14 +257,14 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 		}
 		return F;
 	}
-
+	
 	// 用来给主方块调用，材质改变刷新
 	// 是否改变检测和调用交给主方块，数据同步读取交给这里
 	public void refreshVisual() {
 		setVisualDataDesign();
 		sendClientData(F, null);
 	}
-
+	
 	// 额外的数据
 	// 朝向
 	public byte mPartFacing = getDefaultSide();
@@ -286,7 +286,7 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 				mPartFacing = getDefaultSide();
 		}
 	}
-
+	
 	// 得到材质
 	@Override
 	public ITexture getTexture2(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
@@ -309,8 +309,8 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 		}
 		return null;
 	}
-
-
+	
+	
 	// 更多显示数据的收发
 	// GTCH, 重写这个方法保证和原本的逻辑一致
 	@Override
@@ -322,7 +322,7 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 		super.writeToClientDataPacketByteList(rList);
 		rList.add(4, getVisualData_CH());
 	}
-
+	
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		if(aData.length >= 5){
@@ -338,12 +338,11 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 	
 	@Override public byte getVisualData() {return (byte)mDesign;}
 	@Override public void setVisualData(byte aData) {setDesignInternal(aData);}
-
+	
 	// 用于我的额外的图像信息，朝向，是否在运行，等等
 	public byte getVisualData_CH() {return (byte)(mPartFacing & 7);}
-	public void setVisualData_CH(byte aData) {
-		mPartFacing = (byte)(aData & 7);}
-
+	public void setVisualData_CH(byte aData) {mPartFacing = (byte)(aData & 7);}
+	
 	@Override public String getTileEntityName() {return "gt.multitileentity.multiblock.part";}
 	
 	// Relay Tool Uses
@@ -420,7 +419,7 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 		if (tTileEntity instanceof IMultiBlockInventory) return ((IMultiBlockInventory)tTileEntity).isItemValidForSlot(this, aSlot, aStack);
 		return F;
 	}
-
+	
 	@Override
 	public int[] getAccessibleSlotsFromSide2(byte aSide) {
 		if ((mMode & NO_ITEM) == NO_ITEM) return ZL_INTEGER;
@@ -525,7 +524,7 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 		if (tTileEntity instanceof ITileEntityTapAccessible) return ((ITileEntityTapAccessible)tTileEntity).nozzleDrain(aSide, aMaxDrain, aDoDrain);
 		return null;
 	}
-
+	
 	// GTCH, 阻止非输入输出面的自动连接
 	@Override
 	public boolean interceptAutoConnectFluid(byte aSide) {
@@ -545,8 +544,8 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 	// GTCH, 不能输入和输出的面阻止 MOD 管道连接
 	@Override public boolean interceptModConnectFluid(byte aSide) {return (mMode & NO_FLUID) == NO_FLUID;}
 	@Override public boolean interceptModConnectItem(byte aSide)  {return (mMode & NO_ITEM)  == NO_ITEM;}
-
-
+	
+	
 	// Relay Control Covers and such
 	
 	@Override

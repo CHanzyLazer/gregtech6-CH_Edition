@@ -137,8 +137,8 @@ public class MultiTileEntityMiniPortalNether extends MultiTileEntityMiniPortal i
 	public ITexture sNetherPortal = BlockTextureCopied.get(Blocks.portal, SIDE_ANY, 0, UNCOLOURED, F, T, T), sNetherPortalFrame = BlockTextureCopied.get(Blocks.obsidian, SIDE_ANY, 0);
 	@Override public ITexture getPortalTexture() {return sNetherPortal;}
 	@Override public ITexture getFrameTexture() {return sNetherPortalFrame;}
-
+	
 	@SideOnly(Side.CLIENT) @Override public int colorMultiplier() {return COLOR_OBSIDIAN;}
-
+	
 	@Override public String getTileEntityName() {return "gt.multitileentity.portal.nether";}
 }

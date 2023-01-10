@@ -28,6 +28,6 @@ import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockMachine;
  */
 public class MultiTileEntityAutoclave extends TileEntityBase10MultiBlockMachine {
 	@Override protected MTEC_MultiBlockMachine getNewCoreMultiBlock() {return new MTEC_MultiBlockAutoclave(this);}
-
+	
 	@Override public String getTileEntityName() {return "gt.multitileentity.multiblock.autoclave";}
 }

@@ -131,8 +131,8 @@ public class MultiTileEntityMiniPortalEnd extends MultiTileEntityMiniPortal {
 	public ITexture sEndPortal = BlockTextureCopied.get(Blocks.portal, SIDE_ANY, 0, DYE_Black, F, T, T), sEndPortalFrame = BlockTextureCopied.get(Blocks.end_portal_frame, SIDE_TOP, 0);
 	@Override public ITexture getPortalTexture() {return sEndPortal;}
 	@Override public ITexture getFrameTexture() {return sEndPortalFrame;}
-
+	
 	@SideOnly(Side.CLIENT) @Override public int colorMultiplier() {return COLOR_END_PORTAL_FRAME;}
-
+	
 	@Override public String getTileEntityName() {return "gt.multitileentity.portal.end";}
 }

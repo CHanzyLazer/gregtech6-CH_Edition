@@ -48,7 +48,6 @@ import gregapi.tileentity.energy.ITileEntityEnergyDataCapacitor;
 import gregapi.tileentity.machines.*;
 import gregapi.util.UT.Code;
 import gregtech.blocks.fluids.BlockWaterlike;
-import gregtechCH.data.LH_CH;
 import micdoodle8.mods.galacticraft.api.block.IPartialSealableBlock;
 import micdoodle8.mods.galacticraft.api.world.IGalacticraftWorldProvider;
 import micdoodle8.mods.galacticraft.core.util.OxygenUtil;

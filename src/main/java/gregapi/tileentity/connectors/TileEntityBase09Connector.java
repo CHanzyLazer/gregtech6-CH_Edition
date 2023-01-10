@@ -66,7 +66,7 @@ public abstract class TileEntityBase09Connector extends TileEntityBase08Directio
 		super.writeToNBT2(aNBT);
 		UT.NBT.setNumber(aNBT, NBT_CONNECTION, mConnections);
 	}
-
+	
 	@Override
 	public void onTick2(long aTimer, boolean aIsServerSide) {
 		super.onTick2(aTimer, aIsServerSide);
@@ -105,7 +105,7 @@ public abstract class TileEntityBase09Connector extends TileEntityBase08Directio
 	}
 	public void schedulePlace(EntityPlayer aPlayer, byte aSide) {mScheduleList.add(new SchedulePlace(aPlayer, aSide));}
 	private final List<Runnable> mScheduleList = new ArrayList<>();
-
+	
 	private void _place(EntityPlayer aPlayer, byte aSide) {
 		aSide = OPOS[aSide];
 		DelegatorTileEntity<TileEntity> tDelegator;
@@ -152,7 +152,7 @@ public abstract class TileEntityBase09Connector extends TileEntityBase08Directio
 	}
 	// GTCH, 改为相同的连接性质即可
 	public boolean isFullBlockTE(TileEntity aHand, byte aSide) {return SIDES_VALID[aSide] && (aHand instanceof ITileEntityConnector) && UT.Code.haveOneCommonElement(((ITileEntityConnector)aHand).getConnectorTypes(OPOS[aSide]), getConnectorTypes(aSide));}
-
+	
 	@Override
 	public boolean connected(byte aSide) {
 		return FACE_CONNECTED[aSide][mConnections];
@@ -168,7 +168,7 @@ public abstract class TileEntityBase09Connector extends TileEntityBase08Directio
 			if (tDelegator.mTileEntity instanceof ITileEntityCoverable && ((ITileEntityCoverable)tDelegator.mTileEntity).getCoverData() != null && ((ITileEntityCoverable)tDelegator.mTileEntity).getCoverData().mBehaviours[tDelegator.mSideOfTileEntity] != null && ((ITileEntityCoverable)tDelegator.mTileEntity).getCoverData().mBehaviours[tDelegator.mSideOfTileEntity].interceptConnect(tDelegator.mSideOfTileEntity, ((ITileEntityCoverable)tDelegator.mTileEntity).getCoverData())) return F;
 			// GTCH, 补充条件让有建筑泡沫的管道只有连接面能连接
 			if (tDelegator.mTileEntity instanceof ITileEntityFoamable && ((ITileEntityFoamable) tDelegator.mTileEntity).driedFoam(OPOS[aSide]) && !((ITileEntityConnector) tDelegator.mTileEntity).connected(OPOS[aSide])) return F;
-
+			
 			if (SIDES_VALID[tDelegator.mSideOfTileEntity] && UT.Code.haveOneCommonElement(((ITileEntityConnector)tDelegator.mTileEntity).getConnectorTypes(tDelegator.mSideOfTileEntity), getConnectorTypes(aSide))) {
 				doConnect_(aSide);
 				if (aNotify) ((ITileEntityConnector)tDelegator.mTileEntity).connect(tDelegator.mSideOfTileEntity, F);
@@ -187,7 +187,7 @@ public abstract class TileEntityBase09Connector extends TileEntityBase08Directio
 		}
 		return connected(aSide);
 	}
-
+	
 	// GTCH, 用于减少重复代码
 	private void doConnect_(byte aSide) {
 		byte oConnections = mConnections;
@@ -222,7 +222,7 @@ public abstract class TileEntityBase09Connector extends TileEntityBase08Directio
 	public void onConnectionChange(byte aPreviousConnections) {/**/}
 	public boolean canConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator) {return F;}
 	protected boolean canAutoConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator) {return canConnect(aSide, aDelegator);}
-
+	
 	// GTCH, 非连接面阻止 MOD 管道连接
 	@Override public boolean interceptModConnectItem(byte aSide)  {return !connected(aSide);}
 	@Override public boolean interceptModConnectFluid(byte aSide) {return !connected(aSide);}

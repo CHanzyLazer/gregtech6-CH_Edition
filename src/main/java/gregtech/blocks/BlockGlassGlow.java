@@ -84,14 +84,14 @@ public class BlockGlassGlow extends BlockColored {
 		Block aBlock = aWorld.getBlock(aX, aY, aZ);
 		return aBlock instanceof BlockMetaType && ((BlockMetaType)aBlock).mBlock == mBlock ? WD.meta(aWorld, aX, aY, aZ) != aWorld.getBlockMetadata(aX - OFFX[aSide], aY - OFFY[aSide], aZ - OFFZ[aSide]) || ((((BlockMetaType)aBlock).mSide != mSide || aSide == mSide) && ((BlockMetaType)aBlock).mSide != OPOS[aSide] && ((BlockMetaType)aBlock).mSide != SIDE_ANY) : super.shouldSideBeRendered(aWorld, aX, aY, aZ, aSide);
 	}
-
+	
 	// GTCH, 在这里加入材料的颜色属性
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int getRenderColor(int aMeta) {
 		return DYES_INT_Glass[UT.Code.bind4(aMeta)];
 	}
-
+	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int colorMultiplier(IBlockAccess aWorld, int aX, int aY, int aZ) {

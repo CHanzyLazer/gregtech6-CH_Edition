@@ -115,7 +115,7 @@ public class MultiTileEntityCrucible extends TileEntityBase10MultiBlockBase impl
 		if (worldObj.blockExists(xCoord-1, yCoord, zCoord-1) && worldObj.blockExists(xCoord+1, yCoord+2, zCoord+1)) {
 			if (getAir(xCoord, yCoord+1, zCoord)) worldObj.setBlockToAir(xCoord, yCoord+1, zCoord); else {resetStructurePart(); return F;}
 			if (getAir(xCoord, yCoord+2, zCoord)) worldObj.setBlockToAir(xCoord, yCoord+2, zCoord); else {resetStructurePart(); return F;}
-
+			
 			for (int i = -1; i < 2; i++) for (int j = -1; j < 2; j++) if (i != 0 || j != 0) {
 				if (!ITileEntityMultiBlockController.Util.checkAndSetTargetOffset(this, i, 0, j, mWalls, getMultiTileEntityRegistryID(), MultiTileEntityMultiBlockPart.TRANSPARENT, MultiTileEntityMultiBlockPart.ONLY_ENERGY_IN)) {resetStructurePart(); return F;}
 				if (!ITileEntityMultiBlockController.Util.checkAndSetTargetOffset(this, i, 1, j, mWalls, getMultiTileEntityRegistryID(), MultiTileEntityMultiBlockPart.TRANSPARENT, MultiTileEntityMultiBlockPart.ONLY_CRUCIBLE)) {resetStructurePart(); return F;}
@@ -125,7 +125,7 @@ public class MultiTileEntityCrucible extends TileEntityBase10MultiBlockBase impl
 		}
 		return isStructureOkay();
 	}
-
+	
 	protected void resetStructurePart() {
 		for (int i = -1; i < 2; i++) for (int j = -1; j < 2; j++) if (i != 0 || j != 0) {
 			ITileEntityMultiBlockController.Util.checkAndResetTargetOffset(this, i, 0, j, mWalls, getMultiTileEntityRegistryID());
@@ -584,14 +584,14 @@ public class MultiTileEntityCrucible extends TileEntityBase10MultiBlockBase impl
 		mTemperature = WD.envTemp(worldObj, xCoord, yCoord, zCoord);
 		return T;
 	}
-
+	
 	@Override
 	public boolean sendAny(boolean aSendAll) {return T;}
 	@Override
 	public IPacket getClientDataPacketSendAll(boolean aSendAll, List<Byte> rList) {
 		return super.getClientDataPacketSendAll(T, rList); // 保证附加的方块信息也总是会被发送
 	}
-
+	
 	// GTCH, 重写这个方法来扩展客户端数据
 	@Override
 	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
@@ -601,7 +601,7 @@ public class MultiTileEntityCrucible extends TileEntityBase10MultiBlockBase impl
 		rList.add(7, UT.Code.toByteS(mDisplayedFluid, 1));
 		rList.add(8, (byte)(mMeltDown ? 1 : 0));
 	}
-
+	
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		super.receiveDataByteArray(aData, aNetworkHandler);
@@ -671,11 +671,11 @@ public class MultiTileEntityCrucible extends TileEntityBase10MultiBlockBase impl
 		}
 		return BlockTextureMulti.get(BlockTextureDefault.get((aSide==mFacing?mTexturesFront:mTextures)[FACES_TBS[aSide]], mRGBa), BlockTextureDefault.get((aSide==mFacing?mTexturesFront:mTextures)[FACES_TBS[aSide]+3]));
 	}
-
+	
 	// GTCH, 需要在结构成形时设置其为透明
 	@Override public int getLightOpacity() {return isStructureOkay() ? LIGHT_OPACITY_WATER : super.getLightOpacity();}
 	@Override protected void setStructureOkay2(int aOldOpacity) {updateLightOpacity(aOldOpacity);}
-
+	
 	@Override
 	public void onWalkOver2(EntityLivingBase aEntity) {
 		super.onWalkOver2(aEntity);

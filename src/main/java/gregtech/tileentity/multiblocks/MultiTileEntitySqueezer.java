@@ -35,7 +35,7 @@ import static gregapi.data.CS.*;
  */
 public class MultiTileEntitySqueezer extends TileEntityBase10MultiBlockMachine {
 	@Override protected MTEC_MultiBlockMachine getNewCoreMultiBlock() {return new MTEC_MultiBlockSqueezer(this);}
-
+	
 	@Override
 	public void updateAdjacentToggleableEnergySources() {
 		DelegatorTileEntity<TileEntity> tDelegator;

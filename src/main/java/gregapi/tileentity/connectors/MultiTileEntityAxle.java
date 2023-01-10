@@ -93,7 +93,7 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 		// 默认值不为零（或者可能不为零）的需要专门设置
 		if (SIDES_VALID[mEnergyDir]) aNBT.setByte(NBT_ENERGY_EMITTED_SIDES, mEnergyDir);
 	}
-
+	
 	@Override
 	public NBTTagCompound writeItemNBT2(NBTTagCompound aNBT) {
 		if (isFoamDried()){
@@ -112,7 +112,7 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 		aList.add(Chat.DGRAY + LH.get(LH.TOOL_TO_DETAIL_MAGNIFYINGGLASS));
 		aList.add(LH.Chat.DGRAY + LH_CH.get(LH_CH.TOOL_TO_DETAIL_MAGNIFYINGGLASS_SNEAK));
 	}
-
+	
 	// GTCH, 使用活动扳手调整限制输出方向
 	@Override
 	public long onToolClick2(String aTool, long aRemainingDurability, long aQuality, Entity aPlayer, List<String> aChatReturn, IInventory aPlayerInventory, boolean aSneaking, ItemStack aStack, byte aSide, float aHitX, float aHitY, float aHitZ) {
@@ -155,7 +155,7 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 		}
 		return 0;
 	}
-
+	
 	protected void checkConnection() {
 		if (!connected(mEnergyDir)) mEnergyDir = SIDE_ANY;
 		oConnections = mConnections;
@@ -176,7 +176,7 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 			mSpeedLast = mStateSpeed;
 			mPowerLast = mTransferredPower;
 			mStateSpeed = mTransferredPower = 0;
-
+			
 			if (isFoamDried() && mOutMark) {
 				--mMarkBuffer;
 				if (mMarkBuffer < 0) {
@@ -186,7 +186,7 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 			}
 		}
 	}
-
+	
 	@Override
 	protected int getRenderPasses3(Block aBlock, boolean[] aShouldSideBeRendered) {
 		if (worldObj == null && isFoamDried()) mRGBaMark = UT_CH.Code.getMarkRGB(mRGBa);
@@ -208,7 +208,7 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 		mEnergyDir = (byte)((aData >> 4) & 7);
 	}
 	@Override public byte getVisualData() {return (byte)((mRotationDir & 3) | (mFast?4:0) | (mOutMark?8:0) | ((mEnergyDir & 7) << 4));}
-
+	
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		boolean tOut = super.receiveDataByteArray(aData, aNetworkHandler);
@@ -218,7 +218,7 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 	
 	public long transferRotations(byte aSide, long aSpeed, long aPower, long aChannel, HashSetNoNulls<TileEntity> aAlreadyPassed) {
 		if (mTimer < 1) return 0;
-
+		
 		// GTCH, 用于放大镜显示
 		if (Math.abs(aSpeed) > Math.abs(mStateSpeed)) mStateSpeed = aSpeed;
 		
@@ -246,14 +246,14 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 		}
 		return aPower;
 	}
-
+	
 	@Override
 	public void onConnectionChange(byte aPreviousConnections) {
 		super.onConnectionChange(aPreviousConnections);
 		// GTCH, 使用内部的改变连接方向来检测连接
 		checkConnection();
 	}
-
+	
 	@Override
 	public boolean canConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator) {
 		if (aDelegator.mTileEntity instanceof ITileEntityEnergy) return ((ITileEntityEnergy)aDelegator.mTileEntity).isEnergyAcceptingFrom(TD.Energy.RU, aDelegator.mSideOfTileEntity, T) || ((ITileEntityEnergy)aDelegator.mTileEntity).isEnergyEmittingTo(TD.Energy.RU, aDelegator.mSideOfTileEntity, T);

@@ -21,7 +21,6 @@ package gregapi.tileentity.tank;
 
 import static gregapi.data.CS.*;
 
-import com.google.common.primitives.Bytes;
 import gregapi.data.FL;
 import gregapi.network.INetworkHandler;
 import gregapi.network.IPacket;
@@ -46,7 +45,7 @@ public abstract class TileEntityBase09FluidContainerSync extends TileEntityBase0
 		super.onTickResetChecks(aTimer, aIsServerSide);
 		oDisplay = FL.id_(mTank);
 	}
-
+	
 	// GTCH, 重写这个方法保证和原本的逻辑一致
 	@Override
 	public IPacket getClientDataPacketNoSendAll(boolean aSendAll) {
@@ -60,7 +59,7 @@ public abstract class TileEntityBase09FluidContainerSync extends TileEntityBase0
 		rList.add(0, UT.Code.toByteS(tDisplay, 0));
 		rList.add(1, UT.Code.toByteS(tDisplay, 1)); // 保持原本一致的顺序
 	}
-
+	
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		if (aData.length > 1) mTank.setFluid(FL.make(UT.Code.combine(aData[0], aData[1]), mTank.getCapacity()));

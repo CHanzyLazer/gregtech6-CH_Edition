@@ -140,7 +140,7 @@ public abstract class TileEntityBase03TicksAndSync extends TileEntityBase02Adjac
 		}
 		mIsRunningTick = F;
 	}
-
+	
 //	@Override public boolean canUpdate2() {return isServerSide();}
 	
 	/** The very first Tick happening to this TileEntity */

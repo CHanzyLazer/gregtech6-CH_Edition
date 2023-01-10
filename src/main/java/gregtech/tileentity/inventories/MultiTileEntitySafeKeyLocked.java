@@ -100,14 +100,14 @@ public class MultiTileEntitySafeKeyLocked extends MultiTileEntitySafe implements
 	public long getKeyID() {
 		return mID;
 	}
-
+	
 	// GTCH, 大致检查了一下，只要删除原本的就可以了，不过还是保持一致重写了一下
 	@Override
 	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
 		rList.add(3, getDirectionData());
 		rList.add(4, getVisualData());
 	}
-
+	
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		setRGBData(aData[0], aData[1], aData[1], aData[aData.length-1]);

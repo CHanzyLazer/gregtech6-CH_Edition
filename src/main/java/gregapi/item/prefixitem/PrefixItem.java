@@ -230,7 +230,7 @@ public class PrefixItem extends Item implements Runnable, IItemUpdatable, IPrefi
 	public static String getLocalName(OreDictPrefix aPrefix, OreDictMaterial aMaterial) {
 		return LanguageHandler.getLocalName(aPrefix, aMaterial);
 	}
-
+	
 	// GTCH, 用来在作为覆盖板时潜行也能放置上，检测是否可能不是作为覆盖板
 	@Override public boolean doesSneakBypassUse(World aWorld, int aX, int aY, int aZ, EntityPlayer aPlayer) {
 		if (DATA_GTCH.sneakingMountCover && ALL_COVER_PREFIX.contains(mPrefix)) {

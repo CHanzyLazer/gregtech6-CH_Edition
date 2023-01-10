@@ -20,10 +20,7 @@
 package gregapi.block.prefixblock;
 
 import static gregapi.data.CS.*;
-import static gregtechCH.data.CS_CH.NBT_LIGHT_OPACITY;
 
-import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetLightValue;
-import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetLightOpacity;
 import gregapi.network.INetworkHandler;
 import gregapi.network.packets.data.PacketSyncDataName;
 import gregapi.network.packets.data.PacketSyncDataShort;

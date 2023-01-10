@@ -110,7 +110,7 @@ public abstract class TileEntityBase03MultiTileEntities extends TileEntityBase02
 		// Read the Default Parameters from NBT.
 		if (aNBT != null) readFromNBT(aNBT);
 	}
-
+	
 	@Override
 	public final void readFromNBT(NBTTagCompound aNBT) {
 		super.readFromNBT(aNBT);
@@ -199,7 +199,7 @@ public abstract class TileEntityBase03MultiTileEntities extends TileEntityBase02
 		if (paint(aRGB)) {updateClientData(T); causeBlockUpdate(); worldObj.markTileEntityChunkModified(xCoord, yCoord, zCoord, this); return T;}
 		return F;
 	}
-
+	
 	@SideOnly(Side.CLIENT) @Override public int colorMultiplier() {return UNCOLORED;}
 	
 	public boolean unpaint() {return F;}

@@ -167,7 +167,7 @@ public class MultiTileEntityBlock extends Block implements IBlock, IItemGT, IBlo
 		if (WD_CH.isServerSide(aWorld)) WD_CH.resetBlockGTLightOpacity(aWorld, aX, aY, aZ);
 		aWorld.removeTileEntity(aX, aY, aZ);
 	}
-
+	
 	@Override
 	public MapColor getMapColor(int aMeta) {
 		return mMapColor == null ? super.getMapColor(aMeta) : mMapColor;
@@ -328,11 +328,11 @@ public class MultiTileEntityBlock extends Block implements IBlock, IItemGT, IBlo
 	@Override @Optional.Method(modid = ModIDs.BOTA) public final void onBurstCollision(vazkii.botania.api.internal.IManaBurst aMana, World aWorld, int aX, int aY, int aZ) {if (aWorld.isRemote) return; if (aMana.isFake() || !IL.BOTA_Paintslinger.equal(aMana.getSourceLens(), F, T) || !aMana.getSourceLens().hasTagCompound() || !aMana.getSourceLens().getTagCompound().hasKey("color") || aMana.getSourceLens().getTagCompound().getInteger("color") == -1) return; TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ); if (aTileEntity instanceof IMTE_OnPainting) ((IMTE_OnPainting)aTileEntity).onPainting(SIDE_UNKNOWN, (aMana.getColor() & 0x00ffffff));}
 	// GTCH, 使实体方块可以重写方块的附加颜色（主要是粒子特效的颜色）
 	@SideOnly(Side.CLIENT) @Override public int colorMultiplier(IBlockAccess aWorld, int aX, int aY, int aZ) {TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ); return aTileEntity instanceof IMTE_ColorMultiplier ? ((IMTE_ColorMultiplier)aTileEntity).colorMultiplier() : super.colorMultiplier(aWorld, aX, aY, aZ);}
-
-
+	
+	
 	@Override public final int getLightOpacity(IBlockAccess aWorld, int aX, int aY, int aZ) {
 		if (DATA_GTCH.disableGTBlockLightOpacity) return super.getLightOpacity(aWorld, aX, aY, aZ); // 添加一个直接全部禁用的选项，来从根本直接解决问题
-
+		
 		TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ);
 		Short tTELightOpacity = WD_CH.getBlockGTLightOpacity(aWorld, aX, aY, aZ); // 尝试获取存储的不透光度
 		if (aTileEntity instanceof IMTE_GetLightOpacity)

@@ -239,7 +239,7 @@ dependencies {
 	compileOnly "com.builtbroken:ICBM-classic:1.7.10-2.16.4b239:deobf"
 	compileOnly "com.builtbroken:Mffs:1.7.10-4.0.0b160:deobf"
 	compileOnly "com.builtbroken:MilitaryBaseDecor:1.7.10-0.1.0b203:deobf"
-	compileOnly "com.builtbroken:VoltzEngine:1.7.10-1.11.0b466:deobf" // MARK
+	compileOnly "com.builtbroken:VoltzEngine:1.7.10-1.11.0b466:deobf"
 	compileOnly "com.hbm:hbm:1.0.27:dev"
 	compileOnly "com.celestek.hexcraft:HEXCraft:1.7.10-0.13.1:dev"
 	compileOnly "team.chisel.ctmlib:CTMLib:MC1.7.10-1.4.1.5:deobf"

@@ -257,7 +257,7 @@ public abstract class TileEntityBase04MultiTileEntities extends TileEntityBase03
 	}
  	// 重写以更改方块的粒子特效颜色
 	@SideOnly(Side.CLIENT) @Override public int colorMultiplier() {return UNCOLORED;}
-
+	
 	public boolean unpaint() {return F;}
 	public boolean isPainted() {return F;}
 	public void setIsPainted(boolean aIsPainted) {/**/}

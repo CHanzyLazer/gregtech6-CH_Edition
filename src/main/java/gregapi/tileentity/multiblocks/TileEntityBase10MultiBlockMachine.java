@@ -49,7 +49,7 @@ import net.minecraftforge.fluids.IFluidTank;
 public abstract class TileEntityBase10MultiBlockMachine extends MultiTileEntityBasicMachine implements IMultiBlockFluidHandler, IMultiBlockInventory, IMultiBlockEnergy {
 	public boolean mStructureChanged = F;
 	protected MTEC_MultiBlockMachine mCoreMultiBlock;
-
+	
 	// 用 private 封装防止意料外的修改
 	private boolean mStructureOkay = F;
 	public final boolean isStructureOkay() {return mStructureOkay;}
@@ -62,12 +62,12 @@ public abstract class TileEntityBase10MultiBlockMachine extends MultiTileEntityB
 	}
 	// 与原本的 on... 不同，一定是结构完整度发生了改变才会调用
 	protected void setStructureOkay2(int aOldOpacity) {/**/}
-
+	
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {
 		super.readFromNBT2(aNBT);
 		if (aNBT.hasKey(NBT_STATE+".str")) mStructureOkay = aNBT.getBoolean(NBT_STATE+".str"); // NBT 修改会有统一的更新和优化，不需要在这里再次调用
-
+		
 		// GTCH, core init
 		mCoreMultiBlock = getNewCoreMultiBlock();
 	}
@@ -79,7 +79,7 @@ public abstract class TileEntityBase10MultiBlockMachine extends MultiTileEntityB
 		super.writeToNBT2(aNBT);
 		UT.NBT.setBoolean(aNBT, NBT_STATE+".str", mStructureOkay);
 	}
-
+	
 	@Override public final void toolTipsMultiblock(List<String> aList) {mCoreMultiBlock.toolTipsMultiblock(aList);}
 	
 	@Override
@@ -112,7 +112,7 @@ public abstract class TileEntityBase10MultiBlockMachine extends MultiTileEntityB
 		if (refreshStructureOnActiveStateChange() && (mActive != oActive || mRunning != oRunning)) checkStructure(T);
 		return super.onTickCheck(aTimer);
 	}
-
+	
 	@Override
 	public boolean checkStructure(boolean aForceReset) {
 		boolean tOut = checkStructureOnly(aForceReset);
@@ -146,7 +146,7 @@ public abstract class TileEntityBase10MultiBlockMachine extends MultiTileEntityB
 	
 	public final boolean checkStructure2() {return mCoreMultiBlock.checkStructure2();}
 	public boolean refreshStructureOnActiveStateChange() {return F;}
-
+	
 	@Override public final boolean isInsideStructure(int aX, int aY, int aZ) {return mCoreMultiBlock.isInsideStructure(aX, aY, aZ);}
 	@Override public final DelegatorTileEntity<IInventory> getItemInputTarget(byte aSide) {return mCoreMultiBlock.getItemInputTarget(aSide);}
 	@Override public final DelegatorTileEntity<TileEntity> getItemOutputTarget(byte aSide) {return mCoreMultiBlock.getItemOutputTarget(aSide);}
@@ -174,6 +174,6 @@ public abstract class TileEntityBase10MultiBlockMachine extends MultiTileEntityB
 	@Override public void openInventory                     (MultiTileEntityMultiBlockPart aPart) {openInventory();}
 	@Override public void closeInventory                    (MultiTileEntityMultiBlockPart aPart) {closeInventory();}
 	@Override public boolean isItemValidForSlot             (MultiTileEntityMultiBlockPart aPart, int aSlot, ItemStack aStack) {return isItemValidForSlot(aSlot, aStack);}
-
+	
 	@Override public final String getTileEntityNameCompat() {return mCoreMultiBlock.getTileEntityNameCompat();}
 }

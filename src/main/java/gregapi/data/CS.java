@@ -1307,7 +1307,7 @@ public class CS {
 	, NBT_OUTPUT_AU                 = "gt.output.au"                // Long containing a specified Energy Variable.
 	, NBT_OUTPUT_MJ                 = "gt.output.mj"                // Long containing a specified Energy Variable.
 	, NBT_OUTPUT_RF                 = "gt.output.rf"                // Long containing a specified Energy Variable.
-
+	
 	, NBT_ENERGY                    = "gt.energy"                   // Long containing a generic Energy Variable.
 	, NBT_ENERGY_EU                 = "gt.energy.eu"                // Long containing a specified Energy Variable.
 	, NBT_ENERGY_RU                 = "gt.energy.ru"                // Long containing a specified Energy Variable.
@@ -2142,7 +2142,7 @@ public class CS {
 		, GC_EXTRAPLANETS   = "ExtraPlanets"
 		, VULPES            = "libVulpes"
 		, MD8               = "Micdoodlecore"
-
+		
 		, NEID              = "notenoughIDs"
 		;
 	}

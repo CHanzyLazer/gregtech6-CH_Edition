@@ -160,7 +160,7 @@ public class MultiTileEntityMoldCoinage extends TileEntityBase07Paintable implem
 		super.onTickResetChecks(aTimer, aIsServerSide);
 		oDisplayedMetal = mDisplayedMetal;
 	}
-
+	
 	// GTCH, 重写这个方法保证和原本的逻辑一致
 	@Override
 	public IPacket getClientDataPacketNoSendAll(boolean aSendAll) {
@@ -172,7 +172,7 @@ public class MultiTileEntityMoldCoinage extends TileEntityBase07Paintable implem
 		rList.add(0, UT.Code.toByteS(mDisplayedMetal, 0));
 		rList.add(1, UT.Code.toByteS(mDisplayedMetal, 1)); // 保持原本一致的顺序
 	}
-
+	
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		mDisplayedMetal = UT.Code.combine(aData[0], aData[1]);

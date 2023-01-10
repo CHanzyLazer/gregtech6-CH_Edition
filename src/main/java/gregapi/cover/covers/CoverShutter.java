@@ -33,7 +33,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
 
 /**
  * @author Gregorius Techneticies
@@ -84,10 +83,10 @@ public class CoverShutter extends AbstractCoverAttachment {
 	@Override public boolean interceptItemExtract(byte aCoverSide, CoverData aData, int aSlot, ItemStack aStack, byte aSide) {return (aData.mVisuals[aCoverSide] == 0) == aData.mStopped;}
 	@Override public boolean interceptFluidFill(byte aCoverSide, CoverData aData, byte aSide, FluidStack aFluidToFill) {return (aData.mVisuals[aCoverSide] == 0) == aData.mStopped;}
 	@Override public boolean interceptFluidDrain(byte aCoverSide, CoverData aData, byte aSide, FluidStack aFluidToDrain) {return (aData.mVisuals[aCoverSide] == 0) == aData.mStopped;}
-
+	
 	// GTCH, 用来防止显示连接
 	@Override public boolean interceptConnect(byte aCoverSide, CoverData aData) {return (aData.mVisuals[aCoverSide] == 0) == aData.mStopped;}
-
+	
 	@Override public ITexture getCoverTextureSurface(byte aCoverSide, CoverData aData) {return aData.mVisuals[aCoverSide]==0?sTextureNormal:sTextureInverted;}
 	@Override public ITexture getCoverTextureAttachment(byte aCoverSide, CoverData aData, byte aTextureSide) {return ALONG_AXIS[aCoverSide][aTextureSide] ? BlockTextureMulti.get(BACKGROUND_COVER, aData.mVisuals[aCoverSide]==0?sTextureNormal:sTextureInverted) : BACKGROUND_COVER;}
 	@Override public ITexture getCoverTextureHolder(byte aCoverSide, CoverData aData, byte aTextureSide) {return BACKGROUND_COVER;}

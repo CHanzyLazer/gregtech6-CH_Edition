@@ -427,7 +427,7 @@ public class MultiTileEntityMold extends TileEntityBase07Paintable implements IT
 	
 	@Override
 	public void onTickResetChecks(long aTimer, boolean aIsServerSide) {/* Needed to be delayed. */}
-
+	
 	// GTCH, 重写这个方法保证和原本的逻辑一致
 	@Override
 	public boolean sendAny(boolean aSendAll) {return T;}
@@ -441,7 +441,7 @@ public class MultiTileEntityMold extends TileEntityBase07Paintable implements IT
 		rList.add(7, UT.Code.toByteI(mShape, 2));
 		rList.add(8, UT.Code.toByteI(mShape, 3));
 	}
-
+	
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		mDisplay = UT.Code.combine(aData[0], aData[1]);

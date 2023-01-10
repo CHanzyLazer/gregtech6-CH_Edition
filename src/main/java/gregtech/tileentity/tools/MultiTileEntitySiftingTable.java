@@ -296,7 +296,7 @@ public class MultiTileEntitySiftingTable extends TileEntityBase07Paintable imple
 		oDisplayedInput  = mDisplayedInput;
 		oDisplayedOutput = mDisplayedOutput;
 	}
-
+	
 	// GTCH, 重写这个方法保证和原本的逻辑一致
 	@Override
 	public IPacket getClientDataPacketNoSendAll(boolean aSendAll) {
@@ -313,7 +313,7 @@ public class MultiTileEntitySiftingTable extends TileEntityBase07Paintable imple
 		rList.add(3, UT.Code.toByteS(mDisplayedInput, 0));
 		rList.add(4, UT.Code.toByteS(mDisplayedInput, 1));
 	}
-
+	
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		mState = aData[0];

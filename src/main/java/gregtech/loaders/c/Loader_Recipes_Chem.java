@@ -292,11 +292,11 @@ public class Loader_Recipes_Chem implements Runnable {
 		}
 		RM.Electrolyzer .addRecipe2(T, 16,  512, ST.tag(0), OM.dust(MT.NaHSO4, U*7), NF, MT.H .gas(U  , T), OM.dust(MT.NaSO4, U*6));
 		RM.Electrolyzer .addRecipe2(T, 16,  512, ST.tag(0), OM.dust(MT.KHSO4 , U*7), NF, MT.H .gas(U  , T), OM.dust(MT.KSO4 , U*6));
-		RM.Electrolyzer .addRecipe2(T, 64,  512, ST.tag(0), OM.dust(MT.CaCl2 , U*3), NF, MT.Cl.gas(U*2, T), OM.dust(MT.Ca   , U));
-		RM.Electrolyzer .addRecipe2(T, 64,  512, ST.tag(0), OM.dust(MT.MgCl2 , U*3), NF, MT.Cl.gas(U*2, T), OM.dust(MT.Mg   , U));
+		RM.Electrolyzer .addRecipe2(T, 64, 1024, ST.tag(0), OM.dust(MT.CaCl2 , U*3), NF, MT.Cl.gas(U*2, T), OM.dust(MT.Ca   , U));
+		RM.Electrolyzer .addRecipe2(T, 64, 1024, ST.tag(0), OM.dust(MT.MgCl2 , U*3), NF, MT.Cl.gas(U*2, T), OM.dust(MT.Mg   , U));
 		RM.Electrolyzer .addRecipe2(T, 64, 2048, ST.tag(0), OM.dust(MT.MnCl2 , U*3), NF, MT.Cl.gas(U*2, T), OM.dust(MT.Mn   , U));
-		RM.Electrolyzer .addRecipe1(T, 16, 1024, ST.tag(0), MT.CaCl2.liquid(U*3, T), MT.Cl.gas(U*2, T), OM.dust(MT.Ca, U));
-		RM.Electrolyzer .addRecipe1(T, 16, 1024, ST.tag(0), MT.MgCl2.liquid(U*3, T), MT.Cl.gas(U*2, T), OM.dust(MT.Mg, U));
+		RM.Electrolyzer .addRecipe1(T, 16, 2048, ST.tag(0), MT.CaCl2.liquid(U*3, T), MT.Cl.gas(U*2, T), OM.dust(MT.Ca, U));
+		RM.Electrolyzer .addRecipe1(T, 16, 2048, ST.tag(0), MT.MgCl2.liquid(U*3, T), MT.Cl.gas(U*2, T), OM.dust(MT.Mg, U));
 		RM.Electrolyzer .addRecipe1(T, 16, 4096, ST.tag(0), MT.MnCl2.liquid(U*3, T), MT.Cl.gas(U*2, T), OM.dust(MT.Mn, U));
 		
 		RM.Electrolyzer .addRecipe1(T, 16,  256, ST.tag(1), FL.array(MT.LiClO3.liquid(U*5, T), MT.O.gas(U, T)), NF, OM.dust(MT.LiClO4, U*6));
@@ -491,11 +491,13 @@ public class Loader_Recipes_Chem implements Runnable {
 		
 		RM.Drying       .addRecipe0(T, 16,   16           , FL.Water           .make(10), FL.DistW.make( 8), ZL_IS);
 		RM.Drying       .addRecipe0(T, 16,   16           , FL.SpDew           .make(10), FL.DistW.make( 8), ZL_IS);
+		RM.Drying       .addRecipe0(T, 16,   16           , FL.MnWtr.make(10), FL.DistW.make( 8), ZL_IS);
 		RM.Drying       .addRecipe0(T, 16,   16           , FL.Water_Geothermal.make(25), FL.DistW.make(20), ZL_IS); if (FL.Water_Boiling.exists())
 		RM.Drying       .addRecipe0(T, 16,   16           , FL.Water_Boiling   .make(25), FL.DistW.make(20), ZL_IS); if (FL.Water_Hot.exists())
 		RM.Drying       .addRecipe0(T, 16,   16           , FL.Water_Hot       .make(25), FL.DistW.make(20), ZL_IS);
 		RM.Distillery   .addRecipe1(T, 16,   16, ST.tag(0), FL.Water           .make(10), FL.DistW.make( 8), ZL_IS);
 		RM.Distillery   .addRecipe1(T, 16,   16, ST.tag(0), FL.SpDew           .make(10), FL.DistW.make( 8), ZL_IS);
+		RM.Distillery   .addRecipe1(T, 16,   16, ST.tag(0), FL.MnWtr.make(10), FL.DistW.make( 8), ZL_IS);
 		RM.Distillery   .addRecipe1(T, 16,   16, ST.tag(0), FL.Water_Geothermal.make(25), FL.DistW.make(20), ZL_IS); if (FL.Water_Boiling.exists())
 		RM.Distillery   .addRecipe1(T, 16,   16, ST.tag(0), FL.Water_Boiling   .make(25), FL.DistW.make(20), ZL_IS); if (FL.Water_Hot.exists())
 		RM.Distillery   .addRecipe1(T, 16,   16, ST.tag(0), FL.Water_Hot       .make(25), FL.DistW.make(20), ZL_IS);
@@ -516,6 +518,8 @@ public class Loader_Recipes_Chem implements Runnable {
 		RM.Drying       .addRecipe0(T, 16,   16, FL.Stagnant_Water.make(10)     , FL.DistW.make(5), ZL_IS);
 		
 		RM.Drying       .addRecipe1(T, 16,60000, OP.dust.mat(MT.OREMATS.Mirabilite,  7), NF, FL.DistW.make(30000), OP.dust.mat(MT.Na2SO4  , 7));
+		RM.Drying       .addRecipe1(T, 16,18000, OP.dust.mat(MT.FeO3H3            , 14), NF, FL.DistW.make( 9000), OP.dust.mat(MT.Fe2O3   , 5));
+		RM.Drying       .addRecipe1(T, 16,18000, OP.dust.mat(MT.AlO3H3            , 14), NF, FL.DistW.make( 9000), OP.dust.mat(MT.Al2O3   , 5));
 		RM.Drying       .addRecipe1(T, 16, 6000, OP.dust.mat(MT.H2WO4             ,  7), NF, FL.DistW.make( 3000), OP.dust.mat(MT.WO3     , 4));
 		RM.Drying       .addRecipe1(T, 16, 4000, OP.dust.mat(MT.OREMATS.Bischofite,  1), NF, FL.DistW.make( 2000), OP.dust.mat(MT.MgCl2   , 1));
 		RM.Drying       .addRecipe1(T, 16, 2000, OP.dust.mat(MT.OREMATS.Trona     ,  1), NF, FL.DistW.make( 1000), OP.dust.mat(MT.Na2CO3  , 1));

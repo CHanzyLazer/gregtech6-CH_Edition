@@ -65,6 +65,28 @@ public class OP {
 	oreMoon                     = create("oreMoon"                      , "Moon Ores"                       , "Moon "                           , " Ore").setCondition(ORES).add(UNIFICATABLE, ORE, MATERIAL_BASED, BLOCK_BASED, TOOLTIP_ENCHANTS, STANDARD_ORE).aspects(TC.ALIENIS    , 1).setTextureSetName("ore"),
 	oreMars                     = create("oreMars"                      , "Mars Ores"                       , "Mars "                           , " Ore").setCondition(ORES).add(UNIFICATABLE, ORE, MATERIAL_BASED, BLOCK_BASED, TOOLTIP_ENCHANTS, STANDARD_ORE).aspects(TC.ALIENIS    , 1).setTextureSetName("ore"),
 	oreSpace                    = create("oreSpace"                     , "Space Ores"                      , "Space "                          , " Ore").setCondition(ORES).add(UNIFICATABLE, ORE, MATERIAL_BASED, BLOCK_BASED, TOOLTIP_ENCHANTS, STANDARD_ORE).aspects(TC.ALIENIS    , 1).setTextureSetName("ore"),
+	orePhobos                   = create("orePhobos"                    , "Phobos Ores"                     , "Phobos "                         , " Ore").setCondition(ORES).add(UNIFICATABLE, ORE, MATERIAL_BASED, BLOCK_BASED, TOOLTIP_ENCHANTS, STANDARD_ORE).aspects(TC.ALIENIS    , 1).setTextureSetName("ore"),
+	oreDeimos                   = create("oreDeimos"                    , "Deimos Ores"                     , "Deimos "                         , " Ore").setCondition(ORES).add(UNIFICATABLE, ORE, MATERIAL_BASED, BLOCK_BASED, TOOLTIP_ENCHANTS, STANDARD_ORE).aspects(TC.ALIENIS    , 1).setTextureSetName("ore"),
+	oreVenus                    = create("oreVenus"                     , "Venus Ores"                      , "Venus "                          , " Ore").setCondition(ORES).add(UNIFICATABLE, ORE, MATERIAL_BASED, BLOCK_BASED, TOOLTIP_ENCHANTS, STANDARD_ORE).aspects(TC.ALIENIS    , 1).setTextureSetName("ore"),
+	oreMercury                  = create("oreMercury"                   , "Mercury Ores"                    , "Mercury "                        , " Ore").setCondition(ORES).add(UNIFICATABLE, ORE, MATERIAL_BASED, BLOCK_BASED, TOOLTIP_ENCHANTS, STANDARD_ORE).aspects(TC.ALIENIS    , 1).setTextureSetName("ore"),
+	oreCeres                    = create("oreCeres"                     , "Ceres Ores"                      , "Ceres "                          , " Ore").setCondition(ORES).add(UNIFICATABLE, ORE, MATERIAL_BASED, BLOCK_BASED, TOOLTIP_ENCHANTS, STANDARD_ORE).aspects(TC.ALIENIS    , 1).setTextureSetName("ore"),
+	oreJupiter                  = create("oreJupiter"                   , "Jupiter Ores"                    , "Jupiter "                        , " Ore").setCondition(ORES).add(UNIFICATABLE, ORE, MATERIAL_BASED, BLOCK_BASED, TOOLTIP_ENCHANTS, STANDARD_ORE).aspects(TC.ALIENIS    , 1).setTextureSetName("ore"),
+	oreIo                       = create("oreIo"                        , "Io Ores"                         , "Io "                             , " Ore").setCondition(ORES).add(UNIFICATABLE, ORE, MATERIAL_BASED, BLOCK_BASED, TOOLTIP_ENCHANTS, STANDARD_ORE).aspects(TC.ALIENIS    , 1).setTextureSetName("ore"),       
+	oreEuropa                   = create("oreEuropa"                    , "Europa Ores"                     , "Europa "                         , " Ore").setCondition(ORES).add(UNIFICATABLE, ORE, MATERIAL_BASED, BLOCK_BASED, TOOLTIP_ENCHANTS, STANDARD_ORE).aspects(TC.ALIENIS    , 1).setTextureSetName("ore"),
+	oreGanymede                 = create("oreGanymede"                  , "Ganymede Ores"                   , "Ganymede "                       , " Ore").setCondition(ORES).add(UNIFICATABLE, ORE, MATERIAL_BASED, BLOCK_BASED, TOOLTIP_ENCHANTS, STANDARD_ORE).aspects(TC.ALIENIS    , 1).setTextureSetName("ore"),
+	oreCallisto                 = create("oreCallisto"                  , "Callisto Ores"                   , "Callisto "                       , " Ore").setCondition(ORES).add(UNIFICATABLE, ORE, MATERIAL_BASED, BLOCK_BASED, TOOLTIP_ENCHANTS, STANDARD_ORE).aspects(TC.ALIENIS    , 1).setTextureSetName("ore"),
+	oreSaturn                   = create("oreSaturn"                    , "Saturn Ores"                     , "Saturn "                         , " Ore").setCondition(ORES).add(UNIFICATABLE, ORE, MATERIAL_BASED, BLOCK_BASED, TOOLTIP_ENCHANTS, STANDARD_ORE).aspects(TC.ALIENIS    , 1).setTextureSetName("ore"),       
+	oreRhea                     = create("oreRhea"                      , "Rhea Ores"                       , "Rhea "                           , " Ore").setCondition(ORES).add(UNIFICATABLE, ORE, MATERIAL_BASED, BLOCK_BASED, TOOLTIP_ENCHANTS, STANDARD_ORE).aspects(TC.ALIENIS    , 1).setTextureSetName("ore"),
+	oreTitan                    = create("oreTitan"                     , "Titan Ores"                      , "Titan "                          , " Ore").setCondition(ORES).add(UNIFICATABLE, ORE, MATERIAL_BASED, BLOCK_BASED, TOOLTIP_ENCHANTS, STANDARD_ORE).aspects(TC.ALIENIS    , 1).setTextureSetName("ore"),
+	oreOberon                   = create("oreOberon"                    , "Oberon Ores"                     , "Oberon "                         , " Ore").setCondition(ORES).add(UNIFICATABLE, ORE, MATERIAL_BASED, BLOCK_BASED, TOOLTIP_ENCHANTS, STANDARD_ORE).aspects(TC.ALIENIS    , 1).setTextureSetName("ore"),
+	oreIapetus                  = create("oreIapetus"                   , "Iapetus Ores"                    , "Iapetus "                        , " Ore").setCondition(ORES).add(UNIFICATABLE, ORE, MATERIAL_BASED, BLOCK_BASED, TOOLTIP_ENCHANTS, STANDARD_ORE).aspects(TC.ALIENIS    , 1).setTextureSetName("ore"),
+	oreUranus                   = create("oreUranus"                    , "Uranus Ores"                     , "Uranus "                         , " Ore").setCondition(ORES).add(UNIFICATABLE, ORE, MATERIAL_BASED, BLOCK_BASED, TOOLTIP_ENCHANTS, STANDARD_ORE).aspects(TC.ALIENIS    , 1).setTextureSetName("ore"),
+	oreTitania                  = create("oreTitania"                   , "Titania Ores"                    , "Titania "                        , " Ore").setCondition(ORES).add(UNIFICATABLE, ORE, MATERIAL_BASED, BLOCK_BASED, TOOLTIP_ENCHANTS, STANDARD_ORE).aspects(TC.ALIENIS    , 1).setTextureSetName("ore"),
+	oreNeptune                  = create("oreNeptune"                   , "Neptune Ores"                    , "Neptune "                        , " Ore").setCondition(ORES).add(UNIFICATABLE, ORE, MATERIAL_BASED, BLOCK_BASED, TOOLTIP_ENCHANTS, STANDARD_ORE).aspects(TC.ALIENIS    , 1).setTextureSetName("ore"),
+	oreTriton                   = create("oreTriton"                    , "Triton Ores"                     , "Triton "                         , " Ore").setCondition(ORES).add(UNIFICATABLE, ORE, MATERIAL_BASED, BLOCK_BASED, TOOLTIP_ENCHANTS, STANDARD_ORE).aspects(TC.ALIENIS    , 1).setTextureSetName("ore"),               
+	orePluto                    = create("orePluto"                     , "Pluto Ores"                      , "Pluto "                          , " Ore").setCondition(ORES).add(UNIFICATABLE, ORE, MATERIAL_BASED, BLOCK_BASED, TOOLTIP_ENCHANTS, STANDARD_ORE).aspects(TC.ALIENIS    , 1).setTextureSetName("ore"),                       
+	oreEris                     = create("oreEris"                      , "Eris Ores"                       , "Eris "                           , " Ore").setCondition(ORES).add(UNIFICATABLE, ORE, MATERIAL_BASED, BLOCK_BASED, TOOLTIP_ENCHANTS, STANDARD_ORE).aspects(TC.ALIENIS    , 1).setTextureSetName("ore"),                               
+	oreKepler22b                = create("oreKepler22b"                 , "Kepler22b Ores"                  , "Kepler22b "                      , " Ore").setCondition(ORES).add(UNIFICATABLE, ORE, MATERIAL_BASED, BLOCK_BASED, TOOLTIP_ENCHANTS, STANDARD_ORE).aspects(TC.ALIENIS    , 1).setTextureSetName("ore"),
 	oreHolystone                = create("oreHolystone"                 , "Holystone Ores"                  , "Holystone "                      , " Ore").setCondition(ORES).add(UNIFICATABLE, ORE, MATERIAL_BASED, BLOCK_BASED, TOOLTIP_ENCHANTS, STANDARD_ORE).aspects(TC.LUX        , 1).setTextureSetName("ore"),
 	oreLivingrock               = create("oreLivingrock"                , "Livingrock Ores"                 , "Livingrock "                     , " Ore").setCondition(ORES).add(UNIFICATABLE, ORE, MATERIAL_BASED, BLOCK_BASED, TOOLTIP_ENCHANTS, STANDARD_ORE).aspects(TC.VICTUS     , 1).setTextureSetName("ore"),
 	oreDeadrock                 = create("oreDeadrock"                  , "Deadrock Ores"                   , "Deadrock "                       , " Ore").setCondition(ORES).add(UNIFICATABLE, ORE, MATERIAL_BASED, BLOCK_BASED, TOOLTIP_ENCHANTS, STANDARD_ORE).aspects(TC.MORTUUS    , 1).setTextureSetName("ore"),
@@ -184,28 +206,28 @@ public class OP {
 	stickLong                   = create("stickLong"                    , "Long Sticks/Rods"                , "Long "                           , " Rod"                            ).setMaterialStats(U    )     .setCondition(stick)                                                                                        .add(UNIFICATABLE, BURNABLE, TOOLTIP_ENCHANTS, RECYCLABLE, SIMPLIFIABLE, SCANNABLE, EXTRUDER_FODDER, TOOLTIP_MATERIAL).setMinStacksize(16).aspects(TC.FABRICO, 1), // Stick made of an Ingot.
 	bolt                        = create("bolt"                         , "Bolts"                           , ""                                , " Bolt"                           ).setMaterialStats(U8   )     .setCondition(stick)                                                                                        .add(UNIFICATABLE, BURNABLE, TOOLTIP_ENCHANTS, RECYCLABLE, SIMPLIFIABLE           , EXTRUDER_FODDER, TOOLTIP_MATERIAL).setMinStacksize(16).aspects(TC.FABRICO, 1), // consisting out of 1/8 Ingot or 1/4 Stick.
 	screw                       = create("screw"                        , "Screws"                          , ""                                , " Screw"                          ).setMaterialStats(U9   )     .setCondition(bolt)                                                                                         .add(UNIFICATABLE, BURNABLE, TOOLTIP_ENCHANTS, RECYCLABLE, SIMPLIFIABLE           , EXTRUDER_FODDER, TOOLTIP_MATERIAL).setMinStacksize(16).aspects(TC.FABRICO, 1), // consisting out of a Bolt.
-	round                       = create("round"                        , "Rounds"                          , ""                                , " Round"                          ).setMaterialStats(U9   )     .setCondition(PARTS)                                                                                        .add(UNIFICATABLE, BURNABLE, TOOLTIP_ENCHANTS, RECYCLABLE, SIMPLIFIABLE           , EXTRUDER_FODDER, TOOLTIP_MATERIAL).setMinStacksize(16).aspects(TC.FABRICO, 1), // consisting out of one Nugget.
+	round                       = create("round"                        , "Rounds"                          , ""                                , " Round"                          ).setMaterialStats(U9   )     .setCondition(new Or(PARTS, new And(PROJECTILES, nugget)))                                                  .add(UNIFICATABLE, BURNABLE, TOOLTIP_ENCHANTS, RECYCLABLE, SIMPLIFIABLE           , EXTRUDER_FODDER, TOOLTIP_MATERIAL).setMinStacksize(16).aspects(TC.FABRICO, 1), // consisting out of one Nugget.
 	ring                        = create("ring"                         , "Rings"                           , ""                                , " Ring"                           ).setMaterialStats(U4   )     .setCondition(PARTS)                                                                                        .add(UNIFICATABLE, BURNABLE, TOOLTIP_ENCHANTS, RECYCLABLE, SIMPLIFIABLE           , EXTRUDER_FODDER, TOOLTIP_MATERIAL).setMinStacksize(16).aspects(TC.FABRICO, 1), // consisting out of 1/2 Stick.
 	chain                       = create("chain"                        , "Chains"                          , ""                                , " Chain"                          ).setMaterialStats(U    )     .setCondition(ring)                                                                                         .add(UNIFICATABLE, BURNABLE, TOOLTIP_ENCHANTS, RECYCLABLE, SIMPLIFIABLE, SCANNABLE, EXTRUDER_FODDER, TOOLTIP_MATERIAL).setMinStacksize(16).aspects(TC.FABRICO, 1), // consisting out of 4 Rings.
-	spring                      = create("spring"                       , "Springs"                         , ""                                , " Spring"                         ).setMaterialStats(U    )     .setCondition(new And<>(PARTS, new Or(STRETCHY, BOUNCY, BRITTLE.NOT)))                                      .add(UNIFICATABLE, BURNABLE, TOOLTIP_ENCHANTS, RECYCLABLE, SIMPLIFIABLE, SCANNABLE, EXTRUDER_FODDER, TOOLTIP_MATERIAL).setMinStacksize(16).aspects(TC.MOTUS, 1), // consisting out of 2 Sticks.
+	spring                      = create("spring"                       , "Springs"                         , ""                                , " Spring"                         ).setMaterialStats(U    )     .setCondition(new And(PARTS, new Or(STRETCHY, BOUNCY, BRITTLE.NOT)))                                        .add(UNIFICATABLE, BURNABLE, TOOLTIP_ENCHANTS, RECYCLABLE, SIMPLIFIABLE, SCANNABLE, EXTRUDER_FODDER, TOOLTIP_MATERIAL).setMinStacksize(16).aspects(TC.MOTUS, 1), // consisting out of 2 Sticks.
 	springSmall                 = create("springSmall"                  , "Small Springs"                   , "Small "                          , " Spring"                         ).setMaterialStats(U4   )     .setCondition(spring)                                                                                       .add(UNIFICATABLE, BURNABLE, TOOLTIP_ENCHANTS, RECYCLABLE, SIMPLIFIABLE           , EXTRUDER_FODDER, TOOLTIP_MATERIAL).setMinStacksize(16).aspects(TC.MOTUS, 1), // consisting out of 1 Fine Wire.
-	wireFine                    = create("wireFine"                     , "Fine Wires"                      , "Fine "                           , " Wire"                           ).setMaterialStats(U8   )     .setCondition(new Or<>(WIRES, new And<>(PARTS, SMITHABLE)))                                                 .add(UNIFICATABLE, BURNABLE, TOOLTIP_ENCHANTS, RECYCLABLE, SIMPLIFIABLE           , EXTRUDER_FODDER, TOOLTIP_MATERIAL).setMinStacksize(16).aspects(TC.FABRICO, 1), // consisting out of 1/8 Ingot or 1/4 Wire.
-	minecartWheels              = create("minecartWheels"               , "Cart Wheels"                     , ""                                , " Cart Wheels"                    ).setMaterialStats(U    )     .setCondition(new And<>(PARTS, SMITHABLE))                                                                  .add(UNIFICATABLE, BURNABLE, TOOLTIP_ENCHANTS, RECYCLABLE, SIMPLIFIABLE, SCANNABLE, EXTRUDER_FODDER, TOOLTIP_MATERIAL).setMinStacksize(16).aspects(TC.FABRICO, 1, TC.ITER, 1).setStacksize(16), // consisting out of 2 Rings and 1 Rod.
+	wireFine                    = create("wireFine"                     , "Fine Wires"                      , "Fine "                           , " Wire"                           ).setMaterialStats(U8   )     .setCondition(new Or(WIRES, new And(PARTS, SMITHABLE)))                                                     .add(UNIFICATABLE, BURNABLE, TOOLTIP_ENCHANTS, RECYCLABLE, SIMPLIFIABLE           , EXTRUDER_FODDER, TOOLTIP_MATERIAL).setMinStacksize(16).aspects(TC.FABRICO, 1), // consisting out of 1/8 Ingot or 1/4 Wire.
+	minecartWheels              = create("minecartWheels"               , "Cart Wheels"                     , ""                                , " Cart Wheels"                    ).setMaterialStats(U    )     .setCondition(new And(PARTS, SMITHABLE))                                                                    .add(UNIFICATABLE, BURNABLE, TOOLTIP_ENCHANTS, RECYCLABLE, SIMPLIFIABLE, SCANNABLE, EXTRUDER_FODDER, TOOLTIP_MATERIAL).setMinStacksize(16).aspects(TC.FABRICO, 1, TC.ITER, 1).setStacksize(16), // consisting out of 2 Rings and 1 Rod.
 	gearGt                      = create("gearGt"                       , "Gears"                           , ""                                , " Gear"                           ).setMaterialStats(U * 4)     .setCondition(PARTS)                                                                                        .add(UNIFICATABLE, BURNABLE, TOOLTIP_ENCHANTS, RECYCLABLE, SIMPLIFIABLE, SCANNABLE, EXTRUDER_FODDER, TOOLTIP_MATERIAL).setMinStacksize(16).aspects(TC.MOTUS, 1, TC.MACHINA, 1), // Introduced by me because BuildCraft has ruined the gear Prefix...
 	gearGtSmall                 = create("gearGtSmall"                  , "Small Gears"                     , "Small "                          , " Gear"                           ).setMaterialStats(U    )     .setCondition(gearGt)                                                                                       .add(UNIFICATABLE, BURNABLE, TOOLTIP_ENCHANTS, RECYCLABLE, SIMPLIFIABLE, SCANNABLE, EXTRUDER_FODDER, TOOLTIP_MATERIAL).setMinStacksize(16).aspects(TC.MOTUS, 1, TC.MACHINA, 1),
 	railGt                      = create("railGt"                       , "Single Rails"                    , ""                                , " Rail"                           ).setMaterialStats(U4   )     .setCondition(RAILS)                                                                                        .add(UNIFICATABLE, BURNABLE, TOOLTIP_ENCHANTS, RECYCLABLE, SIMPLIFIABLE           , EXTRUDER_FODDER, TOOLTIP_MATERIAL).setMinStacksize(16).aspects(TC.ITER, 1),
 	casingSmall                 = create("casingSmall"                  , "Item Casings"                    , ""                                , " Item Casing"                    ).setMaterialStats(U2   )     .setCondition(PARTS)                                                                                        .add(UNIFICATABLE, BURNABLE, TOOLTIP_ENCHANTS, RECYCLABLE, SIMPLIFIABLE           , EXTRUDER_FODDER, TOOLTIP_MATERIAL).setMinStacksize(16).aspects(TC.FABRICO, 1), // consisting out of half a Metal Plate
-	casingMachine               = create("casingMachine"                , "Machine Casings"                 , ""                                , " Machine Casing"                 ).setMaterialStats(U * 8)     .setCondition(new And<>(PARTS, SMITHABLE))                                                                  .add(UNIFICATABLE, BURNABLE                  , RECYCLABLE, SIMPLIFIABLE, SCANNABLE, EXTRUDER_FODDER, TOOLTIP_MATERIAL).setMinStacksize( 1).aspects(TC.FABRICO, 2, TC.MACHINA, 2).setStacksize(8),
+	casingMachine               = create("casingMachine"                , "Machine Casings"                 , ""                                , " Machine Casing"                 ).setMaterialStats(U * 8)     .setCondition(new And(PARTS, SMITHABLE))                                                                    .add(UNIFICATABLE, BURNABLE                  , RECYCLABLE, SIMPLIFIABLE, SCANNABLE, EXTRUDER_FODDER, TOOLTIP_MATERIAL).setMinStacksize( 1).aspects(TC.FABRICO, 2, TC.MACHINA, 2).setStacksize(8),
 	casingMachineDouble         = create("casingMachineDouble"          , "Robust Machine Casings"          , "Robust "                         , " Machine Casing"                 ).setMaterialStats(U *14)     .setCondition(casingMachine)                                                                                .add(UNIFICATABLE, BURNABLE                  , RECYCLABLE, SIMPLIFIABLE, SCANNABLE, EXTRUDER_FODDER, TOOLTIP_MATERIAL).setMinStacksize( 1).aspects(TC.FABRICO, 3, TC.MACHINA, 3).setStacksize(4),
 	casingMachineQuadruple      = create("casingMachineQuadruple"       , "Reinforced Machine Casings"      , "Reinforced "                     , " Machine Casing"                 ).setMaterialStats(U *26)     .setCondition(casingMachine)                                                                                .add(UNIFICATABLE, BURNABLE                  , RECYCLABLE, SIMPLIFIABLE, SCANNABLE, EXTRUDER_FODDER, TOOLTIP_MATERIAL).setMinStacksize( 1).aspects(TC.FABRICO, 4, TC.MACHINA, 4).setStacksize(2),
 	casingMachineDense          = create("casingMachineDense"           , "Dense Machine Casings"           , "Dense "                          , " Machine Casing"                 ).setMaterialStats(U *56)     .setCondition(casingMachine)                                                                                .add(UNIFICATABLE, BURNABLE                  , RECYCLABLE, SIMPLIFIABLE, SCANNABLE, EXTRUDER_FODDER, TOOLTIP_MATERIAL).setMinStacksize( 1).aspects(TC.FABRICO, 5, TC.MACHINA, 5).setStacksize(1),
 	rotor                       = create("rotor"                        , "Rotors"                          , ""                                , " Rotor"                          ).setMaterialStats(U*4+U4)    .setCondition(PARTS)                                                                                        .add(UNIFICATABLE, BURNABLE, TOOLTIP_ENCHANTS, RECYCLABLE, SIMPLIFIABLE, SCANNABLE, TOOLTIP_MATERIAL                 ).setMinStacksize(16).aspects(TC.MOTUS, 1, TC.MACHINA, 1).setStacksize(16), // consisting out of 4 Plates, 1 Ring.
 	
 	chemtube                    = create("chemtube"                     , "Glass Tubes"                     , "Glass Tube containing "          , ""                                ).setMaterialStats(U9   )     .setCondition(REACTS_WITH_GLASS.NOT)                                                                        .add(UNIFICATABLE, IS_CONTAINER, SELF_REFERENCING, RECYCLABLE, SCANNABLE, TOOLTIP_MATERIAL).setMinStacksize(64),
-	cell                        = create("cell"                         , "Cells"                           , ""                                , " Cell"                           )                             .setCondition(new Or<>(CONTAINERS, EMPTY, CONTAINERS_FLUID, CONTAINERS_GAS))                                .add(UNIFICATABLE, IS_CONTAINER, SELF_REFERENCING, MATERIAL_BASED, RECYCLABLE).setMinStacksize(16), // Regular Gas/Fluid Cell. Introduced by Calclavia
-	bucket                      = create("bucket"                       , "Buckets"                         , ""                                , " Bucket"                         )                             .setCondition(new Or<>(CONTAINERS, EMPTY, CONTAINERS_FLUID))                                                .add(              IS_CONTAINER, SELF_REFERENCING).setStacksize(16), // A Bucket filled with the Material.
-	bottle                      = create("bottle"                       , "Bottles"                         , ""                                , " Bottle"                         )                             .setCondition(new Or<>(CONTAINERS, EMPTY, CONTAINERS_FLUID))                                                .add(              IS_CONTAINER, SELF_REFERENCING, MATERIAL_BASED).setStacksize(16), // Glass Bottle containing a Fluid.
-	capsule                     = create("capsule"                      , "Capsules"                        , ""                                , " Capsule"                        )                             .setCondition(new Or<>(CONTAINERS, EMPTY, CONTAINERS_FLUID, CONTAINERS_GAS))                                .add(              IS_CONTAINER, SELF_REFERENCING, MATERIAL_BASED).setStacksize(16),
+	cell                        = create("cell"                         , "Cells"                           , ""                                , " Cell"                           )                             .setCondition(new Or(CONTAINERS, EMPTY, CONTAINERS_FLUID, CONTAINERS_GAS))                                  .add(UNIFICATABLE, IS_CONTAINER, SELF_REFERENCING, MATERIAL_BASED, RECYCLABLE).setMinStacksize(16), // Regular Gas/Fluid Cell. Introduced by Calclavia
+	bucket                      = create("bucket"                       , "Buckets"                         , ""                                , " Bucket"                         )                             .setCondition(new Or(CONTAINERS, EMPTY, CONTAINERS_FLUID))                                                  .add(              IS_CONTAINER, SELF_REFERENCING).setStacksize(16), // A Bucket filled with the Material.
+	bottle                      = create("bottle"                       , "Bottles"                         , ""                                , " Bottle"                         )                             .setCondition(new Or(CONTAINERS, EMPTY, CONTAINERS_FLUID))                                                  .add(              IS_CONTAINER, SELF_REFERENCING, MATERIAL_BASED).setStacksize(16), // Glass Bottle containing a Fluid.
+	capsule                     = create("capsule"                      , "Capsules"                        , ""                                , " Capsule"                        )                             .setCondition(new Or(CONTAINERS, EMPTY, CONTAINERS_FLUID, CONTAINERS_GAS))                                  .add(              IS_CONTAINER, SELF_REFERENCING, MATERIAL_BASED).setStacksize(16),
 	
 	toolHeadSaw                 = create("toolHeadSaw"                  , "Saw Blades"                      , ""                                , " Saw Blade"                      ).setMaterialStats(U * 2 -U9) .setCondition(new And(typemin(2), BOUNCY.NOT, STRETCHY.NOT))                                                .add(UNIFICATABLE, BURNABLE, TOOLTIP_ENCHANTS, RECYCLABLE, SCANNABLE, TOOL_HEAD, NEEDS_HANDLE).setStacksize(16).aspects(TC.INSTRUMENTUM, 2, TC.FABRICO, 1),
 	toolHeadFile                = create("toolHeadFile"                 , "File Heads"                      , ""                                , " File Head"                      ).setMaterialStats(3 *U2)     .setCondition(new And(typemin(2), BOUNCY.NOT, STRETCHY.NOT))                                                .add(UNIFICATABLE, BURNABLE, TOOLTIP_ENCHANTS, RECYCLABLE, SCANNABLE, TOOL_HEAD, NEEDS_HANDLE).setStacksize(16).aspects(TC.INSTRUMENTUM, 2, TC.FABRICO, 1),
@@ -253,12 +275,12 @@ public class OP {
 	toolShears                  = create("toolShears"                   , "Shears"                          , ""                                , ""                                ).setMaterialStats(U * 2)     .setCondition(typemin(1))                                                                                   .add(TOOL_ALIKE, BURNABLE, RECYCLABLE              ).setStacksize( 1).aspects(TC.INSTRUMENTUM, 2, TC.PANNUS, 1), // vanilly Shears
 	tool                        = create("tool"                         , "Tools"                           , ""                                , ""                                )                             .setCondition(typemin(1))                                                                                   .add(TOOL_ALIKE                                    ).setStacksize( 1).aspects(TC.INSTRUMENTUM, 2), // toolPot, toolSkillet, toolSaucepan, toolBakeware, toolCuttingboard, toolMortarandpestle, toolMixingbowl, toolJuicer
 	
-	bulletGtSmall               = create("bulletGtSmall"                , "Small Bullets"                   , "Small "                          , " Bullet"                         ).setMaterialStats(U9   )     .setCondition(new Or(new And(PROJECTILES, typemin(2)), EMPTY))                                              .add(UNIFICATABLE, BURNABLE, TOOLTIP_ENCHANTS, AMMO_ALIKE, UNIFICATABLE_RECIPES, RECYCLABLE, SIMPLIFIABLE              ).aspects(TC.MOTUS, 1, TC.TELUM, 1),
-	bulletGtMedium              = create("bulletGtMedium"               , "Medium Bullets"                  , "Medium "                         , " Bullet"                         ).setMaterialStats(2 *U9)     .setCondition(new Or(new And(PROJECTILES, typemin(2)), EMPTY))                                              .add(UNIFICATABLE, BURNABLE, TOOLTIP_ENCHANTS, AMMO_ALIKE, UNIFICATABLE_RECIPES, RECYCLABLE, SIMPLIFIABLE              ).aspects(TC.MOTUS, 1, TC.TELUM, 1),
-	bulletGtLarge               = create("bulletGtLarge"                , "Large Bullets"                   , "Large "                          , " Bullet"                         ).setMaterialStats(U3   )     .setCondition(new Or(new And(PROJECTILES, typemin(2)), EMPTY))                                              .add(UNIFICATABLE, BURNABLE, TOOLTIP_ENCHANTS, AMMO_ALIKE, UNIFICATABLE_RECIPES, RECYCLABLE, SIMPLIFIABLE              ).aspects(TC.MOTUS, 1, TC.TELUM, 1),
-	arrowGtWood                 = create("arrowGtWood"                  , "Regular Arrows"                  , ""                                , " Arrow"                          ).setMaterialStats(U9   )     .setCondition(new Or(toolHeadArrow, EMPTY))                                                                 .add(UNIFICATABLE, BURNABLE, TOOLTIP_ENCHANTS, AMMO_ALIKE, UNIFICATABLE_RECIPES, RECYCLABLE, SIMPLIFIABLE, WEAPON_ALIKE).aspects(TC.TELUM, 1), // Arrow made of 1/4 Ingot/Dust + Wooden Stick.
-	arrowGtPlastic              = create("arrowGtPlastic"               , "Light Arrows"                    , "Light "                          , " Arrow"                          ).setMaterialStats(U9   )     .setCondition(new Or(toolHeadArrow, EMPTY))                                                                 .add(UNIFICATABLE, BURNABLE, TOOLTIP_ENCHANTS, AMMO_ALIKE, UNIFICATABLE_RECIPES, RECYCLABLE, SIMPLIFIABLE, WEAPON_ALIKE).aspects(TC.TELUM, 1), // Arrow made of 1/4 Ingot/Dust + Plastic Stick.
-	arrow                       = create("arrow"                        , "Arrows"                          , ""                                , ""                                )                             .setCondition(toolHeadArrow)                                                                                .add(                        TOOLTIP_ENCHANTS, AMMO_ALIKE, SELF_REFERENCING, WEAPON_ALIKE                              ).aspects(TC.TELUM, 1),
+	bulletGtSmall               = create("bulletGtSmall"                , "Small Bullets"                   , "Small "                          , " Bullet"                         ).setMaterialStats(U9   )     .setCondition(new Or(PROJECTILES, EMPTY))                                                                   .add(UNIFICATABLE, BURNABLE, AMMO_ALIKE, UNIFICATABLE_RECIPES, RECYCLABLE, SIMPLIFIABLE              ).aspects(TC.MOTUS, 1, TC.TELUM, 1),
+	bulletGtMedium              = create("bulletGtMedium"               , "Medium Bullets"                  , "Medium "                         , " Bullet"                         ).setMaterialStats(2 *U9)     .setCondition(new Or(PROJECTILES, EMPTY))                                                                   .add(UNIFICATABLE, BURNABLE, AMMO_ALIKE, UNIFICATABLE_RECIPES, RECYCLABLE, SIMPLIFIABLE              ).aspects(TC.MOTUS, 1, TC.TELUM, 1),
+	bulletGtLarge               = create("bulletGtLarge"                , "Large Bullets"                   , "Large "                          , " Bullet"                         ).setMaterialStats(U3   )     .setCondition(new Or(PROJECTILES, EMPTY))                                                                   .add(UNIFICATABLE, BURNABLE, AMMO_ALIKE, UNIFICATABLE_RECIPES, RECYCLABLE, SIMPLIFIABLE              ).aspects(TC.MOTUS, 1, TC.TELUM, 1),
+	arrowGtWood                 = create("arrowGtWood"                  , "Regular Arrows"                  , ""                                , " Arrow"                          ).setMaterialStats(U9   )     .setCondition(new Or(toolHeadArrow, EMPTY))                                                                 .add(UNIFICATABLE, BURNABLE, AMMO_ALIKE, UNIFICATABLE_RECIPES, RECYCLABLE, SIMPLIFIABLE, WEAPON_ALIKE).aspects(TC.TELUM, 1), // Arrow made of 1/4 Ingot/Dust + Wooden Stick.
+	arrowGtPlastic              = create("arrowGtPlastic"               , "Light Arrows"                    , "Light "                          , " Arrow"                          ).setMaterialStats(U9   )     .setCondition(new Or(toolHeadArrow, EMPTY))                                                                 .add(UNIFICATABLE, BURNABLE, AMMO_ALIKE, UNIFICATABLE_RECIPES, RECYCLABLE, SIMPLIFIABLE, WEAPON_ALIKE).aspects(TC.TELUM, 1), // Arrow made of 1/4 Ingot/Dust + Plastic Stick.
+	arrow                       = create("arrow"                        , "Arrows"                          , ""                                , ""                                )                             .setCondition(toolHeadArrow)                                                                                .add(                        AMMO_ALIKE, SELF_REFERENCING, WEAPON_ALIKE                              ).aspects(TC.TELUM, 1),
 	
 	armorHelmet                 = create("armorHelmet"                  , "Helmets"                         , ""                                , ""                                ).setMaterialStats(U * 5)     .setCondition(ARMORS)                                                                                       .add(ARMOR_ALIKE, BURNABLE, RECYCLABLE).setStacksize( 1).aspects(TC.TUTAMEN, 2), // vanilly Helmet
 	armorChestplate             = create("armorChestplate"              , "Chestplates"                     , ""                                , ""                                ).setMaterialStats(U * 8)     .setCondition(ARMORS)                                                                                       .add(ARMOR_ALIKE, BURNABLE, RECYCLABLE).setStacksize( 1).aspects(TC.TUTAMEN, 4), // vanilly Chestplate
@@ -610,83 +632,105 @@ public class OP {
 		
 		//-----
 		
-		pipeRestrictiveTiny     .mByProducts.add(OM.stack(ANY.Steel             , ring.mAmount));
-		pipeRestrictiveSmall    .mByProducts.add(OM.stack(ANY.Steel             , ring.mAmount * 2));
-		pipeRestrictiveMedium   .mByProducts.add(OM.stack(ANY.Steel             , ring.mAmount * 3));
-		pipeRestrictiveLarge    .mByProducts.add(OM.stack(ANY.Steel             , ring.mAmount * 4));
-		pipeRestrictiveHuge     .mByProducts.add(OM.stack(ANY.Steel             , ring.mAmount * 5));
-		cableGt12               .mByProducts.add(OM.stack(MT.Rubber             , plate.mAmount * 4));
-		cableGt08               .mByProducts.add(OM.stack(MT.Rubber             , plate.mAmount * 3));
-		cableGt04               .mByProducts.add(OM.stack(MT.Rubber             , plate.mAmount * 2));
-		cableGt02               .mByProducts.add(OM.stack(MT.Rubber             , plate.mAmount));
-		cableGt01               .mByProducts.add(OM.stack(MT.Rubber             , plate.mAmount));
-//      bucket                  .mByProducts.add(OM.stack(Any.Fe                , ingot.mAmount * 3));
-		cell                    .mByProducts.add(OM.stack(MT.Sn                 , plateCurved.mAmount));
-		bottle                  .mByProducts.add(OM.stack(MT.Glass              , U));
-		chemtube                .mByProducts.add(OM.stack(MT.Glass              , U3));
-		oreAndesite             .mByProducts.add(OM.stack(MT.STONES.Andesite    , dust.mAmount * 4));
-		oreDiorite              .mByProducts.add(OM.stack(MT.STONES.Diorite     , dust.mAmount * 4));
-		oreBlackstone           .mByProducts.add(OM.stack(MT.STONES.Blackstone  , dust.mAmount * 4));
-		oreRedgranite           .mByProducts.add(OM.stack(MT.STONES.GraniteRed  , dust.mAmount * 4));
-		oreBlackgranite         .mByProducts.add(OM.stack(MT.STONES.GraniteBlack, dust.mAmount * 4));
-		oreVanillagranite       .mByProducts.add(OM.stack(MT.STONES.Granite     , dust.mAmount * 4));
-		oreVanillastone         .mByProducts.add(OM.stack(MT.Stone              , dust.mAmount * 4));
-		oreDeepslate            .mByProducts.add(OM.stack(MT.STONES.Deepslate   , dust.mAmount * 4));
-		oreMoon                 .mByProducts.add(OM.stack(MT.STONES.MoonRock    , dust.mAmount * 4));
-		oreMars                 .mByProducts.add(OM.stack(MT.STONES.MarsRock    , dust.mAmount * 4));
-		oreHolystone            .mByProducts.add(OM.stack(MT.STONES.Holystone   , dust.mAmount * 4));
-		oreLivingrock           .mByProducts.add(OM.stack(MT.STONES.Livingrock  , dust.mAmount * 4));
-		oreDeadrock             .mByProducts.add(OM.stack(MT.STONES.Deadrock    , dust.mAmount * 4));
-		oreBetweenstone         .mByProducts.add(OM.stack(MT.STONES.Betweenstone, dust.mAmount * 4));
-		orePitstone             .mByProducts.add(OM.stack(MT.STONES.Pitstone    , dust.mAmount * 4));
-		oreUmberstone           .mByProducts.add(OM.stack(MT.STONES.Umber       , dust.mAmount * 4));
-		oreKomatiite            .mByProducts.add(OM.stack(MT.STONES.Komatiite   , dust.mAmount * 4));
-		oreBasalt               .mByProducts.add(OM.stack(MT.STONES.Basalt      , dust.mAmount * 4));
-		oreMarble               .mByProducts.add(OM.stack(MT.STONES.Marble      , dust.mAmount * 4));
-		oreLimestone            .mByProducts.add(OM.stack(MT.STONES.Limestone   , dust.mAmount * 4));
-		oreSiltstone            .mByProducts.add(OM.stack(MT.STONES.Siltstone   , dust.mAmount * 4));
-		oreShale                .mByProducts.add(OM.stack(MT.STONES.Shale       , dust.mAmount * 4));
-		oreSlate                .mByProducts.add(OM.stack(MT.STONES.Slate       , dust.mAmount * 4));
-		oreGreenschist          .mByProducts.add(OM.stack(MT.STONES.Greenschist , dust.mAmount * 4));
-		oreBlueschist           .mByProducts.add(OM.stack(MT.STONES.Blueschist  , dust.mAmount * 4));
-		orePinkschist           .mByProducts.add(OM.stack(MT.STONES.Pinkschist  , dust.mAmount * 4));
-		oreGrayschist           .mByProducts.add(OM.stack(MT.STONES.Grayschist  , dust.mAmount * 4));
-		oreGneiss               .mByProducts.add(OM.stack(MT.STONES.Gneiss      , dust.mAmount * 4));
-		oreLightprismarine      .mByProducts.add(OM.stack(MT.PrismarineLight    , dust.mAmount * 4));
-		oreDarkprismarine       .mByProducts.add(OM.stack(MT.PrismarineDark     , dust.mAmount * 4));
-		oreKimberlite           .mByProducts.add(OM.stack(MT.STONES.Kimberlite  , dust.mAmount * 4));
-		oreQuartzite            .mByProducts.add(OM.stack(MT.STONES.Quartzite   , dust.mAmount * 4));
-		oreNetherrack           .mByProducts.add(OM.stack(MT.Netherrack         , dust.mAmount * 4));
-		oreNether               .mByProducts.add(OM.stack(MT.Netherrack         , dust.mAmount * 2));
-		oreEndstone             .mByProducts.add(OM.stack(MT.Endstone           , dust.mAmount * 4));
-		oreEnd                  .mByProducts.add(OM.stack(MT.Endstone           , dust.mAmount * 2));
-		orePoor                 .mByProducts.add(OM.stack(MT.Stone              , dust.mAmount * 2));
-		oreSmall                .mByProducts.add(OM.stack(MT.Stone              , dust.mAmount * 2));
-		oreNormal               .mByProducts.add(OM.stack(MT.Stone              , dust.mAmount * 2));
-		oreRich                 .mByProducts.add(OM.stack(MT.Stone              , dust.mAmount * 2));
-		crushed                 .mByProducts.add(OM.stack(MT.Stone              , dust.mAmount));
-		toolHeadPickaxeGem      .mByProducts.add(OM.stack(ANY.Steel             , toolHeadPickaxe.mAmount));
-		toolHeadDrill           .mByProducts.add(OM.stack(ANY.Steel             , plate.mAmount * 4));
-		toolHeadChainsaw        .mByProducts.add(OM.stack(ANY.Steel             , plate.mAmount * 4 + ring.mAmount * 2));
-		toolHeadWrench          .mByProducts.add(OM.stack(ANY.Steel             , ring.mAmount + screw.mAmount * 2));
-		crateGtGem              .mByProducts.add(OM.stack(ANY.Wood              , U));
-		crateGtDust             .mByProducts.add(OM.stack(ANY.Wood              , U));
-		crateGtIngot            .mByProducts.add(OM.stack(ANY.Wood              , U));
-		crateGtPlate            .mByProducts.add(OM.stack(ANY.Wood              , U));
-		crateGtPlateGem         .mByProducts.add(OM.stack(ANY.Wood              , U));
-		crateGt64Gem            .mByProducts.add(OM.stack(ANY.Wood              , U));
-		crateGt64Dust           .mByProducts.add(OM.stack(ANY.Wood              , U));
-		crateGt64Ingot          .mByProducts.add(OM.stack(ANY.Wood              , U));
-		crateGt64Plate          .mByProducts.add(OM.stack(ANY.Wood              , U));
-		crateGt64PlateGem       .mByProducts.add(OM.stack(ANY.Wood              , U));
-		plantGtTwig             .mByProducts.add(OM.stack(ANY.Wood              , stick.mAmount));
-		arrowGtWood             .mByProducts.add(OM.stack(ANY.Wood              , stick.mAmount));
-		arrowGtPlastic          .mByProducts.add(OM.stack(MT.Plastic            , stick.mAmount));
-		bulletGtSmall           .mByProducts.add(OM.stack(MT.Brass              ,   U9));
-		bulletGtMedium          .mByProducts.add(OM.stack(MT.Brass              , 2*U9));
-		bulletGtLarge           .mByProducts.add(OM.stack(MT.Brass              ,   U3));
-		bulletGtSmall           .mByProducts.add(OM.stack(MT.Gunpowder          ,   U9));
-		bulletGtMedium          .mByProducts.add(OM.stack(MT.Gunpowder          , 2*U9));
-		bulletGtLarge           .mByProducts.add(OM.stack(MT.Gunpowder          ,   U3));
+		pipeRestrictiveTiny     .mByProducts.add(OM.stack(ANY.Steel              , ring.mAmount));
+		pipeRestrictiveSmall    .mByProducts.add(OM.stack(ANY.Steel              , ring.mAmount * 2));
+		pipeRestrictiveMedium   .mByProducts.add(OM.stack(ANY.Steel              , ring.mAmount * 3));
+		pipeRestrictiveLarge    .mByProducts.add(OM.stack(ANY.Steel              , ring.mAmount * 4));
+		pipeRestrictiveHuge     .mByProducts.add(OM.stack(ANY.Steel              , ring.mAmount * 5));
+		cableGt12               .mByProducts.add(OM.stack(MT.Rubber              , plate.mAmount * 4));
+		cableGt08               .mByProducts.add(OM.stack(MT.Rubber              , plate.mAmount * 3));
+		cableGt04               .mByProducts.add(OM.stack(MT.Rubber              , plate.mAmount * 2));
+		cableGt02               .mByProducts.add(OM.stack(MT.Rubber              , plate.mAmount));
+		cableGt01               .mByProducts.add(OM.stack(MT.Rubber              , plate.mAmount));
+//      bucket                  .mByProducts.add(OM.stack(Any.Fe                 , ingot.mAmount * 3));
+		cell                    .mByProducts.add(OM.stack(MT.Sn                  , plateCurved.mAmount));
+		bottle                  .mByProducts.add(OM.stack(MT.Glass               , U));
+		chemtube                .mByProducts.add(OM.stack(MT.Glass               , U3));
+		oreAndesite             .mByProducts.add(OM.stack(MT.STONES.Andesite     , dust.mAmount * 4));
+		oreDiorite              .mByProducts.add(OM.stack(MT.STONES.Diorite      , dust.mAmount * 4));
+		oreBlackstone           .mByProducts.add(OM.stack(MT.STONES.Blackstone   , dust.mAmount * 4));
+		oreRedgranite           .mByProducts.add(OM.stack(MT.STONES.GraniteRed   , dust.mAmount * 4));
+		oreBlackgranite         .mByProducts.add(OM.stack(MT.STONES.GraniteBlack , dust.mAmount * 4));
+		oreVanillagranite       .mByProducts.add(OM.stack(MT.STONES.Granite      , dust.mAmount * 4));
+		oreVanillastone         .mByProducts.add(OM.stack(MT.Stone               , dust.mAmount * 4));
+		oreDeepslate            .mByProducts.add(OM.stack(MT.STONES.Deepslate    , dust.mAmount * 4));
+		oreMoon                 .mByProducts.add(OM.stack(MT.STONES.MoonRock     , dust.mAmount * 4));
+		oreMars                 .mByProducts.add(OM.stack(MT.STONES.MarsRock     , dust.mAmount * 4));
+		oreSpace                .mByProducts.add(OM.stack(MT.STONES.SpaceRock    , dust.mAmount * 4));
+		orePhobos               .mByProducts.add(OM.stack(MT.STONES.PhobosRock   , dust.mAmount * 4));
+		oreDeimos               .mByProducts.add(OM.stack(MT.STONES.DeimosRock   , dust.mAmount * 4));
+		oreMercury              .mByProducts.add(OM.stack(MT.STONES.MercuryRock  , dust.mAmount * 4));
+		oreVenus                .mByProducts.add(OM.stack(MT.STONES.VenusRock    , dust.mAmount * 4));
+		oreCeres                .mByProducts.add(OM.stack(MT.STONES.CeresRock    , dust.mAmount * 4));
+		oreJupiter              .mByProducts.add(OM.stack(MT.STONES.JupiterRock  , dust.mAmount * 4));
+		oreIo                   .mByProducts.add(OM.stack(MT.STONES.IoRock       , dust.mAmount * 4));
+		oreGanymede             .mByProducts.add(OM.stack(MT.STONES.GanymedeRock , dust.mAmount * 4));
+		oreCallisto             .mByProducts.add(OM.stack(MT.STONES.CallistoRock , dust.mAmount * 4));
+		oreSaturn               .mByProducts.add(OM.stack(MT.STONES.SaturnRock   , dust.mAmount * 4));
+		oreRhea                 .mByProducts.add(OM.stack(MT.STONES.RheaRock     , dust.mAmount * 4));
+		oreTitan                .mByProducts.add(OM.stack(MT.STONES.TitanRock    , dust.mAmount * 4));
+		oreOberon               .mByProducts.add(OM.stack(MT.STONES.OberonRock   , dust.mAmount * 4));
+		oreIapetus              .mByProducts.add(OM.stack(MT.STONES.IapetusRock  , dust.mAmount * 4));
+		oreUranus               .mByProducts.add(OM.stack(MT.STONES.UranusRock   , dust.mAmount * 4));
+		oreTitania              .mByProducts.add(OM.stack(MT.STONES.TitaniaRock  , dust.mAmount * 4));
+		oreNeptune              .mByProducts.add(OM.stack(MT.STONES.NeptuneRock  , dust.mAmount * 4));
+		oreTriton               .mByProducts.add(OM.stack(MT.STONES.TritonRock   , dust.mAmount * 4));
+		orePluto                .mByProducts.add(OM.stack(MT.STONES.PlutoRock    , dust.mAmount * 4));
+		oreEris                 .mByProducts.add(OM.stack(MT.STONES.ErisRock     , dust.mAmount * 4));
+		oreKepler22b            .mByProducts.add(OM.stack(MT.STONES.Kepler22bRock, dust.mAmount * 4));
+		oreHolystone            .mByProducts.add(OM.stack(MT.STONES.Holystone    , dust.mAmount * 4));
+		oreLivingrock           .mByProducts.add(OM.stack(MT.STONES.Livingrock   , dust.mAmount * 4));
+		oreDeadrock             .mByProducts.add(OM.stack(MT.STONES.Deadrock     , dust.mAmount * 4));
+		oreBetweenstone         .mByProducts.add(OM.stack(MT.STONES.Betweenstone , dust.mAmount * 4));
+		orePitstone             .mByProducts.add(OM.stack(MT.STONES.Pitstone     , dust.mAmount * 4));
+		oreUmberstone           .mByProducts.add(OM.stack(MT.STONES.Umber        , dust.mAmount * 4));
+		oreKomatiite            .mByProducts.add(OM.stack(MT.STONES.Komatiite    , dust.mAmount * 4));
+		oreBasalt               .mByProducts.add(OM.stack(MT.STONES.Basalt       , dust.mAmount * 4));
+		oreMarble               .mByProducts.add(OM.stack(MT.STONES.Marble       , dust.mAmount * 4));
+		oreLimestone            .mByProducts.add(OM.stack(MT.STONES.Limestone    , dust.mAmount * 4));
+		oreSiltstone            .mByProducts.add(OM.stack(MT.STONES.Siltstone    , dust.mAmount * 4));
+		oreShale                .mByProducts.add(OM.stack(MT.STONES.Shale        , dust.mAmount * 4));
+		oreSlate                .mByProducts.add(OM.stack(MT.STONES.Slate        , dust.mAmount * 4));
+		oreGreenschist          .mByProducts.add(OM.stack(MT.STONES.Greenschist  , dust.mAmount * 4));
+		oreBlueschist           .mByProducts.add(OM.stack(MT.STONES.Blueschist   , dust.mAmount * 4));
+		orePinkschist           .mByProducts.add(OM.stack(MT.STONES.Pinkschist   , dust.mAmount * 4));
+		oreGrayschist           .mByProducts.add(OM.stack(MT.STONES.Grayschist   , dust.mAmount * 4));
+		oreGneiss               .mByProducts.add(OM.stack(MT.STONES.Gneiss       , dust.mAmount * 4));
+		oreLightprismarine      .mByProducts.add(OM.stack(MT.PrismarineLight     , dust.mAmount * 4));
+		oreDarkprismarine       .mByProducts.add(OM.stack(MT.PrismarineDark      , dust.mAmount * 4));
+		oreKimberlite           .mByProducts.add(OM.stack(MT.STONES.Kimberlite   , dust.mAmount * 4));
+		oreQuartzite            .mByProducts.add(OM.stack(MT.STONES.Quartzite    , dust.mAmount * 4));
+		oreNetherrack           .mByProducts.add(OM.stack(MT.Netherrack          , dust.mAmount * 4));
+		oreNether               .mByProducts.add(OM.stack(MT.Netherrack          , dust.mAmount * 2));
+		oreEndstone             .mByProducts.add(OM.stack(MT.Endstone            , dust.mAmount * 4));
+		oreEnd                  .mByProducts.add(OM.stack(MT.Endstone            , dust.mAmount * 2));
+		orePoor                 .mByProducts.add(OM.stack(MT.Stone               , dust.mAmount * 2));
+		oreSmall                .mByProducts.add(OM.stack(MT.Stone               , dust.mAmount * 2));
+		oreNormal               .mByProducts.add(OM.stack(MT.Stone               , dust.mAmount * 2));
+		oreRich                 .mByProducts.add(OM.stack(MT.Stone               , dust.mAmount * 2));
+		crushed                 .mByProducts.add(OM.stack(MT.Stone               , dust.mAmount));
+		toolHeadPickaxeGem      .mByProducts.add(OM.stack(ANY.Steel              , toolHeadPickaxe.mAmount));
+		toolHeadDrill           .mByProducts.add(OM.stack(ANY.Steel              , plate.mAmount * 4));
+		toolHeadChainsaw        .mByProducts.add(OM.stack(ANY.Steel              , plate.mAmount * 4 + ring.mAmount * 2));
+		toolHeadWrench          .mByProducts.add(OM.stack(ANY.Steel              , ring.mAmount + screw.mAmount * 2));
+		crateGtGem              .mByProducts.add(OM.stack(ANY.Wood               , U));
+		crateGtDust             .mByProducts.add(OM.stack(ANY.Wood               , U));
+		crateGtIngot            .mByProducts.add(OM.stack(ANY.Wood               , U));
+		crateGtPlate            .mByProducts.add(OM.stack(ANY.Wood               , U));
+		crateGtPlateGem         .mByProducts.add(OM.stack(ANY.Wood               , U));
+		crateGt64Gem            .mByProducts.add(OM.stack(ANY.Wood               , U));
+		crateGt64Dust           .mByProducts.add(OM.stack(ANY.Wood               , U));
+		crateGt64Ingot          .mByProducts.add(OM.stack(ANY.Wood               , U));
+		crateGt64Plate          .mByProducts.add(OM.stack(ANY.Wood               , U));
+		crateGt64PlateGem       .mByProducts.add(OM.stack(ANY.Wood               , U));
+		plantGtTwig             .mByProducts.add(OM.stack(ANY.Wood               , stick.mAmount));
+		arrowGtWood             .mByProducts.add(OM.stack(ANY.Wood               , stick.mAmount));
+		arrowGtPlastic          .mByProducts.add(OM.stack(MT.Plastic             , stick.mAmount));
+		bulletGtSmall           .mByProducts.add(OM.stack(MT.Brass               ,   U9));
+		bulletGtMedium          .mByProducts.add(OM.stack(MT.Brass               , 2*U9));
+		bulletGtLarge           .mByProducts.add(OM.stack(MT.Brass               ,   U3));
+		bulletGtSmall           .mByProducts.add(OM.stack(MT.Gunpowder           ,   U9));
+		bulletGtMedium          .mByProducts.add(OM.stack(MT.Gunpowder           , 2*U9));
+		bulletGtLarge           .mByProducts.add(OM.stack(MT.Gunpowder           ,   U3));
 	}
 }

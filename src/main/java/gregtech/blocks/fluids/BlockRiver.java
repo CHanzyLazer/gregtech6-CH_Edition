@@ -19,14 +19,10 @@
 
 package gregtech.blocks.fluids;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.data.FL;
 import gregapi.util.WD;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -43,7 +39,7 @@ public class BlockRiver extends BlockWaterlike {
 	private final static boolean DEBUG_PLACEMENT = F; // GTCH, 用于 debug 时允许放置河水
 	
 	public BlockRiver(String aName, Fluid aFluid) {
-		super(aName, aFluid, FLOWS_OUT);
+		super(aName, aFluid, FLOWS_OUT, T);
 		tickRate = 20;
 	}
 	
@@ -103,9 +99,4 @@ public class BlockRiver extends BlockWaterlike {
 		if (aDoDrain) aWorld.setBlockToAir(aX, aY, aZ);
 		return FL.Water.make(1000);
 	}
-	
-	@Override public int getLightOpacity(IBlockAccess aWorld, int aX, int aY, int aZ) {return LIGHT_OPACITY_WATER;}
-	@Override public IIcon getIcon(int aSide, int aMeta) {return Blocks.water.getIcon(aSide, aMeta);}
-	@Override @SideOnly(Side.CLIENT) public int getRenderColor(int aMeta) {return 0x00ffffff;}
-	@Override @SideOnly(Side.CLIENT) public int colorMultiplier(IBlockAccess aWorld, int aX, int aY, int aZ) {return 0x00ffffff;}
 }

@@ -27,7 +27,6 @@ import gregapi.code.ObjectStack;
 import gregapi.code.TagData;
 import gregapi.data.*;
 import gregapi.data.TC.TC_AspectStack;
-import gregapi.enchants.Enchantment_Radioactivity;
 import gregapi.item.IItemEnergy;
 import gregapi.item.IItemGTContainerTool;
 import gregapi.item.IItemGTHandTool;
@@ -206,16 +205,19 @@ public class MultiItemTool extends MultiItem implements IItemGTHandTool, IItemGT
 			doDamage(aStack, 0, aPlayer, T);
 			return;
 		}
-		int tDamage = tStats.convertBlockDrops(aDrops, aStack, aPlayer, aBlock, (getToolMaxDamage(aStack) - getToolDamage(aStack)) / tStats.getToolDamagePerDropConversion(), aX, aY, aZ, aMeta, aFortune, aSilkTouch, aEvent);
+		long tDamage = tStats.convertBlockDrops(aDrops, aStack, aPlayer, aBlock, (getToolMaxDamage(aStack) - getToolDamage(aStack)) / tStats.getToolDamagePerDropConversion(), aX, aY, aZ, aMeta, aFortune, aSilkTouch, aEvent);
 		if (aBlock == Blocks.ice && !aDrops.isEmpty()) aPlayer.worldObj.setBlockToAir(aX, aY, aZ);
 		if (WD.dimBTL(aPlayer.worldObj) && !getPrimaryMaterial(aStack).contains(TD.Properties.BETWEENLANDS)) tDamage *= 4;
 		doDamage(aStack, tDamage * tStats.getToolDamagePerDropConversion(), aPlayer, T);
 	}
 	
+	public boolean canCollectDropsDirectly(ItemStack aStack) {
+		IToolStats tStats = getToolStats(aStack);
+		return (tStats.canCollect() || getPrimaryMaterial(aStack).contains(TD.Properties.MAGNETIC_ACTIVE) || getSecondaryMaterial(aStack).contains(TD.Properties.MAGNETIC_ACTIVE)) && isItemStackUsable(aStack);
+	}
 	public boolean canCollectDropsDirectly(ItemStack aStack, Block aBlock, byte aMeta) {
 		if (ST.instaharvest(aBlock, aMeta)) return T;
-		IToolStats tStats = getToolStats(aStack);
-		return (tStats.canCollect() || getPrimaryMaterial(aStack).contains(TD.Properties.MAGNETIC_ACTIVE) || getSecondaryMaterial(aStack).contains(TD.Properties.MAGNETIC_ACTIVE)) && isItemStackUsable(aStack) && getDigSpeed(aStack, aBlock, aMeta) > 0;
+		return canCollectDropsDirectly(aStack) && getDigSpeed(aStack, aBlock, aMeta) > 0;
 	}
 	
 	public float onBlockBreakSpeedEvent(float aDefault, ItemStack aStack, EntityPlayer aPlayer, Block aBlock, int aX, int aY, int aZ, byte aMeta, PlayerEvent.BreakSpeed aEvent) {
@@ -561,62 +563,27 @@ public class MultiItemTool extends MultiItem implements IItemGTHandTool, IItemGT
 		aNBT.setTag("ench", new NBTTagList());
 		
 		OreDictMaterial aMaterial = getPrimaryMaterial(aStack);
-		
 		List<ObjectStack<Enchantment>> tEnchantments = new ArrayListNoNulls<>();
 		
-		for (ObjectStack<Enchantment> tEnchantment : aMaterial.mEnchantmentTools) {
-			tEnchantments.add(new ObjectStack<>(tEnchantment.mObject, tEnchantment.mAmount));
-			if (tEnchantment.mObject == Enchantment.fortune   ) tEnchantments.add(new ObjectStack<>(Enchantment.looting, tEnchantment.mAmount));
-			if (tEnchantment.mObject == Enchantment.knockback ) tEnchantments.add(new ObjectStack<>(Enchantment.punch  , tEnchantment.mAmount));
-			if (tEnchantment.mObject == Enchantment.fireAspect) tEnchantments.add(new ObjectStack<>(Enchantment.flame  , tEnchantment.mAmount));
-		}
+		// Get Material Specific Enchantments for applicable Tool Classes.
+		if (tStats.isMiningTool  ()) for (ObjectStack<Enchantment> tEnchantment : aMaterial.mEnchantmentTools  ) tEnchantments.add(new ObjectStack<>(tEnchantment.mObject, tEnchantment.mAmount));
+		if (tStats.isWeapon      ()) for (ObjectStack<Enchantment> tEnchantment : aMaterial.mEnchantmentWeapons) tEnchantments.add(new ObjectStack<>(tEnchantment.mObject, tEnchantment.mAmount));
+		if (tStats.isRangedWeapon()) for (ObjectStack<Enchantment> tEnchantment : aMaterial.mEnchantmentRanged ) tEnchantments.add(new ObjectStack<>(tEnchantment.mObject, tEnchantment.mAmount));
 		
+		// Get Tool Specific Enchantments.
 		Enchantment[] tEnchants = tStats.getEnchantments(aStack, aMaterial);
 		int[] tLevels = tStats.getEnchantmentLevels(aStack, aMaterial);
 		
 		for (int i = 0; i < tEnchants.length; i++) if (tLevels[i] > 0) {
 			boolean temp = T;
 			for (ObjectStack<Enchantment> tEnchantment : tEnchantments) if (tEnchantment.mObject == tEnchants[i]) {
-				if (tEnchantment.mAmount == tLevels[i]) {
-					tEnchantment.mAmount++;
-				} else if (tEnchantment.mAmount < tLevels[i]) {
-					tEnchantment.mAmount = tLevels[i];
-				}
+				tEnchantment.mAmount = 1+Math.max(tEnchantment.mAmount, tLevels[i]);
 				temp = F;
 				break;
 			}
 			if (temp) tEnchantments.add(new ObjectStack<>(tEnchants[i], tLevels[i]));
 		}
-		
-		for (ObjectStack<Enchantment> tEnchantment : tEnchantments) {
-			if (tEnchantment.mObject == Enchantment.silkTouch || tEnchantment.mObject == Enchantment_Radioactivity.INSTANCE) {
-				aStack.addEnchantment(tEnchantment.mObject, tEnchantment.amountShort());
-				continue;
-			}
-			if (tEnchantment.mObject == Enchantment.fireAspect) {
-				if (tEnchantment.mAmount > 2 || tStats.isWeapon())
-				aStack.addEnchantment(tEnchantment.mObject, tEnchantment.amountShort());
-				continue;
-			}
-			if ("enchantment.railcraft.crowbar.implosion".equalsIgnoreCase(tEnchantment.mObject.getName())) {
-				if (tStats.isWeapon())
-				aStack.addEnchantment(tEnchantment.mObject, tEnchantment.amountShort());
-				continue;
-			}
-			switch(tEnchantment.mObject.type) {
-			case all        :                              aStack.addEnchantment(tEnchantment.mObject, tEnchantment.amountShort()); break;
-			case weapon     : if (tStats.isWeapon      ()) aStack.addEnchantment(tEnchantment.mObject, tEnchantment.amountShort()); break;
-			case bow        : if (tStats.isRangedWeapon()) aStack.addEnchantment(tEnchantment.mObject, tEnchantment.amountShort()); break;
-			case digger     : if (tStats.isMiningTool  ()) aStack.addEnchantment(tEnchantment.mObject, tEnchantment.amountShort()); break;
-			case armor      : break;
-			case armor_feet : break;
-			case armor_head : break;
-			case armor_legs : break;
-			case armor_torso: break;
-			case breakable  : break;
-			case fishing_rod: break;
-			}
-		}
+		for (ObjectStack<Enchantment> tEnchantment : tEnchantments) UT.NBT.addEnchantment(aStack, tEnchantment.mObject, tEnchantment.amountShort());
 		return T;
 	}
 	

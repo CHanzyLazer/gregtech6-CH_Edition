@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,13 +19,6 @@
 
 package gregapi;
 
-import static gregapi.data.CS.*;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -44,22 +37,7 @@ import gregapi.code.ArrayListNoNulls;
 import gregapi.code.ObjectStack;
 import gregapi.cover.CoverRegistry;
 import gregapi.cover.ICover;
-import gregapi.data.ANY;
-import gregapi.data.CS.BlocksGT;
-import gregapi.data.CS.BooksGT;
-import gregapi.data.CS.FluidsGT;
-import gregapi.data.CS.ItemsGT;
-import gregapi.data.CS.PlankData;
-import gregapi.data.CS.Sandwiches;
-import gregapi.data.CS.ToolsGT;
-import gregapi.data.FL;
-import gregapi.data.IL;
-import gregapi.data.LH;
-import gregapi.data.MD;
-import gregapi.data.MT;
-import gregapi.data.OP;
-import gregapi.data.RM;
-import gregapi.data.TD;
+import gregapi.data.*;
 import gregapi.item.ItemFluidDisplay;
 import gregapi.old.Textures;
 import gregapi.oredict.OreDictItemData;
@@ -69,11 +47,7 @@ import gregapi.oredict.OreDictPrefix;
 import gregapi.oredict.listeners.IOreDictListenerItem;
 import gregapi.recipes.AdvancedCrafting1ToY;
 import gregapi.recipes.AdvancedCraftingXToY;
-import gregapi.render.ITexture;
-import gregapi.render.IconContainerCopied;
-import gregapi.render.RenderHelper;
-import gregapi.render.RendererBlockFluid;
-import gregapi.render.RendererBlockTextured;
+import gregapi.render.*;
 import gregapi.tileentity.render.ITileEntityOnDrawBlockHighlight;
 import gregapi.util.OM;
 import gregapi.util.ST;
@@ -99,6 +73,13 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+import static gregapi.data.CS.*;
 
 /**
  * @author Gregorius Techneticies
@@ -376,6 +357,17 @@ public class GT_API_Proxy_Client extends GT_API_Proxy {
 						if (tData.mPrefix.contains(TD.Prefix.NEEDS_SHARPENING)) aEvent.toolTip.add(LH.Chat.CYAN + LH.get(LH.TOOLTIP_NEEDS_SHARPENING));
 						if (tData.mPrefix.contains(TD.Prefix.NEEDS_HANDLE    )) aEvent.toolTip.add(LH.Chat.CYAN + LH.get(LH.TOOLTIP_NEEDS_HANDLE) + LH.Chat.WHITE + tData.mMaterial.mMaterial.mHandleMaterial.getLocal());
 						
+						if (!tData.mMaterial.mMaterial.mSourceOf.isEmpty() && tData.mPrefix.containsAny(TD.Prefix.ORE,TD.Prefix.ORE_PROCESSING_DIRTY)) {
+							StringBuilder
+							tToolTip = null;
+							for (OreDictMaterial tMaterial : tData.mMaterial.mMaterial.mSourceOf) {
+								if (tToolTip == null) tToolTip = new StringBuilder(LH.Chat.CYAN).append("Source of: ").append(LH.Chat.WHITE); else tToolTip.append(", ");
+								tToolTip.append(tMaterial.getLocal());
+							}
+							if (tToolTip != null) aEvent.toolTip.add(tToolTip.toString());
+						}
+						
+						
 						ArrayListNoNulls<Integer> tShapelessAmounts = new ArrayListNoNulls<>();
 						for (AdvancedCrafting1ToY tHandler : tData.mPrefix.mShapelessManagersSingle) if (tHandler.hasOutputFor(tData.mMaterial.mMaterial)) tShapelessAmounts.add(1);
 						for (AdvancedCraftingXToY tHandler : tData.mPrefix.mShapelessManagers      ) if (tHandler.hasOutputFor(tData.mMaterial.mMaterial)) tShapelessAmounts.add(tHandler.mInputCount);
@@ -384,46 +376,50 @@ public class GT_API_Proxy_Client extends GT_API_Proxy {
 							aEvent.toolTip.add(LH.Chat.CYAN + LH.get(LH.TOOLTIP_SHAPELESS_CRAFT) + LH.Chat.WHITE + tShapelessAmounts);
 						}
 						if (tData.mPrefix.contains(TD.Prefix.TOOLTIP_ENCHANTS)) {
-							if (!tData.mMaterial.mMaterial.mEnchantmentTools.isEmpty()) {
-								if (!tData.mPrefix.contains(TD.Prefix.AMMO_ALIKE)) {
-									if (tData.mMaterial.mMaterial.mEnchantmentTools.size() <= 5) {
-										aEvent.toolTip.add(LH.Chat.PURPLE + LH.get(LH.TOOLTIP_POSSIBLE_TOOL_ENCHANTS));
-										for (ObjectStack<Enchantment> tEnchantment : tData.mMaterial.mMaterial.mEnchantmentTools) {
-											if (tEnchantment.mObject == Enchantment.fortune) {
-												aEvent.toolTip.add(LH.Chat.PINK + Enchantment.fortune   .getTranslatedName((int)tEnchantment.mAmount) + " / " + Enchantment.looting.getTranslatedName((int)tEnchantment.mAmount));
-											} else if (tEnchantment.mObject == Enchantment.knockback) {
-												aEvent.toolTip.add(LH.Chat.PINK + Enchantment.knockback .getTranslatedName((int)tEnchantment.mAmount) + " / " + Enchantment.punch  .getTranslatedName((int)tEnchantment.mAmount));
-											} else if (tEnchantment.mObject == Enchantment.fireAspect) {
-												if (tEnchantment.mAmount >= 3)
-												aEvent.toolTip.add(LH.Chat.PINK + Enchantment.fireAspect.getTranslatedName((int)tEnchantment.mAmount) + " / " + Enchantment.flame  .getTranslatedName((int)tEnchantment.mAmount) + " / Auto Smelt I");
-												else
-												aEvent.toolTip.add(LH.Chat.PINK + Enchantment.fireAspect.getTranslatedName((int)tEnchantment.mAmount) + " / " + Enchantment.flame  .getTranslatedName((int)tEnchantment.mAmount));
-											} else {
-												aEvent.toolTip.add(LH.Chat.PINK + tEnchantment.mObject  .getTranslatedName((int)tEnchantment.mAmount));
-											}
-										}
-									} else {
-										aEvent.toolTip.add(LH.Chat.PURPLE + LH.get(LH.TOOLTIP_TOO_MANY_TOOL_ENCHANTS));
-									}
-								}
+							StringBuilder
+							tToolTip = null;
+							for (ObjectStack<Enchantment> tEnchantment : tData.mMaterial.mMaterial.mEnchantmentTools) {
+								if (tToolTip == null) tToolTip = new StringBuilder(LH.Chat.PURPLE).append(LH.get(LH.TOOLTIP_POSSIBLE_TOOL_ENCHANTS)).append(LH.Chat.PINK); else tToolTip.append(", ");
+								tToolTip.append(tEnchantment.mObject.getTranslatedName((int)tEnchantment.mAmount));
+								if (tEnchantment.mObject == Enchantment.fireAspect && tEnchantment.mAmount >= 3) tToolTip.append(" (Autosmelt)");
 							}
-							if (MD.BTL.mLoaded && tData.mMaterial.mMaterial.contains(TD.Properties.BETWEENLANDS)) {
-								aEvent.toolTip.add(LH.Chat.GREEN + LH.get(LH.TOOLTIP_BETWEENLANDS_RESISTANCE));
+							if (tToolTip != null) aEvent.toolTip.add(tToolTip.toString());
+							tToolTip = null;
+							for (ObjectStack<Enchantment> tEnchantment : tData.mMaterial.mMaterial.mEnchantmentWeapons) {
+								if (tToolTip == null) tToolTip = new StringBuilder(LH.Chat.PURPLE).append(LH.get(LH.TOOLTIP_POSSIBLE_WEAPON_ENCHANTS)).append(LH.Chat.PINK); else tToolTip.append(", ");
+								tToolTip.append(tEnchantment.mObject.getTranslatedName((int)tEnchantment.mAmount));
 							}
+							if (tToolTip != null) aEvent.toolTip.add(tToolTip.toString());
+							tToolTip = null;
+							for (ObjectStack<Enchantment> tEnchantment : tData.mMaterial.mMaterial.mEnchantmentAmmo) {
+								if (tToolTip == null) tToolTip = new StringBuilder(LH.Chat.PURPLE).append(LH.get(LH.TOOLTIP_POSSIBLE_AMMO_ENCHANTS)).append(LH.Chat.PINK); else tToolTip.append(", ");
+								tToolTip.append(tEnchantment.mObject.getTranslatedName((int)tEnchantment.mAmount));
+							}
+							if (tToolTip != null) aEvent.toolTip.add(tToolTip.toString());
+							tToolTip = null;
+							for (ObjectStack<Enchantment> tEnchantment : tData.mMaterial.mMaterial.mEnchantmentRanged) {
+								if (tToolTip == null) tToolTip = new StringBuilder(LH.Chat.PURPLE).append(LH.get(LH.TOOLTIP_POSSIBLE_RANGED_ENCHANTS)).append(LH.Chat.PINK); else tToolTip.append(", ");
+								tToolTip.append(tEnchantment.mObject.getTranslatedName((int)tEnchantment.mAmount));
+							}
+							if (tToolTip != null) aEvent.toolTip.add(tToolTip.toString());
+							
 							if (!tData.mPrefix.containsAny(TD.Prefix.TOOL_HEAD, TD.Prefix.WEAPON_ALIKE, TD.Prefix.AMMO_ALIKE, TD.Prefix.TOOL_ALIKE)) {
-								if (!tData.mMaterial.mMaterial.mEnchantmentArmors.isEmpty()) {
-									if (tData.mMaterial.mMaterial.mEnchantmentArmors.size() <= 3) {
-										aEvent.toolTip.add(LH.Chat.PURPLE + LH.get(LH.TOOLTIP_POSSIBLE_ARMOR_ENCHANTS));
-										for (ObjectStack<Enchantment> tEnchantment : tData.mMaterial.mMaterial.mEnchantmentArmors) {
-											aEvent.toolTip.add(LH.Chat.PINK + tEnchantment.mObject.getTranslatedName((int)tEnchantment.mAmount));
-										}
-									} else {
-										aEvent.toolTip.add(LH.Chat.PURPLE + LH.get(LH.TOOLTIP_TOO_MANY_ARMOR_ENCHANTS));
-									}
+								tToolTip = null;
+								for (ObjectStack<Enchantment> tEnchantment : tData.mMaterial.mMaterial.mEnchantmentArmors) {
+									if (tToolTip == null) tToolTip = new StringBuilder(LH.Chat.PURPLE).append(LH.get(LH.TOOLTIP_POSSIBLE_ARMOR_ENCHANTS)).append(LH.Chat.PINK); else tToolTip.append(", ");
+									tToolTip.append(tEnchantment.mObject.getTranslatedName((int)tEnchantment.mAmount));
 								}
+								if (tToolTip != null) aEvent.toolTip.add(tToolTip.toString());
+								
+								
+								
 								if ((IL.TF_Mazestone.exists() || IL.TF_Mazehedge.exists()) && tData.mMaterial.mMaterial.contains(TD.Properties.MAZEBREAKER)) {
 									aEvent.toolTip.add(LH.Chat.PINK + LH.get(LH.TOOLTIP_TWILIGHT_MAZE_BREAKING));
 								}
+							}
+							
+							if (MD.BTL.mLoaded && tData.mMaterial.mMaterial.contains(TD.Properties.BETWEENLANDS)) {
+								aEvent.toolTip.add(LH.Chat.GREEN + LH.get(LH.TOOLTIP_BETWEENLANDS_RESISTANCE));
 							}
 						}
 						if (aBlock == NB || !(aBlock instanceof MultiTileEntityBlockInternal || aBlock instanceof IBlockBase)) {

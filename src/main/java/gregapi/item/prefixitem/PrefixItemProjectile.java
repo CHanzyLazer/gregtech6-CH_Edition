@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,12 +19,11 @@
 
 package gregapi.item.prefixitem;
 
-import static gregapi.data.CS.*;
-
 import cpw.mods.fml.common.FMLLog;
 import gregapi.code.ModData;
 import gregapi.code.ObjectStack;
 import gregapi.code.TagData;
+import gregapi.data.LH;
 import gregapi.data.MT;
 import gregapi.item.IItemProjectile;
 import gregapi.oredict.OreDictMaterial;
@@ -46,6 +45,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
+import java.util.List;
+
+import static gregapi.data.CS.*;
+
 /**
  * @author Gregorius Techneticies
  */
@@ -53,20 +56,32 @@ public class PrefixItemProjectile extends PrefixItem implements IItemProjectile 
 	public final TagData mProjectileType;
 	public final Class<? extends EntityProjectile> mEntityClass;
 	public final float mSpeedMultiplier, mPrecision;
-	public final boolean mStabbing;
+	public final boolean mStabbing, mIsBullet;
 	
-	public PrefixItemProjectile(ModData aMod, String aNameInternal, OreDictPrefix aPrefix, TagData aProjectileType, Class<? extends EntityProjectile> aEntityClass, float aSpeedMultiplier, float aPrecision, boolean aDispensable, boolean aStabbing, OreDictMaterial... aMaterialList) {
-		this(aMod.mID, aMod.mID, aNameInternal, aPrefix, aProjectileType, aEntityClass, aSpeedMultiplier, aPrecision, aDispensable, aStabbing, aMaterialList);
+	public PrefixItemProjectile(ModData aMod, String aNameInternal, OreDictPrefix aPrefix, TagData aProjectileType, Class<? extends EntityProjectile> aEntityClass, float aSpeedMultiplier, float aPrecision, boolean aDispensable, boolean aStabbing, boolean aIsBullet, OreDictMaterial... aMaterialList) {
+		this(aMod.mID, aMod.mID, aNameInternal, aPrefix, aProjectileType, aEntityClass, aSpeedMultiplier, aPrecision, aDispensable, aStabbing, aIsBullet, aMaterialList);
 	}
 	
-	public PrefixItemProjectile(String aModIDOwner, String aModIDTextures, String aNameInternal, OreDictPrefix aPrefix, TagData aProjectileType, Class<? extends EntityProjectile> aEntityClass, float aSpeedMultiplier, float aPrecision, boolean aDispensable, boolean aStabbing, OreDictMaterial... aMaterialList) {
+	public PrefixItemProjectile(String aModIDOwner, String aModIDTextures, String aNameInternal, OreDictPrefix aPrefix, TagData aProjectileType, Class<? extends EntityProjectile> aEntityClass, float aSpeedMultiplier, float aPrecision, boolean aDispensable, boolean aStabbing, boolean aIsBullet, OreDictMaterial... aMaterialList) {
 		super(aModIDOwner, aModIDTextures, aNameInternal, aPrefix, aMaterialList);
 		mProjectileType = aProjectileType;
 		mEntityClass = aEntityClass;
 		mPrecision = aPrecision;
 		mSpeedMultiplier = aSpeedMultiplier;
 		mStabbing = aStabbing;
+		mIsBullet = aIsBullet;
 		if (aDispensable) BlockDispenser.dispenseBehaviorRegistry.putObject(this, new MetaItemDispense());
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public void addInformation(ItemStack aStack, EntityPlayer aPlayer, List aList, boolean aF3_H) {
+		if (mIsBullet) {
+			OreDictMaterial tMat = getMaterial(ST.meta(aStack));
+			int tDamage = (int)((tMat == null ? 1.0 : tMat.getWeight(getPrefix(ST.meta(aStack)).mAmount) / 50.0) * 2.0F * TFC_DAMAGE_MULTIPLIER)+1;
+			aList.add(LH.Chat.WHITE + "Bullet Damage: " + LH.Chat.RED + tDamage/2.0F + (TFC_DAMAGE_MULTIPLIER>1?"":" Hearts"));
+		}
+		super.addInformation(aStack, aPlayer, aList, aF3_H);
 	}
 	
 	@Override
@@ -114,12 +129,11 @@ public class PrefixItemProjectile extends PrefixItem implements IItemProjectile 
 	public void updateItemStack(ItemStack aStack) {
 		super.updateItemStack(aStack);
 		short aMetaData = ST.meta_(aStack);
-		if (UT.Code.exists(aMetaData, mMaterialList) && !mMaterialList[aMetaData].mEnchantmentTools.isEmpty()) {
-			NBTTagCompound tNBT = UT.NBT.getNBT(aStack);
+		if (UT.Code.exists(aMetaData, mMaterialList) && !mMaterialList[aMetaData].mEnchantmentAmmo.isEmpty()) {
+			NBTTagCompound tNBT = UT.NBT.getOrCreate(aStack);
 			if (!tNBT.getBoolean("gt.u")) {
 				tNBT.setBoolean("gt.u", T);
-				UT.NBT.set(aStack, tNBT);
-				for (ObjectStack<Enchantment> tEnchantment : mMaterialList[aMetaData].mEnchantmentWeapons) {
+				for (ObjectStack<Enchantment> tEnchantment : mMaterialList[aMetaData].mEnchantmentAmmo) {
 					UT.NBT.addEnchantment(aStack, tEnchantment.mObject, tEnchantment.mAmount);
 				}
 			}

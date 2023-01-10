@@ -59,18 +59,18 @@ public class Loader_Worldgen implements Runnable {
 		new WorldgenStoneLayers("stonelayers", T, GEN_GT, GEN_ENVM_GT, GEN_A97_GT, GEN_CW2_AquaCavern_GT, GEN_CW2_Caveland_GT, GEN_CW2_Cavenia_GT, GEN_CW2_Cavern_GT, GEN_CW2_Caveworld_GT); // MUST BE FIRST
 		
 		StoneLayer.DEEPSLATE = new StoneLayer(BlocksGT.Slate, MT.STONES.Deepslate, IL.EtFu_Deepslate.block(), 0, IL.EtFu_Deepslate_Cobble.block(), 0
-		, new StoneLayerOres(MT.Emerald                                 , U64,  0, 32, ST.block(MD.EtFu, "deepslate_emerald_ore"), BIOMES_MOUNTAINS)
-		, new StoneLayerOres(MT.Diamond                                 , U64,  0, 12, ST.block(MD.EtFu, "deepslate_diamond_ore"), BIOMES_JUNGLE, BIOMES_VOLCANIC)
-		, new StoneLayerOres(MT.Lapis                                   , U12, 16, 24, ST.block(MD.EtFu, "deepslate_lapis_ore"), BIOMES_FROZEN, BIOMES_TAIGA)
-		, new StoneLayerOres(MT.Redstone                                , U16,  0, 20, ST.block(MD.EtFu, "deepslate_redstone_ore"))
-		, new StoneLayerOres(MT.Au                                      , U32,  0, 16, ST.block(MD.EtFu, "deepslate_gold_ore"), BIOMES_MESA)
-		, new StoneLayerOres(MT.Cu                                      , U16,  0, 32, ST.block(MD.EtFu, "deepslate_copper_ore"), BIOMES_DESERT, BIOMES_SAVANNA)
-		, new StoneLayerOres(MT.Fe                                      , U16,  0, 32, ST.block(MD.EtFu, "deepslate_iron_ore"), BIOMES_SWAMP, BIOMES_WOODS)
-		, new StoneLayerOres(MT.Coal                                    , U16,  0, 32, ST.block(MD.EtFu, "deepslate_coal_ore"), BIOMES_PLAINS, BIOMES_SHROOM)
-		,!MT.Nikolite.mHidden ? new StoneLayerOres(MT.Nikolite          , U32,  0, 20) : null
-		, MD.HEX     .mLoaded ? new StoneLayerOres(MT.HexoriumBlack     , U32,  0, 16) : null
-		, MD.HEX     .mLoaded ? new StoneLayerOres(MT.HexoriumWhite     , U32,  0, 16) : null
-		, MD.MET     .mLoaded ? new StoneLayerOres(MT.DeepIron          , U16,  0, 16) : null
+		, new StoneLayerOres(MT.Emerald                                 , F, U64,  0, 32, ST.block(MD.EtFu, "deepslate_emerald_ore"), BIOMES_MOUNTAINS)
+		, new StoneLayerOres(MT.Diamond                                 , F, U64,  0, 12, ST.block(MD.EtFu, "deepslate_diamond_ore"), BIOMES_JUNGLE, BIOMES_VOLCANIC)
+		, new StoneLayerOres(MT.Lapis                                   , F, U12, 16, 24, ST.block(MD.EtFu, "deepslate_lapis_ore"), BIOMES_FROZEN, BIOMES_TAIGA)
+		, new StoneLayerOres(MT.Redstone                                , F, U16,  0, 20, ST.block(MD.EtFu, "deepslate_redstone_ore"))
+		, new StoneLayerOres(MT.Au                                      , F, U32,  0, 16, ST.block(MD.EtFu, "deepslate_gold_ore"), BIOMES_MESA)
+		, new StoneLayerOres(MT.Cu                                      , F, U16,  0, 32, ST.block(MD.EtFu, "deepslate_copper_ore"), BIOMES_DESERT, BIOMES_SAVANNA)
+		, new StoneLayerOres(MT.Fe                                      , F, U16,  0, 32, ST.block(MD.EtFu, "deepslate_iron_ore"), BIOMES_SWAMP, BIOMES_WOODS)
+		, new StoneLayerOres(MT.Coal                                    , F, U16,  0, 32, ST.block(MD.EtFu, "deepslate_coal_ore"), BIOMES_PLAINS, BIOMES_SHROOM)
+		,!MT.Nikolite.mHidden ? new StoneLayerOres(MT.Nikolite          , F, U32,  0, 20) : null
+		, MD.HEX     .mLoaded ? new StoneLayerOres(MT.HexoriumBlack     , F, U32,  0, 16) : null
+		, MD.HEX     .mLoaded ? new StoneLayerOres(MT.HexoriumWhite     , F, U32,  0, 16) : null
+		, MD.MET     .mLoaded ? new StoneLayerOres(MT.DeepIron          , F, U16,  0, 16) : null
 		);
 		
 		
@@ -110,30 +110,31 @@ public class Loader_Worldgen implements Runnable {
 		));
 		StoneLayer.LAYERS.add(new StoneLayer(null
 		, MD.ARS     .mLoaded ? new StoneLayerOres(MT.Vinteum           , U64, 16, 40) : null
-		, MD.TC      .mLoaded ? new StoneLayerOres(MT.InfusedOrder      , U64, 24, 40, ST.block(MD.TC, "blockCustomOre"), 5, BIOMES_MAGICAL_GOOD) : null
-		, MD.TC      .mLoaded ? new StoneLayerOres(MT.InfusedWater      , U64, 48, 64, ST.block(MD.TC, "blockCustomOre"), 3, BIOMES_MAGICAL_GOOD) : null
-		, MD.TC      .mLoaded ? new StoneLayerOres(MT.InfusedEarth      , U64,  0, 16, ST.block(MD.TC, "blockCustomOre"), 4, BIOMES_MAGICAL_GOOD) : null
-		, MD.TC      .mLoaded ? new StoneLayerOres(MT.OREMATS.Cinnabar  , U32, 16, 40, ST.block(MD.TC, "blockCustomOre"), 0, BIOMES_MAGICAL_GOOD) : null
+		, MD.TC      .mLoaded ? new StoneLayerOres(MT.InfusedOrder      , U64, 24, 40, ST.block(MD.TC , "blockCustomOre"  ), 5, BIOMES_MAGICAL_GOOD) : null
+		, MD.TC      .mLoaded ? new StoneLayerOres(MT.InfusedWater      , U64, 48, 64, ST.block(MD.TC , "blockCustomOre"  ), 3, BIOMES_MAGICAL_GOOD) : null
+		, MD.TC      .mLoaded ? new StoneLayerOres(MT.InfusedEarth      , U64,  0, 16, ST.block(MD.TC , "blockCustomOre"  ), 4, BIOMES_MAGICAL_GOOD) : null
+		, MD.TC      .mLoaded ? new StoneLayerOres(MT.OREMATS.Cinnabar  , U32, 16, 40, ST.block(MD.TC , "blockCustomOre"  ), 0, BIOMES_MAGICAL_GOOD) : null
 		));
 		StoneLayer.LAYERS.add(new StoneLayer(null
-		, MD.HBM     .mLoaded ? new StoneLayerOres(MT.OREMATS.Uraninite , U16,  0, 48, ST.block(MD.HBM, "tile.ore_uranium")) : null
-		, MD.TC      .mLoaded ? new StoneLayerOres(MT.InfusedEntropy    , U64, 24, 40, ST.block(MD.TC, "blockCustomOre"), 6, BIOMES_MAGICAL_GOOD) : null
-		, MD.TC      .mLoaded ? new StoneLayerOres(MT.InfusedAir        , U64, 48, 64, ST.block(MD.TC, "blockCustomOre"), 1, BIOMES_MAGICAL_GOOD) : null
-		, MD.TC      .mLoaded ? new StoneLayerOres(MT.InfusedFire       , U64,  0, 16, ST.block(MD.TC, "blockCustomOre"), 2, BIOMES_MAGICAL_GOOD) : null
-		, MD.TC      .mLoaded ? new StoneLayerOres(MT.Amber             , U32, 16, 40, ST.block(MD.TC, "blockCustomOre"), 7, BIOMES_MAGICAL_GOOD) : null
+		, MD.HBM     .mLoaded ? new StoneLayerOres(MT.OREMATS.Uraninite , U16,  0, 48, ST.block(MD.HBM, "tile.ore_uranium"), 0) : null
+		, MD.BoP     .mLoaded ? new StoneLayerOres(MT.Amber             , U32, 16, 40, ST.block(MD.BoP, "gemOre"          ),14) : null
+		, MD.TC      .mLoaded ? new StoneLayerOres(MT.Amber             , U32, 16, 40, ST.block(MD.TC , "blockCustomOre"  ), 7, BIOMES_MAGICAL_GOOD) : null
+		, MD.TC      .mLoaded ? new StoneLayerOres(MT.InfusedEntropy    , U64, 24, 40, ST.block(MD.TC , "blockCustomOre"  ), 6, BIOMES_MAGICAL_GOOD) : null
+		, MD.TC      .mLoaded ? new StoneLayerOres(MT.InfusedAir        , U64, 48, 64, ST.block(MD.TC , "blockCustomOre"  ), 1, BIOMES_MAGICAL_GOOD) : null
+		, MD.TC      .mLoaded ? new StoneLayerOres(MT.InfusedFire       , U64,  0, 16, ST.block(MD.TC , "blockCustomOre"  ), 2, BIOMES_MAGICAL_GOOD) : null
 		));
 		StoneLayer.LAYERS.add(new StoneLayer(null
-		, new StoneLayerOres(MT.Emerald                 , U48, 16, 60, Blocks.emerald_ore, BIOMES_MOUNTAINS)
-		, new StoneLayerOres(MT.Diamond                 ,U128,  8, 24, Blocks.diamond_ore)
-		, new StoneLayerOres(MT.Lapis                   , U48, 16, 48, Blocks.lapis_ore)
-		, new StoneLayerOres(MT.Redstone                , U32,  8, 24, Blocks.redstone_ore)
-		, new StoneLayerOres(MT.OREMATS.Cinnabar        ,U128,  8, 24, ST.block(MD.TC, "blockCustomOre"), 0)
-		, new StoneLayerOres(MT.Au                      , U64,  8, 32, Blocks.gold_ore)
-		, new StoneLayerOres(MT.Au                      , U32, 33, 64, Blocks.gold_ore, BIOMES_MESA)
-		, new StoneLayerOres(MT.Cu                      , U16, 20, 50, ST.block(MD.EtFu, "copper_ore"), BIOMES_MESA, BIOMES_DESERT, BIOMES_SAVANNA)
-		, new StoneLayerOres(MT.Fe                      , U16, 40, 80, Blocks.iron_ore)
-		, new StoneLayerOres(MT.Coal                    , U8 , 60,100, Blocks.coal_ore)
-		, new StoneLayerOres(MT.Stone                   , U48,  0,255, Blocks.monster_egg)
+		, new StoneLayerOres(MT.Emerald                 , F, U48, 16, 60, Blocks.emerald_ore, BIOMES_MOUNTAINS)
+		, new StoneLayerOres(MT.Diamond                 , F,U128,  8, 24, Blocks.diamond_ore)
+		, new StoneLayerOres(MT.Lapis                   , F, U48, 16, 48, Blocks.lapis_ore)
+		, new StoneLayerOres(MT.Redstone                , F, U32,  8, 24, Blocks.redstone_ore)
+		, new StoneLayerOres(MT.OREMATS.Cinnabar        , F,U128,  8, 24, ST.block(MD.TC, "blockCustomOre"), 0)
+		, new StoneLayerOres(MT.Au                      , F, U64,  8, 32, Blocks.gold_ore)
+		, new StoneLayerOres(MT.Au                      , F, U32, 33, 64, Blocks.gold_ore, BIOMES_MESA)
+		, new StoneLayerOres(MT.Cu                      , F, U16, 20, 50, ST.block(MD.EtFu, "copper_ore"), BIOMES_MESA, BIOMES_DESERT, BIOMES_SAVANNA)
+		, new StoneLayerOres(MT.Fe                      , F, U16, 40, 80, Blocks.iron_ore)
+		, new StoneLayerOres(MT.Coal                    , F, U8 , 60,100, Blocks.coal_ore)
+		, new StoneLayerOres(MT.Stone                   , F, U48,  0,255, Blocks.monster_egg)
 		));
 		StoneLayer.LAYERS.add(new StoneLayer(null
 		, new StoneLayerOres(MT.Fe2O3                   , U6 , 30, 70)
@@ -779,7 +780,7 @@ public class Loader_Worldgen implements Runnable {
 		new WorldgenOresSmall("ore.small.lapis"            , T,  20,  40,   8, MT.Lapis               , GEN_OVERWORLD, GEN_GT          , GEN_A97, GEN_A97_GT, GEN_ENVM, GEN_ENVM_GT, GEN_CW2_AquaCavern, GEN_CW2_AquaCavern_GT, GEN_CW2_Caveland, GEN_CW2_Caveland_GT, GEN_CW2_Cavenia, GEN_CW2_Cavenia_GT, GEN_CW2_Cavern, GEN_CW2_Cavern_GT, GEN_CW2_Caveworld, GEN_CW2_Caveworld_GT, GEN_EREBUS, GEN_BETWEENLANDS, GEN_ATUM, GEN_ALFHEIM, GEN_AETHER);
 		new WorldgenOresSmall("ore.small.eudialyte"        , T,  20,  40,   4, MT.Eudialyte           , GEN_OVERWORLD, GEN_GT, GEN_PFAA, GEN_A97, GEN_A97_GT, GEN_ENVM, GEN_ENVM_GT, GEN_CW2_AquaCavern, GEN_CW2_AquaCavern_GT, GEN_CW2_Caveland, GEN_CW2_Caveland_GT, GEN_CW2_Cavenia, GEN_CW2_Cavenia_GT, GEN_CW2_Cavern, GEN_CW2_Cavern_GT, GEN_CW2_Caveworld, GEN_CW2_Caveworld_GT);
 		new WorldgenOresSmall("ore.small.azurite"          , T,  20,  40,   4, MT.Azurite             , GEN_OVERWORLD, GEN_GT, GEN_PFAA, GEN_A97, GEN_A97_GT, GEN_ENVM, GEN_ENVM_GT, GEN_CW2_AquaCavern, GEN_CW2_AquaCavern_GT, GEN_CW2_Caveland, GEN_CW2_Caveland_GT, GEN_CW2_Cavenia, GEN_CW2_Cavenia_GT, GEN_CW2_Cavern, GEN_CW2_Cavern_GT, GEN_CW2_Caveworld, GEN_CW2_Caveworld_GT);
-		new WorldgenOresSmall("ore.small.coal"             , T,  60, 100,  24, MT.Coal                , GEN_OVERWORLD, GEN_GT          , GEN_A97, GEN_A97_GT, GEN_ENVM, GEN_ENVM_GT, GEN_CW2_AquaCavern, GEN_CW2_AquaCavern_GT, GEN_CW2_Caveland, GEN_CW2_Caveland_GT, GEN_CW2_Cavenia, GEN_CW2_Cavenia_GT, GEN_CW2_Cavern, GEN_CW2_Cavern_GT, GEN_CW2_Caveworld, GEN_CW2_Caveworld_GT, GEN_EREBUS, GEN_BETWEENLANDS, GEN_ATUM);
+		new WorldgenOresSmall("ore.small.coal"             , T,  40, 100,  36, MT.Coal                , GEN_OVERWORLD, GEN_GT          , GEN_A97, GEN_A97_GT, GEN_ENVM, GEN_ENVM_GT, GEN_CW2_AquaCavern, GEN_CW2_AquaCavern_GT, GEN_CW2_Caveland, GEN_CW2_Caveland_GT, GEN_CW2_Cavenia, GEN_CW2_Cavenia_GT, GEN_CW2_Cavern, GEN_CW2_Cavern_GT, GEN_CW2_Caveworld, GEN_CW2_Caveworld_GT, GEN_EREBUS, GEN_BETWEENLANDS, GEN_ATUM);
 		new WorldgenOresSmall("ore.small.graphite"         , T,   5,  10,   2, MT.Graphite            , GEN_OVERWORLD, GEN_GT, GEN_PFAA, GEN_A97, GEN_A97_GT, GEN_ENVM, GEN_ENVM_GT, GEN_CW2_AquaCavern, GEN_CW2_AquaCavern_GT, GEN_CW2_Caveland, GEN_CW2_Caveland_GT, GEN_CW2_Cavenia, GEN_CW2_Cavenia_GT, GEN_CW2_Cavern, GEN_CW2_Cavern_GT, GEN_CW2_Caveworld, GEN_CW2_Caveworld_GT, GEN_EREBUS, GEN_BETWEENLANDS, GEN_ATUM, GEN_ALFHEIM, GEN_AETHER, GEN_NETHER         , GEN_MARS, GEN_ASTEROIDS          , GEN_PLANETS);
 		new WorldgenOresSmall("ore.small.pollucite"        , T,   1, 250,   1, MT.OREMATS.Pollucite   , GEN_OVERWORLD, GEN_GT, GEN_PFAA, GEN_A97, GEN_A97_GT, GEN_ENVM, GEN_ENVM_GT, GEN_CW2_AquaCavern, GEN_CW2_AquaCavern_GT, GEN_CW2_Caveland, GEN_CW2_Caveland_GT, GEN_CW2_Cavenia, GEN_CW2_Cavenia_GT, GEN_CW2_Cavern, GEN_CW2_Cavern_GT, GEN_CW2_Caveworld, GEN_CW2_Caveworld_GT, GEN_EREBUS, GEN_BETWEENLANDS, GEN_ATUM, GEN_ALFHEIM            , GEN_NETHER);
 		new WorldgenOresSmall("ore.small.zeolite"          , T,   1, 250,   1, MT.OREMATS.Zeolite     , GEN_OVERWORLD, GEN_GT, GEN_PFAA, GEN_A97, GEN_A97_GT, GEN_ENVM, GEN_ENVM_GT, GEN_CW2_AquaCavern, GEN_CW2_AquaCavern_GT, GEN_CW2_Caveland, GEN_CW2_Caveland_GT, GEN_CW2_Cavenia, GEN_CW2_Cavenia_GT, GEN_CW2_Cavern, GEN_CW2_Cavern_GT, GEN_CW2_Caveworld, GEN_CW2_Caveworld_GT, GEN_EREBUS, GEN_BETWEENLANDS, GEN_ATUM, GEN_ALFHEIM            , GEN_NETHER);
@@ -865,7 +866,7 @@ public class Loader_Worldgen implements Runnable {
 		new WorldgenOresLarge("ore.large.iron"        , T, T, 10,  40, 120, 4, 24, MT.OREMATS.BrownLimonite        , MT.OREMATS.YellowLimonite      , MT.Fe2O3                       , MT.OREMATS.Malachite  , ORE_OVERWORLD, ORE_A97, ORE_ENVM, ORE_CW2_AquaCavern, ORE_CW2_Caveland, ORE_CW2_Cavenia, ORE_CW2_Cavern, ORE_CW2_Caveworld, ORE_EREBUS, ORE_ATUM, ORE_BETWEENLANDS, ORE_MARS);
 		new WorldgenOresLarge("ore.large.copper"      , T, T, 10,  30,  80, 4, 24, MT.OREMATS.Chalcopyrite         , MT.Fe2O3                       , MT.Pyrite                      , MT.Cu                 , ORE_OVERWORLD, ORE_A97, ORE_ENVM, ORE_CW2_AquaCavern, ORE_CW2_Caveland, ORE_CW2_Cavenia, ORE_CW2_Cavern, ORE_CW2_Caveworld, ORE_EREBUS, ORE_ATUM, ORE_BETWEENLANDS, ORE_MARS);
 		new WorldgenOresLarge("ore.large.adamantium"  , T, T, 10, 120,   5, 2, 16, MT.OREMATS.BrownLimonite        , MT.OREMATS.YellowLimonite      , MT.Fe2O3                       , MT.Adamantine         , ORE_MARS);
-		new WorldgenOresLarge("ore.large.naquadah"    , T, T, 10,  60,  10, 4, 32, MT.Nq                           , MT.Nq                          , MT.Nq                          , MT.Nq_528             , ORE_MARS, ORE_PLANETS, ORE_ASTEROIDS, ORE_END);
+		new WorldgenOresLarge("ore.large.naquadah"    , T, T, 10,  60,  10, 4, 32, MT.Nq                           , MT.Nq                          , MT.Nq                          , MT.Nq                 , ORE_MARS, ORE_PLANETS, ORE_ASTEROIDS, ORE_END);
 		new WorldgenOresLarge("ore.large.trinium"     , T, T, 10,  90, 100, 1, 12, MT.Ke                           , MT.Ke                          , MT.Ke                          , MT.Ke                 , ORE_MARS, ORE_PLANETS, ORE_ASTEROIDS, ORE_END);
 		new WorldgenOresLarge("ore.large.dolamide"    , T, T,  5,  60,  40, 3, 16, MT.OREMATS.DuraniumHexaiodide   , MT.OREMATS.DuraniumHexafluoride, MT.OREMATS.DuraniumHexachloride, MT.Dolamide           , ORE_MARS, ORE_PLANETS, ORE_ASTEROIDS);
 		new WorldgenOresLarge("ore.large.moonmars"    , T, T, 10,  90, 240, 1,  8, MT.MgCO3                        , MT.MnO2                        , MT.Al2O3                       , MT.TiO2               , ORE_MARS, ORE_PLANETS, ORE_MOON);

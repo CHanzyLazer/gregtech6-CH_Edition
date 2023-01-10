@@ -95,7 +95,14 @@ public class Loader_Recipes_Hints implements Runnable {
 		, ST.make(aRegistry     .getItem(32706), "Mixing Bowls and Bathing Pots are top open too!")
 		), ST.array(ST.make(Items.potionitem, 1, 0, "Ahh, bottled Tap Water!")), null, ZL_LONG, ZL_FS, ZL_FS, 0, 0, 0);
 		
-		
+		RM.DidYouKnow.addFakeRecipe(F, ST.array(
+		  ST.make(OP.dust           .mat(MT.Endstone, 1), "Endstone can be centrifuged for Helium")
+		, ST.make(OP.dust           .mat(MT.Monazite, 1), "Monazite can be smelted for Helium")
+		, ST.make(OP.crushedPurified.mat(MT.Biotite , 1), "Biotite can be dried for Argon")
+		, ST.make(Blocks.end_stone                , 1, 0, "Some Overworld Dungeons have Endstone too!")
+		, ST.make(aRegistry              .getItem(17111), "Cryo Distillation Towers also produce Noble Gasses")
+		, ST.make(aRegistry              .getItem(17198), "Worst case, just let the Fusion Reactor make it!")
+		), ST.array(ST.make(OP.bouleGt.mat(MT.Si, 1), "Noble Gas is used for Crystallizing Boules"), ST.make(OP.plateGem.mat(MT.Si, 1), "Then cut into Plates"), ST.make(OP.plateGemTiny.mat(MT.Si, 1), "And cut in tinier Plates for Circuits"), ST.make(OP.bouleGt.mat(MT.RedstoneAlloy, 1), "Noble Gas is used for Crystallizing Boules"), ST.make(OP.plateGem.mat(MT.RedstoneAlloy, 1), "Then cut into Plates"), ST.make(OP.plateGemTiny.mat(MT.RedstoneAlloy, 1), "And cut in tinier Plates for Circuits")), null, ZL_LONG, ZL_FS, FL.array(FL.Helium.make(1), FL.Neon.make(1), FL.Argon.make(1)), 0, 0, 0);
 		
 		
 		// Tree Stuff
@@ -113,8 +120,8 @@ public class Loader_Recipes_Hints implements Runnable {
 		  ST.make(BlocksGT.Saplings_AB, 1, 1, "Find a Maple Tree in a Forest")
 		, ST.make(BlocksGT.Leaves_AB, 1, 1, "Make sure its natural Leaves stay intact!")
 		, ST.make(BlocksGT.LogA, 1, 1, "Choose one of the Log Segments at the Base of the Tree")
-		, ST.make(ToolsGT.sMetaTool, 1, ToolsGT.HAND_DRILL, "Drill only one Hole into the Tree")
-		, ST.make(ToolsGT.sMetaTool, 1, ToolsGT.DRILL_LV  , "Drill only one Hole into the Tree")
+		, ST.make(ToolsGT.sMetaTool, 1, ToolsGT.HAND_DRILL, "Drill only ONE Hole! Bronze is easiest to make this Tool")
+		, ST.make(ToolsGT.sMetaTool, 1, ToolsGT.DRILL_LV  , "Drill only ONE Hole! Electric might be a bit Late-game")
 		, IL.Bag_Sap_Resin.getWithName(1, "Place Sap Bag at the drilled Hole")
 		), ZL_IS, null, ZL_LONG, ZL_FS, FL.array(FL.Sap_Maple.make(250)), 0, 0, 0);
 		

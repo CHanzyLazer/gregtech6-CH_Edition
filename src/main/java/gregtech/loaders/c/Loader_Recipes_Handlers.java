@@ -193,6 +193,7 @@ public class Loader_Recipes_Handlers implements Runnable {
 		RM.Anvil                .add(new RecipeMapHandlerPrefix(ingotQuintuple                  , 1, null           , 0, NF,  64, 0,    64, NF, plateQuadruple          , 1, scrapGt    , 9, ST.emptySlot(), NI, T, F, F, new And(ANTIMATTER.NOT, FLAMMABLE.NOT, SMITHABLE, COATED.NOT)).chances(10000, 9000));
 		RM.Anvil                .add(new RecipeMapHandlerPrefix(plate                           , 1, null           , 0, NF,  64, 0,    64, NF, casingSmall             , 1, scrapGt    , 4, ST.emptySlot(), NI, T, F, F, new And(ANTIMATTER.NOT, FLAMMABLE.NOT, SMITHABLE, COATED.NOT)).chances(10000, 9000));
 		RM.Anvil                .add(new RecipeMapHandlerPrefix(plateCurved                     , 1, null           , 0, NF,  64, 0,    64, NF, plate                   , 1, null       , 0, ST.emptySlot(), NI, T, F, F, new And(ANTIMATTER.NOT, FLAMMABLE.NOT, SMITHABLE, COATED.NOT)));
+		RM.Anvil                .add(new RecipeMapHandlerPrefix(casingSmall                     , 1, null           , 0, NF,  64, 0,    64, NF, railGt                  , 2, null       , 0, ST.emptySlot(), NI, T, F, F, new And(ANTIMATTER.NOT, FLAMMABLE.NOT, SMITHABLE, COATED.NOT)));
 		RM.Anvil                .add(new RecipeMapHandlerPrefix(gemLegendary                    , 1, null           , 0, NF,  64, 0,    64, NF, gemExquisite            , 2, null       , 0, ST.emptySlot(), NI, T, F, F, new And(ANTIMATTER.NOT)));
 		RM.Anvil                .add(new RecipeMapHandlerPrefix(gemExquisite                    , 1, null           , 0, NF,  64, 0,    64, NF, gemFlawless             , 2, null       , 0, ST.emptySlot(), NI, T, F, F, new And(ANTIMATTER.NOT)));
 		RM.Anvil                .add(new RecipeMapHandlerPrefix(gemFlawless                     , 1, null           , 0, NF,  64, 0,    64, NF, gem                     , 2, null       , 0, ST.emptySlot(), NI, T, F, F, new And(ANTIMATTER.NOT)));
@@ -243,8 +244,11 @@ public class Loader_Recipes_Handlers implements Runnable {
 		RM.Press                .add(new RecipeMapHandlerPrefix(toolHeadArrow                   , 1, NF,  16,16,     0, NF, arrowGtWood     , 1, OP.arrowGtWood     .mat(MT.Empty, 1), NI, T, F, F, new And(ANTIMATTER.NOT, MT.Empty.NOT)));
 		RM.Press                .add(new RecipeMapHandlerPrefix(toolHeadArrow                   , 1, NF,  16,16,     0, NF, arrowGtPlastic  , 1, OP.arrowGtPlastic  .mat(MT.Empty, 1), NI, T, F, F, new And(ANTIMATTER.NOT, MT.Empty.NOT)));
 		RM.Press                .add(new RecipeMapHandlerPrefix(round                           , 1, NF,  16,16,     0, NF, bulletGtSmall   , 1, OP.bulletGtSmall   .mat(MT.Empty, 1), NI, T, F, F, new And(ANTIMATTER.NOT, MT.Empty.NOT)));
+		RM.Press                .add(new RecipeMapHandlerPrefix(bolt                            , 1, NF,  16,16,     0, NF, bulletGtSmall   , 1, OP.bulletGtSmall   .mat(MT.Empty, 1), NI, T, F, F, new And(ANTIMATTER.NOT, MT.Empty.NOT)));
 		RM.Press                .add(new RecipeMapHandlerPrefix(round                           , 2, NF,  16,32,     0, NF, bulletGtMedium  , 1, OP.bulletGtMedium  .mat(MT.Empty, 1), NI, T, F, F, new And(ANTIMATTER.NOT, MT.Empty.NOT)));
+		RM.Press                .add(new RecipeMapHandlerPrefix(bolt                            , 2, NF,  16,32,     0, NF, bulletGtMedium  , 1, OP.bulletGtMedium  .mat(MT.Empty, 1), NI, T, F, F, new And(ANTIMATTER.NOT, MT.Empty.NOT)));
 		RM.Press                .add(new RecipeMapHandlerPrefix(round                           , 3, NF,  16,64,     0, NF, bulletGtLarge   , 1, OP.bulletGtLarge   .mat(MT.Empty, 1), NI, T, F, F, new And(ANTIMATTER.NOT, MT.Empty.NOT)));
+		RM.Press                .add(new RecipeMapHandlerPrefix(bolt                            , 3, NF,  16,64,     0, NF, bulletGtLarge   , 1, OP.bulletGtLarge   .mat(MT.Empty, 1), NI, T, F, F, new And(ANTIMATTER.NOT, MT.Empty.NOT)));
 		
 		
 		RM.RollingMill          .add(new RecipeMapHandlerPrefix(nugget                          , 1, NF,  16, 0,   256, NF, plateTiny       , 1, NI, NI, T, F, F, new And(ANTIMATTER.NOT, COATED.NOT, SMITHABLE, FURNACE.NOT)));
@@ -684,7 +688,7 @@ public class Loader_Recipes_Handlers implements Runnable {
 		RM.Generifier   .add(new RecipeMapHandlerMaterial(MT.Chimerite              , NF                                ,   0,   1, NF, MT.Vinteum              , NI, T, tConditionP));
 		RM.Generifier   .add(new RecipeMapHandlerMaterial(MT.BlueTopaz              , NF                                ,   0,   1, NF, MT.Topaz                , NI, T, tConditionP));
 		
-		for (OreDictMaterial tMaterial : new OreDictMaterial[] {MT.WroughtIron, MT.MeteoricIron, MT.IronMagnetic, MT.Meteorite, MT.PigIron, MT.IronCompressed, MT.IronCast, MT.Thaumium, MT.Enori})
+		for (OreDictMaterial tMaterial : new OreDictMaterial[] {MT.WroughtIron, MT.MeteoricIron, MT.IronMagnetic, MT.Meteorite, MT.IronCompressed, MT.IronCast, MT.Thaumium, MT.Enori})
 		RM.Generifier   .add(new RecipeMapHandlerMaterial(tMaterial                 , NF                                ,   0,   1, NF, MT.Fe                   , NI, T, tConditionP));
 		for (OreDictMaterial tMaterial : new OreDictMaterial[] {MT.MeteoricSteel, MT.SteelMagnetic, MT.Knightmetal})
 		RM.Generifier   .add(new RecipeMapHandlerMaterial(tMaterial                 , NF                                ,   0,   1, NF, MT.Steel                , NI, T, tConditionP));

@@ -82,9 +82,7 @@ import net.minecraftforge.fluids.*;
 import thaumcraft.api.nodes.INode;
 import twilightforest.TwilightForestMod;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Random;
+import java.util.*;
 
 import static gregapi.data.CS.*;
 
@@ -106,6 +104,24 @@ public class WD {
 			}
 		}
 		return null;
+	}
+	public static List<ItemStack> suckAll(IHasWorldAndCoords aCoordinates) {return suckAll(aCoordinates.getWorld(), aCoordinates.getX(), aCoordinates.getY(), aCoordinates.getZ());}
+	public static List<ItemStack> suckAll(World aWorld, double aX, double aY, double aZ) {return suckAll(aWorld, aX, aY, aZ, 1, 1, 1);}
+	@SuppressWarnings("unchecked")
+	public static List<ItemStack> suckAll(World aWorld, double aX, double aY, double aZ, double aL, double aH, double aW) {
+		List<EntityItem> tList = aWorld.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(aX, aY, aZ, aX+aL, aY+aH, aZ+aW));
+		if (tList.isEmpty()) return Collections.emptyList();
+		List<ItemStack> rOutput = new ArrayListNoNulls<>();
+		for (EntityItem tItem : tList) {
+			if (!tItem.isDead) {
+				aWorld.removeEntity(tItem);
+				ItemStack rStack = tItem.getEntityItem();
+				tItem.setEntityItemStack(ST.amount(0, rStack));
+				tItem.setDead();
+				rOutput.add(rStack);
+			}
+		}
+		return rOutput;
 	}
 	
 	public static boolean obstructed(World aWorld, int aX, int aY, int aZ, byte aSide) {
@@ -447,18 +463,18 @@ public class WD {
 			Block tBlock = aWorld.getBlock(aX, aY-1, aZ);
 			if (tBlock == Blocks.grass || tBlock == Blocks.mycelium) aWorld.setBlock(aX, aY-1, aZ, Blocks.dirt, 0, (byte)aFlags);
 		}
-		return aWorld.setBlock(aX, aY, aZ, aBlock, Code.bind4(aMeta), (byte)aFlags);
+		return aWorld.setBlock(aX, aY, aZ, aBlock, aBlock==NB?0:Code.bind4(aMeta), (byte)aFlags);
 	}
 	
 	public static boolean set(Chunk aChunk, int aX, int aY, int aZ, Block aBlock, long aMeta) {
-		return aChunk.func_150807_a(aX, aY, aZ, aBlock, Code.bind4(aMeta));
+		return aChunk.func_150807_a(aX, aY, aZ, aBlock, aBlock==NB?0:Code.bind4(aMeta));
 	}
 	public static boolean set(Chunk aChunk, int aX, int aY, int aZ, Block aBlock, long aMeta, boolean aRemoveGrassBelow) {
 		if (aRemoveGrassBelow) {
 			Block tBlock = aChunk.getBlock(aX, aY-1, aZ);
 			if (tBlock == Blocks.grass || tBlock == Blocks.mycelium) aChunk.func_150807_a(aX, aY-1, aZ, Blocks.dirt, 0);
 		}
-		return aChunk.func_150807_a(aX, aY, aZ, aBlock, Code.bind4(aMeta));
+		return aChunk.func_150807_a(aX, aY, aZ, aBlock, aBlock==NB?0:Code.bind4(aMeta));
 	}
 	
 	public static boolean sign(World aWorld, int aX, int aY, int aZ, byte aSide, long aFlags, String aLine1, String aLine2, String aLine3, String aLine4) {
@@ -720,6 +736,116 @@ public class WD {
 			return aWorld.setBlock(aX, aY, aZ, tStone, 0, 0);
 		}
 		return F;
+	}
+	
+	public static List<ChunkCoordinates> line(final Vec3 aStart, final Vec3 aEnd) {
+		List<ChunkCoordinates> rList = new ArrayListNoNulls<>();
+		if (Double.isNaN(aStart.xCoord) || Double.isNaN(aStart.yCoord) || Double.isNaN(aStart.zCoord) || Double.isNaN(aEnd.xCoord) || Double.isNaN(aEnd.yCoord) || Double.isNaN(aEnd.zCoord)) return rList;
+		Vec3 tPoint = Vec3.createVectorHelper(aStart.xCoord, aStart.yCoord, aStart.zCoord);
+		
+		int sx = UT.Code.roundDown(tPoint.xCoord);
+		int sy = UT.Code.roundDown(tPoint.yCoord);
+		int sz = UT.Code.roundDown(tPoint.zCoord);
+		int ex = UT.Code.roundDown(aEnd.xCoord);
+		int ey = UT.Code.roundDown(aEnd.yCoord);
+		int ez = UT.Code.roundDown(aEnd.zCoord);
+		
+		rList.add(new ChunkCoordinates(sx, sy, sz));
+		
+		int maxAttempts = 2000; // Just to prevent accidental infinite loops
+		
+		while (maxAttempts-- >= 0) {
+			if (Double.isNaN(tPoint.xCoord) || Double.isNaN(tPoint.yCoord) || Double.isNaN(tPoint.zCoord)) return rList;
+			if (sx == ex && sy == ey && sz == ez) return rList;
+			
+			boolean performx = true;
+			boolean performy = true;
+			boolean performz = true;
+			
+			double nx = 999.0D;
+			double ny = 999.0D;
+			double nz = 999.0D;
+			
+			double ndx = 999.0D;
+			double ndy = 999.0D;
+			double ndz = 999.0D;
+			
+			double distx = aEnd.xCoord - tPoint.xCoord;
+			double disty = aEnd.yCoord - tPoint.yCoord;
+			double distz = aEnd.zCoord - tPoint.zCoord;
+			
+			if (ex > sx) {
+				nx = (double) sx + 1.0D;
+			} else if (ex < sx) {
+				nx = (double) sx + 0.0D;
+			} else {
+				performx = false;
+			}
+			
+			if (ey > sy) {
+				ny = (double) sy + 1.0D;
+			} else if (ey < sy) {
+				ny = (double) sy + 0.0D;
+			} else {
+				performy = false;
+			}
+			
+			if (ez > sz) {
+				nz = (double) sz + 1.0D;
+			} else if (ez < sz) {
+				nz = (double) sz + 0.0D;
+			} else {
+				performz = false;
+			}
+			
+			if (performx) {
+				ndx = (nx - tPoint.xCoord) / distx;
+			}
+			
+			if (performy) {
+				ndy = (ny - tPoint.yCoord) / disty;
+			}
+			
+			if (performz) {
+				ndz = (nz - tPoint.zCoord) / distz;
+			}
+			
+			byte whereTo;
+			
+			if (ndx < ndy && ndx < ndz) {
+				if (ex > sx) whereTo = 4;
+				else whereTo = 5;
+				
+				tPoint.xCoord = nx;
+				tPoint.yCoord += disty * ndx;
+				tPoint.zCoord += distz * ndx;
+			} else if (ndy < ndz) {
+				if (ey > sy) whereTo = 0;
+				else whereTo = 1;
+				
+				tPoint.xCoord += distx * ndy;
+				tPoint.yCoord = ny;
+				tPoint.zCoord += distz * ndy;
+			} else {
+				if (ez > sz) whereTo = 2;
+				else whereTo = 3;
+				
+				tPoint.xCoord += distx * ndz;
+				tPoint.yCoord += disty * ndz;
+				tPoint.zCoord = nz;
+			}
+			
+			sx = UT.Code.roundDown(tPoint.xCoord);
+			sy = UT.Code.roundDown(tPoint.yCoord);
+			sz = UT.Code.roundDown(tPoint.zCoord);
+			
+			if (whereTo == 5) --sx;
+			if (whereTo == 1) --sy;
+			if (whereTo == 3) --sz;
+			
+			rList.add(new ChunkCoordinates(sx, sy, sz));
+		}
+		return rList;
 	}
 	
 	public static long scan(ArrayList<String> aList, EntityPlayer aPlayer, World aWorld, int aScanLevel, int aX, int aY, int aZ, byte aSide, float aClickX, float aClickY, float aClickZ) {

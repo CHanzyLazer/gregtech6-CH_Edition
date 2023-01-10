@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,24 +19,12 @@
 
 package gregapi.tileentity.inventories;
 
-import static gregapi.data.CS.*;
-
-import java.util.List;
-
-import com.google.common.collect.Lists;
-import com.google.common.primitives.Bytes;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetEnchantPowerBonus;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetSelectedBoundingBoxFromPool;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_SetBlockBoundsBasedOnState;
 import gregapi.code.ItemStackContainer;
-import gregapi.data.CS.BooksGT;
-import gregapi.data.CS.PlankData;
-import gregapi.data.LH;
+import gregapi.data.*;
 import gregapi.data.LH.Chat;
-import gregapi.data.MD;
-import gregapi.data.OD;
-import gregapi.data.OP;
-import gregapi.data.TD;
 import gregapi.dummies.DummyInventory;
 import gregapi.network.INetworkHandler;
 import gregapi.network.IPacket;
@@ -60,7 +48,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraftforge.common.ChestGenHooks;
-import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
+import static gregapi.data.CS.*;
 
 /**
  * @author Gregorius Techneticies
@@ -83,7 +74,7 @@ public class MultiTileEntityBookShelf extends TileEntityBase09FacingSingle imple
 			if (UT.Code.exists(tShelfID, PlankData.PLANK_ICONS)) mShelfIcon = PlankData.PLANK_ICONS[tShelfID];
 		}
 		if (mShelfIcon == null || mShelfIcon == Textures.BlockIcons.RENDERING_ERROR) mShelfIcon = mMaterial.mTextureSetsBlock.get(OP.casingMachine.mIconIndexBlock);
-		for (int i = 0; i < 28; i++) {
+		for (int i = 0; i < mDisplay.length; i++) {
 			Byte tID = (slotHas(i)?BooksGT.BOOK_REGISTER.get(new ItemStackContainer(slot(i))):null);
 			if ((tID == null || tID == 0) && slotHas(i)) tID = BooksGT.BOOK_REGISTER.get(new ItemStackContainer(slot(i), W));
 			mDisplay[i] = (tID==null?0:tID);
@@ -151,7 +142,7 @@ public class MultiTileEntityBookShelf extends TileEntityBase09FacingSingle imple
 	@Override
 	public float getEnchantPowerBonus() {
 		float tPoints = 0;
-		for (int i = 0; i < 28; i++) if (slotHas(i)) {
+		for (int i = 0; i < mDisplay.length; i++) if (slotHas(i)) {
 			if (BooksGT.BOOKS_ENCHANTED.contains(slot(i), T)) {tPoints += 2; continue;}
 			if (BooksGT.BOOKS_NORMAL   .contains(slot(i), T)) {tPoints += 1; continue;}
 		}
@@ -167,7 +158,7 @@ public class MultiTileEntityBookShelf extends TileEntityBase09FacingSingle imple
 			if (mRedstoneDelay > 0) if (--mRedstoneDelay == 0) causeBlockUpdate();
 			
 			if (mInventoryChanged) {
-				for (int i = 0; i < 28; i++) {
+				for (int i = 0; i < mDisplay.length; i++) {
 					Byte tID = (slotHas(i)?BooksGT.BOOK_REGISTER.get(new ItemStackContainer(slot(i))):null);
 					if ((tID == null || tID == 0) && slotHas(i)) tID = BooksGT.BOOK_REGISTER.get(new ItemStackContainer(slot(i), W));
 					if (tID == null) tID = (byte)0;
@@ -290,35 +281,35 @@ public class MultiTileEntityBookShelf extends TileEntityBase09FacingSingle imple
 	public boolean setBlockBounds2(Block aBlock, int aRenderPass, boolean[] aShouldSideBeRendered) {
 		switch(aRenderPass) {
 		case  0: return F;
-		case  1: box(aBlock, PX_P[                         0], PX_P[                         0], PX_P[                         0], PX_N[                         0], PX_N[                        15], PX_N[                         0]); return T;
-		case  2: box(aBlock, PX_P[                         0], PX_P[                        15], PX_P[                         0], PX_N[                         0], PX_N[                         0], PX_N[                         0]); return T;
-		case  3: box(aBlock, PX_P[                         0], PX_P[                         1], PX_P[                         0], PX_N[SIDES_AXIS_Z[mFacing]?15:0], PX_N[                         1], PX_N[SIDES_AXIS_X[mFacing]?15:0]); return T;
-		case  4: box(aBlock, PX_P[SIDES_AXIS_Z[mFacing]?15:0], PX_P[                         1], PX_P[SIDES_AXIS_X[mFacing]?15:0], PX_N[                         0], PX_N[                         1], PX_N[                         0]); return T;
-		case  5: box(aBlock, PX_P[SIDES_AXIS_X[mFacing]? 7:1], PX_P[                         1], PX_P[SIDES_AXIS_Z[mFacing]? 7:1], PX_N[SIDES_AXIS_X[mFacing]? 7:1], PX_N[                         1], PX_N[SIDES_AXIS_Z[mFacing]? 7:1]); return T;
-		case  6: box(aBlock, PX_P[                         1], PX_P[                         7], PX_P[                         1], PX_N[                         1], PX_N[                         7], PX_N[                         1]); return T;
+		case  1: return box(aBlock, PX_P[                         0], PX_P[                         0], PX_P[                         0], PX_N[                         0], PX_N[                        15], PX_N[                         0]);
+		case  2: return box(aBlock, PX_P[                         0], PX_P[                        15], PX_P[                         0], PX_N[                         0], PX_N[                         0], PX_N[                         0]);
+		case  3: return box(aBlock, PX_P[                         0], PX_P[                         1], PX_P[                         0], PX_N[SIDES_AXIS_Z[mFacing]?15:0], PX_N[                         1], PX_N[SIDES_AXIS_X[mFacing]?15:0]);
+		case  4: return box(aBlock, PX_P[SIDES_AXIS_Z[mFacing]?15:0], PX_P[                         1], PX_P[SIDES_AXIS_X[mFacing]?15:0], PX_N[                         0], PX_N[                         1], PX_N[                         0]);
+		case  5: return box(aBlock, PX_P[SIDES_AXIS_X[mFacing]? 7:1], PX_P[                         1], PX_P[SIDES_AXIS_Z[mFacing]? 7:1], PX_N[SIDES_AXIS_X[mFacing]? 7:1], PX_N[                         1], PX_N[SIDES_AXIS_Z[mFacing]? 7:1]);
+		case  6: return box(aBlock, PX_P[                         1], PX_P[                         7], PX_P[                         1], PX_N[                         1], PX_N[                         7], PX_N[                         1]);
 		default:
 			aRenderPass-=7;
 			switch(mFacing) {
 			case SIDE_X_POS:
-				if (aRenderPass <  7) {                box(aBlock, PX_P[               9], PX_P[               9], PX_N[15-aRenderPass*2], PX_N[               2], PX_N[               1], PX_N[13-aRenderPass*2]); return T;}
-				if (aRenderPass < 14) {aRenderPass%=7; box(aBlock, PX_P[               9], PX_P[               1], PX_N[15-aRenderPass*2], PX_N[               2], PX_N[               9], PX_N[13-aRenderPass*2]); return T;}
-				if (aRenderPass < 21) {aRenderPass%=7; box(aBlock, PX_P[               2], PX_P[               9], PX_N[ 3+aRenderPass*2], PX_N[               9], PX_N[               1], PX_N[ 1+aRenderPass*2]); return T;}
-									   aRenderPass%=7; box(aBlock, PX_P[               2], PX_P[               1], PX_N[ 3+aRenderPass*2], PX_N[               9], PX_N[               9], PX_N[ 1+aRenderPass*2]); return T;
+				if (aRenderPass <  7) {                return box(aBlock, PX_P[               9], PX_P[               9], PX_N[15-aRenderPass*2], PX_N[               2], PX_N[               1], PX_N[13-aRenderPass*2]);}
+				if (aRenderPass < 14) {aRenderPass%=7; return box(aBlock, PX_P[               9], PX_P[               1], PX_N[15-aRenderPass*2], PX_N[               2], PX_N[               9], PX_N[13-aRenderPass*2]);}
+				if (aRenderPass < 21) {aRenderPass%=7; return box(aBlock, PX_P[               2], PX_P[               9], PX_N[ 3+aRenderPass*2], PX_N[               9], PX_N[               1], PX_N[ 1+aRenderPass*2]);}
+									   aRenderPass%=7; return box(aBlock, PX_P[               2], PX_P[               1], PX_N[ 3+aRenderPass*2], PX_N[               9], PX_N[               9], PX_N[ 1+aRenderPass*2]);
 			case SIDE_X_NEG:
-				if (aRenderPass <  7) {                box(aBlock, PX_P[               2], PX_P[               9], PX_P[13-aRenderPass*2], PX_N[               9], PX_N[               1], PX_P[15-aRenderPass*2]); return T;}
-				if (aRenderPass < 14) {aRenderPass%=7; box(aBlock, PX_P[               2], PX_P[               1], PX_P[13-aRenderPass*2], PX_N[               9], PX_N[               9], PX_P[15-aRenderPass*2]); return T;}
-				if (aRenderPass < 21) {aRenderPass%=7; box(aBlock, PX_P[               9], PX_P[               9], PX_P[ 1+aRenderPass*2], PX_N[               2], PX_N[               1], PX_P[ 3+aRenderPass*2]); return T;}
-									   aRenderPass%=7; box(aBlock, PX_P[               9], PX_P[               1], PX_P[ 1+aRenderPass*2], PX_N[               2], PX_N[               9], PX_P[ 3+aRenderPass*2]); return T;
+				if (aRenderPass <  7) {                return box(aBlock, PX_P[               2], PX_P[               9], PX_P[13-aRenderPass*2], PX_N[               9], PX_N[               1], PX_P[15-aRenderPass*2]);}
+				if (aRenderPass < 14) {aRenderPass%=7; return box(aBlock, PX_P[               2], PX_P[               1], PX_P[13-aRenderPass*2], PX_N[               9], PX_N[               9], PX_P[15-aRenderPass*2]);}
+				if (aRenderPass < 21) {aRenderPass%=7; return box(aBlock, PX_P[               9], PX_P[               9], PX_P[ 1+aRenderPass*2], PX_N[               2], PX_N[               1], PX_P[ 3+aRenderPass*2]);}
+									   aRenderPass%=7; return box(aBlock, PX_P[               9], PX_P[               1], PX_P[ 1+aRenderPass*2], PX_N[               2], PX_N[               9], PX_P[ 3+aRenderPass*2]);
 			case SIDE_Z_POS:
-				if (aRenderPass <  7) {                box(aBlock, PX_N[ 3+aRenderPass*2], PX_P[               9], PX_P[               9], PX_N[ 1+aRenderPass*2], PX_N[               1], PX_N[               2]); return T;}
-				if (aRenderPass < 14) {aRenderPass%=7; box(aBlock, PX_N[ 3+aRenderPass*2], PX_P[               1], PX_P[               9], PX_N[ 1+aRenderPass*2], PX_N[               9], PX_N[               2]); return T;}
-				if (aRenderPass < 21) {aRenderPass%=7; box(aBlock, PX_N[15-aRenderPass*2], PX_P[               9], PX_P[               2], PX_N[13-aRenderPass*2], PX_N[               1], PX_N[               9]); return T;}
-									   aRenderPass%=7; box(aBlock, PX_N[15-aRenderPass*2], PX_P[               1], PX_P[               2], PX_N[13-aRenderPass*2], PX_N[               9], PX_N[               9]); return T;
+				if (aRenderPass <  7) {                return box(aBlock, PX_N[ 3+aRenderPass*2], PX_P[               9], PX_P[               9], PX_N[ 1+aRenderPass*2], PX_N[               1], PX_N[               2]);}
+				if (aRenderPass < 14) {aRenderPass%=7; return box(aBlock, PX_N[ 3+aRenderPass*2], PX_P[               1], PX_P[               9], PX_N[ 1+aRenderPass*2], PX_N[               9], PX_N[               2]);}
+				if (aRenderPass < 21) {aRenderPass%=7; return box(aBlock, PX_N[15-aRenderPass*2], PX_P[               9], PX_P[               2], PX_N[13-aRenderPass*2], PX_N[               1], PX_N[               9]);}
+									   aRenderPass%=7; return box(aBlock, PX_N[15-aRenderPass*2], PX_P[               1], PX_P[               2], PX_N[13-aRenderPass*2], PX_N[               9], PX_N[               9]);
 			case SIDE_Z_NEG:
-				if (aRenderPass <  7) {                box(aBlock, PX_P[ 1+aRenderPass*2], PX_P[               9], PX_P[               2], PX_P[ 3+aRenderPass*2], PX_N[               1], PX_N[               9]); return T;}
-				if (aRenderPass < 14) {aRenderPass%=7; box(aBlock, PX_P[ 1+aRenderPass*2], PX_P[               1], PX_P[               2], PX_P[ 3+aRenderPass*2], PX_N[               9], PX_N[               9]); return T;}
-				if (aRenderPass < 21) {aRenderPass%=7; box(aBlock, PX_P[13-aRenderPass*2], PX_P[               9], PX_P[               9], PX_P[15-aRenderPass*2], PX_N[               1], PX_N[               2]); return T;}
-									   aRenderPass%=7; box(aBlock, PX_P[13-aRenderPass*2], PX_P[               1], PX_P[               9], PX_P[15-aRenderPass*2], PX_N[               9], PX_N[               2]); return T;
+				if (aRenderPass <  7) {                return box(aBlock, PX_P[ 1+aRenderPass*2], PX_P[               9], PX_P[               2], PX_P[ 3+aRenderPass*2], PX_N[               1], PX_N[               9]);}
+				if (aRenderPass < 14) {aRenderPass%=7; return box(aBlock, PX_P[ 1+aRenderPass*2], PX_P[               1], PX_P[               2], PX_P[ 3+aRenderPass*2], PX_N[               9], PX_N[               9]);}
+				if (aRenderPass < 21) {aRenderPass%=7; return box(aBlock, PX_P[13-aRenderPass*2], PX_P[               9], PX_P[               9], PX_P[15-aRenderPass*2], PX_N[               1], PX_N[               2]);}
+									   aRenderPass%=7; return box(aBlock, PX_P[13-aRenderPass*2], PX_P[               1], PX_P[               9], PX_P[15-aRenderPass*2], PX_N[               9], PX_N[               2]);
 			}
 		}
 		return F;
@@ -360,13 +351,10 @@ public class MultiTileEntityBookShelf extends TileEntityBase09FacingSingle imple
 	// Inventory Stuff
 	@Override public int getInventoryStackLimit() {return 1;}
 	@Override public int getInventoryStackLimitGUI(int aSlot) {return 1;}
-	@Override public ItemStack[] getDefaultInventory(NBTTagCompound aNBT) {return new ItemStack[28];}
+	@Override public ItemStack[] getDefaultInventory(NBTTagCompound aNBT) {return new ItemStack[mDisplay.length];}
 	@Override public boolean canDrop(int aInventorySlot) {return T;}
 	@Override public ItemStack getDefaultStack(int aSlot) {return ST.make(Items.book, 1, 0);}
 	
-	private static final int[] ACCESSIBLE_SLOTS = new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27};
-	
-	@Override public int[] getAccessibleSlotsFromSide2(byte aSide) {return ACCESSIBLE_SLOTS;}
 	@Override public boolean canExtractItem2(int aSlot, ItemStack aStack, byte aSide) {return slotHas(aSlot)                                                 && !ST.equal(slot(aSlot), Blocks.cobblestone) && !ST.equal(slot(aSlot), Blocks.redstone_torch) && !OD.lever.is(slot(aSlot)) && !OD.button.is(slot(aSlot));}
 	@Override public boolean canInsertItem2(int aSlot, ItemStack aStack, byte aSide) {return !slotHas(aSlot) && BooksGT.BOOK_REGISTER.containsKey(aStack, T) && !ST.equal(slot(aSlot), Blocks.cobblestone) && !ST.equal(slot(aSlot), Blocks.redstone_torch) && !OD.lever.is(slot(aSlot)) && !OD.button.is(slot(aSlot));}
 	

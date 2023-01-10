@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,21 +19,10 @@
 
 package gregapi.block;
 
-import static gregapi.data.CS.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
 import cpw.mods.fml.common.FMLLog;
-import gregapi.data.CS.BlocksGT;
-import gregapi.data.IL;
-import gregapi.data.MD;
-import gregapi.data.MT;
-import gregapi.data.OD;
-import gregapi.data.RM;
-import gregapi.data.TD;
+import forestry.apiculture.tiles.TileCandle;
+import gregapi.data.*;
+import gregapi.item.multiitem.MultiItemTool;
 import gregapi.lang.LanguageHandler;
 import gregapi.oredict.OreDictItemData;
 import gregapi.recipes.Recipe;
@@ -58,6 +47,13 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
 import net.minecraftforge.fluids.IFluidBlock;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+
+import static gregapi.data.CS.*;
 
 /**
  * @author Gregorius Techneticies
@@ -103,6 +99,8 @@ public class ToolCompat {
 		
 		if (aWorld.isRemote) return 0;
 		
+		boolean aCanCollect = (ST.item(aStack) instanceof MultiItemTool && ((MultiItemTool)ST.item_(aStack)).canCollectDropsDirectly(aStack));
+		
 		if (aTool.equals(TOOL_axe) || aTool.equals(TOOL_saw) || aTool.equals(TOOL_knife)) {
 			boolean rReturn = F;
 			ItemStack tBark = OM.dust(MT.Bark);
@@ -138,6 +136,7 @@ public class ToolCompat {
 			}
 			if (!rReturn && BlocksGT.Beam3 != null) {
 				if (IL.TC_Greatwood_Log.equal(aBlock)) {
+					if ((aMeta & 3) < 2)
 					rReturn = aWorld.setBlock(aX, aY, aZ, BlocksGT.Beam3, aMeta, 3);
 				} else if (IL.AETHER_Skyroot_Log.equal(aBlock)) {
 					rReturn = aWorld.setBlock(aX, aY, aZ, BlocksGT.Beam3, (aMeta&12)|2, 3);
@@ -164,7 +163,7 @@ public class ToolCompat {
 			}
 			if (rReturn) {
 				if (FAST_LEAF_DECAY) WD.leafdecay(aWorld, aX, aY, aZ, null, F, F);
-				UT.Inventories.addStackToPlayerInventoryOrDrop(aPlayer instanceof EntityPlayer ? (EntityPlayer)aPlayer : null, tBark, aWorld, aX+OFFX[aSide], aY+OFFY[aSide], aZ+OFFZ[aSide]);
+				UT.Inventories.addStackToPlayerInventoryOrDrop(aEntityPlayer, tBark, aWorld, aX+OFFX[aSide], aY+OFFY[aSide], aZ+OFFZ[aSide]);
 				return aTool.equals(TOOL_axe) ? 500 : 1000;
 			}
 			return 0;
@@ -172,27 +171,42 @@ public class ToolCompat {
 		if (aTool.equals(TOOL_sense) || aTool.equals(TOOL_scythe)) {
 			if (IC_CROPTILE && aTileEntity instanceof ICropTile) {
 				int tDamage = 0;
-				for (int i = -1; i < 2; i++) for (int j = -1; j < 2; j++) for (int k = -1; k < 2; k++) if ((aTileEntity = WD.te(aWorld, aX+i, aY+j, aZ+k, T)) instanceof ICropTile && ((ICropTile)aTileEntity).harvest(T)) tDamage += 10000;
+				for (int i = -1; i < 2; i++) for (int j = -1; j < 2; j++) for (int k = -1; k < 2; k++) if ((aTileEntity = WD.te(aWorld, aX+i, aY+j, aZ+k, T)) instanceof ICropTile && ((ICropTile)aTileEntity).harvest(T)) {
+					UT.Sounds.send(aWorld, SFX.MC_COLLECT, 0.2F, ((RNGSUS.nextFloat()-RNGSUS.nextFloat())*0.7F+1.0F)*2.0F, aX+i, aY+j, aZ+k);
+					tDamage += 10000;
+				}
+				if (aCanCollect) for (ItemStack tDrop : WD.suckAll(aWorld, aX-1.5, aY-0.5, aZ-1.5, 4, 2, 4)) UT.Inventories.addStackToPlayerInventoryOrDrop(aEntityPlayer, tDrop, aWorld, aX, aY, aZ);
 				return tDamage;
 			}
-			if (aBlock.getClass().getName().endsWith("BlockPamCrop")) {
+			if (aBlock instanceof IGrowable) {
 				int tDamage = 0;
 				for (int i = -1; i < 2; i++) for (int j = -1; j < 2; j++) for (int k = -1; k < 2; k++) if (aWorld.getBlockMetadata(aX+i, aY+j, aZ+k) == 7) {
-					Block tBlock = aWorld.getBlock(aX+i, aY+j, aZ+k);
-					if (tBlock.getClass() == aBlock.getClass()) {
+					byte  tMeta  = WD.meta (aWorld, aX+i, aY+j, aZ+k);
+					Block tBlock = WD.block(aWorld, aX+i, aY+j, aZ+k);
+					if (tBlock.getClass() == aBlock.getClass() && !((IGrowable)tBlock).func_149851_a(aWorld, aX+i, aY+j, aZ+k, F)) {
 						tBlock.onBlockActivated(aWorld, aX+i, aY+j, aZ+k, aEntityPlayer, aSide, aHitX, aHitY, aHitZ);
 						tDamage += 10000;
 					}
+					if (tMeta != WD.meta(aWorld, aX+i, aY+j, aZ+k) || tBlock != WD.block(aWorld, aX+i, aY+j, aZ+k)) {
+						UT.Sounds.send(aWorld, SFX.MC_COLLECT, 0.2F, ((RNGSUS.nextFloat()-RNGSUS.nextFloat())*0.7F+1.0F)*2.0F, aX+i, aY+j, aZ+k);
+					}
 				}
+				if (aCanCollect) for (ItemStack tDrop : WD.suckAll(aWorld, aX-1.5, aY-0.5, aZ-1.5, 4, 2, 4)) UT.Inventories.addStackToPlayerInventoryOrDrop(aEntityPlayer, tDrop, aWorld, aX, aY, aZ);
 				return tDamage;
 			}
 		}
-		if (aTool.equals(TOOL_igniter) && (aStack == null || aStack.getItem() != Items.flint_and_steel)) {
+		if (aTool.equals(TOOL_igniter) && ST.item(aStack) != Items.flint_and_steel) {
 			// Ignite any TNT Blocks.
 			if (aBlock instanceof BlockTNT) {
 				((BlockTNT)aBlock).func_150114_a(aWorld, aX, aY, aZ, 1, aEntityLiving);
 				aWorld.setBlockToAir(aX, aY, aZ);
 				return 10000;
+			}
+			// Ignite Forestry Candles.
+			if (IL.FR_Candle.equal(aBlock) && aTileEntity instanceof TileCandle) {
+				((TileCandle)aTileEntity).setLit(T);
+				aWorld.markBlockForUpdate(aX, aY, aZ);
+				return 1;
 			}
 			// This thing has a special Functionality, which should override spawning Fire Blocks.
 			if (!IL.TF_Lamp_of_Cinders.equal(aStack, T, T)) {
@@ -298,9 +312,9 @@ public class ToolCompat {
 						if (RNGSUS.nextInt(tDamage) < aRemainingDurability) {
 							for (ItemStack tStack : tDrops) {
 								if (tOutput == null) {
-									if (aPlayer instanceof EntityPlayer) UT.Inventories.addStackToPlayerInventoryOrDrop((EntityPlayer)aPlayer, tStack, F); else ST.drop(aWorld, aX+0.5, aY+0.5, aZ+0.5, tStack);
+									UT.Inventories.addStackToPlayerInventoryOrDrop(aEntityPlayer, tStack, F, aWorld, aX+0.5, aY+0.5, aZ+0.5);
 								} else {
-									if (aPlayer instanceof EntityPlayer) UT.Inventories.addStackToPlayerInventoryOrDrop((EntityPlayer)aPlayer, tOutput, F); else ST.drop(aWorld, aX+0.5, aY+0.5, aZ+0.5, tOutput);
+									UT.Inventories.addStackToPlayerInventoryOrDrop(aEntityPlayer, tOutput, F, aWorld, aX+0.5, aY+0.5, aZ+0.5);
 									tOutput = null;
 								}
 							}

@@ -59,12 +59,15 @@ public class Loader_Recipes_Temporary implements Runnable {
 		// TODO: Better Coolant Item than Lapis.
 		RM.Injector.addRecipe1(T, 16, 16, OM.dust(MT.Lapis   , 1*U), FL.DistW.make(1000), FL.Coolant_IC2.make(1000), ZL_IS);
 		RM.Injector.addRecipe1(T, 16, 16, OM.dust(MT.Lapis   , 2*U), FL.SpDew.make(1000), FL.Coolant_IC2.make(1000), ZL_IS);
+		RM.Injector.addRecipe1(T, 16, 16, OM.dust(MT.Lapis   , 2*U), FL.MnWtr.make(1000), FL.Coolant_IC2.make(1000), ZL_IS);
 		RM.Injector.addRecipe1(T, 16, 16, OM.dust(MT.Lapis   , 2*U), FL.Water.make(1000), FL.Coolant_IC2.make(1000), ZL_IS);
 		RM.Injector.addRecipe1(T, 16, 16, OM.dust(MT.Lazurite, 1*U), FL.DistW.make(1000), FL.Coolant_IC2.make(1000), ZL_IS);
 		RM.Injector.addRecipe1(T, 16, 16, OM.dust(MT.Lazurite, 2*U), FL.SpDew.make(1000), FL.Coolant_IC2.make(1000), ZL_IS);
+		RM.Injector.addRecipe1(T, 16, 16, OM.dust(MT.Lazurite, 2*U), FL.MnWtr.make(1000), FL.Coolant_IC2.make(1000), ZL_IS);
 		RM.Injector.addRecipe1(T, 16, 16, OM.dust(MT.Lazurite, 2*U), FL.Water.make(1000), FL.Coolant_IC2.make(1000), ZL_IS);
 		RM.Injector.addRecipe1(T, 16, 16, OM.dust(MT.Sodalite, 1*U), FL.DistW.make(1000), FL.Coolant_IC2.make(1000), ZL_IS);
 		RM.Injector.addRecipe1(T, 16, 16, OM.dust(MT.Sodalite, 2*U), FL.SpDew.make(1000), FL.Coolant_IC2.make(1000), ZL_IS);
+		RM.Injector.addRecipe1(T, 16, 16, OM.dust(MT.Sodalite, 2*U), FL.MnWtr.make(1000), FL.Coolant_IC2.make(1000), ZL_IS);
 		RM.Injector.addRecipe1(T, 16, 16, OM.dust(MT.Sodalite, 2*U), FL.Water.make(1000), FL.Coolant_IC2.make(1000), ZL_IS);
 		
 		
@@ -570,8 +573,8 @@ public class Loader_Recipes_Temporary implements Runnable {
 			}
 		}
 		
-		RM.generify(IL.RC_Crushed_Obsidian .get(1), IL.HBM_Crushed_Obsidian.get(1));
-		RM.generify(IL.HBM_Crushed_Obsidian.get(1), IL.RC_Crushed_Obsidian .get(1));
+		RM.genericycle(IL.RC_Crushed_Obsidian .get(1), IL.HBM_Crushed_Obsidian.get(1));
+		RM.genericycle(ST.make(MD.TC, "ItemResource", 1, 6), ST.make(MD.BoP, "gems", 1, 7));
 		
 		// Some of these aren't Temporary, but I like having all Generifier Recipes for Fluids in on place.
 		RM.generify   (FL.make("molten.meteoriciron"   , 1), FL.make("molten.iron", 1));
@@ -646,12 +649,12 @@ public class Loader_Recipes_Temporary implements Runnable {
 		RM.generify   (FL.Water_Hot               .make( 1), FL.Water.make(1));
 		RM.generify   (FL.Soda                    .make( 1), FL.Water.make(1));
 		RM.generify   (FL.Mineralsoda             .make( 1), FL.Water.make(1));
-		RM.generify   (FL.Mineralwater            .make( 1), FL.Water.make(1));
+		RM.generify   (FL.MnWtr                   .make( 1), FL.Water.make(1));
+		RM.generify   (FL.Oil_Olive               .make( 1), FL.Oil_Seed.make(2));
+		RM.generify   (FL.Oil_Nut                 .make( 1), FL.Oil_Seed.make(2));
 		RM.generify   (FL.Oil_Lin                 .make( 1), FL.Oil_Seed.make(1));
 		RM.generify   (FL.Oil_Hemp                .make( 1), FL.Oil_Seed.make(1));
-		RM.generify   (FL.Oil_Olive               .make( 1), FL.Oil_Seed.make(1));
 		RM.generify   (FL.Oil_Sunflower           .make( 1), FL.Oil_Seed.make(1));
-		RM.generify   (FL.Oil_Nut                 .make( 1), FL.Oil_Seed.make(1));
 		
 		for (String tFluid : FluidsGT.JUICE) if (FL.exists(tFluid)) RM.generify(FL.make(tFluid, 1), FL.Juice.make(1));
 		

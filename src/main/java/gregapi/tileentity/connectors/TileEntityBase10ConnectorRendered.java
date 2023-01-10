@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,14 +19,6 @@
 
 package gregapi.tileentity.connectors;
 
-import static gregapi.data.CS.*;
-import static gregtechCH.data.CS_CH.CONNECTED_SIDE_AXIS;
-import static gregtechCH.util.UT_CH.Code.RENDER_LENGTH;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetPlayerRelativeBlockHardness;
@@ -34,8 +26,6 @@ import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetSelectedBoundingBo
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_IgnorePlayerCollisionWhenPlacing;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_SetBlockBoundsBasedOnState;
 import gregapi.block.multitileentity.MultiTileEntityContainer;
-import gregapi.data.CS.BlocksGT;
-import gregapi.data.CS.IconsGT;
 import gregapi.data.LH;
 import gregapi.data.LH.Chat;
 import gregapi.data.MT;
@@ -59,7 +49,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+
+import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.CONNECTED_SIDE_AXIS;
+import static gregtechCH.util.UT_CH.Code.RENDER_LENGTH;
 
 /**
  * @author Gregorius Techneticies
@@ -642,6 +639,8 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
     // 相邻方块改变，需要更新渲染数据
     @Override public void onAdjacentBlockChange2(int aTileX, int aTileY, int aTileZ) {super.onAdjacentBlockChange2(aTileX, aTileY, aTileZ); if (isClientSide()) mCRDataUpdated = F;}
 	
+    @Override public int getFireSpreadSpeed         (byte aSide, boolean aDefault) {return mFoam ? 0 : super.getFireSpreadSpeed(aSide, aDefault);}
+    @Override public int getFlammability            (byte aSide, boolean aDefault) {return mFoam ? 0 : super.getFlammability   (aSide, aDefault);}
     @Override public float getSurfaceSize           (byte aSide) {return (mFoam || mFoamDried) ? 1.0F : mDiameter;}
     @Override public float getSurfaceSizeAttachable (byte aSide) {return mDiameter;}
     @Override public float getSurfaceDistance       (byte aSide) {return (mFoam || mFoamDried || connected(aSide))?0.0F:(1.0F-mDiameter)/2.0F;}

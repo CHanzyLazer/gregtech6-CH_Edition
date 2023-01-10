@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,11 +19,6 @@
 
 package gregtech.tileentity.tools;
 
-import static gregapi.data.CS.*;
-
-import java.util.List;
-
-import com.google.common.primitives.Bytes;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_AddToolTips;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_SyncDataShort;
 import gregapi.data.*;
@@ -50,7 +45,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
+import static gregapi.data.CS.*;
 
 /**
  * @author Gregorius Techneticies
@@ -154,12 +152,12 @@ public class MultiTileEntityDustFunnel extends TileEntityBase07Paintable impleme
 	
 	@Override
 	public boolean onTickCheck(long aTimer) {
-		return super.onTickCheck(aTimer) || (mDust != oDust && isTopVisible());
+		return super.onTickCheck(aTimer) || (SYNC_SECOND && mDust != oDust && isTopVisible());
 	}
 	
 	@Override
-	public void onTickResetChecks(long aTimer, boolean aIsServerSide) {
-		super.onTickResetChecks(aTimer, aIsServerSide);
+	public void onTickChecked(long aTimer) {
+		super.onTickChecked(aTimer);
 		oDust = mDust;
 	}
 

@@ -19,11 +19,6 @@
 
 package gregtech.tileentity.energy.reactors;
 
-import static gregapi.data.CS.*;
-import static gregtechCH.config.ConfigForge.*;
-
-import java.util.List;
-
 import gregapi.data.*;
 import gregapi.render.BlockTextureDefault;
 import gregapi.render.BlockTextureMulti;
@@ -32,6 +27,11 @@ import gregapi.util.ST;
 import gregapi.util.UT;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
+import java.util.List;
+
+import static gregapi.data.CS.*;
+import static gregtechCH.config.ConfigForge.*;
 
 /**
  * @author Gregorius Techneticies
@@ -116,7 +116,7 @@ public class MultiTileEntityReactorRodNuclear extends MultiTileEntityReactorRodB
 				aList.add(LH.Chat.GREEN + "Maximum: " + LH.Chat.WHITE + mNeutronMax + LH.Chat.PURPLE + " Neutrons/t");
 				aList.add(LH.Chat.YELLOW + "Factor: " + LH.Chat.WHITE + "1/" + (mNeutronDiv - 1));
 				aList.add(LH.Chat.GREEN + "1/3 the Heat per Neutron");
-				if (mNeutronDiv <= 4) aList.add(LH.Chat.RED + "This Fuel is" + LH.Chat.BLINKING_RED + " Critical");
+				if (mNeutronDiv <= 5) aList.add(LH.Chat.RED + "This Fuel is" + LH.Chat.BLINKING_RED + " Critical");
 				break;
 			case 4:
 				aList.add(LH.Chat.CYAN + "When used with molten Sodium:");
@@ -125,7 +125,7 @@ public class MultiTileEntityReactorRodNuclear extends MultiTileEntityReactorRodB
 				aList.add(LH.Chat.GREEN + "Maximum: " + LH.Chat.WHITE + mNeutronMax + LH.Chat.PURPLE + " Neutrons/t");
 				aList.add(LH.Chat.YELLOW + "Factor: " + LH.Chat.WHITE + "1/" + (mNeutronDiv - 1));
 				aList.add(LH.Chat.GREEN + "1/6 the Heat per Neutron");
-				if (mNeutronDiv <= 4) aList.add(LH.Chat.RED + "This Fuel is" + LH.Chat.BLINKING_RED + " Critical");
+				if (mNeutronDiv <= 5) aList.add(LH.Chat.RED + "This Fuel is" + LH.Chat.BLINKING_RED + " Critical");
 				break;
 			case 5:
 				aList.add(LH.Chat.CYAN + "When used with Industrial Coolant:");
@@ -157,7 +157,7 @@ public class MultiTileEntityReactorRodNuclear extends MultiTileEntityReactorRodB
 				aList.add(LH.Chat.GREEN + "Self: " + LH.Chat.WHITE + mNeutronSelf * 3 + LH.Chat.PURPLE + " Neutrons/t");
 				aList.add(LH.Chat.GREEN + "Maximum: " + LH.Chat.WHITE + mNeutronMax + LH.Chat.PURPLE + " Neutrons/t");
 				aList.add(LH.Chat.YELLOW + "Factor: " + LH.Chat.WHITE + "1/" + mNeutronDiv);
-				if (mNeutronDiv <= 5) aList.add(LH.Chat.RED + "This Fuel is" + LH.Chat.BLINKING_RED + " Critical");
+				if (mNeutronDiv <= 4) aList.add(LH.Chat.RED + "This Fuel is" + LH.Chat.BLINKING_RED + " Critical");
 				break;
 			case 9:
 				aList.add(LH.Chat.CYAN + "When used with Helium:");
@@ -165,7 +165,7 @@ public class MultiTileEntityReactorRodNuclear extends MultiTileEntityReactorRodB
 				aList.add(LH.Chat.GREEN + "Self: " + LH.Chat.WHITE + mNeutronSelf + LH.Chat.PURPLE + " Neutrons/t");
 				aList.add(LH.Chat.GREEN + "Maximum: " + LH.Chat.WHITE + mNeutronMax + LH.Chat.PURPLE + " Neutrons/t");
 				aList.add(LH.Chat.YELLOW + "Factor: " + LH.Chat.WHITE + "1/" + mNeutronDiv);
-				if (mNeutronDiv <= 3) aList.add(LH.Chat.RED + "This Fuel is" + LH.Chat.BLINKING_RED + " Critical");
+				if (mNeutronDiv <= 4) aList.add(LH.Chat.RED + "This Fuel is" + LH.Chat.BLINKING_RED + " Critical");
 				break;
 		}
 	}

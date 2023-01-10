@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -68,6 +68,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -186,7 +187,11 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 	@Override
 	public boolean breakBlock() {
 		ITileEntityMultiBlockController tTarget = getTarget(F);
-		if (tTarget != null) tTarget.onStructureChange();
+		if (tTarget != null) {
+			mTargetPos = null;
+			mTarget = null;
+			tTarget.onStructureChange();
+		}
 		return F;
 	}
 	
@@ -223,7 +228,7 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 				}
 			}
 		}
-		return aCheckValidity ? mTarget != null && mTarget.checkStructureOnly(F) ? mTarget : null : mTarget;
+		return aCheckValidity && mTarget != null && !mTarget.checkStructureOnly(F) ? null : mTarget;
 	}
 	
 	public void setTarget(ITileEntityMultiBlockController aTarget, int aDesign, int aMode) {
@@ -795,7 +800,7 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 	
 	@Override
 	public void onWalkOver(EntityLivingBase aEntity) {
-		ITileEntityMultiBlockController tTileEntity = getTarget(T);
+		ITileEntityMultiBlockController tTileEntity = getTarget(F);
 		if (tTileEntity instanceof IMTE_OnWalkOver) ((IMTE_OnWalkOver)tTileEntity).onWalkOver(aEntity);
 	}
 	

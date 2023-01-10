@@ -33,7 +33,6 @@ import gregapi.render.TextureSet;
 import gregapi.util.OM;
 import gregapi.util.UT;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.Achievement;
 import net.minecraftforge.fluids.FluidStack;
@@ -77,8 +76,8 @@ public final class OreDictMaterial implements ITagDataContainer<OreDictMaterial>
 	 * <BR>[13000:13999] Qwertygiy
 	 * <BR>[14000:14999] Lauren
 	 * <BR>[15000:15999] Yuesha / GT6U
-	 * <BR>[16000:16999] the next one who asks me (do not use unless I personally tell you to use this larger Range) TODO it would be GTCH
-	 * <BR>[17000:17999] Free
+	 * <BR>[16000:16999] Altadoon
+	 * <BR>[17000:17999] the next one who asks me (do not use unless I personally tell you to use this larger Range) TODO it would be GTCH
 	 * <BR>[18000:18999] Free
 	 * <BR>[19000:19999] Free
 	 * 
@@ -259,6 +258,8 @@ public final class OreDictMaterial implements ITagDataContainer<OreDictMaterial>
 	public final List<OreDictMaterial> mByProducts = new ArrayListNoNulls<>();
 	/** The List of Materials which have this as Alloy Component.*/
 	public final Set<OreDictMaterial> mAlloyComponentReferences = new HashSetNoNulls<>();
+	/** The Materials which this is typically a source of. For Tooltips. */
+	public final Set<OreDictMaterial> mSourceOf = new HashSetNoNulls<>();
 	/** The List of Alloy Recipes which can create this Material. */
 	public final List<IOreDictConfigurationComponent> mAlloyCreationRecipes = new ArrayListNoNulls<>();
 	/** List of Achievements you get for creating an instance of this Material. */
@@ -307,9 +308,9 @@ public final class OreDictMaterial implements ITagDataContainer<OreDictMaterial>
 	/** The Tags for this Material */
 	private final Set<TagData> mTags = new HashSetNoNulls<>();
 	/** Stores the Tool and Armor Enchants */
-	public final List<ObjectStack<Enchantment>> mEnchantmentTools = new ArrayListNoNulls<>(1), mEnchantmentWeapons = new ArrayListNoNulls<>(1), mEnchantmentArmors = new ArrayListNoNulls<>(1);
+	public final List<ObjectStack<Enchantment>> mEnchantmentTools = new ArrayListNoNulls<>(1), mEnchantmentWeapons = new ArrayListNoNulls<>(1), mEnchantmentAmmo = new ArrayListNoNulls<>(1), mEnchantmentRanged = new ArrayListNoNulls<>(1), mEnchantmentArmors = new ArrayListNoNulls<>(1);
 	
-	/** GTCH, Where is this Material registered, 15000-15999 For GregTech6-Unofficial，16000-16999 For GregTech6-CH_Edition */
+	/** GTCH, Where is this Material registered, 15000-15999 For GregTech6-Unofficial，17000-17999 For GregTech6-CH_Edition */
 	public final RegType mRegType;
 	
 	private OreDictMaterial(short aID, String aNameInternal, String aNameLocal) {
@@ -371,6 +372,11 @@ public final class OreDictMaterial implements ITagDataContainer<OreDictMaterial>
 	public OreDictMaterial setRegistration(OreDictMaterial aMaterial) {
 		mTargetRegistration = aMaterial == null ? this : aMaterial.mTargetRegistration;
 		put(TD.Properties.INVALID_MATERIAL);
+		return this;
+	}
+	
+	public OreDictMaterial addSourceOf(OreDictMaterial... aMaterials) {
+		mSourceOf.addAll(Arrays.asList(aMaterials));
 		return this;
 	}
 	
@@ -986,6 +992,7 @@ public final class OreDictMaterial implements ITagDataContainer<OreDictMaterial>
 	
 	/** Sets the TextureSets for this Material, first Parameter = Block Icons, second Parameter = Item Icons. */
 	public OreDictMaterial setTextures(TextureSet... aSets) {
+		if (aSets == null || aSets.length < 2) return setTextures();
 		mTextureSetsBlock = aSets[0].mList;
 		mTextureSetsItems = aSets[1].mList;
 		return this;
@@ -1165,22 +1172,31 @@ public final class OreDictMaterial implements ITagDataContainer<OreDictMaterial>
 	
 	public OreDictMaterial addEnchantmentForTools(Enchantment aEnchantment, int aEnchantmentLevel) {
 		mEnchantmentTools.add(new ObjectStack<>(aEnchantment, aEnchantmentLevel));
-		if (aEnchantment == Enchantment.fortune) {
-			mEnchantmentWeapons.add(new ObjectStack<>(Enchantment.looting, aEnchantmentLevel));
-		} else if (aEnchantment.type == EnumEnchantmentType.weapon || aEnchantment.type == EnumEnchantmentType.all) {
-			mEnchantmentWeapons.add(new ObjectStack<>(aEnchantment, aEnchantmentLevel));
-		}
 		return this;
 	}
 	
 	public OreDictMaterial addEnchantmentForWeapons(Enchantment aEnchantment, int aEnchantmentLevel) {
 		mEnchantmentWeapons.add(new ObjectStack<>(aEnchantment, aEnchantmentLevel));
-		mEnchantmentTools.add(new ObjectStack<>(aEnchantment, aEnchantmentLevel));
+		return this;
+	}
+	
+	public OreDictMaterial addEnchantmentForAmmo(Enchantment aEnchantment, int aEnchantmentLevel) {
+		mEnchantmentAmmo.add(new ObjectStack<>(aEnchantment, aEnchantmentLevel));
+		return this;
+	}
+	
+	public OreDictMaterial addEnchantmentForRanged(Enchantment aEnchantment, int aEnchantmentLevel) {
+		mEnchantmentRanged.add(new ObjectStack<>(aEnchantment, aEnchantmentLevel));
 		return this;
 	}
 	
 	public OreDictMaterial addEnchantmentForArmors(Enchantment aEnchantment, int aEnchantmentLevel) {
 		mEnchantmentArmors.add(new ObjectStack<>(aEnchantment, aEnchantmentLevel));
+		return this;
+	}
+	
+	public OreDictMaterial ores(OreDictMaterial... aMaterials) {
+		mByProducts.addAll(Arrays.asList(aMaterials));
 		return this;
 	}
 	

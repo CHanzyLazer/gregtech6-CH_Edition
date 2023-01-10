@@ -382,6 +382,7 @@ public class Loader_Recipes_Vanilla implements Runnable {
 		CR.shaped(ST.make(Items.repeater                , 1, 0), DEF                            ,        "TDT", "SSS", 'T', OD.craftingRedstoneTorch, 'D', OD.itemRedstone  , 'S', plate.dat(ANY.Stone));
 		CR.shaped(ST.make(Items.comparator              , 1, 0), DEF | DEL_OTHER_SHAPED_RECIPES , " T ", "TQT", "SSS", 'T', OD.craftingRedstoneTorch, 'Q', OD.craftingQuartz, 'S', stoneSmooth         );
 		CR.shaped(ST.make(Items.comparator              , 1, 0), DEF                            , " T ", "TQT", "SSS", 'T', OD.craftingRedstoneTorch, 'Q', OD.craftingQuartz, 'S', plate.dat(ANY.Stone));
+		CR.shaped(ST.make(Blocks.daylight_detector      , 1, 0), DEF                            , "GGG", "QQQ", "PPP", 'P', OD.slabWood             , 'Q', OD.craftingQuartz, 'G', plate.dat(MT.Glass ));
 		CR.shaped(ST.make(Blocks.piston                 , 1, 0), DEF | DEL_OTHER_SHAPED_RECIPES , "WWW", "CBC", "CRC", 'W', OD.plankAnyWood, 'C', stoneCobble, 'B', OD.craftingPistonIngot, 'R', OD.itemRedstone);
 		CR.shaped(ST.make(Blocks.sticky_piston          , 1, 0), DEF | DEL_OTHER_SHAPED_RECIPES ,  "G" ,  "P"        , 'G', OD.craftingPistonGlue, 'P', Blocks.piston);
 		CR.shaped(ST.make(Items.bow                     , 1, 0), DEF_MIR                        , " WS", "WkS", " WS", 'S', OD.itemString, 'W', OD.stickAnyWood);
@@ -619,37 +620,18 @@ public class Loader_Recipes_Vanilla implements Runnable {
 		RM.Compressor   .addRecipe1(T, 16,   32, OM.dust(MT.Sodalite), plateGem.mat(MT.Sodalite, 1));
 		
 		
-		RM.Freezer      .addRecipe1(T, 16,   16, ST.tag(0), FL.Water.make( 250), FL.Ice.make(250), ZL_IS);
-		RM.Freezer      .addRecipe1(T, 16,   64, ST.tag(0), FL.SpDew.make( 250), FL.Ice.make(250), ZL_IS);
-		RM.Freezer      .addRecipe1(T, 16,   16, ST.tag(0), FL.DistW.make( 250), FL.Ice.make(250), ZL_IS);
-		RM.Freezer      .addRecipe1(T, 16,   16, ST.tag(1), FL.Water.make( 250), NF, ST.make(Items.snowball, 1, 0));
-		RM.Freezer      .addRecipe1(T, 16,   64, ST.tag(1), FL.SpDew.make( 250), NF, ST.make(Items.snowball, 1, 0));
-		RM.Freezer      .addRecipe1(T, 16,   16, ST.tag(1), FL.DistW.make( 250), NF, ST.make(Items.snowball, 1, 0));
-		RM.Freezer      .addRecipe1(T, 16,   32, ST.tag(2), FL.Water.make( 500), NF, ST.make(Blocks.snow_layer, 1, 0));
-		RM.Freezer      .addRecipe1(T, 16,  128, ST.tag(2), FL.SpDew.make( 500), NF, ST.make(Blocks.snow_layer, 1, 0));
-		RM.Freezer      .addRecipe1(T, 16,   32, ST.tag(2), FL.DistW.make( 500), NF, ST.make(Blocks.snow_layer, 1, 0));
-		RM.Freezer      .addRecipe1(T, 16,   64, ST.tag(3), FL.Water.make(1000), NF, ST.make(Blocks.snow, 1, 0));
-		RM.Freezer      .addRecipe1(T, 16,  256, ST.tag(3), FL.SpDew.make(1000), NF, ST.make(Blocks.snow, 1, 0));
-		RM.Freezer      .addRecipe1(T, 16,   64, ST.tag(3), FL.DistW.make(1000), NF, ST.make(Blocks.snow, 1, 0));
-		RM.Freezer      .addRecipe1(T, 16,  128, ST.tag(4), FL.Water.make(1000), NF, ST.make(Blocks.ice, 1, 0));
-		RM.Freezer      .addRecipe1(T, 16,  512, ST.tag(4), FL.SpDew.make(1000), NF, ST.make(Blocks.ice, 1, 0));
-		RM.Freezer      .addRecipe1(T, 16,  128, ST.tag(4), FL.DistW.make(1000), NF, ST.make(Blocks.ice, 1, 0));
-		RM.Freezer      .addRecipe1(T, 16,   32, ST.tag(5), FL.Water.make( 250), NF, gemChipped.mat(MT.Ice, 1));
-		RM.Freezer      .addRecipe1(T, 16,  128, ST.tag(5), FL.SpDew.make( 250), NF, gemChipped.mat(MT.Ice, 1));
-		RM.Freezer      .addRecipe1(T, 16,   32, ST.tag(5), FL.DistW.make( 250), NF, gemChipped.mat(MT.Ice, 1));
-		RM.Freezer      .addRecipe1(T, 16,   64, ST.tag(6), FL.Water.make( 500), NF, gemFlawed.mat(MT.Ice, 1));
-		RM.Freezer      .addRecipe1(T, 16,  256, ST.tag(6), FL.SpDew.make( 500), NF, gemFlawed.mat(MT.Ice, 1));
-		RM.Freezer      .addRecipe1(T, 16,   64, ST.tag(6), FL.DistW.make( 500), NF, gemFlawed.mat(MT.Ice, 1));
-		RM.Freezer      .addRecipe1(T, 16,  128, ST.tag(7), FL.Water.make(1000), NF, gem.mat(MT.Ice, 1));
-		RM.Freezer      .addRecipe1(T, 16,  512, ST.tag(7), FL.SpDew.make(1000), NF, gem.mat(MT.Ice, 1));
-		RM.Freezer      .addRecipe1(T, 16,  128, ST.tag(7), FL.DistW.make(1000), NF, gem.mat(MT.Ice, 1));
-		RM.Freezer      .addRecipe1(T, 16,  128, ST.tag(8), FL.Water.make(1000), NF, dust.mat(MT.Ice, 1));
-		RM.Freezer      .addRecipe1(T, 16,  512, ST.tag(8), FL.SpDew.make(1000), NF, dust.mat(MT.Ice, 1));
-		RM.Freezer      .addRecipe1(T, 16,  128, ST.tag(8), FL.DistW.make(1000), NF, dust.mat(MT.Ice, 1));
-		RM.Freezer      .addRecipe1(T, 16,  128, ST.tag(9), FL.Water.make(1000), NF, dust.mat(MT.Snow, 1));
-		RM.Freezer      .addRecipe1(T, 16,  512, ST.tag(9), FL.SpDew.make(1000), NF, dust.mat(MT.Snow, 1));
-		RM.Freezer      .addRecipe1(T, 16,  128, ST.tag(9), FL.DistW.make(1000), NF, dust.mat(MT.Snow, 1));
-		
+		for (FluidStack tWater : FL.waters(250)) {long tMul = FL.SpDew.is(tWater) ? 4 : 1;
+		RM.Freezer      .addRecipe1(T, 16,   16*tMul, ST.tag(0),        tWater    , FL.Ice.make(250), ZL_IS);
+		RM.Freezer      .addRecipe1(T, 16,   16*tMul, ST.tag(1),        tWater    , NF, ST.make(Items.snowball   , 1, 0));
+		RM.Freezer      .addRecipe1(T, 16,   32*tMul, ST.tag(2), FL.mul(tWater, 2), NF, ST.make(Blocks.snow_layer, 1, 0));
+		RM.Freezer      .addRecipe1(T, 16,   64*tMul, ST.tag(3), FL.mul(tWater, 4), NF, ST.make(Blocks.snow      , 1, 0));
+		RM.Freezer      .addRecipe1(T, 16,  128*tMul, ST.tag(4), FL.mul(tWater, 4), NF, ST.make(Blocks.ice       , 1, 0));
+		RM.Freezer      .addRecipe1(T, 16,   64*tMul, ST.tag(9), FL.mul(tWater, 4), NF, dust      .mat(MT.Snow, 1));
+		RM.Freezer      .addRecipe1(T, 16,  128*tMul, ST.tag(8), FL.mul(tWater, 4), NF, dust      .mat(MT.Ice, 1));
+		RM.Freezer      .addRecipe1(T, 16,   32*tMul, ST.tag(5),        tWater    , NF, gemChipped.mat(MT.Ice, 1));
+		RM.Freezer      .addRecipe1(T, 16,   64*tMul, ST.tag(6), FL.mul(tWater, 2), NF, gemFlawed .mat(MT.Ice, 1));
+		RM.Freezer      .addRecipe1(T, 16,  128*tMul, ST.tag(7), FL.mul(tWater, 4), NF, gem       .mat(MT.Ice, 1));
+		}
 		
 		RM.Mortar       .addRecipe1(T, 16, 32, ST.make(Blocks.glass             , 1, W), OM.dust(MT.Glass, U*9));
 		RM.Mortar       .addRecipe1(T, 16, 32, ST.make(Blocks.stained_glass     , 1, W), OM.dust(MT.Glass, U*9));
@@ -920,6 +902,7 @@ public class Loader_Recipes_Vanilla implements Runnable {
 		RM.biomass(ST.make(Blocks.pumpkin, 2, W));
 		RM.biomass(ST.make(Blocks.cactus, 8, W));
 		RM.biomass(ST.make(Blocks.vine, 8, W));
+		RM.biomass(ST.make(Items.egg, 16, W));
 		RM.biomass(ST.make(Items.reeds, 8, W));
 		RM.biomass(ST.make(Items.melon, 9, W));
 		RM.biomass(ST.make(Items.wheat, 9, W));
@@ -928,6 +911,11 @@ public class Loader_Recipes_Vanilla implements Runnable {
 		RM.biomass(ST.make(Items.poisonous_potato, 9, W));
 		RM.biomass(IL.Dye_Cactus.get(16));
 		RM.biomass(IL.Dye_Cocoa.get(16));
+		
+		RM.biomass(blockDust.mat(MT.MeatRotten, 1), 16);
+		RM.biomass(blockDust.mat(MT.FishRotten, 1), 16);
+		RM.biomass(dust.mat(MT.MeatRotten, 9), 16);
+		RM.biomass(dust.mat(MT.FishRotten, 9), 16);
 		
 		RM.add_smelting(ST.make(Blocks.sticky_piston, 1, W), ST.make(Blocks.piston    , 1, 0), F, T, F);
 		RM.add_smelting(ST.make(Items.glass_bottle  , 1, W), ST.make(Blocks.glass_pane, 1, 0), F, F, F);

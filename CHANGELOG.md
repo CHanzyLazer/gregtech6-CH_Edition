@@ -1,25 +1,119 @@
 This is the most recent Changelog. It also contains some of the changes inside the >>>UPCOMING<<< Versions (most of the time). This is for 1.7.10 btw.
 
 
-6.15.04: (Not released yet, released whenever it needs to be)
+6.15.13: (Not released yet)
 Nothing (I tend to only add finished Stuff to the Changelog).
 
 
-6.15.03: (Not released yet, released whenever it needs to be)
+6.15.12: (Not released yet)
 Nothing (I tend to only add finished Stuff to the Changelog).
 
 
-6.15.02: (Not released yet, released whenever it needs to be)
-[NOTE] Be sure to update your Geiger Counter Sensors if using the %-mode for controlling your Thorium Salt or Lithium Chloride reactors.
+6.15.11: (Not released yet)
+Nothing (I tend to only add finished Stuff to the Changelog).
+
+
+6.15.10:
+[COMPAT] Railcraft Platforms, Posts and Glass can now be dyed in the Bathing Pot and such. Paint Removal Recipes included, as well as a Press Recipe for those Platforms, so that you can use any Iron or Steel Plates.
+[FIXED] Railcrafts Implosion Enchantment did not work with Arrows and Bullets. Now those Projectiles will also get +2 to the Implosion Enchant.
+[FIXED] Flint and Tinder, and the other Igniters, can now do Forestry candles. Though remember the chance of ignition failure for the Flint and Steels. Also did you know Forestry Candles can be lit with a Flint too?, And that you can DYE those Candles too using Vanilla Dye Items?, And that it behaves differently depending on the candle being lit or unlit? I sure as heck did not know any of that until now.
+[CHANGED] Newly created Looting Arrows and Bullets will now have twice the Looting Enchantment than Melee Weapons of the same Material have.
+[CHANGED] If you shoot an Enderman with a Gun and no Teleportation Target is found after 64 tries you will actually hit the Enderman. Under normal circumstances this chance is extremely low.
+[ADDED] Bullets can also be made with Bolts now and not just Rounds. Though Bolts are just the slightest bit more wasteful. But hey, Blaze Bullets!
+
+
+6.15.09:
+[COMPAT] Bottlecrates now accept Biomes o'Plenty Jars too. Also Unification now targets the Biomes o'Plenty Gems, except for Amber which might need the Generifier if Thaumcraft is installed.
+[CHANGED] The Enchanted Material System got some backend changes, nothing should be significantly changed or different! Except the Tooltips and Guide Books, which might be a bit more precise.
+[ADDED] Tooltips now show what Materials you can get from Ores and Crushed Ores, making things more easy to understand.
+[ADDED] Pistols, Carbines and Rifles (all singleshot semi-auto)
+It uses the GT6 Bullets as Ammo. Generally Heavier Bullets are better than Lighter ones (the Bullet Casing doesn't count towards the weight), and Tool Quality ONLY matters for the Gun itself and not the Bullets.
+Now that makes Lead, Gold and Uranium obvious Bullet Materials, but do not forget that Steel, despite being much lighter, does have the Sharpness Enchantment on it, same goes for various Alloy Enchantments. Netherite, which is made of 4 Debris and 4 Gold per 1 Ingot is quite dense by the way.
+Small Golden Bullets are perfect for one-shotting unarmored vanilla Undead as long as the Gun you use is made of a Tier 4 or higher Material, such as Netherite. If you want to use Tier 2 Guns, Platinum Bullets do the trick too.
+While Looting does indeed work on a Bullet, that does usually not make much economical sense to aim for, when selecting what you want to shoot. Do note the Guns themselves cant have Looting on them.
+Medium and Large Bullets can pierce through multiple Entities, and tend to deal much more Damage, since they are double or triple the weight.
+Glass, Pumpkins, Melons, Cocoa Beans, Cacti and similar can be shot through, breaking the Block into pieces, but slowing down the Bullet a little.
+Fire Aspect Bullets and Flame Enchanted Guns will set Entities on Fire (may explodify Creepers), and if their combined Level is 3 or higher, the Bullet will also set Fire to whatever Block it hits.
+Shooting from Air into any Liquid will "slow down" Small Bullets and absolutely destroy Medium and Large Bullets. if you want to use Medium or Large Bullets under Water you will have to use the Gun while you are in the Water. Fleeing from another Player by diving into Water can be a viable method of avoiding Bullet related damage.
+If you shoot a Mob that has invulnerability Frames, it will ignore that Mob and shoot through it, hitting whatever is behind that Mob.
+Fences, Iron Bars, Leaves, Wool, Mob Spawners and similar will just let you shoot through without impeding the Bullet whatsoever.
+Endermen require the Bullet to have the Disjunction Enchantment, or them being affected by a Weakness Potion Effect in order to be hit.
+The Power Enchantment increases the "speed" of the Bullet, which can make even the basic Pistol a piercing Gun with slightly longer range. The Level of this Enchantment is similar to the Level of Sharpness that the Material you used for the Gun has.
+Infinity on the Gun will decrease the amount of Ammo you use, but NOT to zero. It will be based on the "Infinity" Level of the Material you make the Gun of.
+Radioactive Bullets that are stored inside the Gun itself will not irradiate you, so as long as you wear a Hazmat while loading that Gun you will be safe.
+Armor with Projectile Protection can make a major difference in PvP against Guns.
+
+
+6.15.08:
+[FIXED] Empty NBT data was saved to dropped GT6 TileEntities.
+[FIXED] Mass Storages and Item Barrels were no longer saving their Mode Data when harvested.
+
+
+6.15.07:
+[COMPAT] WarpDrive should now accept GT6 Energy even if IC2 and CoFH are not installed.
+[COMPAT] Extra Planets now has some Material and Wood Data associated with it.
+[FIXED] Beds stack to 64 now, because what the actual fuck did Notch think when having its Max be ONE...
+[FIXED] Wild Bumblehives wont drop any Bumblebees anymore, when burned or destroyed by anything that is technically not a Player. This should also fix them showing up in the Ender Garbage List.
+[FIXED] Sifting Table will only make noise when there actually is an Input while operating it.
+[FIXED] Crucible Crossings were looping exponentially by accident, instead of just doing a simple floodfill, resulting in lag when placing too many in a circle.
+[FIXED] All Pipes, Wires and Axles had wrong Hardness Values, resulting in them being harder to break than they were supposed to.
+[FIXED] Dust Funnel should now only update its top Texture once per second, in sync with all the other Stuff to reduce Render Update Lag.
+[CHANGED] Using Geothermal Hot Spring Water in a Heat Exchanger will net you Mineral Water now instead of regular Water. I added a Distillery/Dryer Recipe for making it into Distilled Water too, so some Setups wont need to be changed.
+[CHANGED] Radiation now works with the same System that Food uses to apply Potion Effects. This makes the Radaway Pill much more effective (and no longer hidden from NEI), and by extension also the Cure-All Pill. Please be aware that Radiation will not decrease over time, like the Food related Stats do.
+[CHANGED] Vanilla Ores will no longer generate indicator Rocks.
+[ADDED] Recipe for Aluminium Hydroxide to Alumina in the Dryer.
+[ADDED] NEI Hint for how to get Noble Gasses.
+[ADDED] Rails can now be made on an Anvil using Item Casings.
+[ADDED] Bottle Crate
+A portable Block that can store 9 stacks of (potentially filled) Glass Bottles.
+It is mostly decorative, because I felt like adding it, but it does have some minor purpose to it too, I guess.
+Also supports HBM's Fallout Bottles, though they dont contain any actual Fluid, so I made them fallback to something that looks like Cola.
+They also generate in Workshop Rooms in the GT6 Dungeons, potentially containing Mercury Bottles too.
+
+
+6.15.06:
+[NOTE] Human Error caused this Number to be skipped AGAIN. So apparently I can live edit a bash script while running it... I did not expect it to actually be possible like that.
+
+
+6.15.05:
+[CHANGED] Scythes now count as Weapons, just like Axes do. So you can make use of corresponding Material Enchants.
+[CHANGED] Most "Stone" Crucibles are now hidden from Creative and NEI in order to not confuse Players into thinking those are viable.
+[CHANGED] Crucibles will collect Rainwater now, which might result in dangerous Steam if you use them with the Water inside.
+[CHANGED] Enriched Naquadah will no longer generate. Also some Recipes to get that Stuff are now also Reactor Only.
+[ADDED] Naquadah Breeder Rod which breeds into the new Enriched Naquadah Enriched Rod, allowing enrichment of Naquadah.
+
+
+6.15.04:
+[FIXED] Creepers crashing Servers.
+[FIXED] A Crash with ForgeMultiPart that somehow happens for some Modpacks and some Launchers for no good damn reason.
+[FIXED] Scythe on Hunger Overhaul modified Crops. Requires Default Config Pack or setting "enableRightClickHarvesting=false" in the Hunger Overhaul Config.
+[FIXED] The Storage Drawers Mod was not working in Adventure Mode, unless you had an Axe or so in Hand while leftclicking the Drawers.
+[CHANGED] Bathing Pot and Mixing Bowl should now output Items more nicely.
+[CHANGED] Seed Oils and the likes have a Burn Value similar to Biomass now, making them actually worth processing in the first place.
+[CHANGED] Radioactive Ore Byproducts got mostly removed or replaced. You will need to use the Reactor to get most of that Stuff now.
+
+
+6.15.03:
+[NOTE] Be sure to update your Geiger Counter Sensors if using the percentage-mode for controlling your Thorium Salt or Lithium Chloride reactors.
 [FIXED] Basic Machines and their Multiblock Counterparts will no longer accept Fluid Input from the Side that they are Auto-Outputting to.
-[CHANGED] The old Supporter Lists and Update Checker Functionality are now removed, so GT6 is now using the internal Supporter Lists inside the Jar always. The Lists themselves are still on the Server for older Versions to download them. This also means that the GT6 Update Notification you might have gotten is the last one you will ever receive.
+[CHANGED] The old Supporter Lists and Update Checker Functionality are now removed, so GT6 is now using the internal Supporter Lists inside the Jar always. The Lists themselves are still on the Server for older Versions and alternative Ports to download them. This also means that the GT6 Update Notification you might have gotten is the last one you will ever receive.
 [CHANGED] Crucibles now have a Thermal Mass Tooltip, that way inconsistencies with how to interpret the F3+H Tooltip are avoided.
+[CHANGED] The way that Looting Enchantments stack with Butchery Knives and the likes is now always beneficial (whatever the higher level of the two options is, plus 1). This applies to all Tools that have a built in Enchantment Level.
+[CHANGED] Branch Cutters and Scissors should now harvest Vines as is.
+[CHANGED] Scythes with the Auto Collect Modifier (Magnetic Material) should now properly rightclick harvest IC2 and Pams Crops.
 [ADDED] Power Cell, which can be filled with Hydrogen to directly produce electric Power in a Battery Box of up to HV Tier (1 EU/t to 512 EU/t). This is the most efficient way to turn 200_000L of Hydrogen into 3_200_000EU Electricity, even if a little bit cumbersome.
 [ADDED] Portable Aneutronic Fusion Reactor, which acts like a Power Cell of sorts, and can output anything from 1 EU/t to 8192 EU/t in a regular Battery Box. You have to fill it with 200_000L of Helium-3 to get 1_024_000_000EU total from it. It can only be made after you get Vibranium from a regular Fusion Reactor though.
 [ADDED] Higher Tier Germanium Solar Panel that produces 16 EU/t instead of 8 EU/t.
 [ADDED] Dilithium can now be used to make Molten Ender. Also added a way to process Dolamide Dust, should you have made the mistake of turning your crushed Ore into that.
 [FIXED] Some small errors in the reactor guide book.
-[FIXED] Geiger Counter Sensor now takes coolant into account for %-modes and not just use the base maximum of the fuel rods.
+[FIXED] Geiger Counter Sensor now takes coolant into account for percentage-modes and not just use the base maximum of the fuel rods.
+[FIXED] Log Spam when having certain GT6 Crafting Recipes in Forestry Worktables.
+[FIXED] C-Foamed Pipes and Wires are no longer Flammable by outside sources of Fire. You do not need to wait for the Foam to dry to get this Effect.
+[FIXED] The Daylight Detector Recipe did not accept any type of Quartz, and one of the Cookie Dough Recipes was not Slicer compatible.
+
+
+6.15.02:
+[NOTE] Human Error caused this Number to somehow be skipped. Damn Autosaving Script File before running it...
 
 
 6.15.01:

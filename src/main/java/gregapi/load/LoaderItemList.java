@@ -560,7 +560,7 @@ public class LoaderItemList implements Runnable {
 		StoneLayer.REPLACEABLE_BLOCKS.add(ST.block(MD.AE, "tile.oreQuartzCharged"            , null));
 		StoneLayer.REPLACEABLE_BLOCKS.add(ST.block(MD.TG, "oreTitanIron"                     , null));
 		StoneLayer.REPLACEABLE_BLOCKS.add(ST.block(MD.BR, "YelloriteOre"                     , null));
-		StoneLayer.REPLACEABLE_BLOCKS.add(ST.block(MD.BoP, "gemOre"                          , null));
+	//  StoneLayer.REPLACEABLE_BLOCKS.add(ST.block(MD.BoP, "gemOre"                          , null));
 		StoneLayer.REPLACEABLE_BLOCKS.add(ST.block(MD.BoP, "rocks"                           , null));
 		StoneLayer.REPLACEABLE_BLOCKS.add(ST.block(MD.HBM, "tile.stone_gneiss"               , null));
 		StoneLayer.REPLACEABLE_BLOCKS.add(ST.block(MD.HBM, "tile.basalt_smooth"              , null));
@@ -754,6 +754,7 @@ public class LoaderItemList implements Runnable {
 		IL.RC_ShuntingWire                      .set(ST.make(MD.RC, "machine.delta"                         , 1, 0));
 		IL.RC_ShuntingWireFrame                 .set(ST.make(MD.RC, "frame"                                 , 1, 0));
 		IL.RC_Post_Metal                        .set(ST.make(MD.RC, "post"                                  , 1, 2));
+		IL.RC_Platform_Metal                    .set(ST.make(MD.RC, "post"                                  , 1, 6));
 		IL.RC_Concrete                          .set(ST.make(MD.RC, "cube"                                  , 1, 1), new OreDictItemData(MT.Stone, 5*U8), CR.DELATE);
 		IL.RC_Crushed_Obsidian                  .set(ST.make(MD.RC, "cube"                                  , 1, 4), new OreDictItemData(MT.Obsidian, U*8));
 		IL.RC_Stone_Abyssal                     .set(ST.make(MD.RC, "cube"                                  , 1, 6), OP.stone.dat(MT.STONES.Basalt));
@@ -1465,12 +1466,12 @@ public class LoaderItemList implements Runnable {
 		IL.BoP_Mud_Ball                         .set(ST.make(MD.BoP, "mudball"                              , 1, 0), null, OD.itemMud);
 		IL.BoP_Mud_Brick                        .set(ST.make(MD.BoP, "misc"                                 , 1, 0));
 		IL.BoP_Mud_Bricks                       .set(ST.make(MD.BoP, "mudBricks"                            , 1, 0));
-		IL.BoP_Ashes                            .set(ST.make(MD.BoP, "misc"                                 , 1, 1), new OreDictItemData(MT.VolcanicAsh, U), DYE_OREDICTS_MIXABLE[DYE_INDEX_Gray]);
-		IL.BoP_Ashes_Block                      .set(ST.make(MD.BoP, "ash"                                  , 1, 0), new OreDictItemData(MT.VolcanicAsh, U*4));
-		IL.BoP_Ashstone                         .set(ST.make(MD.BoP, "ashStone"                             , 1, 0), new OreDictItemData(MT.VolcanicAsh, U));
+		IL.BoP_Ashes                            .set(ST.make(MD.BoP, "misc"                                 , 1, 1), new OreDictItemData(MT.VolcanicAsh, U4*9), DYE_OREDICTS_MIXABLE[DYE_INDEX_Gray]);
+		IL.BoP_Ashes_Block                      .set(ST.make(MD.BoP, "ash"                                  , 1, 0), new OreDictItemData(MT.VolcanicAsh, U *9));
+		IL.BoP_Ashstone                         .set(ST.make(MD.BoP, "ashStone"                             , 1, 0), new OreDictItemData(MT.VolcanicAsh, U *9));
 		IL.BoP_Comb                             .set(ST.make(MD.BoP, "misc"                                 , 1, 2), null, OD.beeComb, OD.materialWaxcomb);
-		IL.BoP_Flesh                            .set(ST.make(MD.BoP, "misc"                                 , 1, 3), new OreDictItemData(MT.MeatRaw, U));
-		IL.BoP_Flesh_Block                      .set(ST.make(MD.BoP, "flesh"                                , 1, 0), new OreDictItemData(MT.MeatRaw, U*4));
+		IL.BoP_Flesh                            .set(ST.make(MD.BoP, "misc"                                 , 1, 3), new OreDictItemData(MT.MeatRaw, U4*9));
+		IL.BoP_Flesh_Block                      .set(ST.make(MD.BoP, "flesh"                                , 1, 0), new OreDictItemData(MT.MeatRaw, U *9));
 		IL.BoP_Celestial                        .set(ST.make(MD.BoP, "misc"                                 , 1, 4));
 		IL.BoP_Celestial_Block                  .set(ST.make(MD.BoP, "crystal"                              , 1, 0));
 		IL.BoP_Dye_Blue                         .set(ST.make(MD.BoP, "misc"                                 , 1, 5), null, DYE_OREDICTS_MIXABLE[DYE_INDEX_Blue]);
@@ -1600,12 +1601,14 @@ public class LoaderItemList implements Runnable {
 		IL.HBM_Bedrock_Coltan                   .set(ST.make(MD.HBM, "tile.ore_bedrock_coltan"              , 1, 0));
 		IL.HBM_Bedrock_Oil                      .set(ST.make(MD.HBM, "tile.ore_bedrock_oil"                 , 1, 0));
 		IL.HBM_Crushed_Obsidian                 .set(ST.make(MD.HBM, "tile.gravel_obsidian"                 , 1, 0), new OreDictItemData(MT.Obsidian, U*8));
-		IL.HBM_Mercury_Bottle                   .set(ST.make(MD.HBM, "item.bottle_mercury"                  , 1, 0), new OreDictItemData(MT.Hg, U, MT.Glass, U), OP.bottle.dat(MT.Hg));
+		IL.HBM_Bottle_Mercury                   .set(ST.make(MD.HBM, "item.bottle_mercury"                  , 1, 0), new OreDictItemData(MT.Hg, U, MT.Glass, U), OP.bottle.dat(MT.Hg));
 		IL.HBM_Mercury_Drop                     .set(ST.make(MD.HBM, "item.nugget_mercury"                  , 1, 0), new OreDictItemData(MT.Hg, U8));
 		IL.HBM_Mercury_Drop_Tiny                .set(ST.make(MD.HBM, "item.nugget_mercury_tiny"             , 1, 0), new OreDictItemData(MT.Hg, U72));
 		IL.HBM_Poison_Powder                    .set(ST.make(MD.HBM, "item.powder_poison"                   , 1, 0));
 		IL.HBM_Biomass                          .set(ST.make(MD.HBM, "item.biomass"                         , 1, 0));
 		IL.HBM_Biomass_Compressed               .set(ST.make(MD.HBM, "item.biomass_compressed"              , 1, 0));
+		IL.HBM_Bottle_Empty_1                   .set(ST.make(MD.HBM, "item.bottle_empty"                    , 1, 0));
+		IL.HBM_Bottle_Empty_2                   .set(ST.make(MD.HBM, "item.bottle2_empty"                   , 1, 0));
 		
 		
 		IL.ICBM_Concrete                        .set(ST.make(MD.ICBM, "icbmCConcrete"                       , 1, 0));

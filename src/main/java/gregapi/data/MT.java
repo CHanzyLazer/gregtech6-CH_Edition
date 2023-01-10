@@ -51,7 +51,7 @@ public class MT {
 	/** Making the Table a little bit more overviewable. DO NOT USE THESE FUNCTIONS YOURSELF!!! Use "OreDictMaterial.createMaterial(YOUR-ID-AS-SPECIFIED-IN-THE-ID-RANGES, OREDICT-NAME, LOCALISED-NAME)" */
 	static OreDictMaterial tier         (String aNameOreDict) {return create(-1, aNameOreDict).put(UNUSED_MATERIAL, DONT_SHOW_THIS_COMPONENT, IGNORE_IN_COLOR_LOG, MD.GAPI).setAllToTheOutputOf(null, 0, 1);}
 	static OreDictMaterial unused       (String aNameOreDict) {return create(-1, aNameOreDict).put(UNUSED_MATERIAL, DONT_SHOW_THIS_COMPONENT);}
-	static OreDictMaterial depricated   (String aNameOreDict) {return create(-1, aNameOreDict).put(UNUSED_MATERIAL, DONT_SHOW_THIS_COMPONENT);}
+	static OreDictMaterial deprecated   (String aNameOreDict) {return create(-1, aNameOreDict).put(UNUSED_MATERIAL, DONT_SHOW_THIS_COMPONENT);}
 	static OreDictMaterial invalid      (String aNameOreDict) {return create(-1, aNameOreDict).put(UNUSED_MATERIAL, DONT_SHOW_THIS_COMPONENT, INVALID_MATERIAL);}
 	/* 15000-15999 For GregTech6-Unofficial，16000-16999 For GregTech6-CH_Edition */
 	static OreDictMaterial create       (int aID, String aNameOreDict) {if (aID >= 17000) return null; if (aID >= 10000 && aID < 15000) return null; OreDictMaterial rMaterial = OreDictMaterial.createMaterial(aID, aNameOreDict, aNameOreDict); ALL_MATERIALS_REGISTERED_HERE.add(rMaterial); if (aID > 0) rMaterial.setOriginalMod(MD.GAPI); return rMaterial.handle(ANY.WoodPlastic);}
@@ -60,8 +60,8 @@ public class MT {
 	
 	/** Making the Table a little bit more overviewable. DO NOT USE THESE FUNCTIONS YOURSELF!!! Use "OreDictMaterial.createMaterial(YOUR-ID-AS-SPECIFIED-IN-THE-ID-RANGES, OREDICT-NAME, LOCALISED-NAME)" */
 	static OreDictMaterial element      (int aID, String aNameOreDict, String aSymbol, long aProtonsAndElectrons, long aNeutrons, long aMeltingPoint, long aBoilingPoint, double aGramPerCubicCentimeter, TextureSet[] aSets, long aR, long aG, long aB, long aA, Object... aRandomData) {return create      (aID, aNameOreDict, aSets, aR, aG, aB, aA, aRandomData).setStats(aProtonsAndElectrons, aNeutrons, aMeltingPoint, aBoilingPoint, aGramPerCubicCentimeter).put(ELEMENT).tooltip(aSymbol);}
-	static OreDictMaterial metal        (int aID, String aNameOreDict, String aSymbol, long aProtonsAndElectrons, long aNeutrons, long aMeltingPoint, long aBoilingPoint, double aGramPerCubicCentimeter, TextureSet[] aSets, long aR, long aG, long aB, long aA, Object... aRandomData) {return element     (aID, aNameOreDict, aSymbol, aProtonsAndElectrons, aNeutrons, aMeltingPoint, aBoilingPoint, aGramPerCubicCentimeter, aSets, aR, aG, aB, aA, aRandomData).put(METAL    , G_INGOT_ORES, SMITHABLE, MELTING        , EXTRUDER, aMeltingPoint < 1200 ? new Object[] {EXTRUDER_SIMPLE, FURNACE, MORTAR} : null);}
-	static OreDictMaterial metalloid    (int aID, String aNameOreDict, String aSymbol, long aProtonsAndElectrons, long aNeutrons, long aMeltingPoint, long aBoilingPoint, double aGramPerCubicCentimeter, TextureSet[] aSets, long aR, long aG, long aB, long aA, Object... aRandomData) {return element     (aID, aNameOreDict, aSymbol, aProtonsAndElectrons, aNeutrons, aMeltingPoint, aBoilingPoint, aGramPerCubicCentimeter, aSets, aR, aG, aB, aA, aRandomData).put(METALLOID, G_INGOT_ORES, SMITHABLE, MELTING, MOLTEN, EXTRUDER, aMeltingPoint < 1200 ? new Object[] {EXTRUDER_SIMPLE, FURNACE, MORTAR} : null);}
+	static OreDictMaterial metal        (int aID, String aNameOreDict, String aSymbol, long aProtonsAndElectrons, long aNeutrons, long aMeltingPoint, long aBoilingPoint, double aGramPerCubicCentimeter, TextureSet[] aSets, long aR, long aG, long aB, long aA, Object... aRandomData) {return element     (aID, aNameOreDict, aSymbol, aProtonsAndElectrons, aNeutrons, aMeltingPoint, aBoilingPoint, aGramPerCubicCentimeter, aSets, aR, aG, aB, aA, aRandomData).put(METAL    , G_INGOT_ORES, SMITHABLE, MELTING        , EXTRUDER, aMeltingPoint <= 1200 ? new Object[] {EXTRUDER_SIMPLE, FURNACE, MORTAR} : null);}
+	static OreDictMaterial metalloid    (int aID, String aNameOreDict, String aSymbol, long aProtonsAndElectrons, long aNeutrons, long aMeltingPoint, long aBoilingPoint, double aGramPerCubicCentimeter, TextureSet[] aSets, long aR, long aG, long aB, long aA, Object... aRandomData) {return element     (aID, aNameOreDict, aSymbol, aProtonsAndElectrons, aNeutrons, aMeltingPoint, aBoilingPoint, aGramPerCubicCentimeter, aSets, aR, aG, aB, aA, aRandomData).put(METALLOID, G_INGOT_ORES, SMITHABLE, MELTING, MOLTEN, EXTRUDER, aMeltingPoint <= 1200 ? new Object[] {EXTRUDER_SIMPLE, FURNACE, MORTAR} : null);}
 	static OreDictMaterial nonmetal     (int aID, String aNameOreDict, String aSymbol, long aProtonsAndElectrons, long aNeutrons, long aMeltingPoint, long aBoilingPoint, double aGramPerCubicCentimeter, TextureSet[] aSets, long aR, long aG, long aB, long aA, Object... aRandomData) {return element     (aID, aNameOreDict, aSymbol, aProtonsAndElectrons, aNeutrons, aMeltingPoint, aBoilingPoint, aGramPerCubicCentimeter, aSets, aR, aG, aB, aA, aRandomData).put(NONMETAL);}
 	static OreDictMaterial diatomic     (int aID, String aNameOreDict, String aSymbol, long aProtonsAndElectrons, long aNeutrons, long aMeltingPoint, long aBoilingPoint, double aGramPerCubicCentimeter, TextureSet[] aSets, long aR, long aG, long aB, long aA, Object... aRandomData) {return nonmetal    (aID, aNameOreDict, aSymbol, aProtonsAndElectrons, aNeutrons, aMeltingPoint, aBoilingPoint, aGramPerCubicCentimeter, aSets, aR, aG, aB, aA, aRandomData).put(DIATOMIC_NONMETAL);}
 	static OreDictMaterial diatomicgas  (int aID, String aNameOreDict, String aSymbol, long aProtonsAndElectrons, long aNeutrons, long aMeltingPoint, long aBoilingPoint, double aGramPerCubicCentimeter, TextureSet[] aSets, long aR, long aG, long aB, long aA, Object... aRandomData) {return diatomic    (aID, aNameOreDict, aSymbol, aProtonsAndElectrons, aNeutrons, aMeltingPoint, aBoilingPoint, aGramPerCubicCentimeter, aSets, aR, aG, aB, aA, aRandomData).put(GASES);}
@@ -83,7 +83,7 @@ public class MT {
 	static OreDictMaterial element      (int aID, String aNameOreDict, String aSymbol, long aProtonsAndElectrons, long aNeutrons, long aMeltingPoint, long aBoilingPoint, double aGramPerCubicCentimeter, TextureSet[] aSets, TagData[] aTags2, TagData... aTags                       ) {return create      (aID, aNameOreDict, aSets, 256, 256, 256, 255).setStats(aProtonsAndElectrons, aNeutrons, aMeltingPoint, aBoilingPoint, aGramPerCubicCentimeter).put(aTags, aTags2, ELEMENT).tooltip(aSymbol);}
 	static OreDictMaterial element      (int aID, String aNameOreDict, String aSymbol, long aProtonsAndElectrons, long aNeutrons, long aMeltingPoint, long aBoilingPoint, double aGramPerCubicCentimeter, TextureSet[] aSets, TagData aTag3, TagData[] aTags2, TagData... aTags        ) {return create      (aID, aNameOreDict, aSets, 256, 256, 256, 255).setStats(aProtonsAndElectrons, aNeutrons, aMeltingPoint, aBoilingPoint, aGramPerCubicCentimeter).put(aTags, aTags2, aTag3, ELEMENT).tooltip(aSymbol);}
 	static OreDictMaterial unknown      (int aID, String aNameOreDict, String aSymbol, long aProtonsAndElectrons, long aNeutrons                                                                                            , TagData... aTags                                         ) {return element     (aID, aNameOreDict, aSymbol, aProtonsAndElectrons, aNeutrons, 1000, 3000, 0, SET_SHINY                                                        ).put(aTags).hide().aspects(TC.RADIO, 1);}
-	static OreDictMaterial metalloid    (int aID, String aNameOreDict, String aSymbol, long aProtonsAndElectrons, long aNeutrons, long aMeltingPoint, long aBoilingPoint, double aGramPerCubicCentimeter, TextureSet[] aSets, TagData... aTags                                         ) {return element     (aID, aNameOreDict, aSymbol, aProtonsAndElectrons, aNeutrons, aMeltingPoint, aBoilingPoint, aGramPerCubicCentimeter, aSets, 256, 256, 256, 255).put(aTags, METALLOID, G_INGOT_ORES, SMITHABLE, MELTING, MOLTEN, EXTRUDER, aMeltingPoint < 1200 ? new Object[] {EXTRUDER_SIMPLE, FURNACE, MORTAR} : null);}
+	static OreDictMaterial metalloid    (int aID, String aNameOreDict, String aSymbol, long aProtonsAndElectrons, long aNeutrons, long aMeltingPoint, long aBoilingPoint, double aGramPerCubicCentimeter, TextureSet[] aSets, TagData... aTags                                         ) {return element     (aID, aNameOreDict, aSymbol, aProtonsAndElectrons, aNeutrons, aMeltingPoint, aBoilingPoint, aGramPerCubicCentimeter, aSets, 256, 256, 256, 255).put(aTags, METALLOID, G_INGOT_ORES, SMITHABLE, MELTING, MOLTEN, EXTRUDER, aMeltingPoint <= 1200 ? new Object[] {EXTRUDER_SIMPLE, FURNACE, MORTAR} : null);}
 	static OreDictMaterial alkali       (int aID, String aNameOreDict, String aSymbol, long aProtonsAndElectrons, long aNeutrons, long aMeltingPoint, long aBoilingPoint, double aGramPerCubicCentimeter, TextureSet[] aSets, TagData... aTags                                         ) {return metal       (aID, aNameOreDict, aSymbol, aProtonsAndElectrons, aNeutrons, aMeltingPoint, aBoilingPoint, aGramPerCubicCentimeter, aSets, 256, 256, 256, 255).put(aTags, ALKALI_METAL, MOLTEN);}
 	static OreDictMaterial alkaline     (int aID, String aNameOreDict, String aSymbol, long aProtonsAndElectrons, long aNeutrons, long aMeltingPoint, long aBoilingPoint, double aGramPerCubicCentimeter, TextureSet[] aSets, TagData... aTags                                         ) {return metal       (aID, aNameOreDict, aSymbol, aProtonsAndElectrons, aNeutrons, aMeltingPoint, aBoilingPoint, aGramPerCubicCentimeter, aSets, 256, 256, 256, 255).put(aTags, ALKALINE_EARTH_METAL, MOLTEN);}
 	static OreDictMaterial lanthanide   (int aID, String aNameOreDict, String aSymbol, long aProtonsAndElectrons, long aNeutrons, long aMeltingPoint, long aBoilingPoint, double aGramPerCubicCentimeter, TextureSet[] aSets, TagData... aTags                                         ) {return metal       (aID, aNameOreDict, aSymbol, aProtonsAndElectrons, aNeutrons, aMeltingPoint, aBoilingPoint, aGramPerCubicCentimeter, aSets, 256, 256, 256, 255).put(aTags, LANTHANIDE);}
@@ -200,13 +200,13 @@ public class MT {
 	static OreDictMaterial valgemcent   (int aID, String aNameOreDict, TextureSet[] aSets, long aR, long aG, long aB, long aA    , Object... aRandomData)  {return valgemdcmp      (aID, aNameOreDict, aSets           , aR, aG, aB, aA, aRandomData).put(CENTRIFUGE);}
 	static OreDictMaterial valgemelec   (int aID, String aNameOreDict, TextureSet[] aSets, long aR, long aG, long aB, long aA    , Object... aRandomData)  {return valgemdcmp      (aID, aNameOreDict, aSets           , aR, aG, aB, aA, aRandomData).put(ELECTROLYSER);}
 	static OreDictMaterial diamond      (int aID, String aNameOreDict                    , long aR, long aG, long aB, byte aColor, Object... aRandomData)  {return valgemdcmp      (aID, aNameOreDict, SET_DIAMOND     , aR, aG, aB,127, aRandomData).lens(aColor).put(ANY.Diamond   , COMMON_ORE                               ).steal(C).aspects(TC.VITREUS, 3, TC.LUCRUM , 4                ).qual(3, 8.0,1280, 3).setSmelting(C    , 2*U  ).setBurning(Ash, U);}
-	static OreDictMaterial sapphire     (int aID, String aNameOreDict                    , long aR, long aG, long aB, byte aColor, Object... aRandomData)  {return valgemcent      (aID, aNameOreDict, SET_GEM_VERTICAL, aR, aG, aB,127, aRandomData).lens(aColor).put(ANY.Sapphire  , COMMON_ORE, MELTING, RANDOM_SMALL_GEM_ORE)         .aspects(TC.VITREUS, 3, TC.LUCRUM , 4                ).qual(3, 7.0, 512, 3).setSmelting(Al2O3, 3*U4 );}
-	static OreDictMaterial emerald      (int aID, String aNameOreDict                    , long aR, long aG, long aB, byte aColor, Object... aRandomData)  {return valgemelec      (aID, aNameOreDict, SET_EMERALD     , aR, aG, aB,127, aRandomData).lens(aColor).put(ANY.Emerald   , COMMON_ORE, MELTING, RANDOM_SMALL_GEM_ORE)         .aspects(TC.VITREUS, 3, TC.LUCRUM , 3                ).qual(3, 9.0, 128, 2).setSmelting(Be   ,   U36);}
+	static OreDictMaterial sapphire     (int aID, String aNameOreDict                    , long aR, long aG, long aB, byte aColor, Object... aRandomData)  {return valgemcent      (aID, aNameOreDict, SET_GEM_VERTICAL, aR, aG, aB,127, aRandomData).lens(aColor).put(ANY.Sapphire  , COMMON_ORE, MELTING, RANDOM_SMALL_GEM_ORE)         .aspects(TC.VITREUS, 3, TC.LUCRUM , 4                ).qual(3, 7.0, 512, 3).setSmelting(Al2O3, 3*U4 ).addSourceOf(Al);}
+	static OreDictMaterial emerald      (int aID, String aNameOreDict                    , long aR, long aG, long aB, byte aColor, Object... aRandomData)  {return valgemelec      (aID, aNameOreDict, SET_EMERALD     , aR, aG, aB,127, aRandomData).lens(aColor).put(ANY.Emerald   , COMMON_ORE, MELTING, RANDOM_SMALL_GEM_ORE)         .aspects(TC.VITREUS, 3, TC.LUCRUM , 3                ).qual(3, 9.0, 128, 2).setSmelting(Be   ,   U36).addSourceOf(Be);}
 	static OreDictMaterial garnet       (int aID, String aNameOreDict                    , long aR, long aG, long aB, byte aColor, Object... aRandomData)  {return valgemelec      (aID, aNameOreDict, SET_RUBY        , aR, aG, aB,127, aRandomData).lens(aColor).put(ANY.Garnet    , MD.GT              , RANDOM_SMALL_GEM_ORE)         .aspects(TC.VITREUS, 3, TC.LUCRUM , 1                ).qual(3, 7.0, 128, 2);}
 	static OreDictMaterial jasper       (int aID, String aNameOreDict                    , long aR, long aG, long aB, byte aColor, Object... aRandomData)  {return valgemelec      (aID, aNameOreDict, SET_GLASS       , aR, aG, aB,150, aRandomData).lens(aColor).put(ANY.Jasper    , MD.RH              , RANDOM_SMALL_GEM_ORE)         .aspects(TC.VITREUS, 2, TC.LUCRUM , 2, TC.METALLUM, 1).qual(3, 7.0, 256, 2).uumMcfg( 0, SiO2, 2*U, Fe, 1*U);}
 	static OreDictMaterial tigereye     (int aID, String aNameOreDict                    , long aR, long aG, long aB, byte aColor, Object... aRandomData)  {return valgemelec      (aID, aNameOreDict, SET_GLASS       , aR, aG, aB,200, aRandomData).lens(aColor).put(ANY.TigerEye  , MD.RH              , RANDOM_SMALL_GEM_ORE)         .aspects(TC.VITREUS, 2, TC.LUCRUM , 1, TC.TERRA   , 1).qual(3, 7.0, 256, 2).uumMcfg( 0, SiO2, 1*U);}
 	static OreDictMaterial aventurine   (int aID, String aNameOreDict                    , long aR, long aG, long aB, byte aColor, Object... aRandomData)  {return valgemelec      (aID, aNameOreDict, SET_GLASS       , aR, aG, aB,200, aRandomData).lens(aColor).put(ANY.Aventurine, MD.RH              , RANDOM_SMALL_GEM_ORE)         .aspects(TC.VITREUS, 2, TC.LUCRUM , 1, TC.POTENTIA, 1).qual(3, 7.0, 256, 2).uumMcfg( 0, SiO2, 1*U);}
-	static OreDictMaterial fluorite     (int aID, String aNameOreDict                    , long aR, long aG, long aB             , Object... aRandomData)  {return gem             (aID, aNameOreDict, SET_RUBY        , aR, aG, aB,255, aRandomData)             .put(ANY.CaF2      , COMMON_ORE, MD.ReC , RANDOM_SMALL_GEM_ORE)         .aspects(TC.VITREUS, 2, TC.VENENUM, 2                )                     .uumMcfg( 0, Ca, 1*U, F, 2*U).heat(1633).put(DECOMPOSABLE, ACID, MELTING, MORTAR, BRITTLE, CRYSTALLISABLE).setSmelting("Fluorite".equals(aNameOreDict) ? null : CaF2, U);}
+	static OreDictMaterial fluorite     (int aID, String aNameOreDict                    , long aR, long aG, long aB             , Object... aRandomData)  {return gem             (aID, aNameOreDict, SET_RUBY        , aR, aG, aB,255, aRandomData)             .put(ANY.CaF2      , COMMON_ORE, MD.ReC , RANDOM_SMALL_GEM_ORE)         .aspects(TC.VITREUS, 2, TC.VENENUM, 2                )                     .uumMcfg( 0, Ca, 1*U, F, 2*U).addSourceOf(F).heat(1633).put(DECOMPOSABLE, ACID, MELTING, MORTAR, BRITTLE, CRYSTALLISABLE).setSmelting("Fluorite".equals(aNameOreDict) ? null : CaF2, U);}
 	static OreDictMaterial blaze        (int aID, String aNameOreDict                    , long aR, long aG, long aB             , Object... aRandomData)  {return create          (aID, aNameOreDict, SET_POWDER      , aR, aG, aB,255, aRandomData)             .put(ANY.Blaze     , COMMON_ORE                               )         .aspects(TC.PRAECANTIO, 2                            ).qual(1, 2.0,  16, 1).handle(ANY.Blaze).put(G_BLAZE, GLOWING, MAGICAL, BRITTLE, MORTAR);}
 	static OreDictMaterial clay         (int aID, String aNameOreDict         , long aR, long aG, long aB, OreDictMaterial aTrace, Object... aRandomData)  {return oredustelec     (aID, aNameOreDict, SET_ROUGH       , aR, aG, aB,255, aRandomData)             .put(ANY.Clay      , MORTAR, PLATES                           )         .aspects(TC.TERRA, 1                                 ).uumMcfg(18, aTrace, 1*U, Clay, 18*U).heat(2000).setSmelting(Ceramic, U);}
 	static OreDictMaterial mix          (int aID, String aNameOreDict, TextureSet[] aSets, long aR, long aG, long aB, long aA    , Object... aRandomData)  {return dcmp            (aID, aNameOreDict, aSets           , aR, aG, aB, aA, aRandomData).put(CENTRIFUGE);}
@@ -469,7 +469,7 @@ public class MT {
 	static OreDictMaterial astatine       () {return metalloid   ( 850, "Astatine"       , "At"    ,  85, 124,   575,   610,  7.0       , SET_RAD     ,  33,  33,  33, 255             , HALOGEN        , CONTAINERS_GAS      , GASES, "Astatine209"                                                          , "At209").aspects(TC.POTENTIA, 2, TC.RADIO, 1                    );}
 	static OreDictMaterial radon          () {return noblegas    ( 860, "Radon"          , "Rn"    ,  86, 134,   202,   211,  0.00973   , SET_DULL    , 255,   0, 255                                   , CONTAINERS_GAS                                                                                               ).aspects(TC.AER, 2, TC.RADIO, 1                         );}
 	static OreDictMaterial francium       () {return alkali      ( 870, "Francium"       , "Fr"    ,  87, 134,   300,   950,  1.87      , SET_RAD                                                                                                                                                                      ).aspects_met_rad(2, 1                                   );}
-	static OreDictMaterial radium         () {return alkaline    ( 880, "Radium"         , "Ra"    ,  88, 136,   973,  2010,  5.5       , SET_RAD     , 255, 255, 205                                                         , "Radium226"                                                                            ).aspects_met_rad(2, 1                                   );}
+	static OreDictMaterial radium         () {return alkaline    ( 880, "Radium"         , "Ra"    ,  88, 138,   973,  2010,  5.5       , SET_RAD     , 255, 255, 205                                                         , "Radium226"                                                                            ).aspects_met_rad(2, 1                                   );}
 	static OreDictMaterial actinium       () {return actinide    ( 890, "Actinium"       , "Ac"    ,  89, 136,  1323,  3471, 10.07      , SET_RAD     , 125, 113, 113                                                                                                                                                  ).aspects_met_rad(2, 1                                   );}
 	static OreDictMaterial thorium        () {return actinide    ( 900, "Thorium"        , "Th"    ,  90, 142,  2115,  5061, 11.72      , SET_RAD     ,   0,  30,   0                                                         , "Thorium232"                                                                  , "Th232").aspects_met_rad(2, 1                                   );}
 	static OreDictMaterial protactinium   () {return actinide    ( 910, "Protactinium"   , "Pa"    ,  91, 138,  1841,  4300, 15.37      , SET_RAD                                                                                                                                                                      ).aspects_met_rad(2, 1                                   );}
@@ -628,7 +628,7 @@ public class MT {
 	Ir      = iridium        ().qual(3,  6.0, 5120, 4).setRGBaLiquid(255, 128, 200, 255),
 	Pt      = platinum       ().qual(3, 15.0, 64, 2),
 	Au      = gold           ().qual(3, 12.5, 64, 2),
-	Au_198  = gold198        ().qual(3, 12.5, 64, 2),
+	Au_198  = gold198        (),
 	Hg      = mercury        (),
 	Tl      = thallium       (),
 	Pb      = lead           ().qual(2,  8.0, 64, 1),
@@ -1030,6 +1030,7 @@ public class MT {
 	CO3                     = gaschemelec   ( 9843, "Carbon Trioxide"                               ,  45,  45,  45,  15, GASES, ACID)                                                                                                                              .uumMcfg( 0, C              , 1*U, O                , 3*U)                                                                                                  .heat( 100,  200),
 	CH4                     = gaschemelec   ( 9832, "Methane"                                       , 250, 200, 250,  15, GASES, FLAMMABLE)                                                                                                                         .uumMcfg( 0, C              , 1*U, H                , 4*U)                                                                                                  .heat( 100,  200),
 	Sugar                   = dustdcmp      ( 9703, "Sugar"                 , SET_CUBE              , 250, 250, 250, 255, FURNACE, MELTING, FLAMMABLE, BRITTLE, MORTAR, FOOD)                                                                                       .uumMcfg( 0, C              ,12*U, H                ,22*U, O                ,11*U)                                                                          .aspects(TC.HERBA, 1, TC.AQUA, 1, TC.AER, 1).heat(459),
+	Vanilla                 = dustfood      ( 9787, "Vanilla"                                       , 110,  80,  40, 255, DECOMPOSABLE)                                                                                                                             .uumMcfg( 0, C              , 8*U, H                , 8*U, O                , 3*U)                                                                          .aspects(TC.FAMES, 1),
 	Glycerol                = lqudchemelec  ( 9828, "Glycerol"                                      ,   0, 180, 180, 255, LIQUID, FLAMMABLE)                                                                                                                        .uumMcfg( 0, C              , 3*U, H                , 8*U, O                , 3*U)                                                                          .setDensity(1.5).heat( 291,  563),
 	Glyceryl                = lqudchemelec  ( 9821, "Glyceryl"                                      ,   0, 150, 150, 255, LIQUID, FLAMMABLE, EXPLOSIVE)                                                                                                             .uumMcfg( 0, C              , 3*U, H                , 5*U, N                , 3*U, O                , 9*U)                                                  .setDensity(1.5).heat( 287,  323),
 	
@@ -1055,39 +1056,39 @@ public class MT {
 	Datolite                = oredustelec   ( 8006, "Datolite"              , SET_ROUGH             , 222, 255, 222, 255)                                                                                                                                           .uumMcfg( 0, H              , 2*U, Ca               , 2*U, B                , 2*U, Si               , 2*U, O                ,10*U)                          , H2Ca2B2Si2O10 = Datolite,
 	
 	
-	V2O5                    = oredustelec   ( 8234, "Vanadium Pentoxide"    , SET_FINE              ,  50,  50,  50, 255, WASHING_FIRESTONE, MAGNETIC_PASSIVE)                                                                                                      .uumMcfg( 0, V              , 2*U, O                , 5*U)                                                                                                  .setSmelting(V, U7), VanadiumPentoxide = V2O5,
+	V2O5                    = oredustelec   ( 8234, "Vanadium Pentoxide"    , SET_FINE              ,  50,  50,  50, 255, WASHING_FIRESTONE, MAGNETIC_PASSIVE)                                                                                                      .uumMcfg( 0, V              , 2*U, O                , 5*U)                                                                                                  .addSourceOf(V).setSmelting(V, U7), VanadiumPentoxide = V2O5,
 	
 	
-	Nb2O5                   = oredustdcmp   ( 8461, "Niobium Pentoxide"     , SET_FINE              ,  50,  64,  10, 255, WASHING_FIRESTONE)                                                                                                                        .uumMcfg( 0, Nb             , 2*U, O                , 5*U)                                                                                                  ,
+	Nb2O5                   = oredustdcmp   ( 8461, "Niobium Pentoxide"     , SET_FINE              ,  50,  64,  10, 255, WASHING_FIRESTONE)                                                                                                                        .uumMcfg( 0, Nb             , 2*U, O                , 5*U)                                                                                                  .addSourceOf(Nb),
 	
 	
-	Ta2O5                   = oredustdcmp   ( 8462, "Tantalum Pentoxide"    , SET_FINE              ,  64,  50,  10, 255, WASHING_FIRESTONE)                                                                                                                        .uumMcfg( 0, Ta             , 2*U, O                , 5*U)                                                                                                  ,
+	Ta2O5                   = oredustdcmp   ( 8462, "Tantalum Pentoxide"    , SET_FINE              ,  64,  50,  10, 255, WASHING_FIRESTONE)                                                                                                                        .uumMcfg( 0, Ta             , 2*U, O                , 5*U)                                                                                                  .addSourceOf(Ta),
 	
 	
-	PO4                     = oredustelec   ( 8207, "Phosphate"             , SET_DULL              , 255, 255,   0, 255, FLAMMABLE, EXPLOSIVE, BRITTLE, MORTAR)                                                                                                    .uumMcfg( 0, P              , 1*U, O                , 4*U)                                                                                                  .heat( 400,  800),
+	PO4                     = oredustelec   ( 8207, "Phosphate"             , SET_DULL              , 255, 255,   0, 255, FLAMMABLE, EXPLOSIVE, BRITTLE, MORTAR)                                                                                                    .uumMcfg( 0, P              , 1*U, O                , 4*U)                                                                                                  .heat( 400,  800).addSourceOf(P),
 	
 	
-	WO3                     = oredustdcmp   ( 8026, "Tungsten Trioxide"     , SET_DULL              , 199, 211,   0, 255, MELTING, MOLTEN, INGOTS, MORTAR, WASHING_FIRESTONE, "TungstenOxide")                                                                      .uumMcfg( 0, W              , 1*U, O                , 3*U)                                                                                                  .heat(1746, 1970),
-	H2WO4                   = dustdcmp      ( 8027, "Tungstic Acid"         , SET_SHINY             , 188, 200,   0, 255, MELTING, ACID)                                                                                                                            .uumMcfg( 0, H              , 2*U, W                , 1*U, O                , 4*U)                                                                          .heat( 373, 1746).setSmelting(WO3, 4*U7),
+	WO3                     = oredustdcmp   ( 8026, "Tungsten Trioxide"     , SET_DULL              , 199, 211,   0, 255, MELTING, MOLTEN, INGOTS, MORTAR, WASHING_FIRESTONE, "TungstenOxide")                                                                      .uumMcfg( 0, W              , 1*U, O                , 3*U)                                                                                                  .heat(1746, 1970).addSourceOf(W),
+	H2WO4                   = dustdcmp      ( 8027, "Tungstic Acid"         , SET_SHINY             , 188, 200,   0, 255, MELTING, ACID)                                                                                                                            .uumMcfg( 0, H              , 2*U, W                , 1*U, O                , 4*U)                                                                          .heat( 373, 1746).addSourceOf(W).setSmelting(WO3, 4*U7),
 	
 	
-	Al2O3                   = oredustdcmp   ( 8008, "Alumina"               , SET_METALLIC          , 120, 195, 235, 255, MELTING, INGOTS, "NaturalAluminum")                                                                                                       .uumMcfg( 0, Al             , 2*U, O                , 3*U)                                                                                                  .heat(2345, 3250),
+	Al2O3                   = oredustdcmp   ( 8008, "Alumina"               , SET_METALLIC          , 120, 195, 235, 255, MELTING, INGOTS, "NaturalAluminum")                                                                                                       .uumMcfg( 0, Al             , 2*U, O                , 3*U)                                                                                                  .heat(2345, 3250).addSourceOf(Al),
 	AlF3                    = dustdcmp      ( 8010, "Aluminium Fluoride"    , SET_DULL              , 200, 190, 190, 255, MELTING, MOLTEN, INGOTS, ACID)                                                                                                            .uumMcfg( 0, Al             , 1*U, F                , 3*U)                                                                                                  .heat(1560),
-	AlO3H3                  = oredustdcmp   ( 8014, "Aluminium Hydroxide"   , SET_DULL              , 190, 190, 200, 255, MELTING, "Gibbsite")                                                                                                                      .uumMcfg( 0, Al             , 1*U, O                , 3*U, H                , 3*U)                                                                          .heat( 573).setSmelting(Al2O3, 5*U14),
+	AlO3H3                  = oredustdcmp   ( 8014, "Aluminium Hydroxide"   , SET_DULL              , 190, 190, 200, 255, MELTING, "Gibbsite")                                                                                                                      .uumMcfg( 0, Al             , 1*U, O                , 3*U, H                , 3*U)                                                                          .heat( 573).addSourceOf(Al).setSmelting(Al2O3, 5*U14),
 	
 	
-	TiO2                    = oredustdcmp   ( 9192, "Rutile"                , SET_METALLIC          , 110,  80, 120, 255, MELTING, MOLTEN, INGOTS)                                                                                                                  .uumMcfg( 1, Ti             , 1*U, O                , 2*U)                                                                                                  .heat(Ti.mMeltingPoint + 100, Ti.mBoilingPoint).qual(2),
+	TiO2                    = oredustdcmp   ( 9192, "Rutile"                , SET_METALLIC          , 110,  80, 120, 255, MELTING, MOLTEN, INGOTS)                                                                                                                  .uumMcfg( 1, Ti             , 1*U, O                , 2*U)                                                                                                  .heat(Ti.mMeltingPoint + 100, Ti.mBoilingPoint).qual(2).addSourceOf(Ti),
 	TiCl4                   = lqudaciddcmp  ( 8413, "Titanium Tetrachloride"                        , 233, 244, 222, 255, LIQUID)                                                                                                                                   .uumMcfg( 0, Ti             , 1*U, Cl               , 4*U)                                                                                                  .heat( 249,  409), TitaniumTetrachloride = TiCl4,
 	
 	
-	MnO2                    = oredustdcmp   ( 9126, "Pyrolusite"            , SET_DULL              ,  50,  50,  70, 255, MELTING, INGOTS, MORTAR, MAGNETIC_PASSIVE).setSmelting(Mn, 3*U4)                                                                          .uumMcfg( 1, Mn             , 1*U, O                , 2*U)                                                                                                  .heat( 808, 2334),
+	MnO2                    = oredustdcmp   ( 9126, "Pyrolusite"            , SET_DULL              ,  50,  50,  70, 255, MELTING, INGOTS, MORTAR, MAGNETIC_PASSIVE).setSmelting(Mn, 3*U4)                                                                          .uumMcfg( 1, Mn             , 1*U, O                , 2*U)                                                                                                  .heat( 808, 2334).addSourceOf(Mn),
 	MnCl2                   = dustdcmp      ( 8031, "Manganese Chloride"    , SET_CUBE              , 255, 213, 213, 255, MELTING, MOLTEN, INGOTS)                                                                                                                  .uumMcfg( 0, Mn             , 1*U, Cl               , 2*U)                                                                                                  .heat( 927, 1498),
 	
 	
-	Fe2O3                   = oredustdcmp   ( 9104, "Hematite"              , SET_DULL              , 145,  90,  90, 255, MELTING, MOLTEN, MORTAR, MAGNETIC_PASSIVE, "BandedIron", "IronOxide")                                                                     .uumMcfg( 0, Fe             , 2*U, O                , 3*U)                                                                                                  .heat(2 * Fe.mMeltingPoint / 3).qual(0),
+	Fe2O3                   = oredustdcmp   ( 9104, "Hematite"              , SET_DULL              , 145,  90,  90, 255, MELTING, MOLTEN, MORTAR, MAGNETIC_PASSIVE, "BandedIron", "IronOxide")                                                                     .uumMcfg( 0, Fe             , 2*U, O                , 3*U)                                                                                                  .heat(2 * Fe.mMeltingPoint / 3).addSourceOf(Fe).qual(0),
 	FeCl2                   = dustelec      ( 8030, "Ferrous Chloride"      , SET_CUBE              , 199, 233, 199, 255, MELTING, MOLTEN, INGOTS, MAGNETIC_PASSIVE)                                                                                                .uumMcfg( 0, Fe             , 1*U, Cl               , 2*U)                                                                                                  .heat( 950, 1296),
 	FeCl3                   = dustdcmp      ( 8017, "Ferric Chloride"       , SET_METALLIC          , 180, 180, 120, 255, MELTING)                                                                                                                                  .uumMcfg( 0, Fe             , 1*U, Cl               , 3*U)                                                                                                  .heat( 580,  589),
-	FeO3H3                  = dustdcmp      ( 8035, "Ferric Oxyhydroxide"   , SET_FINE              , 137,  62,  40, 255, MELTING)                                                                                                                                  .uumMcfg( 0, Fe             , 1*U, O                , 3*U, H                , 3*U)                                                                          .heat(Fe2O3.mMeltingPoint).setSmelting(Fe2O3, 5*U14),
+	FeO3H3                  = dustdcmp      ( 8035, "Ferric Oxyhydroxide"   , SET_FINE              , 137,  62,  40, 255, MELTING)                                                                                                                                  .uumMcfg( 0, Fe             , 1*U, O                , 3*U, H                , 3*U)                                                                          .heat(Fe2O3.mMeltingPoint).addSourceOf(Fe).setSmelting(Fe2O3, 5*U14),
 	
 	
 	MgCl2                   = oredustdcmp   ( 8018, "Magnesium Chloride"    , SET_CUBE              , 235, 235, 250, 255, MELTING, MOLTEN, INGOTS)                                                                                                                  .uumMcfg( 0, Mg             , 1*U, Cl               , 2*U)                                                                                                  .aspects(TC.FAMES, 1).heat( 987, 1685), // Can be electrolyzed for real
@@ -1097,6 +1098,7 @@ public class MT {
 	CaCl2                   = oredustdcmp   ( 8028, "Calcium Chloride"      , SET_CUBE              , 235, 235, 250, 255, MELTING, MOLTEN, INGOTS)                                                                                                                  .uumMcfg( 0, Ca             , 1*U, Cl               , 2*U)                                                                                                  .aspects(TC.FAMES, 1).heat(1048, 2208), // Can be electrolyzed for real
 	CaSO4                   = dustdcmp      ( 8274, "Calcium Sulfate"       , SET_CUBE              , 240, 220, 210, 255, MORTAR, "CalciumSulphate")                                                                                                                .uumMcfg( 0, Ca             , 1*U, S                , 1*U, O                , 4*U)                                                                          .heat(1730, 3000),
 	Gypsum                  = oredustdcmp   ( 9161, "Gypsum"                , SET_POWDER            , 240, 240, 240, 255, MORTAR)                                                                                                                                   .uumMcfg( 6, CaSO4          , 6*U, H2O              , 6*U)                                                                                                  .heat(1730, 3000),
+	Quicklime               = oredustdcmp   ( 9271, "Quicklime"             , SET_POWDER            , 240, 230, 210, 255, MORTAR)                                                                                                                                   .uumMcfg( 0, Ca             , 1*U, O                , 1*U)                                                                                                  .heat(2886, 3120),
 	CaCO3                   = oredustdcmp   ( 9107, "Calcite"               , SET_DULL              , 250, 230, 220, 255, MELTING, MOLTEN, INGOTS, MORTAR, "Valerite", "Aragonite", "Flux")                                                                         .uumMcfg( 0, Ca             , 1*U, CO3              , 4*U)                                                                                                  .heat(1612, 3000),
 	CaF2                    = fluorite      ( 9215, "Fluorite"                                      , 225, 185, 140, MOLTEN, INGOTS)                                                                                                                                                                                                                                                                                            ,
 	FluoriteRed             = fluorite      ( 8436, "Red Fluorite"                                  , 226,  56,  65)                                                                                                                                                                                                                                                                                                            ,
@@ -1110,16 +1112,16 @@ public class MT {
 	FluoriteMagenta         = fluorite      ( 8444, "Magenta Fluorite"                              , 204,  88, 255)                                                                                                                                                                                                                                                                                                            ,
 	
 	
-	LiCl                    = oredustdcmp   ( 8029, "Lithium Chloride"      , SET_CUBE              , 222, 222, 250, 255, MELTING, MOLTEN, INGOTS, WASHING_MERCURY)                                                                                                 .uumMcfg( 0, Li             , 1*U, Cl               , 1*U)                                                                                                  .aspects(TC.FAMES, 1).setPriorityPrefix(2).heat( 880, 1655), // Can be electrolyzed for real
-	LiClO3                  = dustdcmp      ( 8033, "Lithium Chlorate"      , SET_ROUGH             , 222, 233, 250, 255, MELTING, MOLTEN, INGOTS)                                                                                                                  .uumMcfg( 0, Li             , 1*U, Cl               , 1*U, O                , 3*U)                                                                          .heat( 400),
-	LiClO4                  = dustdcmp      ( 8034, "Lithium Perchlorate"   , SET_ROUGH             , 222, 244, 250, 255, MELTING, MOLTEN, INGOTS)                                                                                                                  .uumMcfg( 0, Li             , 1*U, Cl               , 1*U, O                , 4*U)                                                                          .heat( 509,  703),
-	Li2O                    = dustelec      ( 8004, "Lithium Oxide"         , SET_ROUGH             , 222, 222, 234, 255)                                                                                                                                           .uumMcfg( 0, Li             , 2*U, O                , 1*U)                                                                                                  ,
-	Li2Fe2O4                = metalore      ( 8005, "Ferrite"               , SET_METALLIC          , 120, 120, 130     , DECOMPOSABLE, ELECTROLYSER, MAGNETIC_PASSIVE)                                                                                             .uumMcfg( 0, Li             , 2*U, Fe               , 2*U, O                , 4*U)                                                                          ,
-	LiOH                    = dustelec      ( 8032, "Lithium Hydroxide"     , SET_CUBE              , 222, 202, 250, 255)                                                                                                                                           .uumMcfg( 0, Li             , 1*U, O                , 1*U, H                , 1*U)                                                                          .heat( 735, 1197),
+	LiCl                    = oredustdcmp   ( 8029, "Lithium Chloride"      , SET_CUBE              , 222, 222, 250, 255, MELTING, MOLTEN, INGOTS, WASHING_MERCURY)                                                                                                 .uumMcfg( 0, Li             , 1*U, Cl               , 1*U)                                                                                                  .addSourceOf(Li).aspects(TC.FAMES, 1).setPriorityPrefix(2).heat( 880, 1655), // Can be electrolyzed for real
+	LiClO3                  = dustdcmp      ( 8033, "Lithium Chlorate"      , SET_ROUGH             , 222, 233, 250, 255, MELTING, MOLTEN, INGOTS)                                                                                                                  .uumMcfg( 0, Li             , 1*U, Cl               , 1*U, O                , 3*U)                                                                          .addSourceOf(Li).heat( 400),
+	LiClO4                  = dustdcmp      ( 8034, "Lithium Perchlorate"   , SET_ROUGH             , 222, 244, 250, 255, MELTING, MOLTEN, INGOTS)                                                                                                                  .uumMcfg( 0, Li             , 1*U, Cl               , 1*U, O                , 4*U)                                                                          .addSourceOf(Li).heat( 509,  703),
+	Li2O                    = dustelec      ( 8004, "Lithium Oxide"         , SET_ROUGH             , 222, 222, 234, 255)                                                                                                                                           .uumMcfg( 0, Li             , 2*U, O                , 1*U)                                                                                                  .addSourceOf(Li),
+	Li2Fe2O4                = metalore      ( 8005, "Ferrite"               , SET_METALLIC          , 120, 120, 130     , DECOMPOSABLE, ELECTROLYSER, MAGNETIC_PASSIVE)                                                                                             .uumMcfg( 0, Li             , 2*U, Fe               , 2*U, O                , 4*U)                                                                          .addSourceOf(Li,Fe),
+	LiOH                    = dustelec      ( 8032, "Lithium Hydroxide"     , SET_CUBE              , 222, 202, 250, 255)                                                                                                                                           .uumMcfg( 0, Li             , 1*U, O                , 1*U, H                , 1*U)                                                                          .addSourceOf(Li).heat( 735, 1197),
 	
 	
-	NaCl                    = oredustdcmp   ( 8204, "Salt"                  , SET_CUBE              , 250, 250, 250, 255, BRITTLE, MORTAR, FOOD)                                                                                                                    .uumMcfg( 0, Na             , 1*U, Cl               , 1*U)                                                                                                  .aspects(TC.FAMES, 1).setPriorityPrefix(2).heat(1074, 1686),
-	NaNO3                   = oredustelec   ( 8019, "Sodium Nitrate"        , SET_FINE              , 230, 230, 230, 255, FLAMMABLE, BRITTLE, MORTAR)                                                                                                               .uumMcfg( 0, Na             , 1*U, N                , 1*U, O                , 3*U)                                                                          .aspects(TC.IGNIS, 2).setPriorityPrefix(2).heat(607),
+	NaCl                    = oredustdcmp   ( 8204, "Salt"                  , SET_CUBE              , 250, 250, 250, 255, BRITTLE, MORTAR, FOOD)                                                                                                                    .uumMcfg( 0, Na             , 1*U, Cl               , 1*U)                                                                                                  .aspects(TC.FAMES, 1).addSourceOf(Na).setPriorityPrefix(2).heat(1074, 1686),
+	NaNO3                   = oredustelec   ( 8019, "Sodium Nitrate"        , SET_FINE              , 230, 230, 230, 255, FLAMMABLE, BRITTLE, MORTAR)                                                                                                               .uumMcfg( 0, Na             , 1*U, N                , 1*U, O                , 3*U)                                                                          .aspects(TC.IGNIS, 2).addSourceOf(Na).setPriorityPrefix(2).heat(607),
 	NaOH                    = dustelec      ( 8268, "Sodium Hydroxide"      , SET_CUBE              , 220, 250, 220, 255)                                                                                                                                           .uumMcfg( 0, Na             , 1*U, O                , 1*U, H                , 1*U)                                                                          .heat( 596, 1661),
 	NaHSO4                  = dustdcmp      ( 8230, "Sodium Bisulfate"      , SET_FINE              , 240, 240, 255, 255, "SodiumBisulphate", "SodiumHydrogenSulfate", "SodiumHydrogenSulphate")                                                                    .uumMcfg( 0, Na             , 1*U, H                , 1*U, S                , 1*U, O                , 4*U)                                                  ,
 	NaSO4                   = dustdcmp      ( 9822, "Sodium Persulfate"     , SET_CUBE              , 130, 180, 250, 255, "SodiumPersulphate")                                                                                                                      .uumMcfg( 0, Na             , 1*U, S                , 1*U, O                , 4*U)                                                                          ,
@@ -1130,13 +1132,13 @@ public class MT {
 	Na2CO3                  = dustdcmp      ( 8013, "Sodium Carbonate"      , SET_FINE              , 230, 230, 230, 255, MELTING, MOLTEN, INGOTS)                                                                                                                  .uumMcfg( 0, Na             , 2*U, CO3              , 4*U)                                                                                                  .heat(1124),
 	NaAlO2                  = dustdcmp      ( 8012, "Sodium Aluminate"      , SET_CUBE              , 230, 230, 250, 255)                                                                                                                                           .uumMcfg( 0, Na             , 1*U, Al               , 1*U, O                , 2*U)                                                                          .heat(1920),
 	NaF                     = dustelec      ( 8037, "Sodium Fluoride"       , SET_CUBE              ,  64, 200, 225, 255)                                                                                                                                           .uumMcfg( 0, Na             , 1*U, F                , 1*U)                                                                                                  .heat(1266),
-	Na3AlF6                 = oredustdcmp   ( 8009, "Cryolite"              , SET_DULL              , 200, 190, 190, 255, MELTING, MOLTEN, INGOTS, ACID)                                                                                                            .uumMcfg( 0, Na             , 3*U, Al               , 1*U, F                , 6*U)                                                                          .heat(1285), Cryolite = Na3AlF6,
+	Na3AlF6                 = oredustdcmp   ( 8009, "Cryolite"              , SET_DULL              , 200, 190, 190, 255, MELTING, MOLTEN, INGOTS, ACID)                                                                                                            .uumMcfg( 0, Na             , 3*U, Al               , 1*U, F                , 6*U)                                                                          .heat(1285).addSourceOf(Na,F), Cryolite = Na3AlF6,
 	SaltWater               = lqudelec      ( 9804, "Saltwater"                                     , 255,   0, 255, 255, LIQUID, UNRECYCLABLE, "SaltWater", "Brine")                                                                                               .uumMcfg( 0, H2O            , 3*U, NaCl             , 1*U)                                                                                                  .aspects(TC.AQUA, 2).heat(CS.C, CS.C+100).setDensity(1.0),
 	
 	
-	KCl                     = oredustdcmp   ( 8203, "Rock Salt"             , SET_CUBE              , 240, 200, 200, 255, BRITTLE, MORTAR)                                                                                                                          .uumMcfg( 0, K              , 1*U, Cl               , 1*U)                                                                                                  .aspects(TC.FAMES, 1).setPriorityPrefix(2).heat(1040, 1690),
-	KIO3                    = oredustelec   ( 8242, "Iodine Salt"           , SET_CUBE              , 240, 200, 240, 255, BRITTLE, MORTAR)                                                                                                                          .uumMcfg( 0, K              , 1*U, I                , 1*U, O                , 3*U)                                                                          .aspects(TC.TEMPESTAS, 1).heat(300, 370), IodineSalt = KIO3,
-	KNO3                    = oredustelec   ( 8205, "Potassium Nitrate"     , SET_FINE              , 230, 230, 230, 255, FLAMMABLE, BRITTLE, MORTAR, "Saltpeter", "Nitrate", "Salpeter")                                                                           .uumMcfg( 0, K              , 1*U, N                , 1*U, O                , 3*U)                                                                          .aspects(TC.IGNIS, 2).setPriorityPrefix(2).heat(607),
+	KIO3                    = oredustelec   ( 8242, "Iodine Salt"           , SET_CUBE              , 240, 200, 240, 255, BRITTLE, MORTAR)                                                                                                                          .uumMcfg( 0, K              , 1*U, I                , 1*U, O                , 3*U)                                                                          .aspects(TC.TEMPESTAS, 1).addSourceOf(K).heat(300, 370), IodineSalt = KIO3,
+	KCl                     = oredustdcmp   ( 8203, "Rock Salt"             , SET_CUBE              , 240, 200, 200, 255, BRITTLE, MORTAR)                                                                                                                          .uumMcfg( 0, K              , 1*U, Cl               , 1*U)                                                                                                  .aspects(TC.FAMES, 1).addSourceOf(K).setPriorityPrefix(2).heat(1040, 1690),
+	KNO3                    = oredustelec   ( 8205, "Potassium Nitrate"     , SET_FINE              , 230, 230, 230, 255, FLAMMABLE, BRITTLE, MORTAR, "Saltpeter", "Nitrate", "Salpeter")                                                                           .uumMcfg( 0, K              , 1*U, N                , 1*U, O                , 3*U)                                                                          .aspects(TC.IGNIS, 2).addSourceOf(K).setPriorityPrefix(2).heat(607),
 	KOH                     = dustelec      ( 8015, "Potassium Hydroxide"   , SET_CUBE              , 250, 220, 220, 255)                                                                                                                                           .uumMcfg( 0, K              , 1*U, O                , 1*U, H                , 1*U)                                                                          .heat( 633, 1600),
 	KHSO4                   = dustdcmp      ( 8232, "Potassium Bisulfate"   , SET_FINE              , 255, 240, 240, 255, "PotassiumBisulphate")                                                                                                                    .uumMcfg( 0, K              , 1*U, H                , 1*U, S                , 1*U, O                , 4*U)                                                  ,
 	KSO4                    = dustdcmp      ( 8022, "Potassium Persulfate"  , SET_CUBE              , 250, 180, 130, 255, "PotassiumPersulphate")                                                                                                                   .uumMcfg( 0, K              , 1*U, S                , 1*U, O                , 4*U)                                                                          ,
@@ -1167,12 +1169,12 @@ public class MT {
 	VitriolOfClay           = lqudaciddcmp  ( 8412, "Vitriol Of Clay"                               ,  66, 222, 222, 255, LIQUID)                                                                                                                                   .uumMcfg( 0, Al2O3          , 5*U, S                , 3*U, O                , 9*U)                                                                          .heat( 200,  400),
 	
 	
-	UF4                     = dustdcmp      ( 9007, "Uranium Tetrafluoride"    , SET_SHARDS         ,  86, 118, 105, 255, MELTING, MOLTEN)                                                                                                                          .setMcfg( 0, U_238          , 1*U, F                , 4*U)                                                                                                  .aspects(TC.RADIO, 1, TC.PERDITIO, 2).heat(1309, 1690),
-	UF6                     = gaschemdcmp   ( 9008, "Uranium Hexafluoride"                          ,  66,  98,  85, 255, GASES)                                                                                                                                    .setMcfg( 0, U_238          , 1*U, F                , 6*U)                                                                                                  .aspects(TC.RADIO, 1, TC.PERDITIO, 3).heat( 100,  329),
-	U238F4                  = dustdcmp      ( 9009, "Uranium-238 Tetrafluoride", SET_SHARDS         ,  86, 118, 105, 255, MELTING, MOLTEN)                                                                                                                          .setMcfg( 0, U_238          , 1*U, F                , 4*U)                                                                                                  .aspects(TC.RADIO, 1, TC.PERDITIO, 2).heat(1309, 1690),
-	U238F6                  = gaschemdcmp   ( 9010, "Uranium-238 Hexafluoride"                      ,  66,  98,  85, 255, GASES)                                                                                                                                    .setMcfg( 0, U_238          , 1*U, F                , 6*U)                                                                                                  .aspects(TC.RADIO, 1, TC.PERDITIO, 3).heat( 100,  329),
-	U235F4                  = dustdcmp      ( 9011, "Uranium-235 Tetrafluoride", SET_SHARDS         ,  86, 118, 105, 255, MELTING, MOLTEN)                                                                                                                          .setMcfg( 0, U_235          , 1*U, F                , 4*U)                                                                                                  .aspects(TC.RADIO, 1, TC.PERDITIO, 2).heat(1309, 1690),
-	U235F6                  = gaschemdcmp   ( 9012, "Uranium-235 Hexafluoride"                      ,  66,  98,  85, 255, GASES)                                                                                                                                    .setMcfg( 0, U_235          , 1*U, F                , 6*U)                                                                                                  .aspects(TC.RADIO, 1, TC.PERDITIO, 3).heat( 100,  329),
+	UF4                     = dustdcmp      ( 9007, "Uranium Tetrafluoride"    , SET_SHARDS         ,  86, 118, 105, 255, MELTING, MOLTEN)                                                                                                                          .setMcfg( 0, U_238          , 1*U, F                , 4*U).tooltip("UF\u2084")                                                                              .aspects(TC.RADIO, 1, TC.PERDITIO, 2).heat(1309, 1690),
+	UF6                     = gaschemdcmp   ( 9008, "Uranium Hexafluoride"                          ,  66,  98,  85, 255, GASES)                                                                                                                                    .setMcfg( 0, U_238          , 1*U, F                , 6*U).tooltip("UF\u2086")                                                                              .aspects(TC.RADIO, 1, TC.PERDITIO, 3).heat( 100,  329),
+	U238F4                  = dustdcmp      ( 9009, "Uranium-238 Tetrafluoride", SET_SHARDS         ,  86, 118, 105, 255, MELTING, MOLTEN)                                                                                                                          .setMcfg( 0, U_238          , 1*U, F                , 4*U).tooltip("U-238F\u2084")                                                                          .aspects(TC.RADIO, 1, TC.PERDITIO, 2).heat(1309, 1690),
+	U238F6                  = gaschemdcmp   ( 9010, "Uranium-238 Hexafluoride"                      ,  66,  98,  85, 255, GASES)                                                                                                                                    .setMcfg( 0, U_238          , 1*U, F                , 6*U).tooltip("U-238F\u2086")                                                                          .aspects(TC.RADIO, 1, TC.PERDITIO, 3).heat( 100,  329),
+	U235F4                  = dustdcmp      ( 9011, "Uranium-235 Tetrafluoride", SET_SHARDS         ,  86, 118, 105, 255, MELTING, MOLTEN)                                                                                                                          .setMcfg( 0, U_235          , 1*U, F                , 4*U).tooltip("U-235F\u2084")                                                                          .aspects(TC.RADIO, 1, TC.PERDITIO, 2).heat(1309, 1690),
+	U235F6                  = gaschemdcmp   ( 9012, "Uranium-235 Hexafluoride"                      ,  66,  98,  85, 255, GASES)                                                                                                                                    .setMcfg( 0, U_235          , 1*U, F                , 6*U).tooltip("U-235F\u2086")                                                                          .aspects(TC.RADIO, 1, TC.PERDITIO, 3).heat( 100,  329),
 	
 	
 	AquaRegia               = lqudacidcent  ( 9827, "Aqua Regia"                                    ,  64, 255,  64, 255, LIQUID)                                                                                                                                   .uumMcfg( 0, HNO3           , 5*U, HCl              , 8*U)                                                                                                  .heat( 200,  400),
@@ -1224,9 +1226,9 @@ public class MT {
 	Dolomite                = oredustcent   ( 9163, "Dolomite"              , SET_FLINT             , 225, 205, 205, 255, FURNACE, MORTAR).setSmelting(CaCO3, U2)                                                                                                   .setMcfg( 0, CaCO3          , 1*U, MgCO3            , 1*U)                                                                                                  , // CaMg(CO3)2
 	Asbestos                = oredustelec   ( 9103, "Asbestos"              , SET_LAPIS             , 230, 230, 230, 255, FURNACE, MORTAR, PLATES, INGOTS, MELTING, EXTRUDER, EXTRUDER_SIMPLE, "Chrysotile")                                                        .uumMcfg( 0, Mg             , 3*U, SiO2             , 6*U, H2O              , 6*U, O                , 3*U)                                                  , // Mg3Si2O5(OH)4
 	Talc                    = oredustelec   ( 9169, "Talc"                  , SET_DULL              ,  95, 145,  95, 255, "Soapstone")                                                                                                                              .uumMcfg( 0, Mg             , 3*U, SiO2             ,12*U, H2O              , 3*U, O                , 3*U)                                                  , // H2Mg3(SiO3)4
-	Pyrite                  = oredustdcmp   ( 9125, "Pyrite"                , SET_SHINY             , 255, 230,  80, 255, G_GEM_ORES, BLACKLISTED_SMELTER, MORTAR, MAGNETIC_PASSIVE)                                                                                .uumMcfg( 0, Fe             , 1*U, S                , 2*U)                                                                                                  .qual(0),
+	Pyrite                  = oredustdcmp   ( 9125, "Pyrite"                , SET_SHINY             , 255, 230,  80, 255, G_GEM_ORES, BLACKLISTED_SMELTER, MORTAR, MAGNETIC_PASSIVE)                                                                                .uumMcfg( 0, Fe             , 1*U, S                , 2*U)                                                                                                  .qual(0).addSourceOf(Fe),
 	PotassiumFeldspar       = oredustelec   ( 9140, "Potassium Feldspar"    , SET_FINE              , 120,  40,  40, 255)                                                                                                                                           .uumMcfg( 0, K              , 2*U, Al2O3            , 5*U, SiO2             ,18*U, O                , 1*U)                                                  ,
-	Biotite                 = oredustelec   ( 9141, "Biotite"               , SET_METALLIC          ,  20,  30,  20, 255)                                                                                                                                           .setMcfg( 0, K              , 2*U, Mg               , 6*U, Al2O3            ,15*U, F                , 4*U, SiO2             ,18*U)                          , // releases Argon when heated.
+	Biotite                 = oredustelec   ( 9141, "Biotite"               , SET_METALLIC          ,  20,  30,  20, 255)                                                                                                                                           .setMcfg( 0, K              , 2*U, Mg               , 6*U, Al2O3            ,15*U, F                , 4*U, SiO2             ,18*U)                          .addSourceOf(Ar,K,F,Al), // releases Argon when heated.
 	Emery                   = oredust       ( 9183, "Emery"                 , SET_STONE             , 128, 128, 128, 255)                                                                                                                                                                                                                                                                                                       .aspects(TC.TERRA, 1),
 	
 	
@@ -1262,7 +1264,7 @@ public class MT {
 	Basalz                  = blaze         ( 8247, "Basalz"                                        , 100,  81,  81     , MAGNETIC_ACTIVE)                                                                                                                                                                                                                                                                                      .aspects(TC.TERRA, 4),
 	Blitz                   = blaze         ( 8248, "Blitz"                                         , 250, 219,   0     )                                                                                                                                                                                                                                                                                                       .aspects(TC.AER  , 4),
 	Blizz                   = blaze         ( 8210, "Blizz"                                         ,  33, 200, 234     )                                                                                                                                                                                                                                                                                                       .aspects(TC.GELUM, 4),
-	Blaze                   = blaze         ( 8211, "Blaze"                                         , 255, 200,   0     , UNBURNABLE, BURNING, MELTING)                                                                                                                                                                                                                                                                         .aspects(TC.IGNIS, 4).heat(4000),
+	Blaze                   = blaze         ( 8211, "Blaze"                                         , 255, 200,   0     , UNBURNABLE, BURNING, MELTING, TICKS_PER_SMELT*24)                                                                                                                                                                                                                                                     .aspects(TC.IGNIS, 4).heat(4000),
 	
 	
 	Ceramic                 = dustelec      ( 8225, "Ceramic"               , SET_ROUGH             , 220, 130,  70, 255, MORTAR, PLATES, BRITTLE)                                                                                                                  .uumMcfg(18, Al2O3          , 5*U, SiO2             ,12*U)                                                                                                  .heat(2000).setCompressing(null, 0).setBending(null, 0).setForging(null, 0).setSmashing(null, 0),
@@ -1279,13 +1281,13 @@ public class MT {
 	
 	
 	Graphite                = oredustdcmp   ( 9174, "Graphite"              , SET_DULL              , 128, 128, 128, 255, BLACKLISTED_SMELTER, BRITTLE, MORTAR, STICKS)                                                                                             .uumMcfg( 0, C              , 1*U)                                                                                                                          .qual(1, 5.0, 32, 2).setSmelting(C, U2).setBurning(Ash, U4).heat(1700, C.mBoilingPoint),
-	Niter                   = oredustcent   ( 8206, "Niter"                 , SET_FLINT             , 255, 200, 200, 255, G_GEM_ORES, FLAMMABLE, BRITTLE, MORTAR, CRYSTAL, "Nitre")                                                                                 .uumMcfg( 0, KNO3           , 1*U, NaNO3            , 1*U)                                                                                                  .heat(607),
-	Phosphorus              = cent          ( 8208, "Phosphorus"            , SET_FLINT             , 255, 255,   0, 255, G_GEM_ORES, FLAMMABLE, BRITTLE, MORTAR, EXPLOSIVE, "Phosphorous")                                                                         .uumMcfg( 0, Ca             , 3*U, PO4              , 2*U)                                                                                                  ,
-	PhosphorusBlue          = cent          ( 8458, "Blue Phosphorus"       , SET_FLINT             , 155, 227, 228, 255, G_GEM_ORES, FLAMMABLE, BRITTLE, MORTAR, EXPLOSIVE)                                                                                        .uumMcfg( 0, Ca             , 3*U, PO4              , 2*U)                                                                                                  ,
-	PhosphorusRed           = cent          ( 8459, "Red Phosphorus"        , SET_FLINT             , 119,   4,  14, 255, G_GEM_ORES, FLAMMABLE, BRITTLE, MORTAR, EXPLOSIVE)                                                                                        .uumMcfg( 0, Ca             , 3*U, PO4              , 2*U)                                                                                                  ,
-	PhosphorusWhite         = cent          ( 8460, "White Phosphorus"      , SET_FLINT             , 236, 234, 221, 255, G_GEM_ORES, FLAMMABLE, BRITTLE, MORTAR, EXPLOSIVE)                                                                                        .uumMcfg( 0, Ca             , 3*U, PO4              , 2*U)                                                                                                  ,
-	Apatite                 = elec          ( 8209, "Apatite"               , SET_DIAMOND           , 120, 180, 250, 255, G_GEM_ORES, FLAMMABLE, BRITTLE, MORTAR, CRYSTAL, CRYSTALLISABLE)                                                                          .uumMcfg( 0, Ca             , 5*U, PO4              , 3*U, Cl               , 1*U)                                                                          .aspects(TC.MESSIS, 2),
-	Phosphorite             = elec          ( 8226, "Phosphorite"           , SET_DIAMOND           ,  50,  50,  65, 255, G_GEM_ORES, FLAMMABLE, BRITTLE, MORTAR, CRYSTAL, CRYSTALLISABLE)                                                                          .uumMcfg( 0, Ca             , 5*U, PO4              , 3*U, F                , 1*U)                                                                          .aspects(TC.MESSIS, 2),
+	Niter                   = oredustcent   ( 8206, "Niter"                 , SET_FLINT             , 255, 200, 200, 255, G_GEM_ORES, FLAMMABLE, BRITTLE, MORTAR, CRYSTAL, "Nitre")                                                                                 .uumMcfg( 0, KNO3           , 1*U, NaNO3            , 1*U)                                                                                                  .addSourceOf(Na,K).heat(607),
+	Phosphorus              = cent          ( 8208, "Phosphorus"            , SET_FLINT             , 255, 255,   0, 255, G_GEM_ORES, FLAMMABLE, BRITTLE, MORTAR, EXPLOSIVE, "Phosphorous")                                                                         .uumMcfg( 0, Ca             , 3*U, PO4              , 2*U)                                                                                                  .addSourceOf(P),
+	PhosphorusBlue          = cent          ( 8458, "Blue Phosphorus"       , SET_FLINT             , 155, 227, 228, 255, G_GEM_ORES, FLAMMABLE, BRITTLE, MORTAR, EXPLOSIVE)                                                                                        .uumMcfg( 0, Ca             , 3*U, PO4              , 2*U)                                                                                                  .addSourceOf(P),
+	PhosphorusRed           = cent          ( 8459, "Red Phosphorus"        , SET_FLINT             , 119,   4,  14, 255, G_GEM_ORES, FLAMMABLE, BRITTLE, MORTAR, EXPLOSIVE)                                                                                        .uumMcfg( 0, Ca             , 3*U, PO4              , 2*U)                                                                                                  .addSourceOf(P),
+	PhosphorusWhite         = cent          ( 8460, "White Phosphorus"      , SET_FLINT             , 236, 234, 221, 255, G_GEM_ORES, FLAMMABLE, BRITTLE, MORTAR, EXPLOSIVE)                                                                                        .uumMcfg( 0, Ca             , 3*U, PO4              , 2*U)                                                                                                  .addSourceOf(P),
+	Apatite                 = elec          ( 8209, "Apatite"               , SET_DIAMOND           , 120, 180, 250, 255, G_GEM_ORES, FLAMMABLE, BRITTLE, MORTAR, CRYSTAL, CRYSTALLISABLE)                                                                          .uumMcfg( 0, Ca             , 5*U, PO4              , 3*U, Cl               , 1*U)                                                                          .addSourceOf(P).aspects(TC.MESSIS, 2),
+	Phosphorite             = elec          ( 8226, "Phosphorite"           , SET_DIAMOND           ,  50,  50,  65, 255, G_GEM_ORES, FLAMMABLE, BRITTLE, MORTAR, CRYSTAL, CRYSTALLISABLE)                                                                          .uumMcfg( 0, Ca             , 5*U, PO4              , 3*U, F                , 1*U)                                                                          .addSourceOf(P,F).aspects(TC.MESSIS, 2),
 	Obsidian                = elec          ( 8214, "Obsidian"              , SET_STONE             ,  80,  50, 100, 255, G_STONE, STONE, BRITTLE, MORTAR, UNBURNABLE)                                                                                              .setMcfg(64, Mg             , 1*U, Fe               , 1*U, SiO2             , 6*U, O                , 4*U)                                                  .aspects(TC.TENEBRAE, 1, TC.IGNIS, 2, TC.TERRA, 2).setSmelting(Lava, U).heat(1300, 4000).qual(1, 3.0, 32, 3),
 	Paper                   = dust          ( 8216, "Paper"                 , SET_PAPER             , 250, 250, 250, 255, TICKS_PER_SMELT/ 8, MULTIPLATES, MORTAR)                                                                                                                                                                                                                                                              .aspects(TC.COGNITIO, 1).setBurning(Ash, U9),
 	Rubber                  = create        ( 8217, "Rubber"                , SET_RUBBER            ,  20,  20,  20, 255, G_INGOT_MACHINE, APPROXIMATE, FLAMMABLE, EXTRUDER, EXTRUDER_SIMPLE, WIRES, MORTAR, BOUNCY, STRETCHY, FURNACE)                             .uumMcfg( 0, C              , 5*U, H                , 8*U)                                                                                                  .aspects(TC.MOTUS, 2).heat(410).setBurning(Ash, U9).setSmelting(null, 2*U3).qual(1, 3.0, 256, 0),
@@ -1330,7 +1332,6 @@ public class MT {
 	PEZ                     = orefood       ( 9716, "PEZ"                                           , 210, 210, 210, 255)                                                                                                                                                                                                                                                                                                       .aspects(TC.FAMES, 1).qual(2,  8.0,  512, 3),
 	Licorice                = orefood       ( 9717, "Licorice"                                      ,  30,  30,  30, 255)                                                                                                                                                                                                                                                                                                       .aspects(TC.FAMES, 1).qual(2,  6.0,  128, 2),
 	Nougat                  = orefood       ( 9718, "Nougat"                                        , 240, 200, 150, 255)                                                                                                                                                                                                                                                                                                       .aspects(TC.FAMES, 1),
-	Vanilla                 = dustfood      ( 9787, "Vanilla"                                       , 110,  80,  40, 255)                                                                                                                                                                                                                                                                                                       .aspects(TC.FAMES, 1),
 	PepperBlack             = dustfood      ( 9788, "PepperBlack"                                   ,  40,  40,  40, 255, "Pepper")                                                                                                                                                                                                                                                                                             .aspects(TC.FAMES, 1).setLocal("Black Pepper"),
 	Curry                   = dustfood      ( 9789, "Curry"                                         , 240, 190, 100, 255)                                                                                                                                                                                                                                                                                                       .aspects(TC.FAMES, 1),
 	Milk                    = food          ( 9790, "Milk"                  , SET_FINE              , 254, 254, 254, 255, G_CONTAINERS, DUSTS)                                                                                                                                                                                                                                                                                  .aspects(TC.SANO, 2).heat(CS.C, CS.C+100),
@@ -1347,12 +1348,17 @@ public class MT {
 	EndSand                 = dust          ( 8105, "End Sand"              , SET_SAND              , 250, 250, 250, 255, FURNACE)                                                                                                                                                                                                                                                                                              .setSmelting(Glass, U).setForging(Glass, U),
 	SoulSand                = oredust       ( 8101, "Soulsand"              , SET_SAND              , 100, 100,  80, 255)                                                                                                                                                                                                                                                                                                       .aspects(TC.SPIRITUS, 1, TC.VINCULUM, 1),
 	SluiceSand              = dust          ( 8102, "Sluice Sand"           , SET_SAND              , 165, 165, 120, 255)                                                                                                                                                                                                                                                                                                       .aspects(TC.TERRA, 1),
-	PlatinumGroupSludge     = oredust       ( 8103, "Platinum Group Sludge" , SET_SAND              ,  50,  50,  80, 255)                                                                                                                                                                                                                                                                                                       .aspects(TC.LUCRUM, 2),
-	RareEarth               = oredust       ( 9100, "Rare Earth"            , SET_FINE              , 128, 128, 100, 255)                                                                                                                                                                                                                                                                                                       .aspects(TC.VITREUS, 1, TC.LUCRUM, 1),
+	PlatinumGroupSludge     = oredust       ( 8103, "Platinum Group Sludge" , SET_SAND              ,  50,  50,  80, 255)                                                                                                                                                                                                                                                                                                       .addSourceOf(Ru,Rh,Pd,Os,Ir,Pt).aspects(TC.LUCRUM, 2),
+	RareEarth               = oredust       ( 9100, "Rare Earth"            , SET_FINE              , 128, 128, 100, 255)                                                                                                                                                                                                                                                                                                       .addSourceOf(Nd,Y ,La,Ce,Cd,Cs).aspects(TC.VITREUS, 1, TC.LUCRUM, 1),
 	
 	
 	
 	Diamond                 = diamond       ( 8300, "Diamond"                                       , 200, 255, 255, DYE_INDEX_White      )                                                                                                                         .uumMcfg( 1, C              , 4*U)                                                                                                                                                     .setDensity(3.53).heat(4200, C.mBoilingPoint),
+	DiamondBlue             = diamond       ( 8464, "Blue Diamond"                                  ,  30,  60, 240, DYE_INDEX_Blue       )                                                                                                                         .uumMcfg( 1, C              , 4*U)                                                                                                                                                     .setDensity(3.53).heat(4200, C.mBoilingPoint),
+	DiamondGreen            = diamond       ( 8465, "Green Diamond"                                 ,   0, 240,   0, DYE_INDEX_Green      )                                                                                                                         .uumMcfg( 1, C              , 4*U)                                                                                                                                                     .setDensity(3.53).heat(4200, C.mBoilingPoint),
+	DiamondPurple           = diamond       ( 8466, "Purple Diamond"                                , 120,   0, 240, DYE_INDEX_Purple     )                                                                                                                         .uumMcfg( 1, C              , 4*U)                                                                                                                                                     .setDensity(3.53).heat(4200, C.mBoilingPoint),
+	DiamondRed              = diamond       ( 8467, "Red Diamond"                                   , 240,   0,   0, DYE_INDEX_Red        )                                                                                                                         .uumMcfg( 1, C              , 4*U)                                                                                                                                                     .setDensity(3.53).heat(4200, C.mBoilingPoint),
+	DiamondYellow           = diamond       ( 8468, "Yellow Diamond"                                , 240, 240,   0, DYE_INDEX_Yellow     )                                                                                                                         .uumMcfg( 1, C              , 4*U)                                                                                                                                                     .setDensity(3.53).heat(4200, C.mBoilingPoint),
 	DiamondPink             = diamond       ( 8424, "Pink Diamond"                                  , 240, 160, 160, DYE_INDEX_Pink       )                                                                                                                         .uumMcfg( 1, C              , 4*U)                                                                                                                          .aspects(TC.AURAM      , 4).setDensity(3.53).heat(4200, C.mBoilingPoint).qual(3, 12.0,  1600,  3),
 	DiamondIndustrial       = diamond       ( 8423, "DiamondIndustrial"                             , 255, 255, 210, DYE_INDEX_Yellow     )                                                                                                                         .uumMcfg( 1, C              , 4*U)                                                                                                                          .aspects(TC.FABRICO    , 2).setDensity(3.53).heat(4200, C.mBoilingPoint).qual(3,  9.0,  1440,  3).setLocal("Industrial Diamond"),
 	ManaDiamond             = diamond       ( 8278, "Mana Diamond"                                  , 128, 255, 255, DYE_INDEX_Cyan       , MAGICAL, UNBURNABLE)                                                                                                    .setMcfg( 1, C              , 4*U, Ma               , 1*U)                                                                                                  .aspects(TC.PRAECANTIO , 2).setDensity(3.53).heat(4200, C.mBoilingPoint).qual(3, 10.0,  1280,  3),
@@ -1524,13 +1530,13 @@ public class MT {
 	HydratedCoal            = mixdust       ( 8335, "Hydrated Coal"         , SET_LIGNITE           ,  70,  70, 100, 255, BRITTLE, FURNACE, MORTAR, COAL)                                                                                                           .uumMcfg( 8, Coal           , 8*U, H2O              , 1*U)                                                                                                  ,
 	Graphene                = dcmp          ( 9175, "Graphene"              , SET_DULL              , 128, 128, 128, 255, G_MACHINE, BLACKLISTED_SMELTER, MORTAR, STICKS).setBurning(Ash, U4)                                                                       .uumMcfg( 0, C              , 1*U)                                                                                                                          .setSmelting(C, U2).heat(4300, 4400).setPulver(C, U),
 	Ectoplasm               = dust          ( 8373, "Ectoplasm"             , SET_FOOD              , 220, 255, 255, 200, MAGICAL, LIQUID, GLOWING)                                                                                                                                                                                                                                                                             .aspects(TC.SPIRITUS, 4).heat(400, 3000),
-	Firestone               = create        ( 8342, "Firestone"             , SET_QUARTZ            , 200,  20,   0, 255, G_QUARTZ_ORES, CRYSTAL, BRITTLE, CRYSTALLISABLE, MAGICAL, QUARTZ, UNBURNABLE, BURNING).qual(3,  6.0, 1280, 3)                                                                                                                                                                                         .aspects(TC.IGNIS, 8),
+	Firestone               = create        ( 8342, "Firestone"             , SET_QUARTZ            , 200,  20,   0, 255, G_QUARTZ_ORES, CRYSTAL, BRITTLE, CRYSTALLISABLE, MAGICAL, QUARTZ, UNBURNABLE, BURNING).qual(3,  6.0, 1280, 3)                                                                                                                                                                                         .aspects(TC.IGNIS, 8).heat(3000, 3700),
 	
 	
 	Force                   = create        ( 8343, "Force"                 , SET_REDSTONE          , 255, 255,   0, 255, G_GEM_ORES, G_INGOT_MACHINE_ORES, CRYSTAL, MAGICAL, UNBURNABLE, GLOWING).qual(3, 10.0, 128, 3)                                                                                                                                                                                                        .aspects(TC.POTENTIA, 4),
 	Forcicium               = create        ( 8344, "Forcicium"             , SET_REDSTONE          ,  50,  50,  70, 255, G_QUARTZ_ORES, CRYSTAL, BRITTLE, CRYSTALLISABLE, MAGICAL)                                                                                                                                                                                                                                             .aspects(TC.POTENTIA, 2),
 	Forcillium              = create        ( 8345, "Forcillium"            , SET_REDSTONE          ,  50,  50,  70, 255, G_QUARTZ_ORES, CRYSTAL, BRITTLE, CRYSTALLISABLE, MAGICAL)                                                                                                                                                                                                                                             .aspects(TC.POTENTIA, 2),
-	Monazite                = elec          ( 8338, "Monazite"              , SET_REDSTONE          ,  50,  70,  50, 255, G_GEM_ORES, CRYSTAL, BRITTLE, CRYSTALLISABLE, BLACKLISTED_SMELTER)                                                                        .setMcfg( 0, RareEarth      , 1*U, PO4              , 1*U)                                                                                                  , // Wikipedia: (Ce, La, Nd, Th, Sm, Gd)PO4 Monazite also smelt-extract to Helium, it is brown like the rare earth Item Monazite sand deposits are inevitably of the monazite-(Ce) composition. Typically, the lanthanides in such monazites contain about 45�48% cerium, about 24% lanthanum, about 17% neodymium, about 5% praseodymium, and minor quantities of samarium, gadolinium, and yttrium. Europium concentrations tend to be low, about 0.05% Thorium content of monazite is variable and sometimes can be up to 20�30%
+	Monazite                = elec          ( 8338, "Monazite"              , SET_REDSTONE          ,  50,  70,  50, 255, G_GEM_ORES, CRYSTAL, BRITTLE, CRYSTALLISABLE, BLACKLISTED_SMELTER)                                                                        .setMcfg( 0, RareEarth      , 1*U, PO4              , 1*U)                                                                                                  .addSourceOf(He), // Wikipedia: (Ce, La, Nd, Th, Sm, Gd)PO4 Monazite also smelt-extract to Helium, it is brown like the rare earth Item Monazite sand deposits are inevitably of the monazite-(Ce) composition. Typically, the lanthanides in such monazites contain about 45�48% cerium, about 24% lanthanum, about 17% neodymium, about 5% praseodymium, and minor quantities of samarium, gadolinium, and yttrium. Europium concentrations tend to be low, about 0.05% Thorium content of monazite is variable and sometimes can be up to 20�30%
 	
 	
 	Redstone                = redstone      ( 8333, "Redstone"              , SET_REDSTONE          , 200,   0,   0, 255, PULVERIZING_CINNABAR).lens(DYE_INDEX_Red)                                                                                                 .uumMcfg( 0, Pyrite         , 5*U, Hg               , 3*U, SiO2             , 1*U, Ruby             , 1*U)                                                  .aspects(TC.MACHINA, 1, TC.POTENTIA, 2).heat(500, 1500).qual(0),
@@ -1616,14 +1622,14 @@ public class MT {
 //  HexoriumRainbow         = hexorium      ( 9242, 224, 224, 224, DYE_INDEX_White    ),
 	
 	
-	Bedrock                 = create        ( 8599, "Bedrock"               , SET_STONE             ,  64,  64,  64, 255, G_STONE, STONE, BRITTLE, MELTING, UNBURNABLE)                                                                                                                                                                                                                                                         .aspects(TC.TERRA       , 5).qual(1, 8.0, 2048, 5).heat(4000).setRGBaLiquid(128,  96,  64, 255),
+	Bedrock                 = create        ( 8599, "Bedrock"               , SET_STONE             ,  64,  64,  64, 255, G_STONE, STONE, BRITTLE, MELTING, UNBURNABLE)                                                                                                                                                                                                                                                         .aspects(TC.TERRA       , 5).qual(1, 8.0, 2048, 5).heat(4000).setRGBaLiquid(128,  96,  64, 255).addSourceOf(Ad,Atl,RareEarth),
 	
 	
 	Stone                   = stone         ( 8500, "Stone"                                         , 205, 205, 205, 255, MELTING, MOLTEN, UNRECYCLABLE)                                                                                                                                                                                                                                                                        .aspects(TC.TERRA       , 1).qual(1, 2.0, 16, 1).heat(1100).setRGBaLiquid(192,  96,  64, 255), Gravel = Stone,
 	Concrete                = stone         ( 8501, "Concrete"                                      , 100, 100, 100, 255, MELTING)                                                                                                                                  .setMcfg( 0, Stone          , 1*U)                                                                                                                          .aspects(TC.TERRA       , 1).qual(1, 2.5, 32, 0).heat(500).setSmelting(Stone, U),
 	Netherrack              = stone         ( 8502, "Netherrack"                                    , 200,   0,   0, 255, UNBURNABLE, FLAMMABLE, BLACKLISTED_SMELTER)                                                                                                                                                                                                                                                           .aspects(TC.IGNIS       , 1).qual(1, 2.0,  8, 0).heat(1500, 3000),
 	NetherBrick             = stone         ( 8503, "Nether Brick"                                  , 100,   0,   0, 255, UNBURNABLE, "BrickNether")                                                                                                                                                                                                                                                                            .aspects(TC.IGNIS       , 1).qual(1, 2.0, 24, 1).heat(1800, 3000).setPulver(Netherrack, U),
-	Endstone                = stone         ( 8504, "Endstone"                                      , 217, 222, 158, 255, ENDER_DRAGON_PROOF)                                                                                                                                                                                                                                                                                   .aspects(TC.TENEBRAE    , 1).qual(1, 3.0, 16, 1).heat(1200),
+	Endstone                = stone         ( 8504, "Endstone"                                      , 217, 222, 158, 255, ENDER_DRAGON_PROOF)                                                                                                                                                                                                                                                                                   .aspects(TC.TENEBRAE    , 1).qual(1, 3.0, 16, 1).heat(1200).addSourceOf(He,He_3),
 	
 	PrismarineLight         = stone         ( 9219, "Prismarine"            , SET_PRISMARINE        , 110, 178, 165, 255, G_GEM_ORES, CRYSTAL, CRYSTALLISABLE)                                                                                                                                                                                                                                                                  .aspects(TC.TEMPESTAS   , 1).qual(1, 4.0, 48, 1).setLocal("Light Prismarine"),
 	PrismarineDark          = stone         ( 9220, "PrismarineDark"        , SET_PRISMARINE        ,  88, 125, 108, 255, G_GEM_ORES, CRYSTAL, CRYSTALLISABLE)                                                                                                                                                                                                                                                                  .aspects(TC.TEMPESTAS   , 1).qual(1, 4.0, 48, 1).setLocal("Dark Prismarine"),
@@ -1660,7 +1666,7 @@ public class MT {
 	Vulcanite               = metalore      ( 8776, "Vulcanite"                                     , 255, 132,  72     )                                                                                                                                           .steal(W )                                                                                                                                                  .aspects(TC.METALLUM, 2, TC.VITREUS                             , 1).qual(3,  5.0, 3840, 3).heat(2978),
 	DeepIron                = metalore      ( 8641, "Deep Iron"                                     ,  73,  91, 105     , MAGNETIC_PASSIVE)                                                                                                                         .steal(Fe)                                                                                                                                                  .aspects(TC.METALLUM, 2, TC.MAGNETO                             , 1).qual(3,  6.0,  384, 2).heat(Fe),
 	ShadowIron              = metalore      ( 8670, "Shadow Iron"                                   ,  95,  76,  63     , MAGNETIC_PASSIVE)                                                                                                                         .steal(Fe)                                                                                                                                                  .aspects(TC.METALLUM, 2, TC.TENEBRAE                            , 1).qual(3,  6.0,  384, 2).heat(WroughtIron),
-	Adamantine              = metalore      ( 8784, "Adamantine"                                    , 255,   0,  64     , MAGNETIC_PASSIVE, DECOMPOSABLE, WITHER_PROOF, ENDER_DRAGON_PROOF)                                                                         .uumMcfg( 0, Ad             , 3*U, O                , 4*U)                                                                                                  .aspects(TC.METALLUM, 5, TC.PRAECANTIO                          , 5).qual(3, 10.0, 4500, 5).heat(Ad),
+	Adamantine              = metalore      ( 8784, "Adamantine"                                    , 255,   0,  64     , MAGNETIC_PASSIVE, DECOMPOSABLE, WITHER_PROOF, ENDER_DRAGON_PROOF)                                                                         .uumMcfg( 0, Ad             , 3*U, O                , 4*U)                                                                                                  .aspects(TC.METALLUM, 5, TC.PRAECANTIO                          , 5).qual(3, 10.0, 4500, 5).heat(Ad).addSourceOf(Ad),
 	AstralSilver            = slloymachore  ( 8676, "Astral Silver"                                 , 230, 230, 255     , MAGICAL, MOLTEN, WASHING_MERCURY, VALUABLE, CENTRIFUGE, ENDER_DRAGON_PROOF)                                                               .setMcfg( 2, Ag             , 2*U, Ma               , 1*U)                                                                                                  .aspects(TC.METALLUM, 2, TC.LUCRUM          , 1, TC.PRAECANTIO  , 1).qual(3, 10.0,   64, 2).heat(Ag),
 	Midasium                = slloymachore  ( 8677, "Midasium"                                      , 255, 200,  40     , MAGICAL, MOLTEN, WASHING_MERCURY, VALUABLE, WITHER_PROOF)                                                                                 .setMcfg( 2, Au             , 2*U, Ma               , 1*U)                                                                                                  .aspects(TC.METALLUM, 2, TC.LUCRUM          , 2, TC.PRAECANTIO  , 1).qual(3, 12.0,   64, 2).heat(Au),
 	Mithril                 = slloymachore  ( 8678, "Mithril"                                       , 100, 140, 250     , MAGICAL, MOLTEN, WASHING_MERCURY, VALUABLE, CENTRIFUGE)                                                                                   .setMcfg( 2, Pt             , 2*U, Ma               , 1*U)                                                                                                  .aspects(TC.METALLUM, 2, TC.LUCRUM          , 3, TC.PRAECANTIO  , 1).qual(3, 14.0,   64, 3).heat(Pt),
@@ -1673,10 +1679,10 @@ public class MT {
 	Amordrine               = alloy         ( 8783, "Amordrine"                                     , 169, 141, 177     )                                                                                                                                           .setAloy( 0, Prometheum     , 1*U, Kalendrite       , 1*U)                                                                                                  .aspects(TC.METALLUM, 2, TC.ORDO            , 1, TC.POTENTIA    , 1).qual(3,  7.0, 3328, 3).visDefault(Prometheum, Kalendrite),
 	
 	
-	Electrum                = slloymachore  ( 8600, "Electrum"                                      , 255, 255, 100     , MORTAR, VALUABLE, ENDER_DRAGON_PROOF, RAILS, WASHING_MERCURY, MOLTEN, WITHER_PROOF).qual(3, 12.0,   64, 2)                                .uumAloy( 0, Ag             , 1*U, Au               , 1*U)                                                                                                  .aspects(TC.METALLUM, 2, TC.LUCRUM, 2),
-	SterlingSilver          = slloymachine  ( 8601, "Sterling Silver"                               , 250, 220, 225     , MORTAR, VALUABLE, ENDER_DRAGON_PROOF).qual(3, 13.0,  128, 2)                                                                              .uumAloy( 0, Cu             , 1*U, Ag               , 4*U)                                                                                                  .aspects(TC.METALLUM, 2, TC.LUCRUM, 2),
-	RoseGold                = slloymachine  ( 8602, "Rose Gold"                                     , 255, 230,  30     , MORTAR, VALUABLE, WITHER_PROOF, "Tumbaga").qual(3, 14.0,  128, 2)                                                                         .uumAloy( 0, Cu             , 1*U, Au               , 4*U)                                                                                                  .aspects(TC.METALLUM, 2, TC.LUCRUM, 2),
-	Angmallen               = slloymachine  ( 8603, "Angmallen"                                     , 215, 225, 138     , MORTAR, MAGNETIC_PASSIVE, MOLTEN).qual(3, 10.0,  128, 2)                                                                                  .uumAloy( 0, Au             , 1*U, WroughtIron      , 1*U)                                                                                                  .aspects(TC.METALLUM, 2, TC.LUCRUM, 1),
+	Electrum                = slloymachore  ( 8600, "Electrum"                                      , 255, 255, 100     , MORTAR, MOLTEN, VALUABLE, ENDER_DRAGON_PROOF, RAILS, WASHING_MERCURY, WITHER_PROOF).qual(3, 12.0,   64, 2)                                .uumAloy( 0, Ag             , 1*U, Au               , 1*U)                                                                                                  .aspects(TC.METALLUM, 2, TC.LUCRUM, 2),
+	SterlingSilver          = slloymachine  ( 8601, "Sterling Silver"                               , 250, 220, 225     , MORTAR, MOLTEN, VALUABLE, ENDER_DRAGON_PROOF).qual(3, 13.0,  128, 2)                                                                      .uumAloy( 0, Cu             , 1*U, Ag               , 4*U)                                                                                                  .aspects(TC.METALLUM, 2, TC.LUCRUM, 2),
+	RoseGold                = slloymachine  ( 8602, "Rose Gold"                                     , 255, 230,  30     , MORTAR, MOLTEN, VALUABLE, WITHER_PROOF, "Tumbaga").qual(3, 14.0,  128, 2)                                                                 .uumAloy( 0, Cu             , 1*U, Au               , 4*U)                                                                                                  .aspects(TC.METALLUM, 2, TC.LUCRUM, 2),
+	Angmallen               = slloymachine  ( 8603, "Angmallen"                                     , 215, 225, 138     , MORTAR, MOLTEN, MAGNETIC_PASSIVE).qual(3, 10.0,  128, 2)                                                                                  .uumAloy( 0, Au             , 1*U, WroughtIron      , 1*U)                                                                                                  .aspects(TC.METALLUM, 2, TC.LUCRUM, 1),
 	InductiveAlloy          = slloymachine  ( 8604, "GoldInductive"                                 , 255, 150,  75     , MORTAR, MAGNETIC_PASSIVE, MOLTEN)                                                                                                         .uumAloy( 0, Au             , 1*U, Redstone         , 1*U)                                                                                                  .aspects(TC.METALLUM, 2, TC.MAGNETO, 1).setLocal("Inductive Alloy"),
 	Cd_In_Ag_Alloy          = alloymachine  ( 8605, "Cd-In-Ag-Alloy"                                , 100, 100, 128     )                                                                                                                                           .uumAloy( 0, Cd             , 1*U, In               , 1*U, Ag               , 1*U)                                                                          .aspects(TC.METALLUM, 2, TC.TENEBRAE, 1),
 	GildedIron              = slloymachine  ( 8606, "Gilded Iron"                                   , 255, 230,  80     , COATED, CENTRIFUGE, MAGNETIC_PASSIVE, WITHER_PROOF).qual(3, 12.0,  256, 2)                                                                .setMcfg( 9, Fe             , 9*U, Au               , 1*U)                                                                                                  .aspects(TC.METALLUM, 3, TC.LUCRUM, 1).setSmelting(Fe, U).setForging(Fe, U), // from Flaxbeard, obviously not an Alloy, but coated in Gold. This also gives an example on how to make such things as coated metals.
@@ -1966,6 +1972,8 @@ public class MT {
 			F                       .setOreMultiplier( 2).setCrushing(CaF2, U);
 			Ta                      .setOreMultiplier( 2).setCrushing(OREMATS.Tantalite, U);
 			Nb                      .setOreMultiplier( 2).setCrushing(OREMATS.Columbite, U);
+			Nq_528                  .setOreMultiplier( 2).setCrushing(Nq, U);
+			Nq_522                  .setOreMultiplier( 4).setCrushing(Nq, U);
 			Dilithium               .setOreMultiplier( 2).setCrushing(Dolamide, U);
 			Meteorite               .setOreMultiplier( 2);
 			MeteoricIron            .setOreMultiplier( 2);
@@ -1985,6 +1993,7 @@ public class MT {
 			NaNO3                   .setOreMultiplier( 3);
 			KNO3                    .setOreMultiplier( 3);
 			Apatite                 .setOreMultiplier( 4);
+			Bone                    .setOreMultiplier( 4);
 			Lapis                   .setOreMultiplier( 5);
 			Sodalite                .setOreMultiplier( 5);
 			Lazurite                .setOreMultiplier( 5);
@@ -2150,10 +2159,9 @@ public class MT {
 			TungstenSteel           .put(MD.GT);
 			NiobiumTitanium         .put(MD.GT);
 			Ta4HfC5                 .put(MD.GT);
+			Al2O3                   .put(MD.GT);
 			Osmiridium              .put(MD.GT);
 			UUAmplifier             .put(MD.GT);
-			Al2O3                   .put(MD.GT);
-			EnergiumCyan            .put(MD.GT);
 			Primitive               .put(MD.GT);
 			Good                    .put(MD.GT);
 			Data                    .put(MD.GT);
@@ -2508,6 +2516,35 @@ public class MT {
 			Ultimate                .put(MD.GC);
 			
 			
+			DiamondBlue             .put(MD.GC_EXTRAPLANETS).visDefault();
+			DiamondGreen            .put(MD.GC_EXTRAPLANETS).visDefault();
+			DiamondPurple           .put(MD.GC_EXTRAPLANETS).visDefault();
+			DiamondRed              .put(MD.GC_EXTRAPLANETS).visDefault();
+			DiamondYellow           .put(MD.GC_EXTRAPLANETS).visDefault();
+			STONES.PhobosRock       .put(MD.GC_EXTRAPLANETS).visDefault();
+			STONES.DeimosRock       .put(MD.GC_EXTRAPLANETS).visDefault();
+			STONES.MercuryRock      .put(MD.GC_EXTRAPLANETS).visDefault();
+			STONES.VenusRock        .put(MD.GC_EXTRAPLANETS).visDefault();
+			STONES.CeresRock        .put(MD.GC_EXTRAPLANETS).visDefault();
+			STONES.JupiterRock      .put(MD.GC_EXTRAPLANETS).visDefault();
+			STONES.IoRock           .put(MD.GC_EXTRAPLANETS).visDefault();
+			STONES.EuropaRock       .put(MD.GC_EXTRAPLANETS).visDefault();
+			STONES.GanymedeRock     .put(MD.GC_EXTRAPLANETS).visDefault();
+			STONES.CallistoRock     .put(MD.GC_EXTRAPLANETS).visDefault();
+			STONES.SaturnRock       .put(MD.GC_EXTRAPLANETS).visDefault();
+			STONES.RheaRock         .put(MD.GC_EXTRAPLANETS).visDefault();
+			STONES.TitanRock        .put(MD.GC_EXTRAPLANETS).visDefault();
+			STONES.OberonRock       .put(MD.GC_EXTRAPLANETS).visDefault();
+			STONES.IapetusRock      .put(MD.GC_EXTRAPLANETS).visDefault();
+			STONES.UranusRock       .put(MD.GC_EXTRAPLANETS).visDefault();
+			STONES.TitaniaRock      .put(MD.GC_EXTRAPLANETS).visDefault();
+			STONES.NeptuneRock      .put(MD.GC_EXTRAPLANETS).visDefault();
+			STONES.TritonRock       .put(MD.GC_EXTRAPLANETS).visDefault();
+			STONES.PlutoRock        .put(MD.GC_EXTRAPLANETS).visDefault();
+			STONES.ErisRock         .put(MD.GC_EXTRAPLANETS).visDefault();
+			STONES.Kepler22bRock    .put(MD.GC_EXTRAPLANETS).visDefault();
+			
+			
 			Duralumin               .put(MD.GC_GALAXYSPACE, COMMON_ORE);
 			Oriharukon              .put(MD.GC_GALAXYSPACE, COMMON_ORE).visDefault();
 			Adamantite              .put(MD.GC_GALAXYSPACE, COMMON_ORE);
@@ -2567,6 +2604,7 @@ public class MT {
 			Nikolite                .put(MD.RP, COMMON_ORE).visDefault();
 			NikolineAlloy           .put(MD.RP).visDefault(Nikolite);
 			BlueAlloy               .put(MD.RP).visDefault(Nikolite);
+			EnergiumCyan                       .visDefault(Nikolite);
 			
 			
 			ElectrotineAlloy        .put(MD.PR).visDefault(Nikolite);
@@ -2633,44 +2671,45 @@ public class MT {
 			Forcillium              .put(COMMON_ORE).visDefault(); // And this was ANOTHER Force Field Mod.
 			
 			
-			Plastic                 .addEnchantmentForTools(Enchantment.knockback, 1);
-			Rubber                  .addEnchantmentForTools(Enchantment.knockback, 2);
-			Kalendrite              .addEnchantmentForTools(Enchantment.knockback, 2);
-			InfusedAir              .addEnchantmentForTools(Enchantment.knockback, 2);
-			Blitz                   .addEnchantmentForTools(Enchantment.knockback, 3);
-			Gravitite               .addEnchantmentForTools(Enchantment.knockback, 3);
-			DarkIron                .addEnchantmentForTools(Enchantment.knockback, 3);
-			Tartarite               .addEnchantmentForTools(Enchantment.knockback, 3);
-			DarkMatter              .addEnchantmentForTools(Enchantment.knockback, 3);
-			RedMeteor               .addEnchantmentForTools(Enchantment.knockback, 3);
-			Infinity                .addEnchantmentForTools(Enchantment.knockback,10);
+			Plastic                 .addEnchantmentForWeapons(Enchantment.knockback, 1).addEnchantmentForAmmo(Enchantment.knockback, 1).addEnchantmentForRanged(Enchantment.punch, 1);
+			Rubber                  .addEnchantmentForWeapons(Enchantment.knockback, 2).addEnchantmentForAmmo(Enchantment.knockback, 2).addEnchantmentForRanged(Enchantment.punch, 2);
+			Kalendrite              .addEnchantmentForWeapons(Enchantment.knockback, 2).addEnchantmentForAmmo(Enchantment.knockback, 2).addEnchantmentForRanged(Enchantment.punch, 2);
+			InfusedAir              .addEnchantmentForWeapons(Enchantment.knockback, 2).addEnchantmentForAmmo(Enchantment.knockback, 2).addEnchantmentForRanged(Enchantment.punch, 2);
+			Blitz                   .addEnchantmentForWeapons(Enchantment.knockback, 3).addEnchantmentForAmmo(Enchantment.knockback, 3).addEnchantmentForRanged(Enchantment.punch, 3);
+			Gravitite               .addEnchantmentForWeapons(Enchantment.knockback, 3).addEnchantmentForAmmo(Enchantment.knockback, 3).addEnchantmentForRanged(Enchantment.punch, 3);
+			DarkIron                .addEnchantmentForWeapons(Enchantment.knockback, 3).addEnchantmentForAmmo(Enchantment.knockback, 3).addEnchantmentForRanged(Enchantment.punch, 3);
+			Tartarite               .addEnchantmentForWeapons(Enchantment.knockback, 3).addEnchantmentForAmmo(Enchantment.knockback, 3).addEnchantmentForRanged(Enchantment.punch, 3);
+			DarkMatter              .addEnchantmentForWeapons(Enchantment.knockback, 3).addEnchantmentForAmmo(Enchantment.knockback, 3).addEnchantmentForRanged(Enchantment.punch, 3);
+			RedMeteor               .addEnchantmentForWeapons(Enchantment.knockback, 3).addEnchantmentForAmmo(Enchantment.knockback, 3).addEnchantmentForRanged(Enchantment.punch, 3);
+			Infinity                .addEnchantmentForWeapons(Enchantment.knockback,10).addEnchantmentForAmmo(Enchantment.knockback,10).addEnchantmentForRanged(Enchantment.punch,10);
 			
-			Skyroot                 .addEnchantmentForTools(Enchantment.fortune, 1);
-			IronWood                .addEnchantmentForTools(Enchantment.fortune, 1);
-			Steeleaf                .addEnchantmentForTools(Enchantment.fortune, 2);
-			Efrine                  .addEnchantmentForTools(Enchantment.fortune, 2);
-			Soularium               .addEnchantmentForTools(Enchantment.fortune, 2);
-			Midasium                .addEnchantmentForTools(Enchantment.fortune, 2);
-			Mithril                 .addEnchantmentForTools(Enchantment.fortune, 3);
-			ElvenQuartz             .addEnchantmentForTools(Enchantment.fortune, 3);
-			Vinteum                 .addEnchantmentForTools(Enchantment.fortune, 1);
-			Thaumium                .addEnchantmentForTools(Enchantment.fortune, 2);
-			DarkThaumium            .addEnchantmentForTools(Enchantment.fortune, 3);
-			InfusedWater            .addEnchantmentForTools(Enchantment.fortune, 3);
-			Eximite                 .addEnchantmentForTools(Enchantment.fortune, 3);
-			DarkMatter              .addEnchantmentForTools(Enchantment.fortune, 3);
-			RedMatter               .addEnchantmentForTools(Enchantment.fortune, 3);
-			Jade                    .addEnchantmentForTools(Enchantment.fortune, 3);
-			Sugilite                .addEnchantmentForTools(Enchantment.fortune, 3);
-			EnderAmethyst           .addEnchantmentForTools(Enchantment.fortune, 3);
-			Continuum               .addEnchantmentForTools(Enchantment.fortune, 3);
-			Basalz                  .addEnchantmentForTools(Enchantment.fortune, 4);
-			Ma                      .addEnchantmentForTools(Enchantment.fortune, 4);
-			Haderoth                .addEnchantmentForTools(Enchantment.fortune, 4);
-			VibraniumSteel          .addEnchantmentForTools(Enchantment.fortune, 5);
-			Vibramantium            .addEnchantmentForTools(Enchantment.fortune, 5);
-			Vb                      .addEnchantmentForTools(Enchantment.fortune, 5);
-			Infinity                .addEnchantmentForTools(Enchantment.fortune,10);
+			Skyroot                 .addEnchantmentForTools(Enchantment.fortune, 1).addEnchantmentForWeapons(Enchantment.looting, 1).addEnchantmentForAmmo(Enchantment.looting, 2).addEnchantmentForRanged(Enchantment.infinity, 1);
+			IronWood                .addEnchantmentForTools(Enchantment.fortune, 1).addEnchantmentForWeapons(Enchantment.looting, 1).addEnchantmentForAmmo(Enchantment.looting, 2).addEnchantmentForRanged(Enchantment.infinity, 1);
+			Steeleaf                .addEnchantmentForTools(Enchantment.fortune, 2).addEnchantmentForWeapons(Enchantment.looting, 2).addEnchantmentForAmmo(Enchantment.looting, 4).addEnchantmentForRanged(Enchantment.infinity, 2);
+			Efrine                  .addEnchantmentForTools(Enchantment.fortune, 2).addEnchantmentForWeapons(Enchantment.looting, 2).addEnchantmentForAmmo(Enchantment.looting, 4).addEnchantmentForRanged(Enchantment.infinity, 2);
+			Soularium               .addEnchantmentForTools(Enchantment.fortune, 2).addEnchantmentForWeapons(Enchantment.looting, 2).addEnchantmentForAmmo(Enchantment.looting, 4).addEnchantmentForRanged(Enchantment.infinity, 2);
+			Midasium                .addEnchantmentForTools(Enchantment.fortune, 2).addEnchantmentForWeapons(Enchantment.looting, 2).addEnchantmentForAmmo(Enchantment.looting, 4).addEnchantmentForRanged(Enchantment.infinity, 2);
+			Mithril                 .addEnchantmentForTools(Enchantment.fortune, 3).addEnchantmentForWeapons(Enchantment.looting, 3).addEnchantmentForAmmo(Enchantment.looting, 6).addEnchantmentForRanged(Enchantment.infinity, 3);
+			ElvenQuartz             .addEnchantmentForTools(Enchantment.fortune, 3).addEnchantmentForWeapons(Enchantment.looting, 3).addEnchantmentForAmmo(Enchantment.looting, 6).addEnchantmentForRanged(Enchantment.infinity, 3);
+			Vinteum                 .addEnchantmentForTools(Enchantment.fortune, 1).addEnchantmentForWeapons(Enchantment.looting, 1).addEnchantmentForAmmo(Enchantment.looting, 2).addEnchantmentForRanged(Enchantment.infinity, 1);
+			Thaumium                .addEnchantmentForTools(Enchantment.fortune, 2).addEnchantmentForWeapons(Enchantment.looting, 2).addEnchantmentForAmmo(Enchantment.looting, 4).addEnchantmentForRanged(Enchantment.infinity, 2);
+			DarkThaumium            .addEnchantmentForTools(Enchantment.fortune, 2).addEnchantmentForWeapons(Enchantment.looting, 2).addEnchantmentForAmmo(Enchantment.looting, 4).addEnchantmentForRanged(Enchantment.infinity, 2);
+			VoidMetal               .addEnchantmentForTools(Enchantment.fortune, 3).addEnchantmentForWeapons(Enchantment.looting, 3).addEnchantmentForAmmo(Enchantment.looting, 6).addEnchantmentForRanged(Enchantment.infinity, 3);
+			InfusedWater            .addEnchantmentForTools(Enchantment.fortune, 3).addEnchantmentForWeapons(Enchantment.looting, 3).addEnchantmentForAmmo(Enchantment.looting, 6).addEnchantmentForRanged(Enchantment.infinity, 3);
+			Eximite                 .addEnchantmentForTools(Enchantment.fortune, 3).addEnchantmentForWeapons(Enchantment.looting, 3).addEnchantmentForAmmo(Enchantment.looting, 6).addEnchantmentForRanged(Enchantment.infinity, 3);
+			DarkMatter              .addEnchantmentForTools(Enchantment.fortune, 3).addEnchantmentForWeapons(Enchantment.looting, 3).addEnchantmentForAmmo(Enchantment.looting, 6).addEnchantmentForRanged(Enchantment.infinity, 3);
+			RedMatter               .addEnchantmentForTools(Enchantment.fortune, 3).addEnchantmentForWeapons(Enchantment.looting, 3).addEnchantmentForAmmo(Enchantment.looting, 6).addEnchantmentForRanged(Enchantment.infinity, 3);
+			Jade                    .addEnchantmentForTools(Enchantment.fortune, 3).addEnchantmentForWeapons(Enchantment.looting, 3).addEnchantmentForAmmo(Enchantment.looting, 6).addEnchantmentForRanged(Enchantment.infinity, 3);
+			Sugilite                .addEnchantmentForTools(Enchantment.fortune, 3).addEnchantmentForWeapons(Enchantment.looting, 3).addEnchantmentForAmmo(Enchantment.looting, 6).addEnchantmentForRanged(Enchantment.infinity, 3);
+			EnderAmethyst           .addEnchantmentForTools(Enchantment.fortune, 3).addEnchantmentForWeapons(Enchantment.looting, 3).addEnchantmentForAmmo(Enchantment.looting, 6).addEnchantmentForRanged(Enchantment.infinity, 3);
+			Continuum               .addEnchantmentForTools(Enchantment.fortune, 3).addEnchantmentForWeapons(Enchantment.looting, 3).addEnchantmentForAmmo(Enchantment.looting, 6).addEnchantmentForRanged(Enchantment.infinity, 3);
+			Basalz                  .addEnchantmentForTools(Enchantment.fortune, 4).addEnchantmentForWeapons(Enchantment.looting, 4).addEnchantmentForAmmo(Enchantment.looting, 8).addEnchantmentForRanged(Enchantment.infinity, 4);
+			Ma                      .addEnchantmentForTools(Enchantment.fortune, 4).addEnchantmentForWeapons(Enchantment.looting, 4).addEnchantmentForAmmo(Enchantment.looting, 8).addEnchantmentForRanged(Enchantment.infinity, 4);
+			Haderoth                .addEnchantmentForTools(Enchantment.fortune, 4).addEnchantmentForWeapons(Enchantment.looting, 4).addEnchantmentForAmmo(Enchantment.looting, 8).addEnchantmentForRanged(Enchantment.infinity, 4);
+			VibraniumSteel          .addEnchantmentForTools(Enchantment.fortune, 5).addEnchantmentForWeapons(Enchantment.looting, 5).addEnchantmentForAmmo(Enchantment.looting,10).addEnchantmentForRanged(Enchantment.infinity, 5);
+			Vibramantium            .addEnchantmentForTools(Enchantment.fortune, 5).addEnchantmentForWeapons(Enchantment.looting, 5).addEnchantmentForAmmo(Enchantment.looting,10).addEnchantmentForRanged(Enchantment.infinity, 5);
+			Vb                      .addEnchantmentForTools(Enchantment.fortune, 5).addEnchantmentForWeapons(Enchantment.looting, 5).addEnchantmentForAmmo(Enchantment.looting,10).addEnchantmentForRanged(Enchantment.infinity, 5);
+			Infinity                .addEnchantmentForTools(Enchantment.fortune,10).addEnchantmentForWeapons(Enchantment.looting,10).addEnchantmentForAmmo(Enchantment.looting,20).addEnchantmentForRanged(Enchantment.infinity,10);
 			
 			Ad                      .addEnchantmentForTools(Enchantment.silkTouch, 1);
 			Adamantine              .addEnchantmentForTools(Enchantment.silkTouch, 1);
@@ -2679,14 +2718,10 @@ public class MT {
 			AmberDominican          .addEnchantmentForTools(Enchantment.silkTouch, 1);
 			Ambrosium               .addEnchantmentForTools(Enchantment.silkTouch, 1);
 			ManaQuartz              .addEnchantmentForTools(Enchantment.silkTouch, 1);
-			EnderPearl              .addEnchantmentForTools(Enchantment.silkTouch, 1);
-			Enderium                .addEnchantmentForTools(Enchantment.silkTouch, 1);
-			Endium                  .addEnchantmentForTools(Enchantment.silkTouch, 1);
 			Blizz                   .addEnchantmentForTools(Enchantment.silkTouch, 1);
 			Frezarite               .addEnchantmentForTools(Enchantment.silkTouch, 1);
 			Inolashite              .addEnchantmentForTools(Enchantment.silkTouch, 1);
 			Sanguinite              .addEnchantmentForTools(Enchantment.silkTouch, 1);
-			SpectreIron             .addEnchantmentForTools(Enchantment.silkTouch, 1);
 			NetherStar              .addEnchantmentForTools(Enchantment.silkTouch, 1);
 			InfusedOrder            .addEnchantmentForTools(Enchantment.silkTouch, 1);
 			InfusedBalance          .addEnchantmentForTools(Enchantment.silkTouch, 1);
@@ -2694,118 +2729,129 @@ public class MT {
 			Vibramantium            .addEnchantmentForTools(Enchantment.silkTouch, 1);
 			Infinity                .addEnchantmentForTools(Enchantment.silkTouch,10);
 			
-			Flint                   .addEnchantmentForTools(Enchantment.fireAspect, 1);
-			Netherrack              .addEnchantmentForTools(Enchantment.fireAspect, 1);
-			Obsidian                .addEnchantmentForTools(Enchantment.fireAspect, 1);
-			STONES.Gneiss           .addEnchantmentForTools(Enchantment.fireAspect, 2);
-			NetherBrick             .addEnchantmentForTools(Enchantment.fireAspect, 2);
-			ObsidianSteel           .addEnchantmentForTools(Enchantment.fireAspect, 2);
-			Ignatius                .addEnchantmentForTools(Enchantment.fireAspect, 2);
-			Prometheum              .addEnchantmentForTools(Enchantment.fireAspect, 2);
-			Octine                  .addEnchantmentForTools(Enchantment.fireAspect, 3);
-			Kreknorite              .addEnchantmentForTools(Enchantment.fireAspect, 3);
-			Firestone               .addEnchantmentForTools(Enchantment.fireAspect, 3);
-			FierySteel              .addEnchantmentForTools(Enchantment.fireAspect, 3);
-			Pyrotheum               .addEnchantmentForTools(Enchantment.fireAspect, 3);
-			Blaze                   .addEnchantmentForTools(Enchantment.fireAspect, 3);
-			InfusedFire             .addEnchantmentForTools(Enchantment.fireAspect, 3);
-			Vulcanite               .addEnchantmentForTools(Enchantment.fireAspect, 3);
-			Amordrine               .addEnchantmentForTools(Enchantment.fireAspect, 3);
-			MuspelheimPower         .addEnchantmentForTools(Enchantment.fireAspect, 3);
-			RedMatter               .addEnchantmentForTools(Enchantment.fireAspect, 3);
-			Netherite               .addEnchantmentForTools(Enchantment.fireAspect, 3);
-			NetherizedDiamond       .addEnchantmentForTools(Enchantment.fireAspect, 3);
-			Infinity                .addEnchantmentForTools(Enchantment.fireAspect,10);
+			EnderPearl              .addEnchantmentForTools(Enchantment.silkTouch, 1).addEnchantmentForRanged(Enchantment.infinity, 1);;
+			Enderium                .addEnchantmentForTools(Enchantment.silkTouch, 1).addEnchantmentForRanged(Enchantment.infinity, 2);;
+			Endium                  .addEnchantmentForTools(Enchantment.silkTouch, 1).addEnchantmentForRanged(Enchantment.infinity, 3);;
+			SpectreIron             .addEnchantmentForTools(Enchantment.silkTouch, 1).addEnchantmentForRanged(Enchantment.infinity, 3);;
 			
+			Flint                   .addEnchantmentForWeapons(Enchantment.fireAspect, 1).addEnchantmentForAmmo(Enchantment.fireAspect, 1).addEnchantmentForRanged(Enchantment.flame, 1);
+			Netherrack              .addEnchantmentForWeapons(Enchantment.fireAspect, 1).addEnchantmentForAmmo(Enchantment.fireAspect, 1).addEnchantmentForRanged(Enchantment.flame, 1);
+			Obsidian                .addEnchantmentForWeapons(Enchantment.fireAspect, 1).addEnchantmentForAmmo(Enchantment.fireAspect, 1).addEnchantmentForRanged(Enchantment.flame, 1);
+			STONES.Gneiss           .addEnchantmentForWeapons(Enchantment.fireAspect, 2).addEnchantmentForAmmo(Enchantment.fireAspect, 2).addEnchantmentForRanged(Enchantment.flame, 2);
+			NetherBrick             .addEnchantmentForWeapons(Enchantment.fireAspect, 2).addEnchantmentForAmmo(Enchantment.fireAspect, 2).addEnchantmentForRanged(Enchantment.flame, 2);
+			PO4                     .addEnchantmentForWeapons(Enchantment.fireAspect, 2).addEnchantmentForAmmo(Enchantment.fireAspect, 2).addEnchantmentForRanged(Enchantment.flame, 2);
+			Phosphorite             .addEnchantmentForWeapons(Enchantment.fireAspect, 2).addEnchantmentForAmmo(Enchantment.fireAspect, 2).addEnchantmentForRanged(Enchantment.flame, 2);
+			Phosphorus              .addEnchantmentForWeapons(Enchantment.fireAspect, 2).addEnchantmentForAmmo(Enchantment.fireAspect, 2).addEnchantmentForRanged(Enchantment.flame, 2);
+			PhosphorusBlue          .addEnchantmentForWeapons(Enchantment.fireAspect, 2).addEnchantmentForAmmo(Enchantment.fireAspect, 2).addEnchantmentForRanged(Enchantment.flame, 2);
+			PhosphorusRed           .addEnchantmentForWeapons(Enchantment.fireAspect, 2).addEnchantmentForAmmo(Enchantment.fireAspect, 2).addEnchantmentForRanged(Enchantment.flame, 2);
+			PhosphorusWhite         .addEnchantmentForWeapons(Enchantment.fireAspect, 2).addEnchantmentForAmmo(Enchantment.fireAspect, 2).addEnchantmentForRanged(Enchantment.flame, 2);
+			ObsidianSteel           .addEnchantmentForWeapons(Enchantment.fireAspect, 2).addEnchantmentForAmmo(Enchantment.fireAspect, 2).addEnchantmentForRanged(Enchantment.flame, 2);
+			Ignatius                .addEnchantmentForWeapons(Enchantment.fireAspect, 2).addEnchantmentForAmmo(Enchantment.fireAspect, 2).addEnchantmentForRanged(Enchantment.flame, 2);
+			Prometheum              .addEnchantmentForWeapons(Enchantment.fireAspect, 3).addEnchantmentForAmmo(Enchantment.fireAspect, 3).addEnchantmentForRanged(Enchantment.flame, 3).addEnchantmentForTools(Enchantment.fireAspect, 3);
+			Octine                  .addEnchantmentForWeapons(Enchantment.fireAspect, 3).addEnchantmentForAmmo(Enchantment.fireAspect, 3).addEnchantmentForRanged(Enchantment.flame, 3).addEnchantmentForTools(Enchantment.fireAspect, 3);
+			Kreknorite              .addEnchantmentForWeapons(Enchantment.fireAspect, 3).addEnchantmentForAmmo(Enchantment.fireAspect, 3).addEnchantmentForRanged(Enchantment.flame, 3).addEnchantmentForTools(Enchantment.fireAspect, 3);
+			Firestone               .addEnchantmentForWeapons(Enchantment.fireAspect, 3).addEnchantmentForAmmo(Enchantment.fireAspect, 3).addEnchantmentForRanged(Enchantment.flame, 3).addEnchantmentForTools(Enchantment.fireAspect, 3);
+			FierySteel              .addEnchantmentForWeapons(Enchantment.fireAspect, 3).addEnchantmentForAmmo(Enchantment.fireAspect, 3).addEnchantmentForRanged(Enchantment.flame, 3).addEnchantmentForTools(Enchantment.fireAspect, 3);
+			Pyrotheum               .addEnchantmentForWeapons(Enchantment.fireAspect, 3).addEnchantmentForAmmo(Enchantment.fireAspect, 3).addEnchantmentForRanged(Enchantment.flame, 3).addEnchantmentForTools(Enchantment.fireAspect, 3);
+			Blaze                   .addEnchantmentForWeapons(Enchantment.fireAspect, 3).addEnchantmentForAmmo(Enchantment.fireAspect, 3).addEnchantmentForRanged(Enchantment.flame, 3).addEnchantmentForTools(Enchantment.fireAspect, 3);
+			InfusedFire             .addEnchantmentForWeapons(Enchantment.fireAspect, 3).addEnchantmentForAmmo(Enchantment.fireAspect, 3).addEnchantmentForRanged(Enchantment.flame, 3).addEnchantmentForTools(Enchantment.fireAspect, 3);
+			Vulcanite               .addEnchantmentForWeapons(Enchantment.fireAspect, 3).addEnchantmentForAmmo(Enchantment.fireAspect, 3).addEnchantmentForRanged(Enchantment.flame, 3).addEnchantmentForTools(Enchantment.fireAspect, 3);
+			Amordrine               .addEnchantmentForWeapons(Enchantment.fireAspect, 3).addEnchantmentForAmmo(Enchantment.fireAspect, 3).addEnchantmentForRanged(Enchantment.flame, 3).addEnchantmentForTools(Enchantment.fireAspect, 3);
+			MuspelheimPower         .addEnchantmentForWeapons(Enchantment.fireAspect, 3).addEnchantmentForAmmo(Enchantment.fireAspect, 3).addEnchantmentForRanged(Enchantment.flame, 3).addEnchantmentForTools(Enchantment.fireAspect, 3);
+			RedMatter               .addEnchantmentForWeapons(Enchantment.fireAspect, 3).addEnchantmentForAmmo(Enchantment.fireAspect, 3).addEnchantmentForRanged(Enchantment.flame, 3).addEnchantmentForTools(Enchantment.fireAspect, 3);
+			Netherite               .addEnchantmentForWeapons(Enchantment.fireAspect, 3).addEnchantmentForAmmo(Enchantment.fireAspect, 3).addEnchantmentForRanged(Enchantment.flame, 3).addEnchantmentForTools(Enchantment.fireAspect, 3);
+			NetherizedDiamond       .addEnchantmentForWeapons(Enchantment.fireAspect, 3).addEnchantmentForAmmo(Enchantment.fireAspect, 3).addEnchantmentForRanged(Enchantment.flame, 3).addEnchantmentForTools(Enchantment.fireAspect, 3);
+			Infinity                .addEnchantmentForWeapons(Enchantment.fireAspect,10).addEnchantmentForAmmo(Enchantment.fireAspect,10).addEnchantmentForRanged(Enchantment.flame,10).addEnchantmentForTools(Enchantment.fireAspect,10);
 			
+			Hepatizon               .addEnchantmentForWeapons(Enchantment.smite, 2).addEnchantmentForAmmo(Enchantment.smite, 2);
+			BlackBronze             .addEnchantmentForWeapons(Enchantment.smite, 2).addEnchantmentForAmmo(Enchantment.smite, 2);
+			RedSteel                .addEnchantmentForWeapons(Enchantment.smite, 3).addEnchantmentForAmmo(Enchantment.smite, 3);
+			MeteoricRedSteel        .addEnchantmentForWeapons(Enchantment.smite, 3).addEnchantmentForAmmo(Enchantment.smite, 3);
+			Au                      .addEnchantmentForWeapons(Enchantment.smite, 3).addEnchantmentForAmmo(Enchantment.smite, 3);
+			TitaniumGold            .addEnchantmentForWeapons(Enchantment.smite, 3).addEnchantmentForAmmo(Enchantment.smite, 3);
+			Electrum                .addEnchantmentForWeapons(Enchantment.smite, 3).addEnchantmentForAmmo(Enchantment.smite, 3);
+			GildedIron              .addEnchantmentForWeapons(Enchantment.smite, 3).addEnchantmentForAmmo(Enchantment.smite, 3);
+			STONES.Holystone        .addEnchantmentForWeapons(Enchantment.smite, 3).addEnchantmentForAmmo(Enchantment.smite, 3);
+			RoseGold                .addEnchantmentForWeapons(Enchantment.smite, 4).addEnchantmentForAmmo(Enchantment.smite, 4);
+			EnergeticAlloy          .addEnchantmentForWeapons(Enchantment.smite, 4).addEnchantmentForAmmo(Enchantment.smite, 4);
+			SpectreIron             .addEnchantmentForWeapons(Enchantment.smite, 5).addEnchantmentForAmmo(Enchantment.smite, 5);
+			VibrantAlloy            .addEnchantmentForWeapons(Enchantment.smite, 5).addEnchantmentForAmmo(Enchantment.smite, 5);
+			Mauftrium               .addEnchantmentForWeapons(Enchantment.smite, 5).addEnchantmentForAmmo(Enchantment.smite, 5);
+			Carmot                  .addEnchantmentForWeapons(Enchantment.smite, 5).addEnchantmentForAmmo(Enchantment.smite, 5);
+			Pt                      .addEnchantmentForWeapons(Enchantment.smite, 5).addEnchantmentForAmmo(Enchantment.smite, 5);
+			Mithril                 .addEnchantmentForWeapons(Enchantment.smite, 5).addEnchantmentForAmmo(Enchantment.smite, 5);
+			InfusedVis              .addEnchantmentForWeapons(Enchantment.smite, 5).addEnchantmentForAmmo(Enchantment.smite, 5);
+			Infinity                .addEnchantmentForWeapons(Enchantment.smite,10).addEnchantmentForAmmo(Enchantment.smite,10);
 			
-			Hepatizon               .addEnchantmentForTools(Enchantment.smite, 2);
-			BlackBronze             .addEnchantmentForTools(Enchantment.smite, 2);
-			RedSteel                .addEnchantmentForTools(Enchantment.smite, 3);
-			MeteoricRedSteel        .addEnchantmentForTools(Enchantment.smite, 3);
-			Au                      .addEnchantmentForTools(Enchantment.smite, 3);
-			TitaniumGold            .addEnchantmentForTools(Enchantment.smite, 3);
-			Electrum                .addEnchantmentForTools(Enchantment.smite, 3);
-			GildedIron              .addEnchantmentForTools(Enchantment.smite, 3);
-			STONES.Holystone        .addEnchantmentForTools(Enchantment.smite, 3);
-			RoseGold                .addEnchantmentForTools(Enchantment.smite, 4);
-			EnergeticAlloy          .addEnchantmentForTools(Enchantment.smite, 4);
-			SpectreIron             .addEnchantmentForTools(Enchantment.smite, 5);
-			VibrantAlloy            .addEnchantmentForTools(Enchantment.smite, 5);
-			Mauftrium               .addEnchantmentForTools(Enchantment.smite, 5);
-			Carmot                  .addEnchantmentForTools(Enchantment.smite, 5);
-			Pt                      .addEnchantmentForTools(Enchantment.smite, 5);
-			Mithril                 .addEnchantmentForTools(Enchantment.smite, 5);
-			InfusedVis              .addEnchantmentForTools(Enchantment.smite, 5);
-			Infinity                .addEnchantmentForTools(Enchantment.smite,10);
+			Pb                      .addEnchantmentForWeapons(Enchantment.baneOfArthropods, 2).addEnchantmentForAmmo(Enchantment.baneOfArthropods, 2);
+			Ni                      .addEnchantmentForWeapons(Enchantment.baneOfArthropods, 2).addEnchantmentForAmmo(Enchantment.baneOfArthropods, 2);
+			Constantan              .addEnchantmentForWeapons(Enchantment.baneOfArthropods, 2).addEnchantmentForAmmo(Enchantment.baneOfArthropods, 2);
+			Nichrome                .addEnchantmentForWeapons(Enchantment.baneOfArthropods, 2).addEnchantmentForAmmo(Enchantment.baneOfArthropods, 2);
+			Invar                   .addEnchantmentForWeapons(Enchantment.baneOfArthropods, 3).addEnchantmentForAmmo(Enchantment.baneOfArthropods, 3);
+			Sb                      .addEnchantmentForWeapons(Enchantment.baneOfArthropods, 3).addEnchantmentForAmmo(Enchantment.baneOfArthropods, 3);
+			Aredrite                .addEnchantmentForWeapons(Enchantment.baneOfArthropods, 3).addEnchantmentForAmmo(Enchantment.baneOfArthropods, 3);
+			BatteryAlloy            .addEnchantmentForWeapons(Enchantment.baneOfArthropods, 4).addEnchantmentForAmmo(Enchantment.baneOfArthropods, 4);
+			Bi                      .addEnchantmentForWeapons(Enchantment.baneOfArthropods, 4).addEnchantmentForAmmo(Enchantment.baneOfArthropods, 4);
+			Orichalcum              .addEnchantmentForWeapons(Enchantment.baneOfArthropods, 4).addEnchantmentForAmmo(Enchantment.baneOfArthropods, 4);
+			BismuthBronze           .addEnchantmentForWeapons(Enchantment.baneOfArthropods, 4).addEnchantmentForAmmo(Enchantment.baneOfArthropods, 4);
+			InfusedEarth            .addEnchantmentForWeapons(Enchantment.baneOfArthropods, 5).addEnchantmentForAmmo(Enchantment.baneOfArthropods, 5);
+			Celenegil               .addEnchantmentForWeapons(Enchantment.baneOfArthropods, 5).addEnchantmentForAmmo(Enchantment.baneOfArthropods, 5);
+			Infinity                .addEnchantmentForWeapons(Enchantment.baneOfArthropods,10).addEnchantmentForAmmo(Enchantment.baneOfArthropods,10);
 			
-			Pb                      .addEnchantmentForTools(Enchantment.baneOfArthropods, 2);
-			Ni                      .addEnchantmentForTools(Enchantment.baneOfArthropods, 2);
-			Constantan              .addEnchantmentForTools(Enchantment.baneOfArthropods, 2);
-			Nichrome                .addEnchantmentForTools(Enchantment.baneOfArthropods, 2);
-			Invar                   .addEnchantmentForTools(Enchantment.baneOfArthropods, 3);
-			Sb                      .addEnchantmentForTools(Enchantment.baneOfArthropods, 3);
-			Aredrite                .addEnchantmentForTools(Enchantment.baneOfArthropods, 3);
-			BatteryAlloy            .addEnchantmentForTools(Enchantment.baneOfArthropods, 4);
-			Bi                      .addEnchantmentForTools(Enchantment.baneOfArthropods, 4);
-			Orichalcum              .addEnchantmentForTools(Enchantment.baneOfArthropods, 4);
-			BismuthBronze           .addEnchantmentForTools(Enchantment.baneOfArthropods, 4);
-			InfusedEarth            .addEnchantmentForTools(Enchantment.baneOfArthropods, 5);
-			Celenegil               .addEnchantmentForTools(Enchantment.baneOfArthropods, 5);
-			Infinity                .addEnchantmentForTools(Enchantment.baneOfArthropods,10);
-			
-			Fe                      .addEnchantmentForTools(Enchantment.sharpness, 1);
-			IronMagnetic            .addEnchantmentForTools(Enchantment.sharpness, 1);
-			Ice                     .addEnchantmentForTools(Enchantment.sharpness, 1);
-			Glass                   .addEnchantmentForTools(Enchantment.sharpness, 1);
-			Bronze                  .addEnchantmentForTools(Enchantment.sharpness, 1);
-			GildedIron              .addEnchantmentForTools(Enchantment.sharpness, 1);
-			PulsatingIron           .addEnchantmentForTools(Enchantment.sharpness, 1);
-			ConductiveIron          .addEnchantmentForTools(Enchantment.sharpness, 1);
-			RedstoneAlloy           .addEnchantmentForTools(Enchantment.sharpness, 1);
-			ElectricalSteel         .addEnchantmentForTools(Enchantment.sharpness, 2);
-			Brass                   .addEnchantmentForTools(Enchantment.sharpness, 2);
-			CobaltBrass             .addEnchantmentForTools(Enchantment.sharpness, 2);
-			HSLA                    .addEnchantmentForTools(Enchantment.sharpness, 2);
-			Steel                   .addEnchantmentForTools(Enchantment.sharpness, 2);
-			SteelMagnetic           .addEnchantmentForTools(Enchantment.sharpness, 2);
-			SteelGalvanized         .addEnchantmentForTools(Enchantment.sharpness, 2);
-			Syrmorite               .addEnchantmentForTools(Enchantment.sharpness, 2);
-			WroughtIron             .addEnchantmentForTools(Enchantment.sharpness, 2);
-			PigIron                 .addEnchantmentForTools(Enchantment.sharpness, 2);
-			Meteorite               .addEnchantmentForTools(Enchantment.sharpness, 2);
-			FierySteel              .addEnchantmentForTools(Enchantment.sharpness, 2);
-			FrozenIron              .addEnchantmentForTools(Enchantment.sharpness, 2);
-			MeteoricIron            .addEnchantmentForTools(Enchantment.sharpness, 2);
-			MeteoricSteel           .addEnchantmentForTools(Enchantment.sharpness, 3);
-			VanadiumSteel           .addEnchantmentForTools(Enchantment.sharpness, 3);
-			StainlessSteel          .addEnchantmentForTools(Enchantment.sharpness, 3);
-			Knightmetal             .addEnchantmentForTools(Enchantment.sharpness, 3);
-			DeepIron                .addEnchantmentForTools(Enchantment.sharpness, 3);
-			ShadowIron              .addEnchantmentForTools(Enchantment.sharpness, 3);
-			BlackSteel              .addEnchantmentForTools(Enchantment.sharpness, 3);
-			MeteoricBlackSteel      .addEnchantmentForTools(Enchantment.sharpness, 3);
-			RedSteel                .addEnchantmentForTools(Enchantment.sharpness, 3);
-			MeteoricRedSteel        .addEnchantmentForTools(Enchantment.sharpness, 3);
-			BlueSteel               .addEnchantmentForTools(Enchantment.sharpness, 3);
-			MeteoricBlueSteel       .addEnchantmentForTools(Enchantment.sharpness, 3);
-			Ti                      .addEnchantmentForTools(Enchantment.sharpness, 3);
-			TitaniumGold            .addEnchantmentForTools(Enchantment.sharpness, 3);
-			TungstenAlloy           .addEnchantmentForTools(Enchantment.sharpness, 3);
-			TungstenSteel           .addEnchantmentForTools(Enchantment.sharpness, 4);
-			NetherizedDiamond       .addEnchantmentForTools(Enchantment.sharpness, 4);
-			HSSG                    .addEnchantmentForTools(Enchantment.sharpness, 4);
-			HSSE                    .addEnchantmentForTools(Enchantment.sharpness, 4);
-			HSSS                    .addEnchantmentForTools(Enchantment.sharpness, 4);
-			ShadowSteel             .addEnchantmentForTools(Enchantment.sharpness, 4);
-			Zanite                  .addEnchantmentForTools(Enchantment.sharpness, 4);
-			DamascusSteel           .addEnchantmentForTools(Enchantment.sharpness, 5);
-			Elvorium                .addEnchantmentForTools(Enchantment.sharpness, 5);
-			InfusedEntropy          .addEnchantmentForTools(Enchantment.sharpness, 5);
-			Ke                      .addEnchantmentForTools(Enchantment.sharpness, 6);
-			Trinitanium             .addEnchantmentForTools(Enchantment.sharpness, 7);
-			Trinaquadalloy          .addEnchantmentForTools(Enchantment.sharpness, 8);
-			Infinity                .addEnchantmentForTools(Enchantment.sharpness,10);
+			Fe                      .addEnchantmentForWeapons(Enchantment.sharpness, 1).addEnchantmentForAmmo(Enchantment.sharpness, 1).addEnchantmentForRanged(Enchantment.power, 1);
+			IronMagnetic            .addEnchantmentForWeapons(Enchantment.sharpness, 1).addEnchantmentForAmmo(Enchantment.sharpness, 1).addEnchantmentForRanged(Enchantment.power, 1);
+			IronWood                .addEnchantmentForWeapons(Enchantment.sharpness, 1).addEnchantmentForAmmo(Enchantment.sharpness, 1).addEnchantmentForRanged(Enchantment.power, 1);
+			Ice                     .addEnchantmentForWeapons(Enchantment.sharpness, 1).addEnchantmentForAmmo(Enchantment.sharpness, 1).addEnchantmentForRanged(Enchantment.power, 1);
+			Glass                   .addEnchantmentForWeapons(Enchantment.sharpness, 1).addEnchantmentForAmmo(Enchantment.sharpness, 1).addEnchantmentForRanged(Enchantment.power, 1);
+			Bronze                  .addEnchantmentForWeapons(Enchantment.sharpness, 1).addEnchantmentForAmmo(Enchantment.sharpness, 1).addEnchantmentForRanged(Enchantment.power, 1);
+			GildedIron              .addEnchantmentForWeapons(Enchantment.sharpness, 1).addEnchantmentForAmmo(Enchantment.sharpness, 1).addEnchantmentForRanged(Enchantment.power, 1);
+			PulsatingIron           .addEnchantmentForWeapons(Enchantment.sharpness, 1).addEnchantmentForAmmo(Enchantment.sharpness, 1).addEnchantmentForRanged(Enchantment.power, 1);
+			ConductiveIron          .addEnchantmentForWeapons(Enchantment.sharpness, 1).addEnchantmentForAmmo(Enchantment.sharpness, 1).addEnchantmentForRanged(Enchantment.power, 1);
+			RedstoneAlloy           .addEnchantmentForWeapons(Enchantment.sharpness, 1).addEnchantmentForAmmo(Enchantment.sharpness, 1).addEnchantmentForRanged(Enchantment.power, 1);
+			ElectricalSteel         .addEnchantmentForWeapons(Enchantment.sharpness, 2).addEnchantmentForAmmo(Enchantment.sharpness, 2).addEnchantmentForRanged(Enchantment.power, 2);
+			Brass                   .addEnchantmentForWeapons(Enchantment.sharpness, 2).addEnchantmentForAmmo(Enchantment.sharpness, 2).addEnchantmentForRanged(Enchantment.power, 2);
+			CobaltBrass             .addEnchantmentForWeapons(Enchantment.sharpness, 2).addEnchantmentForAmmo(Enchantment.sharpness, 2).addEnchantmentForRanged(Enchantment.power, 2);
+			HSLA                    .addEnchantmentForWeapons(Enchantment.sharpness, 2).addEnchantmentForAmmo(Enchantment.sharpness, 2).addEnchantmentForRanged(Enchantment.power, 2);
+			Steel                   .addEnchantmentForWeapons(Enchantment.sharpness, 2).addEnchantmentForAmmo(Enchantment.sharpness, 2).addEnchantmentForRanged(Enchantment.power, 2);
+			SteelMagnetic           .addEnchantmentForWeapons(Enchantment.sharpness, 2).addEnchantmentForAmmo(Enchantment.sharpness, 2).addEnchantmentForRanged(Enchantment.power, 2);
+			SteelGalvanized         .addEnchantmentForWeapons(Enchantment.sharpness, 2).addEnchantmentForAmmo(Enchantment.sharpness, 2).addEnchantmentForRanged(Enchantment.power, 2);
+			Syrmorite               .addEnchantmentForWeapons(Enchantment.sharpness, 2).addEnchantmentForAmmo(Enchantment.sharpness, 2).addEnchantmentForRanged(Enchantment.power, 2);
+			WroughtIron             .addEnchantmentForWeapons(Enchantment.sharpness, 2).addEnchantmentForAmmo(Enchantment.sharpness, 2).addEnchantmentForRanged(Enchantment.power, 2);
+			PigIron                 .addEnchantmentForWeapons(Enchantment.sharpness, 2).addEnchantmentForAmmo(Enchantment.sharpness, 2).addEnchantmentForRanged(Enchantment.power, 2);
+			Meteorite               .addEnchantmentForWeapons(Enchantment.sharpness, 2).addEnchantmentForAmmo(Enchantment.sharpness, 2).addEnchantmentForRanged(Enchantment.power, 2);
+			FierySteel              .addEnchantmentForWeapons(Enchantment.sharpness, 2).addEnchantmentForAmmo(Enchantment.sharpness, 2).addEnchantmentForRanged(Enchantment.power, 2);
+			FrozenIron              .addEnchantmentForWeapons(Enchantment.sharpness, 2).addEnchantmentForAmmo(Enchantment.sharpness, 2).addEnchantmentForRanged(Enchantment.power, 2);
+			MeteoricIron            .addEnchantmentForWeapons(Enchantment.sharpness, 2).addEnchantmentForAmmo(Enchantment.sharpness, 2).addEnchantmentForRanged(Enchantment.power, 2);
+			MeteoricSteel           .addEnchantmentForWeapons(Enchantment.sharpness, 3).addEnchantmentForAmmo(Enchantment.sharpness, 3).addEnchantmentForRanged(Enchantment.power, 3);
+			Steeleaf                .addEnchantmentForWeapons(Enchantment.sharpness, 3).addEnchantmentForAmmo(Enchantment.sharpness, 3).addEnchantmentForRanged(Enchantment.power, 3);
+			VanadiumSteel           .addEnchantmentForWeapons(Enchantment.sharpness, 3).addEnchantmentForAmmo(Enchantment.sharpness, 3).addEnchantmentForRanged(Enchantment.power, 3);
+			StainlessSteel          .addEnchantmentForWeapons(Enchantment.sharpness, 3).addEnchantmentForAmmo(Enchantment.sharpness, 3).addEnchantmentForRanged(Enchantment.power, 3);
+			Knightmetal             .addEnchantmentForWeapons(Enchantment.sharpness, 3).addEnchantmentForAmmo(Enchantment.sharpness, 3).addEnchantmentForRanged(Enchantment.power, 3);
+			DeepIron                .addEnchantmentForWeapons(Enchantment.sharpness, 3).addEnchantmentForAmmo(Enchantment.sharpness, 3).addEnchantmentForRanged(Enchantment.power, 3);
+			ShadowIron              .addEnchantmentForWeapons(Enchantment.sharpness, 3).addEnchantmentForAmmo(Enchantment.sharpness, 3).addEnchantmentForRanged(Enchantment.power, 3);
+			BlackSteel              .addEnchantmentForWeapons(Enchantment.sharpness, 3).addEnchantmentForAmmo(Enchantment.sharpness, 3).addEnchantmentForRanged(Enchantment.power, 3);
+			MeteoricBlackSteel      .addEnchantmentForWeapons(Enchantment.sharpness, 3).addEnchantmentForAmmo(Enchantment.sharpness, 3).addEnchantmentForRanged(Enchantment.power, 3);
+			RedSteel                .addEnchantmentForWeapons(Enchantment.sharpness, 3).addEnchantmentForAmmo(Enchantment.sharpness, 3).addEnchantmentForRanged(Enchantment.power, 3);
+			MeteoricRedSteel        .addEnchantmentForWeapons(Enchantment.sharpness, 3).addEnchantmentForAmmo(Enchantment.sharpness, 3).addEnchantmentForRanged(Enchantment.power, 3);
+			BlueSteel               .addEnchantmentForWeapons(Enchantment.sharpness, 3).addEnchantmentForAmmo(Enchantment.sharpness, 3).addEnchantmentForRanged(Enchantment.power, 3);
+			MeteoricBlueSteel       .addEnchantmentForWeapons(Enchantment.sharpness, 3).addEnchantmentForAmmo(Enchantment.sharpness, 3).addEnchantmentForRanged(Enchantment.power, 3);
+			Ti                      .addEnchantmentForWeapons(Enchantment.sharpness, 3).addEnchantmentForAmmo(Enchantment.sharpness, 3).addEnchantmentForRanged(Enchantment.power, 3);
+			TitaniumGold            .addEnchantmentForWeapons(Enchantment.sharpness, 3).addEnchantmentForAmmo(Enchantment.sharpness, 3).addEnchantmentForRanged(Enchantment.power, 3);
+			TungstenAlloy           .addEnchantmentForWeapons(Enchantment.sharpness, 3).addEnchantmentForAmmo(Enchantment.sharpness, 3).addEnchantmentForRanged(Enchantment.power, 3);
+			TungstenSteel           .addEnchantmentForWeapons(Enchantment.sharpness, 4).addEnchantmentForAmmo(Enchantment.sharpness, 4).addEnchantmentForRanged(Enchantment.power, 4);
+			NetherizedDiamond       .addEnchantmentForWeapons(Enchantment.sharpness, 4).addEnchantmentForAmmo(Enchantment.sharpness, 4).addEnchantmentForRanged(Enchantment.power, 4);
+			HSSG                    .addEnchantmentForWeapons(Enchantment.sharpness, 4).addEnchantmentForAmmo(Enchantment.sharpness, 4).addEnchantmentForRanged(Enchantment.power, 4);
+			HSSE                    .addEnchantmentForWeapons(Enchantment.sharpness, 4).addEnchantmentForAmmo(Enchantment.sharpness, 4).addEnchantmentForRanged(Enchantment.power, 4);
+			HSSS                    .addEnchantmentForWeapons(Enchantment.sharpness, 4).addEnchantmentForAmmo(Enchantment.sharpness, 4).addEnchantmentForRanged(Enchantment.power, 4);
+			ShadowSteel             .addEnchantmentForWeapons(Enchantment.sharpness, 4).addEnchantmentForAmmo(Enchantment.sharpness, 4).addEnchantmentForRanged(Enchantment.power, 4);
+			Zanite                  .addEnchantmentForWeapons(Enchantment.sharpness, 4).addEnchantmentForAmmo(Enchantment.sharpness, 4).addEnchantmentForRanged(Enchantment.power, 4);
+			DamascusSteel           .addEnchantmentForWeapons(Enchantment.sharpness, 5).addEnchantmentForAmmo(Enchantment.sharpness, 5).addEnchantmentForRanged(Enchantment.power, 5);
+			Elvorium                .addEnchantmentForWeapons(Enchantment.sharpness, 5).addEnchantmentForAmmo(Enchantment.sharpness, 5).addEnchantmentForRanged(Enchantment.power, 5);
+			InfusedEntropy          .addEnchantmentForWeapons(Enchantment.sharpness, 5).addEnchantmentForAmmo(Enchantment.sharpness, 5).addEnchantmentForRanged(Enchantment.power, 5);
+			Ke                      .addEnchantmentForWeapons(Enchantment.sharpness, 6).addEnchantmentForAmmo(Enchantment.sharpness, 6).addEnchantmentForRanged(Enchantment.power, 6);
+			Trinitanium             .addEnchantmentForWeapons(Enchantment.sharpness, 7).addEnchantmentForAmmo(Enchantment.sharpness, 7).addEnchantmentForRanged(Enchantment.power, 7);
+			Trinaquadalloy          .addEnchantmentForWeapons(Enchantment.sharpness, 8).addEnchantmentForAmmo(Enchantment.sharpness, 8).addEnchantmentForRanged(Enchantment.power, 8);
+			Infinity                .addEnchantmentForWeapons(Enchantment.sharpness,10).addEnchantmentForAmmo(Enchantment.sharpness,10).addEnchantmentForRanged(Enchantment.power,10);
 			
 			
 			Oureclase               .addEnchantmentForArmors(Enchantment.respiration, 3);
@@ -2856,332 +2902,340 @@ public class MT {
 			RedMatter               .addEnchantmentForArmors(Enchantment.blastProtection, 5);
 			Infinity                .addEnchantmentForArmors(Enchantment.blastProtection,10);
 			
-			Yellorite                       .addOreByProducts(Pb                        , Cyanite                   , Yellorium             , Ra                    , RareEarth             );
-			Yellorium                       .addOreByProducts(Pb                        , Cyanite                   , Blutonium             , Am                    );
-			Blutonium                       .addOreByProducts(Pb                        , Yellorium                 , Am                    );
-			Ludicrite                       .addOreByProducts(Pb                        , Blutonium                 , Yellorium             );
 			
-			OREMATS.Pitchblende             .addOreByProducts(Pb                        , Th                        , U_238                 , Ra                    , RareEarth             );
-			OREMATS.Uraninite               .addOreByProducts(Pb                        , Th                        , U_238                 , Ra                    , RareEarth             );
-			U_238                           .addOreByProducts(Pb                        , Th                        , Pu                    , Am                    );
-			Am                              .addOreByProducts(Pb                        , U_238                     , Pu                    );
-			Pu                              .addOreByProducts(Pb                        , U_238                     , Am                    );
-			Th                              .addOreByProducts(Pb                        , U_238                     );
+			OREMATS.Pitchblende             .ores(Pb                        , Ra                        , RareEarth             , Th                    );
+			OREMATS.Uraninite               .ores(Pb                        , Ra                        , RareEarth             , Th                    );
+			Yellorite                       .ores(Pb                        , Ra                        , RareEarth             , Th                    );
 			
-			for (OreDictMaterial tMat : ANY.CaF2.mToThis) tMat.addOreByProducts(OREMATS.Huebnerite, Y, Ce, Fe2O3, Na, Ba);
+			Th                              .ores(Pb                        , Ra                        , RareEarth             );
+			Cyanite                         .ores(Pb                        , Ra                        , RareEarth             );
+			U_238                           .ores(Pb                        , Ra                        , RareEarth             );
+			Yellorium                       .ores(Pb                        , Ra                        , RareEarth             );
+			Pu                              .ores(Pb                        , Ra                        , RareEarth             );
+			Blutonium                       .ores(Pb                        , Ra                        , RareEarth             );
+			Am                              .ores(Pb                        , Ra                        , RareEarth             );
+			Ludicrite                       .ores(Pb                        , Ra                        , RareEarth             );
 			
-			CaF2                            .addOreByProducts(FluoriteGreen             , FluoriteOrange            );
-			FluoriteRed                     .addOreByProducts(FluoritePink              , FluoriteMagenta           );
-			FluoritePink                    .addOreByProducts(FluoriteWhite             , FluoriteRed               );
-			FluoriteBlue                    .addOreByProducts(FluoriteMagenta           , FluoriteBlack             );
-			FluoriteGreen                   .addOreByProducts(FluoriteYellow            , FluoriteBlue              );
-			FluoriteBlack                   .addOreByProducts(FluoriteWhite             , CaF2                      );
-			FluoriteWhite                   .addOreByProducts(FluoriteBlack             , CaF2                      );
-			FluoriteYellow                  .addOreByProducts(FluoriteGreen             , FluoriteOrange            );
-			FluoriteOrange                  .addOreByProducts(FluoriteYellow            , FluoriteRed               );
-			FluoriteMagenta                 .addOreByProducts(FluoritePink              , FluoriteBlue              );
+			for (OreDictMaterial tMat : ANY.CaF2.mToThis) tMat.ores(OREMATS.Huebnerite, Y, Ce, Fe2O3, Na, Ba);
 			
-			S                               .addOreByProducts(Pyrite                    , OREMATS.Sphalerite        , OREMATS.Cinnabar      , OREMATS.Chalcopyrite  , OREMATS.Arsenopyrite  , OREMATS.Galena        , OREMATS.Stibnite      , Gypsum);
-			Se                              .addOreByProducts(Pyrite                    , OREMATS.Galena            , OREMATS.Sphalerite    , In                    , Ga                    , Cd                    );
-			OREMATS.Chalcopyrite            .addOreByProducts(Pyrite                    , OREMATS.Cobaltite         , Cd                    , Au                    , OREMATS.Sperrylite    , OREMATS.Stannite      , In                    );
-			OREMATS.Sperrylite              .addOreByProducts(Sb                        , Cu                        , Fe2O3                 , Rh                    , OREMATS.Cooperite     );
-			OREMATS.Pentlandite             .addOreByProducts(Fe2O3                     , S                         , OREMATS.Cobaltite     , OREMATS.Sperrylite    , Gypsum                );
-			OREMATS.Sphalerite              .addOreByProducts(Cd                        , Ga                        , Zn                    , OREMATS.Kesterite     , Se                    , In                    );
-			OREMATS.Tetrahedrite            .addOreByProducts(Cu                        , Sb                        , Zn                    , OREMATS.Kesterite     );
-			Pyrite                          .addOreByProducts(S                         , Phosphorus                , Fe2O3                 , OREMATS.Stannite      , Se                    );
-			Sn                              .addOreByProducts(OREMATS.Molybdenite       , OREMATS.Wolframite        , FluoriteBlack         , OREMATS.Arsenopyrite  , OREMATS.Stannite      , OREMATS.Sperrylite    , OREMATS.Huebnerite    , Apatite); // Tourmaline
-			OREMATS.Cassiterite             .addOreByProducts(OREMATS.Molybdenite       , OREMATS.Wolframite        , FluoriteWhite         , OREMATS.Arsenopyrite  , OREMATS.Stannite      , OREMATS.Sperrylite    , OREMATS.Huebnerite    , Apatite); // Tourmaline
-			Sb                              .addOreByProducts(Zn                        , OREMATS.Realgar           , OREMATS.Cinnabar      , OREMATS.Galena        , OREMATS.Arsenopyrite  , Pyrite                , OREMATS.Barite        , CaCO3);
-			OREMATS.Stibnite                .addOreByProducts(Sb                        , OREMATS.Realgar           , OREMATS.Cinnabar      , OREMATS.Galena        , OREMATS.Arsenopyrite  , Pyrite                , OREMATS.Barite        , CaCO3);
-			OREMATS.Bauxite                 .addOreByProducts(Kaolinite                 , OREMATS.Ilmenite          , Fe2O3                 , Al2O3                 , AlO3H3                );
-			AlO3H3                          .addOreByProducts(OREMATS.Bauxite           , OREMATS.Ilmenite          , Fe2O3                 , Al2O3                 );
-			OREMATS.Ilmenite                .addOreByProducts(TiO2                      , Fe2O3                     , MgCO3                 , MnO2                  );
-			TiO2                            .addOreByProducts(Fe2O3                     , Zircon                    );
-			Fe2O3                           .addOreByProducts(OREMATS.Ilmenite          , OREMATS.GraniticMineralSand, MnO2                 , ClayRed               );
-			OREMATS.Galena                  .addOreByProducts(OREMATS.Sphalerite        , Ag                        , Pb                    , Se                    , FluoriteRed           , CaCO3);
-			OREMATS.Arsenopyrite            .addOreByProducts(Au                        , OREMATS.Realgar           , FluoriteOrange        , OREMATS.Cassiterite   , OREMATS.Huebnerite    );
-			OREMATS.Cobaltite               .addOreByProducts(Co                        , OREMATS.Realgar           , FluoriteOrange        , OREMATS.Pentlandite   , OREMATS.YellowLimonite);
-			Co_60                           .addOreByProducts(OREMATS.Cobaltite         , OREMATS.Realgar           , FluoriteOrange        , OREMATS.Pentlandite   , OREMATS.YellowLimonite);
-			Co                              .addOreByProducts(OREMATS.Cobaltite         , OREMATS.Realgar           , FluoriteOrange        , OREMATS.Pentlandite   , OREMATS.YellowLimonite);
-			OREMATS.Realgar                 .addOreByProducts(OREMATS.Cobaltite         , OREMATS.Arsenopyrite      );
-			Cu                              .addOreByProducts(OREMATS.Cobaltite         , Au                        , Ni                    , OREMATS.Malachite     );
-			Ni                              .addOreByProducts(OREMATS.Cobaltite         , OREMATS.Cooperite         , Fe2O3                 , OREMATS.Pentlandite   );
-			OREMATS.Stannite                .addOreByProducts(Ge                        , Pyrite                    , OREMATS.Kesterite     );
-			OREMATS.Kesterite               .addOreByProducts(Ge                        , Pyrite                    , OREMATS.Stannite      );
+			CaF2                            .ores(FluoriteGreen             , FluoriteOrange            );
+			FluoriteRed                     .ores(FluoritePink              , FluoriteMagenta           );
+			FluoritePink                    .ores(FluoriteWhite             , FluoriteRed               );
+			FluoriteBlue                    .ores(FluoriteMagenta           , FluoriteBlack             );
+			FluoriteGreen                   .ores(FluoriteYellow            , FluoriteBlue              );
+			FluoriteBlack                   .ores(FluoriteWhite             , CaF2                      );
+			FluoriteWhite                   .ores(FluoriteBlack             , CaF2                      );
+			FluoriteYellow                  .ores(FluoriteGreen             , FluoriteOrange            );
+			FluoriteOrange                  .ores(FluoriteYellow            , FluoriteRed               );
+			FluoriteMagenta                 .ores(FluoritePink              , FluoriteBlue              );
 			
-			OREMATS.Glauconite              .addOreByProducts(Na                        , Al2O3                     , Fe2O3                 );
-			OREMATS.Diatomite               .addOreByProducts(OREMATS.Mica              , Opal                      , Biotite               , OREMATS.Perlite       , Sapphire);
-			OREMATS.Mica                    .addOreByProducts(OREMATS.Vermiculite       , Asbestos                  , Biotite               , OREMATS.Perlite       );
-			OREMATS.Vermiculite             .addOreByProducts(OREMATS.Mica              , Asbestos                  , Biotite               , OREMATS.Diatomite     );
-			Biotite                         .addOreByProducts(OREMATS.Mica              , OREMATS.Vermiculite       , Asbestos              , OREMATS.Perlite       );
-			Asbestos                        .addOreByProducts(OREMATS.Mica              , Biotite                   , Talc                  , Jade                  );
-			Jade                            .addOreByProducts(OREMATS.Mica              , Biotite                   , Talc                  , Asbestos              );
-			Gypsum                          .addOreByProducts(OREMATS.Trona             , OREMATS.Mirabilite        , Asbestos              , Talc                  , S);
-			OREMATS.Mirabilite              .addOreByProducts(OREMATS.Trona             , Gypsum                    );
-			OREMATS.Trona                   .addOreByProducts(OREMATS.Mirabilite        , Gypsum                    );
+			S                               .ores(Pyrite                    , OREMATS.Sphalerite        , OREMATS.Cinnabar      , OREMATS.Chalcopyrite  , OREMATS.Arsenopyrite  , OREMATS.Galena        , OREMATS.Stibnite      , Gypsum);
+			Se                              .ores(Pyrite                    , OREMATS.Galena            , OREMATS.Sphalerite    , In                    , Ga                    , Cd                    );
+			OREMATS.Chalcopyrite            .ores(Pyrite                    , OREMATS.Cobaltite         , Cd                    , Au                    , OREMATS.Sperrylite    , OREMATS.Stannite      , In                    );
+			OREMATS.Sperrylite              .ores(Sb                        , Cu                        , Fe2O3                 , Rh                    , OREMATS.Cooperite     );
+			OREMATS.Pentlandite             .ores(Fe2O3                     , S                         , OREMATS.Cobaltite     , OREMATS.Sperrylite    , Gypsum                );
+			OREMATS.Sphalerite              .ores(Cd                        , Ga                        , Zn                    , OREMATS.Kesterite     , Se                    , In                    );
+			OREMATS.Tetrahedrite            .ores(Cu                        , Sb                        , Zn                    , OREMATS.Kesterite     );
+			Pyrite                          .ores(S                         , Phosphorus                , Fe2O3                 , OREMATS.Stannite      , Se                    );
+			Sn                              .ores(OREMATS.Molybdenite       , OREMATS.Wolframite        , FluoriteBlack         , OREMATS.Arsenopyrite  , OREMATS.Stannite      , OREMATS.Sperrylite    , OREMATS.Huebnerite    , Apatite); // Tourmaline
+			OREMATS.Cassiterite             .ores(OREMATS.Molybdenite       , OREMATS.Wolframite        , FluoriteWhite         , OREMATS.Arsenopyrite  , OREMATS.Stannite      , OREMATS.Sperrylite    , OREMATS.Huebnerite    , Apatite); // Tourmaline
+			Sb                              .ores(Zn                        , OREMATS.Realgar           , OREMATS.Cinnabar      , OREMATS.Galena        , OREMATS.Arsenopyrite  , Pyrite                , OREMATS.Barite        , CaCO3);
+			OREMATS.Stibnite                .ores(Sb                        , OREMATS.Realgar           , OREMATS.Cinnabar      , OREMATS.Galena        , OREMATS.Arsenopyrite  , Pyrite                , OREMATS.Barite        , CaCO3);
+			OREMATS.Bauxite                 .ores(Kaolinite                 , OREMATS.Ilmenite          , Fe2O3                 , Al2O3                 , AlO3H3                );
+			AlO3H3                          .ores(OREMATS.Bauxite           , OREMATS.Ilmenite          , Fe2O3                 , Al2O3                 );
+			OREMATS.Ilmenite                .ores(TiO2                      , Fe2O3                     , MgCO3                 , MnO2                  );
+			TiO2                            .ores(Fe2O3                     , Zircon                    );
+			Fe2O3                           .ores(OREMATS.Ilmenite          , OREMATS.GraniticMineralSand, MnO2                 , ClayRed               );
+			OREMATS.Galena                  .ores(OREMATS.Sphalerite        , Ag                        , Pb                    , Se                    , FluoriteRed           , CaCO3);
+			OREMATS.Arsenopyrite            .ores(Au                        , OREMATS.Realgar           , FluoriteOrange        , OREMATS.Cassiterite   , OREMATS.Huebnerite    );
+			OREMATS.Cobaltite               .ores(Co                        , OREMATS.Realgar           , FluoriteOrange        , OREMATS.Pentlandite   , OREMATS.YellowLimonite);
+			Co_60                           .ores(OREMATS.Cobaltite         , OREMATS.Realgar           , FluoriteOrange        , OREMATS.Pentlandite   , OREMATS.YellowLimonite);
+			Co                              .ores(OREMATS.Cobaltite         , OREMATS.Realgar           , FluoriteOrange        , OREMATS.Pentlandite   , OREMATS.YellowLimonite);
+			OREMATS.Realgar                 .ores(OREMATS.Cobaltite         , OREMATS.Arsenopyrite      );
+			Cu                              .ores(OREMATS.Cobaltite         , Au                        , Ni                    , OREMATS.Malachite     );
+			Ni                              .ores(OREMATS.Cobaltite         , OREMATS.Cooperite         , Fe2O3                 , OREMATS.Pentlandite   );
+			OREMATS.Stannite                .ores(Ge                        , Pyrite                    , OREMATS.Kesterite     );
+			OREMATS.Kesterite               .ores(Ge                        , Pyrite                    , OREMATS.Stannite      );
 			
-			Lapis                           .addOreByProducts(Lazurite                  , Sodalite                  , Pyrite                );
-			OREMATS.Cooperite               .addOreByProducts(Pd                        , Ni                        , Ir                    );
-			OREMATS.Cinnabar                .addOreByProducts(Redstone                  , S                         , Glowstone             , Se                    );
-			OREMATS.Chromite                .addOreByProducts(MnO2                      , Fe2O3                     , MgCO3                 , OREMATS.Bromargyrite  );
-			OREMATS.Bromargyrite            .addOreByProducts(MnO2                      , Ag                        , OREMATS.Chromite      , OREMATS.Smithsonite   );
-			Mn                              .addOreByProducts(MnO2                      , Fe2O3                     , OREMATS.Chromite      );
-			MnO2                            .addOreByProducts(OREMATS.Bromargyrite      , Fe2O3                     , OREMATS.Chromite      );
-			OREMATS.Columbite               .addOreByProducts(OREMATS.Tantalite         , OREMATS.Coltan            , MnO2                  , OREMATS.Ilmenite      );
-			OREMATS.Tantalite               .addOreByProducts(OREMATS.Columbite         , OREMATS.Coltan            , MnO2                  , OREMATS.Ilmenite      );
-			OREMATS.Coltan                  .addOreByProducts(OREMATS.Columbite         , OREMATS.Tantalite         , MnO2                  , OREMATS.Ilmenite      );
+			OREMATS.Glauconite              .ores(Na                        , Al2O3                     , Fe2O3                 );
+			OREMATS.Diatomite               .ores(OREMATS.Mica              , Opal                      , Biotite               , OREMATS.Perlite       , Sapphire);
+			OREMATS.Mica                    .ores(OREMATS.Vermiculite       , Asbestos                  , Biotite               , OREMATS.Perlite       );
+			OREMATS.Vermiculite             .ores(OREMATS.Mica              , Asbestos                  , Biotite               , OREMATS.Diatomite     );
+			Biotite                         .ores(OREMATS.Mica              , OREMATS.Vermiculite       , Asbestos              , OREMATS.Perlite       );
+			Asbestos                        .ores(OREMATS.Mica              , Biotite                   , Talc                  , Jade                  );
+			Jade                            .ores(OREMATS.Mica              , Biotite                   , Talc                  , Asbestos              );
+			Gypsum                          .ores(OREMATS.Trona             , OREMATS.Mirabilite        , Asbestos              , Talc                  , S);
+			OREMATS.Mirabilite              .ores(OREMATS.Trona             , Gypsum                    );
+			OREMATS.Trona                   .ores(OREMATS.Mirabilite        , Gypsum                    );
 			
-			Apatite                         .addOreByProducts(Phosphorite               , PhosphorusBlue            , FluoriteBlue          , PO4                   );
-			Phosphorus                      .addOreByProducts(Phosphorite               , Apatite                   , FluoriteYellow        , PO4                   , PhosphorusRed         , PhosphorusWhite       );
-			PhosphorusBlue                  .addOreByProducts(Phosphorite               , Apatite                   , FluoriteBlue          , PO4                   , PhosphorusRed         , PhosphorusWhite       );
-			PhosphorusRed                   .addOreByProducts(Phosphorite               , Apatite                   , FluoriteRed           , PO4                   , PhosphorusBlue        , PhosphorusWhite       );
-			PhosphorusWhite                 .addOreByProducts(Phosphorite               , Apatite                   , FluoriteWhite         , PO4                   , PhosphorusRed         , PhosphorusBlue        );
-			Phosphorite                     .addOreByProducts(Phosphorus                , Apatite                   , FluoriteYellow        , PO4                   , PhosphorusRed         , PhosphorusWhite       );
-			P                               .addOreByProducts(Phosphorus                , Apatite                   , FluoriteYellow        , PO4                   , PhosphorusRed         , PhosphorusWhite       );
-			PO4                             .addOreByProducts(Phosphorus                , Apatite                   , FluoriteYellow        , Phosphorite           , PhosphorusRed         , PhosphorusWhite       );
+			Lapis                           .ores(Lazurite                  , Sodalite                  , Pyrite                );
+			OREMATS.Cooperite               .ores(Pd                        , Ni                        , Ir                    );
+			OREMATS.Cinnabar                .ores(Redstone                  , S                         , Glowstone             , Se                    );
+			OREMATS.Chromite                .ores(MnO2                      , Fe2O3                     , MgCO3                 , OREMATS.Bromargyrite  );
+			OREMATS.Bromargyrite            .ores(MnO2                      , Ag                        , OREMATS.Chromite      , OREMATS.Smithsonite   );
+			Mn                              .ores(MnO2                      , Fe2O3                     , OREMATS.Chromite      );
+			MnO2                            .ores(OREMATS.Bromargyrite      , Fe2O3                     , OREMATS.Chromite      );
+			OREMATS.Columbite               .ores(OREMATS.Tantalite         , OREMATS.Coltan            , MnO2                  , OREMATS.Ilmenite      );
+			OREMATS.Tantalite               .ores(OREMATS.Columbite         , OREMATS.Coltan            , MnO2                  , OREMATS.Ilmenite      );
+			OREMATS.Coltan                  .ores(OREMATS.Columbite         , OREMATS.Tantalite         , MnO2                  , OREMATS.Ilmenite      );
 			
-			OREMATS.Zeolite                 .addOreByProducts(OREMATS.Pollucite         , NaCl                      );
-			OREMATS.Pollucite               .addOreByProducts(OREMATS.Zeolite           , Cs                        , Rb                    );
+			Apatite                         .ores(Phosphorite               , PhosphorusBlue            , FluoriteBlue          , PO4                   );
+			Phosphorus                      .ores(Phosphorite               , Apatite                   , FluoriteYellow        , PO4                   , PhosphorusRed         , PhosphorusWhite       );
+			PhosphorusBlue                  .ores(Phosphorite               , Apatite                   , FluoriteBlue          , PO4                   , PhosphorusRed         , PhosphorusWhite       );
+			PhosphorusRed                   .ores(Phosphorite               , Apatite                   , FluoriteRed           , PO4                   , PhosphorusBlue        , PhosphorusWhite       );
+			PhosphorusWhite                 .ores(Phosphorite               , Apatite                   , FluoriteWhite         , PO4                   , PhosphorusRed         , PhosphorusBlue        );
+			Phosphorite                     .ores(Phosphorus                , Apatite                   , FluoriteYellow        , PO4                   , PhosphorusRed         , PhosphorusWhite       );
+			P                               .ores(Phosphorus                , Apatite                   , FluoriteYellow        , PO4                   , PhosphorusRed         , PhosphorusWhite       );
+			PO4                             .ores(Phosphorus                , Apatite                   , FluoriteYellow        , Phosphorite           , PhosphorusRed         , PhosphorusWhite       );
 			
-			Be                              .addOreByProducts(Al2O3                     , Emerald                   , Aquamarine            , Morganite             , Goshenite             , Bixbite               , Heliodor              , Maxixe    );
-			Emerald                         .addOreByProducts(Al2O3                     , Be                        , Aquamarine            , Morganite             , Goshenite             , Bixbite               , Heliodor              , Maxixe    );
-			Aquamarine                      .addOreByProducts(Al2O3                     , Be                        , Emerald               , Morganite             , Goshenite             , Bixbite               , Heliodor              , Maxixe    );
-			Morganite                       .addOreByProducts(Al2O3                     , Be                        , Emerald               , Aquamarine            , Goshenite             , Bixbite               , Heliodor              , Maxixe    );
-			Goshenite                       .addOreByProducts(Al2O3                     , Be                        , Emerald               , Aquamarine            , Morganite             , Bixbite               , Heliodor              , Maxixe    );
-			Bixbite                         .addOreByProducts(Al2O3                     , Be                        , Emerald               , Aquamarine            , Morganite             , Goshenite             , Heliodor              , Maxixe    );
-			Heliodor                        .addOreByProducts(Al2O3                     , Be                        , Emerald               , Aquamarine            , Morganite             , Goshenite             , Bixbite               , Maxixe    );
-			Maxixe                          .addOreByProducts(Al2O3                     , Be                        , Emerald               , Aquamarine            , Morganite             , Goshenite             , Bixbite               , Heliodor  );
+			OREMATS.Zeolite                 .ores(OREMATS.Pollucite         , NaCl                      );
+			OREMATS.Pollucite               .ores(OREMATS.Zeolite           , Cs                        , Rb                    );
 			
-			Sapphire                        .addOreByProducts(Ruby                      , PurpleSapphire            , GreenSapphire         );
-			BlueSapphire                    .addOreByProducts(Ruby                      , PurpleSapphire            , GreenSapphire         );
-			GreenSapphire                   .addOreByProducts(Ruby                      , BlueSapphire              , YellowSapphire        );
-			YellowSapphire                  .addOreByProducts(Ruby                      , BlueSapphire              , GreenSapphire         );
-			OrangeSapphire                  .addOreByProducts(Ruby                      , BlueSapphire              , GreenSapphire         );
-			PurpleSapphire                  .addOreByProducts(Ruby                      , BlueSapphire              , GreenSapphire         );
-			Ruby                            .addOreByProducts(OrangeSapphire            , BlueSapphire              , GreenSapphire         );
+			Diamond                         .ores(Graphite                  , DiamondPink               ).addSourceOf(Diamond, Graphite);
+			DiamondBlue                     .ores(Graphite                  , Diamond                   ).addSourceOf(Diamond, Graphite);
+			DiamondGreen                    .ores(Graphite                  , Diamond                   ).addSourceOf(Diamond, Graphite);
+			DiamondPurple                   .ores(Graphite                  , Diamond                   ).addSourceOf(Diamond, Graphite);
+			DiamondRed                      .ores(Graphite                  , Diamond                   ).addSourceOf(Diamond, Graphite);
+			DiamondYellow                   .ores(Graphite                  , Diamond                   ).addSourceOf(Diamond, Graphite);
+			DiamondPink                     .ores(Graphite                  , Diamond                   ).addSourceOf(Diamond, Graphite);
+			ManaDiamond                     .ores(Graphite                  , Diamond                   ).addSourceOf(Diamond, Graphite);
+			ElvenDragonstone                .ores(Graphite                  );
 			
-			Almandine                       .addOreByProducts(Grossular                 , Pyrope                    , Spessartine           , Andradite             , Uvarovite             );
-			Grossular                       .addOreByProducts(Almandine                 , Pyrope                    , Spessartine           , Andradite             , Uvarovite             );
-			Pyrope                          .addOreByProducts(Almandine                 , Grossular                 , Spessartine           , Andradite             , Uvarovite             );
-			Spessartine                     .addOreByProducts(Almandine                 , Grossular                 , Pyrope                , Andradite             , Uvarovite             );
-			Andradite                       .addOreByProducts(Almandine                 , Grossular                 , Pyrope                , Spessartine           , Uvarovite             );
-			Uvarovite                       .addOreByProducts(Almandine                 , Grossular                 , Pyrope                , Spessartine           , Andradite             );
+			Be                              .ores(Al2O3                     , Emerald                   , Aquamarine            , Morganite             , Goshenite             , Bixbite               , Heliodor              , Maxixe    ).addSourceOf(Emerald, Be, Al);
+			Emerald                         .ores(Al2O3                     , Be                        , Aquamarine            , Morganite             , Goshenite             , Bixbite               , Heliodor              , Maxixe    ).addSourceOf(Emerald, Be, Al);
+			Aquamarine                      .ores(Al2O3                     , Be                        , Emerald               , Morganite             , Goshenite             , Bixbite               , Heliodor              , Maxixe    ).addSourceOf(Emerald, Be, Al);
+			Morganite                       .ores(Al2O3                     , Be                        , Emerald               , Aquamarine            , Goshenite             , Bixbite               , Heliodor              , Maxixe    ).addSourceOf(Emerald, Be, Al);
+			Goshenite                       .ores(Al2O3                     , Be                        , Emerald               , Aquamarine            , Morganite             , Bixbite               , Heliodor              , Maxixe    ).addSourceOf(Emerald, Be, Al);
+			Bixbite                         .ores(Al2O3                     , Be                        , Emerald               , Aquamarine            , Morganite             , Goshenite             , Heliodor              , Maxixe    ).addSourceOf(Emerald, Be, Al);
+			Heliodor                        .ores(Al2O3                     , Be                        , Emerald               , Aquamarine            , Morganite             , Goshenite             , Bixbite               , Maxixe    ).addSourceOf(Emerald, Be, Al);
+			Maxixe                          .ores(Al2O3                     , Be                        , Emerald               , Aquamarine            , Morganite             , Goshenite             , Bixbite               , Heliodor  ).addSourceOf(Emerald, Be, Al);
 			
-			Jasper                          .addOreByProducts(JasperOcean               , JasperRainforest          , JasperBlue            , JasperGreen           , JasperYellow          );
-			JasperOcean                     .addOreByProducts(Jasper                    , JasperRainforest          , JasperBlue            , JasperGreen           , JasperYellow          );
-			JasperRainforest                .addOreByProducts(Jasper                    , JasperOcean               , JasperBlue            , JasperGreen           , JasperYellow          );
-			JasperBlue                      .addOreByProducts(Jasper                    , JasperOcean               , JasperRainforest      , JasperGreen           , JasperYellow          );
-			JasperGreen                     .addOreByProducts(Jasper                    , JasperOcean               , JasperRainforest      , JasperBlue            , JasperYellow          );
-			JasperYellow                    .addOreByProducts(Jasper                    , JasperOcean               , JasperRainforest      , JasperBlue            , JasperGreen           );
+			Sapphire                        .ores(Al2O3                     , Ruby                      , GreenSapphire         , BlueSapphire          ).addSourceOf(Sapphire, Al);
+			Ruby                            .ores(Al2O3                     , OrangeSapphire            , GreenSapphire         , BlueSapphire          ).addSourceOf(Sapphire, Al);
+			GreenSapphire                   .ores(Al2O3                     , Ruby                      , YellowSapphire        , BlueSapphire          ).addSourceOf(Sapphire, Al);
+			BlueSapphire                    .ores(Al2O3                     , Ruby                      , GreenSapphire         , PurpleSapphire        ).addSourceOf(Sapphire, Al);
+			YellowSapphire                  .ores(Al2O3                     , Ruby                      , GreenSapphire         , BlueSapphire          ).addSourceOf(Sapphire, Al);
+			OrangeSapphire                  .ores(Al2O3                     , Ruby                      , GreenSapphire         , BlueSapphire          ).addSourceOf(Sapphire, Al);
+			PurpleSapphire                  .ores(Al2O3                     , Ruby                      , GreenSapphire         , BlueSapphire          ).addSourceOf(Sapphire, Al);
 			
-			TigerEyeYellow                  .addOreByProducts(Fe2O3                     , TigerEyeGreen             , TigerEyeRed           , TigerEyeBlue          , TigerEyeBlack         , TigerIron             );
-			TigerEyeGreen                   .addOreByProducts(Fe2O3                     , TigerEyeYellow            , TigerEyeRed           , TigerEyeBlue          , TigerEyeBlack         , TigerIron             );
-			TigerEyeRed                     .addOreByProducts(Fe2O3                     , TigerEyeYellow            , TigerEyeGreen         , TigerEyeBlue          , TigerEyeBlack         , TigerIron             );
-			TigerEyeBlue                    .addOreByProducts(Fe2O3                     , TigerEyeYellow            , TigerEyeGreen         , TigerEyeRed           , TigerEyeBlack         , TigerIron             );
-			TigerEyeBlack                   .addOreByProducts(Fe2O3                     , TigerEyeYellow            , TigerEyeGreen         , TigerEyeRed           , TigerEyeBlue          , TigerIron             );
-			TigerIron                       .addOreByProducts(Fe2O3                     , TigerEyeYellow            , TigerEyeGreen         , TigerEyeRed           , TigerEyeBlue          , TigerEyeBlack         );
+			Almandine                       .ores(Grossular                 , Pyrope                    , Spessartine           , Andradite             , Uvarovite             );
+			Grossular                       .ores(Almandine                 , Pyrope                    , Spessartine           , Andradite             , Uvarovite             );
+			Pyrope                          .ores(Almandine                 , Grossular                 , Spessartine           , Andradite             , Uvarovite             );
+			Spessartine                     .ores(Almandine                 , Grossular                 , Pyrope                , Andradite             , Uvarovite             );
+			Andradite                       .ores(Almandine                 , Grossular                 , Pyrope                , Spessartine           , Uvarovite             );
+			Uvarovite                       .ores(Almandine                 , Grossular                 , Pyrope                , Spessartine           , Andradite             );
 			
-			AventurineGreen                 .addOreByProducts(AventurineBrown           , AventurineYellow          , AventurineBlack       , AventurineBlue        , AventurineRed         );
-			AventurineBrown                 .addOreByProducts(AventurineGreen           , AventurineYellow          , AventurineBlack       , AventurineBlue        , AventurineRed         );
-			AventurineYellow                .addOreByProducts(AventurineGreen           , AventurineBrown           , AventurineBlack       , AventurineBlue        , AventurineRed         );
-			AventurineBlack                 .addOreByProducts(AventurineGreen           , AventurineBrown           , AventurineYellow      , AventurineBlue        , AventurineRed         );
-			AventurineBlue                  .addOreByProducts(AventurineGreen           , AventurineBrown           , AventurineYellow      , AventurineBlack       , AventurineRed         );
-			AventurineRed                   .addOreByProducts(AventurineGreen           , AventurineBrown           , AventurineYellow      , AventurineBlack       , AventurineBlue        );
+			Jasper                          .ores(JasperOcean               , JasperRainforest          , JasperBlue            , JasperGreen           , JasperYellow          );
+			JasperOcean                     .ores(Jasper                    , JasperRainforest          , JasperBlue            , JasperGreen           , JasperYellow          );
+			JasperRainforest                .ores(Jasper                    , JasperOcean               , JasperBlue            , JasperGreen           , JasperYellow          );
+			JasperBlue                      .ores(Jasper                    , JasperOcean               , JasperRainforest      , JasperGreen           , JasperYellow          );
+			JasperGreen                     .ores(Jasper                    , JasperOcean               , JasperRainforest      , JasperBlue            , JasperYellow          );
+			JasperYellow                    .ores(Jasper                    , JasperOcean               , JasperRainforest      , JasperBlue            , JasperGreen           );
 			
-			Spinel                          .addOreByProducts(Al2O3                     , BalasRuby                 );
-			BalasRuby                       .addOreByProducts(OREMATS.Chromite          , Spinel                    );
+			TigerEyeYellow                  .ores(Fe2O3                     , TigerEyeGreen             , TigerEyeRed           , TigerEyeBlue          , TigerEyeBlack         , TigerIron             );
+			TigerEyeGreen                   .ores(Fe2O3                     , TigerEyeYellow            , TigerEyeRed           , TigerEyeBlue          , TigerEyeBlack         , TigerIron             );
+			TigerEyeRed                     .ores(Fe2O3                     , TigerEyeYellow            , TigerEyeGreen         , TigerEyeBlue          , TigerEyeBlack         , TigerIron             );
+			TigerEyeBlue                    .ores(Fe2O3                     , TigerEyeYellow            , TigerEyeGreen         , TigerEyeRed           , TigerEyeBlack         , TigerIron             );
+			TigerEyeBlack                   .ores(Fe2O3                     , TigerEyeYellow            , TigerEyeGreen         , TigerEyeRed           , TigerEyeBlue          , TigerIron             );
+			TigerIron                       .ores(Fe2O3                     , TigerEyeYellow            , TigerEyeGreen         , TigerEyeRed           , TigerEyeBlue          , TigerEyeBlack         );
 			
-			HexoriumRed                     .addOreByProducts(HexoriumWhite             , HexoriumBlack             );
-			HexoriumGreen                   .addOreByProducts(HexoriumWhite             , HexoriumBlack             );
-			HexoriumBlue                    .addOreByProducts(HexoriumWhite             , HexoriumBlack             );
-			HexoriumBlack                   .addOreByProducts(HexoriumRed               , HexoriumGreen             , HexoriumBlue          );
-			HexoriumWhite                   .addOreByProducts(HexoriumRed               , HexoriumGreen             , HexoriumBlue          );
+			AventurineGreen                 .ores(AventurineBrown           , AventurineYellow          , AventurineBlack       , AventurineBlue        , AventurineRed         );
+			AventurineBrown                 .ores(AventurineGreen           , AventurineYellow          , AventurineBlack       , AventurineBlue        , AventurineRed         );
+			AventurineYellow                .ores(AventurineGreen           , AventurineBrown           , AventurineBlack       , AventurineBlue        , AventurineRed         );
+			AventurineBlack                 .ores(AventurineGreen           , AventurineBrown           , AventurineYellow      , AventurineBlue        , AventurineRed         );
+			AventurineBlue                  .ores(AventurineGreen           , AventurineBrown           , AventurineYellow      , AventurineBlack       , AventurineRed         );
+			AventurineRed                   .ores(AventurineGreen           , AventurineBrown           , AventurineYellow      , AventurineBlack       , AventurineBlue        );
 			
-			Clay                            .addOreByProducts(Kaolinite                 , Palygorskite              );
-			ClayBrown                       .addOreByProducts(Clay                      , ClayRed                   );
-			ClayRed                         .addOreByProducts(Bentonite                 , ClayBrown                 );
-			Bentonite                       .addOreByProducts(ClayRed                   , Palygorskite              );
-			Palygorskite                    .addOreByProducts(Kaolinite                 , Bentonite                 );
-			Kaolinite                       .addOreByProducts(ClayBrown                 , Clay                      );
+			Spinel                          .ores(Al2O3                     , BalasRuby                 );
+			BalasRuby                       .ores(OREMATS.Chromite          , Spinel                    );
 			
-			OREMATS.Barite                  .addOreByProducts(CertusQuartz              , STONES.Quartzite          );
-			OREMATS.QuartzSand              .addOreByProducts(CertusQuartz              , STONES.Quartzite          , OREMATS.Barite        );
-			OREMATS.Wollastonite            .addOreByProducts(Fe2O3                     , MgCO3                     , MnO2                  );
+			HexoriumRed                     .ores(HexoriumWhite             , HexoriumBlack             );
+			HexoriumGreen                   .ores(HexoriumWhite             , HexoriumBlack             );
+			HexoriumBlue                    .ores(HexoriumWhite             , HexoriumBlack             );
+			HexoriumBlack                   .ores(HexoriumRed               , HexoriumGreen             , HexoriumBlue          );
+			HexoriumWhite                   .ores(HexoriumRed               , HexoriumGreen             , HexoriumBlue          );
 			
-			Redstone                        .addOreByProducts(OREMATS.Cinnabar          , RareEarth                 , Glowstone             );
-			Nikolite                        .addOreByProducts(Cu                        , RareEarth                 , Azurite               );
+			Clay                            .ores(Kaolinite                 , Palygorskite              );
+			ClayBrown                       .ores(Clay                      , ClayRed                   );
+			ClayRed                         .ores(Bentonite                 , ClayBrown                 );
+			Bentonite                       .ores(ClayRed                   , Palygorskite              );
+			Palygorskite                    .ores(Kaolinite                 , Bentonite                 );
+			Kaolinite                       .ores(ClayBrown                 , Clay                      );
 			
-			Re                              .addOreByProducts(OREMATS.Chalcopyrite      , OREMATS.Molybdenite       );
-			Os                              .addOreByProducts(Ir                        , Pt                        , Ru                    );
-			Ir                              .addOreByProducts(Pt                        , Os                        , Rh                    );
-			Pt                              .addOreByProducts(Ni                        , Ir                        , Pd                    );
-			MeteoricIron                    .addOreByProducts(Ni                        , Ir                        , Pt                    );
-			Au                              .addOreByProducts(Cu                        , Ni                        , OREMATS.Cinnabar      );
-			Ag                              .addOreByProducts(Pb                        , S                         , OREMATS.Bromargyrite  );
-			Nd                              .addOreByProducts(Monazite                  , RareEarth                 );
-			OREMATS.Bastnasite              .addOreByProducts(Monazite                  , RareEarth                 , Nd                    );
-			Monazite                        .addOreByProducts(Th                        , Nd                        , RareEarth             );
-			Forcicium                       .addOreByProducts(Th                        , Nd                        , RareEarth             );
-			Forcillium                      .addOreByProducts(Th                        , Nd                        , RareEarth             );
-			Ge                              .addOreByProducts(Fe2O3                     , Sn                        , OREMATS.Chromite      );
-			Cd                              .addOreByProducts(OREMATS.Chalcopyrite      , OREMATS.Sphalerite        , Se                    );
-			OREMATS.Powellite               .addOreByProducts(OREMATS.Molybdenite       , OREMATS.Scheelite         );
-			OREMATS.Wulfenite               .addOreByProducts(OREMATS.Powellite         , OREMATS.Scheelite         , OREMATS.Molybdenite   , OREMATS.Galena        );
-			Mo                              .addOreByProducts(OREMATS.Powellite         , OREMATS.Scheelite         , Re                    , OREMATS.Wulfenite     , Os);
-			OREMATS.Molybdenite             .addOreByProducts(OREMATS.Powellite         , OREMATS.Scheelite         , Re                    , OREMATS.Wulfenite     , Os);
-			OREMATS.Malachite               .addOreByProducts(Cu                        , OREMATS.BrownLimonite     , CaCO3                 , Azurite);
-			OREMATS.BrownLimonite           .addOreByProducts(OREMATS.Malachite         , OREMATS.YellowLimonite    );
-			OREMATS.YellowLimonite          .addOreByProducts(Ni                        , OREMATS.BrownLimonite     , OREMATS.Cobaltite     );
-			OREMATS.Garnierite              .addOreByProducts(Ni                        , OREMATS.Sperrylite        );
-			OREMATS.Tungstate               .addOreByProducts(MnO2                      , Ag                        , LiCl                  );
-			OREMATS.Scheelite               .addOreByProducts(MnO2                      , OREMATS.Molybdenite       , CaCO3                 );
-			OREMATS.Huebnerite              .addOreByProducts(OREMATS.Wolframite        , OREMATS.Molybdenite       , FluoriteGreen         , OREMATS.Arsenopyrite  , OREMATS.Cassiterite   , Topaz                 ); // Tourmaline, Rhodochrosite
-			OREMATS.Wolframite              .addOreByProducts(OREMATS.Tungstate         , Fe2O3                     , OREMATS.Stannite      , MgCO3);
-			OREMATS.Ferberite               .addOreByProducts(OREMATS.Tungstate         , Fe2O3                     );
-			OREMATS.Russellite              .addOreByProducts(OREMATS.Tungstate         , Bi                        );
-			OREMATS.Stolzite                .addOreByProducts(OREMATS.Tungstate         , Pb                        );
-			OREMATS.Pinalite                .addOreByProducts(OREMATS.Tungstate         , Pb                        );
-			NaCl                            .addOreByProducts(KCl                       , KIO3                      , OREMATS.Borax         );
-			KCl                             .addOreByProducts(KIO3                      , NaCl                      );
-			KIO3                            .addOreByProducts(NaCl                      , KCl                       );
-			Endstone                        .addOreByProducts(He_3                      , Be                        );
-			Endium                          .addOreByProducts(OREMATS.Wolframite        , OREMATS.Sperrylite        , OREMATS.Coltan        , Ke);
+			OREMATS.Barite                  .ores(CertusQuartz              , STONES.Quartzite          );
+			OREMATS.QuartzSand              .ores(CertusQuartz              , STONES.Quartzite          , OREMATS.Barite        );
+			OREMATS.Wollastonite            .ores(Fe2O3                     , MgCO3                     , MnO2                  );
 			
-			Glowstone                       .addOreByProducts(Redstone                  , Au                        , Gloomstone            , FluoriteYellow        );
-			GlowstoneCeres                  .addOreByProducts(Redstone                  , Au                        , Glowstone             );
-			GlowstoneIo                     .addOreByProducts(Redstone                  , Au                        , Glowstone             );
-			GlowstoneEnceladus              .addOreByProducts(Redstone                  , Au                        , Glowstone             );
-			GlowstoneProteus                .addOreByProducts(Redstone                  , Au                        , Glowstone             );
-			GlowstonePluto                  .addOreByProducts(Redstone                  , Au                        , Glowstone             );
-			Gloomstone                      .addOreByProducts(Redstone                  , Au                        , Glowstone             , FluoriteBlue          );
-			Efrine                          .addOreByProducts(SoulSand                  , Be                        , OREMATS.Pentlandite   , Zircon                , FluoriteGreen);
-			AncientDebris                   .addOreByProducts(SoulSand                  , Efrine                    , OREMATS.Huebnerite    , Firestone             );
-			Firestone                       .addOreByProducts(NetherQuartz              , VoidQuartz                , PhosphorusRed         , FluoriteRed           );
-			SoulSand                        .addOreByProducts(Coal                      , NetherQuartz              , Niter                 , Gloomstone            );
-			NetherQuartz                    .addOreByProducts(OREMATS.Barite            , Efrine                    , VoidQuartz            , FluoriteWhite         );
-			VoidQuartz                      .addOreByProducts(OREMATS.Barite            , Efrine                    , NetherQuartz          , FluoriteMagenta       );
-			STONES.Quartzite                .addOreByProducts(CertusQuartz              , OREMATS.Barite            , Fe2O3                 );
-			MilkyQuartz                     .addOreByProducts(CertusQuartz              , OREMATS.Barite            );
-			CertusQuartz                    .addOreByProducts(MilkyQuartz               , OREMATS.Barite            );
-			ChargedCertusQuartz             .addOreByProducts(MilkyQuartz               , OREMATS.Barite            );
-			BlackQuartz                     .addOreByProducts(MilkyQuartz               , OREMATS.Barite            );
+			Redstone                        .ores(OREMATS.Cinnabar          , RareEarth                 , Glowstone             );
+			Nikolite                        .ores(Cu                        , RareEarth                 , Azurite               );
 			
-			Syrmorite                       .addOreByProducts(OREMATS.Stannite          , OREMATS.Tetrahedrite      , Be                    );
-			Octine                          .addOreByProducts(OREMATS.Pentlandite       , OREMATS.Huebnerite        , Zircon                );
+			Re                              .ores(OREMATS.Chalcopyrite      , OREMATS.Molybdenite       );
+			Os                              .ores(Ir                        , Pt                        , Ru                    );
+			Ir                              .ores(Pt                        , Os                        , Rh                    );
+			Pt                              .ores(Ni                        , Ir                        , Pd                    );
+			MeteoricIron                    .ores(Ni                        , Ir                        , Pt                    );
+			Au                              .ores(Cu                        , Ni                        , OREMATS.Cinnabar      );
+			Ag                              .ores(Pb                        , S                         , OREMATS.Bromargyrite  );
+			Nd                              .ores(Monazite                  , RareEarth                 );
+			OREMATS.Bastnasite              .ores(Monazite                  , RareEarth                 , Nd                    );
+			Monazite                        .ores(Th                        , Nd                        , RareEarth             );
+			Forcicium                       .ores(Th                        , Nd                        , RareEarth             );
+			Forcillium                      .ores(Th                        , Nd                        , RareEarth             );
+			Ge                              .ores(Fe2O3                     , Sn                        , OREMATS.Chromite      );
+			Cd                              .ores(OREMATS.Chalcopyrite      , OREMATS.Sphalerite        , Se                    );
+			OREMATS.Powellite               .ores(OREMATS.Molybdenite       , OREMATS.Scheelite         );
+			OREMATS.Wulfenite               .ores(OREMATS.Powellite         , OREMATS.Scheelite         , OREMATS.Molybdenite   , OREMATS.Galena        );
+			Mo                              .ores(OREMATS.Powellite         , OREMATS.Scheelite         , Re                    , OREMATS.Wulfenite     , Os);
+			OREMATS.Molybdenite             .ores(OREMATS.Powellite         , OREMATS.Scheelite         , Re                    , OREMATS.Wulfenite     , Os);
+			OREMATS.Malachite               .ores(Cu                        , OREMATS.BrownLimonite     , CaCO3                 , Azurite);
+			OREMATS.BrownLimonite           .ores(OREMATS.Malachite         , OREMATS.YellowLimonite    );
+			OREMATS.YellowLimonite          .ores(Ni                        , OREMATS.BrownLimonite     , OREMATS.Cobaltite     );
+			OREMATS.Garnierite              .ores(Ni                        , OREMATS.Sperrylite        );
+			OREMATS.Tungstate               .ores(MnO2                      , Ag                        , LiCl                  );
+			OREMATS.Scheelite               .ores(MnO2                      , OREMATS.Molybdenite       , CaCO3                 );
+			OREMATS.Huebnerite              .ores(OREMATS.Wolframite        , OREMATS.Molybdenite       , FluoriteGreen         , OREMATS.Arsenopyrite  , OREMATS.Cassiterite   , Topaz                 ); // Tourmaline, Rhodochrosite
+			OREMATS.Wolframite              .ores(OREMATS.Tungstate         , Fe2O3                     , OREMATS.Stannite      , MgCO3);
+			OREMATS.Ferberite               .ores(OREMATS.Tungstate         , Fe2O3                     );
+			OREMATS.Russellite              .ores(OREMATS.Tungstate         , Bi                        );
+			OREMATS.Stolzite                .ores(OREMATS.Tungstate         , Pb                        );
+			OREMATS.Pinalite                .ores(OREMATS.Tungstate         , Pb                        );
+			NaCl                            .ores(KCl                       , KIO3                      , OREMATS.Borax         );
+			KCl                             .ores(KIO3                      , NaCl                      );
+			KIO3                            .ores(NaCl                      , KCl                       );
+			Endstone                        .ores(He_3                      , Be                        );
+			Endium                          .ores(OREMATS.Wolframite        , OREMATS.Sperrylite        , OREMATS.Coltan        , Ke);
 			
-			Ga                              .addOreByProducts(Zn                        , Se                        );
-			Zn                              .addOreByProducts(Sn                        , Ga                        );
-			OREMATS.Lepidolite              .addOreByProducts(LiCl                      , Cs                        , Rb                    );
-			OREMATS.Spodumene               .addOreByProducts(Al2O3                     , LiCl                      );
-			OREMATS.Kyanite                 .addOreByProducts(STONES.Quartzite          , OREMATS.Lepidolite        , OREMATS.Spodumene     );
-			OREMATS.Alunite                 .addOreByProducts(STONES.Quartzite          );
-			OREMATS.Smithsonite             .addOreByProducts(Zn                        , OREMATS.Bromargyrite      );
-			Pb                              .addOreByProducts(Ag                        , S                         );
-			Electrum                        .addOreByProducts(Au                        , Ag                        );
-			Bronze                          .addOreByProducts(Cu                        , Sn                        );
-			Brass                           .addOreByProducts(Cu                        , Zn                        );
-			Coal                            .addOreByProducts(Lignite                   , S                         );
-			Lignite                         .addOreByProducts(Coal                      , S                         , Ge                    );
+			Glowstone                       .ores(Redstone                  , Au                        , Gloomstone            , FluoriteYellow        );
+			GlowstoneCeres                  .ores(Redstone                  , Au                        , Glowstone             );
+			GlowstoneIo                     .ores(Redstone                  , Au                        , Glowstone             );
+			GlowstoneEnceladus              .ores(Redstone                  , Au                        , Glowstone             );
+			GlowstoneProteus                .ores(Redstone                  , Au                        , Glowstone             );
+			GlowstonePluto                  .ores(Redstone                  , Au                        , Glowstone             );
+			Gloomstone                      .ores(Redstone                  , Au                        , Glowstone             , FluoriteBlue          );
+			Efrine                          .ores(SoulSand                  , Be                        , OREMATS.Pentlandite   , Zircon                , FluoriteGreen);
+			AncientDebris                   .ores(SoulSand                  , Efrine                    , OREMATS.Huebnerite    , Firestone             );
+			Firestone                       .ores(NetherQuartz              , VoidQuartz                , PhosphorusRed         , FluoriteRed           );
+			SoulSand                        .ores(Coal                      , NetherQuartz              , Niter                 , Gloomstone            );
+			NetherQuartz                    .ores(OREMATS.Barite            , Efrine                    , VoidQuartz            , FluoriteWhite         );
+			VoidQuartz                      .ores(OREMATS.Barite            , Efrine                    , NetherQuartz          , FluoriteMagenta       );
+			STONES.Quartzite                .ores(CertusQuartz              , OREMATS.Barite            , Fe2O3                 );
+			MilkyQuartz                     .ores(CertusQuartz              , OREMATS.Barite            );
+			CertusQuartz                    .ores(MilkyQuartz               , OREMATS.Barite            );
+			ChargedCertusQuartz             .ores(MilkyQuartz               , OREMATS.Barite            );
+			BlackQuartz                     .ores(MilkyQuartz               , OREMATS.Barite            );
 			
-			Al2O3                           .addOreByProducts(OREMATS.Bauxite           , Al2O3                     , AlO3H3                );
-			Bi                              .addOreByProducts(OREMATS.Russellite        , OREMATS.Galena            , OREMATS.Kesterite     );
-			Cr                              .addOreByProducts(OREMATS.Chromite          , Fe2O3                     , MgCO3                 );
-			OREMATS.Ferrovanadium           .addOreByProducts(OREMATS.Magnetite         , VanadiumPentoxide         );
-			OREMATS.Magnetite               .addOreByProducts(Fe2O3                     , Au                        , Stone);
-			OREMATS.GraniticMineralSand     .addOreByProducts(Fe2O3                     , Au                        , STONES.GraniteBlack);
-			OREMATS.BasalticMineralSand     .addOreByProducts(Fe2O3                     , Au                        , STONES.Basalt);
-			OREMATS.Celestine               .addOreByProducts(Sr                        , S                         );
-			Lazurite                        .addOreByProducts(Sodalite                  , Lapis                     );
-			Sodalite                        .addOreByProducts(Lazurite                  , Lapis                     );
-			Zr                              .addOreByProducts(TiO2                      , Hf                        );
-			Zircon                          .addOreByProducts(TiO2                      , Hf                        , OREMATS.Uraninite     );
-			Eudialyte                       .addOreByProducts(Zircon                    , RareEarth                 , Hf                    , Pb                    );
-			Azurite                         .addOreByProducts(Zircon                    , OREMATS.Malachite         , Hf                    ); // Niccolite byproduct?
-			Adamantine                      .addOreByProducts(OREMATS.GraniticMineralSand);
-			Diamond                         .addOreByProducts(Graphite                  , DiamondPink               );
-			DiamondPink                     .addOreByProducts(Graphite                  , Diamond                   );
-			ManaDiamond                     .addOreByProducts(Graphite                  , Diamond                   );
-			ElvenDragonstone                .addOreByProducts(Graphite                  );
-			Olivine                         .addOreByProducts(Obsidian                  , MgCO3                     );
-			PigIron                         .addOreByProducts(Fe2O3                     );
-			DarkIron                        .addOreByProducts(Fe2O3                     );
-			Steel                           .addOreByProducts(Fe2O3                     );
-			MeteoricSteel                   .addOreByProducts(Fe2O3                     );
-			Graphite                        .addOreByProducts(C                         );
-			MgCO3                           .addOreByProducts(OREMATS.Cobaltite         , MnO2                      );
-			CaCO3                           .addOreByProducts(OREMATS.Malachite         );
-			OREMATS.Borax                   .addOreByProducts(B                         , NaCl                      );
-			Netherrack                      .addOreByProducts(S                         );
-			Flint                           .addOreByProducts(Obsidian                  );
-			NaNO3                           .addOreByProducts(KNO3                      , Niter                     );
-			KNO3                            .addOreByProducts(NaNO3                     , Niter                     );
-			Niter                           .addOreByProducts(KNO3                      , NaNO3                     );
-			Hf                              .addOreByProducts(Zircon                    );
-			Mg                              .addOreByProducts(Olivine                   , MgCO3                     );
-			Obsidian                        .addOreByProducts(Olivine                   , MgCO3                     );
-			OREMATS.Perlite                 .addOreByProducts(Olivine                   , MgCO3                     );
-			STONES.Redrock                  .addOreByProducts(ClayRed                   );
-			STONES.Limestone                .addOreByProducts(CaCO3                     );
-			STONES.Marble                   .addOreByProducts(CaCO3                     );
-			STONES.Eclogite                 .addOreByProducts(TiO2                      );
-			STONES.Limestone                .addOreByProducts(Phosphorite               );
-			Tanzanite                       .addOreByProducts(Opal                      );
-			Opal                            .addOreByProducts(Tanzanite                 );
-			Topaz                           .addOreByProducts(BlueTopaz                 );
-			BlueTopaz                       .addOreByProducts(Topaz                     );
-			In                              .addOreByProducts(Se                        );
-			Li                              .addOreByProducts(LiCl                      );
-			LiCl                            .addOreByProducts(Li                        );
+			Syrmorite                       .ores(OREMATS.Stannite          , OREMATS.Tetrahedrite      , Be                    );
+			Octine                          .ores(OREMATS.Pentlandite       , OREMATS.Huebnerite        , Zircon                );
+			
+			Ga                              .ores(Zn                        , Se                        );
+			Zn                              .ores(Sn                        , Ga                        );
+			OREMATS.Lepidolite              .ores(LiCl                      , Cs                        , Rb                    );
+			OREMATS.Spodumene               .ores(Al2O3                     , LiCl                      );
+			OREMATS.Kyanite                 .ores(STONES.Quartzite          , OREMATS.Lepidolite        , OREMATS.Spodumene     );
+			OREMATS.Alunite                 .ores(STONES.Quartzite          );
+			OREMATS.Smithsonite             .ores(Zn                        , OREMATS.Bromargyrite      );
+			Pb                              .ores(Ag                        , S                         );
+			Electrum                        .ores(Au                        , Ag                        );
+			Bronze                          .ores(Cu                        , Sn                        );
+			Brass                           .ores(Cu                        , Zn                        );
+			Coal                            .ores(Lignite                   , S                         );
+			Lignite                         .ores(Coal                      , S                         , Ge                    );
+			
+			Al2O3                           .ores(OREMATS.Bauxite           , Al2O3                     , AlO3H3                );
+			Bi                              .ores(OREMATS.Russellite        , OREMATS.Galena            , OREMATS.Kesterite     );
+			Cr                              .ores(OREMATS.Chromite          , Fe2O3                     , MgCO3                 );
+			OREMATS.Ferrovanadium           .ores(OREMATS.Magnetite         , VanadiumPentoxide         );
+			OREMATS.Magnetite               .ores(Fe2O3                     , Au                        , Stone);
+			OREMATS.GraniticMineralSand     .ores(Fe2O3                     , Au                        , STONES.GraniteBlack);
+			OREMATS.BasalticMineralSand     .ores(Fe2O3                     , Au                        , STONES.Basalt);
+			OREMATS.Celestine               .ores(Sr                        , S                         );
+			Lazurite                        .ores(Sodalite                  , Lapis                     );
+			Sodalite                        .ores(Lazurite                  , Lapis                     );
+			Zr                              .ores(TiO2                      , Hf                        );
+			Zircon                          .ores(TiO2                      , Hf                        , OREMATS.Uraninite     );
+			Eudialyte                       .ores(Zircon                    , RareEarth                 , Hf                    , Pb                    );
+			Azurite                         .ores(Zircon                    , OREMATS.Malachite         , Hf                    ); // Niccolite byproduct?
+			Adamantine                      .ores(OREMATS.GraniticMineralSand);
+			Olivine                         .ores(Obsidian                  , MgCO3                     );
+			PigIron                         .ores(Fe2O3                     );
+			DarkIron                        .ores(Fe2O3                     );
+			Steel                           .ores(Fe2O3                     );
+			MeteoricSteel                   .ores(Fe2O3                     );
+			Graphite                        .ores(C                         );
+			MgCO3                           .ores(OREMATS.Cobaltite         , MnO2                      );
+			CaCO3                           .ores(OREMATS.Malachite         );
+			OREMATS.Borax                   .ores(B                         , NaCl                      );
+			Netherrack                      .ores(S                         );
+			Flint                           .ores(Obsidian                  );
+			NaNO3                           .ores(KNO3                      , Niter                     );
+			KNO3                            .ores(NaNO3                     , Niter                     );
+			Niter                           .ores(KNO3                      , NaNO3                     );
+			Hf                              .ores(Zircon                    );
+			Mg                              .ores(Olivine                   , MgCO3                     );
+			Obsidian                        .ores(Olivine                   , MgCO3                     );
+			OREMATS.Perlite                 .ores(Olivine                   , MgCO3                     );
+			STONES.Redrock                  .ores(ClayRed                   );
+			STONES.Limestone                .ores(CaCO3                     );
+			STONES.Marble                   .ores(CaCO3                     );
+			STONES.Eclogite                 .ores(TiO2                      );
+			STONES.Limestone                .ores(Phosphorite               );
+			Tanzanite                       .ores(Opal                      );
+			Opal                            .ores(Tanzanite                 );
+			Topaz                           .ores(BlueTopaz                 );
+			BlueTopaz                       .ores(Topaz                     );
+			In                              .ores(Se                        );
+			Li                              .ores(LiCl                      );
+			LiCl                            .ores(Li                        );
 			
 			
-			Nq_528                          .addOreByProducts(Nq                        , Nq_522                      , OREMATS.DuraniumHexafluoride);
-			Nq_522                          .addOreByProducts(Nq                        , Nq_528                      , OREMATS.TritaniumHexafluoride);
-			Nq                              .addOreByProducts(Nq_528                    , OREMATS.DuraniumHexachloride);
-			Ke                              .addOreByProducts(Sn                        , TiO2                        , Fe2O3, OREMATS.DuraniumHexaiodide);
-			Dn                              .addOreByProducts(OREMATS.TritaniumDioxide  , Ke                          );
-			DuraniumAlloy                   .addOreByProducts(OREMATS.TritaniumDioxide  , Ke                          );
-			OREMATS.DiduraniumTrioxide      .addOreByProducts(OREMATS.TritaniumDioxide  , Ke                          );
-			Tn                              .addOreByProducts(OREMATS.DiduraniumTrioxide, Ke                          );
-			TritaniumAlloy                  .addOreByProducts(OREMATS.DiduraniumTrioxide, Ke                          );
-			OREMATS.TritaniumDioxide        .addOreByProducts(OREMATS.DiduraniumTrioxide, Ke                          );
-			Dolamide                        .addOreByProducts(Dilithium                 , OREMATS.DiduraniumTrioxide  , OREMATS.DuraniumHexafluoride, OREMATS.DuraniumHexabromide);
-			Desh                            .addOreByProducts(Dolamide                  , OREMATS.DuraniumHexaiodide  , OREMATS.DuraniumHexachloride, OREMATS.DuraniumHexaastatide, OREMATS.Columbite, OREMATS.Cobaltite, Monazite, LiCl);
-			OREMATS.DuraniumHexafluoride    .addOreByProducts(OREMATS.DiduraniumTrioxide, FluoritePink                );
-			OREMATS.DuraniumHexachloride    .addOreByProducts(OREMATS.DiduraniumTrioxide, NaCl                        , KCl);
-			OREMATS.DuraniumHexabromide     .addOreByProducts(OREMATS.DiduraniumTrioxide, OREMATS.Bromargyrite        );
-			OREMATS.DuraniumHexaiodide      .addOreByProducts(OREMATS.DiduraniumTrioxide, KIO3                        );
-			OREMATS.DuraniumHexaastatide    .addOreByProducts(OREMATS.DiduraniumTrioxide, At                          );
-			OREMATS.TritaniumHexafluoride   .addOreByProducts(OREMATS.TritaniumDioxide  , FluoriteMagenta             );
-			OREMATS.TritaniumHexachloride   .addOreByProducts(OREMATS.TritaniumDioxide  , NaCl                        , KCl);
-			OREMATS.TritaniumHexabromide    .addOreByProducts(OREMATS.TritaniumDioxide  , OREMATS.Bromargyrite        );
-			OREMATS.TritaniumHexaiodide     .addOreByProducts(OREMATS.TritaniumDioxide  , KIO3                        );
-			OREMATS.TritaniumHexaastatide   .addOreByProducts(OREMATS.TritaniumDioxide  , At                          );
+			Nq_528                          .ores(Nq                        , OREMATS.DuraniumHexafluoride);
+			Nq_522                          .ores(Nq                        , OREMATS.TritaniumHexafluoride);
+			Nq                              .ores(OREMATS.DuraniumHexachloride, OREMATS.TritaniumHexafluoride);
+			Ke                              .ores(Sn                        , TiO2                        , Fe2O3, OREMATS.DuraniumHexaiodide);
+			Dn                              .ores(OREMATS.TritaniumDioxide  , Ke                          );
+			DuraniumAlloy                   .ores(OREMATS.TritaniumDioxide  , Ke                          );
+			OREMATS.DiduraniumTrioxide      .ores(OREMATS.TritaniumDioxide  , Ke                          );
+			Tn                              .ores(OREMATS.DiduraniumTrioxide, Ke                          );
+			TritaniumAlloy                  .ores(OREMATS.DiduraniumTrioxide, Ke                          );
+			OREMATS.TritaniumDioxide        .ores(OREMATS.DiduraniumTrioxide, Ke                          );
+			Dolamide                        .ores(Dilithium                 , OREMATS.DiduraniumTrioxide  , OREMATS.DuraniumHexafluoride, OREMATS.DuraniumHexabromide);
+			Desh                            .ores(Dolamide                  , OREMATS.DuraniumHexaiodide  , OREMATS.DuraniumHexachloride, OREMATS.DuraniumHexaastatide, OREMATS.Columbite, OREMATS.Cobaltite, Monazite, LiCl);
+			OREMATS.DuraniumHexafluoride    .ores(OREMATS.DiduraniumTrioxide, FluoritePink                );
+			OREMATS.DuraniumHexachloride    .ores(OREMATS.DiduraniumTrioxide, NaCl                        , KCl);
+			OREMATS.DuraniumHexabromide     .ores(OREMATS.DiduraniumTrioxide, OREMATS.Bromargyrite        );
+			OREMATS.DuraniumHexaiodide      .ores(OREMATS.DiduraniumTrioxide, KIO3                        );
+			OREMATS.DuraniumHexaastatide    .ores(OREMATS.DiduraniumTrioxide, At                          );
+			OREMATS.TritaniumHexafluoride   .ores(OREMATS.TritaniumDioxide  , FluoriteMagenta             );
+			OREMATS.TritaniumHexachloride   .ores(OREMATS.TritaniumDioxide  , NaCl                        , KCl);
+			OREMATS.TritaniumHexabromide    .ores(OREMATS.TritaniumDioxide  , OREMATS.Bromargyrite        );
+			OREMATS.TritaniumHexaiodide     .ores(OREMATS.TritaniumDioxide  , KIO3                        );
+			OREMATS.TritaniumHexaastatide   .ores(OREMATS.TritaniumDioxide  , At                          );
 			
 
-			Ardite                          .addOreByProducts(OREMATS.Cobaltite         );
-			Aredrite                        .addOreByProducts(OREMATS.Cobaltite         );
-			Alduorite                       .addOreByProducts(Cd                        );
-			Infuscolium                     .addOreByProducts(OREMATS.Malachite         );
-			Rubracium                       .addOreByProducts(OREMATS.Chromite          );
-			Meutoite                        .addOreByProducts(VanadiumPentoxide         );
-			Lemurite                        .addOreByProducts(MgCO3                     );
-			Ceruclase                       .addOreByProducts(OREMATS.Stibnite          );
-			Atl                             .addOreByProducts(TiO2                      );
-			Oureclase                       .addOreByProducts(OREMATS.Pentlandite       );
-			Kalendrite                      .addOreByProducts(Os                        );
-			Orichalcum                      .addOreByProducts(Cs                        );
-			Carmot                          .addOreByProducts(Zn                        );
-			Sanguinite                      .addOreByProducts(Hg                        );
-			Vyroxeres                       .addOreByProducts(Ir                        );
-			Eximite                         .addOreByProducts(Pd                        );
-			Prometheum                      .addOreByProducts(OREMATS.Cobaltite         );
-			Ignatius                        .addOreByProducts(Se                        , In);
-			Vulcanite                       .addOreByProducts(OREMATS.Wolframite        );
-			DeepIron                        .addOreByProducts(Fe2O3                     );
-			ShadowIron                      .addOreByProducts(Fe2O3                     );
-			AstralSilver                    .addOreByProducts(Ag                        );
-			Midasium                        .addOreByProducts(Au                        );
-			Mithril                         .addOreByProducts(Pt                        );
+			Ardite                          .ores(OREMATS.Cobaltite         );
+			Aredrite                        .ores(OREMATS.Cobaltite         );
+			Alduorite                       .ores(Cd                        );
+			Infuscolium                     .ores(OREMATS.Malachite         );
+			Rubracium                       .ores(OREMATS.Chromite          );
+			Meutoite                        .ores(VanadiumPentoxide         );
+			Lemurite                        .ores(MgCO3                     );
+			Ceruclase                       .ores(OREMATS.Stibnite          );
+			Atl                             .ores(TiO2                      );
+			Oureclase                       .ores(OREMATS.Pentlandite       );
+			Kalendrite                      .ores(Os                        );
+			Orichalcum                      .ores(Cs                        );
+			Carmot                          .ores(Zn                        );
+			Sanguinite                      .ores(Hg                        );
+			Vyroxeres                       .ores(Ir                        );
+			Eximite                         .ores(Pd                        );
+			Prometheum                      .ores(OREMATS.Cobaltite         );
+			Ignatius                        .ores(Se                        , In);
+			Vulcanite                       .ores(OREMATS.Wolframite        );
+			DeepIron                        .ores(Fe2O3                     );
+			ShadowIron                      .ores(Fe2O3                     );
+			AstralSilver                    .ores(Ag                        );
+			Midasium                        .ores(Au                        );
+			Mithril                         .ores(Pt                        );
 			
 			
 			
@@ -3515,15 +3569,13 @@ public class MT {
 			OP.circuit.dat(Quantum)
 		};
 		
+		public static final OreDictMaterial[]
+		Dye_Materials           = {Black, Red, Green, Brown, Blue, Purple, Cyan, LightGray, Gray, Pink, Lime, Yellow, LightBlue, Magenta, Orange, White},
 		
-		
-		public static final OreDictMaterial
-		Dye_Materials[]             = {Black, Red, Green, Brown, Blue, Purple, Cyan, LightGray, Gray, Pink, Lime, Yellow, LightBlue, Magenta, Orange, White},
-		
-		Heat_T[]                    = {ANY.Stone, ANY.Steel      , Invar    , Ti            , TungstenCarbide, ANY.W   , ANY.W          , ANY.W          , ANY.W          , ANY.W          , ANY.W          , ANY.W          , ANY.W          , ANY.W          , ANY.W          , ANY.W          },
-		Kinetic_T[]                 = {ANY.Wood , Bronze         , ANY.Steel, Ti            , TungstenSteel  , Ir      , Os             , Os             , Os             , Os             , Os             , Os             , Os             , Os             , Os             , Os             },
-		Electric_T[]                = {TinAlloy , SteelGalvanized, Al       , StainlessSteel, Cr             , Ti      , Ir             , Os             , Trinitanium    , Trinaquadalloy , Neutronium     , Neutronium     , Neutronium     , Neutronium     , Neutronium     , Neutronium     },
-		Flux_T[]                    = {Sn       , Pb             , Invar    , Electrum      , EnderiumBase   , Enderium, TungstenCarbide, TungstenCarbide, TungstenCarbide, TungstenCarbide, TungstenCarbide, TungstenCarbide, TungstenCarbide, TungstenCarbide, TungstenCarbide, TungstenCarbide};
+		Heat_T                  = {ANY.Stone, ANY.Steel      , Invar    , Ti            , TungstenCarbide, ANY.W   , ANY.W          , ANY.W          , ANY.W          , ANY.W          , ANY.W          , ANY.W          , ANY.W          , ANY.W          , ANY.W          , ANY.W          },
+		Kinetic_T               = {ANY.Wood , Bronze         , ANY.Steel, Ti            , TungstenSteel  , Ir      , Os             , Os             , Os             , Os             , Os             , Os             , Os             , Os             , Os             , Os             },
+		Electric_T              = {TinAlloy , SteelGalvanized, Al       , StainlessSteel, Cr             , Ti      , Ir             , Os             , Trinitanium    , Trinaquadalloy , Neutronium     , Neutronium     , Neutronium     , Neutronium     , Neutronium     , Neutronium     },
+		Flux_T                  = {Sn       , Pb             , Invar    , Electrum      , EnderiumBase   , Enderium, TungstenCarbide, TungstenCarbide, TungstenCarbide, TungstenCarbide, TungstenCarbide, TungstenCarbide, TungstenCarbide, TungstenCarbide, TungstenCarbide, TungstenCarbide};
 	}
 	
 	/** The Section where I place regular Ores that are only used in advanced processing anyways due to complexity. */
@@ -3532,106 +3584,106 @@ public class MT {
 		public static final OreDictMaterial Pyrolusite = MnO2, Rutile = TiO2, Hematite = Fe2O3, Magnesite = MgCO3, Gypsum = MT.Gypsum, Bentonite = MT.Bentonite, FullersEarth = Palygorskite, Kaolinite = MT.Kaolinite;
 		
 		public static final OreDictMaterial
-		Cassiterite             = oredustelec( 9108, "Cassiterite"               , SET_METALLIC  , 220, 220, 220, 255, MORTAR, FURNACE, "CassiteriteSand"                                             ).setSmelting(Sn   , 3*U4).setMcfg( 1, Sn             , 1*U, O                , 2*U)                                                                                                .heat(3 * Sn.mMeltingPoint / 2), CassiteriteSand = Cassiterite,
-		Garnierite              = oredustelec( 9118, "Garnierite"                , SET_METALLIC  ,  50, 200,  70, 255, MORTAR, BLACKLISTED_SMELTER, MAGNETIC_PASSIVE, WASHING_PERSULFATE              ).setSmelting(Ni   , 3*U4).setMcfg( 1, Ni             , 1*U, O                , 1*U)                                                                                                .qual(0),
-		Uraninite               = oredustdcmp( 9134, "Uraninite"                 , SET_RAD       ,  35,  35,  35, 255, BLACKLISTED_SMELTER                                                            ).setSmelting(U_238,   U3).setMcfg( 1, U_238          , 1*U, O                , 2*U)                                                                                                ,
-		Magnetite               = oredustdcmp( 9122, "Magnetite"                 , SET_METALLIC  ,  30,  30,  30, 255, MORTAR, MELTING, MAGNETIC_PASSIVE                                              )                         .setMcfg( 0, Fe             , 3*U, O                , 4*U)                                                                                                .qual(0).heat(Fe.mMeltingPoint).aspects(TC.METALLUM, 2, TC.MAGNETO, 1),
-		BasalticMineralSand     = oredustdcmp( 9003, "Basaltic Mineral Sand"     , SET_METALLIC  ,  40,  50,  40, 255, MORTAR, MELTING, MAGNETIC_PASSIVE                                              )                         .setMcfg( 0, Fe             , 3*U, O                , 4*U)                                                                                                .qual(0).heat(Fe.mMeltingPoint).aspects(TC.METALLUM, 2, TC.MAGNETO, 1),
-		GraniticMineralSand     = oredustdcmp( 9004, "Granitic Mineral Sand"     , SET_METALLIC  ,  40,  60,  60, 255, MORTAR, MELTING, MAGNETIC_PASSIVE                                              )                         .setMcfg( 0, Fe             , 3*U, O                , 4*U)                                                                                                .qual(0).heat(Fe.mMeltingPoint).aspects(TC.METALLUM, 2, TC.MAGNETO, 1),
+		Cassiterite             = oredustelec( 9108, "Cassiterite"               , SET_METALLIC  , 220, 220, 220, 255, MORTAR, FURNACE, "CassiteriteSand"                                             ).setSmelting(Sn   , 3*U4).addSourceOf(Sn       ).setMcfg( 1, Sn             , 1*U, O                , 2*U)                                                                                                .heat(3 * Sn.mMeltingPoint / 2), CassiteriteSand = Cassiterite,
+		Garnierite              = oredustelec( 9118, "Garnierite"                , SET_METALLIC  ,  50, 200,  70, 255, MORTAR, BLACKLISTED_SMELTER, MAGNETIC_PASSIVE, WASHING_PERSULFATE              ).setSmelting(Ni   , 3*U4).addSourceOf(Ni       ).setMcfg( 1, Ni             , 1*U, O                , 1*U)                                                                                                .qual(0),
+		Uraninite               = oredustdcmp( 9134, "Uraninite"                 , SET_RAD       ,  35,  35,  35, 255, BLACKLISTED_SMELTER                                                            ).setSmelting(U_238,   U3).addSourceOf(U_238    ).setMcfg( 1, U_238          , 1*U, O                , 2*U)                                                                                                ,
+		Magnetite               = oredustdcmp( 9122, "Magnetite"                 , SET_METALLIC  ,  30,  30,  30, 255, MORTAR, MELTING, MAGNETIC_PASSIVE                                              )                         .addSourceOf(Fe       ).setMcfg( 0, Fe             , 3*U, O                , 4*U)                                                                                                .qual(0).heat(Fe.mMeltingPoint).aspects(TC.METALLUM, 2, TC.MAGNETO, 1),
+		BasalticMineralSand     = oredustdcmp( 9003, "Basaltic Mineral Sand"     , SET_METALLIC  ,  40,  50,  40, 255, MORTAR, MELTING, MAGNETIC_PASSIVE                                              )                         .addSourceOf(Fe       ).setMcfg( 0, Fe             , 3*U, O                , 4*U)                                                                                                .qual(0).heat(Fe.mMeltingPoint).aspects(TC.METALLUM, 2, TC.MAGNETO, 1),
+		GraniticMineralSand     = oredustdcmp( 9004, "Granitic Mineral Sand"     , SET_METALLIC  ,  40,  60,  60, 255, MORTAR, MELTING, MAGNETIC_PASSIVE                                              )                         .addSourceOf(Fe       ).setMcfg( 0, Fe             , 3*U, O                , 4*U)                                                                                                .qual(0).heat(Fe.mMeltingPoint).aspects(TC.METALLUM, 2, TC.MAGNETO, 1),
 		
-		Realgar                 = oredustdcmp( 9109, "Realgar"                   , SET_EMERALD   , 157,  33,  35, 255, G_GEM_ORES_TRANSPARENT, MORTAR, BRITTLE, FURNACE, CRYSTAL                      ).setSmelting(As   ,   U3).uumMcfg( 0, As             , 1*U, S                , 1*U)                                                                                                .qual(0).lens(DYE_INDEX_Red),
-		Cinnabar                = oredustcent( 9114, "Cinnabar"                  , SET_REDSTONE  , 150,   0,   0, 255, G_GEM_ORES_TRANSPARENT, MORTAR, BRITTLE, CRYSTAL, PULVERIZING_CINNABAR         ).setSmelting(Hg   ,   U3).uumMcfg( 0, Hg             , 1*U, S                , 1*U)                                                                                                ,
-		Molybdenite             = oredustdcmp( 9123, "Molybdenite"               , SET_METALLIC  ,  25,  25,  25, 255, G_GEM_ORES, MORTAR, BLACKLISTED_SMELTER, WASHING_FIRESTONE                     ).setSmelting(Mo   ,   U4).uumMcfg( 0, Mo             , 1*U, S                , 2*U)                                                                                                ,
-		Sphalerite              = oredustdcmp( 9130, "Sphalerite"                , SET_DULL      , 222, 222,   0, 255, G_GEM_ORES, MORTAR, FURNACE, WASHING_PERSULFATE                                ).setSmelting(Zn   ,   U3).uumMcfg( 0, Zn             , 1*U, S                , 1*U)                                                                                                ,
-		Stibnite                = oredustdcmp( 9131, "Stibnite"                  , SET_METALLIC  ,  70,  70,  70, 255, G_GEM_ORES, MORTAR, BLACKLISTED_SMELTER                                        ).setSmelting(Sb   ,   U4).uumMcfg( 0, Sb             , 2*U, S                , 3*U)                                                                                                .heat(823),
-		Pentlandite             = oredustdcmp( 9145, "Pentlandite"               , SET_DULL      , 165, 150,   5, 255, G_GEM_ORES, MORTAR, BLACKLISTED_SMELTER, MAGNETIC_PASSIVE, WASHING_PERSULFATE  ).setSmelting(Ni   ,   U3).uumMcfg( 0, Ni             , 9*U, S                , 8*U)                                                                                                .qual(0), // (Fe,Ni)9S8
-		Chalcopyrite            = oredustdcmp( 9111, "Chalcopyrite"              , SET_DULL      , 160, 120,  40, 255, G_GEM_ORES, MORTAR, FURNACE                                                    ).setSmelting(Cu   , 2*U9).uumMcfg( 0, Cu             , 1*U, Fe               , 1*U, S                , 2*U)                                                                        .qual(0),
-		Arsenopyrite            = oredustdcmp( 9216, "Arsenopyrite"              , SET_CUBE_SHINY, 250, 240,  30, 255, G_GEM_ORES, MORTAR, BLACKLISTED_SMELTER                                        )                         .uumMcfg( 0, Fe             , 1*U, As               , 1*U, S                , 1*U)                                                                        .qual(0),
-		Cobaltite               = oredustdcmp( 9115, "Cobaltite"                 , SET_METALLIC  ,  80,  80, 250, 255, G_GEM_ORES, MORTAR, BLACKLISTED_SMELTER, MAGNETIC_PASSIVE, WASHING_PERSULFATE  ).setSmelting(Co   ,   U4).uumMcfg( 0, Co             , 1*U, As               , 1*U, S                , 1*U)                                                                        .qual(0),
-		Galena                  = oredustdcmp( 9117, "Galena"                    , SET_DULL      , 100,  60, 100, 255, G_GEM_ORES, MORTAR, FURNACE                                                    ).setSmelting(Pb   ,   U3).uumMcfg( 0, Pb             , 3*U, Ag               , 3*U, S                , 2*U)                                                                        ,
-		Cooperite               = oredustdcmp( 9116, "Cooperite"                 , SET_METALLIC  , 130, 160, 230, 255, G_GEM_ORES, MORTAR, BLACKLISTED_SMELTER, WASHING_MERCURY, "Sheldonite"         ).setSmelting(Pt   ,   U3).uumMcfg( 0, Pt             , 3*U, Ni               , 1*U, Pd               , 1*U, S                , 1*U)                                                .setLocal("Sheldonite"),
-		Tetrahedrite            = oredustdcmp( 9132, "Tetrahedrite"              , SET_DULL      , 200,  32,   0, 255, G_GEM_ORES, MORTAR, FURNACE, WASHING_PERSULFATE                                ).setSmelting(Cu   ,   U4).uumMcfg( 0, Cu             , 3*U, Sb               , 1*U, Fe               , 1*U, S                , 3*U)                                                , // Cu3SbS3 + x(Fe,Zn)6Sb2S9
-		Kesterite               = oredustdcmp( 9213, "Kesterite"                 , SET_DULL      , 105, 155, 105, 255, G_GEM_ORES, MORTAR, BLACKLISTED_SMELTER                                        ).setSmelting(Cu   ,   U9).uumMcfg( 0, Cu             , 2*U, Zn               , 1*U, Sn               , 1*U, S                , 4*U)                                                ,
-		Stannite                = oredustdcmp( 9214, "Stannite"                  , SET_METALLIC  , 155, 145,  55, 255, G_GEM_ORES, MORTAR, BLACKLISTED_SMELTER                                        ).setSmelting(Cu   ,   U9).uumMcfg( 0, Cu             , 2*U, Fe               , 1*U, Sn               , 1*U, S                , 4*U)                                                ,
-		Barite                  = oredustelec( 9160, "Barite"                    , SET_DULL      , 230, 235, 255, 255, G_GEM_ORES, MORTAR, BLACKLISTED_SMELTER                                        ).setSmelting(Ba   ,   U9).uumMcfg( 0, Ba             , 1*U, S                , 1*U, O                , 4*U)                                                                        .heat(1853),
-		Celestine               = oredustelec( 9110, "Celestine"                 , SET_DULL      , 200, 205, 240, 255, G_GEM_ORES, MORTAR, BLACKLISTED_SMELTER                                        ).setSmelting(Sr   ,   U9).uumMcfg( 0, Sr             , 1*U, S                , 1*U, O                , 4*U)                                                                        ,
+		Realgar                 = oredustdcmp( 9109, "Realgar"                   , SET_EMERALD   , 157,  33,  35, 255, G_GEM_ORES_TRANSPARENT, MORTAR, BRITTLE, FURNACE, CRYSTAL                      ).setSmelting(As   ,   U3).addSourceOf(As       ).uumMcfg( 0, As             , 1*U, S                , 1*U)                                                                                                .qual(0).lens(DYE_INDEX_Red),
+		Cinnabar                = oredustcent( 9114, "Cinnabar"                  , SET_REDSTONE  , 150,   0,   0, 255, G_GEM_ORES_TRANSPARENT, MORTAR, BRITTLE, CRYSTAL, PULVERIZING_CINNABAR         ).setSmelting(Hg   ,   U3).addSourceOf(Hg       ).uumMcfg( 0, Hg             , 1*U, S                , 1*U)                                                                                                ,
+		Molybdenite             = oredustdcmp( 9123, "Molybdenite"               , SET_METALLIC  ,  25,  25,  25, 255, G_GEM_ORES, MORTAR, BLACKLISTED_SMELTER, WASHING_FIRESTONE                     ).setSmelting(Mo   ,   U4).addSourceOf(Mo       ).uumMcfg( 0, Mo             , 1*U, S                , 2*U)                                                                                                ,
+		Sphalerite              = oredustdcmp( 9130, "Sphalerite"                , SET_DULL      , 222, 222,   0, 255, G_GEM_ORES, MORTAR, FURNACE, WASHING_PERSULFATE                                ).setSmelting(Zn   ,   U3).addSourceOf(Zn       ).uumMcfg( 0, Zn             , 1*U, S                , 1*U)                                                                                                ,
+		Stibnite                = oredustdcmp( 9131, "Stibnite"                  , SET_METALLIC  ,  70,  70,  70, 255, G_GEM_ORES, MORTAR, BLACKLISTED_SMELTER                                        ).setSmelting(Sb   ,   U4).addSourceOf(Sb       ).uumMcfg( 0, Sb             , 2*U, S                , 3*U)                                                                                                .heat(823),
+		Pentlandite             = oredustdcmp( 9145, "Pentlandite"               , SET_DULL      , 165, 150,   5, 255, G_GEM_ORES, MORTAR, BLACKLISTED_SMELTER, MAGNETIC_PASSIVE, WASHING_PERSULFATE  ).setSmelting(Ni   ,   U3).addSourceOf(Ni       ).uumMcfg( 0, Ni             , 9*U, S                , 8*U)                                                                                                .qual(0), // (Fe,Ni)9S8
+		Chalcopyrite            = oredustdcmp( 9111, "Chalcopyrite"              , SET_DULL      , 160, 120,  40, 255, G_GEM_ORES, MORTAR, FURNACE                                                    ).setSmelting(Cu   , 2*U9).addSourceOf(Cu,Fe    ).uumMcfg( 0, Cu             , 1*U, Fe               , 1*U, S                , 2*U)                                                                        .qual(0),
+		Arsenopyrite            = oredustdcmp( 9216, "Arsenopyrite"              , SET_CUBE_SHINY, 250, 240,  30, 255, G_GEM_ORES, MORTAR, BLACKLISTED_SMELTER                                        )                         .addSourceOf(Fe,As    ).uumMcfg( 0, Fe             , 1*U, As               , 1*U, S                , 1*U)                                                                        .qual(0),
+		Cobaltite               = oredustdcmp( 9115, "Cobaltite"                 , SET_METALLIC  ,  80,  80, 250, 255, G_GEM_ORES, MORTAR, BLACKLISTED_SMELTER, MAGNETIC_PASSIVE, WASHING_PERSULFATE  ).setSmelting(Co   ,   U4).addSourceOf(Co,As    ).uumMcfg( 0, Co             , 1*U, As               , 1*U, S                , 1*U)                                                                        .qual(0),
+		Galena                  = oredustdcmp( 9117, "Galena"                    , SET_DULL      , 100,  60, 100, 255, G_GEM_ORES, MORTAR, FURNACE                                                    ).setSmelting(Pb   ,   U3).addSourceOf(Pb,Ag    ).uumMcfg( 0, Pb             , 3*U, Ag               , 3*U, S                , 2*U)                                                                        ,
+		Cooperite               = oredustdcmp( 9116, "Cooperite"                 , SET_METALLIC  , 130, 160, 230, 255, G_GEM_ORES, MORTAR, BLACKLISTED_SMELTER, WASHING_MERCURY, "Sheldonite"         ).setSmelting(Pt   ,   U3).addSourceOf(Pt,Ni,Pd ).uumMcfg( 0, Pt             , 3*U, Ni               , 1*U, Pd               , 1*U, S                , 1*U)                                                .setLocal("Sheldonite"),
+		Tetrahedrite            = oredustdcmp( 9132, "Tetrahedrite"              , SET_DULL      , 200,  32,   0, 255, G_GEM_ORES, MORTAR, FURNACE, WASHING_PERSULFATE                                ).setSmelting(Cu   ,   U4).addSourceOf(Cu,Sb,Fe ).uumMcfg( 0, Cu             , 3*U, Sb               , 1*U, Fe               , 1*U, S                , 3*U)                                                , // Cu3SbS3 + x(Fe,Zn)6Sb2S9
+		Kesterite               = oredustdcmp( 9213, "Kesterite"                 , SET_DULL      , 105, 155, 105, 255, G_GEM_ORES, MORTAR, BLACKLISTED_SMELTER                                        ).setSmelting(Cu   ,   U9).addSourceOf(Cu,Zn,Sn ).uumMcfg( 0, Cu             , 2*U, Zn               , 1*U, Sn               , 1*U, S                , 4*U)                                                ,
+		Stannite                = oredustdcmp( 9214, "Stannite"                  , SET_METALLIC  , 155, 145,  55, 255, G_GEM_ORES, MORTAR, BLACKLISTED_SMELTER                                        ).setSmelting(Cu   ,   U9).addSourceOf(Cu,Fe,Sn ).uumMcfg( 0, Cu             , 2*U, Fe               , 1*U, Sn               , 1*U, S                , 4*U)                                                ,
+		Barite                  = oredustelec( 9160, "Barite"                    , SET_DULL      , 230, 235, 255, 255, G_GEM_ORES, MORTAR, BLACKLISTED_SMELTER                                        ).setSmelting(Ba   ,   U9).addSourceOf(Ba       ).uumMcfg( 0, Ba             , 1*U, S                , 1*U, O                , 4*U)                                                                        .heat(1853),
+		Celestine               = oredustelec( 9110, "Celestine"                 , SET_DULL      , 200, 205, 240, 255, G_GEM_ORES, MORTAR, BLACKLISTED_SMELTER                                        ).setSmelting(Sr   ,   U9).addSourceOf(Sr       ).uumMcfg( 0, Sr             , 1*U, S                , 1*U, O                , 4*U)                                                                        ,
 		
-		Scheelite               = oredustdcmp( 9128, "Scheelite"                 , SET_DULL      , 200, 140,  20, 255, BLACKLISTED_SMELTER, WASHING_FIRESTONE, "CalciumTungstate"                     )                         .uumMcfg( 0, Ca             , 1*U, WO3              , 4*U, O                , 1*U)                                                                        .qual(3),
-		Wolframite              = oredustdcmp( 9217, "Wolframite"                , SET_DULL      ,  55,  50,  35, 255, BLACKLISTED_SMELTER, WASHING_FIRESTONE                                         )                         .uumMcfg( 0, Mg             , 1*U, WO3              , 4*U, O                , 1*U)                                                                        .qual(3),
-		Ferberite               = oredustdcmp( 9194, "Ferberite"                 , SET_DULL      ,  55,  50,  35, 255, BLACKLISTED_SMELTER, WASHING_FIRESTONE                                         )                         .uumMcfg( 0, Fe             , 1*U, WO3              , 4*U, O                , 1*U)                                                                        .qual(3),
-		Huebnerite              = oredustdcmp( 9195, "Huebnerite"                , SET_DULL      ,  55,  50,  35, 255, BLACKLISTED_SMELTER, WASHING_FIRESTONE, "Gyubnera"                             )                         .uumMcfg( 0, Mn             , 1*U, WO3              , 4*U, O                , 1*U)                                                                        .qual(3),
-		Tungstate               = oredustdcmp( 9133, "Tungstate"                 , SET_DULL      ,  55,  50,  35, 255, BLACKLISTED_SMELTER, WASHING_FIRESTONE                                         )                         .uumMcfg( 0, Li             , 2*U, WO3              , 4*U, O                , 1*U)                                                                        .qual(3),
+		Scheelite               = oredustdcmp( 9128, "Scheelite"                 , SET_DULL      , 200, 140,  20, 255, BLACKLISTED_SMELTER, WASHING_FIRESTONE, "CalciumTungstate"                     )                         .addSourceOf(W        ).uumMcfg( 0, Ca             , 1*U, WO3              , 4*U, O                , 1*U)                                                                        .qual(3),
+		Wolframite              = oredustdcmp( 9217, "Wolframite"                , SET_DULL      ,  55,  50,  35, 255, BLACKLISTED_SMELTER, WASHING_FIRESTONE                                         )                         .addSourceOf(W        ).uumMcfg( 0, Mg             , 1*U, WO3              , 4*U, O                , 1*U)                                                                        .qual(3),
+		Ferberite               = oredustdcmp( 9194, "Ferberite"                 , SET_DULL      ,  55,  50,  35, 255, BLACKLISTED_SMELTER, WASHING_FIRESTONE                                         )                         .addSourceOf(W,Fe     ).uumMcfg( 0, Fe             , 1*U, WO3              , 4*U, O                , 1*U)                                                                        .qual(3),
+		Huebnerite              = oredustdcmp( 9195, "Huebnerite"                , SET_DULL      ,  55,  50,  35, 255, BLACKLISTED_SMELTER, WASHING_FIRESTONE, "Gyubnera"                             )                         .addSourceOf(W,Mn     ).uumMcfg( 0, Mn             , 1*U, WO3              , 4*U, O                , 1*U)                                                                        .qual(3),
+		Tungstate               = oredustdcmp( 9133, "Tungstate"                 , SET_DULL      ,  55,  50,  35, 255, BLACKLISTED_SMELTER, WASHING_FIRESTONE                                         )                         .addSourceOf(W,Li     ).uumMcfg( 0, Li             , 2*U, WO3              , 4*U, O                , 1*U)                                                                        .qual(3),
 		// TODO Actual Processing, but I don't know what could do it
-		Stolzite                = oredustdcmp( 9193, "Stolzite"                  , SET_DULL      ,  55,  50,  35, 255, BLACKLISTED_SMELTER, WASHING_FIRESTONE, "Raspite"                              ).setSmelting(WO3  ,4* U6).uumMcfg( 0, Pb             , 1*U, WO3              , 4*U, O                , 1*U)                                                                        .qual(3),
-		Russellite              = oredustdcmp( 9196, "Russellite"                , SET_DULL      ,  55,  50,  35, 255, BLACKLISTED_SMELTER, WASHING_FIRESTONE                                         ).setSmelting(WO3  ,4* U9).setMcfg( 0, Bi             , 2*U, WO3              , 4*U, O                , 3*U)                                                                        .qual(3),
-		Pinalite                = oredustdcmp( 9197, "Pinalite"                  , SET_DULL      ,  55,  50,  35, 255, BLACKLISTED_SMELTER, WASHING_FIRESTONE                                         ).setSmelting(WO3  ,4*U11).uumMcfg( 0, Pb             , 3*U, WO3              , 4*U, Cl               , 2*U, O                , 2*U)                                                .qual(3), 
+		Stolzite                = oredustdcmp( 9193, "Stolzite"                  , SET_DULL      ,  55,  50,  35, 255, BLACKLISTED_SMELTER, WASHING_FIRESTONE, "Raspite"                              ).setSmelting(WO3  ,4* U6).addSourceOf(W,Pb     ).uumMcfg( 0, Pb             , 1*U, WO3              , 4*U, O                , 1*U)                                                                        .qual(3),
+		Russellite              = oredustdcmp( 9196, "Russellite"                , SET_DULL      ,  55,  50,  35, 255, BLACKLISTED_SMELTER, WASHING_FIRESTONE                                         ).setSmelting(WO3  ,4* U9).addSourceOf(W,Bi     ).setMcfg( 0, Bi             , 2*U, WO3              , 4*U, O                , 3*U)                                                                        .qual(3),
+		Pinalite                = oredustdcmp( 9197, "Pinalite"                  , SET_DULL      ,  55,  50,  35, 255, BLACKLISTED_SMELTER, WASHING_FIRESTONE                                         ).setSmelting(WO3  ,4*U11).addSourceOf(W,Pb     ).uumMcfg( 0, Pb             , 3*U, WO3              , 4*U, Cl               , 2*U, O                , 2*U)                                                .qual(3), 
 		
-		Wollastonite            = oredustelec( 9164, "Wollastonite"              , SET_DULL      , 240, 240, 240, 255, BLACKLISTED_SMELTER                                                            )                         .setMcfg( 0, Ca             , 1*U, SiO2             , 3*U, O                , 1*U)                                                                        , // CaSiO3
+		Wollastonite            = oredustelec( 9164, "Wollastonite"              , SET_DULL      , 240, 240, 240, 255, BLACKLISTED_SMELTER                                                            )                                                .setMcfg( 0, Ca             , 1*U, SiO2             , 3*U, O                , 1*U)                                                                        , // CaSiO3
 		
-		Zeolite                 = oredustelec( 9165, "Zeolite"                   , SET_DULL      , 240, 230, 230, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                         .setMcfg( 0, Al2O3          , 5*U, Na               , 2*U, SiO2             ,12*U, H2O              , 6*U, O                , 1*U)                        , // Na2Al2Si4O12 2H2O
-		Pollucite               = oredustelec( 9147, "Pollucite"                 , SET_DULL      , 240, 210, 210, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                         .setMcfg( 0, Al2O3          , 5*U, Cs               , 2*U, SiO2             ,12*U, H2O              , 6*U, O                , 1*U)                        , // Cs2Al2Si4O12 2H2O (also a source of Rb)
+		Zeolite                 = oredustelec( 9165, "Zeolite"                   , SET_DULL      , 240, 230, 230, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                         .addSourceOf(Na,Al    ).setMcfg( 0, Al2O3          , 5*U, Na               , 2*U, SiO2             ,12*U, H2O              , 6*U, O                , 1*U)                        , // Na2Al2Si4O12 2H2O
+		Pollucite               = oredustelec( 9147, "Pollucite"                 , SET_DULL      , 240, 210, 210, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                         .addSourceOf(Cs,Al    ).setMcfg( 0, Al2O3          , 5*U, Cs               , 2*U, SiO2             ,12*U, H2O              , 6*U, O                , 1*U)                        , // Cs2Al2Si4O12 2H2O (also a source of Rb)
 		
-		BrownLimonite           = oredustdcmp( 9106, "Brown Limonite"            , SET_METALLIC  , 200, 100,   0, 255, MORTAR, MELTING, MAGNETIC_PASSIVE                                              ).setSmelting(Fe2O3,   U2).setMcfg( 0, Fe             , 1*U, H                , 1*U, O                , 2*U)                                                                        .qual(0).heat(1523), // FeO(OH)
-		YellowLimonite          = oredustdcmp( 9137, "Yellow Limonite"           , SET_METALLIC  , 200, 200,   0, 255, MORTAR, MELTING, MAGNETIC_PASSIVE, "BogIron"                                   ).setSmelting(Fe2O3,   U2).setMcfg( 0, Fe             , 1*U, H                , 1*U, O                , 2*U)                                                                        .qual(0).heat(1523), // FeO(OH) + a bit Ni and Co
+		BrownLimonite           = oredustdcmp( 9106, "Brown Limonite"            , SET_METALLIC  , 200, 100,   0, 255, MORTAR, MELTING, MAGNETIC_PASSIVE                                              ).setSmelting(Fe2O3,   U2).addSourceOf(Fe       ).setMcfg( 0, Fe             , 1*U, H                , 1*U, O                , 2*U)                                                                        .qual(0).heat(1523), // FeO(OH)
+		YellowLimonite          = oredustdcmp( 9137, "Yellow Limonite"           , SET_METALLIC  , 200, 200,   0, 255, MORTAR, MELTING, MAGNETIC_PASSIVE, "BogIron"                                   ).setSmelting(Fe2O3,   U2).addSourceOf(Fe       ).setMcfg( 0, Fe             , 1*U, H                , 1*U, O                , 2*U)                                                                        .qual(0).heat(1523), // FeO(OH) + a bit Ni and Co
 		
-		Ferrovanadium           = oredustcent( 9143, "Vanadium Magnetite"        , SET_METALLIC  ,  35,  35,  60, 255, MORTAR, MELTING, MOLTEN, MAGNETIC_PASSIVE, WASHING_FIRESTONE, "Ferrovanadium"  )                         .setMcfg( 0, Magnetite      , 1*U, V2O5             , 1*U)                                                                                                .aspects(TC.METALLUM, 2, TC.MAGNETO, 1), // Mixture of Fe3O4 and V2O5. Technically Ferrovanadium is an Alloy of Iron and Vanadium. I should not have blindly copied PFAA and assumed it was an Ore.
-		Tantalite               = oredustelec( 9148, "Tantalite"                 , SET_METALLIC  , 145,  80,  40, 255, MORTAR, BLACKLISTED_SMELTER, WASHING_FIRESTONE                                 )                         .setMcfg( 0, Ta2O5          , 7*U, MnO2             , 1*U)                                                                                                , // (Fe, Mn)Ta2O6
-		Columbite               = oredustelec( 9246, "Columbite"                 , SET_METALLIC  ,  65,  77,  14, 255, MORTAR, BLACKLISTED_SMELTER, WASHING_FIRESTONE                                 )                         .setMcfg( 0, Nb2O5          , 7*U, MnO2             , 1*U)                                                                                                , // (Fe, Mn)Nb2O6
-		Coltan                  = oredustcent( 9247, "Coltan"                    , SET_METALLIC  , 105,  83,  66, 255, MORTAR, BLACKLISTED_SMELTER, WASHING_FIRESTONE                                 )                         .setMcfg( 0, Tantalite      , 1*U, Columbite        , 1*U)                                                                                                ,
+		Ferrovanadium           = oredustcent( 9143, "Vanadium Magnetite"        , SET_METALLIC  ,  35,  35,  60, 255, MORTAR, MELTING, MOLTEN, MAGNETIC_PASSIVE, WASHING_FIRESTONE, "Ferrovanadium"  )                         .addSourceOf(V,Fe     ).setMcfg( 0, Magnetite      , 1*U, V2O5             , 1*U)                                                                                                .aspects(TC.METALLUM, 2, TC.MAGNETO, 1), // Mixture of Fe3O4 and V2O5. Technically Ferrovanadium is an Alloy of Iron and Vanadium. I should not have blindly copied PFAA and assumed it was an Ore.
+		Tantalite               = oredustelec( 9148, "Tantalite"                 , SET_METALLIC  , 145,  80,  40, 255, MORTAR, BLACKLISTED_SMELTER, WASHING_FIRESTONE                                 )                         .addSourceOf(Ta,Mn    ).setMcfg( 0, Ta2O5          , 7*U, MnO2             , 1*U)                                                                                                , // (Fe, Mn)Ta2O6
+		Columbite               = oredustelec( 9246, "Columbite"                 , SET_METALLIC  ,  65,  77,  14, 255, MORTAR, BLACKLISTED_SMELTER, WASHING_FIRESTONE                                 )                         .addSourceOf(Nb,Mn    ).setMcfg( 0, Nb2O5          , 7*U, MnO2             , 1*U)                                                                                                , // (Fe, Mn)Nb2O6
+		Coltan                  = oredustcent( 9247, "Coltan"                    , SET_METALLIC  , 105,  83,  66, 255, MORTAR, BLACKLISTED_SMELTER, WASHING_FIRESTONE                                 )                         .addSourceOf(Ta,Nb,Mn ).setMcfg( 0, Tantalite      , 1*U, Columbite        , 1*U)                                                                                                ,
 		
-		Ilmenite                = oredustdcmp( 9120, "Ilmenite"                  , SET_METALLIC  ,  70,  55,  50, 255, MORTAR, MELTING, MOLTEN, MAGNETIC_PASSIVE, WASHING_FIRESTONE, "Illmenite", "TitaniumIron")               .uumMcfg( 0, Fe             , 1*U, Ti               , 1*U, O                , 3*U)                                                                        .qual(2),
-		Bauxite                 = oredustdcmp( 9105, "Bauxite"                   , SET_DULL      , 200, 100,   0, 255, MORTAR, BLACKLISTED_SMELTER, APPROXIMATE                                       )                         .setMcfg( 0, TiO2           , 1*U, Ilmenite         , 2*U, Al2O3            , 2*U)                                                                        .qual(2).heat(2800),
-		Chromite                = oredustelec( 9113, "Chromite"                  , SET_METALLIC  ,  35,  20,  15, 255, MORTAR, BLACKLISTED_SMELTER, WASHING_FIRESTONE                                 ).setSmelting(Cr   , 2*U9).setMcfg( 0, Fe             , 1*U, Cr               , 2*U, O                , 4*U)                                                                        .qual(0),
-		Powellite               = oredustcent( 9124, "Powellite"                 , SET_DULL      , 255, 255,   0, 255, MORTAR, BLACKLISTED_SMELTER                                                    ).setSmelting(Mo   ,   U9).setMcfg( 0, Ca             , 1*U, Mo               , 1*U, O                , 4*U)                                                                        ,
-		Wulfenite               = oredustcent( 9136, "Wulfenite"                 , SET_DULL      , 255, 128,   0, 255, MORTAR, BLACKLISTED_SMELTER                                                    ).setSmelting(Mo   ,   U9).setMcfg( 0, Pb             , 1*U, Mo               , 1*U, O                , 4*U)                                                                        ,
-		Bastnasite              = oredustelec( 9144, "Bastnasite"                , SET_FINE      , 200, 110,  45, 255, MORTAR, BLACKLISTED_SMELTER                                                    ).setSmelting(Ce   ,   U9).setMcfg( 0, Ce             , 1*U, C                , 1*U, F                , 1*U, O                , 3*U)                                                , // (Ce, La, Y)CO3F
-		Pitchblende             = oredustcent( 9155, "Pitchblende"               , SET_RAD       , 100, 110,   0, 255, MORTAR, BLACKLISTED_SMELTER                                                    ).setSmelting(U_238,   U5).setMcfg( 0, Uraninite      , 3*U, Th               , 1*U, Pb               , 1*U)                                                                        ,
-		Malachite               = oredustelec( 9156, "Malachite"                 , SET_LAPIS     ,   5,  95,   5, 255, MORTAR, G_GEM_ORES, FURNACE, WASHING_PERSULFATE                                ).setSmelting(Cu   ,   U6).setMcfg( 0, Cu             , 2*U, CO3              , 4*U, H                , 2*U, O                , 2*U)                                                , // Cu2CO3(OH)2
-		Bromargyrite            = oredustelec( 9210, "Bromargyrite"              , SET_DULL      ,  90,  45,  10, 255, MORTAR, BLACKLISTED_SMELTER, WASHING_MERCURY                                   ).setSmelting(Ag   ,   U3).setMcfg( 0, Ag             , 1*U, Br               , 1*U)                                                                                                ,
-		Smithsonite             = oredustelec( 9211, "Smithsonite"               , SET_DULL      , 110, 223, 210, 255, MORTAR, BLACKLISTED_SMELTER, WASHING_MERCURY, WASHING_PERSULFATE               ).setSmelting(Zn   ,   U6).setMcfg( 0, Zn             , 1*U, C                , 1*U, O                , 3*U)                                                                        ,
-		Sperrylite              = oredustelec( 9212, "Sperrylite"                , SET_SHINY     , 105, 105, 105, 255, MORTAR, BLACKLISTED_SMELTER, WASHING_MERCURY                                   ).setSmelting(Pt   ,   U4).setMcfg( 0, Pt             , 1*U, As               , 2*U)                                                                                                ,
+		Ilmenite                = oredustdcmp( 9120, "Ilmenite"                  , SET_METALLIC  ,  70,  55,  50, 255, MORTAR, MELTING, MOLTEN, MAGNETIC_PASSIVE, WASHING_FIRESTONE, "Illmenite", "TitaniumIron")               .addSourceOf(Ti,Fe    ).uumMcfg( 0, Fe             , 1*U, Ti               , 1*U, O                , 3*U)                                                                        .qual(2),
+		Bauxite                 = oredustdcmp( 9105, "Bauxite"                   , SET_DULL      , 200, 100,   0, 255, MORTAR, BLACKLISTED_SMELTER, APPROXIMATE                                       )                         .addSourceOf(Al,Ti    ).setMcfg( 0, TiO2           , 1*U, Ilmenite         , 2*U, Al2O3            , 2*U)                                                                        .qual(2).heat(2800),
+		Chromite                = oredustelec( 9113, "Chromite"                  , SET_METALLIC  ,  35,  20,  15, 255, MORTAR, BLACKLISTED_SMELTER, WASHING_FIRESTONE                                 ).setSmelting(Cr   , 2*U9).addSourceOf(Cr,Fe    ).setMcfg( 0, Fe             , 1*U, Cr               , 2*U, O                , 4*U)                                                                        .qual(0),
+		Powellite               = oredustcent( 9124, "Powellite"                 , SET_DULL      , 255, 255,   0, 255, MORTAR, BLACKLISTED_SMELTER                                                    ).setSmelting(Mo   ,   U9).addSourceOf(Mo       ).setMcfg( 0, Ca             , 1*U, Mo               , 1*U, O                , 4*U)                                                                        ,
+		Wulfenite               = oredustcent( 9136, "Wulfenite"                 , SET_DULL      , 255, 128,   0, 255, MORTAR, BLACKLISTED_SMELTER                                                    ).setSmelting(Mo   ,   U9).addSourceOf(Mo,Pb    ).setMcfg( 0, Pb             , 1*U, Mo               , 1*U, O                , 4*U)                                                                        ,
+		Bastnasite              = oredustelec( 9144, "Bastnasite"                , SET_FINE      , 200, 110,  45, 255, MORTAR, BLACKLISTED_SMELTER                                                    ).setSmelting(Ce   ,   U9).addSourceOf(Ce,F     ).setMcfg( 0, Ce             , 1*U, C                , 1*U, F                , 1*U, O                , 3*U)                                                , // (Ce, La, Y)CO3F
+		Pitchblende             = oredustcent( 9155, "Pitchblende"               , SET_RAD       , 100, 110,   0, 255, MORTAR, BLACKLISTED_SMELTER                                                    ).setSmelting(U_238,   U5).addSourceOf(U_238,Th ).setMcfg( 0, Uraninite      , 3*U, Th               , 1*U, Pb               , 1*U)                                                                        ,
+		Malachite               = oredustelec( 9156, "Malachite"                 , SET_LAPIS     ,   5,  95,   5, 255, MORTAR, G_GEM_ORES, FURNACE, WASHING_PERSULFATE                                ).setSmelting(Cu   ,   U6).addSourceOf(Cu       ).setMcfg( 0, Cu             , 2*U, CO3              , 4*U, H                , 2*U, O                , 2*U)                                                , // Cu2CO3(OH)2
+		Bromargyrite            = oredustelec( 9210, "Bromargyrite"              , SET_DULL      ,  90,  45,  10, 255, MORTAR, BLACKLISTED_SMELTER, WASHING_MERCURY                                   ).setSmelting(Ag   ,   U3).addSourceOf(Ag,Br    ).setMcfg( 0, Ag             , 1*U, Br               , 1*U)                                                                                                ,
+		Smithsonite             = oredustelec( 9211, "Smithsonite"               , SET_DULL      , 110, 223, 210, 255, MORTAR, BLACKLISTED_SMELTER, WASHING_MERCURY, WASHING_PERSULFATE               ).setSmelting(Zn   ,   U6).addSourceOf(Zn       ).setMcfg( 0, Zn             , 1*U, C                , 1*U, O                , 3*U)                                                                        ,
+		Sperrylite              = oredustelec( 9212, "Sperrylite"                , SET_SHINY     , 105, 105, 105, 255, MORTAR, BLACKLISTED_SMELTER, WASHING_MERCURY                                   ).setSmelting(Pt   ,   U4).addSourceOf(Pt,As    ).setMcfg( 0, Pt             , 1*U, As               , 2*U)                                                                                                ,
 		
-		Perlite                 = oredustcent( 9138, "Perlite"                   , SET_DULL      ,  30,  20,  30, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                         .setMcfg( 1, Obsidian       , 9*U, H2O              , 1*U)                                                                                                ,
-		Trona                   = oredustelec( 9159, "Trona"                     , SET_METALLIC  , 135, 135,  95, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                         .setMcfg( 6, Na2CO3         , 6*U, H2O              , 6*U)                                                                                                ,
-		Mirabilite              = oredustdcmp( 9157, "Mirabilite"                , SET_DULL      , 240, 250, 210, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                         .setMcfg( 7, Na2SO4         , 7*U, H2O              ,30*U)                                                                                                ,
-		Bischofite              = oredustdcmp( 9221, "Bischofite"                , SET_ROUGH     ,  99, 104, 118, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                         .setMcfg( 3, MgCl2          , 3*U, H2O              , 6*U)                                                                                                ,
+		Perlite                 = oredustcent( 9138, "Perlite"                   , SET_DULL      ,  30,  20,  30, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                                                .setMcfg( 1, Obsidian       , 9*U, H2O              , 1*U)                                                                                                ,
+		Trona                   = oredustelec( 9159, "Trona"                     , SET_METALLIC  , 135, 135,  95, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                                                .setMcfg( 6, Na2CO3         , 6*U, H2O              , 6*U)                                                                                                ,
+		Mirabilite              = oredustdcmp( 9157, "Mirabilite"                , SET_DULL      , 240, 250, 210, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                                                .setMcfg( 7, Na2SO4         , 7*U, H2O              ,30*U)                                                                                                ,
+		Bischofite              = oredustdcmp( 9221, "Bischofite"                , SET_ROUGH     ,  99, 104, 118, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                                                .setMcfg( 3, MgCl2          , 3*U, H2O              , 6*U)                                                                                                ,
 		
-		Borax                   = oredustdcmp( 9139, "Borax"                     , SET_FINE      , 250, 250, 250, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                         .setMcfg( 0, Na             , 2*U, B                , 4*U, H2O              ,30*U, O                , 7*U)                                                ,
-		Diatomite               = oredustcent( 9001, "Diatomite"                 , SET_DULL      , 225, 225, 225, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                         .setMcfg( 0, Flint          , 8*U, Fe2O3            , 1*U, Sapphire         , 1*U)                                                                        ,
+		Borax                   = oredustdcmp( 9139, "Borax"                     , SET_FINE      , 250, 250, 250, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                         .addSourceOf(B,Na     ).setMcfg( 0, Na             , 2*U, B                , 4*U, H2O              ,30*U, O                , 7*U)                                                ,
+		Diatomite               = oredustcent( 9001, "Diatomite"                 , SET_DULL      , 225, 225, 225, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                                                .setMcfg( 0, Flint          , 8*U, Fe2O3            , 1*U, Sapphire         , 1*U)                                                                        ,
 		
-		Spodumene               = oredustelec( 9146, "Spodumene"                 , SET_DULL      , 190, 170, 170, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                         .setMcfg( 0, Al2O3          , 5*U, Li               , 2*U, SiO2             ,12*U, O                , 1*U)                                                , // LiAl(SiO3)2
-		Lepidolite              = oredustelec( 9149, "Lepidolite"                , SET_FINE      , 240,  50, 140, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                         .setMcfg( 0, Al2O3          ,10*U, K                , 1*U, Li               , 3*U, F                , 2*U, O                , 6*U)                        , // K(Li,Al,Rb)3(Al,Si)4O10(F,OH)2
-		Glauconite              = oredustelec( 9150, "Glauconite"                , SET_DULL      , 130, 180,  60, 255, MORTAR, BLACKLISTED_SMELTER, "GlauconiteSand"                                  )                         .setMcfg( 0, Al2O3          ,10*U, K                , 1*U, Mg               , 2*U, H2O              , 3*U, O                , 7*U)                        , GlauconiteSand = Glauconite, // (K,Na)(Fe3+,Al,Mg)2(Si,Al)4O10(OH)2
-//      GlauconiteSand          = oredustelec( 9151, "Glauconite Sand"           , SET_DULL      , 130, 180,  60, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                         .setMcfg( 0, Al2O3          ,10*U, K                , 1*U, Mg               , 2*U, H2O              , 3*U, O                , 7*U)                        , // (K,Na)(Fe3+,Al,Mg)2(Si,Al)4O10(OH)2
-		Vermiculite             = oredustelec( 9152, "Vermiculite"               , SET_METALLIC  , 200, 180,  15, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                         .setMcfg( 0, Al2O3          ,10*U, Fe               , 3*U, SiO2             ,12*U, H2O              ,12*U, H                , 2*U)                        , // (Mg+2, Fe+2, Fe+3)3 [(AlSi)4O10] (OH)2 4H2O)
-		Mica                    = oredustelec( 9158, "Mica"                      , SET_FINE      , 195, 195, 205, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                         .setMcfg( 0, Al2O3          ,15*U, K                , 2*U, SiO2             ,18*U, F                , 4*U)                                                , // KAl2(AlSi3O10)(F,OH)2
-		Kyanite                 = oredustelec( 9166, "Kyanite"                   , SET_FLINT     , 110, 110, 250, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                         .setMcfg( 0, Al2O3          , 5*U, SiO2             , 3*U)                                                                                                , // Al2SiO5
-		Alunite                 = oredustelec( 9162, "Alunite"                   , SET_METALLIC  , 225, 180,  65, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                         .setMcfg( 0, Al2O3          ,15*U, KOH              , 6*U, SO3              ,16*U, H2O              ,15*U, O                , 9*U)                        , // KAl3(SO4)2(OH)6
+		Spodumene               = oredustelec( 9146, "Spodumene"                 , SET_DULL      , 190, 170, 170, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                         .addSourceOf(Al,Li    ).setMcfg( 0, Al2O3          , 5*U, Li               , 2*U, SiO2             ,12*U, O                , 1*U)                                                , // LiAl(SiO3)2
+		Lepidolite              = oredustelec( 9149, "Lepidolite"                , SET_FINE      , 240,  50, 140, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                         .addSourceOf(Al,K,Li,F).setMcfg( 0, Al2O3          ,10*U, K                , 1*U, Li               , 3*U, F                , 2*U, O                , 6*U)                        , // K(Li,Al,Rb)3(Al,Si)4O10(F,OH)2
+		Glauconite              = oredustelec( 9150, "Glauconite"                , SET_DULL      , 130, 180,  60, 255, MORTAR, BLACKLISTED_SMELTER, "GlauconiteSand"                                  )                         .addSourceOf(Al,K     ).setMcfg( 0, Al2O3          ,10*U, K                , 1*U, Mg               , 2*U, H2O              , 3*U, O                , 7*U)                        , GlauconiteSand = Glauconite, // (K,Na)(Fe3+,Al,Mg)2(Si,Al)4O10(OH)2
+//      GlauconiteSand          = oredustelec( 9151, "Glauconite Sand"           , SET_DULL      , 130, 180,  60, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                         .addSourceOf(Al,K     ).setMcfg( 0, Al2O3          ,10*U, K                , 1*U, Mg               , 2*U, H2O              , 3*U, O                , 7*U)                        , // (K,Na)(Fe3+,Al,Mg)2(Si,Al)4O10(OH)2
+		Vermiculite             = oredustelec( 9152, "Vermiculite"               , SET_METALLIC  , 200, 180,  15, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                         .addSourceOf(Al       ).setMcfg( 0, Al2O3          ,10*U, Fe               , 3*U, SiO2             ,12*U, H2O              ,12*U, H                , 2*U)                        , // (Mg+2, Fe+2, Fe+3)3 [(AlSi)4O10] (OH)2 4H2O)
+		Mica                    = oredustelec( 9158, "Mica"                      , SET_FINE      , 195, 195, 205, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                         .addSourceOf(Al,K,F   ).setMcfg( 0, Al2O3          ,15*U, K                , 2*U, SiO2             ,18*U, F                , 4*U)                                                , // KAl2(AlSi3O10)(F,OH)2
+		Kyanite                 = oredustelec( 9166, "Kyanite"                   , SET_FLINT     , 110, 110, 250, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                         .addSourceOf(Al       ).setMcfg( 0, Al2O3          , 5*U, SiO2             , 3*U)                                                                                                , // Al2SiO5
+		Alunite                 = oredustelec( 9162, "Alunite"                   , SET_METALLIC  , 225, 180,  65, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                         .addSourceOf(Al,K     ).setMcfg( 0, Al2O3          ,15*U, KOH              , 6*U, SO3              ,16*U, H2O              ,15*U, O                , 9*U)                        , // KAl3(SO4)2(OH)6
 		
-		GarnetSand              = oredustcent( 9005, "Garnet Sand"               , SET_SAND      , 200, 100,   0, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                         .setMcfg( 0, Almandine      , 1*U, Andradite        , 1*U, Grossular        , 1*U, Pyrope           , 1*U, Spessartine      , 1*U, Uvarovite        , 1*U),
-		QuartzSand              = oredustcent( 9006, "Quartz Sand"               , SET_SAND      , 200, 200, 200, 255, MORTAR, BLACKLISTED_SMELTER, QUARTZ                                            ).setSmelting(SiO2 ,   U3).setMcfg( 0, CertusQuartz   , 1*U, MilkyQuartz      , 1*U)                                                                                                ,
+		GarnetSand              = oredustcent( 9005, "Garnet Sand"               , SET_SAND      , 200, 100,   0, 255, MORTAR, BLACKLISTED_SMELTER                                                    )                                                .setMcfg( 0, Almandine      , 1*U, Andradite        , 1*U, Grossular        , 1*U, Pyrope           , 1*U, Spessartine      , 1*U, Uvarovite        , 1*U),
+		QuartzSand              = oredustcent( 9006, "Quartz Sand"               , SET_SAND      , 200, 200, 200, 255, MORTAR, BLACKLISTED_SMELTER, QUARTZ                                            ).setSmelting(SiO2 ,   U3)                       .setMcfg( 0, CertusQuartz   , 1*U, MilkyQuartz      , 1*U)                                                                                                ,
 		
-		DiduraniumTrioxide      = oredustelec( 9198, "Diduranium Trioxide"       , SET_DULL      ,  45, 145, 145, 255, BLACKLISTED_SMELTER                                                            )                         .setMcfg( 0, Dn             , 2*U, O                , 3*U)                                                                                                .qual(4),
-		DuraniumHexafluoride    = oredustelec( 9199, "Duranium Hexafluoride"     , SET_DULL      ,  25, 175, 125, 255, BLACKLISTED_SMELTER                                                            )                         .setMcfg( 0, Dn             , 1*U, F                , 6*U)                                                                                                .qual(4),
-		DuraniumHexachloride    = oredustelec( 9200, "Duranium Hexachloride"     , SET_DULL      ,  75, 175, 145, 255, BLACKLISTED_SMELTER                                                            )                         .setMcfg( 0, Dn             , 1*U, Cl               , 6*U)                                                                                                .qual(4),
-		DuraniumHexabromide     = oredustelec( 9201, "Duranium Hexabromide"      , SET_DULL      ,  45, 125, 175, 255, BLACKLISTED_SMELTER                                                            )                         .setMcfg( 0, Dn             , 1*U, Br               , 6*U)                                                                                                .qual(4),
-		DuraniumHexaiodide      = oredustelec( 9202, "Duranium Hexaiodide"       , SET_DULL      ,  75, 125, 175, 255, BLACKLISTED_SMELTER                                                            )                         .setMcfg( 0, Dn             , 1*U, I                , 6*U)                                                                                                .qual(4),
-		DuraniumHexaastatide    = oredustelec( 9203, "Duranium Hexaastatide"     , SET_DULL      ,  25, 145, 175, 255, BLACKLISTED_SMELTER                                                            )                         .setMcfg( 0, Dn             , 1*U, At               , 6*U)                                                                                                .qual(4),
-		TritaniumDioxide        = oredustelec( 9204, "Tritanium Dioxide"         , SET_DULL      ,  25, 185, 125, 255, BLACKLISTED_SMELTER                                                            )                         .setMcfg( 0, Tn             , 1*U, O                , 2*U)                                                                                                .qual(4),
-		TritaniumHexafluoride   = oredustelec( 9205, "Tritanium Hexafluoride"    , SET_DULL      ,  85, 125, 125, 255, BLACKLISTED_SMELTER                                                            )                         .setMcfg( 0, Tn             , 1*U, F                , 6*U)                                                                                                .qual(4),
-		TritaniumHexachloride   = oredustelec( 9206, "Tritanium Hexachloride"    , SET_DULL      ,  55, 185, 155, 255, BLACKLISTED_SMELTER                                                            )                         .setMcfg( 0, Tn             , 1*U, Cl               , 6*U)                                                                                                .qual(4),
-		TritaniumHexabromide    = oredustelec( 9207, "Tritanium Hexabromide"     , SET_DULL      ,  55, 125, 155, 255, BLACKLISTED_SMELTER                                                            )                         .setMcfg( 0, Tn             , 1*U, Br               , 6*U)                                                                                                .qual(4),
-		TritaniumHexaiodide     = oredustelec( 9208, "Tritanium Hexaiodide"      , SET_DULL      ,  85, 185, 185, 255, BLACKLISTED_SMELTER                                                            )                         .setMcfg( 0, Tn             , 1*U, I                , 6*U)                                                                                                .qual(4),
-		TritaniumHexaastatide   = oredustelec( 9209, "Tritanium Hexaastatide"    , SET_DULL      ,  25, 125, 185, 255, BLACKLISTED_SMELTER                                                            )                         .setMcfg( 0, Tn             , 1*U, At               , 6*U)                                                                                                .qual(4);
+		DiduraniumTrioxide      = oredustelec( 9198, "Diduranium Trioxide"       , SET_DULL      ,  45, 145, 145, 255, BLACKLISTED_SMELTER                                                            )                         .addSourceOf(Dn       ).setMcfg( 0, Dn             , 2*U, O                , 3*U)                                                                                                .qual(4),
+		DuraniumHexafluoride    = oredustelec( 9199, "Duranium Hexafluoride"     , SET_DULL      ,  25, 175, 125, 255, BLACKLISTED_SMELTER                                                            )                         .addSourceOf(Dn,F     ).setMcfg( 0, Dn             , 1*U, F                , 6*U)                                                                                                .qual(4),
+		DuraniumHexachloride    = oredustelec( 9200, "Duranium Hexachloride"     , SET_DULL      ,  75, 175, 145, 255, BLACKLISTED_SMELTER                                                            )                         .addSourceOf(Dn       ).setMcfg( 0, Dn             , 1*U, Cl               , 6*U)                                                                                                .qual(4),
+		DuraniumHexabromide     = oredustelec( 9201, "Duranium Hexabromide"      , SET_DULL      ,  45, 125, 175, 255, BLACKLISTED_SMELTER                                                            )                         .addSourceOf(Dn,Br    ).setMcfg( 0, Dn             , 1*U, Br               , 6*U)                                                                                                .qual(4),
+		DuraniumHexaiodide      = oredustelec( 9202, "Duranium Hexaiodide"       , SET_DULL      ,  75, 125, 175, 255, BLACKLISTED_SMELTER                                                            )                         .addSourceOf(Dn,I     ).setMcfg( 0, Dn             , 1*U, I                , 6*U)                                                                                                .qual(4),
+		DuraniumHexaastatide    = oredustelec( 9203, "Duranium Hexaastatide"     , SET_DULL      ,  25, 145, 175, 255, BLACKLISTED_SMELTER                                                            )                         .addSourceOf(Dn,At    ).setMcfg( 0, Dn             , 1*U, At               , 6*U)                                                                                                .qual(4),
+		TritaniumDioxide        = oredustelec( 9204, "Tritanium Dioxide"         , SET_DULL      ,  25, 185, 125, 255, BLACKLISTED_SMELTER                                                            )                         .addSourceOf(Tn       ).setMcfg( 0, Tn             , 1*U, O                , 2*U)                                                                                                .qual(4),
+		TritaniumHexafluoride   = oredustelec( 9205, "Tritanium Hexafluoride"    , SET_DULL      ,  85, 125, 125, 255, BLACKLISTED_SMELTER                                                            )                         .addSourceOf(Tn,F     ).setMcfg( 0, Tn             , 1*U, F                , 6*U)                                                                                                .qual(4),
+		TritaniumHexachloride   = oredustelec( 9206, "Tritanium Hexachloride"    , SET_DULL      ,  55, 185, 155, 255, BLACKLISTED_SMELTER                                                            )                         .addSourceOf(Tn       ).setMcfg( 0, Tn             , 1*U, Cl               , 6*U)                                                                                                .qual(4),
+		TritaniumHexabromide    = oredustelec( 9207, "Tritanium Hexabromide"     , SET_DULL      ,  55, 125, 155, 255, BLACKLISTED_SMELTER                                                            )                         .addSourceOf(Tn,Br    ).setMcfg( 0, Tn             , 1*U, Br               , 6*U)                                                                                                .qual(4),
+		TritaniumHexaiodide     = oredustelec( 9208, "Tritanium Hexaiodide"      , SET_DULL      ,  85, 185, 185, 255, BLACKLISTED_SMELTER                                                            )                         .addSourceOf(Tn,I     ).setMcfg( 0, Tn             , 1*U, I                , 6*U)                                                                                                .qual(4),
+		TritaniumHexaastatide   = oredustelec( 9209, "Tritanium Hexaastatide"    , SET_DULL      ,  25, 125, 185, 255, BLACKLISTED_SMELTER                                                            )                         .addSourceOf(Tn,At    ).setMcfg( 0, Tn             , 1*U, At               , 6*U)                                                                                                .qual(4);
 	}
 	
 	/** Had to move a chunk of Materials into its own Class due to space Issues... */
 	public static class STONES {
 		@SuppressWarnings("hiding")
 		public static final OreDictMaterial
-		SpaceRock    = stone    ( 8512, "Space Stone" , SET_SPACE ,  99,  99,  99, 255, MELTING, MOLTEN)                                                                                                                                                     .aspects(TC.ALIENIS     , 1).qual(1, 5.0, 32, 1).setLocal("Space"),
+		SpaceRock    = stone    ( 8512, "Space Stone" , SET_SPACE ,  99,  99,  99, 255, MELTING, MOLTEN)                                                                                                                                                     .aspects(TC.ALIENIS     , 1).qual(1, 5.0, 32, 1).addSourceOf(He,He_3).setLocal("Space"),
 		MoonRock     = stone    ( 8513, "Moon Stone"              , 189, 189, 189, 255, MELTING, MOLTEN)                                                                                                                                                     .aspects(TC.ALIENIS     , 1).qual(1, 5.0, 32, 1).setLocal("Moon"),
-		MoonTurf     = stone    ( 8514, "Moon Turf"               , 207, 207, 207, 255)                                                                                                                                                                      .aspects(TC.ALIENIS     , 1).qual(1, 3.0, 16, 1),
+		MoonTurf     = stone    ( 8514, "Moon Turf"               , 207, 207, 207, 255)                                                                                                                                                                      .aspects(TC.ALIENIS     , 1).qual(1, 3.0, 16, 1).addSourceOf(He,He_3),
 		MarsRock     = stone    ( 8515, "Mars Stone"              , 189,  77,  77, 255, MELTING, MOLTEN)                                                                                                                                                     .aspects(TC.ALIENIS     , 1).qual(1, 5.0, 32, 1).setLocal("Mars"),
 		MarsSand     = stone    ( 8516, "Mars Sand"               , 207,  66,  66, 255)                                                                                                                                                                      .aspects(TC.ALIENIS     , 1).qual(1, 3.0, 16, 1),
 		Holystone    = stone    ( 8522, "Holystone"               , 172, 172, 172, 255)                                                                                                                                                                      .aspects(TC.LUX         , 1).qual(1, 5.0,128, 1).heat(2000),
@@ -3669,7 +3721,29 @@ public class MT {
 		Dacite       = stone    ( 9187, "Dacite"                  , 131, 131, 131, 255)                                                                                                                                                                      .aspects(TC.TERRA       , 1).qual(1, 2.0, 16, 1),
 		Slate        = stone    ( 9222, "Slate"                   , 148, 151, 156, 255)                                                                                                                                                                      .aspects(TC.TERRA       , 1).qual(1, 2.0, 16, 0),
 		Deepslate    = stone    ( 9248, "Deepslate"               ,  57,  59,  61, 255)                                                                                                                                                                      .aspects(TC.TERRA       , 1).qual(1, 2.0, 32, 1),
-		Eclogite     = stone    ( 9191, "Eclogite"                ,  90,  40,  40, 255)                                                                                                                                                                      .aspects(TC.TERRA       , 1).qual(1, 2.0, 16, 1);
+		Eclogite     = stone    ( 9191, "Eclogite"                ,  90,  40,  40, 255)                                                                                                                                                                      .aspects(TC.TERRA       , 1).qual(1, 2.0, 16, 1),
+		PhobosRock   = stone    ( 9249, "PhobosRock"              , 189, 189, 189, 255)                                                                                                                                                                      .aspects(TC.ALIENIS     , 1).qual(1, 5.0,128, 1).setLocal("Phobos"   ),
+		DeimosRock   = stone    ( 9250, "DeimosRock"              , 189, 189, 189, 255)                                                                                                                                                                      .aspects(TC.ALIENIS     , 1).qual(1, 5.0,128, 1).setLocal("Deimos"   ),
+		VenusRock    = stone    ( 9251, "VenusRock"               , 189, 189, 189, 255)                                                                                                                                                                      .aspects(TC.ALIENIS     , 1).qual(1, 5.0,128, 1).setLocal("Venus"    ),
+		MercuryRock  = stone    ( 9252, "MercuryRock"             , 189, 189, 189, 255)                                                                                                                                                                      .aspects(TC.ALIENIS     , 1).qual(1, 5.0,128, 1).setLocal("Mercury"  ),
+		CeresRock    = stone    ( 9253, "CeresRock"               , 189, 189, 189, 255)                                                                                                                                                                      .aspects(TC.ALIENIS     , 1).qual(1, 5.0,128, 1).setLocal("Ceres"    ),
+		JupiterRock  = stone    ( 9254, "JupiterRock"             , 189, 189, 189, 255)                                                                                                                                                                      .aspects(TC.ALIENIS     , 1).qual(1, 5.0,128, 1).setLocal("Jupiter"  ),
+		IoRock       = stone    ( 9255, "IoRock"                  , 189, 189, 189, 255)                                                                                                                                                                      .aspects(TC.ALIENIS     , 1).qual(1, 5.0,128, 1).setLocal("Io"       ),
+		EuropaRock   = stone    ( 9256, "EuropaRock"              , 189, 189, 189, 255)                                                                                                                                                                      .aspects(TC.ALIENIS     , 1).qual(1, 5.0,128, 1).setLocal("Europa"   ),
+		GanymedeRock = stone    ( 9257, "GanymedeRock"            , 189, 189, 189, 255)                                                                                                                                                                      .aspects(TC.ALIENIS     , 1).qual(1, 5.0,128, 1).setLocal("Ganymede" ),
+		CallistoRock = stone    ( 9258, "CallistoRock"            , 189, 189, 189, 255)                                                                                                                                                                      .aspects(TC.ALIENIS     , 1).qual(1, 5.0,128, 1).setLocal("Callisto" ),
+		SaturnRock   = stone    ( 9259, "SaturnRock"              , 189, 189, 189, 255)                                                                                                                                                                      .aspects(TC.ALIENIS     , 1).qual(1, 5.0,128, 1).setLocal("Saturn"   ),
+		RheaRock     = stone    ( 9260, "RheaRock"                , 189, 189, 189, 255)                                                                                                                                                                      .aspects(TC.ALIENIS     , 1).qual(1, 5.0,128, 1).setLocal("Rhea"     ),
+		TitanRock    = stone    ( 9261, "TitanRock"               , 189, 189, 189, 255)                                                                                                                                                                      .aspects(TC.ALIENIS     , 1).qual(1, 5.0,128, 1).setLocal("Titan"    ),
+		OberonRock   = stone    ( 9262, "OberonRock"              , 189, 189, 189, 255)                                                                                                                                                                      .aspects(TC.ALIENIS     , 1).qual(1, 5.0,128, 1).setLocal("Oberon"   ),
+		IapetusRock  = stone    ( 9263, "IapetusRock"             , 189, 189, 189, 255)                                                                                                                                                                      .aspects(TC.ALIENIS     , 1).qual(1, 5.0,128, 1).setLocal("Iapetus"  ),
+		UranusRock   = stone    ( 9264, "UranusRock"              , 189, 189, 189, 255)                                                                                                                                                                      .aspects(TC.ALIENIS     , 1).qual(1, 5.0,128, 1).setLocal("Uranus"   ),
+		TitaniaRock  = stone    ( 9265, "TitaniaRock"             , 189, 189, 189, 255)                                                                                                                                                                      .aspects(TC.ALIENIS     , 1).qual(1, 5.0,128, 1).setLocal("Titania"  ),
+		NeptuneRock  = stone    ( 9266, "NeptuneRock"             , 189, 189, 189, 255)                                                                                                                                                                      .aspects(TC.ALIENIS     , 1).qual(1, 5.0,128, 1).setLocal("Neptune"  ),
+		TritonRock   = stone    ( 9267, "TritonRock"              , 189, 189, 189, 255)                                                                                                                                                                      .aspects(TC.ALIENIS     , 1).qual(1, 5.0,128, 1).setLocal("Triton"   ),
+		PlutoRock    = stone    ( 9268, "PlutoRock"               , 189, 189, 189, 255)                                                                                                                                                                      .aspects(TC.ALIENIS     , 1).qual(1, 5.0,128, 1).setLocal("Pluto"    ),
+		ErisRock     = stone    ( 9269, "ErisRock"                , 189, 189, 189, 255)                                                                                                                                                                      .aspects(TC.ALIENIS     , 1).qual(1, 5.0,128, 1).setLocal("Eris"     ),
+		Kepler22bRock= stone    ( 9270, "Kepler22bRock"           , 189, 189, 189, 255)                                                                                                                                                                      .aspects(TC.ALIENIS     , 1).qual(1, 5.0,128, 1).setLocal("Kepler22b");
 	}
 	
 	/** Taking over Wood Materials from QwerTech, with major changes because damn that shit was broken. */
@@ -3803,7 +3877,6 @@ public class MT {
 		IridiumSodiumOxide          = unused    ("Iridium Sodium Oxide"       ),
 		Iridiron                    = unused    ("IridiumIron"                ).setPriorityPrefix(3).put(G_INGOT).setMcfg( 0, Ir, 1*U, Fe, 1*U).setLocal("Iridiron"),
 		IridironReinforced          = unused    ("IridiumIronReinforced"      ).setPriorityPrefix(3).put(G_INGOT).setMcfg( 0, Ir, 1*U, Fe, 1*U).setLocal("Reinforced Iridiron"),
-		Quicklime                   = unused    ("Quicklime"                  ).setPriorityPrefix(2).put(G_DUST).setMcfg( 0, Ca, 1*U, O, 1*U),
 		LimePure                    = unused    ("LimePure"                   ).setLocal("Pure Lime"),
 		TNT                         = unused    ("TNT"                        ).put(EXPLOSIVE, FLAMMABLE, MD.MC).aspects(TC.PERDITIO, 3, TC.IGNIS, 1),
 		TerrasteelAlloyRaw          = unused    ("TerrasteelAlloyRaw"         ).setPriorityPrefix(3).put(G_INGOT, MAGICAL, "RawTerrasteelAlloy").setLocal("Raw Terrasteel Alloy"),
@@ -3817,7 +3890,7 @@ public class MT {
 		Starconium                  = unused    ("Starconium"                 ).setPriorityPrefix(3).put(G_INGOT_ORES),
 		Thyrium                     = unused    ("Thyrium"                    ).setPriorityPrefix(3).put(G_INGOT_ORES),
 		Zectium                     = unused    ("Zectium"                    ).setPriorityPrefix(3).put(G_INGOT_ORES),
-		Draconic                    = depricated("Draconic"                   ).setPriorityPrefix(2).put(G_DUST),
+		Draconic                    = deprecated("Draconic"                   ).setPriorityPrefix(2).put(G_DUST),
 		InfusedTeslatite            = unused    ("InfusedTeslatite"           ).setPriorityPrefix(2).put(G_DUST), // 1 Redstone + 1 Teslatite/Nikolite = 1 Infused
 		IrridantUranium             = unused    ("Irridant Uranium"           ).setPriorityPrefix(3).put(G_INGOT),
 		IrridantReinforced          = unused    ("IrridantReinforced"         ).setPriorityPrefix(3).put(G_INGOT),

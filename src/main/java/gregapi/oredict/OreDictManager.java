@@ -226,7 +226,7 @@ public final class OreDictManager {
 		Collection<OreDictMaterial> tNames = mVisibilityTriggers.get(aName.toString());
 		if (tNames == null) mVisibilityTriggers.put(aName.toString(), tNames = new HashSetNoNulls<>());
 		if (tNames.add(aMaterial)) {
-			for (ItemStack tOreStack : OreDictionary.getOres(aName.toString(), F)) if (!(tOreStack.getItem() instanceof IPrefixItem)) aMaterial.mHidden = F;
+			for (ItemStack tOreStack : OreDictionary.getOres(aName.toString(), F)) if (!ST.isGT(tOreStack)) aMaterial.mHidden = F;
 			return T;
 		}
 		return F;

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,12 +19,6 @@
 
 package gregapi.tileentity.inventories;
 
-import static gregapi.data.CS.*;
-import static org.lwjgl.opengl.GL11.*;
-
-import java.util.List;
-
-import com.google.common.primitives.Bytes;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -66,7 +60,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.Explosion;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.fluids.Fluid;
-import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
+import static gregapi.data.CS.*;
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  * @author Gregorius Techneticies
@@ -88,17 +86,14 @@ public abstract class MultiTileEntityMassStorage extends TileEntityBase09FacingS
 	@Override
 	public void writeToNBT2(NBTTagCompound aNBT) {
 		super.writeToNBT2(aNBT);
-		aNBT.setByte(NBT_MODE, mMode);
+		UT.NBT.setNumber(aNBT, NBT_MODE, mMode);
 		UT.NBT.setNumber(aNBT, NBT_INPUT, mPartialUnits);
 	}
 	
 	@Override
 	public NBTTagCompound writeItemNBT2(NBTTagCompound aNBT) {
-		if ((mMode & B[3]) != 0) {
-			aNBT.setByte(NBT_MODE, mMode);
-			ST.save(aNBT, NBT_STATE, slot(1));
-		}
 		if (isClientSide() && slotHas(1)) aNBT.setTag("display", UT.NBT.makeString(aNBT.getCompoundTag("display"), "Name", slot(1).getDisplayName()));
+		UT.NBT.setNumber(aNBT, NBT_MODE, mMode);
 		return super.writeItemNBT2(aNBT);
 	}
 	
@@ -549,7 +544,8 @@ public abstract class MultiTileEntityMassStorage extends TileEntityBase09FacingS
 	@Override public long getAmountOfItemsInConnectedInventory(byte aSide, ItemStack aStack, long aStopCountingAtThisNumber) {return slotHas(1) && ST.equal(slot(1), aStack) ? slot(1).stackSize : 0;}
 	@Override public long getProgressValue(byte aSide) {return slotHas(1) ? slot(1).stackSize : 0;}
 	@Override public long getProgressMax(byte aSide) {return mMaxStorage;}
-	@Override public boolean canDrop(int aInventorySlot) {return aInventorySlot != 1 || (mMode & B[3]) == 0;}
+	@Override public boolean canDrop (int aSlot) {return !keepSlot(aSlot);}
+	@Override public boolean keepSlot(int aSlot) {return aSlot == 1 && (mMode & B[3]) != 0;}
 	@Override public byte getMaxStackSize(ItemStack aStack, byte aDefault) {return slotHas(1) ? 1 : aDefault;}
 	
 	@Override

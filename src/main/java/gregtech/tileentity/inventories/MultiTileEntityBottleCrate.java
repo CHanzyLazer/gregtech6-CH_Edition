@@ -25,7 +25,6 @@ import gregapi.block.multitileentity.IMultiTileEntity.IMTE_SetBlockBoundsBasedOn
 import gregapi.data.*;
 import gregapi.data.LH.Chat;
 import gregapi.network.INetworkHandler;
-import gregapi.network.IPacket;
 import gregapi.old.Textures;
 import gregapi.oredict.OreDictMaterial;
 import gregapi.render.BlockTextureDefault;
@@ -43,6 +42,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -127,9 +127,18 @@ public class MultiTileEntityBottleCrate extends TileEntityBase09FacingSingle imp
 		return F;
 	}
 	
+	// 保证和原本逻辑一样，无论怎样都全部 send
 	@Override
-	public IPacket getClientDataPacket(boolean aSendAll) {
-		return getClientDataPacketByteArray(aSendAll, (byte)UT.Code.getR(mRGBa), (byte)UT.Code.getG(mRGBa), (byte)UT.Code.getB(mRGBa), getDirectionData(), UT.Code.toByteS(mDisplay[0], 0), UT.Code.toByteS(mDisplay[0], 1), UT.Code.toByteS(mDisplay[1], 0), UT.Code.toByteS(mDisplay[1], 1), UT.Code.toByteS(mDisplay[2], 0), UT.Code.toByteS(mDisplay[2], 1), UT.Code.toByteS(mDisplay[3], 0), UT.Code.toByteS(mDisplay[3], 1), UT.Code.toByteS(mDisplay[4], 0), UT.Code.toByteS(mDisplay[4], 1), UT.Code.toByteS(mDisplay[5], 0), UT.Code.toByteS(mDisplay[5], 1), UT.Code.toByteS(mDisplay[6], 0), UT.Code.toByteS(mDisplay[6], 1), UT.Code.toByteS(mDisplay[7], 0), UT.Code.toByteS(mDisplay[7], 1), UT.Code.toByteS(mDisplay[8], 0), UT.Code.toByteS(mDisplay[8], 1));
+	public boolean sendAny(boolean aSendAll) {return T;}
+	// GTCH, 重写这个方法保证和原本的逻辑一致
+	@Override
+	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
+		// 禁用 VisualData
+		rList.add(3, getDirectionData());
+		for (int i = 0; i < mDisplay.length; ++i) {
+			rList.add(2*i+4, UT.Code.toByteS(mDisplay[i], 0));
+			rList.add(2*i+5, UT.Code.toByteS(mDisplay[i], 1));
+		}
 	}
 	
 	@Override

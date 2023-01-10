@@ -60,6 +60,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.Explosion;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.fluids.Fluid;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -482,7 +483,7 @@ public abstract class MultiTileEntityMassStorage extends TileEntityBase09FacingS
 	public boolean isFaceVisible() {
 		return SIDES_HORIZONTAL[mFacing] && (mMode & B[3]) == 0 && (!hasCovers()||mCovers.mBehaviours[mFacing]==null||!mCovers.mBehaviours[mFacing].isOpaque(mFacing, mCovers));
 	}
-
+	
 	// GTCH, 重写这个方法保证和原本的逻辑一致
 	@Override
 	public IPacket getClientDataPacketNoSendAll(boolean aSendAll) {
@@ -506,7 +507,7 @@ public abstract class MultiTileEntityMassStorage extends TileEntityBase09FacingS
 		rList.add(11, UT.Code.toByteI(tStacksize, 2));
 		rList.add(12, UT.Code.toByteI(tStacksize, 3));
 	}
-
+	
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		setRGBData(aData[0], aData[1], aData[2], aData[aData.length-1]);

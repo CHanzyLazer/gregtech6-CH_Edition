@@ -45,6 +45,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -160,7 +161,7 @@ public class MultiTileEntityDustFunnel extends TileEntityBase07Paintable impleme
 		super.onTickChecked(aTimer);
 		oDust = mDust;
 	}
-
+	
 	// GTCH, 重写这个方法保证和原本的逻辑一致
 	@Override
 	public IPacket getClientDataPacketNoSendAll(boolean aSendAll) {
@@ -173,7 +174,7 @@ public class MultiTileEntityDustFunnel extends TileEntityBase07Paintable impleme
 		rList.add(1, UT.Code.toByteS(mDust, 1)); // 保持原本一致的顺序
 		rList.add(2, mMode);
 	}
-
+	
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		mDust = UT.Code.combine(aData[0], aData[1]);

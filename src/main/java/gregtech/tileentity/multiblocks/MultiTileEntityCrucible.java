@@ -589,7 +589,7 @@ public class MultiTileEntityCrucible extends TileEntityBase10MultiBlockBase impl
 	public boolean sendAny(boolean aSendAll) {return T;}
 	@Override
 	public IPacket getClientDataPacketSendAll(boolean aSendAll, List<Byte> rList) {
-		return super.getClientDataPacketSendAll(T, rList);
+		return super.getClientDataPacketSendAll(T, rList); // 保证附加的方块信息也总是会被发送
 	}
 
 	// GTCH, 重写这个方法来扩展客户端数据

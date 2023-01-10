@@ -25,8 +25,6 @@ import cpw.mods.fml.common.Optional;
 import gregapi.data.CS.ModIDs;
 import gregapi.data.CS.ToolsGT;
 import gregapi.network.INetworkHandler;
-import gregapi.network.IPacket;
-import gregapi.util.UT;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import org.jetbrains.annotations.NotNull;

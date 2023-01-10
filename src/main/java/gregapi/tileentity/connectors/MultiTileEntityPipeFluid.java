@@ -30,8 +30,7 @@ import gregapi.block.multitileentity.MultiTileEntityRegistry;
 import gregapi.code.ArrayListNoNulls;
 import gregapi.code.HashSetNoNulls;
 import gregapi.code.TagData;
-import gregapi.data.FL;
-import gregapi.data.LH;
+import gregapi.data.*;
 import gregapi.data.LH.Chat;
 import gregapi.fluid.FluidTankGT;
 import gregapi.network.INetworkHandler;
@@ -69,9 +68,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fluids.IFluidTank;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static gregapi.data.CS.*;
 import static gregtechCH.data.CS_CH.*;

@@ -27,7 +27,6 @@ import gregapi.data.*;
 import gregapi.data.LH.Chat;
 import gregapi.dummies.DummyInventory;
 import gregapi.network.INetworkHandler;
-import gregapi.network.IPacket;
 import gregapi.network.packets.PacketItemStackChat;
 import gregapi.old.Textures;
 import gregapi.render.BlockTextureDefault;
@@ -48,6 +47,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraftforge.common.ChestGenHooks;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -251,7 +251,7 @@ public class MultiTileEntityBookShelf extends TileEntityBase09FacingSingle imple
 	@Override
 	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
 		rList.add(3, getDirectionData());
-		for (int i = 0; i < mDisplay.length; i++) rList.add(4+i, mDisplay[i]);
+		for (int i = 0; i < mDisplay.length; ++i) rList.add(4+i, mDisplay[i]);
 	}
 	
 	@Override

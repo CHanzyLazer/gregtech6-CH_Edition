@@ -22,6 +22,7 @@
 # Build files
 !/build.gradle
 !/settings.gradle
+!/gradle.properties
 !/gradlew
 !/gradlew.bat
 !/gradle/wrapper/gradle-wrapper.jar

@@ -567,8 +567,8 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         /// 修改项
         // 蒸馏塔设置最低输入
         aRegistry.addReplacer(17101).setParameters(NBT_INPUT_MIN, 16);
-        // 低温蒸馏塔设置最低输入，并且替换核心方块，材料替换
-        aRegistry.addReplacer(17111).setParameters(NBT_INPUT_MIN, 16, NBT_MATERIAL, MT.Al).recipe("PPP", "PMP", "PPP", 'M', aRegistry.getItem(18112), 'P', OP.pipeNonuple.dat(ANY.Cu));
+        // 低温蒸馏塔设置最低输入，并且替换核心方块，材料替换，需要部件修改为 Frost Proof Machine Casing
+        aRegistry.addReplacer(17111).setParameters(NBT_INPUT_MIN, 16, NBT_MATERIAL, MT.Al, NBT_DESIGN, 18112).recipe("PPP", "PMP", "PPP", 'M', aRegistry.getItem(18112), 'P', OP.pipeNonuple.dat(ANY.Cu));
         // MARK 内爆压缩机不需要输入电力，莫名其妙，并且也没有对聚爆压缩机的类进行任何修改 TODO 材质的修改检查
         // MARK 大型高压釜不再需要输入电力，莫名其妙，TODO 类的修改检查，材质的修改检查
         // MARK 大电炉的合成不再修改

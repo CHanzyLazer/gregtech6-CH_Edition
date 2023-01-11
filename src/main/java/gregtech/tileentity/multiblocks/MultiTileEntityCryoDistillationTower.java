@@ -30,9 +30,11 @@ import gregapi.tileentity.multiblocks.TileEntityBase10MultiBlockMachine;
 import gregapi.util.ST;
 import gregapi.util.WD;
 import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockCryoDistillationTower;
+import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockDistillationTower;
 import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockMachine;
 import gregtechCH.tileentity.multiblocks.IDistillationTower;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.Fluid;
 
@@ -45,6 +47,13 @@ import static gregapi.data.CS.*;
  */
 public class MultiTileEntityCryoDistillationTower extends TileEntityBase10MultiBlockMachine implements IDistillationTower {
 	@Override protected MTEC_MultiBlockMachine getNewCoreMultiBlock() {return new MTEC_MultiBlockCryoDistillationTower(this);}
+	protected MTEC_MultiBlockCryoDistillationTower coreM() {return (MTEC_MultiBlockCryoDistillationTower)mCoreMultiBlock;}
+	
+	@Override
+	public void readFromNBT2(NBTTagCompound aNBT) {
+		super.readFromNBT2(aNBT);
+		if (aNBT.hasKey(NBT_DESIGN)) coreM().mDesign = aNBT.getShort(NBT_DESIGN);
+	}
 	
 	@Override
 	public void addToolTipsSided(List<String> aList, ItemStack aStack, boolean aF3_H) {

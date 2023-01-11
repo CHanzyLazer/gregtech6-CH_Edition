@@ -1,5 +1,6 @@
 package gregtechCH.tileentity.multiblocks;
 
+import gregapi.block.multitileentity.MultiTileEntityRegistry;
 import gregapi.data.LH;
 import gregapi.tileentity.ITileEntityUnloadable;
 import gregapi.tileentity.multiblocks.ITileEntityMultiBlockController;
@@ -260,13 +261,13 @@ public class MultiTileEntityMultiblockEnergyStorageUnit extends TileEntityBase11
     }
     
     public String getBatteryCoreName() {
-        if (REG_GREG.getLocal(aBatteryCores[mSyncBatteryCoreType]) != null) return REG_GREG.getLocal(aBatteryCores[mSyncBatteryCoreType]);
-        return "No Battery Core!";
+        String tName = MultiTileEntityRegistry.getRegistry(getMultiTileEntityRegistryID()).getLocal(aBatteryCores[mSyncBatteryCoreType]);
+        return tName != null ? tName : "No Battery Core!";
     }
     
     public String getElectodeName() {
-        if (REG_GREG.getLocal(aElectrodes[mSyncElectrodeType]) != null) return REG_GREG.getLocal(aElectrodes[mSyncElectrodeType]);
-        return "No Electrode!";
+        String tName = MultiTileEntityRegistry.getRegistry(getMultiTileEntityRegistryID()).getLocal(aElectrodes[mSyncElectrodeType]);
+        return tName != null ? tName : "No Electrode!";
     }
     
     public long getBatteryCoreCapacity() {

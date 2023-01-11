@@ -1,10 +1,12 @@
 package gregtechCH.data;
 
+import gregapi.block.multitileentity.MultiTileEntityRegistry;
 import gregapi.data.LH;
 import gregapi.lang.LanguageHandler;
 import gregapi.oredict.OreDictMaterial;
 import gregapi.oredict.OreDictPrefix;
 import gregtechCH.lang.LanguageHandler_CH;
+import net.minecraft.item.ItemStack;
 
 import static gregtechCH.data.CS_CH.RegType;
 
@@ -39,6 +41,7 @@ public class LH_CH {
     public static final String get(String aKey) {return LanguageHandler_CH.translate(aKey);}
     public static final String getNumber(String aKey, long aNum) {return String.format(LanguageHandler_CH.translate(aKey), aNum);}
     public static final String getNumber(String aKey, long aNum1, long aNum2) {return String.format(LanguageHandler_CH.translate(aKey), aNum1, aNum2);}
+    public static final String getItemName(String aKey, int aRegistryMeta, int aRegistryID) {return String.format(LanguageHandler_CH.translate(aKey), MultiTileEntityRegistry.getRegistry(aRegistryID).getLocal(aRegistryMeta));}
     public static final String get(String aKey, String aDefault) {return LanguageHandler_CH.translate(aKey, aDefault);}
 
     public static final String percentSimple(long aNumber) {return String.valueOf(aNumber/100);}

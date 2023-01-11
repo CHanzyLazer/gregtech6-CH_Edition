@@ -31,10 +31,9 @@ import gregapi.util.UT;
 /**
  * @author Gregorius Techneticies
  */
-public class MultiTileEntityWireRedstone extends MultiTileEntityWireRedstoneInsulated implements IMTE_GetLightValue {
-	// 激活时会发光，为了不让亮度显示奇怪将其透光度设为零
-	@Override public int getLightOpacity2() {return getState()>0 ? LIGHT_OPACITY_NONE : super.getLightOpacity2();}
-	@Override public int getLightValue() {return (mIsGlowing & getState()>0) ? 15 : 0;}
+public class MultiTileEntityWireRedstone extends MultiTileEntityWireRedstoneInsulated {
+	// 为了减少光照更新造成的卡顿，激活时不再发光
+	@Override public int getLightOpacity2() {return LIGHT_OPACITY_NONE;}
 	
 	// GTCH, 还原为原本材料的颜色
 	@Override public int getBottomRGB() {return UT.Code.getRGBInt(mMaterial.fRGBaSolid);}

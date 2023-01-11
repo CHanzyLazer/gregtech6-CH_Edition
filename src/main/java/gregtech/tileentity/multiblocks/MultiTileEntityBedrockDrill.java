@@ -144,13 +144,12 @@ public class MultiTileEntityBedrockDrill extends TileEntityBase10MultiBlockBase 
 	}
 	
 	@Override
-	public void onTick2(long aTimer, boolean aIsServerSide) {
-		super.onTick2(aTimer, aIsServerSide);
+	public void onTick3(long aTimer, boolean aIsServerSide) {
 		if (aIsServerSide) {
 			if (slotHas(0)) {
 				ST.move(delegator(SIDE_TOP), getAdjacentInventory(SIDE_TOP));
 			}
-			if (mEnergy >= 32768 && !slotHas(0) && checkStructure(F) && mTank.drainAll(100)) {
+			if (mEnergy >= 32768 && !slotHas(0) && isStructureOkay() && mTank.drainAll(100)) {
 				mEnergy -= 32768;
 				// Switch Stone Type randomly. The plus 1 is for the Vanilla Stone case.
 				if (rng(1000) == 0) mType = rng(BlocksGT.stones.length+(IL.EtFu_Deepslate_Cobble.exists() ? 2 : 1));
@@ -243,7 +242,8 @@ public class MultiTileEntityBedrockDrill extends TileEntityBase10MultiBlockBase 
 	}
 	
 	@Override
-	public void onMagnifyingGlass2(List<String> aChatReturn) {
+	public void onMagnifyingGlassSuccess(List<String> aChatReturn, boolean aOldStructureOkay) {
+		super.onMagnifyingGlassSuccess(aChatReturn, aOldStructureOkay);
 		aChatReturn.add(mTank.content("WARNING: NO LUBRICANT!!!"));
 	}
 	

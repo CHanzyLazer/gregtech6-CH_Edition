@@ -176,8 +176,7 @@ public class MultiTileEntityCrucible extends TileEntityBase10MultiBlockBase impl
 	}
 	
 	@Override
-	public void onTick2(long aTimer, boolean aIsServerSide) {
-		super.onTick2(aTimer, aIsServerSide);
+	public void onTick3(long aTimer, boolean aIsServerSide) {
 		if (aIsServerSide && mHasToAddTimer) {
 			GT_API_Proxy.SERVER_TICK_POST.add(this);
 			mHasToAddTimer = F;
@@ -189,7 +188,7 @@ public class MultiTileEntityCrucible extends TileEntityBase10MultiBlockBase impl
 	public void onServerTickPost(boolean aFirst) {
 		long tTemperature = WD.envTemp(worldObj, xCoord, yCoord, zCoord), tHash = mContent.hashCode();
 		
-		if (!checkStructure(F)) {
+		if (!isStructureOkay()) {
 			if (SERVER_TIME % 10 == 0) {if (mTemperature > tTemperature) mTemperature--; if (mTemperature < tTemperature) mTemperature++;}
 			mTemperature = Math.max(mTemperature, Math.min(200, tTemperature));
 			return;

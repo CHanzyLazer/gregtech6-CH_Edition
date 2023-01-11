@@ -179,24 +179,16 @@ public class MultiTileEntityMultiblockEnergyStorageUnit extends TileEntityBase11
     }
     
     @Override
-    public void onMagnifyingGlass(List<String> aChatReturn) {
-        if (checkStructure(F)) {
-            onMagnifyingGlass2(aChatReturn);
-        } else {
-            if (checkStructure(T)) {
-                aChatReturn.add("Structure did form just now!");
-            } else {
-                aChatReturn.add("Structure did not form!");
-                aChatReturn.add("If you think you have the structure correct:");
-                aChatReturn.add("1. Re-place the mainblock");
-                aChatReturn.add("2. Another MESU might be to close (< 7 block) to this one");
-            }
-        }
+    public void onMagnifyingGlassFail(List<String> aChatReturn, boolean aOldStructureOkay) {
+        super.onMagnifyingGlassFail(aChatReturn, aOldStructureOkay);
+        aChatReturn.add("If you think you have the structure correct:");
+        aChatReturn.add("1. Re-place the mainblock");
+        aChatReturn.add("2. Another MESU might be to close (< 7 block) to this one");
     }
     
     @Override
-    public void onMagnifyingGlass2(List<String> aChatReturn) {
-        super.onMagnifyingGlass2(aChatReturn);
+    public void onMagnifyingGlassSuccess(List<String> aChatReturn, boolean aOldStructureOkay) {
+        super.onMagnifyingGlassSuccess(aChatReturn, aOldStructureOkay);
         String mBatteryCoreName = this.getBatteryCoreName();
         String mElectrodeName = this.getElectodeName();
         aChatReturn.add("Core Type: " + mBatteryCoreName);

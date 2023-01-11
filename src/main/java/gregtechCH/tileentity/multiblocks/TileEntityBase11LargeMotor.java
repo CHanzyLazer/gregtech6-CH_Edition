@@ -79,14 +79,15 @@ public abstract class TileEntityBase11LargeMotor extends TileEntityBase10MultiBl
 
         return mCore.onToolClick(aTool, aRemainingDurability, aQuality, aPlayer, aChatReturn, aPlayerInventory, aSneaking, aStack, aSide, aHitX, aHitY, aHitZ);
     }
-    @Override public void onMagnifyingGlass2(List<String> aChatReturn) {mCore.onMagnifyingGlass2(aChatReturn);}
+    @Override public void onMagnifyingGlassSuccess(List<String> aChatReturn, boolean aOldStructureOkay) {
+        super.onMagnifyingGlassSuccess(aChatReturn, aOldStructureOkay);
+        mCore.onMagnifyingGlass2(aChatReturn);
+    }
 
     // 每 tick 转换
     @Override
-    public final void onTick2(long aTimer, boolean aIsServerSide) {
-        super.onTick2(aTimer, aIsServerSide);
+    public final void onTick3(long aTimer, boolean aIsServerSide) {
         if (aIsServerSide) {
-            checkStructure(F);
             if (isStructureOkay()) {
                 IMTEC_MotorTick.Util.onTick(mCore, aTimer);
             } else {

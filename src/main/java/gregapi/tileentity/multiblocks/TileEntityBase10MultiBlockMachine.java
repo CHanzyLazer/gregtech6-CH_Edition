@@ -52,7 +52,7 @@ public abstract class TileEntityBase10MultiBlockMachine extends MultiTileEntityB
 	
 	// 用 private 封装防止意料外的修改
 	private boolean mStructureOkay = F;
-	public final boolean isStructureOkay() {return mStructureOkay;}
+	@Override public final boolean isStructureOkay() {return mStructureOkay;}
 	// GTCH, 用于子类重写实现在结构改变时更新不透明度
 	private void setStructureOkay(boolean aStructureOkay) {
 		if (aStructureOkay == mStructureOkay) return;
@@ -89,22 +89,20 @@ public abstract class TileEntityBase10MultiBlockMachine extends MultiTileEntityB
 		return 0;
 	}
 	
-	@Override
+	// 放大镜永远都要强制检测结构
 	public void onMagnifyingGlass(List<String> aChatReturn) {
-		super.onMagnifyingGlass(aChatReturn);
-		if (checkStructure(F)) {
-			onMagnifyingGlass2(aChatReturn);
+		boolean tOldStructureOkay = isStructureOkay();
+		if (checkStructureOnly(T)) {
+			onMagnifyingGlassSuccess(aChatReturn, tOldStructureOkay);
 		} else {
-			if (checkStructure(T)) {
-				aChatReturn.add("Structure did form just now!");
-			} else {
-				aChatReturn.add("Structure did not form!");
-			}
+			onMagnifyingGlassFail(aChatReturn, tOldStructureOkay);
 		}
 	}
-	
-	public void onMagnifyingGlass2(List<String> aChatReturn) {
-		aChatReturn.add("Structure is formed already!");
+	public void onMagnifyingGlassSuccess(List<String> aChatReturn, boolean aOldStructureOkay) {
+		aChatReturn.add(aOldStructureOkay ? "Structure is formed already!" : "Structure did form just now!");
+	}
+	public void onMagnifyingGlassFail(List<String> aChatReturn, boolean aOldStructureOkay) {
+		aChatReturn.add("Structure did not form!");
 	}
 	
 	@Override

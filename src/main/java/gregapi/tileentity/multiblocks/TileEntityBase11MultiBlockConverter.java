@@ -121,9 +121,8 @@ public abstract class TileEntityBase11MultiBlockConverter extends TileEntityBase
 	}
 	
 	@Override
-	public void onTick2(long aTimer, boolean aIsServerSide) {
-		super.onTick2(aTimer, aIsServerSide);
-		if (aIsServerSide && checkStructure(F)) {
+	public void onTick3(long aTimer, boolean aIsServerSide) {
+		if (aIsServerSide && isStructureOkay()) {
 			doConversion(aTimer);
 			if (mTimer % 600 == 5 && !mActivity.mActive && mExplosionPrevention > 0) mExplosionPrevention--;
 		}

@@ -49,15 +49,15 @@ public class MTEC_LargeBoilerTank extends MTEC_BoilerTank {
     @Override public void toolTipsOther(List<String> aList, ItemStack aStack, boolean aF3_H) {
         aList.add(LH.Chat.DGRAY    + LH.get(LH.TOOL_TO_DECALCIFY_CHISEL));
     }
-
+    
     // 释放蒸汽使用 Large 的释放
     @Override
     protected void doEmitSteam2(long aAmount) {
         FluidStack tDrainableSteam = mTanks[1].drain(UT.Code.bindInt(aAmount), F);
-
+        
         if (tDrainableSteam != null) {
             int tTargets = 0;
-
+            
             @SuppressWarnings("unchecked")
             DelegatorTileEntity<TileEntity>[] tDelegators = new DelegatorTileEntity[] {
                   WD.te(mTE.getWorldObj(), mTE.getOffsetXN(mTE.mFacing, 1)  , mTE.yCoord+3, mTE.getOffsetZN(mTE.mFacing, 1)  , SIDE_Y_NEG, F)
@@ -66,11 +66,11 @@ public class MTEC_LargeBoilerTank extends MTEC_BoilerTank {
                 , WD.te(mTE.getWorldObj(), mTE.getOffsetXN(mTE.mFacing, 1)  , mTE.yCoord+1, mTE.getOffsetZN(mTE.mFacing, 1)-2, SIDE_Z_POS, F)
                 , WD.te(mTE.getWorldObj(), mTE.getOffsetXN(mTE.mFacing, 1)  , mTE.yCoord+1, mTE.getOffsetZN(mTE.mFacing, 1)+2, SIDE_Z_NEG, F)
             };
-
+            
             long[] tTargetAmounts = new long[tDelegators.length];
-
+            
             for (int i = 0; i < tDelegators.length; i++) if (tDelegators[i].mTileEntity instanceof IFluidHandler && (tTargetAmounts[i] = FL.fill_(tDelegators[i], tDrainableSteam, F)) > 0) tTargets++; else tDelegators[i] = null;
-
+            
             if (tTargets == 1) {
                 for (DelegatorTileEntity<TileEntity> tDelegator : tDelegators) if (tDelegator != null) {
                     FL.move_(mTanks[1], tDelegator, tDrainableSteam.amount);
@@ -103,16 +103,16 @@ public class MTEC_LargeBoilerTank extends MTEC_BoilerTank {
             }
         }
     }
-
+    
     @Override
     protected boolean checkExplode() {
-        return (mBarometer > 4 && !((TileEntityBase10MultiBlockBase)mTE).checkStructure(F)) || super.checkExplode();
+        return (mBarometer > 4 && !((TileEntityBase10MultiBlockBase)mTE).checkStructureOnly(F)) || super.checkExplode();
     }
-
+    
     // 大型的在 super 中已经检测了放大镜操作
     @Override protected boolean notSuperMagnifyingGlass() {return F;}
-
+    
     // tanks
     @Override public IFluidTank getFluidTankFillable(byte aSide, FluidStack aFluidToFill) {return FL.water(aFluidToFill) ? mTanks[0] : null;}
-
+    
 }

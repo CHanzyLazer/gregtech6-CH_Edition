@@ -368,6 +368,7 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 	@Override
 	public void onCoordinateChange() {
 		updateAdjacentToggleableEnergySources();
+		checkStructure(T);
 	}
 	
 	@Override
@@ -400,7 +401,12 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 			
 			doWork(aTimer);
 			
-			if (mTimer % 600 == 5 && mRunning) doDefaultStructuralChecks();
+			if (mTimer % 600 == 5) {
+				if (!checkStructure(F)) checkStructure(T);
+				if (isStructureOkay() && mRunning) doDefaultStructuralChecks();
+			} else {
+				checkStructure(F); // 为了保证结构能够及时失效，这里每 tick 都要检测一次结构是否改变并且在改变后进行检测。也能保证 only 的检测不会有过多的无用检测
+			}
 			
 			for (int i = 0; i < mTanksInput .length; i++) slot(mRecipes.mInputItemsCount + mRecipes.mOutputItemsCount + 1 + i                       , FL.display(mTanksInput [i], T, T));
 			for (int i = 0; i < mTanksOutput.length; i++) slot(mRecipes.mInputItemsCount + mRecipes.mOutputItemsCount + 1 + i + mTanksInput.length  , FL.display(mTanksOutput[i], T, T));
@@ -628,9 +634,8 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 		return UT.Sounds.send(mRequiresIgnition?SFX.MC_FIZZ:mNoConstantEnergy?SFX.IC_MACHINE_INTERRUPT:SFX.MC_CLICK, this);
 	}
 	
-	public boolean checkStructure(boolean aForceReset) {
-		return T;
-	}
+	public boolean checkStructure(boolean aForceReset) {return T;}
+	public boolean isStructureOkay() {return T;}
 	
 	public DelegatorTileEntity<IInventory> getItemInputTarget(byte aSide) {
 		return getAdjacentInventory(aSide);

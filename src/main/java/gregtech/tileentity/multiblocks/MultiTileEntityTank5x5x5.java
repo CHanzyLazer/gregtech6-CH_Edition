@@ -79,9 +79,8 @@ public abstract class MultiTileEntityTank5x5x5 extends MultiTileEntityTank {
 	}
 	
 	@Override
-	public void onTick2(long aTimer, boolean aIsServerSide) {
-		super.onTick2(aTimer, aIsServerSide);
-		if (aIsServerSide && checkStructure(F)) {
+	public void onTick3(long aTimer, boolean aIsServerSide) {
+		if (aIsServerSide && isStructureOkay()) {
 			FluidStack tFluid = mTank.getFluid();
 			if (tFluid != null && tFluid.amount > 0) {
 				if (FL.temperature(mTank) >= mMaterial.mMeltingPoint && meltdown()) return;

@@ -271,7 +271,7 @@ public abstract class TileEntityBase04MultiTileEntities extends TileEntityBase03
 	public void updateClientData(boolean aRerendImmediate) {willRerendImmediate = aRerendImmediate; updateClientData();} // 后续在需要立刻重新渲染时调用此函数即可
 	@Override public void onTickResetChecks(long aTimer, boolean aIsServerSide) {super.onTickResetChecks(aTimer, aIsServerSide); if (aIsServerSide) willRerendImmediate = F;} // 对于 ticking 的需要在这里恢复标记
 	@Override
-	public final void doAfterUpdateRender_CH(IBlockAccess aWorld, int aX, int aY, int aZ) {
+	public final void doAfterUpdateRender(IBlockAccess aWorld, int aX, int aY, int aZ) {
 		if (!ConfigForge.DATA_GTCH.rerenderAll && (willRerendImmediate || willRerendImmediateAny())) WD_CH.updateRender(aWorld, aX, aY, aZ, T, F);
 		willRerendImmediate = F;
 	}

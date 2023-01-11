@@ -79,9 +79,8 @@ public abstract class TileEntityBase11MultiBlockEnergyStorage extends TileEntity
     public void onScrewdriverSneaking(List<String> aChatReturn) {aChatReturn.add("Structure is formed already!");}
     
     @Override
-    public void onTick2(long aTimer, boolean aIsServerSide) {
-        super.onTick2(aTimer, aIsServerSide);
-        if (aIsServerSide && checkStructure(F)) {
+    public void onTick3(long aTimer, boolean aIsServerSide) {
+        if (aIsServerSide && isStructureOkay()) {
             onTickEnergy(aTimer);
         }
     }

@@ -214,7 +214,7 @@ public abstract class TileEntityBase03MultiTileEntities extends TileEntityBase02
 	private boolean willRerendImmediate = F;
 	public void updateClientData(boolean aRerendImmediate) {willRerendImmediate = aRerendImmediate; updateClientData(); willRerendImmediate = F;} // 后续在需要立刻重新渲染时调用此函数即可
 	@Override
-	public final void doAfterUpdateRender_CH(IBlockAccess aWorld, int aX, int aY, int aZ) {
+	public final void doAfterUpdateRender(IBlockAccess aWorld, int aX, int aY, int aZ) {
 		if (!ConfigForge.DATA_GTCH.rerenderAll && (willRerendImmediate || willRerendImmediateAny())) WD_CH.updateRender(aWorld, aX, aY, aZ, T, F);
 		willRerendImmediate = F;
 	}

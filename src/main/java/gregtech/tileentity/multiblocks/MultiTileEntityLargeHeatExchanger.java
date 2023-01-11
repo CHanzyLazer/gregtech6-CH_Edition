@@ -148,8 +148,7 @@ public class MultiTileEntityLargeHeatExchanger extends TileEntityBase10MultiBloc
 	}
 	
 	@Override
-	public void onTick2(long aTimer, boolean aIsServerSide) {
-		super.onTick2(aTimer, aIsServerSide);
+	public void onTick3(long aTimer, boolean aIsServerSide) {
 		if (aIsServerSide) {
 			// Emit buffered Energy. And yes if you use a strong enough Fuel, that Energy would stay buffered even while the Box is Off. This is very intended and represents partially used Fuel.
 			if (mEnergy >= 8) {
@@ -204,8 +203,8 @@ public class MultiTileEntityLargeHeatExchanger extends TileEntityBase10MultiBloc
 	}
 	
 	@Override
-	public void onMagnifyingGlass2(List<String> aChatReturn) {
-		aChatReturn.add("Structure is formed already!");
+	public void onMagnifyingGlassSuccess(List<String> aChatReturn, boolean aOldStructureOkay) {
+		super.onMagnifyingGlassSuccess(aChatReturn, aOldStructureOkay);
 		aChatReturn.add("Input: "  + mTanks[0].content());
 		aChatReturn.add("Output: " + mTanks[1].content());
 	}

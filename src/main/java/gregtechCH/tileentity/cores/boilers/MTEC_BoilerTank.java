@@ -4,6 +4,7 @@ import gregapi.code.TagData;
 import gregapi.data.FL;
 import gregapi.data.LH;
 import gregapi.data.TD;
+import gregapi.tileentity.base.TileEntityBase01Root;
 import gregapi.tileentity.base.TileEntityBase09FacingSingle;
 import gregapi.util.UT;
 import gregtechCH.data.LH_CH;
@@ -18,8 +19,8 @@ import static gregtechCH.data.CS_CH.*;
 
 public class MTEC_BoilerTank extends MTEC_BoilerTank_Greg {
     /* 将所有是数据使用这个类封装，保证在相互包含时只有一份数据 */
-    public MTEC_BoilerTank(TileEntityBase09FacingSingle aTE) {super(aTE);}
-
+    public MTEC_BoilerTank(TileEntityBase01Root aTE) {super(aTE);}
+    
     /* main code */
     protected long mEnergyEff = 0, mInput = 64, pEnergy = 0;
     protected long mOutputNow = 0;
@@ -31,7 +32,7 @@ public class MTEC_BoilerTank extends MTEC_BoilerTank_Greg {
         if (aNBT.hasKey(NBT_ENERGY_EFF)) mEnergyEff = aNBT.getLong(NBT_ENERGY_EFF);
         if (aNBT.hasKey(NBT_ENERGY_PRE)) pEnergy = aNBT.getLong(NBT_ENERGY_PRE);
         if (aNBT.hasKey(NBT_OUTPUT_SU)) mInput = aNBT.getLong(NBT_OUTPUT_SU) / STEAM_PER_EU; //保留兼容
-
+        
         if (aNBT.hasKey(NBT_INPUT)) mInput = aNBT.getLong(NBT_INPUT);
         if (aNBT.hasKey(NBT_EFFICIENCY_CH)) mEfficiencyCH = (short) UT.Code.bind_(0, 10000, aNBT.getShort(NBT_EFFICIENCY_CH));
         mOutput = UT.Code.units(mInput, 10000, UT.Code.units(mEfficiency, 10000, mEfficiencyCH, F), F) * STEAM_PER_EU;
@@ -46,7 +47,7 @@ public class MTEC_BoilerTank extends MTEC_BoilerTank_Greg {
         UT.NBT.setNumber(aNBT, NBT_CAPACITY_HU, mCapacity); // for OmniOcular usage 和读取的名称不一致是为了避免被意外修改
         for (int i = 0; i < mTanks.length; i++) UT.NBT.setNumber(aNBT, NBT_TANK_CAPACITY+"."+i, mTanks[i].capacity()); // for OmniOcular usage
     }
-
+    
     @Override
     public void toolTipsRecipe(List<String> aList) {
         aList.add(LH.Chat.CYAN     + LH.get(LH.CONVERTS_FROM_X)        + " 1 L " + FL.name(FluidRegistry.WATER, T) + " " + LH.get(LH.CONVERTS_TO_Y) + " " + STEAM_PER_WATER + " L " + FL.name(FL.Steam.make(0), T) + " " + LH.get(LH.CONVERTS_USING_Z) + " " + UT.Code.units(EU_PER_WATER, mEfficiencyCH, 10000, F) + " " + mEnergyTypeAccepted.getLocalisedNameShort());
@@ -61,7 +62,7 @@ public class MTEC_BoilerTank extends MTEC_BoilerTank_Greg {
     public void toolTipsUseful(List<String> aList) {
         aList.add(LH.Chat.GREEN    + LH_CH.get(LH_CH.TOOLTIP_PREHEAT));
     }
-
+    
     // 改写部分原版锅炉运行逻辑
     @Override public void onTickConvert() {
         // 有接受到热量就不会冷却
@@ -115,8 +116,8 @@ public class MTEC_BoilerTank extends MTEC_BoilerTank_Greg {
             mOutputNow = 0;
         }
     }
-
-
+    
+    
     @Override
     public void onBreakBlock() {
         if (mTE.isServerSide()) {

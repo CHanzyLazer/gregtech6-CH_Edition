@@ -36,6 +36,7 @@ import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.tileentity.energy.ITileEntityEnergyDataCapacitor;
 import gregtechCH.tileentity.cores.boilers.IMTEC_BoilerTank;
 import gregtechCH.tileentity.cores.IMTEC_ToolTips;
+import gregtechCH.tileentity.cores.boilers.IMTEC_HasBoilerTank;
 import gregtechCH.tileentity.cores.boilers.MTEC_BoilerTank_Greg;
 import gregtechCH.tileentity.cores.boilers.MTEC_BoilerTank;
 import net.minecraft.block.Block;
@@ -59,8 +60,10 @@ import static gregapi.data.CS.*;
 /**
  * @author Gregorius Techneticies
  */
-public class MultiTileEntityBoilerTank extends TileEntityBase09FacingSingle implements ITileEntityEnergy, ITileEntityFunnelAccessible, ITileEntityGibbl, ITileEntityEnergyDataCapacitor, IFluidHandler, IMTE_RemovedByPlayer, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnEntityCollidedWithBlock {
-	protected MTEC_BoilerTank_Greg mCore;
+public class MultiTileEntityBoilerTank extends TileEntityBase09FacingSingle implements IMTEC_HasBoilerTank, ITileEntityEnergy, ITileEntityFunnelAccessible, ITileEntityGibbl, ITileEntityEnergyDataCapacitor, IFluidHandler, IMTE_RemovedByPlayer, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnEntityCollidedWithBlock {
+	protected MTEC_BoilerTank mCore;
+	@Override public MTEC_BoilerTank core() {return mCore;}
+	@Override public byte facing() {return mFacing;}
 	
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {

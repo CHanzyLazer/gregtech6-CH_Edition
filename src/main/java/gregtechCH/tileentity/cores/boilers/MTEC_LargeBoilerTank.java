@@ -3,11 +3,13 @@ package gregtechCH.tileentity.cores.boilers;
 import gregapi.data.FL;
 import gregapi.data.LH;
 import gregapi.data.TD;
+import gregapi.tileentity.base.TileEntityBase01Root;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.tileentity.multiblocks.TileEntityBase10MultiBlockBase;
 import gregapi.util.UT;
 import gregapi.util.WD;
 import gregtechCH.data.LH_CH;
+import gregtechCH.util.UT_CH;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.FluidStack;
@@ -21,7 +23,8 @@ import static gregapi.data.CS.F;
 
 // 为避免多继承，原本大锅炉的部分逻辑被抛弃
 public class MTEC_LargeBoilerTank extends MTEC_BoilerTank {
-    public MTEC_LargeBoilerTank(TileEntityBase10MultiBlockBase aTE) {super(aTE);}
+    public MTEC_LargeBoilerTank(TileEntityBase01Root aTE) {super(aTE); UT_CH.Debug.assertWhenDebug(aTE instanceof IMTEC_HasLargeBoilerTank);}
+    @Override protected IMTEC_HasLargeBoilerTank te() {return (IMTEC_HasLargeBoilerTank)mTE;} // 返回值可以为器子类，返回值重写
     
     /* main code */
     static {
@@ -60,11 +63,11 @@ public class MTEC_LargeBoilerTank extends MTEC_BoilerTank {
             
             @SuppressWarnings("unchecked")
             DelegatorTileEntity<TileEntity>[] tDelegators = new DelegatorTileEntity[] {
-                  WD.te(mTE.getWorldObj(), mTE.getOffsetXN(mTE.mFacing, 1)  , mTE.yCoord+3, mTE.getOffsetZN(mTE.mFacing, 1)  , SIDE_Y_NEG, F)
-                , WD.te(mTE.getWorldObj(), mTE.getOffsetXN(mTE.mFacing, 1)-2, mTE.yCoord+1, mTE.getOffsetZN(mTE.mFacing, 1)  , SIDE_X_POS, F)
-                , WD.te(mTE.getWorldObj(), mTE.getOffsetXN(mTE.mFacing, 1)+2, mTE.yCoord+1, mTE.getOffsetZN(mTE.mFacing, 1)  , SIDE_X_NEG, F)
-                , WD.te(mTE.getWorldObj(), mTE.getOffsetXN(mTE.mFacing, 1)  , mTE.yCoord+1, mTE.getOffsetZN(mTE.mFacing, 1)-2, SIDE_Z_POS, F)
-                , WD.te(mTE.getWorldObj(), mTE.getOffsetXN(mTE.mFacing, 1)  , mTE.yCoord+1, mTE.getOffsetZN(mTE.mFacing, 1)+2, SIDE_Z_NEG, F)
+                  WD.te(mTE.getWorldObj(), mTE.getOffsetXN(te().facing(), 1)  , mTE.yCoord+3, mTE.getOffsetZN(te().facing(), 1)  , SIDE_Y_NEG, F)
+                , WD.te(mTE.getWorldObj(), mTE.getOffsetXN(te().facing(), 1)-2, mTE.yCoord+1, mTE.getOffsetZN(te().facing(), 1)  , SIDE_X_POS, F)
+                , WD.te(mTE.getWorldObj(), mTE.getOffsetXN(te().facing(), 1)+2, mTE.yCoord+1, mTE.getOffsetZN(te().facing(), 1)  , SIDE_X_NEG, F)
+                , WD.te(mTE.getWorldObj(), mTE.getOffsetXN(te().facing(), 1)  , mTE.yCoord+1, mTE.getOffsetZN(te().facing(), 1)-2, SIDE_Z_POS, F)
+                , WD.te(mTE.getWorldObj(), mTE.getOffsetXN(te().facing(), 1)  , mTE.yCoord+1, mTE.getOffsetZN(te().facing(), 1)+2, SIDE_Z_NEG, F)
             };
             
             long[] tTargetAmounts = new long[tDelegators.length];
@@ -106,7 +109,7 @@ public class MTEC_LargeBoilerTank extends MTEC_BoilerTank {
     
     @Override
     protected boolean checkExplode() {
-        return (mBarometer > 4 && !((TileEntityBase10MultiBlockBase)mTE).checkStructureOnly(F)) || super.checkExplode();
+        return (mBarometer > 4 && !te().checkStructureOnly(F)) || super.checkExplode();
     }
     
     // 大型的在 super 中已经检测了放大镜操作

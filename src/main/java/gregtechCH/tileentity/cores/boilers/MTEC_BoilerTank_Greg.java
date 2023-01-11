@@ -5,9 +5,12 @@ import gregapi.data.FL;
 import gregapi.data.LH;
 import gregapi.data.TD;
 import gregapi.fluid.FluidTankGT;
+import gregapi.tileentity.base.TileEntityBase01Root;
 import gregapi.tileentity.base.TileEntityBase09FacingSingle;
 import gregapi.util.UT;
 import gregtechCH.tileentity.cores.IMTEC_ToolTips;
+import gregtechCH.tileentity.cores.electric.IMTEC_HasElectricWire;
+import gregtechCH.util.UT_CH;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -25,11 +28,12 @@ import java.util.List;
 import static gregapi.data.CS.*;
 
 // 放弃旧逻辑的兼容但是这个类可以保留（用来比较方便的看出我的修改），只是限制直接生成
-public class MTEC_BoilerTank_Greg implements IMTEC_ToolTips, IMTEC_BoilerTank {
-    // the instance of TileEntityBase09FacingSingle
-    protected final TileEntityBase09FacingSingle mTE;
-    protected MTEC_BoilerTank_Greg(TileEntityBase09FacingSingle aTE) {mTE = aTE;}
-
+public abstract class MTEC_BoilerTank_Greg implements IMTEC_ToolTips, IMTEC_BoilerTank {
+    // the instance of TileEntityBase01Root
+    protected final TileEntityBase01Root mTE;
+    public MTEC_BoilerTank_Greg(TileEntityBase01Root aTE) {UT_CH.Debug.assertWhenDebug(aTE instanceof IMTEC_HasBoilerTank); mTE = aTE;}
+    protected IMTEC_HasBoilerTank te() {return (IMTEC_HasBoilerTank)mTE;}
+    
     /* main code */
     protected byte mBarometer = 0, oBarometer = 0;
     protected short mEfficiency = 10000;
@@ -37,7 +41,7 @@ public class MTEC_BoilerTank_Greg implements IMTEC_ToolTips, IMTEC_BoilerTank {
     protected long mEnergy = 0, mCapacity = 640000, mOutput = 6400;
     protected TagData mEnergyTypeAccepted = TD.Energy.HU;
     protected FluidTankGT[] mTanks = new FluidTankGT[] {new FluidTankGT(4000), new FluidTankGT(64000)};
-
+    
     public void readFromNBT(NBTTagCompound aNBT) {
         mEnergy = aNBT.getLong(NBT_ENERGY);
         if (aNBT.hasKey(NBT_VISUAL)) mBarometer = aNBT.getByte(NBT_VISUAL);
@@ -53,7 +57,7 @@ public class MTEC_BoilerTank_Greg implements IMTEC_ToolTips, IMTEC_BoilerTank {
         if (mEfficiency != 10000) aNBT.setShort(NBT_EFFICIENCY, mEfficiency);
         for (int i = 0; i < mTanks.length; i++) mTanks[i].writeToNBT(aNBT, NBT_TANK+"."+i);
     }
-
+    
     // tooltips
     @Override public void toolTipsMultiblock(List<String> aList) {/**/}
     @Override public void toolTipsRecipe(List<String> aList) {
@@ -81,7 +85,7 @@ public class MTEC_BoilerTank_Greg implements IMTEC_ToolTips, IMTEC_BoilerTank {
         aList.add(LH.Chat.DGRAY    + LH.get(LH.TOOL_TO_DECALCIFY_CHISEL));
         aList.add(LH.Chat.DGRAY    + LH.get(LH.TOOL_TO_DETAIL_MAGNIFYINGGLASS));
     }
-
+    
     // ticking
     @Override public void onTickConvert() {
         // Convert Water to Steam
@@ -134,8 +138,8 @@ public class MTEC_BoilerTank_Greg implements IMTEC_ToolTips, IMTEC_BoilerTank {
     protected boolean checkExplode() {
         return mEnergy > mCapacity || mTanks[1].isFull();
     }
-
-
+    
+    
     // toolClick
     public long onToolClick(String aTool, long aRemainingDurability, long aQuality, Entity aPlayer, List<String> aChatReturn, IInventory aPlayerInventory, boolean aSneaking, ItemStack aStack, byte aSide, float aHitX, float aHitY, float aHitZ) {
 
@@ -158,7 +162,7 @@ public class MTEC_BoilerTank_Greg implements IMTEC_ToolTips, IMTEC_BoilerTank {
             }
             return 0;
         }
-
+        
         if (aTool.equals(TOOL_thermometer)) {
             if (aChatReturn != null) aChatReturn.add("Stored Heat Units: " + mEnergy + " / " + mCapacity + " HU");
             return 10000;
@@ -182,8 +186,8 @@ public class MTEC_BoilerTank_Greg implements IMTEC_ToolTips, IMTEC_BoilerTank {
         }
         aChatReturn.add(mTanks[0].content("WARNING: NO WATER!!!"));
     }
-
-
+    
+    
     // explode things
     public void onRemovedByPlayer(World aWorld, EntityPlayer aPlayer, boolean aWillHarvest) {
         if (mBarometer > 4 && mTE.isServerSide() && !UT.Entities.isCreative(aPlayer)) mTE.explode(T);
@@ -194,7 +198,7 @@ public class MTEC_BoilerTank_Greg implements IMTEC_ToolTips, IMTEC_BoilerTank {
     public void explode(boolean aInstant, double aDivisor) {
         mTE.explode(aInstant, Math.max(1, Math.sqrt(mTanks[1].amount()) / aDivisor));
     }
-
+    
     // data sync
     public boolean onTickCheck(long aTimer) {
         mBarometer = UT.Code.bind5(mBarometer);
@@ -212,12 +216,12 @@ public class MTEC_BoilerTank_Greg implements IMTEC_ToolTips, IMTEC_BoilerTank {
     public byte getBarometer() {
         return mBarometer;
     }
-
+    
     // 烫伤计算
     public void onEntityCollidedWithBlock(Entity aEntity) {if (mEnergy+mTanks[1].amount()/STEAM_PER_EU > 2000) UT.Entities.applyHeatDamage(aEntity, Math.min(10.0F, (mEnergy+mTanks[1].amount()/2.0F) / 2000.0F));}
-
+    
     public void onBreakBlock() {/**/}
-
+    
     // energy interfaces
     public boolean isEnergyType(TagData aEnergyType, byte aSide, boolean aEmitting) {return !aEmitting && aEnergyType == mEnergyTypeAccepted;}
     public boolean isEnergyAcceptingFrom(TagData aEnergyType, byte aSide, boolean aTheoretical) {return mTE.isEnergyType(aEnergyType, aSide, F);}
@@ -231,13 +235,13 @@ public class MTEC_BoilerTank_Greg implements IMTEC_ToolTips, IMTEC_BoilerTank {
     public long getEnergyCapacity(TagData aEnergyType, byte aSide) {return aEnergyType == mEnergyTypeAccepted ? mCapacity : 0;}
     public Collection<TagData> getEnergyTypes(byte aSide) {return mEnergyTypeAccepted.AS_LIST;}
     public Collection<TagData> getEnergyCapacitorTypes(byte aSide) {return mEnergyTypeAccepted.AS_LIST;}
-
+    
     // tanks
     public IFluidTank getFluidTankFillable(byte aSide, FluidStack aFluidToFill) {return SIDES_BOTTOM_HORIZONTAL[aSide] && FL.water(aFluidToFill) ? mTanks[0] : null;}
     public IFluidTank getFluidTankDrainable(byte aSide, FluidStack aFluidToDrain) {return null;}
     public IFluidTank[] getFluidTanks(byte aSide) {return mTanks;}
     public int funnelFill(byte aSide, FluidStack aFluid, boolean aDoFill) {return FL.water(aFluid) ? mTanks[0].fill(aFluid, aDoFill) : 0;}
-
+    
     public long getGibblValue(byte aSide) {return mTanks[1].amount();}
     public long getGibblMax(byte aSide) {return mTanks[1].capacity();}
 }

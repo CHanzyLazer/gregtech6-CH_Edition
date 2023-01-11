@@ -41,9 +41,7 @@ import gregapi.tileentity.multiblocks.ITileEntityMultiBlockController;
 import gregapi.tileentity.multiblocks.MultiTileEntityMultiBlockPart;
 import gregapi.tileentity.multiblocks.TileEntityBase10MultiBlockBase;
 import gregtechCH.tileentity.cores.*;
-import gregtechCH.tileentity.cores.boilers.IMTEC_BoilerTank;
-import gregtechCH.tileentity.cores.boilers.MTEC_BoilerTank_Greg;
-import gregtechCH.tileentity.cores.boilers.MTEC_LargeBoilerTank;
+import gregtechCH.tileentity.cores.boilers.*;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -59,8 +57,10 @@ import net.minecraftforge.fluids.IFluidTank;
 /**
  * @author Gregorius Techneticies
  */
-public class MultiTileEntityLargeBoiler extends TileEntityBase10MultiBlockBase implements ITileEntityEnergy, ITileEntityGibbl, ITileEntityEnergyDataCapacitor, IMultiBlockEnergy, IMultiBlockFluidHandler, IFluidHandler, IMTE_RemovedByPlayer {
-	protected MTEC_BoilerTank_Greg mCore;
+public class MultiTileEntityLargeBoiler extends TileEntityBase10MultiBlockBase implements IMTEC_HasLargeBoilerTank, ITileEntityEnergy, ITileEntityGibbl, ITileEntityEnergyDataCapacitor, IMultiBlockEnergy, IMultiBlockFluidHandler, IFluidHandler, IMTE_RemovedByPlayer {
+	protected MTEC_LargeBoilerTank mCore;
+	@Override public MTEC_LargeBoilerTank core() {return mCore;}
+	@Override public byte facing() {return mFacing;}
 	
 	public short mBoilerWalls = 18002;
 	

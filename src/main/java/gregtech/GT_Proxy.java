@@ -285,7 +285,7 @@ public abstract class GT_Proxy extends Abstract_Proxy {
 					}
 				} else if (IL.Food_Toast_Sliced.equal(aStack, F, T) || IL.Food_Toasted_Sliced.equal(aStack, F, T)) {
 					int tUsed = Math.min(16, aStack.stackSize);
-					// GTCH, 增加判断 doesSneakBypassUse 来确保要放置方块放置刷物品
+					// GTCH, 增加判断 doesSneakBypassUse 来确保要放置方块防止刷物品
 					if (!aEvent.world.isRemote && (aEvent.entityPlayer.isSneaking() && !aStack.getItem().doesSneakBypassUse(aEvent.world, aEvent.x, aEvent.y, aEvent.z, aEvent.entityPlayer)) && MultiTileEntityRegistry.getRegistry("gt.multitileentity").getItem(32105, ST.save("sandwich.0", ST.amount(tUsed, aStack))).tryPlaceItemIntoWorld(aEvent.entityPlayer, aEvent.world, aEvent.x, aEvent.y, aEvent.z, (byte)aEvent.face, 0.5F, 0.5F, 0.5F)) {
 						ST.use(aEvent.entityPlayer, aStack, tUsed); aEvent.setCanceled(T);
 					}

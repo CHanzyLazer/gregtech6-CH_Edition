@@ -155,6 +155,8 @@ public class GT_ASM_UT {
         M_JM_setFlags(C_JM_VanillaBlockHandler, "setFlags", null, null, "("+toDesc(C_Class)+"["+toDesc(C_JM_Flag)+")V"),
         F_JM_CustomBiomeColor(C_JM_Flag, "CustomBiomeColor", null, null, toDesc(C_JM_Flag)),
         
+        M_doesSneakBypassUse(C_Item, "doesSneakBypassUse", null, null, "("+toDesc(C_World)+"III"+toDesc(C_Player)+")Z"), // 测试发现此方法没有混淆
+        
         M_onEntityUpdate(C_Entity, "onEntityUpdate", "C", "func_70030_z", "()V"),
         F_worldObj(C_Entity, "worldObj", "o", "field_70170_p", toDesc(C_World)),
         
@@ -208,6 +210,7 @@ public class GT_ASM_UT {
         M_BlockBase(C_GTASM_R, "getBlockBase", null, null, "()"+toDesc(C_Class)),
         M_interceptModConnectItem(C_GTASM_R, "interceptModConnectItem", null, null, "("+toDesc(C_TileEntity, C_ForgeDirection)+")Z"),
         M_interceptModConnectFluid(C_GTASM_R, "interceptModConnectFluid", null, null, "("+toDesc(C_TileEntity, C_ForgeDirection)+")Z"),
+        M_MCItemDoesSneakBypassUse(C_GTASM_R, "MCItemDoesSneakBypassUse", null, null, "("+toDesc(C_Item, C_World)+"III"+toDesc(C_Player)+")Z"),
         F_GTLO(C_EBS, "blockGTLightOpacityArray", null, null, toDesc(C_NA));
         
         public final Name clazz; // 所属类

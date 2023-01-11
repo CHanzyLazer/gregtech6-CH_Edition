@@ -3,7 +3,12 @@ package gregtech.asm.transformers.replacements;
 import gregapi.block.BlockBase;
 import gregapi.block.multitileentity.MultiTileEntityBlock;
 import gregapi.block.prefixblock.PrefixBlock;
+import gregapi.cover.ITileEntityCoverable;
+import gregapi.tileentity.connectors.MultiTileEntityWireRedstoneInsulated;
+import gregapi.util.ST;
 import gregapi.util.UT;
+import gregapi.util.WD;
+import gregtechCH.config.ConfigForge;
 import gregtechCH.tileentity.connectors.ITEInterceptModConnectFluid;
 import gregtechCH.tileentity.connectors.ITEInterceptModConnectItem;
 import gregtechCH.util.WD_CH;
@@ -13,6 +18,10 @@ import net.minecraft.client.particle.EntityBlockDustFX;
 import net.minecraft.client.particle.EntityDiggingFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -22,10 +31,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.Random;
 
-import static gregapi.data.CS.OPOS;
-import static gregapi.data.CS.RNGSUS;
+import static gregapi.data.CS.*;
 import static gregtech.interfaces.asm.LO_CH.*;
-import static gregtech.interfaces.asm.LO_CH.initLightOpacityNA;
 
 
 /* This is a separate file, so it class loads *while* minecraft loads,
@@ -162,6 +169,16 @@ public class Methods {
     }
     public static boolean interceptModConnectFluid(TileEntity aTile, ForgeDirection aSide) {
         if (aTile instanceof ITEInterceptModConnectFluid) return ((ITEInterceptModConnectFluid)aTile).interceptModConnectFluid(OPOS[UT.Code.side(aSide)]);
+        return false;
+    }
+    
+    // 自定义的原版物品的 doesSneakBypassUse
+    public static boolean MCItemDoesSneakBypassUse(Item aItem, World aWorld, int aX, int aY, int aZ, EntityPlayer aPlayer) {
+        // 红石火把和红石中继器作为覆盖版
+        if (ConfigForge.DATA_GTCH.sneakingMountCover && (ST.block(aItem)==Blocks.redstone_torch || ST.block(aItem)==Blocks.unlit_redstone_torch || aItem==Items.repeater)) {
+            TileEntity tTileEntity = WD.te(aWorld, aX, aY, aZ, F);
+            if (tTileEntity instanceof MultiTileEntityWireRedstoneInsulated) return true; // 仅红石线缆会穿透 sneak
+        }
         return false;
     }
 }

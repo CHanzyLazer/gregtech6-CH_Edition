@@ -230,7 +230,6 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 	@Override
 	public void onTick2(long aTimer, boolean aIsServerSide) {
 		super.onTick2(aTimer, aIsServerSide);
-		
 		if (aIsServerSide && aTimer >= 100 && mFoam && !mFoamDried && rng(5900) == 0) {
 			setFoamDried(T);
 			updateClientData();
@@ -257,7 +256,7 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 				if (mDiameter < 1.0F && driedFoam(SIDE_ANY)) for (byte tSide : ALL_SIDES_VALID) if (connected(tSide)) mCRLengths[tSide] = UT_CH.Code.RENDER_EPS;
 			}
 		} else
-		// 在 render 的部分进行数据更新
+		// 在 render 的部分进行数据更新（渲染错误不关键，因此不用每 tick 检测）
 		if (!mCRDataUpdated) {
 			updateCRData();
 			mCRDataUpdated = T;

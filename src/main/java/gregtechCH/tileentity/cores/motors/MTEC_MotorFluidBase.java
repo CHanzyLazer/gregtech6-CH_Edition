@@ -9,8 +9,7 @@ import net.minecraft.item.ItemStack;
 
 import java.util.List;
 
-import static gregapi.data.CS.SIDES_VALID;
-import static gregapi.data.CS.SIDE_FRONT;
+import static gregapi.data.CS.*;
 
 // 提取公共的部分
 public abstract class MTEC_MotorFluidBase extends MTEC_Motor {
@@ -62,4 +61,6 @@ public abstract class MTEC_MotorFluidBase extends MTEC_Motor {
     
     @Override public byte getDefaultSide() {return SIDE_FRONT;}
     @Override public boolean[] getValidSides() {return SIDES_VALID;}
+    @Override protected boolean isInput (byte aSide) {return aSide != mTE.mFacing && aSide != OPOS[mTE.mFacing];}
+    @Override protected boolean isOutput(byte aSide) {return aSide == mTE.mFacing;}
 }

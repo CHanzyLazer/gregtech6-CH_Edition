@@ -77,4 +77,6 @@ public class Timer {
     public void check() {
         mCurrentTimer.setStop(true);
     }
+    // 由于是可以实时创建的，提供一个关闭线程池的接口
+    public void close() {mScheduledThread.shutdown();}
 }

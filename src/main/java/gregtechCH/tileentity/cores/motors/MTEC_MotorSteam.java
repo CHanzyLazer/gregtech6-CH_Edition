@@ -82,6 +82,7 @@ public class MTEC_MotorSteam extends MTEC_Motor {
     
     // 一些接口
     @Override public float getSurfaceSizeAttachable (byte aSide) {return ALONG_AXIS[aSide][mTE.mFacing]?0.5F:0.25F;}
-    
+    @Override protected boolean isInput (byte aSide) {return aSide == OPOS[mTE.mFacing];}
+    @Override protected boolean isOutput(byte aSide) {return aSide == mTE.mFacing;}
     @Override public IFluidTank getFluidTankFillable(byte aSide, FluidStack aFluidToFill) {return isInput(aSide) ? super.getFluidTankFillable(aSide, aFluidToFill) : null;}
 }

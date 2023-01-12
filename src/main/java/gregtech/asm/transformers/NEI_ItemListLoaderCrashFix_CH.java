@@ -158,6 +158,18 @@ public class NEI_ItemListLoaderCrashFix_CH implements IClassTransformer  {
                 }
                 // 添加自己的调用
                 m.instructions.insert(at, M_Timer_check.virtualInvocation(isObfuscated()));
+                
+                // 匹配所有的 RETURN，在函数结束前手动关闭 timer
+                at = m.instructions.getFirst();
+                while (at != null) {
+                    if (at.getOpcode() == Opcodes.RETURN) {
+                        insert.clear();
+                        insert.add(new VarInsnNode(Opcodes.ALOAD, timerIdx)); // load timer
+                        insert.add(M_Timer_close.virtualInvocation(isObfuscated()));      // close method
+                        m.instructions.insertBefore(at, insert);
+                    }
+                    at = at.getNext();
+                }
             }
 //            GT_ASM.writePrettyPrintedOpCodesToFile(classNode, "C_NEI_ItemList$"+i+"_Modified"); // DEBUG
             

@@ -178,8 +178,8 @@ public abstract class MTEC_Motor implements IMTEC_MotorTick, IMTEC_ToolTips, IMT
     public boolean canDrop(int aInventorySlot) {return mD.canDrop(aInventorySlot);}
 
     // energy interfaces
-    protected boolean isInput (byte aSide) {return aSide != mTE.mFacing && aSide != OPOS[mTE.mFacing];}
-    protected boolean isOutput(byte aSide) {return aSide == mTE.mFacing;}
+    protected abstract boolean isInput (byte aSide);
+    protected abstract boolean isOutput(byte aSide);
 
     public boolean allowCovers(byte aSide) {return T;}
     public boolean isEnergyType(TagData aEnergyType, byte aSide, boolean aEmitting) {return mD.isEnergyType(aEnergyType, aSide, aEmitting);}

@@ -195,6 +195,7 @@ public class GT_ASM_UT {
         M_Timer_init(C_Timer, "<init>", null, null, "()V"),
         M_Timer_reset(C_Timer, "reset", null, null, "("+toDesc(C_Object)+")V"),
         M_Timer_check(C_Timer, "check", null, null, "()V"),
+        M_Timer_close(C_Timer, "close", null, null, "()V"),
         M_enabledLO(C_GTASM_LO, "isEnableAsmBlockGtLightOpacity", null, null, "()Z"),
         M_getLO(C_GTASM_LO, "getLightOpacityNA", null, null, "("+toDesc(C_EBS)+")"+toDesc(C_NA)),
         M_initLO(C_GTASM_LO, "initLightOpacityNA", null, null, "("+toDesc(C_EBS, C_NA)+")V"),

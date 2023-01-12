@@ -39,8 +39,8 @@ public class MTEC_MotorSteam extends MTEC_Motor {
     public boolean isFast() {return mFast;}
     
     // ticking
-    @Override public void onTickDoActive2() {
-        super.onTickDoActive2();
+    @Override public void onTickDoActive2(long aTimer) {
+        super.onTickDoActive2(aTimer);
         mFast = data().mOutput > data().mRate;
     }
     @Override

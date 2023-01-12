@@ -125,11 +125,11 @@ public class MultiTileEntityMixingBowl extends TileEntityBase07Paintable impleme
 		if (aTool.equals(TOOL_magnifyingglass)) {
 			if (aChatReturn != null) {
 				boolean temp = T;
-				for (FluidTankGT tTank : mTanksInput) if (!tTank.isEmpty()) {
+				for (FluidTankGT tTank : mTanksInput) if (tTank.has()) {
 					temp = F;
 					aChatReturn.add("Input: " + tTank.content());
 				}
-				for (FluidTankGT tTank : mTanksOutput) if (!tTank.isEmpty()) {
+				for (FluidTankGT tTank : mTanksOutput) if (tTank.has()) {
 					temp = F;
 					aChatReturn.add("Output: " + tTank.content());
 				}

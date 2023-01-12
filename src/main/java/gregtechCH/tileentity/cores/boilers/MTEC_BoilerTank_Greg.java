@@ -6,10 +6,8 @@ import gregapi.data.LH;
 import gregapi.data.TD;
 import gregapi.fluid.FluidTankGT;
 import gregapi.tileentity.base.TileEntityBase01Root;
-import gregapi.tileentity.base.TileEntityBase09FacingSingle;
 import gregapi.util.UT;
 import gregtechCH.tileentity.cores.IMTEC_ToolTips;
-import gregtechCH.tileentity.cores.electric.IMTEC_HasElectricWire;
 import gregtechCH.util.UT_CH;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -50,12 +48,12 @@ public abstract class MTEC_BoilerTank_Greg implements IMTEC_ToolTips, IMTEC_Boil
         if (aNBT.hasKey(NBT_OUTPUT_SU)) mOutput = aNBT.getLong(NBT_OUTPUT_SU);
         if (aNBT.hasKey(NBT_EFFICIENCY)) mEfficiency = (short)UT.Code.bind_(0, 10000, aNBT.getShort(NBT_EFFICIENCY));
         if (aNBT.hasKey(NBT_ENERGY_ACCEPTED)) mEnergyTypeAccepted = TagData.createTagData(aNBT.getString(NBT_ENERGY_ACCEPTED));
-        for (int i = 0; i < mTanks.length; i++) mTanks[i].readFromNBT(aNBT, NBT_TANK+"."+i);
+        for (int i = 0; i < mTanks.length; ++i) mTanks[i].readFromNBT(aNBT, NBT_TANK+"."+i);
     }
     public void writeToNBT(NBTTagCompound aNBT) {
         UT.NBT.setNumber(aNBT, NBT_ENERGY, mEnergy);
         if (mEfficiency != 10000) aNBT.setShort(NBT_EFFICIENCY, mEfficiency);
-        for (int i = 0; i < mTanks.length; i++) mTanks[i].writeToNBT(aNBT, NBT_TANK+"."+i);
+        for (int i = 0; i < mTanks.length; ++i) mTanks[i].writeToNBT(aNBT, NBT_TANK+"."+i);
     }
     
     // tooltips
@@ -87,7 +85,8 @@ public abstract class MTEC_BoilerTank_Greg implements IMTEC_ToolTips, IMTEC_Boil
     }
     
     // ticking
-    @Override public void onTickConvert() {
+    protected void resetCoolDownTimer() {mCoolDownResetTimer = 128;}
+    @Override public void onTickConvert(long aTimer) {
         // Convert Water to Steam
         long tConversions = Math.min(mTanks[1].capacity() / 2560, Math.min(mEnergy / 80, mTanks[0].amount()));
         if (tConversions > 0) {
@@ -98,10 +97,10 @@ public abstract class MTEC_BoilerTank_Greg implements IMTEC_ToolTips, IMTEC_Boil
             }
             mTanks[1].setFluid(FL.Steam.make(mTanks[1].amount() + UT.Code.units(tConversions, 10000, mEfficiency * 160, F)));
             mEnergy -= tConversions * 80;
-            mCoolDownResetTimer = 128;
+            resetCoolDownTimer();
         }
     }
-    @Override public void onTickCoolDown() {
+    @Override public void onTickCoolDown(long aTimer) {
         // Remove Steam and Heat during the process of cooling down.
         if (mCoolDownResetTimer-- <= 0) {
             mCoolDownResetTimer = 0;
@@ -109,20 +108,20 @@ public abstract class MTEC_BoilerTank_Greg implements IMTEC_ToolTips, IMTEC_Boil
             GarbageGT.trash(mTanks[1], mOutput * 64);
             if (mEnergy <= 0) {
                 mEnergy = 0;
-                mCoolDownResetTimer = 128;
+                resetCoolDownTimer();
             }
         }
     }
-    @Override public final void onTickEmitSteam() {
+    @Override public final void onTickEmitSteam(long aTimer) {
         long tAmount = mTanks[1].amount() - mTanks[1].capacity() / 2;
         // Emit Steam
         doEmitSteam(tAmount);
     }
-    @Override public void onTickSetBarometer() {
+    @Override public void onTickSetBarometer(long aTimer) {
         // Set Barometer
         mBarometer = (byte)UT.Code.scale(mTanks[1].amount(), mTanks[1].capacity(), 31, F);
     }
-    @Override public final void onTickExplodeCheck() {
+    @Override public final void onTickExplodeCheck(long aTimer) {
         // Well the Boiler gets structural Damage when being too hot, or when being too full of Steam.
         if (checkExplode()) {
             mTE.explode(F);
@@ -232,7 +231,7 @@ public abstract class MTEC_BoilerTank_Greg implements IMTEC_ToolTips, IMTEC_Boil
     public boolean isEnergyType(TagData aEnergyType, byte aSide, boolean aEmitting) {return !aEmitting && aEnergyType == mEnergyTypeAccepted;}
     public boolean isEnergyAcceptingFrom(TagData aEnergyType, byte aSide, boolean aTheoretical) {return mTE.isEnergyType(aEnergyType, aSide, F);}
     public boolean isEnergyCapacitorType(TagData aEnergyType, byte aSide) {return aEnergyType == mEnergyTypeAccepted;}
-    public long doInject(TagData aEnergyType, byte aSide, long aSize, long aAmount, boolean aDoInject) {if (aDoInject) {mEnergy += Math.abs(aAmount * aSize); mCoolDownResetTimer = (short)Math.max(mCoolDownResetTimer, 32);} return aAmount;}
+    public long doInject(TagData aEnergyType, byte aSide, long aSize, long aAmount, boolean aDoInject) {if (aDoInject) {mEnergy += Math.abs(aAmount * aSize); resetCoolDownTimer();} return aAmount;}
     public long getEnergyDemanded(TagData aEnergyType, byte aSide, long aSize) {return mOutput/2;}
     public long getEnergySizeInputRecommended(TagData aEnergyType, byte aSide) {return mOutput/2;}
     public long getEnergySizeInputMin(TagData aEnergyType, byte aSide) {return 1;}

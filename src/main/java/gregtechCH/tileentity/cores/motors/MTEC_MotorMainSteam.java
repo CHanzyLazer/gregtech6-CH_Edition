@@ -81,7 +81,7 @@ public class MTEC_MotorMainSteam extends MTEC_MotorMainBase {
 
     // 每 tick 转换
     @Override
-    public void onTickConvert() {
+    public void onTickConvert(long aTimer) {
         long tSteam = mTankSteam.amount();
         mInputSU = tSteam - pSteam;
         if (mInputSU > 0) mCooldownCounter = COOLDOWN_NUM;
@@ -143,26 +143,26 @@ public class MTEC_MotorMainSteam extends MTEC_MotorMainBase {
     }
     protected void convert(long aInRate, long aOutRate, boolean aOverclockLoss) {if (mTankSteam.has(aInRate)) convert_(aInRate, aOutRate, aOverclockLoss);}
 
-    @Override public boolean onTickCheckOverload() {return mOverload;}
-    @Override public void onTickDoOverload() {
-        super.onTickDoOverload();
+    @Override public boolean onTickCheckOverload(long aTimer) {return mOverload;}
+    @Override public void onTickDoOverload(long aTimer) {
+        super.onTickDoOverload(aTimer);
         mCore.mTE.overcharge(mTankSteam.capacity(), mEnergyTypeEmitted);
         mOverload = F;
     }
     @Override protected boolean onTickCheckPreheat2() {return mCooldownCounter > 0;}
     @Override protected boolean onTickCheckCooldown2() {return mCooldownCounter <= 0;}
-    @Override public void onTickDoCooldown() {
-        super.onTickDoCooldown();
+    @Override public void onTickDoCooldown(long aTimer) {
+        super.onTickDoCooldown(aTimer);
         mCooldownCounter = 0;
         mTankSteam.setEmpty();
         pSteam = 0;
         mInputSU = 0;
     }
     @Override protected long getActiveOutput() {return mEnergy - mPEnergy;}
-    @Override public void onTickDoElse() {
+    @Override public void onTickDoElse(long aTimer) {
         // 必须要冷却才能清空数据
         if (mCooldownCounter <= 0) stop();
-        else super.onTickDoElse();
+        else super.onTickDoElse(aTimer);
     }
     @Override
     public void stop() {

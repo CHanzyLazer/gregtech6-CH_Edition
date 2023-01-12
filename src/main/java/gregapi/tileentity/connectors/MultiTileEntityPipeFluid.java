@@ -310,7 +310,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 			if (!isCovered(UT.Code.getSideWrenching(aSide, aHitX, aHitY, aHitZ))) {
 				if (aChatReturn != null) {
 					boolean tPipeEmpty = T;
-					for (FluidTankGT tTank : mTanks) if (!tTank.isEmpty()) {
+					for (FluidTankGT tTank : mTanks) if (tTank.has()) {
 						aChatReturn.add(tTank.content());
 						tPipeEmpty = F;
 					}
@@ -325,7 +325,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 					
 					while (T) {
 						for (MultiTileEntityPipeFluid tPipe : tNow) {
-							for (FluidTankGT tTank : tPipe.mTanks) if (!tTank.isEmpty()) {
+							for (FluidTankGT tTank : tPipe.mTanks) if (tTank.has()) {
 								boolean temp = T;
 								for (FluidTankGT tFluid : tFluids) if (tFluid.contains(tTank.get())) {
 									tFluid.add(tTank.amount());

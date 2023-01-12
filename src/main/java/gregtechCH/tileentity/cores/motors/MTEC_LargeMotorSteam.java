@@ -30,7 +30,7 @@ public class MTEC_LargeMotorSteam extends MTEC_LargeMotor {
     protected FluidTankGT mTankWater = new FluidTankGT(); // 大的涡轮会多一个蒸馏水的储罐
     
     // init of core
-    @Override protected void postInitTank() {super.postInitTank(); mTankWater.setCapacity(mD.mInRate*16);} // core 不进行容量大小设定
+    @Override protected void postInitTank() {super.postInitTank(); mTankWater.setCapacity(mD.mInRate*16).fixFluid(FL.DistW.fluid()).setVoidExcess();} // core 不进行容量大小设定
     
     @Override public void writeToNBT(NBTTagCompound aNBT) {
         super.writeToNBT(aNBT);

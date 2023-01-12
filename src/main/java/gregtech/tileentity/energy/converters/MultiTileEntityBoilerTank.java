@@ -84,7 +84,7 @@ public class MultiTileEntityBoilerTank extends TileEntityBase09FacingSingle impl
 	// tooltips
 	@Override public final void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {IMTEC_ToolTips.Util.addToolTips(mCore, aList, aStack, aF3_H); super.addToolTips(aList, aStack, aF3_H);}
 	// ticking
-	@Override public void onTick2(long aTimer, boolean aIsServerSide) {if (aIsServerSide) IMTEC_BoilerTank.Util.onTick(mCore);}
+	@Override public void onTick2(long aTimer, boolean aIsServerSide) {if (aIsServerSide) IMTEC_BoilerTank.Util.onTick(mCore, aTimer);}
 	
 	@Override public boolean breakBlock() {mCore.onBreakBlock(); return super.breakBlock();}
 	

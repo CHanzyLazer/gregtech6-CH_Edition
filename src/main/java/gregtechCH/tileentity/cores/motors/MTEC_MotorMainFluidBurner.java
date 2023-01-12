@@ -79,7 +79,7 @@ public class MTEC_MotorMainFluidBurner extends MTEC_MotorMainBase {
         return F;
     }
     @Override
-    public void onTickConvert() {
+    public void onTickConvert(long aTimer) {
         // 燃烧
         if (mBurning) {
             // Check if it needs to burn more Fuel, or if the buffered Energy is enough.
@@ -166,16 +166,16 @@ public class MTEC_MotorMainFluidBurner extends MTEC_MotorMainBase {
     @Override protected long getActiveOutput() {return mRate;}
     @Override protected boolean onTickCheckPreheat2() {return mBurning;}
     @Override protected boolean onTickCheckCooldown2() {return !mBurning;}
-    @Override public void onTickDoCooldown() {
-        super.onTickDoCooldown();
+    @Override public void onTickDoCooldown(long aTimer) {
+        super.onTickDoCooldown(aTimer);
         mBurningCounter = 0;
         mBurning = F;
         mEnergyHU = 0;
     }
-    @Override public void onTickDoElse() {
+    @Override public void onTickDoElse(long aTimer) {
         // 能量耗尽，但是不熄火（因为熄火不在这里判断）
         if (!mBurning) stop();
-        else super.onTickDoElse();
+        else super.onTickDoElse(aTimer);
     }
     @Override
     public void stop() {

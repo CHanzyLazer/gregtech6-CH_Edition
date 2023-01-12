@@ -1465,7 +1465,7 @@ public class CS {
 					if (!aNBT.hasKey(""+i)) break;
 					FluidTankGT tTank = new FluidTankGT().setPreventDraining().setVoidExcess();
 					tTank.readFromNBT(aNBT, ""+i);
-					if (!tTank.has()) continue;
+					if (tTank.isEmpty()) continue;
 					GARBAGE_FLUIDS.add(tTank);
 				}
 			}

@@ -78,7 +78,7 @@ public abstract class MTEC_MotorMainBase implements IMTEC_MotorTick {
     }
     
     // Motor 基本方法
-    @Override public boolean onTickStopCheck() {
+    @Override public boolean onTickStopCheck(long aTime) {
         if (mStopped) {
             // 主动关机
             stop();
@@ -86,33 +86,33 @@ public abstract class MTEC_MotorMainBase implements IMTEC_MotorTick {
         }
         return F;
     }
-    @Override public boolean onTickCheckOverload() {return F;} // 默认禁用超载
-    @Override public void onTickDoOverload() {
+    @Override public boolean onTickCheckOverload(long aTimer) {return F;} // 默认禁用超载
+    @Override public void onTickDoOverload(long aTimer) {
         mActive = F;
         mPreheat = F;
         mCooldown = F;
         mOutput = 0;
     }
-    @Override public final boolean onTickCheckPreheat() {return onTickCheckPreheat2() && mEnergy < mPEnergy && mEnergy >= mPCost;}
+    @Override public final boolean onTickCheckPreheat(long aTimer) {return onTickCheckPreheat2() && mEnergy < mPEnergy && mEnergy >= mPCost;}
     protected boolean onTickCheckPreheat2() {return F;} // 默认禁用预热
-    @Override public void onTickDoPreheat() {
+    @Override public void onTickDoPreheat(long aTimer) {
         mActive = F;
         mPreheat = T;
         mCooldown = F;
         mOutput = 0;
         mEnergy -= mPCost;
     }
-    @Override public final boolean onTickCheckCooldown() {return onTickCheckCooldown2() && mEnergy >= mCRate;}
+    @Override public final boolean onTickCheckCooldown(long aTimer) {return onTickCheckCooldown2() && mEnergy >= mCRate;}
     protected boolean onTickCheckCooldown2() {return F;} // 默认禁用冷却
-    @Override public void onTickDoCooldown() {
+    @Override public void onTickDoCooldown(long aTimer) {
         mActive = F;
         mPreheat = F;
         mCooldown = T;
         mOutput = 0;
         mEnergy -= mCRate;
     }
-    @Override public boolean onTickCheckActive() {return mEnergy >= mPEnergy + mCore.mTE.getEnergySizeOutputMin(mEnergyTypeEmitted, SIDE_ANY);}
-    @Override public void onTickDoActive() {
+    @Override public boolean onTickCheckActive(long aTimer) {return mEnergy >= mPEnergy + mCore.mTE.getEnergySizeOutputMin(mEnergyTypeEmitted, SIDE_ANY);}
+    @Override public void onTickDoActive(long aTimer) {
         mActive = T;
         mPreheat = F;
         mCooldown = F;
@@ -120,7 +120,7 @@ public abstract class MTEC_MotorMainBase implements IMTEC_MotorTick {
         mEnergy -= mOutput;
     }
     protected abstract long getActiveOutput(); // 固定输出或是根据 convert 获取输出
-    public void onTickDoEmit() {
+    public void onTickDoEmit(long aTimer) {
         mEmitsEnergy = F;
         if (mCounterClockwise) {
             mEmitsEnergy = ITileEntityEnergy.Util.emitEnergyToNetwork(mEnergyTypeEmitted, -mOutput, 1L, mCore.getEnergyEmitter()) > 0; // 使用基类中的接口可以在后续继承中重写这个方法
@@ -129,7 +129,7 @@ public abstract class MTEC_MotorMainBase implements IMTEC_MotorTick {
         }
     }
     
-    @Override public void onTickDoElse() {
+    @Override public void onTickDoElse(long aTimer) {
         mActive = F;
         mPreheat = F;
         mCooldown = F;

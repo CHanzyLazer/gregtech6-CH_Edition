@@ -4,6 +4,7 @@ import gregapi.code.TagData;
 import gregapi.data.FL;
 import gregapi.data.LH;
 import gregapi.data.TD;
+import gregapi.fluid.FluidTankGT;
 import gregapi.tileentity.base.TileEntityBase01Root;
 import gregapi.tileentity.base.TileEntityBase09FacingSingle;
 import gregapi.util.UT;
@@ -23,30 +24,36 @@ public class MTEC_BoilerTank extends MTEC_BoilerTank_Greg {
     public MTEC_BoilerTank(TileEntityBase01Root aTE) {super(aTE);}
     
     /* main code */
-    protected long mEnergyEff = 0, mInput = 64, pEnergy = 0;
+    protected long mEnergyEff = 0, mInput = 64;
     protected long mOutputNow = 0;
     protected short mEfficiencyCH = 10000;
+    protected FluidTankGT mInBoilerWater = new FluidTankGT(); // 增加一个锅炉内部的蒸馏水储罐，用于存储内部蒸汽冷却后的蒸馏水
     
     @Override
     public void readFromNBT(NBTTagCompound aNBT) {
         super.readFromNBT(aNBT);
         if (aNBT.hasKey(NBT_ENERGY_EFF)) mEnergyEff = aNBT.getLong(NBT_ENERGY_EFF);
-        if (aNBT.hasKey(NBT_ENERGY_PRE)) pEnergy = aNBT.getLong(NBT_ENERGY_PRE);
         if (aNBT.hasKey(NBT_OUTPUT_SU)) mInput = aNBT.getLong(NBT_OUTPUT_SU) / STEAM_PER_EU; //保留兼容
         
         if (aNBT.hasKey(NBT_INPUT)) mInput = aNBT.getLong(NBT_INPUT);
         if (aNBT.hasKey(NBT_EFFICIENCY_CH)) mEfficiencyCH = (short) UT.Code.bind_(0, 10000, aNBT.getShort(NBT_EFFICIENCY_CH));
-        mOutput = UT.Code.units(mInput, 10000, UT.Code.units(mEfficiency, 10000, mEfficiencyCH, F), F) * STEAM_PER_EU;
+        mOutput = UT.Code.units(mInput, 10000, mEfficiencyCH, F) * STEAM_PER_EU;
+        
+        mInBoilerWater.setCapacity(UT.Code.divup(mTanks[1].getCapacity(), STEAM_PER_WATER) + 1000);
+        mInBoilerWater.readFromNBT(aNBT, NBT_TANK+"."+mTanks.length);
+        // 指定 tank 的存储类型，快速释放和添加
+        mTanks[1].fixFluid(FL.Steam.fluid());
+        mInBoilerWater.fixFluid(FL.DistW.fluid()).setVoidExcess();
     }
     @Override
     public void writeToNBT(NBTTagCompound aNBT) {
         super.writeToNBT(aNBT);
         UT.NBT.setNumber(aNBT, NBT_ENERGY_EFF, mEnergyEff);
-        UT.NBT.setNumber(aNBT, NBT_ENERGY_PRE, pEnergy);
-
+        mInBoilerWater.writeToNBT(aNBT, NBT_TANK+"."+mTanks.length);
+        
         if (mOutputNow != 0) aNBT.setLong(NBT_OUTPUT_NOW, mOutputNow); // for OmniOcular usage
         UT.NBT.setNumber(aNBT, NBT_CAPACITY_HU, mCapacity); // for OmniOcular usage 和读取的名称不一致是为了避免被意外修改
-        for (int i = 0; i < mTanks.length; i++) UT.NBT.setNumber(aNBT, NBT_TANK_CAPACITY+"."+i, mTanks[i].capacity()); // for OmniOcular usage
+        for (int i = 0; i < mTanks.length; ++i) UT.NBT.setNumber(aNBT, NBT_TANK_CAPACITY+"."+i, mTanks[i].capacity()); // for OmniOcular usage
     }
     
     @Override
@@ -56,8 +63,8 @@ public class MTEC_BoilerTank extends MTEC_BoilerTank_Greg {
     @Override
     public void toolTipsEnergy(List<String> aList) {
         aList.add(LH.getToolTipEfficiency(mEfficiencyCH));
-        aList.add(LH.Chat.GREEN    + LH.get(LH.ENERGY_INPUT)           + ": " + LH.Chat.WHITE + mInput + " - " + (mInput*2)   + " " + mEnergyTypeAccepted.getLocalisedChatNameShort() + LH.Chat.WHITE + "/t ("+LH.get(LH.FACE_ANY)+")");
-        aList.add(LH.Chat.RED      + LH.get(LH.ENERGY_OUTPUT)          + ": " + LH.Chat.WHITE + mOutput	+ " - " + (mOutput*2)	+ " " + TD.Energy.STEAM.getLocalisedChatNameLong()         + LH.Chat.WHITE + "/t ("+LH.get(LH.FACE_TOP)+")");
+        aList.add(LH.Chat.GREEN    + LH.get(LH.ENERGY_INPUT)           + ": " + LH.Chat.WHITE + mInput  + " - " + (mInput*2)   + " " + mEnergyTypeAccepted.getLocalisedChatNameShort() + LH.Chat.WHITE + "/t ("+LH.get(LH.FACE_ANY)+")");
+        aList.add(LH.Chat.RED      + LH.get(LH.ENERGY_OUTPUT)          + ": " + LH.Chat.WHITE + UT.Code.units(mOutput, 10000, mEfficiency, F) + " - " + (mOutput*2) + " " + TD.Energy.STEAM.getLocalisedChatNameLong() + LH.Chat.WHITE + "/t ("+LH.get(LH.FACE_TOP)+")");
     }
     @Override
     public void toolTipsUseful(List<String> aList) {
@@ -65,10 +72,7 @@ public class MTEC_BoilerTank extends MTEC_BoilerTank_Greg {
     }
     
     // 改写部分原版锅炉运行逻辑
-    @Override public void onTickConvert() {
-        // 有接受到热量就不会冷却
-        if (mEnergy > pEnergy) mCoolDownResetTimer = 128;
-        pEnergy = mEnergy;
+    @Override public void onTickConvert(long aTimer) {
         // Convert HU to effective energy
         if (mEnergy < mInput && mTanks[1].isHalf()) mEnergy = 0; // 输入能量不足不会工作
         // 改用倍率判断，防止卡最小输入不稳
@@ -82,26 +86,42 @@ public class MTEC_BoilerTank extends MTEC_BoilerTank_Greg {
         // Convert Water to Steam
         long tConversionsEff = mEnergyEff / EU_PER_WATER;
         if (tConversionsEff > 0) {
-            mTanks[0].remove(tConversionsEff);
-            if (mTE.rng(10) == 0 && mEfficiency > 5000 && mTanks[0].has() && !FL.distw(mTanks[0])) {
-                mEfficiency -= tConversionsEff;
+            // 优先转换 mInBoilerWater 中的蒸馏水
+            long tDrained = mInBoilerWater.remove(tConversionsEff);
+            // 转换 tank 中的水，需要考虑钙化的问题
+            boolean tCalcification = mTE.rng(10) == 0 && mEfficiency > 5000 && mTanks[0].has() && !FL.distw(mTanks[0]);
+            long tDrainedTank = mTanks[0].remove(tConversionsEff-tDrained);
+            tDrained += tDrainedTank;
+            if (tCalcification && tDrainedTank > 0) {
+                mEfficiency -= tDrainedTank;
                 if (mEfficiency < 5000) mEfficiency = 5000;
             }
-            mTanks[1].setFluid(FL.Steam.make(mTanks[1].amount() + tConversionsEff * STEAM_PER_WATER));
-            mEnergyEff -= tConversionsEff * EU_PER_WATER;
+            mTanks[1].add(tDrained * STEAM_PER_WATER); // 由于固定了流体种类，因此可以直接添加
+            mEnergyEff -= tDrained * EU_PER_WATER;
         }
     }
-    @Override public void onTickCoolDown() {
-        // Remove Steam and Heat during the process of cooling down.
-        if (mCoolDownResetTimer-- <= 0) {
-            mCoolDownResetTimer = 0;
-            mEnergy -= mInput * 64;
-            pEnergy = mEnergy;
+    
+    protected void resetCoolDownTimer() {mCoolDownResetTimer = STEAM_PER_WATER*2;} // 将 mCoolDownResetTimer 设为 STEAM_PER_WATER*2
+    @Override public void onTickCoolDown(long aTimer) {
+        // 冷却阶段将蒸汽再次转换为蒸馏水暂存到 mInBoilerWater 中
+        // 为了避免出现余数，直接将 mCoolDownResetTimer 设为 STEAM_PER_WATER*2，而冷却倍率则为 STEAM_PER_WATER
+        --mCoolDownResetTimer;
+        if (mCoolDownResetTimer <= 0) {
+            resetCoolDownTimer(); // 逻辑改变，不会在 mEnergy 不为零时高速冷却
+            mEnergy -= mInput * EU_PER_WATER * 2;
+            if (mEnergy <= 0) mEnergy = 0;
             mEnergyEff = 0;
-            GarbageGT.trash(mTanks[1], mOutput * 64);
-            if (mEnergy <= 0) {
-                mEnergy = 0;
-                mCoolDownResetTimer = 128;
+            
+            // 只有能量为零时内部蒸汽才会冷却回蒸馏水
+            if (mEnergy == 0) {
+                long tCoolDownSteam = mOutput * STEAM_PER_WATER;
+                long tCoolDownWater = mOutput;
+                if (tCoolDownSteam > mTanks[1].amount()) {
+                    tCoolDownSteam = mTanks[1].amount();
+                    tCoolDownWater = tCoolDownSteam / STEAM_PER_WATER;
+                }
+                mInBoilerWater.add(tCoolDownWater); // 由于固定了流体种类，因此可以直接添加
+                mTanks[1].remove(tCoolDownSteam);
             }
         }
     }

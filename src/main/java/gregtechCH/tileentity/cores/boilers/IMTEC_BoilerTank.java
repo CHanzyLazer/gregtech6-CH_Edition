@@ -8,20 +8,20 @@ package gregtechCH.tileentity.cores.boilers;
  * TE 继承并将自身作为 core 传入来指定每个子项使用何种 core
  **/
 public interface IMTEC_BoilerTank {
-    public void onTickConvert();
-    public void onTickCoolDown();
-    public void onTickEmitSteam();
-    public void onTickSetBarometer();
-    public void onTickExplodeCheck();
+    public void onTickConvert(long aTimer);
+    public void onTickCoolDown(long aTimer);
+    public void onTickEmitSteam(long aTimer);
+    public void onTickSetBarometer(long aTimer);
+    public void onTickExplodeCheck(long aTimer);
 
     // 通用调用
     public static class Util {
-        public static void onTick(IMTEC_BoilerTank aCore) {
-            aCore.onTickConvert();
-            aCore.onTickCoolDown();
-            aCore.onTickEmitSteam();
-            aCore.onTickSetBarometer();
-            aCore.onTickExplodeCheck();
+        public static void onTick(IMTEC_BoilerTank aCore, long aTimer) {
+            aCore.onTickConvert(aTimer);
+            aCore.onTickCoolDown(aTimer);
+            aCore.onTickEmitSteam(aTimer);
+            aCore.onTickSetBarometer(aTimer);
+            aCore.onTickExplodeCheck(aTimer);
         }
     }
 }

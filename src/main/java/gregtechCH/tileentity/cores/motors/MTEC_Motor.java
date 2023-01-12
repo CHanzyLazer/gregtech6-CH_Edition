@@ -65,18 +65,18 @@ public abstract class MTEC_Motor implements IMTEC_MotorTick, IMTEC_ToolTips, IMT
     public void writeToNBT(NBTTagCompound aNBT) {mD.writeToNBT(aNBT);}
 
     // Motor 基本方法
-    @Override public boolean onTickStopCheck() {return mD.onTickStopCheck();}
-    @Override public void onTickConvert() {mD.onTickConvert();}
-    @Override public boolean onTickCheckOverload() {return mD.onTickCheckOverload();}
-    @Override public void onTickDoOverload() {mD.onTickDoOverload();}
-    @Override public boolean onTickCheckPreheat() {return mD.onTickCheckPreheat();}
-    @Override public void onTickDoPreheat() {mD.onTickDoPreheat();}
-    @Override public boolean onTickCheckCooldown() {return mD.onTickCheckCooldown();}
-    @Override public void onTickDoCooldown() {mD.onTickDoCooldown();}
-    @Override public boolean onTickCheckActive() {return mD.onTickCheckActive();}
-    @Override public final void onTickDoActive() {onTickDoActive2(); mD.onTickDoEmit();}
-    protected void onTickDoActive2() {mD.onTickDoActive();}
-    @Override public void onTickDoElse() {mD.onTickDoElse();}
+    @Override public boolean onTickStopCheck(long aTimer) {return mD.onTickStopCheck(aTimer);}
+    @Override public void onTickConvert(long aTimer) {mD.onTickConvert(aTimer);}
+    @Override public boolean onTickCheckOverload(long aTimer) {return mD.onTickCheckOverload(aTimer);}
+    @Override public void onTickDoOverload(long aTimer) {mD.onTickDoOverload(aTimer);}
+    @Override public boolean onTickCheckPreheat(long aTimer) {return mD.onTickCheckPreheat(aTimer);}
+    @Override public void onTickDoPreheat(long aTimer) {mD.onTickDoPreheat(aTimer);}
+    @Override public boolean onTickCheckCooldown(long aTimer) {return mD.onTickCheckCooldown(aTimer);}
+    @Override public void onTickDoCooldown(long aTimer) {mD.onTickDoCooldown(aTimer);}
+    @Override public boolean onTickCheckActive(long aTimer) {return mD.onTickCheckActive(aTimer);}
+    @Override public final void onTickDoActive(long aTimer) {onTickDoActive2(aTimer); mD.onTickDoEmit(aTimer);}
+    protected void onTickDoActive2(long aTimer) {mD.onTickDoActive(aTimer);}
+    @Override public void onTickDoElse(long aTimer) {mD.onTickDoElse(aTimer);}
     @Override public void onTickExplodeCheck(long aTimer) {mD.onTickExplodeCheck(aTimer);}
 
     // tooltips

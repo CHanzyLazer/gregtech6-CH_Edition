@@ -45,10 +45,12 @@ public class FluidTankGT implements IFluidTank {
 	public int mIndex = 0;
 	
 	// GTCH, 固定储罐的溶液种类，在一些情况避免频繁创建流体以及意外的填充
-	private boolean mFixedFluid = F; // 注意和 mPreventDraining 等一样，统一不进行 NBT 存储，因此永远都需要在读取 NBT 时手动进行设置
+	private boolean mFixedFluid = F, mSaveEmpty = F; // 注意和 mPreventDraining 等一样，统一不进行 NBT 存储，因此永远都需要在读取 NBT 时手动进行设置
 	public FluidTankGT fixFluid(Fluid aFluid) {return fixFluid(FL.make(aFluid, 0));}
-	public FluidTankGT fixFluid(FluidStack aFluid) {mFluid = aFluid; mFixedFluid = T; mPreventDraining = T; return this;}
-	public FluidTankGT unfixFluid() {mFixedFluid = F; mPreventDraining = F; if (mAmount == 0) mFluid = null; return this;}
+	public FluidTankGT fixFluid(FluidStack aFluid) {mFluid = aFluid; mSaveEmpty = mFixedFluid = mPreventDraining = T; return this;} // 统一逻辑，和 mPreventDraining 一样，默认开启时即使空也会存储
+	public FluidTankGT unfixFluid() {mSaveEmpty = mFixedFluid = mPreventDraining = F; if (mAmount == 0) mFluid = null; return this;}
+	public FluidTankGT setSaveEmpty() {return setSaveEmpty(T);}
+	public FluidTankGT setSaveEmpty(boolean aSaveEmpty) {mSaveEmpty = aSaveEmpty; return this;}
 	
 	public FluidTankGT() {mCapacity = Long.MAX_VALUE;}
 	public FluidTankGT(long aCapacity) {mCapacity = aCapacity;}
@@ -72,7 +74,7 @@ public class FluidTankGT implements IFluidTank {
 	}
 	
 	public NBTTagCompound writeToNBT(NBTTagCompound aNBT, String aKey) {
-		if (mFluid != null && (mPreventDraining || mAmount > 0)) {
+		if (mFluid != null && (mSaveEmpty || mAmount > 0)) {
 			NBTTagCompound tNBT = UT.NBT.make();
 			mFluid.amount = UT.Code.bindInt(mAmount);
 			aNBT.setTag(aKey, mFluid.writeToNBT(tNBT));
@@ -85,7 +87,7 @@ public class FluidTankGT implements IFluidTank {
 	
 	public NBTTagCompound writeToNBT(String aKey) {
 		NBTTagCompound aNBT = UT.NBT.make();
-		if (mFluid != null && (mPreventDraining || mAmount > 0)) {
+		if (mFluid != null && (mSaveEmpty || mAmount > 0)) {
 			NBTTagCompound tNBT = UT.NBT.make();
 			mFluid.amount = UT.Code.bindInt(mAmount);
 			aNBT.setTag(aKey, mFluid.writeToNBT(tNBT));
@@ -280,7 +282,8 @@ public class FluidTankGT implements IFluidTank {
 	/** Always keeps at least 0 Liters of Fluid instead of setting it to null */
 	public FluidTankGT setPreventDraining() {return setPreventDraining(T);}
 	/** Always keeps at least 0 Liters of Fluid instead of setting it to null */
-	public FluidTankGT setPreventDraining(boolean aPrevent) {mPreventDraining = aPrevent; return this;}
+	public FluidTankGT setPreventDraining(boolean aPrevent) {
+		mSaveEmpty = mPreventDraining = aPrevent; return this;}
 	/** Voids any Overlow */
 	public FluidTankGT setVoidExcess() {return setVoidExcess(T);}
 	/** Voids any Overlow */

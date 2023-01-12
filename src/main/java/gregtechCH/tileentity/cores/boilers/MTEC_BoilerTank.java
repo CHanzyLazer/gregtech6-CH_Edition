@@ -43,16 +43,14 @@ public class MTEC_BoilerTank extends MTEC_BoilerTank_Greg {
         mInBoilerWater.setCapacity(UT.Code.divup(mTanks[1].getCapacity(), STEAM_PER_WATER) + 1000);
         mInBoilerWater.readFromNBT(aNBT, NBT_TANK+"."+mTanks.length);
         // 指定 tank 的存储类型，快速释放和添加
-        mTanks[1].fixFluid(FL.Steam.fluid());
-        mInBoilerWater.fixFluid(FL.DistW.fluid()).setVoidExcess();
+        mTanks[1].fixFluid(FL.Steam.fluid()).setSaveEmpty(F);
+        mInBoilerWater.fixFluid(FL.DistW.fluid()).setSaveEmpty(F).setVoidExcess();
     }
     @Override
     public void writeToNBT(NBTTagCompound aNBT) {
-        UT.NBT.setNumber(aNBT, NBT_ENERGY_EFF, mEnergyEffSU);
-        
-        mTanks[1].unfixFluid(); // 由于总是会在读取时 fix 到指定的流体，因此存储时不需要 fix
-        mInBoilerWater.unfixFluid().writeToNBT(aNBT, NBT_TANK+"."+mTanks.length);
         super.writeToNBT(aNBT);
+        UT.NBT.setNumber(aNBT, NBT_ENERGY_EFF, mEnergyEffSU);
+        mInBoilerWater.writeToNBT(aNBT, NBT_TANK+"."+mTanks.length);
         
         if (mOutputNow != 0) aNBT.setLong(NBT_OUTPUT_NOW, mOutputNow); // for OmniOcular usage
         UT.NBT.setNumber(aNBT, NBT_CAPACITY_HU, mCapacity); // for OmniOcular usage 和读取的名称不一致是为了避免被意外修改

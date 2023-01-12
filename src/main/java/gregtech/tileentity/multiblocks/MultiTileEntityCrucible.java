@@ -606,7 +606,7 @@ public class MultiTileEntityCrucible extends TileEntityBase10MultiBlockBase impl
 		super.receiveDataByteArray(aData, aNetworkHandler);
 		mDisplayedHeight = aData[5];
 		mDisplayedFluid = UT.Code.combine(aData[6], aData[7]);
-		if (aData.length >= 9) mMeltDown = (aData[8] != 0);
+		if (aData.length > 8) mMeltDown = (aData[8] != 0);
 		return T;
 	}
 	

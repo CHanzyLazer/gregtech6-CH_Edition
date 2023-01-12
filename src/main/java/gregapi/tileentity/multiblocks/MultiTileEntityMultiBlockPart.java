@@ -324,11 +324,11 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 	
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
-		if(aData.length >= 5){
+		if(aData.length > 5){
 			setRGBData(aData[0], aData[1], aData[2], aData[aData.length-1]);
 			setVisualData(aData[3]);
 			setVisualData_CH(aData[4]);
-		} else if (aData.length >= 2) {
+		} else if (aData.length > 1) {
 			setVisualData(aData[0]);
 			setVisualData_CH(aData[1]);
 		}

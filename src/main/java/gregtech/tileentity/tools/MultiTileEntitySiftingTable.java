@@ -319,7 +319,7 @@ public class MultiTileEntitySiftingTable extends TileEntityBase07Paintable imple
 		mState = aData[0];
 		if (aData.length > 2) mDisplayedOutput = UT.Code.combine(aData[1], aData[2]);
 		if (aData.length > 4) mDisplayedInput  = UT.Code.combine(aData[3], aData[4]);
-		if (aData.length > 7) setRGBData(aData[5], aData[6], aData[7], aData[aData.length-1]);
+		if (aData.length > 8) setRGBData(aData[5], aData[6], aData[7], aData[aData.length-1]);
 		return T;
 	}
 	

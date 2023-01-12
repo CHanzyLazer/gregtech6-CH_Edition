@@ -303,7 +303,7 @@ public class MultiTileEntityAnvil extends TileEntityBase09FacingSingle implement
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		super.receiveDataByteArray(aData, aNetworkHandler);
-		if (aData.length > 10) {
+		if (aData.length > 11) {
 			mShapeA = aData[5];
 			mShapeB = aData[6];
 			mMaterialA = UT.Code.combine(aData[7], aData[ 8]);

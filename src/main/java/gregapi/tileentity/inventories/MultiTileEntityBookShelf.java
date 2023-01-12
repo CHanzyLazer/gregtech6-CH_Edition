@@ -256,7 +256,7 @@ public class MultiTileEntityBookShelf extends TileEntityBase09FacingSingle imple
 	
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
-		setRGBData(aData[0], aData[1], aData[1], aData[aData.length-1]);
+		setRGBData(aData[0], aData[1], aData[2], aData[aData.length-1]);
 		setDirectionData(aData[3]);
 		System.arraycopy(aData, 4, mDisplay, 0, mDisplay.length);
 		return T;

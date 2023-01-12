@@ -155,7 +155,7 @@ public abstract class MultiTileEntitySensor extends TileEntityBase10FacingDouble
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		mDisplayedNumber = UT.Code.unsignS(UT.Code.combine(aData[0], aData[1]));
-		if (aData.length >= 8) {
+		if (aData.length > 8) {
 			setRGBData(aData[2], aData[3], aData[4], aData[aData.length-1]);
 			setDirectionData(aData[5]);
 			mMode = aData[6];

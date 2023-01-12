@@ -295,7 +295,7 @@ public class MultiTileEntityReactorCore1x1 extends MultiTileEntityReactorCore {
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		super.receiveDataByteArray(aData, aNetworkHandler);
 		int i = 5;
-		if (aData.length <= i) return T;
+		if (aData.length < i) return T;
 		mTanks[0].setFluid(FL.make(UT.Code.combine(aData[i++], aData[i++]), mTanks[0].getCapacity()));
 		slot(0, ST.make(UT.Code.combine(aData[i++], aData[i++]), 1, UT.Code.combine(aData[i++], aData[i++])));
 		return T;

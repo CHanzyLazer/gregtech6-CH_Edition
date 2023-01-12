@@ -446,7 +446,7 @@ public class MultiTileEntityMold extends TileEntityBase07Paintable implements IT
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		mDisplay = UT.Code.combine(aData[0], aData[1]);
 		setRGBData(aData[2], aData[3], aData[4], aData[aData.length-1]);
-		if (aData.length > 8) mShape = UT.Code.combine(aData[5], aData[6], aData[7], aData[8]);
+		if (aData.length > 9) mShape = UT.Code.combine(aData[5], aData[6], aData[7], aData[8]);
 		return T;
 	}
 	

@@ -176,7 +176,7 @@ public class MultiTileEntityMoldCoinage extends TileEntityBase07Paintable implem
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		mDisplayedMetal = UT.Code.combine(aData[0], aData[1]);
-		if (aData.length >= 5) setRGBData(aData[2], aData[3], aData[4], aData[aData.length-1]);
+		if (aData.length > 5) setRGBData(aData[2], aData[3], aData[4], aData[aData.length-1]);
 		return T;
 	}
 	

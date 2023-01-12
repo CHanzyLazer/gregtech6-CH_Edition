@@ -570,9 +570,9 @@ public class MultiTileEntitySmeltery extends TileEntityBase07Paintable implement
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		mDisplayedHeight = aData[0];
-		if (aData.length >= 3) mDisplayedFluid = UT.Code.combine(aData[1], aData[2]);
-		if (aData.length >= 6) setRGBData(aData[3], aData[4], aData[5], aData[aData.length-1]);
-		if (aData.length >= 7) mMeltDown = (aData[6] != 0);
+		if (aData.length > 2) mDisplayedFluid = UT.Code.combine(aData[1], aData[2]);
+		if (aData.length > 5) setRGBData(aData[3], aData[4], aData[5], aData[aData.length-1]);
+		if (aData.length > 7) mMeltDown = (aData[6] != 0);
 		return T;
 	}
 	

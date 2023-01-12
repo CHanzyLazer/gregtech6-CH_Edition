@@ -144,8 +144,7 @@ public abstract class MTEC_BoilerTank_Greg implements IMTEC_ToolTips, IMTEC_Boil
     public long onToolClick(String aTool, long aRemainingDurability, long aQuality, Entity aPlayer, List<String> aChatReturn, IInventory aPlayerInventory, boolean aSneaking, ItemStack aStack, byte aSide, float aHitX, float aHitY, float aHitZ) {
 
         if (aTool.equals(TOOL_plunger)) {
-            if (mTanks[0].has()) return GarbageGT.trash(mTanks[0]);
-            return GarbageGT.trash(mTanks[1]);
+            return onPlunger(aPlayer, aChatReturn);
         }
         if (aTool.equals(TOOL_chisel)) {
             int rResult = 10000 - mEfficiency;
@@ -153,7 +152,7 @@ public abstract class MTEC_BoilerTank_Greg implements IMTEC_ToolTips, IMTEC_Boil
                 if (mBarometer > 15) {
                     mTE.explode(F);
                 } else {
-                    if (mEnergy+mTanks[1].amount()/STEAM_PER_EU > 2000) UT.Entities.applyHeatDamage(aPlayer, (mEnergy+mTanks[1].amount()/2) / 2000.0F);
+                    if (mEnergy+mTanks[1].amount()/STEAM_PER_EU > 2000) UT.Entities.applyHeatDamage(aPlayer, (mEnergy+mTanks[1].amount()/2.0F) / 2000.0F);
                     mTanks[1].setEmpty();
                     mEfficiency = 10000;
                     mEnergy = 0;
@@ -175,6 +174,13 @@ public abstract class MTEC_BoilerTank_Greg implements IMTEC_ToolTips, IMTEC_Boil
 
         return 0;
     }
+    
+    // 重写修改搋子的操作
+    public long onPlunger(Entity aPlayer, List<String> aChatReturn) {
+        if (mTanks[0].has()) return GarbageGT.trash(mTanks[0]);
+        return GarbageGT.trash(mTanks[1]);
+    }
+    
     // GTCH，是否 super 中不包含放大镜的操作
     protected boolean notSuperMagnifyingGlass() {return T;}
 

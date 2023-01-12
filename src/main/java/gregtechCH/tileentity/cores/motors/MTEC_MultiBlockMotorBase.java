@@ -22,23 +22,23 @@ public class MTEC_MultiBlockMotorBase {
     // reference of MTEC_LargeMotor for some call use
     protected final MTEC_LargeMotor mCore;
     protected MTEC_MultiBlockMotorBase(MTEC_LargeMotor aCore) {mCore = aCore;}
-
+    
     /* main code */
     protected short mTurbineWalls = 18022;
-
+    
     protected boolean mSelfOut = F, oSelfOut = F;
-
+    
     protected int mLength = 0, mPLength = 0, mMidLength = 1, mMinLength = 1, mMaxLength = 5;
     protected short[] mEfficiencyArray = ZL_SHORT;
     protected long[] mRateArray = ZL_LONG, mPEnergyArray = ZL_LONG, mPCostArray = ZL_LONG, mCRateArray = ZL_LONG;
-
+    
     // NBT读写
     public void writeToNBT(NBTTagCompound aNBT) {
         UT.NBT.setBoolean(aNBT, NBT_OUTPUT_SELF, mSelfOut);
         UT.NBT.setNumber(aNBT, NBT_LENGTH, mLength);
         UT.NBT.setNumber(aNBT, NBT_LENGTH_PRE, mPLength);
     }
-
+    
     // init of core
     public void init(NBTTagCompound aNBT) {
         if (aNBT.hasKey(NBT_OUTPUT_SELF)) mSelfOut = aNBT.getBoolean(NBT_OUTPUT_SELF);
@@ -57,7 +57,7 @@ public class MTEC_MultiBlockMotorBase {
         setEnergyArray(aNBT, mMaxLength - mMinLength + 1);
     }
     public final void postInitRate(NBTTagCompound aNBT) {setOutRateFromLength(); setInRateFromLength();}
-
+    
     protected void setEnergyArray(NBTTagCompound aNBT, int aArrayLen) {
         mEfficiencyArray = new short[aArrayLen];
         mRateArray = new long[aArrayLen];
@@ -82,7 +82,7 @@ public class MTEC_MultiBlockMotorBase {
     }
     protected final void setInRateFromLength() {int tIdx = mLength - mMinLength; if (tIdx >= 0) setInRateFromIdx(tIdx);}
     protected void setInRateFromIdx(int aIdx) {mCore.mD.setInRate2();} // 直接使用 Motor 的设置即可
-
+    
     // 多方快结构
     protected static final int[] START_IJK = {-1, -1, 0};
     protected int[] mEndIJK = {START_IJK[0] + 2, START_IJK[1] + 2, START_IJK[2]};
@@ -153,7 +153,7 @@ public class MTEC_MultiBlockMotorBase {
         if (mFluidEmitter.isDead()) mFluidEmitter = null;
         return (TileEntityBase01Root) mFluidEmitter;
     }
-
+    
     protected void setStructurePart(int[] aStartIJK, int[] aEndIJK) {
         int[] tOutEnergyIJK = {0, 0, mLength-1};
         boolean tHasFluidOut = F;
@@ -195,7 +195,7 @@ public class MTEC_MultiBlockMotorBase {
             ITileEntityMultiBlockController.Util.checkAndResetTarget(mCore.te(), tXYZ[0], tXYZ[1], tXYZ[2], mTurbineWalls, mCore.mTE.getMultiTileEntityRegistryID());
         }
     }
-
+    
     public final boolean checkStructure2() {
         setStructureParameter(mCore.mTE.mFacing); // 每次检测都进行更新以免出现意外的错误
         int[] tXYZ = new int[3];
@@ -231,20 +231,15 @@ public class MTEC_MultiBlockMotorBase {
         return mCore.te().isStructureOkay();
     }
     protected void doLengthChange() {
-        if (checkExplodeByLength()) {
-            doExplodeByLength();
+        if (ConfigForge.DATA_MACHINES.motorExplodeByLength && mCore.canExplode()) {
+            mCore.explode(F);
         }
-        stopByLength();
+        mCore.mD.stop();
         setOutRateFromLength();
         setInRateFromLength();
         mCore.postInitTank(); // 需要重置容器的容量
     }
-    protected boolean checkExplodeByLength() {
-        return (ConfigForge.DATA_MACHINES.motorExplodeByLength && (UT.Code.units(mCore.mD.mEnergy, mCore.mD.mPEnergy, 16, F) > 4));
-    }
-    protected void doExplodeByLength() {mCore.mTE.explode(F);}
-    protected void stopByLength() {mCore.mD.stop();}
-
+    
     public boolean isInsideStructure(int aX, int aY, int aZ) {
         return
         aX >= mCore.mTE.xCoord-(SIDE_X_NEG==mCore.mTE.mFacing?0:SIDE_X_POS==mCore.mTE.mFacing?(mLength-1):1) &&
@@ -254,7 +249,7 @@ public class MTEC_MultiBlockMotorBase {
         aY <= mCore.mTE.yCoord+(SIDE_Y_POS==mCore.mTE.mFacing?0:SIDE_Y_NEG==mCore.mTE.mFacing?(mLength-1):1) &&
         aZ <= mCore.mTE.zCoord+(SIDE_Z_POS==mCore.mTE.mFacing?0:SIDE_Z_NEG==mCore.mTE.mFacing?(mLength-1):1);
     }
-
+    
     public void onBreakBlock() {
         if (mCore.mTE.isServerSide()) {
             setStructureParameter(mCore.mTE.mFacing);
@@ -269,4 +264,6 @@ public class MTEC_MultiBlockMotorBase {
     public void onFacingChange(byte aPreviousFacing) {
         setStructureParameter(mCore.mTE.mFacing);
     }
+    
+    protected void explode(boolean aInstant) {mCore.mTE.explode(aInstant, 2+Math.max(1, Math.sqrt(mCore.mD.mEnergy) / 1000.0));}
 }

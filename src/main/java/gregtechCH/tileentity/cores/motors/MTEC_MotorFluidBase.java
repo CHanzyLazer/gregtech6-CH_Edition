@@ -47,7 +47,7 @@ public abstract class MTEC_MotorFluidBase extends MTEC_Motor {
         if (tReturn > 0) return tReturn;
         tReturn = super.onToolClick(aTool, aRemainingDurability, aQuality, aPlayer, aChatReturn, aPlayerInventory, aSneaking, aStack, aSide, aHitX, aHitY, aHitZ);
         if (tReturn > 0) return tReturn;
-        tReturn = data().onToolClickLast_plungerIgniterExtinguisher(aTool, aChatReturn, aSneaking);
+        tReturn = data().onToolClickLast_plungerIgniterExtinguisher(aTool, aPlayer, aChatReturn, aSneaking);
         if (tReturn > 0) return tReturn;
         return 0;
     }

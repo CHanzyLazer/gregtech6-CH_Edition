@@ -1,6 +1,9 @@
 package gregtechCH.tileentity.cores;
 
 import gregapi.fluid.FluidTankGT;
+import gregtechCH.config.ConfigForge;
+import gregtechCH.tileentity.cores.motors.IMTEC_CanExplode;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -11,16 +14,16 @@ import static gregapi.data.CS.*;
 
 // 将拥有储罐的机器的接口合并到这个 core 中
 public class MTEC_HasTanks {
-    public MTEC_HasTanks(FluidTankGT[] aInputTanks, FluidTankGT[] aOutputTanks) {
-        mTanksInput = aInputTanks; mTanksOutput = aOutputTanks;}
-
+    final IMTEC_CanExplode mCore;
+    public MTEC_HasTanks(IMTEC_CanExplode aCore, FluidTankGT[] aInputTanks, FluidTankGT[] aOutputTanks) {mCore = aCore; mTanksInput = aInputTanks; mTanksOutput = aOutputTanks;}
+    
     /* stuff to override */
     public final FluidTankGT[] mTanksInput;
     public final FluidTankGT[] mTanksOutput;
-
+    
     /* main code */
     protected FluidTankGT[] mTanks = ZL_FT;
-
+    
     // NBT读写
     public void readFromNBT(NBTTagCompound aNBT) {
         int tIdx = 0;
@@ -43,7 +46,7 @@ public class MTEC_HasTanks {
         for (int tIdx = 0; tIdx < mTanks.length; ++tIdx)
             mTanks[tIdx].writeToNBT(aNBT, NBT_TANK+"."+tIdx);
     }
-
+    
     public IFluidTank getFluidTankFillable(byte aSide, FluidStack aFluidToFill) {
         for (FluidTankGT tTank : mTanksInput) if (tTank.contains(aFluidToFill) || tTank.isEmpty()) return tTank;
         return null;
@@ -66,7 +69,7 @@ public class MTEC_HasTanks {
         for (FluidTankGT tTank : mTanksInput)  if (tTank.has()) return tTank.drain(aMaxDrain, aDoDrain);
         return null;
     }
-
+    
     // 放大镜右键监视内部储罐
     public void onMagnifyingGlass(List<String> aChatReturn) {
         if (mTanksInput.length == 1) {if (mTanksInput[0].has()) aChatReturn.add("Tank input: " + mTanksInput[0].content());}
@@ -75,8 +78,15 @@ public class MTEC_HasTanks {
         else {for (int i = 0; i < mTanksOutput.length; ++i) if (mTanksOutput[i].has()) aChatReturn.add("Tank output " + (i+1) + ": " + mTanksOutput[i].content());}
     }
     // 搋子右键清空内部流体
-    public void onPlunger(List<String> aChatReturn) {
-        for (FluidTankGT tTank : mTanksOutput) if (tTank.has()) {GarbageGT.trash(tTank); return;}
-        for (FluidTankGT tTank : mTanksInput)  if (tTank.has()) {GarbageGT.trash(tTank); return;}
+    public long onPlunger(Entity aPlayer, List<String> aChatReturn) {
+        for (FluidTankGT tTank : mTanksOutput) if (tTank.has()) {long tOut = GarbageGT.trash(tTank); if (tOut > 0) plungerExplode(aPlayer); return tOut;}
+        for (FluidTankGT tTank : mTanksInput)  if (tTank.has()) {long tOut = GarbageGT.trash(tTank); if (tOut > 0) plungerExplode(aPlayer); return tOut;}
+        return 0;
+    }
+    // 运行时清除流体会爆炸
+    public void plungerExplode(Entity aPlayer) {
+        if (ConfigForge.DATA_MACHINES.motorExplodeByPlunger && mCore.canExplode()) {
+            mCore.explode(F);
+        }
     }
 }

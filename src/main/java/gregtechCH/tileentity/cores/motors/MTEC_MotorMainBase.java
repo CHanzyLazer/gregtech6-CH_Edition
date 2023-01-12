@@ -161,6 +161,10 @@ public abstract class MTEC_MotorMainBase implements IMTEC_MotorTick {
     public ItemStack[] getDefaultInventory(NBTTagCompound aNBT) {return ZL_IS;}
     public boolean canDrop(int aInventorySlot) {return F;}
     
+    // explode
+    protected boolean canExplode() {return UT.Code.units(mEnergy, mPEnergy, 16, F) > 4;}
+    protected void explode(boolean aInstant) {mCore.mTE.explode(aInstant, 1+Math.max(1, Math.sqrt(mCore.mD.mEnergy) / 100.0));}
+    
     // energy interfaces
     public boolean allowCovers(byte aSide) {return T;}
     public boolean isEnergyType(TagData aEnergyType, byte aSide, boolean aEmitting) {return aEmitting && aEnergyType == mEnergyTypeEmitted;}

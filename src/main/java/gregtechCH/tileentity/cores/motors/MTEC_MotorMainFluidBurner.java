@@ -9,6 +9,7 @@ import gregapi.util.UT;
 import gregapi.util.WD;
 import gregtechCH.data.LH_CH;
 import gregtechCH.tileentity.cores.MTEC_HasTanks;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -22,21 +23,21 @@ public class MTEC_MotorMainFluidBurner extends MTEC_MotorMainBase {
     // the instance of MTEC_HasTanks
     protected final MTEC_HasTanks mCTanks;
     protected MTEC_MotorMainFluidBurner(MTEC_Motor aCore) {this(aCore, ZL_FT);}
-    protected MTEC_MotorMainFluidBurner(MTEC_Motor aCore, FluidTankGT[] aOutputTanks) {super(aCore); mCTanks = new MTEC_HasTanks(mTankFluid.AS_ARRAY, aOutputTanks);}
-
-
+    protected MTEC_MotorMainFluidBurner(MTEC_Motor aCore, FluidTankGT[] aOutputTanks) {super(aCore); mCTanks = new MTEC_HasTanks(aCore, mTankFluid.AS_ARRAY, aOutputTanks);}
+    
+    
     /* main code */
     protected boolean mBurning = F;
     protected long mEnergyHU = 0;
     protected long mPRate = 64, mInPRate = 64; // preheat rate, input preheat rate
-
+    
     protected static final byte COOLDOWN_NUM = 16;
     protected byte mBurningCounter = 0;  // 注意默认是停止工作的
-
+    
     protected Recipe.RecipeMap mRecipes = null;
     protected Recipe mLastRecipe = null;
     protected FluidTankGT mTankFluid = new FluidTankGT(1000);
-
+    
     // NBT读写
     @Override
     public void init(NBTTagCompound aNBT) {
@@ -60,7 +61,7 @@ public class MTEC_MotorMainFluidBurner extends MTEC_MotorMainBase {
         mInPRate = UT.Code.units(mPRate, mEfficiency, 10000, T);
     }
     @Override public void postInitTank() {mTankFluid.setCapacity(mRate * 8);} // core 不进行容量设定
-
+    
     @Override
     public void writeToNBT(NBTTagCompound aNBT) {
         super.writeToNBT(aNBT);
@@ -70,7 +71,7 @@ public class MTEC_MotorMainFluidBurner extends MTEC_MotorMainBase {
 
         mCTanks.writeToNBT(aNBT);
     }
-
+    
     // 每 tick 转换，统一采用燃气涡轮的逻辑
     protected boolean isTankOutputFull() {
         if (mCTanks.mTanksOutput.length == 0) return T;
@@ -161,7 +162,7 @@ public class MTEC_MotorMainFluidBurner extends MTEC_MotorMainBase {
         }
         mEnergyHU = 0;
     }
-
+    
     @Override protected long getActiveOutput() {return mRate;}
     @Override protected boolean onTickCheckPreheat2() {return mBurning;}
     @Override protected boolean onTickCheckCooldown2() {return !mBurning;}
@@ -183,7 +184,7 @@ public class MTEC_MotorMainFluidBurner extends MTEC_MotorMainBase {
         mBurning = F;
         mEnergyHU = 0;
     }
-
+    
     // 重复的接口消除
     @Override protected long getRealEfficiency() {return UT.Code.units(10000, mInRate, mRate, F);}
     @Override public IFluidTank getFluidTankFillable(byte aSide, FluidStack aFluidToFill) {return mRecipes.containsInput(aFluidToFill, mCore.mTE, NI) ? mTankFluid : null;}
@@ -198,15 +199,15 @@ public class MTEC_MotorMainFluidBurner extends MTEC_MotorMainBase {
         mCore.mTE.updateInventory();
         return mCTanks.tapDrain(aSide, aMaxDrain, aDoDrain);
     }
-
+    
     @Override public boolean isEnergyAcceptingFrom(TagData aEnergyType, byte aSide, boolean aTheoretical) {return F;}
     @Override public long getEnergySizeOutputRecommended(TagData aEnergyType, byte aSide) {return mRate;}
     @Override public long getEnergySizeOutputMin(TagData aEnergyType, byte aSide) {return mRate;}
     @Override public long getEnergySizeOutputMax(TagData aEnergyType, byte aSide) {return mRate;}
-
+    
     @Override public boolean getStateRunningPossible() {return mActive || (mTankFluid.has() && !isTankOutputFull());}
-
-
+    
+    
     // 重复的接口实现消除
     public void toolTipsRecipe_burn(List<String> aList) {aList.add(LH.Chat.CYAN + LH.get(LH.RECIPES) + ": " + LH.Chat.WHITE + LH.get(mRecipes.mNameInternal));}
     public void toolTipsImportant_igniteFire(List<String> aList) {aList.add(LH.Chat.ORANGE + LH.get(LH.REQUIREMENT_IGNITE_FIRE) + " (" + LH.get(LH.FACE_ANY) + ")");}
@@ -218,15 +219,15 @@ public class MTEC_MotorMainFluidBurner extends MTEC_MotorMainBase {
         }
         return 0;
     }
-    public long onToolClickLast_plungerIgniterExtinguisher(String aTool, List<String> aChatReturn, boolean aSneakingZ) {
+    public long onToolClickLast_plungerIgniterExtinguisher(String aTool, Entity aPlayer, List<String> aChatReturn, boolean aSneakingZ) {
         if (aTool.equals(TOOL_plunger)) {
-            if (aChatReturn != null) mCTanks.onPlunger(aChatReturn);
-            return 11;
+            if (aChatReturn != null) return mCTanks.onPlunger(aPlayer, aChatReturn);
+            return 0;
         }
-
+        
         if (aTool.equals(TOOL_igniter)) {mBurning = T; return 10000;}
         if (aTool.equals(TOOL_extinguisher)) {mBurning = F; return 10000;}
-
+        
         return 0;
     }
 }

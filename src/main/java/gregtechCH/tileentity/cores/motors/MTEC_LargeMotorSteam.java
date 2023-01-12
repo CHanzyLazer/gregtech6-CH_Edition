@@ -5,6 +5,7 @@ import gregapi.data.LH;
 import gregapi.fluid.FluidTankGT;
 import gregapi.tileentity.multiblocks.TileEntityBase10MultiBlockBase;
 import gregapi.util.UT;
+import gregtechCH.config.ConfigForge;
 import gregtechCH.data.LH_CH;
 import gregtechCH.tileentity.cores.IMTEC_Texture;
 import net.minecraft.entity.Entity;
@@ -20,23 +21,23 @@ import static gregapi.data.CS.*;
 public class MTEC_LargeMotorSteam extends MTEC_LargeMotor {
     public MTEC_LargeMotorSteam(TileEntityBase10MultiBlockBase aTE) {super(aTE);}
     public MTEC_MotorMainSteam data() {return (MTEC_MotorMainSteam)mD;}
-
+    
     /* stuff to override */
     @Override protected MTEC_MotorMainBase getNewCoreMain() {return new MTEC_MotorMainSteam(this, mTankWater.AS_ARRAY);}
     @Override protected IMTEC_Texture getNewCoreIcon() {return new MTEC_LargeMotorIconSteam(this);}
-
+    
     /* main code */
     protected FluidTankGT mTankWater = new FluidTankGT(); // 大的涡轮会多一个蒸馏水的储罐
-
+    
     // init of core
     @Override protected void postInitTank() {super.postInitTank(); mTankWater.setCapacity(mD.mInRate*16);} // core 不进行容量大小设定
-
+    
     @Override public void writeToNBT(NBTTagCompound aNBT) {
         super.writeToNBT(aNBT);
         mTankWater.writeToNBT(aNBT, NBT_TANK+"."+1);
         UT.NBT.setNumber(aNBT, NBT_TANK_CAPACITY+"."+1, mTankWater.capacity());
     }
-
+    
     // tooltips
     @Override
     public void toolTipsEnergy2(List<String> aList) {
@@ -73,15 +74,21 @@ public class MTEC_LargeMotorSteam extends MTEC_LargeMotor {
         LH_CH.add("gtch.tooltip.multiblock.steamturbine.4", "Distilled Water can still be pumped out at Bottom Layer");
         LH_CH.add("gtch.tooltip.multiblock.steamturbine.5", "N can be from %d to %d");
     }
-
-
+    
+    
     // 工具右键
     @Override
     public long onToolClick(String aTool, long aRemainingDurability, long aQuality, Entity aPlayer, List<String> aChatReturn, IInventory aPlayerInventory, boolean aSneaking, ItemStack aStack, byte aSide, float aHitX, float aHitY, float aHitZ) {
         long rReturn = super.onToolClick(aTool, aRemainingDurability, aQuality, aPlayer, aChatReturn, aPlayerInventory, aSneaking, aStack, aSide, aHitX, aHitY, aHitZ);
         if (rReturn > 0) return rReturn;
-
-        if (aTool.equals(TOOL_plunger)) return GarbageGT.trash(mTankWater);
+        
+        // 特例，搋子优先清除蒸馏水，同样运行时用搋子清除蒸馏水会爆炸
+        if (aTool.equals(TOOL_plunger)) {
+            if (mTankWater.isEmpty()) return 0;
+            long tOut = GarbageGT.trash(mTankWater);
+            if (tOut > 0) data().mCTanks.plungerExplode(aPlayer);
+            return tOut;
+        }
         return 0;
     }
     @Override
@@ -89,7 +96,7 @@ public class MTEC_LargeMotorSteam extends MTEC_LargeMotor {
         aChatReturn.add(LH.get(LH.ENERGY_INPUT)   + ": " + getEnergySizeInputMin( data().mEnergyTypeAccepted, SIDE_ANY) + " - " + getEnergySizeInputMax( data().mEnergyTypeAccepted, SIDE_ANY) + " " + data().mEnergyTypeAccepted.getLocalisedChatNameShort() + LH.Chat.WHITE + "/t");
         aChatReturn.add(LH.get(LH.ENERGY_OUTPUT)  + ": " + getEnergySizeOutputMin(data().mEnergyTypeEmitted,  SIDE_ANY) + " - " + getEnergySizeOutputMax(data().mEnergyTypeEmitted,  SIDE_ANY) + " " + data().mEnergyTypeEmitted.getLocalisedChatNameShort()  + LH.Chat.WHITE + "/t");
     }
-
+    
     // ticking
     @Override
     protected void convertToTanks(FluidStack... aFluids) {
@@ -103,7 +110,7 @@ public class MTEC_LargeMotorSteam extends MTEC_LargeMotor {
             if (tAmount > 0) GarbageGT.trash(mTankWater, tAmount);
         }
     }
-
+    
     // 一些接口
     @Override
     public void onBreakBlock() {

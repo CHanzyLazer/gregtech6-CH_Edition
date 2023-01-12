@@ -27,7 +27,7 @@ import static gregapi.data.CS.*;
 
 // 基本重写了原版的逻辑
 /* 使用多态包含 MTEC_MotorMainBase 的方法实现单一 core (因为数据需要共享) */
-public abstract class MTEC_Motor implements IMTEC_MotorTick, IMTEC_ToolTips {
+public abstract class MTEC_Motor implements IMTEC_MotorTick, IMTEC_ToolTips, IMTEC_CanExplode {
     // the instance of TileEntityBase09FacingSingle
     protected final TileEntityBase09FacingSingle mTE;
     // the instance of MTEC_MotorMainBase
@@ -151,8 +151,9 @@ public abstract class MTEC_Motor implements IMTEC_MotorTick, IMTEC_ToolTips {
         mD.mCounterClockwise = ((aData & 8)  != 0);
     }
     public byte getVisualData() {return (byte)((mD.mActive?1:0) | (mD.mPreheat?2:0) | (mD.mCooldown?4:0) | (mD.mCounterClockwise?8:0));}
-
-    public void explode(boolean aInstant) {mTE.explode(aInstant, 4);}
+    
+    public boolean canExplode() {return mD.canExplode();}
+    public void explode(boolean aInstant) {mD.explode(aInstant);}
     public void onBreakBlock() {/**/}
     public void onFacingChange(byte aPreviousFacing) {/**/}
     public void onWalkOver(EntityLivingBase aEntity) {if (SIDES_TOP[mTE.mFacing] && mD.mActive) {aEntity.rotationYaw=aEntity.rotationYaw+(mD.mCounterClockwise?-5.0F:+5.0F)*entityRotationSpeed(); aEntity.rotationYawHead=aEntity.rotationYawHead+(mD.mCounterClockwise?-5.0F:+5.0F)*entityRotationSpeed();}}

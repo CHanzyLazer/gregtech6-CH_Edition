@@ -8,6 +8,7 @@ import gregapi.tileentity.base.TileEntityBase01Root;
 import gregapi.tileentity.base.TileEntityBase09FacingSingle;
 import gregapi.util.UT;
 import gregtechCH.data.LH_CH;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidRegistry;
 
@@ -117,6 +118,22 @@ public class MTEC_BoilerTank extends MTEC_BoilerTank_Greg {
         }
     }
     
+    // 重写修改搋子的操作，运行时清除会爆炸
+    public long onPlunger(Entity aPlayer, List<String> aChatReturn) {
+        if (mTanks[0].isEmpty()) return 0;
+        long tOut = GarbageGT.trash(mTanks[0]);
+        if (tOut > 0) {
+            if (mBarometer > 15) {
+                mTE.explode(F);
+            } else {
+                if (mEnergy+mTanks[1].amount()/STEAM_PER_EU > 2000) UT.Entities.applyHeatDamage(aPlayer, (mEnergy+mTanks[1].amount()/2.0F) / 2000.0F);
+            }
+            mTanks[1].setEmpty();
+            mEnergy = 0;
+            return tOut;
+        }
+        return 0;
+    }
     
     @Override
     public void onBreakBlock() {

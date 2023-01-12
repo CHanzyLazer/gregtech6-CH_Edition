@@ -88,7 +88,7 @@ public abstract class MTEC_LargeMotor extends MTEC_Motor {
     @Override public byte getVisualData() {return (byte)(super.getVisualData() | (mDL.mSelfOut?16:0));}
 
     // 一些接口
-    @Override public void explode(boolean aInstant) {mTE.explode(2+Math.max(1, Math.sqrt(mD.mEnergy) / 1000.0));}
+    public void explode(boolean aInstant) {mDL.explode(aInstant);}
     @Override public void onBreakBlock() {mDL.onBreakBlock();}
     @Override public void onFacingChange(byte aPreviousFacing) {mDL.onFacingChange(aPreviousFacing);}
 

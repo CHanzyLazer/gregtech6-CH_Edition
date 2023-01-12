@@ -23,7 +23,7 @@ public class MTEC_MotorMainSteam extends MTEC_MotorMainBase {
     // the instance of MTEC_HasTanks
     protected final MTEC_HasTanks mCTanks;
     protected MTEC_MotorMainSteam(MTEC_Motor aCore) {this(aCore, ZL_FT);}
-    protected MTEC_MotorMainSteam(MTEC_Motor aCore, FluidTankGT[] aOutputTanks) {super(aCore); mCTanks = new MTEC_HasTanks(mTankSteam.AS_ARRAY, aOutputTanks);}
+    protected MTEC_MotorMainSteam(MTEC_Motor aCore, FluidTankGT[] aOutputTanks) {super(aCore); mCTanks = new MTEC_HasTanks(aCore, mTankSteam.AS_ARRAY, aOutputTanks);}
 
     /* main code */
     protected FluidTankGT mTankSteam = new FluidTankGT();

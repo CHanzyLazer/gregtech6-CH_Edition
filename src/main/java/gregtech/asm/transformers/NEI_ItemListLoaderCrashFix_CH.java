@@ -124,22 +124,17 @@ public class NEI_ItemListLoaderCrashFix_CH implements IClassTransformer  {
                     GT_ASM.logger.warn("Reached `null` in `at (3)` too soon!  No changes made, bailing!");
                     return GT_ASM.writeByteArraySelfReferenceFixup(classNode);
                 }
-                // 重复删除两次，即删除调用 node 以及加载 item 的 node
+                // 删除调用 node
                 tAt = at.getPrevious();
                 m.instructions.remove(at);
                 at = tAt;
-                int itemIdx = ((VarInsnNode)at).var;
-                tAt = at.getPrevious();
-                m.instructions.remove(at);
-                at = tAt;
-                
                 if (at == null) {
                     GT_ASM.logger.warn("Reached `null` in `at (4)` too soon!  No changes made, bailing!");
                     return GT_ASM.writeByteArraySelfReferenceFixup(classNode);
                 }
                 // 添加自己的调用
                 m.instructions.insert(at, M_Timer_reset.virtualInvocation(isObfuscated())); // 调用 reset
-    
+                
                 // 匹配不带参数的 reset 方法，替换为 check 方法
                 while (at != null) {
                     if (at.getOpcode() == Opcodes.INVOKEVIRTUAL) {
@@ -153,17 +148,16 @@ public class NEI_ItemListLoaderCrashFix_CH implements IClassTransformer  {
                     GT_ASM.logger.warn("Reached `null` in `at (5)` too soon!  No changes made, bailing!");
                     return GT_ASM.writeByteArraySelfReferenceFixup(classNode);
                 }
-                at = removeLine(m.instructions, at);
+                // 删除调用 node
+                tAt = at.getPrevious();
+                m.instructions.remove(at);
+                at = tAt;
                 if (at == null) {
                     GT_ASM.logger.warn("Reached `null` in `at (6)` too soon!  No changes made, bailing!");
                     return GT_ASM.writeByteArraySelfReferenceFixup(classNode);
                 }
                 // 添加自己的调用
-                insert = new InsnList();
-                insert.add(new VarInsnNode(Opcodes.ALOAD, timerIdx));   // load timer
-                insert.add(new VarInsnNode(Opcodes.ALOAD, itemIdx));    // load item
-                insert.add(M_Timer_check.virtualInvocation(isObfuscated()));
-                m.instructions.insert(at, insert);
+                m.instructions.insert(at, M_Timer_check.virtualInvocation(isObfuscated()));
             }
 //            GT_ASM.writePrettyPrintedOpCodesToFile(classNode, "C_NEI_ItemList$"+i+"_Modified"); // DEBUG
             

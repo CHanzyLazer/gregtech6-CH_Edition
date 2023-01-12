@@ -40,6 +40,7 @@ import gregapi.oredict.OreDictMaterial;
 import gregapi.oredict.OreDictPrefix;
 import gregapi.util.ST;
 import gregapi.util.UT;
+import gregtech.asm.transformers.replacements.Timer;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -76,15 +77,19 @@ public class PrefixBlockItem extends ItemBlock implements IItemUpdatable, IPrefi
 		}
 	}
 	
+	private final static Timer TIMER = new Timer();
+	// TODO 应该是仅客户端可用
 	@Override
 	@SuppressWarnings("unchecked")
 	public void getSubItems(Item var1, CreativeTabs aCreativeTab, @SuppressWarnings("rawtypes") List aList) {
+		TIMER.reset(var1);
 		if (!mBlock.mHidden && (SHOW_HIDDEN_PREFIXES || !mBlock.mPrefix.contains(TD.Creative.HIDDEN)) && (SHOW_ORE_BLOCK_PREFIXES || mBlock == BlocksGT.ore || !mBlock.mPrefix.contains(TD.Prefix.ORE) || mBlock.mPrefix.contains(TD.Prefix.STORAGE_BASED))) for (int i = 0; i < mBlock.mMaterialList.length; i++) if (mBlock.mPrefix.isGeneratingItem(mBlock.mMaterialList[i])) if (SHOW_HIDDEN_MATERIALS || !mBlock.mMaterialList[i].mHidden) {
 			ItemStack tStack = ST.make(this, 1, i);
 			updateItemStack(tStack);
 			if (ST.meta_(tStack) == i) aList.add(tStack);
 		}
 		if (aList.isEmpty()) ST.hide(this);
+		TIMER.check();
 	}
 	
 	@Override

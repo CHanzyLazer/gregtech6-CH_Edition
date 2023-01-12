@@ -34,7 +34,7 @@ public abstract class MTEC_BoilerTank_Greg implements IMTEC_ToolTips, IMTEC_Boil
     
     /* main code */
     protected byte mBarometer = 0, oBarometer = 0;
-    protected short mEfficiency = 10000;
+    public short mEfficiency = 10000;
     protected short mCoolDownResetTimer = 128;
     protected long mEnergy = 0, mCapacity = 640000, mOutput = 6400;
     protected TagData mEnergyTypeAccepted = TD.Energy.HU;
@@ -55,6 +55,7 @@ public abstract class MTEC_BoilerTank_Greg implements IMTEC_ToolTips, IMTEC_Boil
         if (mEfficiency != 10000) aNBT.setShort(NBT_EFFICIENCY, mEfficiency);
         for (int i = 0; i < mTanks.length; ++i) mTanks[i].writeToNBT(aNBT, NBT_TANK+"."+i);
     }
+    public void writeItemNBT(NBTTagCompound aNBT) {/**/}
     
     // tooltips
     @Override public void toolTipsMultiblock(List<String> aList) {/**/}

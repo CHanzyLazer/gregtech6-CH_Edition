@@ -5,13 +5,14 @@ import gregapi.data.FL;
 import gregapi.data.LH;
 import gregapi.data.TD;
 import gregapi.fluid.FluidTankGT;
+import gregapi.network.INetworkHandler;
 import gregapi.tileentity.base.TileEntityBase01Root;
-import gregapi.tileentity.base.TileEntityBase09FacingSingle;
 import gregapi.util.UT;
 import gregtechCH.data.LH_CH;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidRegistry;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class MTEC_BoilerTank extends MTEC_BoilerTank_Greg {
     public MTEC_BoilerTank(TileEntityBase01Root aTE) {super(aTE);}
     
     /* main code */
-    protected long mEnergyEff = 0, mInput = 64;
+    protected long mEnergyEffSU = 0, mInput = 64;
     protected long mOutputNow = 0;
     protected short mEfficiencyCH = 10000;
     protected FluidTankGT mInBoilerWater = new FluidTankGT(); // 增加一个锅炉内部的蒸馏水储罐，用于存储内部蒸汽冷却后的蒸馏水
@@ -32,7 +33,7 @@ public class MTEC_BoilerTank extends MTEC_BoilerTank_Greg {
     @Override
     public void readFromNBT(NBTTagCompound aNBT) {
         super.readFromNBT(aNBT);
-        if (aNBT.hasKey(NBT_ENERGY_EFF)) mEnergyEff = aNBT.getLong(NBT_ENERGY_EFF);
+        if (aNBT.hasKey(NBT_ENERGY_EFF)) mEnergyEffSU = aNBT.getLong(NBT_ENERGY_EFF);
         if (aNBT.hasKey(NBT_OUTPUT_SU)) mInput = aNBT.getLong(NBT_OUTPUT_SU) / STEAM_PER_EU; //保留兼容
         
         if (aNBT.hasKey(NBT_INPUT)) mInput = aNBT.getLong(NBT_INPUT);
@@ -47,24 +48,35 @@ public class MTEC_BoilerTank extends MTEC_BoilerTank_Greg {
     }
     @Override
     public void writeToNBT(NBTTagCompound aNBT) {
+        UT.NBT.setNumber(aNBT, NBT_ENERGY_EFF, mEnergyEffSU);
+        
+        mTanks[1].unfixFluid(); // 由于总是会在读取时 fix 到指定的流体，因此存储时不需要 fix
+        mInBoilerWater.unfixFluid().writeToNBT(aNBT, NBT_TANK+"."+mTanks.length);
         super.writeToNBT(aNBT);
-        UT.NBT.setNumber(aNBT, NBT_ENERGY_EFF, mEnergyEff);
-        mInBoilerWater.writeToNBT(aNBT, NBT_TANK+"."+mTanks.length);
         
         if (mOutputNow != 0) aNBT.setLong(NBT_OUTPUT_NOW, mOutputNow); // for OmniOcular usage
         UT.NBT.setNumber(aNBT, NBT_CAPACITY_HU, mCapacity); // for OmniOcular usage 和读取的名称不一致是为了避免被意外修改
         for (int i = 0; i < mTanks.length; ++i) UT.NBT.setNumber(aNBT, NBT_TANK_CAPACITY+"."+i, mTanks[i].capacity()); // for OmniOcular usage
     }
+    @Override
+    public void writeItemNBT(NBTTagCompound aNBT) {
+        if (mEfficiency != 10000) aNBT.setShort(NBT_EFFICIENCY, mEfficiency); // 用于在拆下后保留钙化程度
+    }
+    public long realOutput() {return mEfficiency == 10000 ? mOutput : UT.Code.units(mOutput, 10000, mEfficiency, F);}
     
     @Override
     public void toolTipsRecipe(List<String> aList) {
         aList.add(LH.Chat.CYAN     + LH.get(LH.CONVERTS_FROM_X)        + " 1 L " + FL.name(FluidRegistry.WATER, T) + " " + LH.get(LH.CONVERTS_TO_Y) + " " + STEAM_PER_WATER + " L " + FL.name(FL.Steam.make(0), T) + " " + LH.get(LH.CONVERTS_USING_Z) + " " + UT.Code.units(EU_PER_WATER, mEfficiencyCH, 10000, F) + " " + mEnergyTypeAccepted.getLocalisedNameShort());
     }
+    static {
+        LH_CH.add("gt.tooltip.boiler.calcification", "Calcification: ");
+    }
     @Override
     public void toolTipsEnergy(List<String> aList) {
         aList.add(LH.getToolTipEfficiency(mEfficiencyCH));
-        aList.add(LH.Chat.GREEN    + LH.get(LH.ENERGY_INPUT)           + ": " + LH.Chat.WHITE + mInput  + " - " + (mInput*2)   + " " + mEnergyTypeAccepted.getLocalisedChatNameShort() + LH.Chat.WHITE + "/t ("+LH.get(LH.FACE_ANY)+")");
-        aList.add(LH.Chat.RED      + LH.get(LH.ENERGY_OUTPUT)          + ": " + LH.Chat.WHITE + UT.Code.units(mOutput, 10000, mEfficiency, F) + " - " + (mOutput*2) + " " + TD.Energy.STEAM.getLocalisedChatNameLong() + LH.Chat.WHITE + "/t ("+LH.get(LH.FACE_TOP)+")");
+        if (mEfficiency < 10000) aList.add(LH.Chat.YELLOW + LH_CH.get("gt.tooltip.boiler.calcification") + LH.percent(10000 - mEfficiency) + "%");
+        aList.add(LH.Chat.GREEN    + LH.get(LH.ENERGY_INPUT)           + ": " + LH.Chat.WHITE + mInput       + " - " + (mInput*2)  + " " + mEnergyTypeAccepted.getLocalisedChatNameShort() + LH.Chat.WHITE + "/t ("+LH.get(LH.FACE_ANY)+")");
+        aList.add(LH.Chat.RED      + LH.get(LH.ENERGY_OUTPUT)          + ": " + LH.Chat.WHITE + realOutput() + " - " + (mOutput*2) + " " + TD.Energy.STEAM.getLocalisedChatNameLong() + LH.Chat.WHITE + "/t ("+LH.get(LH.FACE_TOP)+")");
     }
     @Override
     public void toolTipsUseful(List<String> aList) {
@@ -75,16 +87,16 @@ public class MTEC_BoilerTank extends MTEC_BoilerTank_Greg {
     @Override public void onTickConvert(long aTimer) {
         // Convert HU to effective energy
         if (mEnergy < mInput && mTanks[1].isHalf()) mEnergy = 0; // 输入能量不足不会工作
-        // 改用倍率判断，防止卡最小输入不稳
-        if (mEnergyEff < EU_PER_WATER * 2) {
+        // 改用倍率判断并且暂存能量单位为 SU，防止卡最小输入不稳
+        if (mEnergyEffSU < STEAM_PER_WATER * 2) {
             int tMul = (int) (mEnergy / mInput);
             if (tMul > 0) {
                 mEnergy -= mInput * tMul;
-                mEnergyEff += UT.Code.units(mOutput * tMul, 10000, mEfficiency, F) / STEAM_PER_EU;
+                mEnergyEffSU += UT.Code.units(mOutput * tMul, 10000, mEfficiency, F);
             }
         }
         // Convert Water to Steam
-        long tConversionsEff = mEnergyEff / EU_PER_WATER;
+        long tConversionsEff = mEnergyEffSU / STEAM_PER_WATER;
         if (tConversionsEff > 0) {
             // 优先转换 mInBoilerWater 中的蒸馏水
             long tDrained = mInBoilerWater.remove(tConversionsEff);
@@ -97,7 +109,7 @@ public class MTEC_BoilerTank extends MTEC_BoilerTank_Greg {
                 if (mEfficiency < 5000) mEfficiency = 5000;
             }
             mTanks[1].add(tDrained * STEAM_PER_WATER); // 由于固定了流体种类，因此可以直接添加
-            mEnergyEff -= tDrained * EU_PER_WATER;
+            mEnergyEffSU -= tDrained * STEAM_PER_WATER;
         }
     }
     
@@ -110,7 +122,7 @@ public class MTEC_BoilerTank extends MTEC_BoilerTank_Greg {
             resetCoolDownTimer(); // 逻辑改变，不会在 mEnergy 不为零时高速冷却
             mEnergy -= mInput * EU_PER_WATER * 2;
             if (mEnergy <= 0) mEnergy = 0;
-            mEnergyEff = 0;
+            mEnergyEffSU = 0;
             
             // 只有能量为零时内部蒸汽才会冷却回蒸馏水
             if (mEnergy == 0) {
@@ -126,10 +138,11 @@ public class MTEC_BoilerTank extends MTEC_BoilerTank_Greg {
         }
     }
     @Override protected void doEmitSteam(long aAmount) {
-        if (aAmount >= mOutput) {
-            mOutputNow = Math.min(aAmount > mTanks[1].capacity() / 4 ?
-                            mOutput * 2 :
-                            mOutput + UT.Code.units(mOutput, mTanks[1].capacity() / 4, aAmount - mOutput, F),
+        long tOutput = realOutput();
+        if (aAmount >= tOutput) {
+            mOutputNow = Math.min(aAmount * 4 > mTanks[1].capacity() ?
+                            tOutput * 2 :
+                            tOutput + UT.Code.units(tOutput, mTanks[1].capacity(), (aAmount - tOutput) * 4, F),
                     aAmount);
             doEmitSteam2(mOutputNow);
         } else {
@@ -141,7 +154,9 @@ public class MTEC_BoilerTank extends MTEC_BoilerTank_Greg {
     // 重写修改搋子的操作，运行时清除会爆炸
     public long onPlunger(Entity aPlayer, List<String> aChatReturn) {
         if (mTanks[0].isEmpty()) return 0;
-        long tOut = GarbageGT.trash(mTanks[0]);
+        long tOut = 0;
+        if (mInBoilerWater.has()) tOut = GarbageGT.trash(mInBoilerWater);
+        else if (mTanks[0].has()) tOut = GarbageGT.trash(mTanks[0]);
         if (tOut > 0) {
             if (mBarometer > 15) {
                 mTE.explode(F);
@@ -163,4 +178,16 @@ public class MTEC_BoilerTank extends MTEC_BoilerTank_Greg {
     }
     @Override public long getEnergyDemanded(TagData aEnergyType, byte aSide, long aSize) {return mInput;}
     @Override public long getEnergySizeInputRecommended(TagData aEnergyType, byte aSide) {return mInput;}
+    
+    // 重写这个方法来扩展客户端数据，必须要把 efficiency 发送到客户端才存入物品
+    public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
+        if (mEfficiency == 10000) return;
+        rList.add(5, UT.Code.toByteS(mEfficiency, 0));
+        rList.add(6, UT.Code.toByteS(mEfficiency, 1));
+    }
+    public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
+        if (aData.length > 7) mEfficiency = UT.Code.combine(aData[5], aData[6]); // 注意到最后永远都有一个 paint data
+        else mEfficiency = 10000;
+        return T;
+    }
 }

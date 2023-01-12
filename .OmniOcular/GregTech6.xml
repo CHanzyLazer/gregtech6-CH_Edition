@@ -1154,7 +1154,7 @@
 
 		<line displayname = "钙化程度">
 			if(nbt['gt.eff'] != undefined){
-				return 100 - nbt['gt.eff'] / 100 + "%";
+				return (10000 - nbt['gt.eff']) / 100 + "%";
 			}
 		</line>
 
@@ -1185,6 +1185,12 @@
 				return nbt['gt.tank.1']['Amount'] + "/" + SteamCap(nbt) + Unit("L") + " - " + parseInt(nbt['gt.tank.1']['Amount'] / SteamCap(nbt) * 10000) / 100 + "%";
 			}
 			return "0/" + SteamCap(nbt) + Unit("L") + " - " + "0.00%";
+		</line>
+		
+		<line displayname = "内部冷却水">
+			if(nbt['gt.tank.2'] != undefined){
+				return nbt['gt.tank.2']['Amount'] + Unit("L");
+			}
 		</line>
 		
 	</tileentity>
@@ -1253,7 +1259,7 @@
 
 		<line displayname = "钙化程度">
 			if(nbt['gt.eff'] != undefined){
-				return 100 - nbt['gt.eff'] / 100 + "%";
+				return (10000 - nbt['gt.eff']) / 100 + "%";
 			}
 		</line>
 
@@ -1284,6 +1290,12 @@
 				return nbt['gt.tank.1']['Amount'] + "/" + SteamCap(nbt) + Unit("L") + " - " + parseInt(nbt['gt.tank.1']['Amount'] / SteamCap(nbt) * 10000) / 100 + "%";
 			}
 			return "0/" + SteamCap(nbt) + Unit("L") + " - " + "0.00%";
+		</line>
+		
+		<line displayname = "内部冷却水">
+			if(nbt['gt.tank.2'] != undefined){
+				return nbt['gt.tank.2']['Amount'] + Unit("L");
+			}
 		</line>
 		
 	</tileentity>

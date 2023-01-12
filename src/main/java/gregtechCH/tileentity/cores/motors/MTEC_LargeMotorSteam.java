@@ -34,7 +34,7 @@ public class MTEC_LargeMotorSteam extends MTEC_LargeMotor {
     
     @Override public void writeToNBT(NBTTagCompound aNBT) {
         super.writeToNBT(aNBT);
-        mTankWater.writeToNBT(aNBT, NBT_TANK+"."+1);
+        mTankWater.unfixFluid().writeToNBT(aNBT, NBT_TANK+"."+1);
         UT.NBT.setNumber(aNBT, NBT_TANK_CAPACITY+"."+1, mTankWater.capacity());
     }
     

@@ -46,7 +46,7 @@ public class FluidTankGT implements IFluidTank {
 	
 	// GTCH, 固定储罐的溶液种类，在一些情况避免频繁创建流体以及意外的填充
 	private boolean mFixedFluid = F; // 注意和 mPreventDraining 等一样，统一不进行 NBT 存储，因此永远都需要在读取 NBT 时手动进行设置
-	public FluidTankGT fixFluid(Fluid aFluid) {return fixFluid(FL.make(aFluid, 1));}
+	public FluidTankGT fixFluid(Fluid aFluid) {return fixFluid(FL.make(aFluid, 0));}
 	public FluidTankGT fixFluid(FluidStack aFluid) {mFluid = aFluid; mFixedFluid = T; mPreventDraining = T; return this;}
 	public FluidTankGT unfixFluid() {mFixedFluid = F; mPreventDraining = F; if (mAmount == 0) mFluid = null; return this;}
 	

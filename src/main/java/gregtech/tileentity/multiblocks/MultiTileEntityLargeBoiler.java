@@ -19,14 +19,10 @@
 
 package gregtech.tileentity.multiblocks;
 
-import static gregapi.data.CS.*;
-
-import java.util.Collection;
-import java.util.List;
-
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_RemovedByPlayer;
 import gregapi.code.TagData;
 import gregapi.data.BI;
+import gregapi.network.INetworkHandler;
 import gregapi.old.Textures;
 import gregapi.render.BlockTextureDefault;
 import gregapi.render.BlockTextureMulti;
@@ -35,13 +31,11 @@ import gregapi.render.ITexture;
 import gregapi.tileentity.data.ITileEntityGibbl;
 import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.tileentity.energy.ITileEntityEnergyDataCapacitor;
-import gregapi.tileentity.multiblocks.IMultiBlockEnergy;
-import gregapi.tileentity.multiblocks.IMultiBlockFluidHandler;
-import gregapi.tileentity.multiblocks.ITileEntityMultiBlockController;
-import gregapi.tileentity.multiblocks.MultiTileEntityMultiBlockPart;
-import gregapi.tileentity.multiblocks.TileEntityBase10MultiBlockBase;
-import gregtechCH.tileentity.cores.*;
-import gregtechCH.tileentity.cores.boilers.*;
+import gregapi.tileentity.multiblocks.*;
+import gregtechCH.tileentity.cores.IMTEC_ToolTips;
+import gregtechCH.tileentity.cores.boilers.IMTEC_BoilerTank;
+import gregtechCH.tileentity.cores.boilers.IMTEC_HasLargeBoilerTank;
+import gregtechCH.tileentity.cores.boilers.MTEC_LargeBoilerTank;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -53,6 +47,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fluids.IFluidTank;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
+import java.util.List;
+
+import static gregapi.data.CS.*;
 
 /**
  * @author Gregorius Techneticies
@@ -77,8 +77,13 @@ public class MultiTileEntityLargeBoiler extends TileEntityBase10MultiBlockBase i
 	@Override
 	public void writeToNBT2(NBTTagCompound aNBT) {
 		super.writeToNBT2(aNBT);
-		
 		mCore.writeToNBT(aNBT);
+	}
+	
+	@Override
+	public NBTTagCompound writeItemNBT2(NBTTagCompound aNBT) {
+		mCore.writeItemNBT(aNBT);
+		return super.writeItemNBT2(aNBT);
 	}
 	
 	@Override
@@ -203,6 +208,10 @@ public class MultiTileEntityLargeBoiler extends TileEntityBase10MultiBlockBase i
 		ITexture rTexture = super.getTexture2(aBlock, aRenderPass, aSide, aShouldSideBeRendered);
 		return aSide != mFacing || rTexture == null ? rTexture : BlockTextureMulti.get(rTexture, BlockTextureDefault.get(BI.BAROMETER), BlockTextureDefault.get(BI.BAROMETER_SCALE[mCore.getBarometer()], CA_RED_64));
 	}
+	
+	// 统一提供提供接口
+	@Override public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {super.writeToClientDataPacketByteList(rList); mCore.writeToClientDataPacketByteList(rList);}
+	@Override public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {super.receiveDataByteArray(aData, aNetworkHandler); return mCore.receiveDataByteArray(aData, aNetworkHandler);}
 	
 	@Override public byte getVisualData() {return mCore.getVisualData();}
 	@Override public byte getDefaultSide() {return SIDE_FRONT;}

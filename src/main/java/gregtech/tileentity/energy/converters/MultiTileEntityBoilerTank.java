@@ -24,6 +24,7 @@ import gregapi.block.multitileentity.IMultiTileEntity.IMTE_OnEntityCollidedWithB
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_RemovedByPlayer;
 import gregapi.code.TagData;
 import gregapi.data.BI;
+import gregapi.network.INetworkHandler;
 import gregapi.old.Textures;
 import gregapi.render.BlockTextureDefault;
 import gregapi.render.BlockTextureMulti;
@@ -51,6 +52,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fluids.IFluidTank;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.List;
@@ -76,9 +78,14 @@ public class MultiTileEntityBoilerTank extends TileEntityBase09FacingSingle impl
 	@Override
 	public void writeToNBT2(NBTTagCompound aNBT) {
 		super.writeToNBT2(aNBT);
-		
 		// GTCH, core save
 		mCore.writeToNBT(aNBT);
+	}
+	
+	@Override
+	public NBTTagCompound writeItemNBT2(NBTTagCompound aNBT) {
+		mCore.writeItemNBT(aNBT);
+		return super.writeItemNBT2(aNBT);
 	}
 	
 	// tooltips
@@ -130,6 +137,10 @@ public class MultiTileEntityBoilerTank extends TileEntityBase09FacingSingle impl
 	public void setVisualData(byte aData) {
 		mCore.setVisualData(aData);
 	}
+	
+	// 重写这个方法来扩展客户端数据，必须要把 efficiency 发送到客户端才存入物品
+	@Override public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {super.writeToClientDataPacketByteList(rList); mCore.writeToClientDataPacketByteList(rList);}
+	@Override public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {super.receiveDataByteArray(aData, aNetworkHandler); return mCore.receiveDataByteArray(aData, aNetworkHandler);}
 	
 	@Override
 	public int funnelFill(byte aSide, FluidStack aFluid, boolean aDoFill) {

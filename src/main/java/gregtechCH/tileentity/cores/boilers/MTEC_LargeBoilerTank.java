@@ -3,6 +3,7 @@ package gregtechCH.tileentity.cores.boilers;
 import gregapi.data.FL;
 import gregapi.data.LH;
 import gregapi.data.TD;
+import gregapi.network.INetworkHandler;
 import gregapi.tileentity.base.TileEntityBase01Root;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.tileentity.multiblocks.TileEntityBase10MultiBlockBase;
@@ -11,10 +12,12 @@ import gregapi.util.WD;
 import gregtechCH.data.LH_CH;
 import gregtechCH.util.UT_CH;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fluids.IFluidTank;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -27,6 +30,9 @@ public class MTEC_LargeBoilerTank extends MTEC_BoilerTank {
     @Override protected IMTEC_HasLargeBoilerTank te() {return (IMTEC_HasLargeBoilerTank)mTE;} // 返回值可以为器子类，返回值重写
     
     /* main code */
+    @Override
+    public void writeItemNBT(NBTTagCompound aNBT) {/**/} // 大锅炉不保留钙化
+    
     static {
         LH.add("gt.tooltip.multiblock.largeboiler.1", "3x3 Base of Heat Transmitters");
         LH.add("gt.tooltip.multiblock.largeboiler.2", "3x3x3 Hollow of the Block you crafted this one with");
@@ -43,8 +49,9 @@ public class MTEC_LargeBoilerTank extends MTEC_BoilerTank {
     @Override
     public void toolTipsEnergy(List<String> aList) {
         aList.add(LH.getToolTipEfficiency(mEfficiencyCH));
-        aList.add(LH.Chat.GREEN    + LH.get(LH.ENERGY_INPUT)           + ": " + LH.Chat.WHITE + mInput + " - " + (mInput*2)   + " " + mEnergyTypeAccepted.getLocalisedChatNameShort() + LH.Chat.WHITE + "/t (" + LH_CH.get(LH_CH.FACE_HEAT_TRANS) + ")");
-        aList.add(LH.Chat.RED      + LH.get(LH.ENERGY_OUTPUT)          + ": " + LH.Chat.WHITE + mOutput	+ " - " + (mOutput*2)    + " " + TD.Energy.STEAM.getLocalisedChatNameLong()         + LH.Chat.WHITE + "/t (" + LH_CH.get(LH_CH.FACE_PIPE_HOLE)  + ")");
+        if (mEfficiency < 10000) aList.add(LH.Chat.YELLOW + LH_CH.get("gt.tooltip.boiler.calcification") + LH.percent(10000 - mEfficiency) + "%");
+        aList.add(LH.Chat.GREEN    + LH.get(LH.ENERGY_INPUT)           + ": " + LH.Chat.WHITE + mInput       + " - " + (mInput*2)   + " " + mEnergyTypeAccepted.getLocalisedChatNameShort() + LH.Chat.WHITE + "/t (" + LH_CH.get(LH_CH.FACE_HEAT_TRANS) + ")");
+        aList.add(LH.Chat.RED      + LH.get(LH.ENERGY_OUTPUT)          + ": " + LH.Chat.WHITE + realOutput() + " - " + (mOutput*2)  + " " + TD.Energy.STEAM.getLocalisedChatNameLong()      + LH.Chat.WHITE + "/t (" + LH_CH.get(LH_CH.FACE_PIPE_HOLE)  + ")");
     }
     @Override public void toolTipsImportant(List<String> aList) {
         aList.add(LH.Chat.ORANGE   + LH.get(LH.REQUIREMENT_WATER_PURE));
@@ -118,4 +125,7 @@ public class MTEC_LargeBoilerTank extends MTEC_BoilerTank {
     // tanks
     @Override public IFluidTank getFluidTankFillable(byte aSide, FluidStack aFluidToFill) {return FL.water(aFluidToFill) ? mTanks[0] : null;}
     
+    // 大锅炉不需要
+    @Override public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {/**/}
+    @Override public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {return T;}
 }

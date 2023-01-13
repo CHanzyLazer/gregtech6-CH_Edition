@@ -49,6 +49,8 @@ import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
 import gregtechCH.fluid.IFluidHandler_CH;
+import gregtechCH.tileentity.cores.dust.IMTEC_HasDusts;
+import gregtechCH.tileentity.cores.dust.MTEC_Dusts;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -63,7 +65,7 @@ import net.minecraftforge.fluids.IFluidTank;
 /**
  * @author Gregorius Techneticies
  */
-public class MultiTileEntityGeneratorFluidBed extends TileEntityBase09FacingSingle implements IFluidHandler_CH, ITileEntityTapAccessible, ITileEntityFunnelAccessible, ITileEntityEnergy, ITileEntityRunningActively, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnEntityCollidedWithBlock {
+public class MultiTileEntityGeneratorFluidBed extends TileEntityBase09FacingSingle implements IMTEC_HasDusts, IFluidHandler_CH, ITileEntityTapAccessible, ITileEntityFunnelAccessible, ITileEntityEnergy, ITileEntityRunningActively, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnEntityCollidedWithBlock {
 	private static int FLAME_RANGE = 2;
 	
 	protected short mEfficiency = 10000;
@@ -73,7 +75,15 @@ public class MultiTileEntityGeneratorFluidBed extends TileEntityBase09FacingSing
 	protected RecipeMap mRecipes = FM.FluidBed;
 	protected Recipe mLastRecipe = null;
 	protected FluidTankGT mTank = new FluidTankGT(1000);
-	protected ItemStack mOutput1 = null;
+	protected ItemStack mOutput1 = null; // 为了物质守恒，依旧需要这个变量
+	
+	// GTCH, 使用专门的 dust core 来实现灰烬永远都是标准大小的功能
+	protected MTEC_Dusts mDust = new MTEC_Dusts(this, 1);
+	// 实现必要的接口
+	public MTEC_Dusts dust() {return mDust;}
+	public ItemStack getItem(int aIdx) {return slot(aIdx+1);}
+	public void setItem(int aIdx, ItemStack aItem) {setInventorySlotContents(aIdx+1, aItem);}
+	public boolean addItem(int aIdx, ItemStack aItem) {return addStackToSlot(aIdx+1, aItem);}
 	
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {
@@ -87,6 +97,8 @@ public class MultiTileEntityGeneratorFluidBed extends TileEntityBase09FacingSing
 		if (aNBT.hasKey(NBT_ENERGY_EMITTED)) mEnergyTypeEmitted = TagData.createTagData(aNBT.getString(NBT_ENERGY_EMITTED));
 		mTank.setCapacity(Math.max(mRecipes.mMaxFluidInputSize, mRate));
 		mTank.readFromNBT(aNBT, NBT_TANK);
+		// GTCH, core 初始化
+		mDust.readFromNBT(aNBT);
 	}
 	
 	@Override
@@ -96,6 +108,8 @@ public class MultiTileEntityGeneratorFluidBed extends TileEntityBase09FacingSing
 		UT.NBT.setBoolean(aNBT, NBT_ACTIVE, mBurning);
 		ST.save(aNBT, NBT_INV_OUT + ".1", mOutput1);
 		mTank.writeToNBT(aNBT, NBT_TANK);
+		// GTCH, core 保存
+		mDust.writeToNBT(aNBT);
 	}
 	
 	@Override
@@ -116,6 +130,7 @@ public class MultiTileEntityGeneratorFluidBed extends TileEntityBase09FacingSing
 	@Override
 	public void onTick2(long aTimer, boolean aIsServerSide) {
 		if (aIsServerSide) {
+			if (mOutput1 != null && mDust.insert(0, mOutput1)) mOutput1 = null; // 无论怎样都先尝试将暂存的输出转为 dust
 			if (mBurning) {
 				if (mEnergy >= mRate) {
 					ITileEntityEnergy.Util.emitEnergyToNetwork(mEnergyTypeEmitted, 1, Math.min(mRate, mEnergy), this);
@@ -126,13 +141,13 @@ public class MultiTileEntityGeneratorFluidBed extends TileEntityBase09FacingSing
 				}
 				if (mEnergy < mRate * 2) {
 					WD.burn(worldObj, getOffset(mFacing, 1), T, T);
-					if (addStackToSlot(1, mOutput1)) mOutput1 = null;
-					if (mOutput1 == null && !WD.hasCollide(worldObj, getOffsetX(mFacing), getOffsetY(mFacing), getOffsetZ(mFacing)) && !getBlockAtSide(mFacing).getMaterial().isLiquid() && WD.oxygen(worldObj, getOffsetX(mFacing), getOffsetY(mFacing), getOffsetZ(mFacing))) {
+					mDust.convert(0);
+					if (mOutput1 == null && !mDust.full(0) && !WD.hasCollide(worldObj, getOffsetX(mFacing), getOffsetY(mFacing), getOffsetZ(mFacing)) && !getBlockAtSide(mFacing).getMaterial().isLiquid() && WD.oxygen(worldObj, getOffsetX(mFacing), getOffsetY(mFacing), getOffsetZ(mFacing))) {
 						Recipe tRecipe = mRecipes.findRecipe(this, mLastRecipe, T, Long.MAX_VALUE, NI, mTank.AS_ARRAY, slot(0));
 						if (tRecipe != null && tRecipe.isRecipeInputEqual(T, F, mTank.AS_ARRAY, slot(0))) {
 							mLastRecipe = tRecipe;
 							ItemStack[] tOutputs = tRecipe.getOutputs();
-							if (tOutputs.length > 0) mOutput1 = ST.copy(tOutputs[0]);
+							if (tOutputs.length > 0) if (!mDust.insert(0, tOutputs[0])) mOutput1 = tOutputs[0]; // 注入失败暂存这个输出
 							mEnergy += UT.Code.units(tRecipe.getAbsoluteTotalPower(), 10000, mEfficiency, F);
 							removeAllDroppableNullStacks();
 						}
@@ -164,6 +179,12 @@ public class MultiTileEntityGeneratorFluidBed extends TileEntityBase09FacingSing
 				if (slotHas(1)) {
 					aPlayer.inventory.setInventorySlotContents(aPlayer.inventory.currentItem, slot(1));
 					slotKill(1);
+					return T;
+				}
+				ItemStack tRestDust = mDust.item(0);
+				if (tRestDust != null && tRestDust.stackSize > 0) {
+					aPlayer.inventory.setInventorySlotContents(aPlayer.inventory.currentItem, tRestDust);
+					mDust.kill(0);
 					return T;
 				}
 				if (slotHas(0)) {
@@ -251,6 +272,9 @@ public class MultiTileEntityGeneratorFluidBed extends TileEntityBase09FacingSing
 	@Override
 	public boolean breakBlock() {
 		if (isServerSide()) {
+			// 破坏时释放 buffer 的灰烬
+			ST.drop(worldObj, getCoords(), mDust.item(0));
+			mDust.kill(0);
 			GarbageGT.trash(mTank);
 		}
 		return super.breakBlock();
@@ -278,7 +302,7 @@ public class MultiTileEntityGeneratorFluidBed extends TileEntityBase09FacingSing
 	@Override public Collection<TagData> getEnergyTypes(byte aSide) {return mEnergyTypeEmitted.AS_LIST;}
 	
 	@Override public boolean getStateRunningPassively() {return mBurning;}
-	@Override public boolean getStateRunningPossible() {return mBurning || (mOutput1 == null && slotHas(0) && mTank.has() && !WD.hasCollide(worldObj, getOffsetX(mFacing), getOffsetY(mFacing), getOffsetZ(mFacing)) && !getBlockAtSide(mFacing).getMaterial().isLiquid() && WD.oxygen(worldObj, getOffsetX(mFacing), getOffsetY(mFacing), getOffsetZ(mFacing)));}
+	@Override public boolean getStateRunningPossible() {return mBurning || (mOutput1 == null && !mDust.full(0) && slotHas(0) && mTank.has() && !WD.hasCollide(worldObj, getOffsetX(mFacing), getOffsetY(mFacing), getOffsetZ(mFacing)) && !getBlockAtSide(mFacing).getMaterial().isLiquid() && WD.oxygen(worldObj, getOffsetX(mFacing), getOffsetY(mFacing), getOffsetZ(mFacing)));}
 	@Override public boolean getStateRunningActively() {return mBurning;}
 	
 	protected void spawnBurningParticles(double aX, double aY, double aZ) {

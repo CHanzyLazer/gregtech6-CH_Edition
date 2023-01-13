@@ -176,7 +176,7 @@ public class MultiTileEntityMultiblockEnergyStorageUnit extends TileEntityBase11
     @Override
     public void onTickEnergy(long aTimer) {
         super.onTickEnergy(aTimer);
-        core().costEnergy((long)mMaintenanceCostPerCore * mSyncBatteryCoreLength * mSyncBatteryCoreWidth * mSyncBatteryCoreWidth);
+        core().cost((long)mMaintenanceCostPerCore * mSyncBatteryCoreLength * mSyncBatteryCoreWidth * mSyncBatteryCoreWidth);
     }
     
     @Override
@@ -197,7 +197,7 @@ public class MultiTileEntityMultiblockEnergyStorageUnit extends TileEntityBase11
         aChatReturn.add("Voltage: " + core().getOutputSize() + " Volts");
         aChatReturn.add("Current: " + core().getOutputAmountMax() + " Amps");
         aChatReturn.add("Core Amount: " + mSyncBatteryCoreWidth * mSyncBatteryCoreWidth * mSyncBatteryCoreLength);
-        aChatReturn.add("Energy Stored: " + core().getEnergy() + "/" + core().getCapacity() + core().mEnergyType.getLocalisedNameShort());
+        aChatReturn.add("Energy Stored: " + core().energy() + "/" + core().capacity() + core().mEnergyType.getLocalisedNameShort());
     }
     
     // TODO 需要处理螺丝刀调整电流和覆盖版调整的兼容性

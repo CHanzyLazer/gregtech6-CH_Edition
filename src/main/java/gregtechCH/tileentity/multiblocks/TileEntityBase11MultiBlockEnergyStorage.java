@@ -91,17 +91,17 @@ public abstract class TileEntityBase11MultiBlockEnergyStorage extends TileEntity
             if (!mStopped) {
                 long tEmittedAmount;
                 byte tEmitSide = getEmittingSide();
-                if (SIDES_VALID[tEmitSide]) tEmittedAmount = ITileEntityEnergy.Util.emitEnergyToSide(mCore.mEnergyType, tEmitSide, mCore.getOutputSize(), mCore.getEmitAmount(), getEmittingTileEntity());
-                else tEmittedAmount = ITileEntityEnergy.Util.emitEnergyToNetwork(mCore.mEnergyType, mCore.getOutputSize(), mCore.getEmitAmount(), (ITileEntityEnergy)getEmittingTileEntity());
+                if (SIDES_VALID[tEmitSide]) tEmittedAmount = ITileEntityEnergy.Util.emitEnergyToSide(mCore.mEnergyType, tEmitSide, mCore.getOutputSize(), mCore.emitAmount(), getEmittingTileEntity());
+                else tEmittedAmount = ITileEntityEnergy.Util.emitEnergyToNetwork(mCore.mEnergyType, mCore.getOutputSize(), mCore.emitAmount(), (ITileEntityEnergy)getEmittingTileEntity());
                 mEmitsEnergy = (tEmittedAmount > 0);
-                mCore.emitEnergy(tEmittedAmount);
+                mCore.emit(tEmittedAmount);
             }
         }
     }
     
     @Override
     public long doInject(TagData aEnergyType, byte aSide, long aSize, long aAmount, boolean aDoInject) {
-        return mCore.injectEnergy(aSize, aAmount);
+        return mCore.inject(aSize, aAmount);
     }
     
     // TODO 还没有做动画，虽然只有主方块的
@@ -131,8 +131,8 @@ public abstract class TileEntityBase11MultiBlockEnergyStorage extends TileEntity
     @Override public long getEnergySizeOutputRecommended    (TagData aEnergyType, byte aSide) {return mCore.getOutputSize();}
     @Override public long getEnergySizeOutputMax            (TagData aEnergyType, byte aSide) {return mCore.getOutputSize();}
     @Override public long getEnergySizeInputRecommended     (TagData aEnergyType, byte aSide) {return mCore.getInputSizeRec();}
-    @Override public long getEnergyStored                   (TagData aEnergyType, byte aSide) {return mCore.getEnergy();}
-    @Override public long getEnergyCapacity                 (TagData aEnergyType, byte aSide) {return mCore.getCapacity();}
+    @Override public long getEnergyStored                   (TagData aEnergyType, byte aSide) {return mCore.energy();}
+    @Override public long getEnergyCapacity                 (TagData aEnergyType, byte aSide) {return mCore.capacity();}
     @Override public Collection<TagData> getEnergyTypes(byte aSide) {return mCore.mEnergyType.AS_LIST;}
     @Override public Collection<TagData> getEnergyCapacitorTypes(byte aSide) {return mCore.mEnergyType.AS_LIST;}
     

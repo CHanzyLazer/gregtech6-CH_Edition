@@ -27,8 +27,8 @@ public class MTEC_ElectricStorage {
     // 容量相关
     protected long mCapacity = 102400; protected boolean mStrict = F;
     protected long mEnergy = 0;
-    public final long getEnergy() {return mEnergy;}
-    public final long getCapacity() {return mCapacity;}
+    public final long energy() {return mEnergy;}
+    public final long capacity() {return mCapacity;}
     public final boolean full() {return mEnergy >= mCapacity;}
     public final boolean halfFull() {return mEnergy*2 >= mCapacity;}
     public final MTEC_ElectricStorage setStrict(boolean aStrict) {mStrict = aStrict; return this;}
@@ -77,7 +77,7 @@ public class MTEC_ElectricStorage {
     }
     
     // 输入能量，返回成功输入的电流数
-    public long injectEnergy(long aSize, long aAmount) {
+    public long inject(long aSize, long aAmount) {
         if (aAmount < getInputAmountMin()) return 0;
         aAmount = Math.min(aAmount, getInputAmountMax());
         aSize = Math.abs(aSize);
@@ -93,7 +93,7 @@ public class MTEC_ElectricStorage {
         return aAmount-tOveredAmount;
     }
     // 获取能够输出的电流数
-    public long getEmitAmount() {
+    public long emitAmount() {
         long tAmount = getOutputAmountMax();
         if (tAmount <= 0) return 0;
         if (mEnergy >= tAmount*getOutputSize()) return tAmount;
@@ -101,13 +101,13 @@ public class MTEC_ElectricStorage {
         return mEnergy/getOutputSize();
     }
     // 输出能量，需要保证输出后能量一定大于等于零
-    public void emitEnergy(long aAmount) {
+    public void emit(long aAmount) {
         if (aAmount <= 0) return;
         mEnergy -= aAmount*getOutputSize();
         UT_CH.Debug.assertWhenDebug(mEnergy >= 0);
     }
     // 损失能量（用于自动损耗）
-    public void costEnergy(long aEnergy) {
+    public void cost(long aEnergy) {
         mEnergy -= aEnergy;
         if (mEnergy < 0) mEnergy = 0;
     }

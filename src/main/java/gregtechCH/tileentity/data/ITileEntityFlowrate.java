@@ -2,7 +2,9 @@ package gregtechCH.tileentity.data;
 
 import gregapi.tileentity.ITileEntityUnloadable;
 
-
+/**
+ * @author CHanzy
+ */
 public interface ITileEntityFlowrate extends ITileEntityUnloadable {
 	/** The Fluid Flow Rate this Object has right now. Measured in Liter per Tick. */
 	public long getFlowrateValue(byte aSide);

@@ -15,7 +15,10 @@ import java.util.Collection;
 import static gregapi.data.CS.*;
 import static gregtechCH.data.CS_CH.*;
 
-/* 将重复的主要部分单独拆出来 */
+/**
+ * @author CHanzy
+ * 将重复的主要部分单独拆出来
+ */
 public abstract class MTEC_MotorMainBase implements IMTEC_MotorTick {
     // the instance of MTEC_Motor
     protected final MTEC_Motor mCore;

@@ -10,6 +10,7 @@ import java.util.List;
 import static gregtechCH.data.CS_CH.RegType;
 
 /**
+ * @author Gregorius Techneticies, YueSha, CHanzy
  * stuff from GT6U
  */
 public final class MTEC_MultiBlockParticleCollider extends MTEC_MultiBlockLargeRing {

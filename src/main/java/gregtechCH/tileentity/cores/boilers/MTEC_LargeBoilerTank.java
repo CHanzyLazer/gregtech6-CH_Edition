@@ -24,7 +24,10 @@ import java.util.List;
 import static gregapi.data.CS.*;
 import static gregapi.data.CS.F;
 
-// 为避免多继承，原本大锅炉的部分逻辑被抛弃
+/**
+ * @author Gregorius Techneticies, CHanzy
+ * 为避免多继承，原本大锅炉的部分逻辑被抛弃
+ */
 public class MTEC_LargeBoilerTank extends MTEC_BoilerTank {
     public MTEC_LargeBoilerTank(TileEntityBase01Root aTE) {super(aTE); UT_CH.Debug.assertWhenDebug(aTE instanceof IMTEC_HasLargeBoilerTank);}
     @Override protected IMTEC_HasLargeBoilerTank te() {return (IMTEC_HasLargeBoilerTank)mTE;} // 返回值可以为器子类，返回值重写

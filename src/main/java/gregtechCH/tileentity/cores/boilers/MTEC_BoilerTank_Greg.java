@@ -25,7 +25,10 @@ import java.util.List;
 
 import static gregapi.data.CS.*;
 
-// 放弃旧逻辑的兼容但是这个类可以保留（用来比较方便的看出我的修改），只是限制直接生成
+/**
+ * @author Gregorius Techneticies, CHanzy
+ * 放弃旧逻辑的兼容但是这个类可以保留（用来比较方便的看出我的修改），只是限制直接生成
+ */
 public abstract class MTEC_BoilerTank_Greg implements IMTEC_ToolTips, IMTEC_BoilerTank {
     // the instance of TileEntityBase01Root
     protected final TileEntityBase01Root mTE;

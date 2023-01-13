@@ -1,15 +1,14 @@
 package gregtechCH.tileentity.cores.basicmachines;
 
-import gregapi.block.multitileentity.MultiTileEntityRegistry;
 import gregapi.data.LH;
 import gregapi.tileentity.multiblocks.TileEntityBase10MultiBlockMachine;
 import gregtechCH.data.LH_CH;
 
 import java.util.List;
 
-import static gregtechCH.data.CS_CH.REG_GREG;
-import static gregtechCH.data.CS_CH.RegType;
-
+/**
+ * @author Gregorius Techneticies, CHanzy
+ */
 public final class MTEC_MultiBlockCryoDistillationTower extends MTEC_MultiBlockTowerBase {
     public MTEC_MultiBlockCryoDistillationTower(TileEntityBase10MultiBlockMachine aTE) {super(aTE);}
     public short mDesign = 18102; // 为了兼容 GT6U，冷凝塔的主要部件是可变的

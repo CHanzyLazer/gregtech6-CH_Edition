@@ -16,7 +16,10 @@ import java.util.Set;
 import static gregapi.data.CS.*;
 import static gregapi.data.OP.*;
 
-
+/**
+ * @author CHanzy
+ * Extension of CS
+ */
 public class CS_CH {
     // Gson stuff
     public static final Gson GSON = new Gson();

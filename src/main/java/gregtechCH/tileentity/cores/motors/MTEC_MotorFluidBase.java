@@ -11,7 +11,10 @@ import java.util.List;
 
 import static gregapi.data.CS.*;
 
-// 提取公共的部分
+/**
+ * @author CHanzy
+ * 提取公共的部分
+ */
 public abstract class MTEC_MotorFluidBase extends MTEC_Motor {
     protected MTEC_MotorFluidBase(TileEntityBase09FacingSingle aTE) {super(aTE);}
     public MTEC_MotorMainFluidBurner data() {return (MTEC_MotorMainFluidBurner)mD;}

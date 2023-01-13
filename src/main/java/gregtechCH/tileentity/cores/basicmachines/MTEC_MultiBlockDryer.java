@@ -17,8 +17,9 @@ import static gregapi.data.CS.*;
 import static gregtechCH.data.CS_CH.RegType;
 
 /**
+ * @author Gregorius Techneticies, YueSha, CHanzy
  * stuff from GT6U
- **/
+ */
 public class MTEC_MultiBlockDryer extends MTEC_MultiBlockMachine {
     public MTEC_MultiBlockDryer(MultiTileEntityDryer aTE) {super(aTE);}
     public MultiTileEntityDryer te() {return (MultiTileEntityDryer)mTE;}

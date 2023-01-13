@@ -11,7 +11,6 @@ import java.io.File;
 
 /**
  * @author CHanzy
- *
  * Manage the config data in json style.
  */
 public class ConfigJson {

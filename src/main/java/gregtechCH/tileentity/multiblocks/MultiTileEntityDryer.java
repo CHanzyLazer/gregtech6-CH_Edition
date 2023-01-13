@@ -8,8 +8,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import static gregapi.data.CS.NBT_DESIGN;
 
 /**
+ * @author Gregorius Techneticies, YueSha, CHanzy
  * stuff from GT6U
- **/
+ */
 public class MultiTileEntityDryer extends TileEntityBase10MultiBlockMachine {
     @Override protected MTEC_MultiBlockMachine getNewCoreMultiBlock() {return new MTEC_MultiBlockDryer(this);}
     

@@ -7,6 +7,9 @@ import static gregapi.data.CS.OPOS;
 import static gregapi.data.CS.SIDES_EQUAL;
 import static gregtechCH.data.CS_CH.FACE_TO_ORDER;
 
+/**
+ * @author CHanzy
+ */
 public class MTEC_MotorIconLiquid extends MTEC_MotorIconBase {
     public MTEC_MotorIconLiquid(MTEC_MotorLiquid aCore) {super(aCore);}
     public MTEC_MotorLiquid core() {return (MTEC_MotorLiquid)mCore;}

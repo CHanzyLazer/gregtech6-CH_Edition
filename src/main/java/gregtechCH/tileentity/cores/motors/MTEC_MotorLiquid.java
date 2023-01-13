@@ -9,6 +9,9 @@ import gregtechCH.tileentity.cores.IMTEC_Texture;
 
 import java.util.List;
 
+/**
+ * @author CHanzy
+ */
 public final class MTEC_MotorLiquid extends MTEC_MotorFluidBase {
     public MTEC_MotorLiquid(TileEntityBase09FacingSingle aTE) {super(aTE);}
     

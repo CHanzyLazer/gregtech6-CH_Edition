@@ -17,6 +17,7 @@ import static gregapi.data.CS.*;
 import static gregtechCH.data.CS_CH.RegType;
 
 /**
+ * @author Gregorius Techneticies, YueSha, CHanzy
  * stuff from GT6U
  */
 public class MTEC_MultiBlockIonizer extends MTEC_MultiBlockMachine {

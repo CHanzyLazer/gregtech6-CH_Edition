@@ -11,7 +11,7 @@ import net.minecraft.block.Block;
 import net.minecraft.util.AxisAlignedBB;
 
 /**
- * @author Gregorius Techneticies
+ * @author Gregorius Techneticies, YueSha
  * From GregTech6-Unofficial
  */
 public class MultiTileEntityBatteryEU8192 extends TileEntityBase08Battery {

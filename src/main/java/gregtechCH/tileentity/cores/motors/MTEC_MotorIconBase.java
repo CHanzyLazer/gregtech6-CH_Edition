@@ -10,7 +10,10 @@ import net.minecraft.block.Block;
 
 import static gregapi.data.CS.*;
 
-// 管理涡轮的图像
+/**
+ * @author CHanzy
+ * 管理涡轮的图像
+ */
 public abstract class MTEC_MotorIconBase implements IMTEC_Texture {
     // the reference of MTEC_Motor
     protected final MTEC_Motor mCore;

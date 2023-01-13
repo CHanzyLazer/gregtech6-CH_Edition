@@ -14,6 +14,7 @@ import static gregapi.data.CS.*;
 import static gregtechCH.data.CS_CH.RegType;
 
 /**
+ * @author YueSha
  * GT6U stuff
  */
 public class RecipeMapFuelCleaner extends RecipeMap {

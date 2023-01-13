@@ -9,8 +9,9 @@ import java.util.List;
 import static gregtechCH.data.CS_CH.RegType;
 
 /**
+ * @author Gregorius Techneticies, YueSha, CHanzy
  * stuff from GT6U
- **/
+ */
 public final class MTEC_MultiBlockCrackingTower extends MTEC_MultiBlockTowerBase {
     public MTEC_MultiBlockCrackingTower(TileEntityBase10MultiBlockMachine aTE) {super(aTE);}
     

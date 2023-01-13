@@ -25,12 +25,12 @@ import static gregapi.data.CS.*;
 import static gregtechCH.data.CS_CH.NBT_CANFILL_STEAM;
 
 /**
- * MultiTileEntityCore
+ * @author Gregorius Techneticies, CHanzy
  * 用这个类实现自定义实体的行为，使得同一种实体可以有不同的行为
  * 为了减少工作量，仅包含修改后的方法，使用相互包含对方引用的方式来调用对方的接口
- **/
-// 放弃旧逻辑的兼容但是这个类可以保留（用来比较方便的看出我的修改），只是限制直接生成
-public class MTEC_BasicMachine_Greg implements IMTEC_BasicMachine, IMTEC_ToolTips {
+ * 放弃旧逻辑的兼容但是这个类可以保留（用来比较方便的看出我的修改），只是限制直接生成
+ */
+public abstract class MTEC_BasicMachine_Greg implements IMTEC_BasicMachine, IMTEC_ToolTips {
     // the instance of MultiTileEntityBasicMachine
     protected final MultiTileEntityBasicMachine mTE;
     protected MTEC_BasicMachine_Greg(MultiTileEntityBasicMachine aTE) {mTE = aTE;}

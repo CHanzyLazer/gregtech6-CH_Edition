@@ -2,6 +2,9 @@ package gregtechCH.tileentity.data;
 
 import gregapi.tileentity.ITileEntityUnloadable;
 
+/**
+ * @author CHanzy
+ */
 public interface ITileEntityElectric  extends ITileEntityUnloadable {
     /** The Wattage this Object has right now. Measured in Liter per Tick. */
     public long getWattageValue(byte aSide);

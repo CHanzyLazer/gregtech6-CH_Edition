@@ -25,8 +25,11 @@ import java.util.List;
 
 import static gregapi.data.CS.*;
 
-// 基本重写了原版的逻辑
-/* 使用多态包含 MTEC_MotorMainBase 的方法实现单一 core (因为数据需要共享) */
+/**
+ * @author CHanzy
+ * 基本重写了原版的逻辑
+ * 使用多态包含 MTEC_MotorMainBase 的方法实现单一 core (因为数据需要共享)
+ */
 public abstract class MTEC_Motor implements IMTEC_MotorTick, IMTEC_ToolTips, IMTEC_CanExplode {
     // the instance of TileEntityBase09FacingSingle
     protected final TileEntityBase09FacingSingle mTE;

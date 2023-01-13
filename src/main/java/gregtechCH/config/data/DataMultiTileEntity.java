@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * @author CHanzy
+ */
 public class DataMultiTileEntity extends DataJson {
     
     public static class Recipe {

@@ -8,6 +8,9 @@ import static gregapi.data.CS.OUT;
 import static gregtechCH.data.CS_CH.GSON;
 import static gregtechCH.config.data.DataMultiTileEntity.Clazz;
 
+/**
+ * @author CHanzy
+ */
 public class ClazzAdapter implements JsonDeserializer<Clazz>, JsonSerializer<Clazz> {
     @Override
     public Clazz deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {

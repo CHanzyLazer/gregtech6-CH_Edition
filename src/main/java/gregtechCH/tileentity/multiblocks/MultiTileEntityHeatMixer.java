@@ -12,8 +12,9 @@ import net.minecraft.block.Block;
 import static gregapi.data.CS.*;
 
 /**
+ * @author Gregorius Techneticies, YueSha, CHanzy
  * stuff from GT6U
- **/
+ */
 public class MultiTileEntityHeatMixer extends TileEntityBase10MultiBlockMachine {
     @Override protected MTEC_MultiBlockMachine getNewCoreMultiBlock() {return new MTEC_MultiBlockHeatMixer(this);}
     

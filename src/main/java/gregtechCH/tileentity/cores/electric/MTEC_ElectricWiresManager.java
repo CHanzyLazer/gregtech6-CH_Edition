@@ -12,7 +12,7 @@ import java.util.*;
 import static gregapi.data.CS.*;
 
 /**
- * WIP
+ * @author CHanzy
  * 电网的公用类，用来接受和输出能量
  * 根据输入来调整上限，并且存储输入用于最近搜索
  */

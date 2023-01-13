@@ -17,7 +17,10 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 import static gregapi.data.CS.*;
 
-// 用于处理管道和其他 mod 的连接
+/**
+ * @author CHanzy
+ * 用于处理管道和其他 mod 的连接
+ */
 public class PipeCompat {
     public static boolean BC_PIPES = F, EIO_PIPES = F;
 

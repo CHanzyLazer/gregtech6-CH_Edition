@@ -17,9 +17,8 @@ import static gregapi.data.CS.*;
 
 /**
  * @author CHanzy
- *
  * Main class of GTCH
-**/
+ */
 public class GTCH_Main {
     public static String getModNameForLog() {return "GTCH";}
     

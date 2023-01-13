@@ -7,6 +7,7 @@ import gregapi.tileentity.machines.ITileEntitySwitchableMode;
 import gregapi.tileentity.machines.ITileEntitySwitchableOnOff;
 
 /**
+ * @author CHanzy
  * 内部拥有 MTEC_ElectricStorage 的实体继承此接口，用于方便通过实体获取 core
  * 并方便表明 core 需要的实体接口，以及需要实现的覆盖版控制接口
  */

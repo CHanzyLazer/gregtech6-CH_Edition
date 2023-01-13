@@ -14,6 +14,9 @@ import java.util.List;
 import static gregapi.data.CS.F;
 import static gregapi.data.CS.T;
 
+/**
+ * @author CHanzy
+ */
 public class DataItemMaterial extends DataJson {
     public static class Item {
         public ItemStack value = null;

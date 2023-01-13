@@ -15,6 +15,9 @@ import java.nio.file.StandardOpenOption;
 import static gregapi.data.CS.OUT;
 import static gregtechCH.GTCH_Main.getModNameForLog;
 
+/**
+ * @author CHanzy
+ */
 public abstract class DataJson {
     public abstract void initDefault();
     protected abstract <Type extends DataJson> void setMember(Type aData);

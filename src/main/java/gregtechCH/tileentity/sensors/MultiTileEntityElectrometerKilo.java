@@ -17,7 +17,9 @@ import net.minecraft.tileentity.TileEntity;
 import static gregapi.data.CS.CA_RED_255;
 import static gregapi.data.CS.V;
 
-
+/**
+ * @author Gregorius Techneticies, CHanzy
+ */
 public class MultiTileEntityElectrometerKilo extends MultiTileEntityElectrometer {
 	static {LH_CH.add("gt.tooltip.sensor.electrometerkilo", "Measures Electricity Flow (In Kilo-EU)");}
 	@Override public String getSensorDescription() {return LH_CH.get("gt.tooltip.sensor.electrometerkilo");}

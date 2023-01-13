@@ -45,6 +45,10 @@ import static gregapi.data.CS.*;
 import static gregtechCH.config.ConfigForge.DATA_GTCH;
 import static gregtechCH.data.CS_CH.REG_GREG;
 
+/**
+ * @author CHanzy
+ * Extension of UT
+ */
 public class UT_CH {
     // 未分类，用来获取 GT 物品的实体
     public static TileEntity getItemTE(ItemStack aItemStack) {

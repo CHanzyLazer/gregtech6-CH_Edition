@@ -1,6 +1,7 @@
 package gregtechCH.code;
 
 /**
+ * @author CHanzy
  * STL style Triplet
  * simple and more powerful
  */

@@ -13,7 +13,6 @@ import java.util.LinkedList;
 
 /**
  * @author CHanzy
- *
  *  Manage the config data in forge style.
  */
 public class ConfigForge {

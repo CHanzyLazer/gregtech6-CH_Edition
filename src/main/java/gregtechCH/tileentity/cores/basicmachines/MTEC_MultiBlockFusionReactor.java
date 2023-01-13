@@ -5,6 +5,9 @@ import gregapi.tileentity.multiblocks.TileEntityBase10MultiBlockMachine;
 
 import java.util.List;
 
+/**
+ * @author Gregorius Techneticies, CHanzy
+ */
 public final class MTEC_MultiBlockFusionReactor extends MTEC_MultiBlockLargeRing {
     public MTEC_MultiBlockFusionReactor(TileEntityBase10MultiBlockMachine aTE) {super(aTE);}
 

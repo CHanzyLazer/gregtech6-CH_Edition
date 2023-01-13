@@ -4,8 +4,10 @@ import net.minecraft.client.Minecraft;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
-
-// 这里提供一些通用接口，部分借鉴 NotEnoughIDs 的写法
+/**
+ * @author CHanzy
+ * 这里提供一些通用接口，部分借鉴 NotEnoughIDs 的写法
+ */
 public class GT_ASM_UT {
     
     // 检测当前的的 mc 是否是混淆的，仅在直接获取失效时使用

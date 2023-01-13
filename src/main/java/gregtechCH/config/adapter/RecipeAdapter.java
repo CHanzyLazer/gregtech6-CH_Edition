@@ -20,6 +20,9 @@ import static gregapi.data.CS.OUT;
 import static gregtechCH.data.CS_CH.GSON;
 import static gregtechCH.config.data.DataMultiTileEntity.Recipe;
 
+/**
+ * @author CHanzy
+ */
 public class RecipeAdapter implements JsonDeserializer<Recipe>, JsonSerializer<Recipe> {
     @Override
     public Recipe deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {

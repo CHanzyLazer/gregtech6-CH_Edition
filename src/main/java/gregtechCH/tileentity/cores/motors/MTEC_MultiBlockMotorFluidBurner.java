@@ -6,6 +6,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import static gregapi.data.CS.ZL_LONG;
 import static gregtechCH.data.CS_CH.NBT_PREHEAT_RATE;
 
+/**
+ * @author CHanzy
+ */
 public class MTEC_MultiBlockMotorFluidBurner extends MTEC_MultiBlockMotorBase {
     protected MTEC_MultiBlockMotorFluidBurner(MTEC_LargeMotor aCore) {super(aCore);}
     public MTEC_MotorMainFluidBurner data() {return (MTEC_MotorMainFluidBurner)mCore.mD;}

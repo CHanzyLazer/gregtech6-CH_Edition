@@ -9,7 +9,10 @@ import gregtechCH.tileentity.cores.IMTEC_Texture;
 
 import java.util.List;
 
-// 目前仅默认的合成表不同
+/**
+ * @author CHanzy
+ * 目前仅默认的合成表不同
+ */
 public final class MTEC_MotorGas extends MTEC_MotorFluidBase {
     public MTEC_MotorGas(TileEntityBase09FacingSingle aTE) {super(aTE);}
     

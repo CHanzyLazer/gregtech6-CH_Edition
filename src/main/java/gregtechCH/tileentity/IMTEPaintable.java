@@ -1,5 +1,8 @@
 package gregtechCH.tileentity;
 
+/**
+ * @author CHanzy
+ */
 public interface IMTEPaintable {
     int getRGBa();
     int getBottomRGB();

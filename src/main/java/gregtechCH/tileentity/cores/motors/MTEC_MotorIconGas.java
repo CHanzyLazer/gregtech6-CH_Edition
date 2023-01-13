@@ -8,6 +8,9 @@ import static gregapi.data.CS.SIDES_EQUAL;
 import static gregtechCH.data.CS_CH.DIR_ICON;
 import static gregtechCH.data.CS_CH.IconType;
 
+/**
+ * @author CHanzy
+ */
 public class MTEC_MotorIconGas extends MTEC_MotorIconBase {
     public MTEC_MotorIconGas(MTEC_MotorGas aCore) {super(aCore);}
     public MTEC_MotorGas core() {return (MTEC_MotorGas)mCore;}

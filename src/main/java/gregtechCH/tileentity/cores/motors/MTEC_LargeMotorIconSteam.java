@@ -3,6 +3,9 @@ package gregtechCH.tileentity.cores.motors;
 import gregapi.old.Textures;
 import gregapi.render.IIconContainer;
 
+/**
+ * @author CHanzy
+ */
 public class MTEC_LargeMotorIconSteam extends MTEC_LargeMotorIconBase {
     protected MTEC_LargeMotorIconSteam(MTEC_LargeMotorSteam aCore) {super(aCore);}
 

@@ -11,9 +11,10 @@ import static gregtechCH.data.CS_CH.RegType;
 import static gregtechCH.config.ConfigForge.*;
 
 /**
- * 额外添加的 Recipe Maps 统一放在这里
+ * @author CHanzy
+ * Extension of RM
  * 目前修改只是添加一个同名的 RM，当一切完善后注释掉原本的声明
- **/
+ */
 public class RM_CH extends RM {
     /* GT6U stuff */
     public static final RecipeMap

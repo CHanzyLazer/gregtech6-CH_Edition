@@ -35,11 +35,13 @@ import static gregapi.data.CS.*;
 import static gregtech.interfaces.asm.LO_CH.*;
 
 
-/* This is a separate file, so it class loads *while* minecraft loads,
-   if we accessed world in the main transformer then we can miss out
-   on the transformations.  Not an issue when accessing MC classes
-   while transforming other mods though.
-   GTCH, 用于 asm 注入的方法
+/**
+ * @author CHanzy
+ * This is a separate file, so it class loads *while* minecraft loads,
+ * if we accessed world in the main transformer then we can miss out
+ * on the transformations.  Not an issue when accessing MC classes
+ * while transforming other mods though.
+ * 用于 asm 注入的方法
  */
 public class Methods {
     // 提供的实用接口

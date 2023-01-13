@@ -12,7 +12,9 @@ import net.minecraft.tileentity.TileEntity;
 
 import static gregapi.data.CS.CA_GREEN_255;
 
-
+/**
+ * @author Gregorius Techneticies, CHanzy
+ */
 public class MultiTileEntityTachometerKilo extends MultiTileEntitySensorTE {
 	static {LH_CH.add("gt.tooltip.sensor.tachometerkilo", "Measures Axle Rotations (In Kilo-RU)");}
 	@Override public String getSensorDescription() {return LH_CH.get("gt.tooltip.sensor.tachometerkilo");}

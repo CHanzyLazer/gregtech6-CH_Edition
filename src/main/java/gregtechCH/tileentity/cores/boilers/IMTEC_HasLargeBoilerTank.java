@@ -2,6 +2,7 @@ package gregtechCH.tileentity.cores.boilers;
 
 
 /**
+ * @author CHanzy
  * 内部拥有 MTEC_LargeBoilerTank 的实体继承此接口，用于方便通过实体获取 core
  * 并方便表明 core 需要的实体接口
  */

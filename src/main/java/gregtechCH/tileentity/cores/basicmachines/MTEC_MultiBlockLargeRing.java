@@ -11,7 +11,10 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 import static gregapi.data.CS.*;
 
-// 基本的 Ring 类，聚变反应堆，粒子碰撞机等等，用来减少重复代码
+/**
+ * @author Gregorius Techneticies, CHanzy
+ * 基本的 Ring 类，聚变反应堆，粒子碰撞机等等，用来减少重复代码
+ */
 public abstract class MTEC_MultiBlockLargeRing extends MTEC_MultiBlockMachine {
     protected MTEC_MultiBlockLargeRing(TileEntityBase10MultiBlockMachine aTE) {super(aTE);}
     

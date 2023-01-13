@@ -5,8 +5,9 @@ import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockMachine;
 import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockPyrolyseOven;
 
 /**
+ * @author Gregorius Techneticies, YueSha, CHanzy
  * stuff from GT6U
- **/
+ */
 public class MultiTileEntityPyrolyseOven extends TileEntityBase10MultiBlockMachine {
     @Override protected MTEC_MultiBlockMachine getNewCoreMultiBlock() {return new MTEC_MultiBlockPyrolyseOven(this);}
     

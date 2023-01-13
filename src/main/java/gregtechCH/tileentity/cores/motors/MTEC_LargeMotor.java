@@ -12,7 +12,9 @@ import java.util.List;
 
 import static gregapi.data.CS.*;
 
-
+/**
+ * @author CHanzy
+ */
 public abstract class MTEC_LargeMotor extends MTEC_Motor {
     protected MTEC_MultiBlockMotorBase mDL; // Data Large Motor
     protected MTEC_LargeMotor(TileEntityBase10MultiBlockBase aTE) {super(aTE);}

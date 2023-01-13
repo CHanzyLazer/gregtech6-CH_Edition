@@ -5,8 +5,9 @@ import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockAquaticFarm;
 import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockMachine;
 
 /**
+ * @author Gregorius Techneticies, YueSha, CHanzy
  * stuff from GT6U
- **/
+ */
 public class MultiTileEntityAquaticFarm extends TileEntityBase10MultiBlockMachine {
     @Override protected MTEC_MultiBlockMachine getNewCoreMultiBlock() {return new MTEC_MultiBlockAquaticFarm(this);}
     

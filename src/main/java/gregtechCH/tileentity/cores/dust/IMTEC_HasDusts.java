@@ -3,6 +3,7 @@ package gregtechCH.tileentity.cores.dust;
 import net.minecraft.item.ItemStack;
 
 /**
+ * @author CHanzy
  * 内部拥有 MTEC_Dusts 的实体继承此接口，用于方便通过实体获取 core
  * 并方便表明 core 需要的实体接口
  */

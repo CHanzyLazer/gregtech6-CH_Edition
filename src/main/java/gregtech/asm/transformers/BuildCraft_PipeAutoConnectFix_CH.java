@@ -9,7 +9,10 @@ import static gregtech.asm.GT_ASM_UT.Name;
 import static gregtech.asm.GT_ASM_UT.Name.*;
 import static gregtech.asm.GT_ASM_UT.isObfuscated;
 
-// 修复 BC 管道会自动连接太多 GT 方块的问题
+/**
+ * @author CHanzy
+ * 修复 BC 管道会自动连接太多 GT 方块的问题
+ */
 public class BuildCraft_PipeAutoConnectFix_CH implements IClassTransformer  {
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {

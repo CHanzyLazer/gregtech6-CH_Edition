@@ -8,6 +8,9 @@ import java.lang.reflect.Type;
 import static gregapi.data.CS.OUT;
 import static gregtechCH.data.CS_CH.GSON;
 
+/**
+ * @author CHanzy
+ */
 public class MaterialAdapter implements JsonDeserializer<OreDictMaterial>, JsonSerializer<OreDictMaterial> {
     @Override
     public OreDictMaterial deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {

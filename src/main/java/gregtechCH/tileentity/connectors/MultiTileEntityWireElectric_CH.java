@@ -38,6 +38,7 @@ import java.util.List;
 import static gregapi.data.CS.*;
 
 /**
+ * @author CHanzy
  * WIP
  * 符合欧姆定律的新电线
  */

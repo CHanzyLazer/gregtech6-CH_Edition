@@ -9,6 +9,9 @@ import static gregapi.data.CS.OUT;
 import static gregtechCH.data.CS_CH.GSON;
 import static gregtechCH.config.data.DataItemMaterial.Item;
 
+/**
+ * @author CHanzy
+ */
 public class ItemAdapter implements JsonDeserializer<Item>, JsonSerializer<Item> {
     @Override
     public Item deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {

@@ -12,6 +12,10 @@ import static gregapi.data.CS.*;
 import static gregtechCH.config.ConfigForge.DATA_GTCH;
 import static gregtechCH.data.CS_CH.RegType;
 
+/**
+ * @author CHanzy
+ * Extension of Loader_Fluids
+ */
 public class Loader_Fluids_CH extends Loader_Fluids {
     /* 采用和 MTE 类似的方法实现不直接修改文件的添加流体 */
     @Override public final void run() {

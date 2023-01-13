@@ -17,8 +17,9 @@ import static gregapi.data.CS.*;
 import static gregtechCH.data.CS_CH.RegType;
 
 /**
+ * @author Gregorius Techneticies, YueSha, CHanzy
  * stuff from GT6U
- **/
+ */
 public class MTEC_MultiBlockOilCleaner extends MTEC_MultiBlockMachine {
     public MTEC_MultiBlockOilCleaner(TileEntityBase10MultiBlockMachine aTE) {super(aTE);}
     

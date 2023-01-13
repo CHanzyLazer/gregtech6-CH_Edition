@@ -9,7 +9,10 @@ import static gregtech.asm.GT_ASM_UT.Name;
 import static gregtech.asm.GT_ASM_UT.Name.*;
 import static gregtech.asm.GT_ASM_UT.isObfuscated;
 
-// 修复莫名其妙 GT 方块颜色可能正常显示又可能不能正常显示的问题
+/**
+ * @author CHanzy
+ * 修复莫名其妙 GT 方块颜色可能正常显示又可能不能正常显示的问题
+ */
 public class Journeymap_BlockGTColorFix_CH implements IClassTransformer  {
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {

@@ -12,7 +12,10 @@ import java.util.List;
 
 import static gregapi.data.CS.*;
 
-// 将拥有储罐的机器的接口合并到这个 core 中
+/**
+ * @author CHanzy
+ * 将拥有储罐的机器的接口合并到这个 core 中
+ */
 public class MTEC_HasTanks {
     final IMTEC_CanExplode mCore;
     public MTEC_HasTanks(IMTEC_CanExplode aCore, FluidTankGT[] aInputTanks, FluidTankGT[] aOutputTanks) {mCore = aCore; mTanksInput = aInputTanks; mTanksOutput = aOutputTanks;}

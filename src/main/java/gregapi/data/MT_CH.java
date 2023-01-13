@@ -14,10 +14,13 @@ import static gregapi.render.TextureSet.*;
 import static gregtechCH.data.TD_CH.ItemGenerator.MOLTEN_6U;
 import static gregtechCH.config.ConfigForge.*;
 
-/* 额外添加的材料统一放在这里
-* 使用原有的接口但是由于不希望改动访问权限因此只能放到同一 package 下
-* 由于 MT 太大了（会编译失败），因此这些结构都放到另一个文件下
-* 由于不同的来源 ID 有明确的区域，因此直接在 OreDictMaterial 中确定来源以及处理语言文件 */
+/**
+ * @author CHanzy
+ * Extension of MT
+ * 使用原有的接口但是由于不希望改动访问权限因此只能放到同一 package 下
+ * 由于 MT 太大了（会编译失败），因此这些结构都放到另一个文件下
+ * 由于不同的来源 ID 有明确的区域，因此直接在 OreDictMaterial 中确定来源以及处理语言文件
+ */
 @SuppressWarnings("ConstantConditions")
 public class MT_CH extends MT {
     

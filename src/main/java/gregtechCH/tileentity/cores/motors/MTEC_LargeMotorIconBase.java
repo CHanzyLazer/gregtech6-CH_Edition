@@ -8,6 +8,9 @@ import gregtechCH.tileentity.cores.IMTEC_Texture;
 import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
 
+/**
+ * @author CHanzy
+ */
 public abstract class MTEC_LargeMotorIconBase implements IMTEC_Texture {
     // the reference of MTEC_LargeMotor
     protected final MTEC_LargeMotor mCore;

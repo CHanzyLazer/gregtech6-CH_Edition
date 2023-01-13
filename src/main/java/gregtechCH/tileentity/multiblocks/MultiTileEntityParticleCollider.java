@@ -7,6 +7,7 @@ import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockParticleCollider
 import static gregapi.data.CS.T;
 
 /**
+ * @author Gregorius Techneticies, YueSha, CHanzy
  * stuff from GT6U
  */
 public class MultiTileEntityParticleCollider extends TileEntityBase10MultiBlockMachine {

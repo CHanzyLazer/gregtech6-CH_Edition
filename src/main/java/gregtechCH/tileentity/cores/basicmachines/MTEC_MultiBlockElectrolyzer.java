@@ -14,6 +14,9 @@ import java.util.List;
 
 import static gregapi.data.CS.*;
 
+/**
+ * @author Gregorius Techneticies, CHanzy
+ */
 public class MTEC_MultiBlockElectrolyzer extends MTEC_MultiBlockMachine {
     public MTEC_MultiBlockElectrolyzer(TileEntityBase10MultiBlockMachine aTE) {super(aTE);}
 

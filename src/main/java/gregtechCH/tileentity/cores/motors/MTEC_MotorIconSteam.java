@@ -6,6 +6,9 @@ import gregapi.render.IIconContainer;
 import static gregapi.data.CS.OPOS;
 import static gregapi.data.CS.SIDES_EQUAL;
 
+/**
+ * @author CHanzy
+ */
 public class MTEC_MotorIconSteam extends MTEC_MotorIconBase {
     protected MTEC_MotorIconSteam(MTEC_MotorSteam aCore) {super(aCore);}
     public MTEC_MotorSteam core() {return (MTEC_MotorSteam)mCore;}

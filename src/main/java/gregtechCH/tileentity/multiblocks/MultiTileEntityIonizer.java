@@ -5,6 +5,7 @@ import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockIonizer;
 import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockMachine;
 
 /**
+ * @author Gregorius Techneticies, YueSha, CHanzy
  * stuff from GT6U
  */
 public class MultiTileEntityIonizer extends TileEntityBase10MultiBlockMachine {

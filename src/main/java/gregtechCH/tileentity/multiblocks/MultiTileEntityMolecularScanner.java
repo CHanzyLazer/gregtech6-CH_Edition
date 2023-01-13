@@ -7,8 +7,9 @@ import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockMachine;
 import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockMolecularScanner;
 
 /**
+ * @author Gregorius Techneticies, YueSha, CHanzy
  * stuff from GT6U
- **/
+ */
 public class MultiTileEntityMolecularScanner extends TileEntityBase10MultiBlockMachine {
     @Override protected MTEC_MultiBlockMachine getNewCoreMultiBlock() {return new MTEC_MultiBlockMolecularScanner(this);}
     

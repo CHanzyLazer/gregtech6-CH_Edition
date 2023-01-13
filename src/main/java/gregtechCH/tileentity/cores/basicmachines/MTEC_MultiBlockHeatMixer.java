@@ -17,8 +17,9 @@ import static gregapi.data.CS.*;
 import static gregtechCH.data.CS_CH.RegType;
 
 /**
+ * @author Gregorius Techneticies, YueSha, CHanzy
  * stuff from GT6U
- **/
+ */
 public class MTEC_MultiBlockHeatMixer extends MTEC_MultiBlockMachine {
     public MTEC_MultiBlockHeatMixer(TileEntityBase10MultiBlockMachine aTE) {super(aTE);}
     

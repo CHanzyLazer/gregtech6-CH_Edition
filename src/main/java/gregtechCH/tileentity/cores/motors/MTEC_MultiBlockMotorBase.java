@@ -17,7 +17,10 @@ import static gregapi.tileentity.multiblocks.MultiTileEntityMultiBlockPart.ENERG
 import static gregapi.tileentity.multiblocks.MultiTileEntityMultiBlockPart.FLUID_EMITTER;
 import static gregtechCH.data.CS_CH.*;
 
-/* 对大涡轮的主要逻辑（多方快处理）进行分离 */
+/**
+ * @author CHanzy
+ * 对大涡轮的主要逻辑（多方快处理）进行分离
+ */
 public class MTEC_MultiBlockMotorBase {
     // reference of MTEC_LargeMotor for some call use
     protected final MTEC_LargeMotor mCore;

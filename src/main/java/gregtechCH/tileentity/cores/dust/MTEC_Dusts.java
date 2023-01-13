@@ -21,8 +21,10 @@ import java.util.List;
 import static gregapi.data.CS.F;
 import static gregapi.data.CS.T;
 
-
-// 拥有粉末输出的包含此 core，可以让输出保持单元的状态
+/**
+ * @author CHanzy
+ * 拥有粉末输出的包含此 core，可以让输出保持单元的状态
+ */
 public class MTEC_Dusts {
     protected final TileEntityBase01Root mTE; // reference of te
     public MTEC_Dusts(TileEntityBase01Root aTE, int aSize) {UT_CH.Debug.assertWhenDebug(aTE instanceof IMTEC_HasDusts); mTE = aTE; mDustBuffers = new OreDictMaterialStack[aSize]; Arrays.fill(mDustBuffers, null);}

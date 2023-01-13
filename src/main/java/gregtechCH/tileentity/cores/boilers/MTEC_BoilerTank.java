@@ -20,6 +20,9 @@ import static gregapi.data.CS.*;
 import static gregapi.data.CS.F;
 import static gregtechCH.data.CS_CH.*;
 
+/**
+ * @author CHanzy
+ */
 public class MTEC_BoilerTank extends MTEC_BoilerTank_Greg {
     /* 将所有是数据使用这个类封装，保证在相互包含时只有一份数据 */
     public MTEC_BoilerTank(TileEntityBase01Root aTE) {super(aTE);}

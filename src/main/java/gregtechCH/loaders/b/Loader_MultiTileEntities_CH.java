@@ -32,10 +32,12 @@ import static gregtechCH.data.CS_CH.*;
 
 
 /**
+ * @author CHanzy
+ * Extension of Loader_MultiTileEntities
  * EMPTY IDS: 23000 - 24999; 15000 - 16999; 9500 - 9999
  * 由于后续 greg 还有比较激进的添加，因此不按照 mod 来分划 id 使用区域
  * TODO 想方法完善 id 改变时能够找到正确的新 id 的方法
- **/
+ */
 @SuppressWarnings({"PointlessArithmeticExpression", "ConstantConditions"})
 public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
     

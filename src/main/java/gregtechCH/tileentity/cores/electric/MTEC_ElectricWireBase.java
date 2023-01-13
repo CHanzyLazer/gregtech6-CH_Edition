@@ -25,7 +25,7 @@ import static gregapi.data.CS.*;
 import static gregtechCH.config.ConfigForge.*;
 
 /**
- * WIP
+ * @author CHanzy
  * 基本电线的类，存储此电线的电压，电流等数值
  */
 public class MTEC_ElectricWireBase {

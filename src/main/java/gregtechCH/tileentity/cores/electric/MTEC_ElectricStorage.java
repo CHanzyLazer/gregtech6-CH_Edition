@@ -10,6 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import static gregapi.data.CS.*;
 
 /**
+ * @author CHanzy
  * 需要将存储电量放入 NBT 的实体的 core
  * 可以处理输入输出，限制电流和电压，严格限制容量模式或者不严格模式
  * 暂时只负责存储电能的逻辑

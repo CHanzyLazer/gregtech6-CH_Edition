@@ -14,6 +14,9 @@ import java.util.List;
 
 import static gregapi.data.CS.*;
 
+/**
+ * @author Gregorius Techneticies, CHanzy
+ */
 public class MTEC_MultiBlockCentrifuge extends MTEC_MultiBlockMachine {
     public MTEC_MultiBlockCentrifuge(TileEntityBase10MultiBlockMachine aTE) {super(aTE);}
 

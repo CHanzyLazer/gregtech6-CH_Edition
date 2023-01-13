@@ -5,8 +5,9 @@ import gregapi.code.TagData;
 
 
 /**
- * 额外添加的 Tag Data 统一放在这里
- **/
+ * @author CHanzy
+ * Extension of TD
+ */
 public class TD_CH {
     public static class Connectors {
         /* GT6U stuff */

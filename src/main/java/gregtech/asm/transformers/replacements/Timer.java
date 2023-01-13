@@ -11,7 +11,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * GTCH, 用来 asm 注入的类
+ * @author CHanzy
+ * 用来 asm 注入的类
  * 仅输出超时不进行报错
  */
 public class Timer {

@@ -9,6 +9,9 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 import java.util.List;
 
+/**
+ * @author CHanzy
+ */
 public abstract class MTEC_MultiBlockMachine {
     // the instance of TileEntityBase10MultiBlockMachine
     protected final TileEntityBase10MultiBlockMachine mTE;

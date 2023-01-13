@@ -16,6 +16,9 @@ import java.util.List;
 import static gregapi.data.CS.*;
 import static gregtechCH.data.CS_CH.RegType;
 
+/**
+ * @author Gregorius Techneticies, CHanzy
+ */
 public class MTEC_MultiBlockMolecularScanner extends MTEC_MultiBlockMachine {
     public MTEC_MultiBlockMolecularScanner(TileEntityBase10MultiBlockMachine aTE) {super(aTE);}
     

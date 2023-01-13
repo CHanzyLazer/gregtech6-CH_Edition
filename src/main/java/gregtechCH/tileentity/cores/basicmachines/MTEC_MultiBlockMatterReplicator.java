@@ -17,8 +17,9 @@ import static gregapi.data.CS.*;
 import static gregtechCH.data.CS_CH.RegType;
 
 /**
+ * @author Gregorius Techneticies, YueSha, CHanzy
  * stuff from GT6U
- **/
+ */
 public class MTEC_MultiBlockMatterReplicator extends MTEC_MultiBlockMachine {
     public MTEC_MultiBlockMatterReplicator(TileEntityBase10MultiBlockMachine aTE) {super(aTE);}
     

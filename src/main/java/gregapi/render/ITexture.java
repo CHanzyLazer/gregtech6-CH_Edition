@@ -31,7 +31,7 @@ import org.lwjgl.opengl.GL11;
 import static gregapi.data.CS.*;
 
 /**
- * @author Gregorius Techneticies
+ * @author Gregorius Techneticies, CHanzy
  */
 public interface ITexture {
 	public void renderXPos(RenderBlocks aRenderer, Block aBlock, int aX, int aY, int aZ, int aBrightness, boolean aChangedBlockBounds);

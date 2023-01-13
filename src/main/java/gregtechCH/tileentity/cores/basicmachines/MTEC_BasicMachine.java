@@ -14,6 +14,9 @@ import static gregapi.data.CS.F;
 import static gregapi.data.CS.T;
 import static gregtechCH.data.CS_CH.*;
 
+/**
+ * @author CHanzy
+ */
 public class MTEC_BasicMachine extends MTEC_BasicMachine_Greg {
     public MTEC_BasicMachine(MultiTileEntityBasicMachine aTE) {super(aTE);}
 

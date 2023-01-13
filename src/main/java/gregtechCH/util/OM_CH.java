@@ -8,6 +8,10 @@ import net.minecraft.item.ItemStack;
 
 import java.util.List;
 
+/**
+ * @author CHanzy
+ * Extension of OM
+ */
 public class OM_CH {
     // 将 ItemStack 转换为材料的 list，考虑了 ItemStack 的数目以及获取到的 OreDictMaterialStack 需要经过拷贝的问题
     public static List<OreDictMaterialStack> stack(ItemStack aItemStack) {

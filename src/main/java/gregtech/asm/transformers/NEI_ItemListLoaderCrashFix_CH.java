@@ -9,8 +9,10 @@ import static gregtech.asm.GT_ASM_UT.Name.*;
 import static gregtech.asm.GT_ASM_UT.isObfuscated;
 import static gregtech.asm.GT_ASM_UT.removeLine;
 
-
-// 修复进入世界时有概率 nei 物品列表加载失败导致游戏崩溃的问题
+/**
+ * @author CHanzy
+ * 修复进入世界时有概率 nei 物品列表加载失败导致游戏崩溃的问题
+ */
 public class NEI_ItemListLoaderCrashFix_CH implements IClassTransformer  {
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {

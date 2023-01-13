@@ -10,6 +10,9 @@ import java.lang.reflect.Type;
 import static gregapi.data.CS.OUT;
 import static gregtechCH.data.CS_CH.GSON;
 
+/**
+ * @author CHanzy
+ */
 public class ParametersAdapter implements JsonDeserializer<NBTTagCompound>, JsonSerializer<NBTTagCompound> {
     @Override
     public NBTTagCompound deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {

@@ -19,6 +19,9 @@ import java.util.List;
 import static gregapi.data.CS.*;
 import static gregtechCH.data.CS_CH.*;
 
+/**
+ * @author Gregorius Techneticies, CHanzy
+ */
 public class MTEC_MotorMainFluidBurner extends MTEC_MotorMainBase {
     // the instance of MTEC_HasTanks
     protected final MTEC_HasTanks mCTanks;

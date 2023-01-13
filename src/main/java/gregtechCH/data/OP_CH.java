@@ -6,8 +6,9 @@ import static gregapi.data.TD.Prefix.PREFIX_UNUSED;
 import static gregtechCH.data.CS_CH.RegType;
 
 /**
- * 额外添加的 Prefixes 统一放在这里
- **/
+ * @author CHanzy
+ * Extension of OP
+ */
 public class OP_CH {
     // 提供指明注册 mod 的接口
     private static OreDictPrefix create(RegType aRegType, String aName, String aCategory, String aPreMaterial, String aPostMaterial) {return OreDictPrefix.createPrefix(aRegType, aName).setCategoryName(aCategory).setLocalPrefixName(aCategory).setLocalItemName(aPreMaterial, aPostMaterial);}

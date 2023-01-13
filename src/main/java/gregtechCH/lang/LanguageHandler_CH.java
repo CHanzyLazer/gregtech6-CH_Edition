@@ -13,7 +13,11 @@ import static gregapi.data.CS.F;
 import static gregapi.data.CS.T;
 import static gregtechCH.data.CS_CH.RegType;
 
-/* 由于都是静态方法，这里继承必须手动重写一些 */
+/**
+ * @author CHanzy
+ * Extension of LanguageHandler
+ * 由于都是静态方法，这里继承必须手动重写一些
+ */
 public class LanguageHandler_CH extends LanguageHandler {
     public static Configuration sLangFile;
 

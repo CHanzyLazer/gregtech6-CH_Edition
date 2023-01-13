@@ -14,6 +14,9 @@ import java.util.List;
 
 import static gregapi.data.CS.CA_BLUE_255;
 
+/**
+ * @author Gregorius Techneticies, CHanzy
+ */
 public class MultiTileEntityVoltageometer extends MultiTileEntitySensorTE {
     static {LH.add("gt.tooltip.sensor.voltageometer", "Measures Voltage (In EU)");}
     @Override public String getSensorDescription() {return LH.get("gt.tooltip.sensor.voltageometer");}

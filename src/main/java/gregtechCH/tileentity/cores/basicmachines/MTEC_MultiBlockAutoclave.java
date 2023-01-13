@@ -15,6 +15,9 @@ import java.util.List;
 import static gregapi.data.CS.*;
 import static gregapi.data.CS.SIDE_BOTTOM;
 
+/**
+ * @author Gregorius Techneticies, CHanzy
+ */
 public class MTEC_MultiBlockAutoclave extends MTEC_MultiBlockMachine {
     public MTEC_MultiBlockAutoclave(TileEntityBase10MultiBlockMachine aTE) {super(aTE);}
 

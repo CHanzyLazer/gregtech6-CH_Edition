@@ -11,7 +11,10 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 import static gregapi.data.CS.*;
 
-// 基本的 Tower 类，各种蒸馏塔，裂解塔等等，用来减少重复代码
+/**
+ * @author Gregorius Techneticies, CHanzy
+ * 基本的 Tower 类，各种蒸馏塔，裂解塔等等，用来减少重复代码
+ */
 public abstract class MTEC_MultiBlockTowerBase extends MTEC_MultiBlockMachine {
     protected MTEC_MultiBlockTowerBase(TileEntityBase10MultiBlockMachine aTE) {super(aTE);}
     

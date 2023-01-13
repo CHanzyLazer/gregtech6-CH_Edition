@@ -18,6 +18,9 @@ import java.util.List;
 
 import static gregapi.data.CS.*;
 
+/**
+ * @author CHanzy
+ */
 public class MTEC_LargeMotorSteam extends MTEC_LargeMotor {
     public MTEC_LargeMotorSteam(TileEntityBase10MultiBlockBase aTE) {super(aTE);}
     public MTEC_MotorMainSteam data() {return (MTEC_MotorMainSteam)mD;}

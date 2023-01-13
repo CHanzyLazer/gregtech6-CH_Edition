@@ -15,6 +15,9 @@ import java.util.List;
 import static gregapi.data.CS.GarbageGT;
 import static gregapi.data.CS.SIDE_ANY;
 
+/**
+ * @author CHanzy
+ */
 public class MTEC_LargeMotorGas extends MTEC_LargeMotor {
     public MTEC_LargeMotorGas(TileEntityBase10MultiBlockBase aTE) {super(aTE);}
     public MTEC_MotorMainFluidBurner data() {return (MTEC_MotorMainFluidBurner)mD;}

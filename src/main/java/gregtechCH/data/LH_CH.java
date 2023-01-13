@@ -10,6 +10,11 @@ import net.minecraft.item.ItemStack;
 
 import static gregtechCH.data.CS_CH.RegType;
 
+/**
+ * @author CHanzy
+ * Extension of LH
+ * MUST use LH_CH.add() to add custom lang
+ */
 public class LH_CH {
     public static final String
               AXLE_STATS_SPEED                          = "gtch.lang.axle.stats.speed"

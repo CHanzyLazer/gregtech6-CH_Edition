@@ -1,5 +1,8 @@
 package gregtechCH.config;
 
+/**
+ * @author CHanzy
+ */
 public enum ConfigCategories_CH {
     general,
     gameplay,

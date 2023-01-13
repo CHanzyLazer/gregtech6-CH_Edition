@@ -1,6 +1,7 @@
 package gregtechCH.code;
 
 /**
+ * @author CHanzy
  * STL style pair
  * simple and more powerful
  */

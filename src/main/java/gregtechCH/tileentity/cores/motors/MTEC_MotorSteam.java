@@ -15,6 +15,9 @@ import java.util.List;
 
 import static gregapi.data.CS.*;
 
+/**
+ * @author CHanzy
+ */
 public class MTEC_MotorSteam extends MTEC_Motor {
     public MTEC_MotorSteam(TileEntityBase09FacingSingle aTE) {super(aTE);}
     public MTEC_MotorMainSteam data() {return (MTEC_MotorMainSteam)mD;}

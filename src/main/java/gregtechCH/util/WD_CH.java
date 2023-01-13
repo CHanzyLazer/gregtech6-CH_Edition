@@ -25,6 +25,10 @@ import static gregtech.interfaces.asm.LO_CH.*;
 import static gregtechCH.config.ConfigForge.DATA_GTCH;
 import static gregtechCH.threads.ThreadPools.RENDER_THREAD;
 
+/**
+ * @author CHanzy
+ * Extension of WD
+ */
 public class WD_CH {
     @SideOnly(Side.CLIENT)
     public static void onTicking(long aTimer) {

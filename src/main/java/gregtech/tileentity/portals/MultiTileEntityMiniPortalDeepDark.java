@@ -132,6 +132,6 @@ public class MultiTileEntityMiniPortalDeepDark extends MultiTileEntityMiniPortal
 	@Override public ITexture getFrameTexture() {return sDeepDarkPortalFrame;}
 	
 	// TODO
-
+	
 	@Override public String getTileEntityName() {return "gt.multitileentity.portal.deepdark";}
 }

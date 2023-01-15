@@ -86,14 +86,14 @@ public class BlockConcrete extends BlockColored implements IBlockToolable {
 		}
 		return ToolCompat.onToolClick(this, aTool, aRemainingDurability, aQuality, aPlayer, aChatReturn, aPlayerInventory, aSneaking, aStack, aWorld, aSide, aX, aY, aZ, aHitX, aHitY, aHitZ);
 	}
-
+	
 	// GTCH, 在这里加入材料的颜色属性
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int getRenderColor(int aMeta) {
 		return DYES_INT_Concrete[UT.Code.bind4(aMeta)];
 	}
-
+	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int colorMultiplier(IBlockAccess aWorld, int aX, int aY, int aZ) {

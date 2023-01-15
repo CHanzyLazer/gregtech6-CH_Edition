@@ -92,7 +92,8 @@ public abstract class MultiTileEntityTank extends TileEntityBase10MultiBlockBase
 	}
 	
 	@Override
-	public void onMagnifyingGlass2(List<String> aChatReturn) {
+	public void onMagnifyingGlassSuccess(List<String> aChatReturn, boolean aOldStructureOkay) {
+		super.onMagnifyingGlassSuccess(aChatReturn, aOldStructureOkay);
 		aChatReturn.add(mTank.contentcap());
 	}
 	

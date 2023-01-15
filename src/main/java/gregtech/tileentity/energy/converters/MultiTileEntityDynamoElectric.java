@@ -43,7 +43,7 @@ public class MultiTileEntityDynamoElectric extends TileEntityBase10EnergyConvert
 		int aIndex = aSide==mFacing?0:aSide==OPOS[mFacing]?1:2;
 		return BlockTextureMulti.get(BlockTextureDefault.get(sColoreds[aIndex], mRGBa), BlockTextureDefault.get((mActivity.mState>0?sOverlaysActive:sOverlays)[aIndex]));
 	}
-
+	
 	@Override protected long minConsiderInput() {return 1;}
 	
 	// Icons

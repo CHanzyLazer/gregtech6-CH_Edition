@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,10 +19,11 @@
 
 package gregapi.data;
 
-import static gregapi.data.CS.*;
-
 import gregapi.code.ModData;
 import gregapi.data.CS.ModIDs;
+
+import static gregapi.data.CS.F;
+import static gregapi.data.CS.T;
 
 /**
  * @author Gregorius Techneticies
@@ -38,6 +39,7 @@ public class MD {
 	, GAPI_POST         = new ModData(ModIDs.GAPI_POST          , "Greg-API-Post")
 	, GT5U              = new ModData(ModIDs.GT                 , "GregTech 5 Unofficial")
 	, GT6U              = new ModData(ModIDs.GT                 , "GregTech 6 Unofficial")
+	, GTCH              = new ModData(ModIDs.GT                 , "GregTech 6 CH Edition")
 	
 	, QT                = new ModData(ModIDs.QT                 , "QwerTech")
 	
@@ -270,11 +272,13 @@ public class MD {
 	, OMT               = new ModData(ModIDs.OMT                , "Open Modular Turrets")
 	, TG                = new ModData(ModIDs.TG                 , "Tech Guns")
 	
+	, WARPDRIVE         = new ModData(ModIDs.WARPDRIVE          , "Warp Drive")
 	, FM                = new ModData(ModIDs.FM                 , "Falling Meteors")
 	, GC                = new ModData(ModIDs.GC                 , "Galacticraft")
 	, GC_PLANETS        = new ModData(ModIDs.GC_PLANETS         , "Galacticraft Planets")
 	, GC_GALAXYSPACE    = new ModData(ModIDs.GC_GALAXYSPACE     , "Galaxy Space")
 	, GC_ADV_ROCKETRY   = new ModData(ModIDs.GC_ADV_ROCKETRY    , "Advanced Rocketry")
+	, GC_EXTRAPLANETS   = new ModData(ModIDs.GC_EXTRAPLANETS    , "Extra Planets")
 	, VULPES            = new ModData(ModIDs.VULPES             , "Lib Vulpes")
 	, MD8               = new ModData(ModIDs.MD8                , "Micdoodle8 Core")
 

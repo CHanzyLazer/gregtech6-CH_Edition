@@ -40,6 +40,7 @@ import gregapi.util.OM;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
+import gregtechCH.data.LH_CH;
 import mekanism.api.MekanismAPI;
 import mods.railcraft.common.carts.EntityTunnelBore;
 import net.minecraft.block.Block;
@@ -235,8 +236,8 @@ public class PrefixBlock extends Block implements Runnable, ITileEntityProvider,
 	/** This ensures, that all Materials are registered at the time this Item registers to the OreDictionary. */
 	@Override
 	public void run() {
-		for (short i = 0; i < mMaterialList.length; i++) if (mPrefix.isGeneratingItem(mMaterialList[i])) {
-			LH.add("oredict." + mPrefix.dat(mMaterialList[i]).toString() + ".name", getLocalName(mPrefix, mMaterialList[i]));
+		for (OreDictMaterial oreDictMaterial : mMaterialList) if (mPrefix.isGeneratingItem(oreDictMaterial)) {
+			LH_CH.addOredict(mPrefix, oreDictMaterial);
 		}
 		if (mRegisterToOreDict) {
 			boolean tUnificationAllowed = (mPrefix.contains(TD.Prefix.UNIFICATABLE) && !mPrefix.contains(TD.Prefix.UNIFICATABLE_RECIPES));
@@ -616,7 +617,7 @@ public class PrefixBlock extends Block implements Runnable, ITileEntityProvider,
 	public PrefixBlock setHidden(boolean aHidden) {mHidden = aHidden; return this;}
 	
 	/** @return the Local Name for this Block depending on Prefix and Material. */
-	public String getLocalName(OreDictPrefix aPrefix, OreDictMaterial aMaterial) {
+	public static String getLocalName(OreDictPrefix aPrefix, OreDictMaterial aMaterial) {
 		return LanguageHandler.getLocalName(aPrefix, aMaterial);
 	}
 	

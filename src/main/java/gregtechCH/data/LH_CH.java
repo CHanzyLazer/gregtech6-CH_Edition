@@ -1,7 +1,20 @@
 package gregtechCH.data;
 
+import gregapi.block.multitileentity.MultiTileEntityRegistry;
+import gregapi.data.LH;
+import gregapi.lang.LanguageHandler;
+import gregapi.oredict.OreDictMaterial;
+import gregapi.oredict.OreDictPrefix;
 import gregtechCH.lang.LanguageHandler_CH;
+import net.minecraft.item.ItemStack;
 
+import static gregtechCH.data.CS_CH.RegType;
+
+/**
+ * @author CHanzy
+ * Extension of LH
+ * MUST use LH_CH.add() to add custom lang
+ */
 public class LH_CH {
     public static final String
               AXLE_STATS_SPEED                          = "gtch.lang.axle.stats.speed"
@@ -28,14 +41,27 @@ public class LH_CH {
             , HAZARD_EXPLOSION_LENGTH                   = "gtch.lang.hazard.explosion.motor.length"
             ;
 
-    public static final String add(String aKey, String aEnglish) {LanguageHandler_CH.add(aKey, aEnglish); return aKey;}
+    public static final String add(String aKey, String aEnglish) {LanguageHandler_CH.add(RegType.GTCH, aKey, aEnglish); return aKey;}
+    public static final String add(RegType aRegType, String aKey, String aEnglish) {LanguageHandler_CH.add(aRegType, aKey, aEnglish); return aKey;}
     public static final String get(String aKey) {return LanguageHandler_CH.translate(aKey);}
     public static final String getNumber(String aKey, long aNum) {return String.format(LanguageHandler_CH.translate(aKey), aNum);}
     public static final String getNumber(String aKey, long aNum1, long aNum2) {return String.format(LanguageHandler_CH.translate(aKey), aNum1, aNum2);}
+    public static final String getItemName(String aKey, int aRegistryMeta, int aRegistryID) {return String.format(LanguageHandler_CH.translate(aKey), MultiTileEntityRegistry.getRegistry(aRegistryID).getLocal(aRegistryMeta));}
     public static final String get(String aKey, String aDefault) {return LanguageHandler_CH.translate(aKey, aDefault);}
 
     public static final String percentSimple(long aNumber) {return String.valueOf(aNumber/100);}
     public static final String getToolTipEfficiencySimple(long aEfficiency) {aEfficiency = Math.abs(aEfficiency); return percentSimple(aEfficiency) + "%";}
+    
+    
+    // 用于避免重复代码，添加 prefix + material 的物品的语言文件
+    public static void addOredict(OreDictPrefix aPrefix, OreDictMaterial aMaterial) {
+        if (aMaterial.mRegType==RegType.GREG && aPrefix.mRegType==RegType.GREG) LH.add("oredict." + aPrefix.dat(aMaterial).toString() + ".name", LanguageHandler.getLocalName(aPrefix, aMaterial));
+        else {
+            // 以 aPrefix 优先语言文件的位置
+            if (aPrefix.mRegType==RegType.GREG) LH_CH.add(aMaterial.mRegType, "oredict." + aPrefix.dat(aMaterial).toString() + ".name", LanguageHandler.getLocalName(aPrefix, aMaterial));
+            else LH_CH.add(aPrefix.mRegType, "oredict." + aPrefix.dat(aMaterial).toString() + ".name", LanguageHandler.getLocalName(aPrefix, aMaterial));
+        }
+    }
 
     public static void init() {
         add(AXLE_STATS_SPEED,                           "Speed limit:");

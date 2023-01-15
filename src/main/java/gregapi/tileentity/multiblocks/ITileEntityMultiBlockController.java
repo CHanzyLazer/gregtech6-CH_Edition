@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2019 Gregorius Techneticies
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -38,6 +38,7 @@ public interface ITileEntityMultiBlockController extends ITileEntityUnloadable, 
 	public boolean isInsideStructure(int aX, int aY, int aZ);
 	public boolean checkStructure(boolean aForceReset);
 	public boolean checkStructureOnly(boolean aForceReset);
+	public boolean isStructureOkay();
 	public void onStructureChange();
 	public long onToolClickMultiBlock(String aTool, long aRemainingDurability, long aQuality, Entity aPlayer, List<String> aChatReturn, IInventory aPlayerInventory, boolean aSneaking, ItemStack aStack, byte aSide, float aHitX, float aHitY, float aHitZ, ChunkCoordinates aFrom);
 	
@@ -66,7 +67,7 @@ public interface ITileEntityMultiBlockController extends ITileEntityUnloadable, 
 				}
 			}
 		}
-
+		
 		public static boolean checkAndSetTarget(ITileEntityMultiBlockController aController, int aX, int aY, int aZ, int aRegistryMeta, int aRegistryID, int aDesign, int aMode) {
 			TileEntity tTileEntity = aController.getTileEntity(aX, aY, aZ);
 			if (tTileEntity == aController) return T;
@@ -78,7 +79,7 @@ public interface ITileEntityMultiBlockController extends ITileEntityUnloadable, 
 			}
 			return F;
 		}
-
+		
 		// 将检测和设置进行分开来提高效率
 		public static boolean checkStructurePartOffset(ITileEntityMultiBlockController aController, int aX, int aY, int aZ, int aRegistryMeta, int aRegistryID) {
 			return checkStructurePart(aController, aX+aController.getX(), aY+aController.getY(), aZ+aController.getZ(), aRegistryMeta, aRegistryID);
@@ -89,7 +90,7 @@ public interface ITileEntityMultiBlockController extends ITileEntityUnloadable, 
 		public static void checkAndResetTargetOffset(ITileEntityMultiBlockController aController, int aX, int aY, int aZ, int aRegistryMeta, int aRegistryID) {
 			checkAndResetTarget(aController, aX+aController.getX(), aY+aController.getY(), aZ+aController.getZ(), aRegistryMeta, aRegistryID);
 		}
-
+		
 		public static boolean checkAndSetTargetOffset(ITileEntityMultiBlockController aController, int aX, int aY, int aZ, int aRegistryMeta, int aRegistryID, int aDesign, int aMode) {
 			return checkAndSetTarget(aController, aX+aController.getX(), aY+aController.getY(), aZ+aController.getZ(), aRegistryMeta, aRegistryID, aDesign, aMode);
 		}

@@ -25,6 +25,7 @@ import gregapi.render.IIconContainer;
 import gregapi.render.ITexture;
 import gregapi.render.IconContainerCopied;
 import gregapi.util.UT;
+import gregtechCH.data.CS_CH;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.init.Blocks;
@@ -43,7 +44,8 @@ public class Textures {
 		
 		, ZPM_TOP, ZPM_SIDES, ZPM_BOTTOM
 		, ANEUTRONIC_FUSION_TOP, ANEUTRONIC_FUSION_SIDES, ANEUTRONIC_FUSION_BOTTOM
-		, DUCT_TAPE
+		, POWERCELL_TOP, POWERCELL_SIDES, POWERCELL_TOP_OVERLAY, POWERCELL_SIDES_OVERLAY
+		, DUCT_TAPE, BOTTLECRATE_BOTTLE_TOP, BOTTLECRATE_BOTTLE_SIDES, BOTTLECRATE_BOTTLE_CAP
 		
 		, MUD, CLAY_BROWN, TURF, CLAY_RED, CLAY_YELLOW, CLAY_BLUE, CLAY_WHITE
 		, SAND_MAGNETITE, SAND_BASALT_MAGNETITE, SAND_GRANITE_MAGNETITE
@@ -56,7 +58,9 @@ public class Textures {
 		, ARROW2_UP, ARROW2_DOWN, ARROW2_LEFT, ARROW2_RIGHT
 		, ARROW3_UP, ARROW3_DOWN, ARROW3_LEFT, ARROW3_RIGHT
 		, INSULATION_AROUND, INSULATION_QUADRUPLE, INSULATION_NONUPLE
-
+		// GTCH
+		, AXLE_CLOCKWISE_FAST, AXLE_COUNTERCLOCKWISE_FAST, AXLE_DOWN_FAST, AXLE_UP_FAST, AXLE_LEFT_FAST, AXLE_RIGHT_FAST
+		
 		, AXLE, AXLE_CLOCKWISE, AXLE_COUNTERCLOCKWISE, AXLE_VERTICAL, AXLE_DOWN, AXLE_UP, AXLE_HORIZONTAL, AXLE_LEFT, AXLE_RIGHT
 		, GEAR, GEAR_CLOCKWISE, GEAR_COUNTERCLOCKWISE, GEARBOX, GEARBOX_AXLE
 		, PISTON_IDLE, PISTON_MOVING
@@ -169,7 +173,8 @@ public class Textures {
 		, CRYSTAL_ORE_ARSENOPYRITE, CRYSTAL_ORE_CHALCOPYRITE, CRYSTAL_ORE_CINNABAR, CRYSTAL_ORE_COBALTITE, CRYSTAL_ORE_GALENA, CRYSTAL_ORE_KESTERITE, CRYSTAL_ORE_MOLYBDENITE, CRYSTAL_ORE_PYRITE, CRYSTAL_ORE_SPHALERITE, CRYSTAL_ORE_STANNITE, CRYSTAL_ORE_STIBNITE, CRYSTAL_ORE_TETRAHEDRITE
 		;
 		
-		protected IIcon mIcon;
+		public IIcon mIcon;
+		public ITexture mTexture = new BlockTextureDefault(this);
 		
 		@Override public IIcon getIcon(int aRenderPass) {return mIcon;}
 		
@@ -672,65 +677,6 @@ public class Textures {
 			LONG_DIST_PIPE_FLUID,
 			LONG_DIST_PIPE_FLUID,
 		},
-		AXLES[][] = {{
-			{AXLE_HORIZONTAL, AXLE_LEFT            	, AXLE_RIGHT            },
-			{AXLE_HORIZONTAL, AXLE_LEFT             , AXLE_RIGHT            },
-			{AXLE           , AXLE_CLOCKWISE        , AXLE_COUNTERCLOCKWISE },
-			{AXLE           , AXLE_COUNTERCLOCKWISE , AXLE_CLOCKWISE        },
-			{AXLE_VERTICAL  , AXLE_DOWN             , AXLE_UP               },
-			{AXLE_VERTICAL  , AXLE_UP               , AXLE_DOWN             },
-			{VOID           , VOID                  , VOID                  }
-		},{
-			{AXLE           , AXLE_CLOCKWISE        , AXLE_COUNTERCLOCKWISE },
-			{AXLE           , AXLE_COUNTERCLOCKWISE , AXLE_CLOCKWISE        },
-			{AXLE_HORIZONTAL, AXLE_RIGHT            , AXLE_LEFT             },
-			{AXLE_HORIZONTAL, AXLE_RIGHT            , AXLE_LEFT             },
-			{AXLE_HORIZONTAL, AXLE_RIGHT            , AXLE_LEFT             },
-			{AXLE_HORIZONTAL, AXLE_RIGHT            , AXLE_LEFT             },
-			{VOID           , VOID                  , VOID                  }
-		},{
-			{AXLE_VERTICAL  , AXLE_UP             	, AXLE_DOWN             },
-			{AXLE_VERTICAL  , AXLE_DOWN             , AXLE_UP               },
-			{AXLE_VERTICAL  , AXLE_UP               , AXLE_DOWN             },
-			{AXLE_VERTICAL  , AXLE_DOWN             , AXLE_UP               },
-			{AXLE           , AXLE_CLOCKWISE        , AXLE_COUNTERCLOCKWISE },
-			{AXLE           , AXLE_COUNTERCLOCKWISE , AXLE_CLOCKWISE        },
-			{VOID           , VOID                  , VOID                  }
-		}},
-		// GTCH, 用于指明管道方向 [Mode][aSide][mFluidDir]
-		ARROWS[][] = {{
-				{VOID, 			VOID, 		VOID, 			VOID, 			VOID, 			VOID,			VOID},
-				{VOID, 			VOID, 		VOID, 			VOID, 			VOID, 			VOID,			VOID},
-				{VOID, 			VOID, 		VOID, 			VOID, 			VOID, 			VOID,			VOID},
-				{VOID, 			VOID, 		VOID, 			VOID, 			VOID, 			VOID,			VOID},
-				{VOID, 			VOID, 		VOID, 			VOID,			VOID, 			VOID,			VOID},
-				{VOID, 			VOID, 		VOID,			VOID, 			VOID, 			VOID,			VOID},
-				{VOID, 			VOID, 		VOID, 			VOID, 			VOID, 			VOID,			VOID}
-			},{
-				{VOID, 			VOID, 		ARROW_UP, 		ARROW_DOWN, 	ARROW_RIGHT, 	ARROW_LEFT,		VOID},
-				{VOID, 			VOID, 		ARROW_UP, 		ARROW_DOWN, 	ARROW_LEFT, 	ARROW_RIGHT,	VOID},
-				{ARROW_DOWN, 	ARROW_UP, 	VOID, 			VOID, 			ARROW_RIGHT,	ARROW_LEFT, 	VOID},
-				{ARROW_DOWN, 	ARROW_UP, 	VOID, 			VOID, 			ARROW_LEFT, 	ARROW_RIGHT,	VOID},
-				{ARROW_DOWN, 	ARROW_UP, 	ARROW_LEFT, 	ARROW_RIGHT,	VOID, 			VOID,			VOID},
-				{ARROW_DOWN, 	ARROW_UP, 	ARROW_RIGHT,	ARROW_LEFT, 	VOID, 			VOID,			VOID},
-				{VOID, 			VOID, 		VOID, 			VOID, 			VOID, 			VOID,			VOID}
-			},{
-				{VOID, 			VOID, 		ARROW2_UP, 		ARROW2_DOWN, 	ARROW2_RIGHT, 	ARROW2_LEFT,	VOID},
-				{VOID, 			VOID, 		ARROW2_UP, 		ARROW2_DOWN, 	ARROW2_LEFT, 	ARROW2_RIGHT,	VOID},
-				{ARROW2_DOWN, 	ARROW2_UP, 	VOID, 			VOID, 			ARROW2_RIGHT,	ARROW2_LEFT, 	VOID},
-				{ARROW2_DOWN, 	ARROW2_UP, 	VOID, 			VOID, 			ARROW2_LEFT, 	ARROW2_RIGHT,	VOID},
-				{ARROW2_DOWN, 	ARROW2_UP, 	ARROW2_LEFT, 	ARROW2_RIGHT,	VOID, 			VOID,			VOID},
-				{ARROW2_DOWN, 	ARROW2_UP, 	ARROW2_RIGHT,	ARROW2_LEFT, 	VOID, 			VOID,			VOID},
-				{VOID, 			VOID, 		VOID, 			VOID, 			VOID, 			VOID,			VOID}
-			},{
-				{VOID, 			VOID, 		ARROW3_UP, 		ARROW3_DOWN, 	ARROW3_RIGHT, 	ARROW3_LEFT,	VOID},
-				{VOID, 			VOID, 		ARROW3_UP, 		ARROW3_DOWN, 	ARROW3_LEFT, 	ARROW3_RIGHT,	VOID},
-				{ARROW3_DOWN, 	ARROW3_UP, 	VOID, 			VOID, 			ARROW3_RIGHT,	ARROW3_LEFT, 	VOID},
-				{ARROW3_DOWN, 	ARROW3_UP, 	VOID, 			VOID, 			ARROW3_LEFT, 	ARROW3_RIGHT,	VOID},
-				{ARROW3_DOWN, 	ARROW3_UP, 	ARROW3_LEFT, 	ARROW3_RIGHT,	VOID, 			VOID,			VOID},
-				{ARROW3_DOWN, 	ARROW3_UP, 	ARROW3_RIGHT,	ARROW3_LEFT, 	VOID, 			VOID,			VOID},
-				{VOID, 			VOID, 		VOID, 			VOID, 			VOID, 			VOID,			VOID}
-		}},
 		
 		GLASSES_CLEAR = UT.Code.fill(GLASS_CLEAR, new IIconContainer[16]),
 		ASPHALTS = UT.Code.fill(ASPHALT, new IIconContainer[16]),
@@ -738,6 +684,41 @@ public class Textures {
 		CFOAMS_FRESH = UT.Code.fill(CFOAM_FRESH, new IIconContainer[16]),
 		CONCRETES = UT.Code.fill(CONCRETE, new IIconContainer[16]),
 		CONCRETES_REINFORCED = UT.Code.fill(CONCRETE_REINFORCED, new IIconContainer[16]);
+		
+		// GTCH, 还是统一使用 switch 来实现, 用于指明管道方向
+		public static BlockIcons getArrow(CS_CH.IconType aIconType, CS_CH.PipeMode aMode) {
+			switch (aIconType) {
+			case SIDE_UP:
+				switch (aMode) {case LIMIT: return ARROW_UP; case PRIORITY: return ARROW2_UP; case DIVIDE: return ARROW3_UP; case DEFAULT: default: return VOID;}
+			case SIDE_DOWN:
+				switch (aMode) {case LIMIT: return ARROW_DOWN; case PRIORITY: return ARROW2_DOWN; case DIVIDE: return ARROW3_DOWN; case DEFAULT: default: return VOID;}
+			case SIDE_LEFT:
+				switch (aMode) {case LIMIT: return ARROW_LEFT; case PRIORITY: return ARROW2_LEFT; case DIVIDE: return ARROW3_LEFT; case DEFAULT: default: return VOID;}
+			case SIDE_RIGHT:
+				switch (aMode) {case LIMIT: return ARROW_RIGHT; case PRIORITY: return ARROW2_RIGHT; case DIVIDE: return ARROW3_RIGHT; case DEFAULT: default: return VOID;}
+			case VOID: case FRONT: case BACK: default:
+				return VOID;
+			}
+		}
+		// GTCH, 还是统一使用 switch 来实现, 用于指明轴的材质
+		public static BlockIcons getAxle(CS_CH.IconType aIconType, boolean aStop, boolean aCounterClockwise, boolean aFast) {
+			switch (aIconType) {
+				case SIDE_UP:
+					return aStop ? AXLE_HORIZONTAL : (aCounterClockwise ? (aFast ? AXLE_RIGHT_FAST : AXLE_RIGHT) : (aFast ? AXLE_LEFT_FAST : AXLE_LEFT));
+				case SIDE_DOWN:
+					return aStop ? AXLE_HORIZONTAL : (aCounterClockwise ? (aFast ? AXLE_LEFT_FAST : AXLE_LEFT) : (aFast ? AXLE_RIGHT_FAST : AXLE_RIGHT));
+				case SIDE_LEFT:
+					return aStop ? AXLE_VERTICAL : (aCounterClockwise ? (aFast ? AXLE_UP_FAST : AXLE_UP) : (aFast ? AXLE_DOWN_FAST : AXLE_DOWN));
+				case SIDE_RIGHT:
+					return aStop ? AXLE_VERTICAL : (aCounterClockwise ? (aFast ? AXLE_DOWN_FAST : AXLE_DOWN) : (aFast ? AXLE_UP_FAST : AXLE_UP));
+				case FRONT:
+					return aStop ? AXLE : (aCounterClockwise ? (aFast ? AXLE_COUNTERCLOCKWISE_FAST : AXLE_COUNTERCLOCKWISE) : (aFast ? AXLE_CLOCKWISE_FAST : AXLE_CLOCKWISE));
+				case BACK:
+					return aStop ? AXLE : (aCounterClockwise ? (aFast ? AXLE_CLOCKWISE_FAST : AXLE_CLOCKWISE) : (aFast ? AXLE_COUNTERCLOCKWISE_FAST : AXLE_COUNTERCLOCKWISE));
+				case VOID: default:
+					return VOID;
+			}
+		}
 		
 		public static class CustomIcon implements IIconContainer, Runnable {
 			protected IIcon mIcon;
@@ -815,8 +796,8 @@ public class Textures {
 		, KNIFE, BUTCHERYKNIFE, SICKLE
 		, SCOOP, GRAFTER, SCISSORS
 		, PLUNGER, ROLLING_PIN, CLUB, MAGNIFYING_GLASS
-		, PISTOL
-		, HANDLE_PISTOL, HANDLE_SWORD, HANDLE_FILE, HANDLE_CHISEL, HANDLE_SAW, HANDLE_SCREWDRIVER, HANDLE_BUZZSAW, HANDLE_ELECTRIC_SCREWDRIVER, HANDLE_ELECTRIC_DRILL, TIP_ELECTRIC_DRILL, HANDLE_ELECTRIC_MIXER, TIP_ELECTRIC_MIXER, HANDLE_ELECTRIC_TRIMMER, TIP_ELECTRIC_TRIMMER
+		, PISTOL, CARBINE, RIFLE
+		, HANDLE_PISTOL, HANDLE_CARBINE, HANDLE_RIFLE, HANDLE_SWORD, HANDLE_FILE, HANDLE_CHISEL, HANDLE_SAW, HANDLE_SCREWDRIVER, HANDLE_BUZZSAW, HANDLE_ELECTRIC_SCREWDRIVER, HANDLE_ELECTRIC_DRILL, TIP_ELECTRIC_DRILL, HANDLE_ELECTRIC_MIXER, TIP_ELECTRIC_MIXER, HANDLE_ELECTRIC_TRIMMER, TIP_ELECTRIC_TRIMMER
 		, POCKET_MULTITOOL_CLOSED, POCKET_MULTITOOL_FILE, POCKET_MULTITOOL_KNIFE, POCKET_MULTITOOL_SAW, POCKET_MULTITOOL_CUTTER, POCKET_MULTITOOL_SCISSORS, POCKET_MULTITOOL_SCREWDRIVER, POCKET_MULTITOOL_CHISEL
 		, POWER_UNIT_LV, POWER_UNIT_MV, POWER_UNIT_HV
 		, DURABILITY_BAR_0, DURABILITY_BAR_1, DURABILITY_BAR_2, DURABILITY_BAR_3, DURABILITY_BAR_4, DURABILITY_BAR_5, DURABILITY_BAR_6, DURABILITY_BAR_7, DURABILITY_BAR_8

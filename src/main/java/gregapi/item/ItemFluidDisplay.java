@@ -33,6 +33,7 @@ import gregapi.recipes.Recipe;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
+import gregtechCH.item.IItemDisableNEIDamageSearch;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -55,7 +56,7 @@ import static gregapi.data.CS.*;
 /**
  * @author Gregorius Techneticies
  */
-public class ItemFluidDisplay extends Item implements IFluidContainerItem, IItemUpdatable, IItemGT {
+public class ItemFluidDisplay extends Item implements IItemDisableNEIDamageSearch, IFluidContainerItem, IItemUpdatable, IItemGT {
 	protected IIcon mIcon;
 	private final String mName;
 	
@@ -88,7 +89,7 @@ public class ItemFluidDisplay extends Item implements IFluidContainerItem, IItem
 		} else {
 			String aName = aFluid.getName();
 			
-			if (SHOW_INTERNAL_NAMES) aList.add("Registry: " + aName);
+			if (SHOW_INTERNAL_NAMES || aF3_H) aList.add("Registry: " + aName);
 			if (FluidsGT.FLUID_RENAMINGS.containsKey(aName) || FluidsGT.NONSTANDARD.contains(aName)) aList.add(LH.Chat.BLINKING_RED + "NON-STANDARD FLUID!");
 			
 			long tAmount = 0, tTemperature = DEF_ENV_TEMP;
@@ -377,4 +378,7 @@ public class ItemFluidDisplay extends Item implements IFluidContainerItem, IItem
 	public FluidStack drain(ItemStack aStack, int aDrain, boolean aDoDrain) {
 		return getFluid(aStack);
 	}
+	
+	// GTCH, 禁止此物品的 DamageSearch
+	@Override public boolean disableNEIDamageSearch() {return T;}
 }

@@ -37,7 +37,6 @@ import gregapi.render.IIconContainer;
 import gregapi.util.OM;
 import gregapi.util.ST;
 import gregapi.util.UT;
-import gregtechCH.util.UT_CH;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
@@ -73,14 +72,14 @@ public class BlockAsphalt extends BlockColored implements IBlockOnWalkOver {
 	}
 	
 	@Override public boolean doesWalkSpeed(byte aMeta) {return T;}
-
+	
 	// GTCH, 在这里加入材料的颜色属性
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int getRenderColor(int aMeta) {
 		return DYES_INT_Asphalt[UT.Code.bind4(aMeta)];
 	}
-
+	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int colorMultiplier(IBlockAccess aWorld, int aX, int aY, int aZ) {

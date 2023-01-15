@@ -271,7 +271,7 @@ public class MultiTileEntityBush extends TileEntityBase09FacingSingle implements
 	public ITexture getTexture2(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
 		return aShouldSideBeRendered[aSide] || SIDES_VALID[mFacing] ? mTexture : null;
 	}
-
+	
 	// 由于没有 RGB，使用这个方法使其跳过 List 阶段
 	@Override
 	public boolean sendAny(boolean aSendAll) {return F;}

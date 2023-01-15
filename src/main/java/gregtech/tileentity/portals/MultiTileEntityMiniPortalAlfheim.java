@@ -131,8 +131,8 @@ public class MultiTileEntityMiniPortalAlfheim extends MultiTileEntityMiniPortal 
 	public ITexture sAlfheimPortal = BlockTextureCopied.get(Blocks.portal, SIDE_ANY, 0, 0x000088ff, F, T, T), sMidgardPortal = BlockTextureCopied.get(Blocks.portal, SIDE_ANY, 0, 0x00ffff00, F, T, T), sAlfheimPortalFrame = BlockTextureCopied.get(ST.block(MD.BOTA, "dreamwood", Blocks.planks));
 	@Override public ITexture getPortalTexture() {return WD.dimALF(worldObj) ? sMidgardPortal : sAlfheimPortal;}
 	@Override public ITexture getFrameTexture() {return sAlfheimPortalFrame;}
-
+	
 	// TODO
-
+	
 	@Override public String getTileEntityName() {return "gt.multitileentity.portal.alfheim";}
 }

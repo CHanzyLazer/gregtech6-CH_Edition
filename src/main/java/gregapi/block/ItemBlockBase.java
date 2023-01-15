@@ -31,6 +31,7 @@ import gregapi.item.IItemGT;
 import gregapi.render.ITexture;
 import gregapi.util.ST;
 import gregapi.util.UT;
+import gregtechCH.item.IItemDisableNEIDamageSearch;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
@@ -40,7 +41,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
-public class ItemBlockBase extends ItemBlock implements IBlock, IItemGT {
+public class ItemBlockBase extends ItemBlock implements IItemDisableNEIDamageSearch, IBlock, IItemGT {
 	public final IBlockBase mPlaceable;
 	
 	public ItemBlockBase(Block aBlock) {
@@ -104,4 +105,7 @@ public class ItemBlockBase extends ItemBlock implements IBlock, IItemGT {
 	@Override public int getItemStackLimit(ItemStack aStack) {return mPlaceable.getItemStackLimit(aStack);}
 	@Override public int getMetadata(int aMeta) {return aMeta;}
 	@Override public ItemStack onItemRightClick(ItemStack aStack, World aWorld, EntityPlayer aPlayer) {return mPlaceable.onItemRightClick(aStack, aWorld, aPlayer);}
+	
+	// GTCH, 禁止此物品的 DamageSearch
+	@Override public boolean disableNEIDamageSearch() {return T;}
 }

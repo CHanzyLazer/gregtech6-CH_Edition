@@ -35,7 +35,9 @@ import gregapi.util.OM;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
-import gregtechCH.config.ConfigForge_CH.DATA_GTCH;
+import gregtechCH.config.ConfigForge.DATA_GTCH;
+import gregtechCH.data.LH_CH;
+import gregtechCH.item.IItemDisableNEIDamageSearch;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -53,7 +55,7 @@ import static gregtechCH.data.CS_CH.ALL_COVER_PREFIX;
 /**
  * @author Gregorius Techneticies
  */
-public class PrefixItem extends Item implements Runnable, IItemUpdatable, IPrefixItem, IItemGT, IItemNoGTOverride {
+public class PrefixItem extends Item implements IItemDisableNEIDamageSearch, Runnable, IItemUpdatable, IPrefixItem, IItemGT, IItemNoGTOverride {
 	public final String mNameInternal;
 	public final OreDictPrefix mPrefix;
 	public final OreDictMaterial[] mMaterialList;
@@ -107,7 +109,7 @@ public class PrefixItem extends Item implements Runnable, IItemUpdatable, IPrefi
 		boolean tUnificationAllowed = (mPrefix.contains(TD.Prefix.UNIFICATABLE) && !mPrefix.contains(TD.Prefix.UNIFICATABLE_RECIPES));
 		for (short i = 0; i < mMaterialList.length; i++) if (mPrefix.isGeneratingItem(mMaterialList[i])) {
 			ItemStack tStack = ST.update_(ST.make(this, 1, i));
-			LH.add("oredict." + mPrefix.dat(mMaterialList[i]).toString() + ".name", getLocalName(mPrefix, mMaterialList[i]));
+			LH_CH.addOredict(mPrefix, mMaterialList[i]);
 			if (tUnificationAllowed) OreDictManager.INSTANCE.addTarget_(mPrefix, mMaterialList[i], tStack); else OreDictManager.INSTANCE.registerOre_(mPrefix, mMaterialList[i], tStack);
 		}
 	}
@@ -226,10 +228,10 @@ public class PrefixItem extends Item implements Runnable, IItemUpdatable, IPrefi
 	*/
 	
 	/** @return the Local Name for this Item depending on Prefix and Material. */
-	public String getLocalName(OreDictPrefix aPrefix, OreDictMaterial aMaterial) {
+	public static String getLocalName(OreDictPrefix aPrefix, OreDictMaterial aMaterial) {
 		return LanguageHandler.getLocalName(aPrefix, aMaterial);
 	}
-
+	
 	// GTCH, 用来在作为覆盖板时潜行也能放置上，检测是否可能不是作为覆盖板
 	@Override public boolean doesSneakBypassUse(World aWorld, int aX, int aY, int aZ, EntityPlayer aPlayer) {
 		if (DATA_GTCH.sneakingMountCover && ALL_COVER_PREFIX.contains(mPrefix)) {
@@ -238,4 +240,7 @@ public class PrefixItem extends Item implements Runnable, IItemUpdatable, IPrefi
 		}
 		return F;
 	}
+	
+	// GTCH, 禁止此物品的 DamageSearch
+	@Override public boolean disableNEIDamageSearch() {return T;}
 }

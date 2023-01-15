@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,13 +19,6 @@
 
 package gregapi;
 
-import static gregapi.data.CS.*;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -44,22 +37,7 @@ import gregapi.code.ArrayListNoNulls;
 import gregapi.code.ObjectStack;
 import gregapi.cover.CoverRegistry;
 import gregapi.cover.ICover;
-import gregapi.data.ANY;
-import gregapi.data.CS.BlocksGT;
-import gregapi.data.CS.BooksGT;
-import gregapi.data.CS.FluidsGT;
-import gregapi.data.CS.ItemsGT;
-import gregapi.data.CS.PlankData;
-import gregapi.data.CS.Sandwiches;
-import gregapi.data.CS.ToolsGT;
-import gregapi.data.FL;
-import gregapi.data.IL;
-import gregapi.data.LH;
-import gregapi.data.MD;
-import gregapi.data.MT;
-import gregapi.data.OP;
-import gregapi.data.RM;
-import gregapi.data.TD;
+import gregapi.data.*;
 import gregapi.item.ItemFluidDisplay;
 import gregapi.old.Textures;
 import gregapi.oredict.OreDictItemData;
@@ -69,17 +47,15 @@ import gregapi.oredict.OreDictPrefix;
 import gregapi.oredict.listeners.IOreDictListenerItem;
 import gregapi.recipes.AdvancedCrafting1ToY;
 import gregapi.recipes.AdvancedCraftingXToY;
-import gregapi.render.ITexture;
-import gregapi.render.IconContainerCopied;
-import gregapi.render.RenderHelper;
-import gregapi.render.RendererBlockFluid;
-import gregapi.render.RendererBlockTextured;
+import gregapi.render.*;
 import gregapi.tileentity.render.ITileEntityOnDrawBlockHighlight;
 import gregapi.util.OM;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
 import gregtechCH.GTCH_Main;
+import gregtechCH.data.CS_CH;
+import gregtechCH.data.LH_CH;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderFallingBlock;
@@ -97,6 +73,13 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+import static gregapi.data.CS.*;
 
 /**
  * @author Gregorius Techneticies
@@ -187,13 +170,19 @@ public class GT_API_Proxy_Client extends GT_API_Proxy {
 	
 	@Override
 	public void onProxyBeforeInit(Abstract_Mod aMod, FMLInitializationEvent aEvent) {
-		for (OreDictMaterial tMaterial : OreDictMaterial.MATERIAL_MAP.values()) LH.add("gt.material." + tMaterial.mNameInternal, tMaterial.mNameLocal);
+		for (OreDictMaterial tMaterial : OreDictMaterial.MATERIAL_MAP.values()) {
+			// 目前所有的非 greg 的 material 都使用外置的语言文件
+			if (tMaterial.mRegType == CS_CH.RegType.GREG) LH.add("gt.material." + tMaterial.mNameInternal, tMaterial.mNameLocal);
+			else LH_CH.add(tMaterial.mRegType, "gt.material." + tMaterial.mNameInternal, tMaterial.mNameLocal);
+		}
 	}
 	
 	@Override
 	public void onProxyAfterInit(Abstract_Mod aMod, FMLInitializationEvent aEvent) {
 		for (OreDictPrefix tPrefix : OreDictPrefix.VALUES) {
-			LH.add("oredict.prefix." + tPrefix.mNameInternal, tPrefix.mNameLocal);
+			// 目前所有的非 greg 的 prefix 都使用外置的语言文件
+			if (tPrefix.mRegType == CS_CH.RegType.GREG) LH.add("oredict.prefix." + tPrefix.mNameInternal, tPrefix.mNameLocal);
+			else LH_CH.add(tPrefix.mRegType, "oredict.prefix." + tPrefix.mNameInternal, tPrefix.mNameLocal);
 			tPrefix.mNameLocal = LH.get("oredict.prefix." + tPrefix.mNameInternal, tPrefix.mNameLocal);
 		}
 	}
@@ -368,6 +357,17 @@ public class GT_API_Proxy_Client extends GT_API_Proxy {
 						if (tData.mPrefix.contains(TD.Prefix.NEEDS_SHARPENING)) aEvent.toolTip.add(LH.Chat.CYAN + LH.get(LH.TOOLTIP_NEEDS_SHARPENING));
 						if (tData.mPrefix.contains(TD.Prefix.NEEDS_HANDLE    )) aEvent.toolTip.add(LH.Chat.CYAN + LH.get(LH.TOOLTIP_NEEDS_HANDLE) + LH.Chat.WHITE + tData.mMaterial.mMaterial.mHandleMaterial.getLocal());
 						
+						if (!tData.mMaterial.mMaterial.mSourceOf.isEmpty() && tData.mPrefix.containsAny(TD.Prefix.ORE,TD.Prefix.ORE_PROCESSING_DIRTY)) {
+							StringBuilder
+							tToolTip = null;
+							for (OreDictMaterial tMaterial : tData.mMaterial.mMaterial.mSourceOf) {
+								if (tToolTip == null) tToolTip = new StringBuilder(LH.Chat.CYAN).append("Source of: ").append(LH.Chat.WHITE); else tToolTip.append(", ");
+								tToolTip.append(tMaterial.getLocal());
+							}
+							if (tToolTip != null) aEvent.toolTip.add(tToolTip.toString());
+						}
+						
+						
 						ArrayListNoNulls<Integer> tShapelessAmounts = new ArrayListNoNulls<>();
 						for (AdvancedCrafting1ToY tHandler : tData.mPrefix.mShapelessManagersSingle) if (tHandler.hasOutputFor(tData.mMaterial.mMaterial)) tShapelessAmounts.add(1);
 						for (AdvancedCraftingXToY tHandler : tData.mPrefix.mShapelessManagers      ) if (tHandler.hasOutputFor(tData.mMaterial.mMaterial)) tShapelessAmounts.add(tHandler.mInputCount);
@@ -376,46 +376,50 @@ public class GT_API_Proxy_Client extends GT_API_Proxy {
 							aEvent.toolTip.add(LH.Chat.CYAN + LH.get(LH.TOOLTIP_SHAPELESS_CRAFT) + LH.Chat.WHITE + tShapelessAmounts);
 						}
 						if (tData.mPrefix.contains(TD.Prefix.TOOLTIP_ENCHANTS)) {
-							if (!tData.mMaterial.mMaterial.mEnchantmentTools.isEmpty()) {
-								if (!tData.mPrefix.contains(TD.Prefix.AMMO_ALIKE)) {
-									if (tData.mMaterial.mMaterial.mEnchantmentTools.size() <= 5) {
-										aEvent.toolTip.add(LH.Chat.PURPLE + LH.get(LH.TOOLTIP_POSSIBLE_TOOL_ENCHANTS));
-										for (ObjectStack<Enchantment> tEnchantment : tData.mMaterial.mMaterial.mEnchantmentTools) {
-											if (tEnchantment.mObject == Enchantment.fortune) {
-												aEvent.toolTip.add(LH.Chat.PINK + Enchantment.fortune   .getTranslatedName((int)tEnchantment.mAmount) + " / " + Enchantment.looting.getTranslatedName((int)tEnchantment.mAmount));
-											} else if (tEnchantment.mObject == Enchantment.knockback) {
-												aEvent.toolTip.add(LH.Chat.PINK + Enchantment.knockback .getTranslatedName((int)tEnchantment.mAmount) + " / " + Enchantment.punch  .getTranslatedName((int)tEnchantment.mAmount));
-											} else if (tEnchantment.mObject == Enchantment.fireAspect) {
-												if (tEnchantment.mAmount >= 3)
-												aEvent.toolTip.add(LH.Chat.PINK + Enchantment.fireAspect.getTranslatedName((int)tEnchantment.mAmount) + " / " + Enchantment.flame  .getTranslatedName((int)tEnchantment.mAmount) + " / Auto Smelt I");
-												else
-												aEvent.toolTip.add(LH.Chat.PINK + Enchantment.fireAspect.getTranslatedName((int)tEnchantment.mAmount) + " / " + Enchantment.flame  .getTranslatedName((int)tEnchantment.mAmount));
-											} else {
-												aEvent.toolTip.add(LH.Chat.PINK + tEnchantment.mObject  .getTranslatedName((int)tEnchantment.mAmount));
-											}
-										}
-									} else {
-										aEvent.toolTip.add(LH.Chat.PURPLE + LH.get(LH.TOOLTIP_TOO_MANY_TOOL_ENCHANTS));
-									}
-								}
+							StringBuilder
+							tToolTip = null;
+							for (ObjectStack<Enchantment> tEnchantment : tData.mMaterial.mMaterial.mEnchantmentTools) {
+								if (tToolTip == null) tToolTip = new StringBuilder(LH.Chat.PURPLE).append(LH.get(LH.TOOLTIP_POSSIBLE_TOOL_ENCHANTS)).append(LH.Chat.PINK); else tToolTip.append(", ");
+								tToolTip.append(tEnchantment.mObject.getTranslatedName((int)tEnchantment.mAmount));
+								if (tEnchantment.mObject == Enchantment.fireAspect && tEnchantment.mAmount >= 3) tToolTip.append(" (Autosmelt)");
 							}
-							if (MD.BTL.mLoaded && tData.mMaterial.mMaterial.contains(TD.Properties.BETWEENLANDS)) {
-								aEvent.toolTip.add(LH.Chat.GREEN + LH.get(LH.TOOLTIP_BETWEENLANDS_RESISTANCE));
+							if (tToolTip != null) aEvent.toolTip.add(tToolTip.toString());
+							tToolTip = null;
+							for (ObjectStack<Enchantment> tEnchantment : tData.mMaterial.mMaterial.mEnchantmentWeapons) {
+								if (tToolTip == null) tToolTip = new StringBuilder(LH.Chat.PURPLE).append(LH.get(LH.TOOLTIP_POSSIBLE_WEAPON_ENCHANTS)).append(LH.Chat.PINK); else tToolTip.append(", ");
+								tToolTip.append(tEnchantment.mObject.getTranslatedName((int)tEnchantment.mAmount));
 							}
+							if (tToolTip != null) aEvent.toolTip.add(tToolTip.toString());
+							tToolTip = null;
+							for (ObjectStack<Enchantment> tEnchantment : tData.mMaterial.mMaterial.mEnchantmentAmmo) {
+								if (tToolTip == null) tToolTip = new StringBuilder(LH.Chat.PURPLE).append(LH.get(LH.TOOLTIP_POSSIBLE_AMMO_ENCHANTS)).append(LH.Chat.PINK); else tToolTip.append(", ");
+								tToolTip.append(tEnchantment.mObject.getTranslatedName((int)tEnchantment.mAmount));
+							}
+							if (tToolTip != null) aEvent.toolTip.add(tToolTip.toString());
+							tToolTip = null;
+							for (ObjectStack<Enchantment> tEnchantment : tData.mMaterial.mMaterial.mEnchantmentRanged) {
+								if (tToolTip == null) tToolTip = new StringBuilder(LH.Chat.PURPLE).append(LH.get(LH.TOOLTIP_POSSIBLE_RANGED_ENCHANTS)).append(LH.Chat.PINK); else tToolTip.append(", ");
+								tToolTip.append(tEnchantment.mObject.getTranslatedName((int)tEnchantment.mAmount));
+							}
+							if (tToolTip != null) aEvent.toolTip.add(tToolTip.toString());
+							
 							if (!tData.mPrefix.containsAny(TD.Prefix.TOOL_HEAD, TD.Prefix.WEAPON_ALIKE, TD.Prefix.AMMO_ALIKE, TD.Prefix.TOOL_ALIKE)) {
-								if (!tData.mMaterial.mMaterial.mEnchantmentArmors.isEmpty()) {
-									if (tData.mMaterial.mMaterial.mEnchantmentArmors.size() <= 3) {
-										aEvent.toolTip.add(LH.Chat.PURPLE + LH.get(LH.TOOLTIP_POSSIBLE_ARMOR_ENCHANTS));
-										for (ObjectStack<Enchantment> tEnchantment : tData.mMaterial.mMaterial.mEnchantmentArmors) {
-											aEvent.toolTip.add(LH.Chat.PINK + tEnchantment.mObject.getTranslatedName((int)tEnchantment.mAmount));
-										}
-									} else {
-										aEvent.toolTip.add(LH.Chat.PURPLE + LH.get(LH.TOOLTIP_TOO_MANY_ARMOR_ENCHANTS));
-									}
+								tToolTip = null;
+								for (ObjectStack<Enchantment> tEnchantment : tData.mMaterial.mMaterial.mEnchantmentArmors) {
+									if (tToolTip == null) tToolTip = new StringBuilder(LH.Chat.PURPLE).append(LH.get(LH.TOOLTIP_POSSIBLE_ARMOR_ENCHANTS)).append(LH.Chat.PINK); else tToolTip.append(", ");
+									tToolTip.append(tEnchantment.mObject.getTranslatedName((int)tEnchantment.mAmount));
 								}
+								if (tToolTip != null) aEvent.toolTip.add(tToolTip.toString());
+								
+								
+								
 								if ((IL.TF_Mazestone.exists() || IL.TF_Mazehedge.exists()) && tData.mMaterial.mMaterial.contains(TD.Properties.MAZEBREAKER)) {
 									aEvent.toolTip.add(LH.Chat.PINK + LH.get(LH.TOOLTIP_TWILIGHT_MAZE_BREAKING));
 								}
+							}
+							
+							if (MD.BTL.mLoaded && tData.mMaterial.mMaterial.contains(TD.Properties.BETWEENLANDS)) {
+								aEvent.toolTip.add(LH.Chat.GREEN + LH.get(LH.TOOLTIP_BETWEENLANDS_RESISTANCE));
 							}
 						}
 						if (aBlock == NB || !(aBlock instanceof MultiTileEntityBlockInternal || aBlock instanceof IBlockBase)) {
@@ -493,7 +497,7 @@ public class GT_API_Proxy_Client extends GT_API_Proxy {
 		// 经检测确实只在客户端运行
 //		if (!aEvent.side.isClient())
 //			OUT.println(GTCH_Main.getModNameForLog() + ": why this run in server????");
-
+		
 		if (aEvent.phase == Phase.END) {
 			if (CLIENT_TIME == 10) {
 				// Initializing the Fake Furnace Recipe Map
@@ -508,7 +512,7 @@ public class GT_API_Proxy_Client extends GT_API_Proxy {
 					for (ItemStack tStack : tList) ST.hide(tStack);
 				}
 			}
-
+			
 			switch((int)(CLIENT_TIME % 10)) {
 			case   0: LH.Chat.RAINBOW_FAST = LH.Chat.RED; LH.Chat.BLINKING_CYAN = LH.Chat.CYAN; LH.Chat.BLINKING_RED = LH.Chat.RED; LH.Chat.BLINKING_ORANGE = LH.Chat.ORANGE; break;
 			case   1: LH.Chat.RAINBOW_FAST = LH.Chat.ORANGE; break;
@@ -521,7 +525,7 @@ public class GT_API_Proxy_Client extends GT_API_Proxy {
 			case   8: LH.Chat.RAINBOW_FAST = LH.Chat.PURPLE; break;
 			case   9: LH.Chat.RAINBOW_FAST = LH.Chat.PINK; break;
 			}
-
+			
 			switch((int)(CLIENT_TIME % 50)) {
 			case   0: LH.Chat.RAINBOW = LH.Chat.RED; LH.Chat.BLINKING_GRAY = LH.Chat.GRAY; break;
 			case   5: LH.Chat.RAINBOW = LH.Chat.ORANGE; break;
@@ -534,7 +538,7 @@ public class GT_API_Proxy_Client extends GT_API_Proxy {
 			case  40: LH.Chat.RAINBOW = LH.Chat.PURPLE; break;
 			case  45: LH.Chat.RAINBOW = LH.Chat.PINK; break;
 			}
-
+			
 			switch((int)(CLIENT_TIME % 250)) {
 			case   0: LH.Chat.RAINBOW_SLOW = LH.Chat.RED; break;
 			case  25: LH.Chat.RAINBOW_SLOW = LH.Chat.ORANGE; break;
@@ -547,7 +551,7 @@ public class GT_API_Proxy_Client extends GT_API_Proxy {
 			case 200: LH.Chat.RAINBOW_SLOW = LH.Chat.PURPLE; break;
 			case 225: LH.Chat.RAINBOW_SLOW = LH.Chat.PINK; break;
 			}
-
+			
 			int tDirection = (CLIENT_TIME % 100 < 50 ? +1 : -1);
 			for (short[] tArray : sPosR) tArray[0] = UT.Code.bind8(tArray[0]+tDirection);
 			for (short[] tArray : sPosG) tArray[1] = UT.Code.bind8(tArray[1]+tDirection);
@@ -557,11 +561,11 @@ public class GT_API_Proxy_Client extends GT_API_Proxy {
 			for (short[] tArray : sNegG) tArray[1] = UT.Code.bind8(tArray[1]-tDirection);
 			for (short[] tArray : sNegB) tArray[2] = UT.Code.bind8(tArray[2]-tDirection);
 			for (short[] tArray : sNegA) tArray[3] = UT.Code.bind8(tArray[3]-tDirection);
-
+			
 			boolean
 			tNR = UT.Code.inside(  0,  99, (CLIENT_TIME/2) % 300), tNG = UT.Code.inside( 50, 149, (CLIENT_TIME/2) % 300), tNB = UT.Code.inside(100, 199, (CLIENT_TIME/2) % 300),
 			tPR = UT.Code.inside(100, 199, (CLIENT_TIME/2) % 300), tPG = UT.Code.inside(150, 249, (CLIENT_TIME/2) % 300), tPB = UT.Code.inside(200, 299, (CLIENT_TIME/2) % 300);
-
+			
 			for (short[] tArray : sRainbow) {
 			if (tPR) tArray[0] = UT.Code.bind8(tArray[0] + 1);
 			if (tPG) tArray[1] = UT.Code.bind8(tArray[1] + 1);
@@ -570,10 +574,10 @@ public class GT_API_Proxy_Client extends GT_API_Proxy {
 			if (tNG) tArray[1] = UT.Code.bind8(tArray[1] - 1);
 			if (tNB) tArray[2] = UT.Code.bind8(tArray[2] - 1);
 			}
-
+			
 			tNR = UT.Code.inside( 0,  9, (CLIENT_TIME/2) % 30); tNG = UT.Code.inside( 5, 14, (CLIENT_TIME/2) % 30); tNB = UT.Code.inside(10, 19, (CLIENT_TIME/2) % 30);
 			tPR = UT.Code.inside(10, 19, (CLIENT_TIME/2) % 30); tPG = UT.Code.inside(15, 24, (CLIENT_TIME/2) % 30); tPB = UT.Code.inside(20, 29, (CLIENT_TIME/2) % 30);
-
+			
 			for (short[] tArray : sRainbowFast) {
 			if (tPR) tArray[0] = UT.Code.bind8(tArray[0] + 10);
 			if (tPG) tArray[1] = UT.Code.bind8(tArray[1] + 10);
@@ -582,7 +586,7 @@ public class GT_API_Proxy_Client extends GT_API_Proxy {
 			if (tNG) tArray[1] = UT.Code.bind8(tArray[1] - 10);
 			if (tNB) tArray[2] = UT.Code.bind8(tArray[2] - 10);
 			}
-
+			
 			GTCH_Main.UPDATE_CLIENT_TIME();
 		}
 	}

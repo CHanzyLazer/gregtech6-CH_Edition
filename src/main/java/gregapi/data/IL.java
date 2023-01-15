@@ -178,13 +178,13 @@ public enum IL implements IItemContainer {
 	RC_Rail_Reinforced, RC_Rail_Electric, RC_Rail_Standard, RC_Rail_Wooden, RC_Rail_Adv, RC_Rail_HS,
 	RC_Tie_Wood, RC_Tie_Stone, RC_Bed_Wood, RC_Bed_Stone,
 	RC_Rebar, RC_Firestone_Cut, RC_Firestone_Cracked, RC_Firestone_Refined,
-	RC_Post_Metal, RC_Creosote_Wood, RC_Crushed_Obsidian, RC_Concrete, RC_Stone_Abyssal, RC_Stone_Quarried,
+	RC_Post_Metal, RC_Platform_Metal, RC_Creosote_Wood, RC_Crushed_Obsidian, RC_Concrete, RC_Stone_Abyssal, RC_Stone_Quarried,
 	RC_Crowbar_Iron, RC_Crowbar_Steel, RC_Crowbar_Thaumium, RC_Crowbar_Voidmetal,
 	RC_Creosote_Bottle, RC_Creosote_Bucket, RC_Creosote_Cell, RC_Creosote_Can, RC_Creosote_Capsule, RC_Creosote_RefractoryCapsule,
 	IE_Creosote_Bottle, IE_Creosote_Bucket, IE_Hammer, IE_Slag, IE_Blueprint_Projectiles_Common, IE_Blueprint_Projectiles_Specialized, IE_Blueprint_Projectiles_Electrodes, IE_Crate, IE_Treated_Planks, IE_Treated_Slab, IE_Treated_Stairs,
 	SC2_Wrench, SC2_Hammer, SC2_Hammer_Gilded, SC2_Teapot_Empty, SC2_Teapot_Water, SC2_Teapot_Boiling, SC2_Teapot_Full, SC2_Teacup_Empty, SC2_Teacup_Full,
 	FZ_Sludge,
-	HBM_Mercury_Bottle, HBM_Mercury_Drop, HBM_Mercury_Drop_Tiny, HBM_Poison_Powder, HBM_Biomass, HBM_Biomass_Compressed,
+	HBM_Bottle_Mercury, HBM_Mercury_Drop, HBM_Mercury_Drop_Tiny, HBM_Poison_Powder, HBM_Biomass, HBM_Biomass_Compressed, HBM_Bottle_Empty_1, HBM_Bottle_Empty_2,
 	HBM_Bedrock_Coltan, HBM_Bedrock_Oil,
 	HBM_Crushed_Obsidian,
 	ICBM_Concrete,
@@ -474,6 +474,19 @@ public enum IL implements IItemContainer {
 	Battery_Hull_HV, Battery_SU_HV_SulfuricAcid, Battery_SU_HV_Mercury, Battery_RE_HV_Sodium, Battery_RE_HV_Cadmium, Battery_RE_HV_Lithium, Battery_RE_HV_Redstone, Battery_RE_HV_Nikolite, Battery_RE_HV_Teslatite, Battery_RE_HV_Electrotine,
 	EnergyCrystal_RE_LV_Energium, EnergyCrystal_RE_MV_Energium, EnergyCrystal_RE_HV_Energium, EnergyCrystal_RE_EV_Energium, EnergyCrystal_RE_IV_Energium,
 	
+	/* 由于枚举类不能继承，因此只能全部放在一起。这里仅进行罗列因此顺序不重要，将 GT6U GTCH 的部分和原版分开来方便合并 */
+	/* GT6U stuff START */
+	ircuit_Plate_Empty_Phenolic, Circuit_Plate_Empty_Epoxid, Circuit_Plate_Empty_Multilayer, Circuit_plate_Empty_Crystal,
+	Perforated_Bushing, Glass_Fiber,
+	Battery_Lead_Acid_IV, Battery_Alkaline_IV, Battery_NiCd_IV, Battery_LiCoO2_IV, Battery_LiMn_IV,
+	// Physics
+	Proton, Anti_Proton, Electron, Positron, Neutron, Alpha_Particle, Neutrino, Anti_Neutrino, Higgs_Boson,
+	Kerr_Blackhole,
+	// Biology
+	ulture_Dish_Empty,Culture_Dish_MSC,Culture_Dish_Stem_Cell_Embryonic,Culture_Dish_Stem_Cell_Somatic,dust_Inorganic_Salt_Mixture,dust_Tiny_Inorganic_Salt_Mixture,
+	dust_Glucose,Stem_Cell,Neuron_Cell,Unformed_Embryo,Precision_Manipulator,Lauryl_Sulfate,SDS,Culture_Dish_Biomass_Flora,Mixing_Rod,
+	Culture_Dish_Yeast,Culture_Dish_Methanogens,Culture_Dish_Bacillus,Culture_Dish_Clostridia,Protein_Sample, Gene_Samples,
+	/* GT6U stuff END */
 	NULL;
 	
 	public static final IL[]

@@ -252,7 +252,7 @@ public class MultiTileEntityLongDistancePipelineFluid extends TileEntityBase09Fa
 	};
 	
 	@Override public String getTileEntityName() {return "gt.multitileentity.pipelines.fluid";}
-
+	
 	@Override
 	public boolean canFillExtra(FluidStack aFluid) {
 		return T;

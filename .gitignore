@@ -3,6 +3,7 @@
 
 # Whitelist directories (directories with no tracked files don't get committed regardless)
 !**/
+.*/
 
 !/.gitignore
 !/.gitattributes
@@ -21,6 +22,7 @@
 # Build files
 !/build.gradle
 !/settings.gradle
+!/gradle.properties
 !/gradlew
 !/gradlew.bat
 !/gradle/wrapper/gradle-wrapper.jar
@@ -72,3 +74,9 @@
 
 # Language
 !/.lang/*
+
+# idea config
+/.idea/
+
+# gradle temps
+/.gradle/

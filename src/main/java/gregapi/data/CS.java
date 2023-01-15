@@ -485,7 +485,7 @@ public class CS {
 	/** Default Size Box. */
 	public static final float[] PX_BOX = {0,0,0,1,1,1};
 	
-	/** Array with length 17 containing the Coordinates of Pixels from 0/16 to 16/16 */
+	/** Array with length 17 and some overflow containing the Coordinates of Pixels from 0/16 to 16/16 */
 	public static final float[] PX_P = {
 		  0.0000F, 0.0625F, 0.1250F, 0.1875F
 		, 0.2500F, 0.3125F, 0.3750F, 0.4375F
@@ -497,7 +497,7 @@ public class CS {
 		, 1.7500F, 1.8125F, 1.8750F, 1.9375F
 		, 2.0000F}, PIXELS_POS = PX_P;
 	
-	/** Array with length 17 containing the Coordinates of Pixels from 16/16 to 0/16 */
+	/** Array with length 17 and some overflow containing the Coordinates of Pixels from 16/16 to 0/16 */
 	public static final float[] PX_N = {
 		  1.0000F, 0.9375F, 0.8750F, 0.8125F
 		, 0.7500F, 0.6875F, 0.6250F, 0.5625F
@@ -631,6 +631,18 @@ public class CS {
 	public static final byte[]              COMPASS_DIRECTIONS      = {SIDE_NORTH, SIDE_EAST, SIDE_SOUTH, SIDE_WEST};
 	/** Side -> Compass Direction. Defaults to North if wrong value. */
 	public static final byte[]              COMPASS_FROM_SIDE       = { 0, 0, 0, 2, 3, 1, 0};
+	/** Meta -> Side+1 */
+	public static final byte[]              META_TO_SIDE_0          = { 0, 1, 2, 3, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6},
+	                                        META_TO_SIDE_1          = { 6, 0, 1, 2, 3, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6},
+	                                        META_TO_SIDE_2          = { 6, 6, 0, 1, 2, 3, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6},
+	                                        META_TO_SIDE_3          = { 6, 6, 6, 0, 1, 2, 3, 4, 5, 6, 6, 6, 6, 6, 6, 6},
+	                                        META_TO_SIDE_4          = { 6, 6, 6, 6, 0, 1, 2, 3, 4, 5, 6, 6, 6, 6, 6, 6},
+	                                        META_TO_SIDE_5          = { 6, 6, 6, 6, 6, 0, 1, 2, 3, 4, 5, 6, 6, 6, 6, 6},
+	                                        META_TO_SIDE_6          = { 6, 6, 6, 6, 6, 6, 0, 1, 2, 3, 4, 5, 6, 6, 6, 6},
+	                                        META_TO_SIDE_7          = { 6, 6, 6, 6, 6, 6, 6, 0, 1, 2, 3, 4, 5, 6, 6, 6},
+	                                        META_TO_SIDE_8          = { 6, 6, 6, 6, 6, 6, 6, 6, 0, 1, 2, 3, 4, 5, 6, 6},
+	                                        META_TO_SIDE_9          = { 6, 6, 6, 6, 6, 6, 6, 6, 6, 0, 1, 2, 3, 4, 5, 6},
+	                                        META_TO_SIDE10          = { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 0, 1, 2, 3, 4, 5};
 	
 	/** Used for Meta => Side */
 	public static final byte[]              VALIDATE                = { 0, 1, 2, 3, 4, 5, 0, 0, 0, 1, 2, 3, 4, 5, 0, 0},
@@ -812,10 +824,10 @@ public class CS {
 
 	/** This way it is possible to have a Call Hierarchy of NullPointers in ItemStack based Functions, and also because most of the time I don't know what kind of Data Type the "null" stands for, when there are shitloads of Parameters for a Function */
 	public static final ItemStack NI = null;
-
+	
 	/** This way it is possible to have a Call Hierarchy of NullPointers in FluidStack based Functions, and also because most of the time I don't know what kind of Data Type the "null" stands for, when there are shitloads of Parameters for a Function */
 	public static final FluidStack NF = null;
-
+	
 	/** This way it is possible to have a Call Hierarchy of NullPointers in Block based Functions, and also because most of the time I don't know what kind of Data Type the "null" stands for, when there are shitloads of Parameters for a Function */
 	public static final Block NB = Blocks.air;
 	
@@ -833,7 +845,7 @@ public class CS {
 	public static final double WEIGHT_AIR_KG_PER_UNIT = WEIGHT_AIR_KG_PER_CUBIC_METER / 9;
 	
 	/** Not really Constants, but they set using the Config and therefore should be constant. */
-	public static boolean D1 = F, D2 = F, D3 = F, ALWAYS_TRUE = T, ALWAYS_FALSE = F, CLIENT_BLOCKUPDATE_SOUNDS = F, NEI = F, TOOL_SOUNDS = T, EMIT_EU_AS_RF = F, DISABLE_GT6_CRAFTING_RECIPES = F, ENABLE_ADDING_IC2_MACERATOR_RECIPES = T, DISABLE_ALL_IC2_MACERATOR_RECIPES = F, ENABLE_ADDING_IC2_EXTRACTOR_RECIPES = T, DISABLE_ALL_IC2_EXTRACTOR_RECIPES = F, ENABLE_ADDING_IC2_COMPRESSOR_RECIPES = T, DISABLE_ALL_IC2_COMPRESSOR_RECIPES = F, ENABLE_ADDING_IC2_OREWASHER_RECIPES = T, DISABLE_ALL_IC2_OREWASHER_RECIPES = F, ENABLE_ADDING_IC2_CENTRIFUGE_RECIPES = T, DISABLE_ALL_IC2_CENTRIFUGE_RECIPES = F, FAST_LEAF_DECAY = T, FORCE_GRAVEL_NO_FLINT = F, NERFED_WOOD = T, FOOD_OVERDOSE_DEATH = T, NUTRITION_SYSTEM = T, OBSTRUCTION_CHECKS = T, OWNERSHIP_RESET = F, SPAWN_ZONE_MOB_PROTECTION = T, SPAWN_NO_BATS = T, SPAWN_HOSTILES_ONLY_IN_DARKNESS = T, CONSTANT_ENERGY = T, RAIN_EXPLOSIONS = F, WATER_EXPLOSIONS = F, THUNDER_EXPLOSIONS = F, FIRE_EXPLOSIONS = F, OVERCHARGE_EXPLOSIONS = F, FIRE_BREAKING = F, RAIN_BREAKING = F, WATER_BREAKING = F, THUNDER_BREAKING = F, OVERCHARGE_BREAKING = F, SHOW_MICROBLOCKS = F, SHOW_CHEM_FORMULAS = T, SHOW_INTERNAL_NAMES = F, SHOW_HIDDEN_MATERIALS = F, SHOW_HIDDEN_PREFIXES = F, SHOW_ORE_BLOCK_PREFIXES = F, SHOW_HIDDEN_ITEMS = F, SHOW_BUMBLEBEES = F, DRINKS_ALWAYS_DRINKABLE = F, HUNGER_BY_INVENTORY_WEIGHT = F, TOOL_BREAK_FATIQUE = T, INVENTORY_UNIFICATION = T, XP_ORB_COMBINING = T, ADVENTURE_MODE_KIT = F, SURVIVAL_INTO_ADVENTURE_MODE = F, MOBS_DROP_LEAD = T, MOBS_DROP_MEAT = T, MOBS_DROP_JUNK = T, MOBS_DROP_BOOK = T, MOBS_DROP_NAME = T, ZOMBIES_DIG_WITH_TOOLS = F, ZOMBIES_DIG_TILEENTITIES = F, ZOMBIES_HOLD_PICKAXES = T, ZOMBIES_HOLD_TNT = T, ZOMBIES_IGNITE_HELD_TNT = T, DISPLAY_TEMP_TOOLTIP = T, GENERATE_STONE = T, GENERATE_STREETS = F, GENERATE_NEXUS = F, GENERATE_TESTING = F, GENERATE_BEACON = F, GENERATE_BIOMES = F, GENERATING_SPECIAL = F;
+	public static boolean D1 = F, D2 = F, D3 = F, ALWAYS_TRUE = T, ALWAYS_FALSE = F, EXPERIMENTS = F, CLIENT_BLOCKUPDATE_SOUNDS = F, NEI = F, TOOL_SOUNDS = T, EMIT_EU_AS_RF = F, DISABLE_GT6_CRAFTING_RECIPES = F, ENABLE_ADDING_IC2_MACERATOR_RECIPES = T, DISABLE_ALL_IC2_MACERATOR_RECIPES = F, ENABLE_ADDING_IC2_EXTRACTOR_RECIPES = T, DISABLE_ALL_IC2_EXTRACTOR_RECIPES = F, ENABLE_ADDING_IC2_COMPRESSOR_RECIPES = T, DISABLE_ALL_IC2_COMPRESSOR_RECIPES = F, ENABLE_ADDING_IC2_OREWASHER_RECIPES = T, DISABLE_ALL_IC2_OREWASHER_RECIPES = F, ENABLE_ADDING_IC2_CENTRIFUGE_RECIPES = T, DISABLE_ALL_IC2_CENTRIFUGE_RECIPES = F, FAST_LEAF_DECAY = T, FORCE_GRAVEL_NO_FLINT = F, NERFED_WOOD = T, FOOD_OVERDOSE_DEATH = T, NUTRITION_SYSTEM = T, OBSTRUCTION_CHECKS = T, OWNERSHIP_RESET = F, SPAWN_ZONE_MOB_PROTECTION = T, SPAWN_NO_BATS = T, SPAWN_HOSTILES_ONLY_IN_DARKNESS = T, CONSTANT_ENERGY = T, RAIN_EXPLOSIONS = F, WATER_EXPLOSIONS = F, THUNDER_EXPLOSIONS = F, FIRE_EXPLOSIONS = F, OVERCHARGE_EXPLOSIONS = F, FIRE_BREAKING = F, RAIN_BREAKING = F, WATER_BREAKING = F, THUNDER_BREAKING = F, OVERCHARGE_BREAKING = F, SHOW_MICROBLOCKS = F, SHOW_CHEM_FORMULAS = T, SHOW_INTERNAL_NAMES = F, SHOW_HIDDEN_MATERIALS = F, SHOW_HIDDEN_PREFIXES = F, SHOW_ORE_BLOCK_PREFIXES = F, SHOW_HIDDEN_ITEMS = F, SHOW_BUMBLEBEES = F, DRINKS_ALWAYS_DRINKABLE = F, HUNGER_BY_INVENTORY_WEIGHT = F, TOOL_BREAK_FATIQUE = T, INVENTORY_UNIFICATION = T, XP_ORB_COMBINING = T, ADVENTURE_MODE_KIT = F, SURVIVAL_INTO_ADVENTURE_MODE = F, MOBS_DROP_LEAD = T, MOBS_DROP_MEAT = T, MOBS_DROP_JUNK = T, MOBS_DROP_BOOK = T, MOBS_DROP_NAME = T, ZOMBIES_DIG_WITH_TOOLS = F, ZOMBIES_DIG_TILEENTITIES = F, ZOMBIES_HOLD_PICKAXES = T, ZOMBIES_HOLD_TNT = T, ZOMBIES_IGNITE_HELD_TNT = T, DISPLAY_TEMP_TOOLTIP = T, GENERATE_STONE = T, GENERATE_STREETS = F, GENERATE_NEXUS = F, GENERATE_TESTING = F, GENERATE_BEACON = F, GENERATE_BIOMES = F, GENERATING_SPECIAL = F;
 	/** Date based Shenanigans */
 	@SuppressWarnings("deprecation")
 	public static boolean
@@ -1240,6 +1252,7 @@ public class CS {
 	, NBT_REPLICATOR_DATA           = "gt.replicator.data"          // Short
 	, NBT_REACTOR_SETUP             = "gt.reactor.setup"            // Short
 	, NBT_REACTOR_SETUP_NAME        = "gt.reactor.setup.name"       // String
+	, NBT_AMMO                      = "gt.ammo"                     // ItemStack, see ST.save or ST.load
 	
 	, NBT_RECYCLING_COMPS           = "gt.recycling.comps"          // List of Components for the Disassembler.
 	, NBT_RECYCLING_MATS            = "gt.recycling.mats"           // List of Materials this Item recycles into. OM.anydata(ItemStack aStack) will check for this NBT, but only AFTER the Server already started!
@@ -1294,7 +1307,7 @@ public class CS {
 	, NBT_OUTPUT_AU                 = "gt.output.au"                // Long containing a specified Energy Variable.
 	, NBT_OUTPUT_MJ                 = "gt.output.mj"                // Long containing a specified Energy Variable.
 	, NBT_OUTPUT_RF                 = "gt.output.rf"                // Long containing a specified Energy Variable.
-
+	
 	, NBT_ENERGY                    = "gt.energy"                   // Long containing a generic Energy Variable.
 	, NBT_ENERGY_EU                 = "gt.energy.eu"                // Long containing a specified Energy Variable.
 	, NBT_ENERGY_RU                 = "gt.energy.ru"                // Long containing a specified Energy Variable.
@@ -1330,10 +1343,10 @@ public class CS {
 		public static ArrayListNoNulls<FluidTankGT> GARBAGE_FLUIDS = new ArrayListNoNulls<>();
 		
 		public static int trash(ItemStack aStack) {
-			if (ST.invalid(aStack) || aStack.stackSize <= 0 || BLACKLIST.contains(aStack, T)) return 0;
+			if (ST.invalid(aStack) || aStack.stackSize <= 0 || ST.meta_(aStack) == W || BLACKLIST.contains(aStack, T)) return 0;
 			if (aStack.hasTagCompound()) {
 				for (ItemStack tGarbage : GARBAGE_ITEMS) if (ST.equal(aStack, tGarbage)) {
-					tGarbage.stackSize = UT.Code.bindInt((long)tGarbage.stackSize + (long)aStack.stackSize);
+					tGarbage.stackSize = UT.Code.bind31((long)tGarbage.stackSize + (long)aStack.stackSize);
 					return aStack.stackSize;
 				}
 				GARBAGE_ITEMS.add(aStack.copy());
@@ -1341,7 +1354,7 @@ public class CS {
 			}
 			ItemStack tGarbage = GARBAGE_MAP_ITEMS.get(aStack);
 			if (ST.valid(tGarbage)) {
-				tGarbage.stackSize = UT.Code.bindInt((long)tGarbage.stackSize + (long)aStack.stackSize);
+				tGarbage.stackSize = UT.Code.bind31((long)tGarbage.stackSize + (long)aStack.stackSize);
 				return aStack.stackSize;
 			}
 			aStack = aStack.copy();
@@ -1391,12 +1404,12 @@ public class CS {
 		}
 		public static long trash(IFluidTank aTank, long aTrashed) {
 			if (aTank == null || aTrashed <= 0) return 0;
-			return aTank instanceof FluidTankGT ? trash(aTank.getFluid(), ((FluidTankGT)aTank).remove(aTrashed)) : trash(aTank.drain(UT.Code.bindInt(aTrashed), T));
+			return aTank instanceof FluidTankGT ? trash(aTank.getFluid(), ((FluidTankGT)aTank).remove(aTrashed)) : trash(aTank.drain(UT.Code.bind31(aTrashed), T));
 		}
 		public static long trash(IFluidTank[] aTanks) {
 			if (aTanks == null) return 0;
 			long rTrashed = 0;
-			for (int i = 0; i < aTanks.length; i++) rTrashed += trash(aTanks[i]);
+			for (IFluidTank aTank : aTanks) rTrashed += trash(aTank);
 			return rTrashed;
 		}
 		public static long trash(IFluidTank[] aTanks, int aIndex) {
@@ -1406,7 +1419,7 @@ public class CS {
 		public static long trash(FluidStack[] aFluids) {
 			if (aFluids == null) return 0;
 			long rTrashed = 0;
-			for (int i = 0; i < aFluids.length; i++) rTrashed += trash(aFluids[i]);
+			for (FluidStack aFluid : aFluids) rTrashed += trash(aFluid);
 			return rTrashed;
 		}
 		public static long trash(FluidStack[] aFluids, int aIndex) {
@@ -1452,7 +1465,7 @@ public class CS {
 					if (!aNBT.hasKey(""+i)) break;
 					FluidTankGT tTank = new FluidTankGT().setPreventDraining().setVoidExcess();
 					tTank.readFromNBT(aNBT, ""+i);
-					if (!tTank.has()) continue;
+					if (tTank.isEmpty()) continue;
 					GARBAGE_FLUIDS.add(tTank);
 				}
 			}
@@ -1474,7 +1487,7 @@ public class CS {
 		, LIQUID = new HashSetNoNulls<>(F, "poison", "liquidnitrogen", "liquiddna")
 		, GAS = new HashSetNoNulls<>()
 		, PLASMA = new HashSetNoNulls<>(F, "rc fusion plasma")
-		, HIDDEN = new HashSetNoNulls<>(F, "heliumplasma", "nitrogenplasma")
+		, HIDDEN = new HashSetNoNulls<>(F) // REMOVED "heliumplasma", "nitrogenplasma"
 		, AIR = new HashSetNoNulls<>()
 		, OXYGEN = new HashSetNoNulls<>()
 		, LIQUID_OXYGEN = new HashSetNoNulls<>()
@@ -1545,8 +1558,10 @@ public class CS {
 	public static class FoodsGT {
 		public static final ItemStackMap<ItemStackContainer, int[]> MAP = new ItemStackMap<>();
 		public static int[] get(ItemStack aStack) {return MAP.containsKey(aStack, F) ? MAP.get(aStack) : MAP.get(new ItemStackContainer(aStack, 1, W));}
-		/** Alcohol, Caffeine, Dehydration, Sugar, Fat */
-		public static void put(ItemStack aStack, int aAlcohol, int aCaffeine, int aDehydration, int aSugar, int aFat) {if (!MAP.containsKey(aStack, F)) MAP.put(aStack, new int[] {aAlcohol, aCaffeine, aDehydration, aSugar, aFat});}
+		/** Alcohol, Caffeine, Dehydration, Sugar, Fat, Radiation */
+		public static void put(ItemStack aStack, int aAlcohol, int aCaffeine, int aDehydration, int aSugar, int aFat, int aRadiation) {if (!MAP.containsKey(aStack, F)) MAP.put(aStack, new int[] {aAlcohol, aCaffeine, aDehydration, aSugar, aFat, aRadiation});}
+		/** Alcohol, Caffeine, Dehydration, Sugar, Fat, Radiation */
+		public static void put(ItemStack aStack, int aAlcohol, int aCaffeine, int aDehydration, int aSugar, int aFat) {if (!MAP.containsKey(aStack, F)) MAP.put(aStack, new int[] {aAlcohol, aCaffeine, aDehydration, aSugar, aFat, 0});}
 		public static void override(ItemStack aStack, int... aStats) {MAP.put(aStack, aStats);}
 	}
 	
@@ -1586,7 +1601,7 @@ public class CS {
 		oreSmall , oreSmallSandstone , oreSmallNetherrack , oreSmallEndstone , oreSmallAtumLimestone , oreSmallAtumSand, oreSmallGravel, oreSmallMud, oreSmallSand, oreSmallRedSand, oreSmallBedrock;
 		
 		public static BlockBaseFluid OilLight, OilMedium, OilHeavy, OilExtraHeavy, GasNatural, WaterGeothermal;
-		public static BlockFluidClassic Ocean, Swamp, River;
+		public static BlockFluidClassic Ocean, Swamp, River, RiverAdvanced;
 		
 		public static BlockBase Sands, Diggables, Grass, Paths, RockOres, CrystalOres, VanillaOresA;
 		
@@ -1682,7 +1697,7 @@ public class CS {
 		  SWORD = 0, PICKAXE = 2, SHOVEL = 4, AXE = 6, HOE = 8, SAW = 10, HARDHAMMER = 12, SOFTHAMMER = 14, WRENCH = 16, FILE = 18, CROWBAR = 20, SCREWDRIVER = 22, CLUB = 24, WIRECUTTER = 26, SCOOP = 28, BRANCHCUTTER = 30, UNIVERSALSPADE = 32, KNIFE = 34, BUTCHERYKNIFE = 36, SICKLE = 38, SENSE = 40, PLOW = 42, PLUNGER = 44, ROLLING_PIN = 46, CHISEL = 48, FLINT_AND_TINDER = 50, MONKEY_WRENCH = 52, BENDING_CYLINDER = 54, BENDING_CYLINDER_SMALL = 56, DOUBLE_AXE = 58, CONSTRUCTION_PICK = 60, MAGNIFYING_GLASS = 62, SCISSORS = 64, PINCERS = 66, SPADE = 68, GEM_PICK = 70, HAND_DRILL = 72, BUILDERWAND = 74
 		, MININGDRILL_LV = 100, MININGDRILL_MV = 102, MININGDRILL_HV = 104, CHAINSAW_LV = 110, CHAINSAW_MV = 112, CHAINSAW_HV = 114, WRENCH_LV = 120, WRENCH_MV = 122, WRENCH_HV = 124, JACKHAMMER_HV_Normal = 130, JACKHAMMER_HV_No_Ores = 132, BUZZSAW_LV = 140, SCREWDRIVER_LV = 150, DRILL_LV = 160, MIXER_LV = 170, MONKEY_WRENCH_LV = 180, MONKEY_WRENCH_MV = 182, MONKEY_WRENCH_HV = 184, TRIMMER_LV = 190
 		, POCKET_MULTITOOL = 1000, POCKET_KNIFE = 1002, POCKET_SAW = 1004, POCKET_FILE = 1006, POCKET_SCREWDRIVER = 1008, POCKET_WIRECUTTER = 1010, POCKET_SCISSORS = 1012, POCKET_CHISEL = 1014
-		, PISTOL = 5000
+		, PISTOL = 5000, CARBINE = 5002, RIFLE = 5004
 		;
 		
 		public static MultiItemTool sMetaTool;
@@ -2118,14 +2133,16 @@ public class CS {
 		, OMT               = "openmodularturrets"
 		, TG                = "Techguns"
 		
+		, WARPDRIVE         = "WarpDriveCore"
 		, FM                = "meteors"
 		, GC                = "GalacticraftCore"
 		, GC_PLANETS        = "GalacticraftMars"
 		, GC_GALAXYSPACE    = "GalaxySpace"
 		, GC_ADV_ROCKETRY   = "advancedRocketry"
+		, GC_EXTRAPLANETS   = "ExtraPlanets"
 		, VULPES            = "libVulpes"
 		, MD8               = "Micdoodlecore"
-
+		
 		, NEID              = "notenoughIDs"
 		;
 	}
@@ -2149,8 +2166,9 @@ public class CS {
 		, MC_IGNITE             = "fire.ignite"
 		, MC_DIG_CLOTH          = "dig.cloth"
 		, MC_DIG_ROCK           = "dig.stone"
-		, MC_DIG_GRAVEL         = "dig.gravel"
+		, MC_DIG_GLASS          = "dig.glass"
 		, MC_DIG_GRASS          = "dig.grass"
+		, MC_DIG_GRAVEL         = "dig.gravel"
 		, MC_DIG_SAND           = "dig.sand"
 		, MC_DIG_WOOD           = "dig.wood"
 		, MC_DIG_SNOW           = "dig.snow"
@@ -2160,6 +2178,7 @@ public class CS {
 		, MC_FIREWORK_LARGE     = "fireworks.largeBlast"
 		, MC_FIREWORK_LARGE_FAR = "fireworks.largeBlast_far"
 		, MC_LIQUID_WATER       = "liquid.water"
+		, MC_LIQUID_SPLASH      = "game.neutral.swim"
 		, MC_HMM                = "mob.villager.idle"
 		, MC_AHA                = "mob.villager.haggle"
 		, MC_SHEARS             = "mob.sheep.shear"

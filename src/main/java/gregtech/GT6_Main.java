@@ -59,6 +59,7 @@ import gregtech.loaders.a.*;
 import gregtech.loaders.b.*;
 import gregtech.loaders.c.*;
 import gregtechCH.GTCH_Main;
+import gregtechCH.loaders.a.Loader_Fluids_CH;
 import gregtechCH.loaders.b.Loader_MultiTileEntities_CH;
 import ic2.core.Ic2Items;
 import net.minecraft.block.Block;
@@ -98,7 +99,7 @@ public class GT6_Main extends Abstract_Mod {
 	public void onModPreInit2(FMLPreInitializationEvent aEvent) {
 		//CH config pre init
 		GTCH_Main.preInit();
-
+		
 		try {
 			LoadController tLoadController = ((LoadController)UT.Reflection.getFieldContent(Loader.instance(), "modController", T, T));
 			List<ModContainer> tModList = tLoadController.getActiveModList(), tNewModsList = new ArrayList<>(tModList.size());
@@ -123,47 +124,6 @@ public class GT6_Main extends Abstract_Mod {
 		BlockSwamp.FLOWS_OUT             = ConfigsGT.GREGTECH.get("general", "SwampBlocksFlowOutFar" , F);
 		BlockRiver.FLOWS_OUT             = ConfigsGT.GREGTECH.get("general", "RiverBlocksFlowOutFar" , F);
 		
-		if (ConfigsGT.GREGTECH.get("general", "IncreaseDungeonLoot", T)) {
-			ChestGenHooks tChest;
-			tChest = ChestGenHooks.getInfo(ChestGenHooks.BONUS_CHEST             ); tChest.setMax(tChest.getMax()+ 8); tChest.setMin(tChest.getMin()+ 4);
-			tChest = ChestGenHooks.getInfo(ChestGenHooks.DUNGEON_CHEST           ); tChest.setMax(tChest.getMax()+12); tChest.setMin(tChest.getMin()+ 6);
-			tChest = ChestGenHooks.getInfo(ChestGenHooks.PYRAMID_DESERT_CHEST    ); tChest.setMax(tChest.getMax()+ 8); tChest.setMin(tChest.getMin()+ 4);
-			tChest = ChestGenHooks.getInfo(ChestGenHooks.PYRAMID_JUNGLE_CHEST    ); tChest.setMax(tChest.getMax()+16); tChest.setMin(tChest.getMin()+ 8);
-			tChest = ChestGenHooks.getInfo(ChestGenHooks.PYRAMID_JUNGLE_DISPENSER); tChest.setMax(tChest.getMax()+ 2); tChest.setMin(tChest.getMin()+ 1);
-			tChest = ChestGenHooks.getInfo(ChestGenHooks.MINESHAFT_CORRIDOR      ); tChest.setMax(tChest.getMax()+ 4); tChest.setMin(tChest.getMin()+ 2);
-			tChest = ChestGenHooks.getInfo(ChestGenHooks.VILLAGE_BLACKSMITH      ); tChest.setMax(tChest.getMax()+12); tChest.setMin(tChest.getMin()+ 6);
-			tChest = ChestGenHooks.getInfo(ChestGenHooks.STRONGHOLD_CROSSING     ); tChest.setMax(tChest.getMax()+ 8); tChest.setMin(tChest.getMin()+ 4);
-			tChest = ChestGenHooks.getInfo(ChestGenHooks.STRONGHOLD_CORRIDOR     ); tChest.setMax(tChest.getMax()+ 6); tChest.setMin(tChest.getMin()+ 3);
-			tChest = ChestGenHooks.getInfo(ChestGenHooks.STRONGHOLD_LIBRARY      ); tChest.setMax(tChest.getMax()+16); tChest.setMin(tChest.getMin()+ 8);
-		}
-		if (ConfigsGT.GREGTECH.get("general", "SmallerVanillaToolDurability", T)) {
-			Items.wooden_sword   .setMaxDamage(  8);
-			Items.wooden_pickaxe .setMaxDamage(  8);
-			Items.wooden_shovel  .setMaxDamage(  8);
-			Items.wooden_axe     .setMaxDamage(  8);
-			Items.wooden_hoe     .setMaxDamage(  8);
-			Items.stone_sword    .setMaxDamage( 16);
-			Items.stone_pickaxe  .setMaxDamage( 16);
-			Items.stone_shovel   .setMaxDamage( 16);
-			Items.stone_axe      .setMaxDamage( 16);
-			Items.stone_hoe      .setMaxDamage( 16);
-			Items.golden_sword   .setMaxDamage( 32);
-			Items.golden_pickaxe .setMaxDamage( 32);
-			Items.golden_shovel  .setMaxDamage( 32);
-			Items.golden_axe     .setMaxDamage( 32);
-			Items.golden_hoe     .setMaxDamage( 32);
-			Items.iron_sword     .setMaxDamage(128);
-			Items.iron_pickaxe   .setMaxDamage(128);
-			Items.iron_shovel    .setMaxDamage(128);
-			Items.iron_axe       .setMaxDamage(128);
-			Items.iron_hoe       .setMaxDamage(128);
-			Items.diamond_sword  .setMaxDamage(512);
-			Items.diamond_pickaxe.setMaxDamage(512);
-			Items.diamond_shovel .setMaxDamage(512);
-			Items.diamond_axe    .setMaxDamage(512);
-			Items.diamond_hoe    .setMaxDamage(512);
-		}
-		
 		if (COMPAT_IC2 != null && !MD.IC2C.mLoaded) {
 			OUT.println(getModNameForLog() + ": Removing all original Scrapbox Drops.");
 			try {
@@ -172,7 +132,6 @@ public class GT6_Main extends Abstract_Mod {
 			} catch(Throwable e) {
 				e.printStackTrace(ERR);
 			}
-
 			OUT.println(getModNameForLog() + ": Adding Scrap with a Weight of 200.0F to the Scrapbox Drops.");
 			COMPAT_IC2.scrapbox(200.0F, IL.IC2_Scrap.get(1));
 		}
@@ -208,7 +167,8 @@ public class GT6_Main extends Abstract_Mod {
 		RM.pulverizing(ST.make(Items.melon       , 1, W), ST.make(Items.melon_seeds, 1, 0), null, 0, F);
 		RM.pulverizing(ST.make(Blocks.wool       , 1, W), ST.make(Items.string, 2, 0), ST.make(Items.string, 1, 0), 50, F);
 		
-		new Loader_Fluids().run();
+//		new Loader_Fluids().run();
+		new Loader_Fluids_CH().run();
 		new Loader_Tools().run();
 		new Loader_Items().run();
 		new Loader_PrefixBlocks().run();
@@ -327,13 +287,13 @@ public class GT6_Main extends Abstract_Mod {
 	public void onModInit2(FMLInitializationEvent aEvent) {
 		//CH config init config
 		GTCH_Main.init();
-
+		
 		for (FluidContainerData tData : FluidContainerRegistry.getRegisteredFluidContainerData()) if (tData.filledContainer.getItem() == Items.potionitem && ST.meta_(tData.filledContainer) == 0) {tData.fluid.amount = 0; break;}
 		
 		new Loader_Late_Items_And_Blocks().run();
 		
 		if (MD.IC2C.mLoaded) for (int i = 0; i <= 6; i++) FMLInterModComms.sendMessage(MD.IC2C.mID, "generatorDrop", ST.save(UT.NBT.makeInt("Key", i), "Value", IL.IC2_Machine.get(1)));
-
+		
 		ArrayListNoNulls<Runnable> tList = new ArrayListNoNulls<>(F,
 //			new Loader_MultiTileEntities(),
 			new Loader_MultiTileEntities_CH(),
@@ -352,7 +312,7 @@ public class GT6_Main extends Abstract_Mod {
 	public void onModPostInit2(FMLPostInitializationEvent aEvent) {
 		//CH config post init config
 		GTCH_Main.postInit();
-
+		
 		ItemStack tLignite = ST.make(MD.UB, "ligniteCoal", 1, 0);
 		if (ST.valid(tLignite)) CR.remove(tLignite, tLignite, tLignite, tLignite, tLignite, tLignite, tLignite, tLignite, tLignite);
 		
@@ -435,6 +395,46 @@ public class GT6_Main extends Abstract_Mod {
 		RM.ByProductList.mRecipeMachineList.add(ST.make(Items .cauldron, 1, 0));
 		RM.ByProductList.mRecipeMachineList.add(ST.make(Blocks.cauldron, 1, 0));
 		
+		if (ConfigsGT.GREGTECH.get("general", "IncreaseDungeonLoot", T)) {
+			ChestGenHooks tChest;
+			tChest = ChestGenHooks.getInfo(ChestGenHooks.BONUS_CHEST             ); tChest.setMax(tChest.getMax()+ 8); tChest.setMin(tChest.getMin()+ 4);
+			tChest = ChestGenHooks.getInfo(ChestGenHooks.DUNGEON_CHEST           ); tChest.setMax(tChest.getMax()+12); tChest.setMin(tChest.getMin()+ 6);
+			tChest = ChestGenHooks.getInfo(ChestGenHooks.PYRAMID_DESERT_CHEST    ); tChest.setMax(tChest.getMax()+ 8); tChest.setMin(tChest.getMin()+ 4);
+			tChest = ChestGenHooks.getInfo(ChestGenHooks.PYRAMID_JUNGLE_CHEST    ); tChest.setMax(tChest.getMax()+16); tChest.setMin(tChest.getMin()+ 8);
+			tChest = ChestGenHooks.getInfo(ChestGenHooks.PYRAMID_JUNGLE_DISPENSER); tChest.setMax(tChest.getMax()+ 2); tChest.setMin(tChest.getMin()+ 1);
+			tChest = ChestGenHooks.getInfo(ChestGenHooks.MINESHAFT_CORRIDOR      ); tChest.setMax(tChest.getMax()+ 4); tChest.setMin(tChest.getMin()+ 2);
+			tChest = ChestGenHooks.getInfo(ChestGenHooks.VILLAGE_BLACKSMITH      ); tChest.setMax(tChest.getMax()+12); tChest.setMin(tChest.getMin()+ 6);
+			tChest = ChestGenHooks.getInfo(ChestGenHooks.STRONGHOLD_CROSSING     ); tChest.setMax(tChest.getMax()+ 8); tChest.setMin(tChest.getMin()+ 4);
+			tChest = ChestGenHooks.getInfo(ChestGenHooks.STRONGHOLD_CORRIDOR     ); tChest.setMax(tChest.getMax()+ 6); tChest.setMin(tChest.getMin()+ 3);
+			tChest = ChestGenHooks.getInfo(ChestGenHooks.STRONGHOLD_LIBRARY      ); tChest.setMax(tChest.getMax()+16); tChest.setMin(tChest.getMin()+ 8);
+		}
+		if (ConfigsGT.GREGTECH.get("general", "SmallerVanillaToolDurability", T)) {
+			Items.wooden_sword   .setMaxDamage(  8);
+			Items.wooden_pickaxe .setMaxDamage(  8);
+			Items.wooden_shovel  .setMaxDamage(  8);
+			Items.wooden_axe     .setMaxDamage(  8);
+			Items.wooden_hoe     .setMaxDamage(  8);
+			Items.stone_sword    .setMaxDamage( 16);
+			Items.stone_pickaxe  .setMaxDamage( 16);
+			Items.stone_shovel   .setMaxDamage( 16);
+			Items.stone_axe      .setMaxDamage( 16);
+			Items.stone_hoe      .setMaxDamage( 16);
+			Items.golden_sword   .setMaxDamage( 32);
+			Items.golden_pickaxe .setMaxDamage( 32);
+			Items.golden_shovel  .setMaxDamage( 32);
+			Items.golden_axe     .setMaxDamage( 32);
+			Items.golden_hoe     .setMaxDamage( 32);
+			Items.iron_sword     .setMaxDamage(128);
+			Items.iron_pickaxe   .setMaxDamage(128);
+			Items.iron_shovel    .setMaxDamage(128);
+			Items.iron_axe       .setMaxDamage(128);
+			Items.iron_hoe       .setMaxDamage(128);
+			Items.diamond_sword  .setMaxDamage(512);
+			Items.diamond_pickaxe.setMaxDamage(512);
+			Items.diamond_shovel .setMaxDamage(512);
+			Items.diamond_axe    .setMaxDamage(512);
+			Items.diamond_hoe    .setMaxDamage(512);
+		}
 		
 		if (CODE_CLIENT) {
 			for (OreDictMaterial aMaterial : OreDictMaterial.ALLOYS) {

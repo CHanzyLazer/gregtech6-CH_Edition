@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,34 +19,17 @@
 
 package gregtech.tileentity.multiblocks;
 
-import static gregapi.data.CS.*;
-
-import java.util.Collection;
-import java.util.List;
-
 import gregapi.code.ArrayListNoNulls;
 import gregapi.code.ItemStackContainer;
 import gregapi.code.TagData;
-import gregapi.data.ANY;
-import gregapi.data.CS.BlocksGT;
-import gregapi.data.CS.FluidsGT;
-import gregapi.data.CS.GarbageGT;
-import gregapi.data.IL;
-import gregapi.data.LH;
+import gregapi.data.*;
 import gregapi.data.LH.Chat;
-import gregapi.data.MT;
-import gregapi.data.OP;
-import gregapi.data.TD;
 import gregapi.fluid.FluidTankGT;
 import gregapi.oredict.OreDictMaterial;
 import gregapi.oredict.OreDictMaterialStack;
 import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.tileentity.energy.ITileEntityEnergyDataCapacitor;
-import gregapi.tileentity.multiblocks.IMultiBlockEnergy;
-import gregapi.tileentity.multiblocks.IMultiBlockFluidHandler;
-import gregapi.tileentity.multiblocks.ITileEntityMultiBlockController;
-import gregapi.tileentity.multiblocks.MultiTileEntityMultiBlockPart;
-import gregapi.tileentity.multiblocks.TileEntityBase10MultiBlockBase;
+import gregapi.tileentity.multiblocks.*;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
@@ -60,6 +43,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fluids.IFluidTank;
+
+import java.util.Collection;
+import java.util.List;
+
+import static gregapi.data.CS.*;
 
 /**
  * @author Gregorius Techneticies
@@ -156,16 +144,15 @@ public class MultiTileEntityBedrockDrill extends TileEntityBase10MultiBlockBase 
 	}
 	
 	@Override
-	public void onTick2(long aTimer, boolean aIsServerSide) {
-		super.onTick2(aTimer, aIsServerSide);
+	public void onTick3(long aTimer, boolean aIsServerSide) {
 		if (aIsServerSide) {
 			if (slotHas(0)) {
 				ST.move(delegator(SIDE_TOP), getAdjacentInventory(SIDE_TOP));
 			}
-			if (mEnergy >= 32768 && !slotHas(0) && checkStructure(F) && mTank.drainAll(100)) {
+			if (mEnergy >= 32768 && !slotHas(0) && isStructureOkay() && mTank.drainAll(100)) {
 				mEnergy -= 32768;
 				// Switch Stone Type randomly. The plus 1 is for the Vanilla Stone case.
-				if (rng(1000) == 0) mType = rng(BlocksGT.stones.length+1);
+				if (rng(1000) == 0) mType = rng(BlocksGT.stones.length+(IL.EtFu_Deepslate_Cobble.exists() ? 2 : 1));
 				// a 0-18 of 128 Chance to be an Ore.
 				int tSelector = rng(128);
 				if (tSelector < mList.size()) {
@@ -200,8 +187,8 @@ public class MultiTileEntityBedrockDrill extends TileEntityBase10MultiBlockBase 
 						// This might be the Overworld or some Overworld alike Dimension.
 						slot(0, ST.make((Block)BlocksGT.ores_broken[mType], 1, tMaterial.mID));
 					}
-					if (ST.invalid(slot(0)) && StoneLayer.DEEPSLATE != null) {
-						// Make Deepslate Ore before Cobblestone.
+					if (ST.invalid(slot(0)) && mType%2==0 && IL.EtFu_Deepslate_Cobble.exists()) {
+						// Make Deepslate Ore 50% of the time.
 						slot(0, ST.make((Block)StoneLayer.DEEPSLATE.mOreBroken, 1, tMaterial.mID));
 					}
 					if (ST.invalid(slot(0))) {
@@ -229,9 +216,9 @@ public class MultiTileEntityBedrockDrill extends TileEntityBase10MultiBlockBase 
 						// This might be the Overworld or some Overworld alike Dimension.
 						slot(0, ST.make(BlocksGT.stones[mType], 1, 1));
 					}
-					if (ST.invalid(slot(0)) && StoneLayer.DEEPSLATE != null) {
-						// Make Deepslate before Cobblestone.
-						slot(0, ST.make(StoneLayer.DEEPSLATE.mCobble, 1, StoneLayer.DEEPSLATE.mMetaCobble));
+					if (ST.invalid(slot(0)) && mType%2==0 && IL.EtFu_Deepslate_Cobble.exists()) {
+						// Make Deepslate 50% of the time.
+						slot(0, IL.EtFu_Deepslate_Cobble.get(1));
 					}
 					if (ST.invalid(slot(0))) {
 						// Make Cobble, if nothing else applies.
@@ -255,7 +242,8 @@ public class MultiTileEntityBedrockDrill extends TileEntityBase10MultiBlockBase 
 	}
 	
 	@Override
-	public void onMagnifyingGlass2(List<String> aChatReturn) {
+	public void onMagnifyingGlassSuccess(List<String> aChatReturn, boolean aOldStructureOkay) {
+		super.onMagnifyingGlassSuccess(aChatReturn, aOldStructureOkay);
 		aChatReturn.add(mTank.content("WARNING: NO LUBRICANT!!!"));
 	}
 	

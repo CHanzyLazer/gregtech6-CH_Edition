@@ -25,19 +25,16 @@ import gregapi.block.multitileentity.MultiTileEntityContainer;
 import gregapi.cover.ITileEntityCoverable;
 import gregapi.data.LH;
 import gregapi.data.LH.Chat;
-import gregapi.oredict.OreDictItemData;
-import gregapi.oredict.OreDictPrefix;
 import gregapi.tileentity.ITileEntity;
 import gregapi.tileentity.ITileEntityFoamable;
 import gregapi.tileentity.ITileEntityMachineBlockUpdateable;
 import gregapi.tileentity.base.TileEntityBase08Directional;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
-import gregapi.util.OM;
 import gregapi.util.UT;
 import gregapi.util.WD;
-import gregtechCH.tileentity.ITEPaintable_CH;
-import gregtechCH.tileentity.connectors.ITEInterceptModConnectFluid_CH;
-import gregtechCH.tileentity.connectors.ITEInterceptModConnectItem_CH;
+import gregtechCH.tileentity.IMTEPaintable;
+import gregtechCH.tileentity.connectors.ITEInterceptModConnectFluid;
+import gregtechCH.tileentity.connectors.ITEInterceptModConnectItem;
 import gregtechCH.util.UT_CH;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -55,7 +52,7 @@ import static gregapi.data.CS.*;
 /**
  * @author Gregorius Techneticies
  */
-public abstract class TileEntityBase09Connector extends TileEntityBase08Directional implements ITEInterceptModConnectItem_CH, ITEInterceptModConnectFluid_CH, ITileEntityConnector, IMTE_OnPlaced, IMTE_AddToolTips {
+public abstract class TileEntityBase09Connector extends TileEntityBase08Directional implements ITEInterceptModConnectItem, ITEInterceptModConnectFluid, ITileEntityConnector, IMTE_OnPlaced, IMTE_AddToolTips {
 	protected byte mConnections = 0;
 	
 	@Override
@@ -69,7 +66,7 @@ public abstract class TileEntityBase09Connector extends TileEntityBase08Directio
 		super.writeToNBT2(aNBT);
 		UT.NBT.setNumber(aNBT, NBT_CONNECTION, mConnections);
 	}
-
+	
 	@Override
 	public void onTick2(long aTimer, boolean aIsServerSide) {
 		super.onTick2(aTimer, aIsServerSide);
@@ -108,7 +105,7 @@ public abstract class TileEntityBase09Connector extends TileEntityBase08Directio
 	}
 	public void schedulePlace(EntityPlayer aPlayer, byte aSide) {mScheduleList.add(new SchedulePlace(aPlayer, aSide));}
 	private final List<Runnable> mScheduleList = new ArrayList<>();
-
+	
 	private void _place(EntityPlayer aPlayer, byte aSide) {
 		aSide = OPOS[aSide];
 		DelegatorTileEntity<TileEntity> tDelegator;
@@ -131,7 +128,7 @@ public abstract class TileEntityBase09Connector extends TileEntityBase08Directio
 				tDelegator = getAdjacentTileEntity(tSide);
 				if (tDelegator.mTileEntity instanceof ITileEntity && !((ITileEntity)tDelegator.mTileEntity).allowInteraction(aPlayer)) continue;
 				if (tDelegator.mTileEntity instanceof ITileEntityConnector && SIDES_VALID[tDelegator.mSideOfTileEntity] && UT.Code.haveOneCommonElement(((ITileEntityConnector)tDelegator.mTileEntity).getConnectorTypes(tDelegator.mSideOfTileEntity), getConnectorTypes(tSide))) {
-					if (tDelegator.mTileEntity instanceof ITEPaintable_CH && ((ITEPaintable_CH)tDelegator.mTileEntity).isPainted() && ((ITEPaintable_CH)tDelegator.mTileEntity).getPaint()==getPaint()) connect(tSide, T);
+					if (tDelegator.mTileEntity instanceof IMTEPaintable && ((IMTEPaintable)tDelegator.mTileEntity).isPainted() && ((IMTEPaintable)tDelegator.mTileEntity).getPaint()==getPaint()) connect(tSide, T);
 				} else
 				if (canAutoConnect(tSide,tDelegator)) {
 					// 需要避免自动连接空气和液体
@@ -155,7 +152,7 @@ public abstract class TileEntityBase09Connector extends TileEntityBase08Directio
 	}
 	// GTCH, 改为相同的连接性质即可
 	public boolean isFullBlockTE(TileEntity aHand, byte aSide) {return SIDES_VALID[aSide] && (aHand instanceof ITileEntityConnector) && UT.Code.haveOneCommonElement(((ITileEntityConnector)aHand).getConnectorTypes(OPOS[aSide]), getConnectorTypes(aSide));}
-
+	
 	@Override
 	public boolean connected(byte aSide) {
 		return FACE_CONNECTED[aSide][mConnections];
@@ -171,7 +168,7 @@ public abstract class TileEntityBase09Connector extends TileEntityBase08Directio
 			if (tDelegator.mTileEntity instanceof ITileEntityCoverable && ((ITileEntityCoverable)tDelegator.mTileEntity).getCoverData() != null && ((ITileEntityCoverable)tDelegator.mTileEntity).getCoverData().mBehaviours[tDelegator.mSideOfTileEntity] != null && ((ITileEntityCoverable)tDelegator.mTileEntity).getCoverData().mBehaviours[tDelegator.mSideOfTileEntity].interceptConnect(tDelegator.mSideOfTileEntity, ((ITileEntityCoverable)tDelegator.mTileEntity).getCoverData())) return F;
 			// GTCH, 补充条件让有建筑泡沫的管道只有连接面能连接
 			if (tDelegator.mTileEntity instanceof ITileEntityFoamable && ((ITileEntityFoamable) tDelegator.mTileEntity).driedFoam(OPOS[aSide]) && !((ITileEntityConnector) tDelegator.mTileEntity).connected(OPOS[aSide])) return F;
-
+			
 			if (SIDES_VALID[tDelegator.mSideOfTileEntity] && UT.Code.haveOneCommonElement(((ITileEntityConnector)tDelegator.mTileEntity).getConnectorTypes(tDelegator.mSideOfTileEntity), getConnectorTypes(aSide))) {
 				doConnect_(aSide);
 				if (aNotify) ((ITileEntityConnector)tDelegator.mTileEntity).connect(tDelegator.mSideOfTileEntity, F);
@@ -190,7 +187,7 @@ public abstract class TileEntityBase09Connector extends TileEntityBase08Directio
 		}
 		return connected(aSide);
 	}
-
+	
 	// GTCH, 用于减少重复代码
 	private void doConnect_(byte aSide) {
 		byte oConnections = mConnections;
@@ -225,7 +222,7 @@ public abstract class TileEntityBase09Connector extends TileEntityBase08Directio
 	public void onConnectionChange(byte aPreviousConnections) {/**/}
 	public boolean canConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator) {return F;}
 	protected boolean canAutoConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator) {return canConnect(aSide, aDelegator);}
-
+	
 	// GTCH, 非连接面阻止 MOD 管道连接
 	@Override public boolean interceptModConnectItem(byte aSide)  {return !connected(aSide);}
 	@Override public boolean interceptModConnectFluid(byte aSide) {return !connected(aSide);}

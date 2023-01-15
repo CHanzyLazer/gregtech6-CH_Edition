@@ -81,9 +81,9 @@ import gregapi.util.CR;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.worldgen.GT6WorldGenerator;
-import gregtechCH.config.ConfigForge_CH;
-import gregtechCH.config.ConfigJson_CH;
+import gregtechCH.config.ConfigForge;
 import gregtechCH.data.LH_CH;
+import gregtechCH.data.TD_CH;
 import gregtechCH.lang.LanguageHandler_CH;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -108,7 +108,7 @@ import static gregapi.data.CS.*;
  * 
  * This loads before compatible Mods, except Micdoodlecore. GT_API_Post loads after all compatible Mods.
  */
-@Mod(modid=ModIDs.GAPI, name="Greg-API", version="GT6-MC1710", dependencies="required-before:"+ModIDs.GAPI_POST+"; after:"+ModIDs.MD8+"; before:"+ModIDs.IC2+"; before:"+ModIDs.IC2C+"; before:"+ModIDs.NC+"; before:"+ModIDs.IHL+"; before:"+ModIDs.FUNK+"; before:"+ModIDs.BAUBLES+"; before:"+ModIDs.HEE+"; before:"+ModIDs.GaSu+"; before:"+ModIDs.GaNe+"; before:"+ModIDs.GaEn+"; before:"+ModIDs.WdSt+"; before:"+ModIDs.CrGu+"; before:"+ModIDs.COFH_API+"; before:"+ModIDs.COFH_API_ENERGY+"; before:"+ModIDs.COFH_CORE+"; before:"+ModIDs.CC+"; before:"+ModIDs.OC+"; before:"+ModIDs.HEX+"; before:"+ModIDs.DE+"; before:"+ModIDs.AV+"; before:"+ModIDs.FR+"; before:"+ModIDs.FRMB+"; before:"+ModIDs.BINNIE+"; before:"+ModIDs.BINNIE_BEE+"; before:"+ModIDs.BINNIE_TREE+"; before:"+ModIDs.BINNIE_GENETICS+"; before:"+ModIDs.BINNIE_BOTANY+"; before:"+ModIDs.IE+"; before:"+ModIDs.UB+"; before:"+ModIDs.COG+"; before:"+ModIDs.PFAA+"; before:"+ModIDs.MIN+"; before:"+ModIDs.RH+"; before:"+ModIDs.CANDY+"; before:"+ModIDs.ABYSSAL+"; before:"+ModIDs.SOULFOREST+"; before:"+ModIDs.ARS+"; before:"+ModIDs.TC+"; before:"+ModIDs.TCFM+"; before:"+ModIDs.BOTA+"; before:"+ModIDs.ALF+"; before:"+ModIDs.WTCH+"; before:"+ModIDs.HOWL+"; before:"+ModIDs.MoCr+"; before:"+ModIDs.GoG+"; before:"+ModIDs.LycM+"; before:"+ModIDs.LycM_Arctic+"; before:"+ModIDs.LycM_Demon+"; before:"+ModIDs.LycM_Desert+"; before:"+ModIDs.LycM_Forest+"; before:"+ModIDs.LycM_Fresh+"; before:"+ModIDs.LycM_Inferno+"; before:"+ModIDs.LycM_Jungle+"; before:"+ModIDs.LycM_Mountain+"; before:"+ModIDs.LycM_Plains+"; before:"+ModIDs.LycM_Salt+"; before:"+ModIDs.LycM_Shadow+"; before:"+ModIDs.LycM_Swamp+"; before:"+ModIDs.RC+"; before:"+ModIDs.BP+"; before:"+ModIDs.PR+"; before:"+ModIDs.PR_EXPANSION+"; before:"+ModIDs.PR_INTEGRATION+"; before:"+ModIDs.PR_TRANSMISSION+"; before:"+ModIDs.PR_TRANSPORT+"; before:"+ModIDs.PR_EXPLORATION+"; before:"+ModIDs.PR_COMPATIBILITY+"; before:"+ModIDs.PR_FABRICATION+"; before:"+ModIDs.PR_ILLUMINATION+"; before:"+ModIDs.PE+"; before:"+ModIDs.AE+"; before:"+ModIDs.MO+"; before:"+ModIDs.TE_FOUNDATION+"; before:"+ModIDs.TE_DYNAMICS+"; before:"+ModIDs.TE+"; before:"+ModIDs.ZTONES+"; before:"+ModIDs.CHSL+"; before:"+ModIDs.NePl+"; before:"+ModIDs.NeLi+"; before:"+ModIDs.EnLi+"; before:"+ModIDs.EtFu+"; before:"+ModIDs.BB+"; before:"+ModIDs.DYNAMIC_TREES+"; before:"+ModIDs.BbLC+"; before:"+ModIDs.CARP+"; before:"+ModIDs.BETTER_RECORDS+"; before:"+ModIDs.TF+"; before:"+ModIDs.ERE+"; before:"+ModIDs.MFR+"; before:"+ModIDs.FSP+"; before:"+ModIDs.SC2+"; before:"+ModIDs.PnC+"; before:"+ModIDs.ExU+"; before:"+ModIDs.ExS+"; before:"+ModIDs.EIO+"; before:"+ModIDs.RT+"; before:"+ModIDs.AA+"; before:"+ModIDs.TreeCap+"; before:"+ModIDs.HaC+"; before:"+ModIDs.CookBook+"; before:"+ModIDs.APC+"; before:"+ModIDs.ENVM+"; before:"+ModIDs.MaCr+"; before:"+ModIDs.BC_TRANSPORT+"; before:"+ModIDs.BC_SILICON+"; before:"+ModIDs.BC_FACTORY+"; before:"+ModIDs.BC_ENERGY+"; before:"+ModIDs.BC_ROBOTICS+"; before:"+ModIDs.BC+"; before:"+ModIDs.BC_BUILDERS+"; before:"+ModIDs.MgC+"; before:"+ModIDs.BR+"; before:"+ModIDs.HBM+"; before:"+ModIDs.ELN+"; before:"+ModIDs.DRGN+"; before:"+ModIDs.ElC+"; before:"+ModIDs.CrC+"; before:"+ModIDs.ReC+"; before:"+ModIDs.RoC+"; before:"+ModIDs.Mek+"; before:"+ModIDs.Mek_Tools+"; before:"+ModIDs.Mek_Generators+"; before:"+ModIDs.GC+"; before:"+ModIDs.GC_PLANETS+"; before:"+ModIDs.GC_GALAXYSPACE+"; before:"+ModIDs.VULPES+"; before:"+ModIDs.GC_ADV_ROCKETRY+"; before:"+ModIDs.BTL+"; before:"+ModIDs.AETHER+"; before:"+ModIDs.TROPIC+"; before:"+ModIDs.ATUM+"; before:"+ModIDs.EB+"; before:"+ModIDs.EBXL+"; before:"+ModIDs.BoP+"; before:"+ModIDs.HiL+"; before:"+ModIDs.ATG+"; before:"+ModIDs.RTG+"; before:"+ModIDs.RWG+"; before:"+ModIDs.CW2+"; before:"+ModIDs.A97_MINING+"; before:"+ModIDs.MYST+"; before:"+ModIDs.WARPBOOK+"; before:"+ModIDs.LOSTBOOKS+"; before:"+ModIDs.LOOTBAGS+"; before:"+ModIDs.EUREKA+"; before:"+ModIDs.ENCHIRIDION+"; before:"+ModIDs.ENCHIRIDION2+"; before:"+ModIDs.SmAc+"; before:"+ModIDs.HQM+"; before:"+ModIDs.SD+"; before:"+ModIDs.BTRS+"; before:"+ModIDs.JABBA+"; before:"+ModIDs.MaCu+"; before:"+ModIDs.PdC+"; before:"+ModIDs.Bamboo+"; before:"+ModIDs.PMP+"; before:"+ModIDs.Fossil+"; before:"+ModIDs.GrC+"; before:"+ModIDs.GrC_Apples+"; before:"+ModIDs.GrC_Bamboo+"; before:"+ModIDs.GrC_Bees+"; before:"+ModIDs.GrC_Cellar+"; before:"+ModIDs.GrC_Fish+"; before:"+ModIDs.GrC_Grapes+"; before:"+ModIDs.GrC_Hops+"; before:"+ModIDs.GrC_Milk+"; before:"+ModIDs.GrC_Rice+"; before:"+ModIDs.BG2+"; before:"+ModIDs.BWM+"; before:"+ModIDs.OMT+"; before:"+ModIDs.TG+"; before:"+ModIDs.FM+"; before:"+ModIDs.FZ+"; before:"+ModIDs.MNTL+"; before:"+ModIDs.OB+"; before:"+ModIDs.PA+"; before:"+ModIDs.TiC+"; before:"+ModIDs.MF2+"; before:"+ModIDs.TRANSLOCATOR+"; before:"+ModIDs.WR_CBE_C+"; before:"+ModIDs.WR_CBE_A+"; before:"+ModIDs.WR_CBE_L+"; before:"+ModIDs.VOLTZ+"; before:"+ModIDs.MFFS+"; before:"+ModIDs.ICBM+"; before:"+ModIDs.ATSCI+"; before:inventorytweaks; before:ironbackpacks; before:journeymap; before:LogisticsPipes; before:LunatriusCore; before:NEIAddons; before:NEIAddons|Developer; before:NEIAddons|AppEng; before:NEIAddons|Botany; before:NEIAddons|Forestry; before:NEIAddons|CraftingTables; before:NEIAddons|ExNihilo; before:neiintegration; before:openglasses; before:simplyjetpacks; before:Stackie; before:StevesCarts; before:TiCTooltips; before:worldedit; before:McMultipart; before:OpenPeripheralCore; before:OpenPeripheralIntegration; before:OpenPeripheral; ")
+@Mod(modid=ModIDs.GAPI, name="Greg-API", version="GT6-MC1710", dependencies="required-before:"+ModIDs.GAPI_POST+"; after:"+ModIDs.MD8+"; before:"+ModIDs.IC2+"; before:"+ModIDs.IC2C+"; before:"+ModIDs.NC+"; before:"+ModIDs.IHL+"; before:"+ModIDs.FUNK+"; before:"+ModIDs.BAUBLES+"; before:"+ModIDs.HEE+"; before:"+ModIDs.GaSu+"; before:"+ModIDs.GaNe+"; before:"+ModIDs.GaEn+"; before:"+ModIDs.WdSt+"; before:"+ModIDs.CrGu+"; before:"+ModIDs.COFH_API+"; before:"+ModIDs.COFH_API_ENERGY+"; before:"+ModIDs.COFH_CORE+"; before:"+ModIDs.CC+"; before:"+ModIDs.OC+"; before:"+ModIDs.HEX+"; before:"+ModIDs.DE+"; before:"+ModIDs.AV+"; before:"+ModIDs.FR+"; before:"+ModIDs.FRMB+"; before:"+ModIDs.BINNIE+"; before:"+ModIDs.BINNIE_BEE+"; before:"+ModIDs.BINNIE_TREE+"; before:"+ModIDs.BINNIE_GENETICS+"; before:"+ModIDs.BINNIE_BOTANY+"; before:"+ModIDs.IE+"; before:"+ModIDs.UB+"; before:"+ModIDs.COG+"; before:"+ModIDs.PFAA+"; before:"+ModIDs.MIN+"; before:"+ModIDs.RH+"; before:"+ModIDs.CANDY+"; before:"+ModIDs.ABYSSAL+"; before:"+ModIDs.SOULFOREST+"; before:"+ModIDs.ARS+"; before:"+ModIDs.TC+"; before:"+ModIDs.TCFM+"; before:"+ModIDs.BOTA+"; before:"+ModIDs.ALF+"; before:"+ModIDs.WTCH+"; before:"+ModIDs.HOWL+"; before:"+ModIDs.MoCr+"; before:"+ModIDs.GoG+"; before:"+ModIDs.LycM+"; before:"+ModIDs.LycM_Arctic+"; before:"+ModIDs.LycM_Demon+"; before:"+ModIDs.LycM_Desert+"; before:"+ModIDs.LycM_Forest+"; before:"+ModIDs.LycM_Fresh+"; before:"+ModIDs.LycM_Inferno+"; before:"+ModIDs.LycM_Jungle+"; before:"+ModIDs.LycM_Mountain+"; before:"+ModIDs.LycM_Plains+"; before:"+ModIDs.LycM_Salt+"; before:"+ModIDs.LycM_Shadow+"; before:"+ModIDs.LycM_Swamp+"; before:"+ModIDs.RC+"; before:"+ModIDs.BP+"; before:"+ModIDs.PR+"; before:"+ModIDs.PR_EXPANSION+"; before:"+ModIDs.PR_INTEGRATION+"; before:"+ModIDs.PR_TRANSMISSION+"; before:"+ModIDs.PR_TRANSPORT+"; before:"+ModIDs.PR_EXPLORATION+"; before:"+ModIDs.PR_COMPATIBILITY+"; before:"+ModIDs.PR_FABRICATION+"; before:"+ModIDs.PR_ILLUMINATION+"; before:"+ModIDs.PE+"; before:"+ModIDs.AE+"; before:"+ModIDs.MO+"; before:"+ModIDs.TE_FOUNDATION+"; before:"+ModIDs.TE_DYNAMICS+"; before:"+ModIDs.TE+"; before:"+ModIDs.ZTONES+"; before:"+ModIDs.CHSL+"; before:"+ModIDs.NePl+"; before:"+ModIDs.NeLi+"; before:"+ModIDs.EnLi+"; before:"+ModIDs.EtFu+"; before:"+ModIDs.BB+"; before:"+ModIDs.DYNAMIC_TREES+"; before:"+ModIDs.BbLC+"; before:"+ModIDs.CARP+"; before:"+ModIDs.BETTER_RECORDS+"; before:"+ModIDs.TF+"; before:"+ModIDs.ERE+"; before:"+ModIDs.MFR+"; before:"+ModIDs.FSP+"; before:"+ModIDs.SC2+"; before:"+ModIDs.PnC+"; before:"+ModIDs.ExU+"; before:"+ModIDs.ExS+"; before:"+ModIDs.EIO+"; before:"+ModIDs.RT+"; before:"+ModIDs.AA+"; before:"+ModIDs.TreeCap+"; before:"+ModIDs.HaC+"; before:"+ModIDs.CookBook+"; before:"+ModIDs.APC+"; before:"+ModIDs.ENVM+"; before:"+ModIDs.MaCr+"; before:"+ModIDs.BC_TRANSPORT+"; before:"+ModIDs.BC_SILICON+"; before:"+ModIDs.BC_FACTORY+"; before:"+ModIDs.BC_ENERGY+"; before:"+ModIDs.BC_ROBOTICS+"; before:"+ModIDs.BC+"; before:"+ModIDs.BC_BUILDERS+"; before:"+ModIDs.MgC+"; before:"+ModIDs.BR+"; before:"+ModIDs.HBM+"; before:"+ModIDs.ELN+"; before:"+ModIDs.DRGN+"; before:"+ModIDs.ElC+"; before:"+ModIDs.CrC+"; before:"+ModIDs.ReC+"; before:"+ModIDs.RoC+"; before:"+ModIDs.Mek+"; before:"+ModIDs.Mek_Tools+"; before:"+ModIDs.Mek_Generators+"; before:"+ModIDs.GC+"; before:"+ModIDs.GC_PLANETS+"; before:"+ModIDs.GC_GALAXYSPACE+"; before:"+ModIDs.VULPES+"; before:"+ModIDs.GC_ADV_ROCKETRY+"; before:"+ModIDs.GC_EXTRAPLANETS+"; before:"+ModIDs.BTL+"; before:"+ModIDs.AETHER+"; before:"+ModIDs.TROPIC+"; before:"+ModIDs.ATUM+"; before:"+ModIDs.EB+"; before:"+ModIDs.EBXL+"; before:"+ModIDs.BoP+"; before:"+ModIDs.HiL+"; before:"+ModIDs.ATG+"; before:"+ModIDs.RTG+"; before:"+ModIDs.RWG+"; before:"+ModIDs.CW2+"; before:"+ModIDs.A97_MINING+"; before:"+ModIDs.MYST+"; before:"+ModIDs.WARPBOOK+"; before:"+ModIDs.LOSTBOOKS+"; before:"+ModIDs.LOOTBAGS+"; before:"+ModIDs.EUREKA+"; before:"+ModIDs.ENCHIRIDION+"; before:"+ModIDs.ENCHIRIDION2+"; before:"+ModIDs.SmAc+"; before:"+ModIDs.HQM+"; before:"+ModIDs.SD+"; before:"+ModIDs.BTRS+"; before:"+ModIDs.JABBA+"; before:"+ModIDs.MaCu+"; before:"+ModIDs.PdC+"; before:"+ModIDs.Bamboo+"; before:"+ModIDs.PMP+"; before:"+ModIDs.Fossil+"; before:"+ModIDs.GrC+"; before:"+ModIDs.GrC_Apples+"; before:"+ModIDs.GrC_Bamboo+"; before:"+ModIDs.GrC_Bees+"; before:"+ModIDs.GrC_Cellar+"; before:"+ModIDs.GrC_Fish+"; before:"+ModIDs.GrC_Grapes+"; before:"+ModIDs.GrC_Hops+"; before:"+ModIDs.GrC_Milk+"; before:"+ModIDs.GrC_Rice+"; before:"+ModIDs.BG2+"; before:"+ModIDs.BWM+"; before:"+ModIDs.OMT+"; before:"+ModIDs.TG+"; before:"+ModIDs.FM+"; before:"+ModIDs.FZ+"; before:"+ModIDs.MNTL+"; before:"+ModIDs.OB+"; before:"+ModIDs.PA+"; before:"+ModIDs.TiC+"; before:"+ModIDs.MF2+"; before:"+ModIDs.TRANSLOCATOR+"; before:"+ModIDs.WR_CBE_C+"; before:"+ModIDs.WR_CBE_A+"; before:"+ModIDs.WR_CBE_L+"; before:"+ModIDs.VOLTZ+"; before:"+ModIDs.MFFS+"; before:"+ModIDs.ICBM+"; before:"+ModIDs.ATSCI+"; before:inventorytweaks; before:ironbackpacks; before:journeymap; before:LogisticsPipes; before:LunatriusCore; before:NEIAddons; before:NEIAddons|Developer; before:NEIAddons|AppEng; before:NEIAddons|Botany; before:NEIAddons|Forestry; before:NEIAddons|CraftingTables; before:NEIAddons|ExNihilo; before:neiintegration; before:openglasses; before:simplyjetpacks; before:Stackie; before:StevesCarts; before:TiCTooltips; before:worldedit; before:McMultipart; before:OpenPeripheralCore; before:OpenPeripheralIntegration; before:OpenPeripheral; ")
 public class GT_API extends Abstract_Mod {
 	@SidedProxy(modId = ModIDs.GAPI, clientSide = "gregapi.GT_API_Proxy_Client", serverSide = "gregapi.GT_API_Proxy_Server")
 	public static GT_API_Proxy api_proxy;
@@ -133,6 +133,9 @@ public class GT_API extends Abstract_Mod {
 		MT.init();
 		BI.BAROMETER.toString();
 		OP.ore.toString();
+//		OP_CH.wireLPGt16.toString(); // GTCH stuff
+		TD_CH.init(); // GTCH stuff
+		MT.initLater(); // GTCH, 保证引用项正确初始化
 		
 		// Make sure Icons are initialized.
 		Textures.BlockIcons.VOID.toString();
@@ -199,6 +202,7 @@ public class GT_API extends Abstract_Mod {
 		Items.experience_bottle.setContainerItem(Items.glass_bottle);
 		
 		// Fixing Max Stacksizes that don't make sense.
+		Items.bed.setMaxStackSize(64);
 		Items.cake.setMaxStackSize(64);
 		Items.wooden_door.setMaxStackSize(8);
 		Items.iron_door.setMaxStackSize(8);
@@ -233,19 +237,19 @@ public class GT_API extends Abstract_Mod {
 	@Mod.EventHandler
 	public void onPreLoad(FMLPreInitializationEvent aEvent) {
 		DirectoriesGT.CONFIG = aEvent.getModConfigurationDirectory();
-
+		
 		DirectoriesGT.CONFIG_GT = new File(DirectoriesGT.CONFIG, "GregTech");
 		if (!DirectoriesGT.CONFIG_GT.exists()) DirectoriesGT.CONFIG_GT = new File(DirectoriesGT.CONFIG, "gregtech");
-
-		ConfigForge_CH.initFile(); // init GTCH config file in forge
-
+		
+		ConfigForge.initFile(); // init GTCH config file in forge
+		
 		DirectoriesGT.CONFIG_RECIPES = new File(DirectoriesGT.CONFIG, "Recipes");
 		if (!DirectoriesGT.CONFIG_RECIPES.exists()) DirectoriesGT.CONFIG_RECIPES = new File(DirectoriesGT.CONFIG, "recipes");
 		
 		DirectoriesGT.MINECRAFT = DirectoriesGT.CONFIG.getParentFile();
 		
 		DirectoriesGT.LOGS = new File(DirectoriesGT.MINECRAFT, "logs");
-
+		
 		onModPreInit(aEvent);
 	}
 	
@@ -261,7 +265,7 @@ public class GT_API extends Abstract_Mod {
 				tMaterial.mHandleMaterial = OreDictMaterial.get(ConfigsGT.MATERIAL.get(tMaterial.mNameInternal, "ToolHandle", tMaterial.mHandleMaterial.mNameInternal));
 			}
 		}
-
+		
 		onModInit(aEvent);
 	}
 	
@@ -297,10 +301,10 @@ public class GT_API extends Abstract_Mod {
 		ConfigsGT.OREPROCESSING = new Config("OreProcessing.cfg");
 		// Deprecated Config Files.
 		ConfigsGT.OVERPOWERED = ConfigsGT.MACHINES = ConfigsGT.SPECIAL = ConfigsGT.GREGTECH;
-
+		
 		//CH config init config
-		ConfigForge_CH.initConfig();
-
+		ConfigForge.initConfig();
+		
 		tFile = new File(DirectoriesGT.CONFIG_GT, "Stacksizes.cfg");
 		if (!tFile.exists()) tFile = new File(DirectoriesGT.CONFIG_GT, "stacksizes.cfg");
 		Configuration tStackConfig = new Configuration(tFile);
@@ -356,9 +360,10 @@ public class GT_API extends Abstract_Mod {
 		
 		ConfigsGT.CLIENT = new Config(DirectoriesGT.MINECRAFT, "GregTech.cfg");
 		
-		D1 = ConfigsGT.CLIENT.get("debug" , "logs"         , F);
-		D2 = ConfigsGT.CLIENT.get("debug" , "oredict"      , F);
-		D3 = ConfigsGT.CLIENT.get("debug" , "misc"         , F);
+		D1                        = ConfigsGT.CLIENT.get("debug" , "logs"               , F);
+		D2                        = ConfigsGT.CLIENT.get("debug" , "oredict"            , F);
+		D3                        = ConfigsGT.CLIENT.get("debug" , "misc"               , F);
+		EXPERIMENTS               = ConfigsGT.CLIENT.get("debug" , "experiments"        , F);
 		CLIENT_BLOCKUPDATE_SOUNDS = ConfigsGT.CLIENT.get("debug" , "block_update_sounds", F);
 		if ( ConfigsGT.CLIENT.get("debug" , "april_fools"  , F)) APRIL_FOOLS = T;
 		if ( ConfigsGT.CLIENT.get("debug" , "xmas_july"    , F)) XMAS_IN_JULY = T;
@@ -695,7 +700,7 @@ public class GT_API extends Abstract_Mod {
 			tFile = new File(DirectoriesGT.MINECRAFT, "GregTech.lang");
 			if (!tFile.exists()) tFile = new File(DirectoriesGT.MINECRAFT, "gregtech.lang");
 			LanguageHandler.sLangFile = new Configuration(tFile);
-
+			
 			//CH lang
 			tFile = new File(DirectoriesGT.MINECRAFT, "GregTechCH.lang");
 			if (!tFile.exists()) tFile = new File(DirectoriesGT.MINECRAFT, "gregtechCH.lang");

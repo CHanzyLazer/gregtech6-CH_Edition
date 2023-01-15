@@ -61,6 +61,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
@@ -114,7 +115,7 @@ public class MultiTileEntityCrucible extends TileEntityBase10MultiBlockBase impl
 		if (worldObj.blockExists(xCoord-1, yCoord, zCoord-1) && worldObj.blockExists(xCoord+1, yCoord+2, zCoord+1)) {
 			if (getAir(xCoord, yCoord+1, zCoord)) worldObj.setBlockToAir(xCoord, yCoord+1, zCoord); else {resetStructurePart(); return F;}
 			if (getAir(xCoord, yCoord+2, zCoord)) worldObj.setBlockToAir(xCoord, yCoord+2, zCoord); else {resetStructurePart(); return F;}
-
+			
 			for (int i = -1; i < 2; i++) for (int j = -1; j < 2; j++) if (i != 0 || j != 0) {
 				if (!ITileEntityMultiBlockController.Util.checkAndSetTargetOffset(this, i, 0, j, mWalls, getMultiTileEntityRegistryID(), MultiTileEntityMultiBlockPart.TRANSPARENT, MultiTileEntityMultiBlockPart.ONLY_ENERGY_IN)) {resetStructurePart(); return F;}
 				if (!ITileEntityMultiBlockController.Util.checkAndSetTargetOffset(this, i, 1, j, mWalls, getMultiTileEntityRegistryID(), MultiTileEntityMultiBlockPart.TRANSPARENT, MultiTileEntityMultiBlockPart.ONLY_CRUCIBLE)) {resetStructurePart(); return F;}
@@ -124,7 +125,7 @@ public class MultiTileEntityCrucible extends TileEntityBase10MultiBlockBase impl
 		}
 		return isStructureOkay();
 	}
-
+	
 	protected void resetStructurePart() {
 		for (int i = -1; i < 2; i++) for (int j = -1; j < 2; j++) if (i != 0 || j != 0) {
 			ITileEntityMultiBlockController.Util.checkAndResetTargetOffset(this, i, 0, j, mWalls, getMultiTileEntityRegistryID());
@@ -175,8 +176,7 @@ public class MultiTileEntityCrucible extends TileEntityBase10MultiBlockBase impl
 	}
 	
 	@Override
-	public void onTick2(long aTimer, boolean aIsServerSide) {
-		super.onTick2(aTimer, aIsServerSide);
+	public void onTick3(long aTimer, boolean aIsServerSide) {
 		if (aIsServerSide && mHasToAddTimer) {
 			GT_API_Proxy.SERVER_TICK_POST.add(this);
 			mHasToAddTimer = F;
@@ -188,10 +188,17 @@ public class MultiTileEntityCrucible extends TileEntityBase10MultiBlockBase impl
 	public void onServerTickPost(boolean aFirst) {
 		long tTemperature = WD.envTemp(worldObj, xCoord, yCoord, zCoord), tHash = mContent.hashCode();
 		
-		if (!checkStructure(F)) {
+		if (!isStructureOkay()) {
 			if (SERVER_TIME % 10 == 0) {if (mTemperature > tTemperature) mTemperature--; if (mTemperature < tTemperature) mTemperature++;}
 			mTemperature = Math.max(mTemperature, Math.min(200, tTemperature));
 			return;
+		}
+		
+		if (SERVER_TIME % 600 == 10 && worldObj.isRaining() && getRainOffset(0, 1, 0)) {
+			BiomeGenBase tBiome = getBiome();
+			if (tBiome.rainfall > 0 && tBiome.temperature >= 0.2) {
+				addMaterialStacks(Arrays.asList(OM.stack(MT.Water, U100 * (long)Math.max(1, tBiome.rainfall*100) * (worldObj.isThundering()?2:1))), tTemperature);
+			}
 		}
 		
 		if (!slotHas(0)) slot(0, WD.suck(worldObj, xCoord-0.5, yCoord+PX_P[2], zCoord-0.5, 2, 3, 2));
@@ -576,14 +583,14 @@ public class MultiTileEntityCrucible extends TileEntityBase10MultiBlockBase impl
 		mTemperature = WD.envTemp(worldObj, xCoord, yCoord, zCoord);
 		return T;
 	}
-
+	
 	@Override
 	public boolean sendAny(boolean aSendAll) {return T;}
 	@Override
 	public IPacket getClientDataPacketSendAll(boolean aSendAll, List<Byte> rList) {
-		return super.getClientDataPacketSendAll(T, rList);
+		return super.getClientDataPacketSendAll(T, rList); // 保证附加的方块信息也总是会被发送
 	}
-
+	
 	// GTCH, 重写这个方法来扩展客户端数据
 	@Override
 	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
@@ -593,13 +600,13 @@ public class MultiTileEntityCrucible extends TileEntityBase10MultiBlockBase impl
 		rList.add(7, UT.Code.toByteS(mDisplayedFluid, 1));
 		rList.add(8, (byte)(mMeltDown ? 1 : 0));
 	}
-
+	
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		super.receiveDataByteArray(aData, aNetworkHandler);
 		mDisplayedHeight = aData[5];
 		mDisplayedFluid = UT.Code.combine(aData[6], aData[7]);
-		if (aData.length >= 9) mMeltDown = (aData[8] != 0);
+		if (aData.length > 8) mMeltDown = (aData[8] != 0);
 		return T;
 	}
 	
@@ -663,11 +670,11 @@ public class MultiTileEntityCrucible extends TileEntityBase10MultiBlockBase impl
 		}
 		return BlockTextureMulti.get(BlockTextureDefault.get((aSide==mFacing?mTexturesFront:mTextures)[FACES_TBS[aSide]], mRGBa), BlockTextureDefault.get((aSide==mFacing?mTexturesFront:mTextures)[FACES_TBS[aSide]+3]));
 	}
-
+	
 	// GTCH, 需要在结构成形时设置其为透明
 	@Override public int getLightOpacity() {return isStructureOkay() ? LIGHT_OPACITY_WATER : super.getLightOpacity();}
 	@Override protected void setStructureOkay2(int aOldOpacity) {updateLightOpacity(aOldOpacity);}
-
+	
 	@Override
 	public void onWalkOver2(EntityLivingBase aEntity) {
 		super.onWalkOver2(aEntity);

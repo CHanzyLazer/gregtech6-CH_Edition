@@ -20,10 +20,13 @@
 package gregapi.block.prefixblock;
 
 import static gregapi.data.CS.*;
+import static java.lang.Thread.sleep;
 
 import java.util.List;
 
 import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.data.CS.BlocksGT;
 import gregapi.data.CS.ModIDs;
 import gregapi.data.LH;
@@ -40,6 +43,8 @@ import gregapi.oredict.OreDictMaterial;
 import gregapi.oredict.OreDictPrefix;
 import gregapi.util.ST;
 import gregapi.util.UT;
+import gregtech.asm.transformers.replacements.Timer;
+import gregtechCH.item.IItemDisableNEIDamageSearch;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -56,7 +61,7 @@ import vazkii.botania.api.subtile.SubTileEntity;
 @Optional.InterfaceList(value = {
   @Optional.Interface(iface = "vazkii.botania.api.item.IFlowerPlaceable", modid = ModIDs.BOTA)
 })
-public class PrefixBlockItem extends ItemBlock implements IItemUpdatable, IPrefixItem, IItemGT, IItemNoGTOverride, IFlowerPlaceable {
+public class PrefixBlockItem extends ItemBlock implements IItemDisableNEIDamageSearch, IItemUpdatable, IPrefixItem, IItemGT, IItemNoGTOverride, IFlowerPlaceable {
 	public final PrefixBlock mBlock;
 	
 	public PrefixBlockItem(Block aBlock) {
@@ -76,9 +81,9 @@ public class PrefixBlockItem extends ItemBlock implements IItemUpdatable, IPrefi
 		}
 	}
 	
-	@Override
+	@Override @SideOnly(Side.CLIENT)
 	@SuppressWarnings("unchecked")
-	public void getSubItems(Item var1, CreativeTabs aCreativeTab, @SuppressWarnings("rawtypes") List aList) {
+	public void getSubItems(Item var1, CreativeTabs aCreativeTab, List aList) {
 		if (!mBlock.mHidden && (SHOW_HIDDEN_PREFIXES || !mBlock.mPrefix.contains(TD.Creative.HIDDEN)) && (SHOW_ORE_BLOCK_PREFIXES || mBlock == BlocksGT.ore || !mBlock.mPrefix.contains(TD.Prefix.ORE) || mBlock.mPrefix.contains(TD.Prefix.STORAGE_BASED))) for (int i = 0; i < mBlock.mMaterialList.length; i++) if (mBlock.mPrefix.isGeneratingItem(mBlock.mMaterialList[i])) if (SHOW_HIDDEN_MATERIALS || !mBlock.mMaterialList[i].mHidden) {
 			ItemStack tStack = ST.make(this, 1, i);
 			updateItemStack(tStack);
@@ -181,4 +186,7 @@ public class PrefixBlockItem extends ItemBlock implements IItemUpdatable, IPrefi
 		return (AspectList)GT_API.sCompatTC.getAspectList(rAspects);
 	}
 	*/
+	
+	// GTCH, 禁止此物品的 DamageSearch
+	@Override public boolean disableNEIDamageSearch() {return T;}
 }

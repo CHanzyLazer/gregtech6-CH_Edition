@@ -51,7 +51,7 @@ import static gregapi.data.CS.*;
  *
  * This loads after compatible Mods. The regular API loads before all compatible Mods.
  */
-@Mod(modid=ModIDs.GAPI_POST, name="Greg-API-Post", version="GT6-MC1710", dependencies="required-after:"+ModIDs.GAPI+"; after:"+ModIDs.MD8+"; after:"+ModIDs.IC2+"; after:"+ModIDs.IC2C+"; after:"+ModIDs.NC+"; after:"+ModIDs.IHL+"; after:"+ModIDs.FUNK+"; after:"+ModIDs.BAUBLES+"; after:"+ModIDs.HEE+"; after:"+ModIDs.GaSu+"; after:"+ModIDs.GaNe+"; after:"+ModIDs.GaEn+"; after:"+ModIDs.WdSt+"; after:"+ModIDs.CrGu+"; after:"+ModIDs.COFH_API+"; after:"+ModIDs.COFH_API_ENERGY+"; after:"+ModIDs.COFH_CORE+"; after:"+ModIDs.CC+"; after:"+ModIDs.OC+"; after:"+ModIDs.HEX+"; after:"+ModIDs.DE+"; after:"+ModIDs.AV+"; after:"+ModIDs.FR+"; after:"+ModIDs.FRMB+"; after:"+ModIDs.BINNIE+"; after:"+ModIDs.BINNIE_BEE+"; after:"+ModIDs.BINNIE_TREE+"; after:"+ModIDs.BINNIE_GENETICS+"; after:"+ModIDs.BINNIE_BOTANY+"; after:"+ModIDs.IE+"; after:"+ModIDs.UB+"; after:"+ModIDs.COG+"; after:"+ModIDs.PFAA+"; after:"+ModIDs.MIN+"; after:"+ModIDs.RH+"; after:"+ModIDs.CANDY+"; after:"+ModIDs.ABYSSAL+"; after:"+ModIDs.SOULFOREST+"; after:"+ModIDs.ARS+"; after:"+ModIDs.TC+"; after:"+ModIDs.TCFM+"; after:"+ModIDs.BOTA+"; after:"+ModIDs.ALF+"; after:"+ModIDs.WTCH+"; after:"+ModIDs.HOWL+"; after:"+ModIDs.MoCr+"; after:"+ModIDs.GoG+"; after:"+ModIDs.LycM+"; after:"+ModIDs.LycM_Arctic+"; after:"+ModIDs.LycM_Demon+"; after:"+ModIDs.LycM_Desert+"; after:"+ModIDs.LycM_Forest+"; after:"+ModIDs.LycM_Fresh+"; after:"+ModIDs.LycM_Inferno+"; after:"+ModIDs.LycM_Jungle+"; after:"+ModIDs.LycM_Mountain+"; after:"+ModIDs.LycM_Plains+"; after:"+ModIDs.LycM_Salt+"; after:"+ModIDs.LycM_Shadow+"; after:"+ModIDs.LycM_Swamp+"; after:"+ModIDs.RC+"; after:"+ModIDs.BP+"; after:"+ModIDs.PR+"; after:"+ModIDs.PR_EXPANSION+"; after:"+ModIDs.PR_INTEGRATION+"; after:"+ModIDs.PR_TRANSMISSION+"; after:"+ModIDs.PR_TRANSPORT+"; after:"+ModIDs.PR_EXPLORATION+"; after:"+ModIDs.PR_COMPATIBILITY+"; after:"+ModIDs.PR_FABRICATION+"; after:"+ModIDs.PR_ILLUMINATION+"; after:"+ModIDs.PE+"; after:"+ModIDs.AE+"; after:"+ModIDs.MO+"; after:"+ModIDs.TE_FOUNDATION+"; after:"+ModIDs.TE_DYNAMICS+"; after:"+ModIDs.TE+"; after:"+ModIDs.ZTONES+"; after:"+ModIDs.CHSL+"; after:"+ModIDs.NePl+"; after:"+ModIDs.NeLi+"; after:"+ModIDs.EnLi+"; after:"+ModIDs.EtFu+"; after:"+ModIDs.BB+"; after:"+ModIDs.DYNAMIC_TREES+"; after:"+ModIDs.BbLC+"; after:"+ModIDs.CARP+"; after:"+ModIDs.BETTER_RECORDS+"; after:"+ModIDs.TF+"; after:"+ModIDs.ERE+"; after:"+ModIDs.MFR+"; after:"+ModIDs.FSP+"; after:"+ModIDs.SC2+"; after:"+ModIDs.PnC+"; after:"+ModIDs.ExU+"; after:"+ModIDs.ExS+"; after:"+ModIDs.EIO+"; after:"+ModIDs.RT+"; after:"+ModIDs.AA+"; after:"+ModIDs.TreeCap+"; after:"+ModIDs.HaC+"; after:"+ModIDs.CookBook+"; after:"+ModIDs.APC+"; after:"+ModIDs.ENVM+"; after:"+ModIDs.MaCr+"; after:"+ModIDs.BC_TRANSPORT+"; after:"+ModIDs.BC_SILICON+"; after:"+ModIDs.BC_FACTORY+"; after:"+ModIDs.BC_ENERGY+"; after:"+ModIDs.BC_ROBOTICS+"; after:"+ModIDs.BC+"; after:"+ModIDs.BC_BUILDERS+"; after:"+ModIDs.MgC+"; after:"+ModIDs.BR+"; after:"+ModIDs.HBM+"; after:"+ModIDs.ELN+"; after:"+ModIDs.DRGN+"; after:"+ModIDs.ElC+"; after:"+ModIDs.CrC+"; after:"+ModIDs.ReC+"; after:"+ModIDs.RoC+"; after:"+ModIDs.Mek+"; after:"+ModIDs.Mek_Tools+"; after:"+ModIDs.Mek_Generators+"; after:"+ModIDs.GC+"; after:"+ModIDs.GC_PLANETS+"; after:"+ModIDs.GC_GALAXYSPACE+"; after:"+ModIDs.VULPES+"; after:"+ModIDs.GC_ADV_ROCKETRY+"; after:"+ModIDs.BTL+"; after:"+ModIDs.AETHER+"; after:"+ModIDs.TROPIC+"; after:"+ModIDs.ATUM+"; after:"+ModIDs.EB+"; after:"+ModIDs.EBXL+"; after:"+ModIDs.BoP+"; after:"+ModIDs.HiL+"; after:"+ModIDs.ATG+"; after:"+ModIDs.RTG+"; after:"+ModIDs.RWG+"; after:"+ModIDs.CW2+"; after:"+ModIDs.A97+"; after:"+ModIDs.A97_MINING+"; after:"+ModIDs.MYST+"; after:"+ModIDs.WARPBOOK+"; after:"+ModIDs.LOSTBOOKS+"; after:"+ModIDs.LOOTBAGS+"; after:"+ModIDs.EUREKA+"; after:"+ModIDs.ENCHIRIDION+"; after:"+ModIDs.ENCHIRIDION2+"; after:"+ModIDs.SmAc+"; after:"+ModIDs.HQM+"; after:"+ModIDs.SD+"; after:"+ModIDs.BTRS+"; after:"+ModIDs.JABBA+"; after:"+ModIDs.MaCu+"; after:"+ModIDs.PdC+"; after:"+ModIDs.Bamboo+"; after:"+ModIDs.PMP+"; after:"+ModIDs.Fossil+"; after:"+ModIDs.GrC+"; after:"+ModIDs.GrC_Apples+"; after:"+ModIDs.GrC_Bamboo+"; after:"+ModIDs.GrC_Bees+"; after:"+ModIDs.GrC_Cellar+"; after:"+ModIDs.GrC_Fish+"; after:"+ModIDs.GrC_Grapes+"; after:"+ModIDs.GrC_Hops+"; after:"+ModIDs.GrC_Milk+"; after:"+ModIDs.GrC_Rice+"; after:"+ModIDs.BG2+"; after:"+ModIDs.BWM+"; after:"+ModIDs.OMT+"; after:"+ModIDs.TG+"; after:"+ModIDs.FM+"; after:"+ModIDs.FZ+"; after:"+ModIDs.MNTL+"; after:"+ModIDs.OB+"; after:"+ModIDs.PA+"; after:"+ModIDs.TiC+"; after:"+ModIDs.MF2+"; after:"+ModIDs.TRANSLOCATOR+"; after:"+ModIDs.WR_CBE_C+"; after:"+ModIDs.WR_CBE_A+"; after:"+ModIDs.WR_CBE_L+"; after:"+ModIDs.VOLTZ+"; after:"+ModIDs.MFFS+"; after:"+ModIDs.ICBM+"; after:"+ModIDs.ATSCI+"; after:inventorytweaks; after:ironbackpacks; after:journeymap; after:LogisticsPipes; after:LunatriusCore; after:NEIAddons; after:NEIAddons|Developer; after:NEIAddons|AppEng; after:NEIAddons|Botany; after:NEIAddons|Forestry; after:NEIAddons|CraftingTables; after:NEIAddons|ExNihilo; after:neiintegration; after:openglasses; after:simplyjetpacks; after:Stackie; after:StevesCarts; after:TiCTooltips; after:worldedit; after:McMultipart")
+@Mod(modid=ModIDs.GAPI_POST, name="Greg-API-Post", version="GT6-MC1710", dependencies="required-after:"+ModIDs.GAPI+"; after:"+ModIDs.MD8+"; after:"+ModIDs.IC2+"; after:"+ModIDs.IC2C+"; after:"+ModIDs.NC+"; after:"+ModIDs.IHL+"; after:"+ModIDs.FUNK+"; after:"+ModIDs.BAUBLES+"; after:"+ModIDs.HEE+"; after:"+ModIDs.GaSu+"; after:"+ModIDs.GaNe+"; after:"+ModIDs.GaEn+"; after:"+ModIDs.WdSt+"; after:"+ModIDs.CrGu+"; after:"+ModIDs.COFH_API+"; after:"+ModIDs.COFH_API_ENERGY+"; after:"+ModIDs.COFH_CORE+"; after:"+ModIDs.CC+"; after:"+ModIDs.OC+"; after:"+ModIDs.HEX+"; after:"+ModIDs.DE+"; after:"+ModIDs.AV+"; after:"+ModIDs.FR+"; after:"+ModIDs.FRMB+"; after:"+ModIDs.BINNIE+"; after:"+ModIDs.BINNIE_BEE+"; after:"+ModIDs.BINNIE_TREE+"; after:"+ModIDs.BINNIE_GENETICS+"; after:"+ModIDs.BINNIE_BOTANY+"; after:"+ModIDs.IE+"; after:"+ModIDs.UB+"; after:"+ModIDs.COG+"; after:"+ModIDs.PFAA+"; after:"+ModIDs.MIN+"; after:"+ModIDs.RH+"; after:"+ModIDs.CANDY+"; after:"+ModIDs.ABYSSAL+"; after:"+ModIDs.SOULFOREST+"; after:"+ModIDs.ARS+"; after:"+ModIDs.TC+"; after:"+ModIDs.TCFM+"; after:"+ModIDs.BOTA+"; after:"+ModIDs.ALF+"; after:"+ModIDs.WTCH+"; after:"+ModIDs.HOWL+"; after:"+ModIDs.MoCr+"; after:"+ModIDs.GoG+"; after:"+ModIDs.LycM+"; after:"+ModIDs.LycM_Arctic+"; after:"+ModIDs.LycM_Demon+"; after:"+ModIDs.LycM_Desert+"; after:"+ModIDs.LycM_Forest+"; after:"+ModIDs.LycM_Fresh+"; after:"+ModIDs.LycM_Inferno+"; after:"+ModIDs.LycM_Jungle+"; after:"+ModIDs.LycM_Mountain+"; after:"+ModIDs.LycM_Plains+"; after:"+ModIDs.LycM_Salt+"; after:"+ModIDs.LycM_Shadow+"; after:"+ModIDs.LycM_Swamp+"; after:"+ModIDs.RC+"; after:"+ModIDs.BP+"; after:"+ModIDs.PR+"; after:"+ModIDs.PR_EXPANSION+"; after:"+ModIDs.PR_INTEGRATION+"; after:"+ModIDs.PR_TRANSMISSION+"; after:"+ModIDs.PR_TRANSPORT+"; after:"+ModIDs.PR_EXPLORATION+"; after:"+ModIDs.PR_COMPATIBILITY+"; after:"+ModIDs.PR_FABRICATION+"; after:"+ModIDs.PR_ILLUMINATION+"; after:"+ModIDs.PE+"; after:"+ModIDs.AE+"; after:"+ModIDs.MO+"; after:"+ModIDs.TE_FOUNDATION+"; after:"+ModIDs.TE_DYNAMICS+"; after:"+ModIDs.TE+"; after:"+ModIDs.ZTONES+"; after:"+ModIDs.CHSL+"; after:"+ModIDs.NePl+"; after:"+ModIDs.NeLi+"; after:"+ModIDs.EnLi+"; after:"+ModIDs.EtFu+"; after:"+ModIDs.BB+"; after:"+ModIDs.DYNAMIC_TREES+"; after:"+ModIDs.BbLC+"; after:"+ModIDs.CARP+"; after:"+ModIDs.BETTER_RECORDS+"; after:"+ModIDs.TF+"; after:"+ModIDs.ERE+"; after:"+ModIDs.MFR+"; after:"+ModIDs.FSP+"; after:"+ModIDs.SC2+"; after:"+ModIDs.PnC+"; after:"+ModIDs.ExU+"; after:"+ModIDs.ExS+"; after:"+ModIDs.EIO+"; after:"+ModIDs.RT+"; after:"+ModIDs.AA+"; after:"+ModIDs.TreeCap+"; after:"+ModIDs.HaC+"; after:"+ModIDs.CookBook+"; after:"+ModIDs.APC+"; after:"+ModIDs.ENVM+"; after:"+ModIDs.MaCr+"; after:"+ModIDs.BC_TRANSPORT+"; after:"+ModIDs.BC_SILICON+"; after:"+ModIDs.BC_FACTORY+"; after:"+ModIDs.BC_ENERGY+"; after:"+ModIDs.BC_ROBOTICS+"; after:"+ModIDs.BC+"; after:"+ModIDs.BC_BUILDERS+"; after:"+ModIDs.MgC+"; after:"+ModIDs.BR+"; after:"+ModIDs.HBM+"; after:"+ModIDs.ELN+"; after:"+ModIDs.DRGN+"; after:"+ModIDs.ElC+"; after:"+ModIDs.CrC+"; after:"+ModIDs.ReC+"; after:"+ModIDs.RoC+"; after:"+ModIDs.Mek+"; after:"+ModIDs.Mek_Tools+"; after:"+ModIDs.Mek_Generators+"; after:"+ModIDs.GC+"; after:"+ModIDs.GC_PLANETS+"; after:"+ModIDs.GC_GALAXYSPACE+"; after:"+ModIDs.VULPES+"; after:"+ModIDs.GC_ADV_ROCKETRY+"; after:"+ModIDs.GC_EXTRAPLANETS+"; after:"+ModIDs.BTL+"; after:"+ModIDs.AETHER+"; after:"+ModIDs.TROPIC+"; after:"+ModIDs.ATUM+"; after:"+ModIDs.EB+"; after:"+ModIDs.EBXL+"; after:"+ModIDs.BoP+"; after:"+ModIDs.HiL+"; after:"+ModIDs.ATG+"; after:"+ModIDs.RTG+"; after:"+ModIDs.RWG+"; after:"+ModIDs.CW2+"; after:"+ModIDs.A97+"; after:"+ModIDs.A97_MINING+"; after:"+ModIDs.MYST+"; after:"+ModIDs.WARPBOOK+"; after:"+ModIDs.LOSTBOOKS+"; after:"+ModIDs.LOOTBAGS+"; after:"+ModIDs.EUREKA+"; after:"+ModIDs.ENCHIRIDION+"; after:"+ModIDs.ENCHIRIDION2+"; after:"+ModIDs.SmAc+"; after:"+ModIDs.HQM+"; after:"+ModIDs.SD+"; after:"+ModIDs.BTRS+"; after:"+ModIDs.JABBA+"; after:"+ModIDs.MaCu+"; after:"+ModIDs.PdC+"; after:"+ModIDs.Bamboo+"; after:"+ModIDs.PMP+"; after:"+ModIDs.Fossil+"; after:"+ModIDs.GrC+"; after:"+ModIDs.GrC_Apples+"; after:"+ModIDs.GrC_Bamboo+"; after:"+ModIDs.GrC_Bees+"; after:"+ModIDs.GrC_Cellar+"; after:"+ModIDs.GrC_Fish+"; after:"+ModIDs.GrC_Grapes+"; after:"+ModIDs.GrC_Hops+"; after:"+ModIDs.GrC_Milk+"; after:"+ModIDs.GrC_Rice+"; after:"+ModIDs.BG2+"; after:"+ModIDs.BWM+"; after:"+ModIDs.OMT+"; after:"+ModIDs.TG+"; after:"+ModIDs.FM+"; after:"+ModIDs.FZ+"; after:"+ModIDs.MNTL+"; after:"+ModIDs.OB+"; after:"+ModIDs.PA+"; after:"+ModIDs.TiC+"; after:"+ModIDs.MF2+"; after:"+ModIDs.TRANSLOCATOR+"; after:"+ModIDs.WR_CBE_C+"; after:"+ModIDs.WR_CBE_A+"; after:"+ModIDs.WR_CBE_L+"; after:"+ModIDs.VOLTZ+"; after:"+ModIDs.MFFS+"; after:"+ModIDs.ICBM+"; after:"+ModIDs.ATSCI+"; after:inventorytweaks; after:ironbackpacks; after:journeymap; after:LogisticsPipes; after:LunatriusCore; after:NEIAddons; after:NEIAddons|Developer; after:NEIAddons|AppEng; after:NEIAddons|Botany; after:NEIAddons|Forestry; after:NEIAddons|CraftingTables; after:NEIAddons|ExNihilo; after:neiintegration; after:openglasses; after:simplyjetpacks; after:Stackie; after:StevesCarts; after:TiCTooltips; after:worldedit; after:McMultipart")
 public class GT_API_Post extends Abstract_Mod {
 	public GT_API_Post() {GAPI_POST = this;}
 	
@@ -93,11 +93,20 @@ public class GT_API_Post extends Abstract_Mod {
 		
 		OM.blacklist(ST.make(MD.GrC_Bees, "grcbees.BeesWax", 1, 1));
 		OM.blacklist(ST.make(MD.GrC_Bees, "grcbees.BeesWax", 1, 2));
+		OM.blacklist(ST.make(MD.TC, "ItemResource", 1, 6));
 		OM.blacklist(ST.make(MD.TC, "ItemResource", 1,18));
 		OM.blacklist(ST.make(MD.FZ, "diamond_shard", 1, W));
 		OM.blacklist(ST.make(MD.ReC, "reactorcraft_item_fluorite", 1, W));
 		OM.blacklist(ST.make(MD.ERE, "encrustedDiamond", 1, W));
 		OM.blacklist(ST.make(MD.BTL, "groundStuff", 1, 16));
+		OM.blacklist(ST.make(MD.BoP, "gems", 1, 0));
+		OM.blacklist(ST.make(MD.BoP, "gems", 1, 1));
+		OM.blacklist(ST.make(MD.BoP, "gems", 1, 2));
+		OM.blacklist(ST.make(MD.BoP, "gems", 1, 3));
+		OM.blacklist(ST.make(MD.BoP, "gems", 1, 4));
+		OM.blacklist(ST.make(MD.BoP, "gems", 1, 5));
+		OM.blacklist(ST.make(MD.BoP, "gems", 1, 6));
+		OM.blacklist(ST.make(MD.BoP, "gems", 1, 7));
 		
 		new LoaderItemList().run();
 		new LoaderItemData().run();
@@ -589,22 +598,22 @@ public class GT_API_Post extends Abstract_Mod {
 			if ("enchantment.Magnetization".equalsIgnoreCase(tEnchant.getName())) {
 				for (OreDictMaterial tMaterial : MT.ALL_MATERIALS_REGISTERED_HERE) {
 					if (tMaterial == MT.NeodymiumMagnetic) {
-						tMaterial.addEnchantmentForTools(tEnchant, 3).addEnchantmentForArmors(tEnchant, 3);
-					} else if (tMaterial == MT.SteelMagnetic || tMaterial == MT.MeteoricSteel || tMaterial == MT.Meteorite) {
-						tMaterial.addEnchantmentForTools(tEnchant, 2).addEnchantmentForArmors(tEnchant, 2);
+						tMaterial.addEnchantmentForTools(tEnchant, 3).addEnchantmentForWeapons(tEnchant, 3).addEnchantmentForArmors(tEnchant, 3);
+					} else if (tMaterial == MT.SteelMagnetic || tMaterial == MT.MeteoricSteel || tMaterial == MT.MeteoricBlackSteel || tMaterial == MT.MeteoricBlueSteel || tMaterial == MT.MeteoricRedSteel || tMaterial == MT.Meteorite) {
+						tMaterial.addEnchantmentForTools(tEnchant, 2).addEnchantmentForWeapons(tEnchant, 2).addEnchantmentForArmors(tEnchant, 2);
 					} else if (tMaterial.contains(TD.Properties.MAGNETIC_ACTIVE)) {
-						tMaterial.addEnchantmentForTools(tEnchant, 1).addEnchantmentForArmors(tEnchant, 1);
+						tMaterial.addEnchantmentForTools(tEnchant, 1).addEnchantmentForWeapons(tEnchant, 1).addEnchantmentForArmors(tEnchant, 1);
 					}
 				}
 			}
 			if ("enchantment.Cold Touch".equalsIgnoreCase(tEnchant.getName())) {
-				MT.Ice                  .addEnchantmentForWeapons(tEnchant, 1);
-				MT.Snow                 .addEnchantmentForWeapons(tEnchant, 1);
-				MT.FrozenIron           .addEnchantmentForWeapons(tEnchant, 2);
-				MT.Blizz                .addEnchantmentForWeapons(tEnchant, 3);
-				MT.Frezarite            .addEnchantmentForWeapons(tEnchant, 4);
-				MT.InfusedWater         .addEnchantmentForWeapons(tEnchant, 4);
-				MT.Cryotheum            .addEnchantmentForWeapons(tEnchant, 5);
+				MT.Ice                  .addEnchantmentForWeapons(tEnchant, 1).addEnchantmentForAmmo(tEnchant, 1);
+				MT.Snow                 .addEnchantmentForWeapons(tEnchant, 1).addEnchantmentForAmmo(tEnchant, 1);
+				MT.FrozenIron           .addEnchantmentForWeapons(tEnchant, 2).addEnchantmentForAmmo(tEnchant, 2);
+				MT.Blizz                .addEnchantmentForWeapons(tEnchant, 3).addEnchantmentForAmmo(tEnchant, 3);
+				MT.Frezarite            .addEnchantmentForWeapons(tEnchant, 4).addEnchantmentForAmmo(tEnchant, 4);
+				MT.InfusedWater         .addEnchantmentForWeapons(tEnchant, 4).addEnchantmentForAmmo(tEnchant, 4);
+				MT.Cryotheum            .addEnchantmentForWeapons(tEnchant, 5).addEnchantmentForAmmo(tEnchant, 5);
 			}
 			if ("enchantment.frost_walker".equalsIgnoreCase(tEnchant.getName())) {
 				MT.Ice                  .addEnchantmentForArmors(tEnchant, 1);
@@ -616,28 +625,31 @@ public class GT_API_Post extends Abstract_Mod {
 				MT.Cryotheum            .addEnchantmentForArmors(tEnchant, 1);
 			}
 			if ("enchantment.railcraft.crowbar.implosion".equalsIgnoreCase(tEnchant.getName())) {
-				for (OreDictMaterial tMat : ANY.Emerald   .mToThis) tMat.addEnchantmentForWeapons(tEnchant, 5);
-				for (OreDictMaterial tMat : ANY.Sapphire  .mToThis) tMat.addEnchantmentForWeapons(tEnchant, 3);
-				for (OreDictMaterial tMat : ANY.Garnet    .mToThis) tMat.addEnchantmentForWeapons(tEnchant, 2);
-				for (OreDictMaterial tMat : ANY.Jasper    .mToThis) tMat.addEnchantmentForWeapons(tEnchant, 2);
-				for (OreDictMaterial tMat : ANY.TigerEye  .mToThis) tMat.addEnchantmentForWeapons(tEnchant, 4);
-				for (OreDictMaterial tMat : ANY.Aventurine.mToThis) tMat.addEnchantmentForWeapons(tEnchant, 3);
-				MT.Spinel               .addEnchantmentForWeapons(tEnchant, 3);
-				MT.BalasRuby            .addEnchantmentForWeapons(tEnchant, 3);
-				MT.OnyxBlack            .addEnchantmentForWeapons(tEnchant, 3);
-				MT.OnyxRed              .addEnchantmentForWeapons(tEnchant, 3);
-				MT.Topaz                .addEnchantmentForWeapons(tEnchant, 5);
-				MT.BlueTopaz            .addEnchantmentForWeapons(tEnchant, 5);
-				MT.Tanzanite            .addEnchantmentForWeapons(tEnchant, 4);
-				MT.Amazonite            .addEnchantmentForWeapons(tEnchant, 5);
-				MT.Alexandrite          .addEnchantmentForWeapons(tEnchant, 5);
-				MT.Opal                 .addEnchantmentForWeapons(tEnchant, 4);
-				MT.Olivine              .addEnchantmentForWeapons(tEnchant, 2);
-				MT.Dioptase             .addEnchantmentForWeapons(tEnchant, 3);
-				MT.Jade                 .addEnchantmentForWeapons(tEnchant, 3);
-				MT.Craponite            .addEnchantmentForWeapons(tEnchant, 1);
-				MT.Amethyst             .addEnchantmentForWeapons(tEnchant, 3);
-				MT.EnderAmethyst        .addEnchantmentForWeapons(tEnchant, 5);
+				for (OreDictMaterial tMat : ANY.Emerald   .mToThis) tMat.addEnchantmentForWeapons(tEnchant, 5).addEnchantmentForAmmo(tEnchant, 7);
+				for (OreDictMaterial tMat : ANY.Sapphire  .mToThis) tMat.addEnchantmentForWeapons(tEnchant, 3).addEnchantmentForAmmo(tEnchant, 5);
+				for (OreDictMaterial tMat : ANY.Garnet    .mToThis) tMat.addEnchantmentForWeapons(tEnchant, 2).addEnchantmentForAmmo(tEnchant, 4);
+				for (OreDictMaterial tMat : ANY.Jasper    .mToThis) tMat.addEnchantmentForWeapons(tEnchant, 2).addEnchantmentForAmmo(tEnchant, 4);
+				for (OreDictMaterial tMat : ANY.TigerEye  .mToThis) tMat.addEnchantmentForWeapons(tEnchant, 4).addEnchantmentForAmmo(tEnchant, 6);
+				for (OreDictMaterial tMat : ANY.Aventurine.mToThis) tMat.addEnchantmentForWeapons(tEnchant, 3).addEnchantmentForAmmo(tEnchant, 5);
+				for (OreDictMaterial tMat : ANY.Phosphorus.mToThis) tMat.addEnchantmentForWeapons(tEnchant, 5).addEnchantmentForAmmo(tEnchant, 7);
+				MT.PO4                  .addEnchantmentForWeapons(tEnchant, 5).addEnchantmentForAmmo(tEnchant, 7);
+				MT.Phosphorite          .addEnchantmentForWeapons(tEnchant, 5).addEnchantmentForAmmo(tEnchant, 7);
+				MT.Spinel               .addEnchantmentForWeapons(tEnchant, 3).addEnchantmentForAmmo(tEnchant, 5);
+				MT.BalasRuby            .addEnchantmentForWeapons(tEnchant, 3).addEnchantmentForAmmo(tEnchant, 5);
+				MT.OnyxBlack            .addEnchantmentForWeapons(tEnchant, 3).addEnchantmentForAmmo(tEnchant, 5);
+				MT.OnyxRed              .addEnchantmentForWeapons(tEnchant, 3).addEnchantmentForAmmo(tEnchant, 5);
+				MT.Topaz                .addEnchantmentForWeapons(tEnchant, 5).addEnchantmentForAmmo(tEnchant, 7);
+				MT.BlueTopaz            .addEnchantmentForWeapons(tEnchant, 5).addEnchantmentForAmmo(tEnchant, 7);
+				MT.Tanzanite            .addEnchantmentForWeapons(tEnchant, 4).addEnchantmentForAmmo(tEnchant, 6);
+				MT.Amazonite            .addEnchantmentForWeapons(tEnchant, 5).addEnchantmentForAmmo(tEnchant, 7);
+				MT.Alexandrite          .addEnchantmentForWeapons(tEnchant, 5).addEnchantmentForAmmo(tEnchant, 7);
+				MT.Opal                 .addEnchantmentForWeapons(tEnchant, 4).addEnchantmentForAmmo(tEnchant, 6);
+				MT.Olivine              .addEnchantmentForWeapons(tEnchant, 2).addEnchantmentForAmmo(tEnchant, 4);
+				MT.Dioptase             .addEnchantmentForWeapons(tEnchant, 3).addEnchantmentForAmmo(tEnchant, 5);
+				MT.Jade                 .addEnchantmentForWeapons(tEnchant, 3).addEnchantmentForAmmo(tEnchant, 5);
+				MT.Craponite            .addEnchantmentForWeapons(tEnchant, 1).addEnchantmentForAmmo(tEnchant, 3);
+				MT.Amethyst             .addEnchantmentForWeapons(tEnchant, 3).addEnchantmentForAmmo(tEnchant, 5);
+				MT.EnderAmethyst        .addEnchantmentForWeapons(tEnchant, 5).addEnchantmentForAmmo(tEnchant, 7);
 			}
 		}
 		
@@ -662,20 +674,15 @@ public class GT_API_Post extends Abstract_Mod {
 		
 		for (OreDictMaterial tMaterial : OreDictMaterial.MATERIAL_MAP.values()) {
 			// Diatomic Elements get a Subscript 2 appended to their ToolTip after PostInit. That way the ToolTip Calculation works properly until PostInit happens.
-			if (tMaterial.contains(TD.Atomic.DIATOMIC_NONMETAL)) tMaterial.mTooltipChemical += "\u2082";
+			if (tMaterial.contains(TD.Atomic.DIATOMIC_NONMETAL)) tMaterial.mTooltipChemical += NUM_SUB[2];
 			// Simple automatically added Alloying Recipes.
 			if (tMaterial.contains(TD.Processing.CRUCIBLE_ALLOY)) if (tMaterial.mComponents != null) tMaterial.addAlloyingRecipe(tMaterial.mComponents); else ERR.println("ERROR: Alloying Recipe for " + tMaterial.mNameLocal + " cannot be added due to lack of Component Information");
 		}
 		
-		MT.P     .mTooltipChemical += "\u2084";
-		MT.S     .mTooltipChemical += "\u2088";
-		MT.Se    .mTooltipChemical += "\u2088";
-		MT.UF4   .mTooltipChemical  = "UF\u2084";
-		MT.UF6   .mTooltipChemical  = "UF\u2086";
-		MT.U235F4.mTooltipChemical  = "U-235F\u2084";
-		MT.U235F6.mTooltipChemical  = "U-235F\u2086";
-		MT.U238F4.mTooltipChemical  = "U-238F\u2084";
-		MT.U238F6.mTooltipChemical  = "U-238F\u2086";
+		// Polyatomic Elements get a Subscript 4 or 8 appended to their ToolTip after PostInit. That way the ToolTip Calculation works properly until PostInit happens.
+		MT.P .mTooltipChemical += NUM_SUB[4];
+		MT.S .mTooltipChemical += NUM_SUB[8];
+		MT.Se.mTooltipChemical += NUM_SUB[8];
 		
 		// Adding all the things that belong to the "ore" Prefix to its registered List.
 		for (OreDictPrefix tPrefix : OreDictPrefix.VALUES) if (tPrefix.containsAny(TD.Prefix.STANDARD_ORE, TD.Prefix.DUST_ORE, TD.Prefix.DENSE_ORE)) OP.ore.mRegisteredItems.addAll(tPrefix.mRegisteredItems);

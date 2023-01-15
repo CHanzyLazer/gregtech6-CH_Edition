@@ -50,6 +50,6 @@ public class MultiTileEntityAneutronicFusion extends TileEntityBase09PowerCell i
 	
 	@Override public byte getDisplayScaleMax() {return 15;}
 	@Override public int getLightValue() {return mDisplayedEnergy;}
-
+	
 	@Override public String getTileEntityName() {return "gt.multitileentity.aneutronicfusion";}
 }

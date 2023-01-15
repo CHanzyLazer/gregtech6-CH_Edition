@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,13 +19,8 @@
 
 package gregapi.recipes.maps;
 
-import static gregapi.data.CS.*;
-import static gregapi.data.TD.Processing.*;
-
-import java.util.Collection;
-import java.util.List;
-
 import gregapi.code.ArrayListNoNulls;
+import gregapi.code.HashSetNoNulls;
 import gregapi.data.OP;
 import gregapi.data.TD;
 import gregapi.oredict.OreDictItemData;
@@ -36,6 +31,12 @@ import gregapi.util.OM;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import net.minecraft.item.ItemStack;
+
+import java.util.Collection;
+import java.util.List;
+
+import static gregapi.data.CS.*;
+import static gregapi.data.TD.Processing.MELTING;
 
 /**
  * @author Gregorius Techneticies
@@ -48,10 +49,11 @@ public class RecipeMapCrucible extends RecipeMapSpecialSingleInput {
 	@Override
 	public List<Recipe> getNEIRecipes(ItemStack... aOutputs) {
 		List<Recipe> rList = super.getNEIRecipes(aOutputs);
+		HashSetNoNulls<OreDictMaterial> tSet = new HashSetNoNulls<>();
 		for (ItemStack aOutput : aOutputs) {
 			OreDictItemData aData = OM.anydata(aOutput);
 			if (aData == null || !aData.hasValidPrefixMaterialData() || !aData.mPrefix.contains(TD.Prefix.INGOT_BASED)) continue;
-			for (OreDictMaterial tMat : aData.mMaterial.mMaterial.mTargetedSmelting) if (tMat.mTargetSmelting.mMaterial == aData.mMaterial.mMaterial) {
+			for (OreDictMaterial tMat : aData.mMaterial.mMaterial.mTargetedSmelting) if (tSet.add(tMat) && !tMat.contains(TD.Properties.INVALID_MATERIAL) && tMat.mTargetSmelting.mMaterial == aData.mMaterial.mMaterial) {
 				if (tMat != aData.mMaterial.mMaterial) {
 				rList.add(getRecipeFor(OP.ingot             .mat(tMat, 1)));
 				rList.add(getRecipeFor(OP.blockIngot        .mat(tMat, 1)));
@@ -81,14 +83,16 @@ public class RecipeMapCrucible extends RecipeMapSpecialSingleInput {
 		OreDictItemData aData = OM.anydata(aInput);
 		if (aData == null) return null;
 		
-		List<OreDictMaterialStack> tList = new ArrayListNoNulls<>();
-		for (OreDictMaterialStack tMaterial : aData.getAllMaterialStacks()) if (tMaterial.mMaterial.mTargetSmelting.mAmount > 0 && tMaterial.mMaterial.contains(MELTING)) OM.stack(UT.Code.units(tMaterial.mAmount, U, tMaterial.mMaterial.mTargetSmelting.mAmount, F), tMaterial.mMaterial.mTargetSmelting.mMaterial).addToList(tList);
-		if (tList.isEmpty()) return null;
+		List<OreDictMaterialStack> tMaterialList = new ArrayListNoNulls<>();
+		for (OreDictMaterialStack tMaterial : aData.getAllMaterialStacks()) if (tMaterial.mMaterial.mTargetSmelting.mAmount > 0 && tMaterial.mMaterial.contains(MELTING)) OM.stack(UT.Code.units(tMaterial.mAmount, U, tMaterial.mMaterial.mTargetSmelting.mAmount, F), tMaterial.mMaterial.mTargetSmelting.mMaterial).addToList(tMaterialList);
+		if (tMaterialList.isEmpty()) return null;
 		
-		ArrayListNoNulls<ItemStack> tIngots = new ArrayListNoNulls<>();
-		for (OreDictMaterialStack tMaterial : tList) tIngots.add(OM.ingotOrDust(tMaterial.mMaterial, tMaterial.mAmount));
+		ArrayListNoNulls<ItemStack> tOutputList = new ArrayListNoNulls<>();
+		for (OreDictMaterialStack tMaterial : tMaterialList) tOutputList.add(OM.ingotOrDust(tMaterial.mMaterial, tMaterial.mAmount));
 		
-		if (tIngots.isEmpty()) return null;
-		return new Recipe(T, F, F, ST.array(ST.amount(1, aInput)), tIngots.toArray(ZL_IS), null, null, ZL_FS, ZL_FS, 0, 0, aData.mMaterial.mMaterial.mMeltingPoint);
+		ItemStack[] tOutputs = tOutputList.toArray(ZL_IS);
+		if (!ST.hasValid(tOutputs)) return null;
+		
+		return new Recipe(F, F, F, ST.array(ST.amount(1, aInput)), tOutputs, null, null, ZL_FS, ZL_FS, 0, 0, aData.mMaterial.mMaterial.mMeltingPoint);
 	}
 }

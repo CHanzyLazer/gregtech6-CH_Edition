@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,24 +19,13 @@
 
 package gregtech.tileentity.tools;
 
-import static gregapi.data.CS.*;
-
-import java.util.List;
-import java.util.Map.Entry;
-
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_AddToolTips;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetCollisionBoundingBoxFromPool;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetSelectedBoundingBoxFromPool;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_SetBlockBoundsBasedOnState;
-import gregapi.data.BI;
-import gregapi.data.CS.BlocksGT;
-import gregapi.data.CS.SFX;
-import gregapi.data.IL;
-import gregapi.data.LH;
+import gregapi.data.*;
+import gregapi.data.CS.*;
 import gregapi.data.LH.Chat;
-import gregapi.data.MT;
-import gregapi.data.RM;
-import gregapi.data.TD;
 import gregapi.network.INetworkHandler;
 import gregapi.network.IPacket;
 import gregapi.old.Textures;
@@ -44,11 +33,7 @@ import gregapi.oredict.OreDictItemData;
 import gregapi.oredict.OreDictMaterial;
 import gregapi.recipes.Recipe;
 import gregapi.recipes.Recipe.RecipeMap;
-import gregapi.render.BlockTextureCopied;
-import gregapi.render.BlockTextureDefault;
-import gregapi.render.BlockTextureMulti;
-import gregapi.render.IIconContainer;
-import gregapi.render.ITexture;
+import gregapi.render.*;
 import gregapi.tileentity.base.TileEntityBase07Paintable;
 import gregapi.util.OM;
 import gregapi.util.ST;
@@ -61,6 +46,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChunkCoordinates;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+import java.util.Map.Entry;
+
+import static gregapi.data.CS.*;
 
 /**
  * @author Gregorius Techneticies
@@ -259,7 +249,7 @@ public class MultiTileEntitySiftingTable extends TileEntityBase07Paintable imple
 				}
 			}
 		} else {
-			if (aTimer % 5 == 0 && (mState & B[2]) != 0) {
+			if (aTimer % 5 == 0 && mDisplayedInput != 0 && (mState & B[2]) != 0) {
 				UT.Sounds.play(SFX.MC_DIG_SAND, 5, 1.0F, 1.0F, getCoords());
 			}
 		}
@@ -306,7 +296,7 @@ public class MultiTileEntitySiftingTable extends TileEntityBase07Paintable imple
 		oDisplayedInput  = mDisplayedInput;
 		oDisplayedOutput = mDisplayedOutput;
 	}
-
+	
 	// GTCH, 重写这个方法保证和原本的逻辑一致
 	@Override
 	public IPacket getClientDataPacketNoSendAll(boolean aSendAll) {
@@ -323,13 +313,13 @@ public class MultiTileEntitySiftingTable extends TileEntityBase07Paintable imple
 		rList.add(3, UT.Code.toByteS(mDisplayedInput, 0));
 		rList.add(4, UT.Code.toByteS(mDisplayedInput, 1));
 	}
-
+	
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		mState = aData[0];
 		if (aData.length > 2) mDisplayedOutput = UT.Code.combine(aData[1], aData[2]);
 		if (aData.length > 4) mDisplayedInput  = UT.Code.combine(aData[3], aData[4]);
-		if (aData.length > 7) setRGBData(aData[5], aData[6], aData[7], aData[aData.length-1]);
+		if (aData.length > 8) setRGBData(aData[5], aData[6], aData[7], aData[aData.length-1]);
 		return T;
 	}
 	

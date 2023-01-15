@@ -36,7 +36,6 @@ import java.util.List;
 import static gregapi.data.CS.F;
 import static gregapi.data.CS.UNCOLORED;
 import static gregtechCH.data.CS_CH.NBT_COLOR_BOTTOM;
-import static gregtechCH.data.CS_CH.NBT_COLOR_ORIGIN;
 
 /**
  * @author Gregorius Techneticies
@@ -51,12 +50,12 @@ public abstract class TileEntityBase09PowerCell extends TileEntityBase08Battery 
 		updateRGB();
 	}
 	private void updateRGB() {mRGBa = isPainted() ? UT_CH.Code.getPaintRGB(getBottomRGB(), getPaint()) : getOriginalRGB();}
-
+	
 	@Override public int getBottomRGB() {return mDisplayedEnergy == 0 ? UT.Code.getRGBInt(UT.Code.getR(mRGBBottom) / 2, UT.Code.getG(mRGBBottom) / 2, UT.Code.getB(mRGBBottom) / 2) : mRGBBottom;}
 	@Override public int getOriginalRGB() {return getBottomRGB();}
-
+	
 	@Override protected void onDisplayedEnergyChange(byte aPreviousDisplayedEnergy) {updateRGB();}
-
+	
 	public abstract ItemStack getEmptyPowerCell();
 	
 	@Override

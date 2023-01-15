@@ -28,6 +28,7 @@ import gregapi.data.TD;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.tileentity.machines.MultiTileEntityBasicMachine;
 import gregapi.util.UT;
+import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockMachine;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -46,19 +47,40 @@ import net.minecraftforge.fluids.IFluidTank;
  * Some Defaults for MultiBlock Machines.
  */
 public abstract class TileEntityBase10MultiBlockMachine extends MultiTileEntityBasicMachine implements IMultiBlockFluidHandler, IMultiBlockInventory, IMultiBlockEnergy {
-	public boolean mStructureChanged = F, mStructureOkay = F;
+	public boolean mStructureChanged = F;
+	protected MTEC_MultiBlockMachine mCoreMultiBlock;
+	
+	// 用 private 封装防止意料外的修改
+	private boolean mStructureOkay = F;
+	@Override public final boolean isStructureOkay() {return mStructureOkay;}
+	// GTCH, 用于子类重写实现在结构改变时更新不透明度
+	private void setStructureOkay(boolean aStructureOkay) {
+		if (aStructureOkay == mStructureOkay) return;
+		int tOldOpacity = getLightOpacity();
+		mStructureOkay = aStructureOkay;
+		setStructureOkay2(tOldOpacity);
+	}
+	// 与原本的 on... 不同，一定是结构完整度发生了改变才会调用
+	protected void setStructureOkay2(int aOldOpacity) {/**/}
 	
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {
 		super.readFromNBT2(aNBT);
-		if (aNBT.hasKey(NBT_STATE+".str")) mStructureOkay = aNBT.getBoolean(NBT_STATE+".str");
+		if (aNBT.hasKey(NBT_STATE+".str")) mStructureOkay = aNBT.getBoolean(NBT_STATE+".str"); // NBT 修改会有统一的更新和优化，不需要在这里再次调用
+		
+		// GTCH, core init
+		mCoreMultiBlock = getNewCoreMultiBlock();
 	}
+	// 用于子类重写
+	protected abstract MTEC_MultiBlockMachine getNewCoreMultiBlock();
 	
 	@Override
 	public void writeToNBT2(NBTTagCompound aNBT) {
 		super.writeToNBT2(aNBT);
 		UT.NBT.setBoolean(aNBT, NBT_STATE+".str", mStructureOkay);
 	}
+	
+	@Override public final void toolTipsMultiblock(List<String> aList) {mCoreMultiBlock.toolTipsMultiblock(aList);}
 	
 	@Override
 	public long onToolClickMultiBlock(String aTool, long aRemainingDurability, long aQuality, Entity aPlayer, List<String> aChatReturn, IInventory aPlayerInventory, boolean aSneaking, ItemStack aStack, byte aSide, float aHitX, float aHitY, float aHitZ, ChunkCoordinates aFrom) {
@@ -67,22 +89,20 @@ public abstract class TileEntityBase10MultiBlockMachine extends MultiTileEntityB
 		return 0;
 	}
 	
-	@Override
+	// 放大镜永远都要强制检测结构
 	public void onMagnifyingGlass(List<String> aChatReturn) {
-		super.onMagnifyingGlass(aChatReturn);
-		if (checkStructure(F)) {
-			onMagnifyingGlass2(aChatReturn);
+		boolean tOldStructureOkay = isStructureOkay();
+		if (checkStructureOnly(T)) {
+			onMagnifyingGlassSuccess(aChatReturn, tOldStructureOkay);
 		} else {
-			if (checkStructure(T)) {
-				aChatReturn.add("Structure did form just now!");
-			} else {
-				aChatReturn.add("Structure did not form!");
-			}
+			onMagnifyingGlassFail(aChatReturn, tOldStructureOkay);
 		}
 	}
-	
-	public void onMagnifyingGlass2(List<String> aChatReturn) {
-		aChatReturn.add("Structure is formed already!");
+	public void onMagnifyingGlassSuccess(List<String> aChatReturn, boolean aOldStructureOkay) {
+		aChatReturn.add(aOldStructureOkay ? "Structure is formed already!" : "Structure did form just now!");
+	}
+	public void onMagnifyingGlassFail(List<String> aChatReturn, boolean aOldStructureOkay) {
+		aChatReturn.add("Structure did not form!");
 	}
 	
 	@Override
@@ -90,7 +110,7 @@ public abstract class TileEntityBase10MultiBlockMachine extends MultiTileEntityB
 		if (refreshStructureOnActiveStateChange() && (mActive != oActive || mRunning != oRunning)) checkStructure(T);
 		return super.onTickCheck(aTimer);
 	}
-
+	
 	@Override
 	public boolean checkStructure(boolean aForceReset) {
 		boolean tOut = checkStructureOnly(aForceReset);
@@ -101,7 +121,7 @@ public abstract class TileEntityBase10MultiBlockMachine extends MultiTileEntityB
 	public boolean checkStructureOnly(boolean aForceReset) {
 		if (isClientSide()) return mStructureOkay;
 		if ((mStructureChanged || aForceReset) && mStructureOkay != checkStructure2()) {
-			mStructureOkay = !mStructureOkay;
+			setStructureOkay(!mStructureOkay);
 			updateClientData();
 		}
 		return mStructureOkay;
@@ -114,7 +134,7 @@ public abstract class TileEntityBase10MultiBlockMachine extends MultiTileEntityB
 	
 	@Override public void onFacingChange(byte aPreviousFacing) {onStructureChange();}
 	@Override public final byte getDirectionData() {return (byte)((mFacing & 7) | (mStructureOkay ? 8 : 0));}
-	@Override public final void setDirectionData(byte aData) {mFacing = (byte)(aData & 7); mStructureOkay = ((aData & 8) != 0);}
+	@Override public final void setDirectionData(byte aData) {mFacing = (byte)(aData & 7); setStructureOkay((aData & 8) != 0);}
 	
 	@Override public void updateAdjacentToggleableEnergySources() {/**/}
 	
@@ -122,13 +142,14 @@ public abstract class TileEntityBase10MultiBlockMachine extends MultiTileEntityB
 	
 	@Override public void onStructureChange() {mStructureChanged = T;}
 	
-	public abstract boolean checkStructure2();
+	public final boolean checkStructure2() {return mCoreMultiBlock.checkStructure2();}
 	public boolean refreshStructureOnActiveStateChange() {return F;}
 	
-	@Override public abstract DelegatorTileEntity<IInventory> getItemInputTarget(byte aSide);
-	@Override public abstract DelegatorTileEntity<TileEntity> getItemOutputTarget(byte aSide);
-	@Override public abstract DelegatorTileEntity<IFluidHandler> getFluidInputTarget(byte aSide);
-	@Override public abstract DelegatorTileEntity<IFluidHandler> getFluidOutputTarget(byte aSide, Fluid aOutput);
+	@Override public final boolean isInsideStructure(int aX, int aY, int aZ) {return mCoreMultiBlock.isInsideStructure(aX, aY, aZ);}
+	@Override public final DelegatorTileEntity<IInventory> getItemInputTarget(byte aSide) {return mCoreMultiBlock.getItemInputTarget(aSide);}
+	@Override public final DelegatorTileEntity<TileEntity> getItemOutputTarget(byte aSide) {return mCoreMultiBlock.getItemOutputTarget(aSide);}
+	@Override public final DelegatorTileEntity<IFluidHandler> getFluidInputTarget(byte aSide) {return mCoreMultiBlock.getFluidInputTarget(aSide);}
+	@Override public final DelegatorTileEntity<IFluidHandler> getFluidOutputTarget(byte aSide, Fluid aOutput) {return mCoreMultiBlock.getFluidOutputTarget(aSide, aOutput);}
 	@Override public abstract String getTileEntityName();
 	
 	@Override protected IFluidTank getFluidTankFillable     (MultiTileEntityMultiBlockPart aPart, byte aSide, FluidStack aFluidToFill) {return getFluidTankFillable2(aSide, aFluidToFill);}
@@ -151,4 +172,6 @@ public abstract class TileEntityBase10MultiBlockMachine extends MultiTileEntityB
 	@Override public void openInventory                     (MultiTileEntityMultiBlockPart aPart) {openInventory();}
 	@Override public void closeInventory                    (MultiTileEntityMultiBlockPart aPart) {closeInventory();}
 	@Override public boolean isItemValidForSlot             (MultiTileEntityMultiBlockPart aPart, int aSlot, ItemStack aStack) {return isItemValidForSlot(aSlot, aStack);}
+	
+	@Override public final String getTileEntityNameCompat() {return mCoreMultiBlock.getTileEntityNameCompat();}
 }

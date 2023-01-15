@@ -203,8 +203,11 @@ public class LH {
 	, TOOLTIP_BEACON_PAYMENT = "gt.lang.beacon.payment"
 	, TOOLTIP_SHELFABLE = "gt.lang.shelfable"
 	, TOOLTIP_SANDWICHABLE = "gt.lang.sandwichable"
-	, TOOLTIP_AMMO_ENCHANTS = "gt.lang.ammo.enchants"
+	, TOOLTIP_POSSIBLE_ENCHANTS = "gt.lang.tool.possible.enchants"
 	, TOOLTIP_POSSIBLE_TOOL_ENCHANTS = "gt.lang.tool.enchants"
+	, TOOLTIP_POSSIBLE_WEAPON_ENCHANTS = "gt.lang.weapon.enchants"
+	, TOOLTIP_POSSIBLE_AMMO_ENCHANTS = "gt.lang.ammo.enchants"
+	, TOOLTIP_POSSIBLE_RANGED_ENCHANTS = "gt.lang.ranged.enchants"
 	, TOOLTIP_POSSIBLE_ARMOR_ENCHANTS = "gt.lang.armor.enchants"
 	, TOOLTIP_TOO_MANY_TOOL_ENCHANTS = "gt.lang.tool.enchants.too.many"
 	, TOOLTIP_TOO_MANY_ARMOR_ENCHANTS = "gt.lang.armor.enchants.too.many"
@@ -257,6 +260,7 @@ public class LH {
 	public static final String get(String aKey, String aDefault) {return LanguageHandler.translate(aKey, aDefault);}
 	
 	public static final String percent(long aNumber) {return (aNumber/100) + ((aNumber%100)>9?"."+aNumber%100:".0"+(aNumber%100));}
+	public static final String numberU(long aNumber) {return String.format(aNumber < U ? "%.4f" : "%.2f", (double)aNumber/(double)U);}
 	
 	public static final String getToolTipBlastResistance(Block aBlock, double aResistance) {return Chat.WHITE + get(LH.TOOLTIP_BLASTRESISTANCE) + Chat.ORANGE + ((int)aResistance) + "." + (((int)(aResistance * 10)) % 10) + (aResistance < 4 ? Chat.BLINKING_RED + " " + get(LH.TOOLTIP_BLAST_RESISTANCE_TERRIBLE) : aResistance < 12 ? Chat.RED + " " + get(LH.TOOLTIP_BLAST_RESISTANCE_GHAST) : aResistance < 16 ? Chat.YELLOW + " " + get(LH.TOOLTIP_BLAST_RESISTANCE_CREEPER) : aResistance <= 40 ? Chat.GREEN + " " + get(LH.TOOLTIP_BLAST_RESISTANCE_TNT) : aResistance < 3330 || COMPAT_IC2 == null || COMPAT_IC2.isExplosionWhitelisted(aBlock) ? Chat.GREEN + " " + get(LH.TOOLTIP_BLAST_RESISTANCE_DYNAMITE) : Chat.BLINKING_CYAN + " " + get(LH.TOOLTIP_BLAST_RESISTANCE_NOT_NUKE));}
 	
@@ -298,7 +302,7 @@ public class LH {
 	}
 	
 	public static final String getToolTipEfficiency(long aEfficiency) {aEfficiency = Math.abs(aEfficiency); return Chat.YELLOW + get(EFFICIENCY) + ": " + Chat.WHITE + percent(aEfficiency) + "%";}
-
+	
 	//保留备份
 	public static final void addToolTipsEfficiency(List<String> aList, ItemStack aStack, boolean aF3_H, TE_Behavior_Energy_Converter aConverter) {
 		short tEfficiency = getEfficiencyConverter(aConverter);
@@ -319,7 +323,7 @@ public class LH {
 	public static final short getEfficiencyConverter(TE_Behavior_Energy_Converter aConverter) {
 		return getEfficiencyIO(aConverter.mEnergyIN, aConverter.mEnergyOUT, aConverter.mMultiplier);
 	}
-
+	
 	public static final short getEfficiencyIO(TE_Behavior_Energy_Stats aEnergyIN, TE_Behavior_Energy_Stats aEnergyOUT, long aMultiplier) {
 		short tEfficiency = -1;
 		if (TD.Energy.ALL_EU.contains(aEnergyIN.mType)) {
@@ -484,7 +488,7 @@ public class LH {
 		add(TOOL_TO_HARVEST                             , "Tool to Harvest");
 		add(TOOL_TO_TAKE_PINCERS                        , "Use Pincers to extract Items");
 		add(TOOL_HINT_USE_SNEAK                         , "Use Tool and Sneak for more options");
-		add(WEAPON_SNEAK_RIGHTCLICK_TO_RELOAD           , "Sneak Rightclick to Reload");
+		add(WEAPON_SNEAK_RIGHTCLICK_TO_RELOAD           , "Sneak Rightclick to Unload/Reload");
 		add(WIRE_STATS_LOSSLESS                         , "Transfers Power losslessly");
 		add(WIRE_STATS_LOSS                             , "Loss: ");
 		add(WIRE_STATS_VOLTAGE                          , "Voltage: ");
@@ -534,9 +538,12 @@ public class LH {
 		add(TOOLTIP_BEACON_PAYMENT                      , "Can be used as a Beacon Payment");
 		add(TOOLTIP_SHELFABLE                           , "Can be placed inside a GT Bookshelf");
 		add(TOOLTIP_SANDWICHABLE                        , "Is a valid Sandwich Ingredient");
-		add(TOOLTIP_AMMO_ENCHANTS                       , "Ammo Enchantments:");
-		add(TOOLTIP_POSSIBLE_TOOL_ENCHANTS              , "Possible Tool Enchantments:");
-		add(TOOLTIP_POSSIBLE_ARMOR_ENCHANTS             , "Possible Armor Enchantments:");
+		add(TOOLTIP_POSSIBLE_ENCHANTS                   , "Possible Enchantments: ");
+		add(TOOLTIP_POSSIBLE_TOOL_ENCHANTS              , "Tool: ");
+		add(TOOLTIP_POSSIBLE_WEAPON_ENCHANTS            , "Weapon: ");
+		add(TOOLTIP_POSSIBLE_AMMO_ENCHANTS              , "Ammo: ");
+		add(TOOLTIP_POSSIBLE_RANGED_ENCHANTS            , "Ranged: ");
+		add(TOOLTIP_POSSIBLE_ARMOR_ENCHANTS             , "Armor: ");
 		add(TOOLTIP_TOO_MANY_TOOL_ENCHANTS              , "Too Many Tool Enchantments to List");
 		add(TOOLTIP_TOO_MANY_ARMOR_ENCHANTS             , "Too Many Armor Enchantments to List");
 		add(TOOLTIP_CONTAINED_MATERIALS                 , "Contained Materials:");

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -18,11 +18,6 @@
  */
 
 package gregtech.tileentity.placeables;
-
-import static gregapi.data.CS.*;
-import static gregtechCH.data.CS_CH.COLOR_LOG;
-
-import java.util.Random;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -47,6 +42,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
+
+import java.util.Random;
+
+import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.COLOR_LOG;
 
 /**
  * @author Gregorius Techneticies
@@ -87,9 +87,17 @@ public class MultiTileEntityStick extends TileEntityBase03MultiTileEntities impl
 	
 	@Override
 	public void onNeighborBlockChange(World aWorld, Block aBlock) {
-		if (isServerSide() && !worldObj.getBlock(xCoord, yCoord-1, zCoord).isSideSolid(worldObj, xCoord, yCoord-1, zCoord, FORGE_DIR[SIDE_TOP])) {
-			ST.drop(worldObj, getCoords(), getDefaultStick(1));
-			setToAir();
+		if (isServerSide()) {
+			if (!worldObj.getBlock(xCoord, yCoord-1, zCoord).isSideSolid(worldObj, xCoord, yCoord-1, zCoord, FORGE_DIR[SIDE_TOP])) {
+				ST.drop(worldObj, getCoords(), getDefaultStick(1));
+				setToAir();
+				return;
+			}
+			for (byte tSide : ALL_SIDES_HORIZONTAL_UP) if (WD.liquid(getBlockAtSide(tSide))) {
+				ST.drop(worldObj, getCoords(), getDefaultStick(1));
+				setToAir();
+				return;
+			}
 		}
 	}
 	

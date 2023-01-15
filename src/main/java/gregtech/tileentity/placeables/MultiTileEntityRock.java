@@ -153,9 +153,17 @@ public class MultiTileEntityRock extends TileEntityBase03MultiTileEntities imple
 	
 	@Override
 	public void onNeighborBlockChange(World aWorld, Block aBlock) {
-		if (isServerSide() && !worldObj.getBlock(xCoord, yCoord-1, zCoord).isSideSolid(worldObj, xCoord, yCoord-1, zCoord, FORGE_DIR[SIDE_TOP])) {
-			ST.drop(worldObj, getCoords(), mRock == null ? getDefaultRock(1) : ST.amount(1, mRock));
-			setToAir();
+		if (isServerSide()) {
+			if (!worldObj.getBlock(xCoord, yCoord-1, zCoord).isSideSolid(worldObj, xCoord, yCoord-1, zCoord, FORGE_DIR[SIDE_TOP])) {
+				ST.drop(worldObj, getCoords(), mRock == null ? getDefaultRock(1) : ST.amount(1, mRock));
+				setToAir();
+				return;
+			}
+			for (byte tSide : ALL_SIDES_HORIZONTAL_UP) if (WD.liquid(getBlockAtSide(tSide))) {
+				ST.drop(worldObj, getCoords(), mRock == null ? getDefaultRock(1) : ST.amount(1, mRock));
+				setToAir();
+				return;
+			}
 		}
 	}
 	
@@ -224,7 +232,7 @@ public class MultiTileEntityRock extends TileEntityBase03MultiTileEntities imple
 		mTexture = BlockTextureCopied.get(Blocks.stone);
 		return 1;
 	}
-
+	
 	@SideOnly(Side.CLIENT) @Override public int colorMultiplier() {
 		if (worldObj == null) {
 			return COLOR_STONE;
@@ -257,7 +265,7 @@ public class MultiTileEntityRock extends TileEntityBase03MultiTileEntities imple
 		if (IL.NeLi_Gravel.equal(tBlock)) {
 			return UT.Code.getRGBInt(MT.STONES.GraniteBlack.fRGBaSolid);
 		}
-
+		
 		if (worldObj.provider.dimensionId == -1) return COLOR_NETHERRACK;
 		if (worldObj.provider.dimensionId ==  0) return COLOR_STONE;
 		if (worldObj.provider.dimensionId == +1) return COLOR_END_STONE;
@@ -268,7 +276,7 @@ public class MultiTileEntityRock extends TileEntityBase03MultiTileEntities imple
 		if (WD.dimATUM(worldObj))                return UT.Code.getRGBInt(MT.STONES.Limestone.fRGBaSolid);
 		if (WD.dimAETHER(worldObj))              return UT.Code.getRGBInt(MT.STONES.Andesite.fRGBaSolid);
 		if (WD.dimTROPIC(worldObj))              return UT.Code.getRGBInt(MT.STONES.Basalt.fRGBaSolid);
-
+		
 		if (BIOMES_SPACE.contains(getBiome().biomeName)) {
 			if (tBlock.getMaterial() == Material.rock) return tBlock.getMaterial().getMaterialMapColor().colorValue;
 			return COLOR_OBSIDIAN;

@@ -30,6 +30,7 @@ import gregapi.data.LH;
 import gregapi.lang.LanguageHandler;
 import gregapi.util.ST;
 import gregapi.util.UT;
+import gregtechCH.item.IItemDisableNEIDamageSearch;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
@@ -48,7 +49,7 @@ import net.minecraft.world.World;
 /**
  * @author Gregorius Techneticies
  */
-public class ItemBase extends Item implements IItemProjectile, IItemUpdatable, IItemGT, IItemNoGTOverride {
+public class ItemBase extends Item implements IItemDisableNEIDamageSearch, IItemProjectile, IItemUpdatable, IItemGT, IItemNoGTOverride {
 	protected IIcon mIcon;
 	protected final String mModID;
 	protected final String mName, mTooltip;
@@ -124,4 +125,7 @@ public class ItemBase extends Item implements IItemProjectile, IItemUpdatable, I
 	public boolean isItemStackUsable(ItemStack aStack) {return T;}
 	public ItemStack make(long aMetaData) {return ST.make(this, 1, aMetaData);}
 	public ItemStack make(long aAmount, long aMetaData) {return ST.make(this, aAmount, aMetaData);}
+	
+	// GTCH, 禁止此物品的 DamageSearch
+	@Override public boolean disableNEIDamageSearch() {return T;}
 }

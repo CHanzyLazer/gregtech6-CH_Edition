@@ -7,6 +7,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @author CHanzy
+ */
 public class ThreadPools {
     public static final ITaskNumberExecutor NONE_THREAD     = newSingleNoneExecutor();
     public static final ITaskNumberExecutor LIGHT_THREAD    = newSingleThreadExecutor();

@@ -131,7 +131,7 @@ public class MultiTileEntityMiniPortalErebus extends MultiTileEntityMiniPortal {
 	@Override public ITexture getPortalTexture() {return sErebusPortal;}
 	@Override public ITexture getFrameTexture() {return sErebusPortalFrame;}
 	@Override public ITexture getInactiveTexture() {return sErebusPortalInactive;}
-
+	
 	// TODO
 	
 	@Override public String getTileEntityName() {return "gt.multitileentity.portal.erebus";}

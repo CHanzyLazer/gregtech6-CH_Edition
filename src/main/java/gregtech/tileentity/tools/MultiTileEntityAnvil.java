@@ -287,7 +287,7 @@ public class MultiTileEntityAnvil extends TileEntityBase09FacingSingle implement
 		aWorld.playSoundEffect(aX+0.5, aY+0.5, aZ+0.5, Blocks.anvil.stepSound.func_150496_b(), (Blocks.anvil.stepSound.getVolume()+1)/2, Blocks.anvil.stepSound.getPitch()*0.8F);
 		return F;
 	}
-
+	
 	// GTCH, 重写这个方法来扩展客户端数据
 	@Override
 	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
@@ -303,7 +303,7 @@ public class MultiTileEntityAnvil extends TileEntityBase09FacingSingle implement
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		super.receiveDataByteArray(aData, aNetworkHandler);
-		if (aData.length > 10) {
+		if (aData.length > 11) {
 			mShapeA = aData[5];
 			mShapeB = aData[6];
 			mMaterialA = UT.Code.combine(aData[7], aData[ 8]);

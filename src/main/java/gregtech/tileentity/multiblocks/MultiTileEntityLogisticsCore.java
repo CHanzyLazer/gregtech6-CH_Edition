@@ -192,8 +192,7 @@ public class MultiTileEntityLogisticsCore extends TileEntityBase10MultiBlockBase
 	@Override public void onUnregisterPre() {mHasToAddTimer = T;}
 	
 	@Override
-	public void onTick2(long aTimer, boolean aIsServerSide) {
-		super.onTick2(aTimer, aIsServerSide);
+	public void onTick3(long aTimer, boolean aIsServerSide) {
 		if (aIsServerSide && mHasToAddTimer) {
 			GT_API_Proxy.SERVER_TICK_PRE.add(this);
 			mHasToAddTimer = F;
@@ -218,7 +217,7 @@ public class MultiTileEntityLogisticsCore extends TileEntityBase10MultiBlockBase
 			oCPU_Storage = 0;
 			oCPU_Conversion = 0;
 			
-			if (checkStructure(F) && mEnergy >= 128L + mCPU_Logic * 64L * mCPU_Conversion) {
+			if (isStructureOkay() && mEnergy >= 128L + mCPU_Logic * 64L * mCPU_Conversion) {
 				int tX = getOffsetXN(mFacing, 2), tY = getOffsetYN(mFacing, 2), tZ = getOffsetZN(mFacing, 2);
 				
 				ItemStackSet<ItemStackContainer> tFilteredFor = new ItemStackSet<>();
@@ -665,7 +664,7 @@ public class MultiTileEntityLogisticsCore extends TileEntityBase10MultiBlockBase
 	
 	@Override
 	public boolean onBlockActivated3(EntityPlayer aPlayer, byte aSide, float aHitX, float aHitY, float aHitZ) {
-		if (isServerSide() && aPlayer != null && checkStructure(F)) {
+		if (isServerSide() && aPlayer != null && checkStructureOnly(F)) {
 			List<String> tChat = new ArrayListNoNulls<>();
 			tChat.add("Power: " + mEnergy + " EU");
 			tChat.add("Comsumption: " + (20+mCPU_Logic+mCPU_Control+mCPU_Storage+mCPU_Conversion) + " EU/t, plus more per moved Item/Fluid");

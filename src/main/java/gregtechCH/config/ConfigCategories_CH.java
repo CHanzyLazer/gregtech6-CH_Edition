@@ -1,11 +1,16 @@
 package gregtechCH.config;
 
+/**
+ * @author CHanzy
+ */
 public enum ConfigCategories_CH {
-    general_CH,
-    nbt_CH,
-    colour_CH,
-    fluid_CH,
-    optimize_CH;
+    general,
+    gameplay,
+    loader,
+    nbt,
+    colour,
+    fluid,
+    optimize;
     public enum Machines {
         basic,
         boiler,

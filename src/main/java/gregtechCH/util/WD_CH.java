@@ -5,7 +5,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.GT_API;
 import gregapi.util.UT;
-import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Vec3;
@@ -23,9 +22,13 @@ import java.util.Map;
 
 import static gregapi.data.CS.*;
 import static gregtech.interfaces.asm.LO_CH.*;
+import static gregtechCH.config.ConfigForge.DATA_GTCH;
 import static gregtechCH.threads.ThreadPools.RENDER_THREAD;
-import static gregtechCH.config.ConfigForge_CH.*;
 
+/**
+ * @author CHanzy
+ * Extension of WD
+ */
 public class WD_CH {
     @SideOnly(Side.CLIENT)
     public static void onTicking(long aTimer) {

@@ -20,7 +20,7 @@
 package gregapi.tileentity.machines;
 
 import static gregapi.data.CS.*;
-import static gregtechCH.config.ConfigForge_CH.*;
+import static gregtechCH.config.ConfigForge.*;
 
 import java.util.List;
 

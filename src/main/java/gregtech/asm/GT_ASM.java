@@ -94,13 +94,16 @@ public class GT_ASM implements IFMLLoadingPlugin {
 			// Shouldn't happen, but sanity, and Java can't enforce this unlike decent programming languages...
 			if (mclocation == null) throw new RuntimeException("Failed to acquire `location` in GT6 CoreMod");
 			
+			transformers.put(MultiPart_FixLoggerCrash.class.getName(), true);
+			transformers.put(MicroBlock_FixLoggerCrash.class.getName(), true);
 			transformers.put(CoFHCore_CrashFix.class.getName(), true);
 			transformers.put(CoFHLib_HashFix.class.getName(), true);
 			transformers.put(ExtraUtils_FixThaumcraftAspects.class.getName(), true);
 			transformers.put(Minecraft_EmptyRecipeOptimization.class.getName(), true);
+			transformers.put(Minecraft_Feature_CreeperSwellToward.class.getName(), true);
 			transformers.put(Minecraft_IceHarvestMissingHookFix.class.getName(), true);
 			transformers.put(Minecraft_LavaFlammableFix.class.getName(), true);
-			transformers.put(Minecraft_MinecraftServerIntegratedLaunchMainMenuPartialFix.class.getName(), true);
+	// TODO transformers.put(Minecraft_MinecraftServerIntegratedLaunchMainMenuPartialFix.class.getName(), true);
 			transformers.put(Minecraft_RemoveCartSpeedCap.class.getName(), true);
 			transformers.put(Minecraft_ZombieVillagerConversion.class.getName(), true);
 			transformers.put(Railcraft_RemoveBoreSpam.class.getName(), true);
@@ -108,9 +111,12 @@ public class GT_ASM implements IFMLLoadingPlugin {
 			transformers.put(Thaumcraft_AspectLagFix.class.getName(), true);
 			transformers.put(Minecraft_LightOpacityFix_CH.class.getName(), true);
 			transformers.put(Minecraft_BlockParticleFix_CH.class.getName(), true);
+			transformers.put(Minecraft_CustomSneakBypassUse_CH.class.getName(), true);
 			transformers.put(Journeymap_BlockGTColorFix_CH.class.getName(), true);
 			transformers.put(BuildCraft_PipeAutoConnectFix_CH.class.getName(), true);
-
+			transformers.put(NEI_ItemListLoaderCrashFix_CH.class.getName(), true);
+			transformers.put(Forge_VersionDownloadFailFix_CH.class.getName(), true);
+			
 			mclocation = new File(mclocation, "/config/gregtech");
 			mclocation.mkdirs();
 			mclocation = new File(mclocation, "/asm.ini");
@@ -223,13 +229,19 @@ public class GT_ASM implements IFMLLoadingPlugin {
 	}
 	
 	public static byte[] writeByteArray(ClassNode aClassNode) {
-		ClassWriter rWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+		return writeByteArray(aClassNode, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+	}
+	public static byte[] writeByteArray(ClassNode aClassNode, final int aFlags) {
+		ClassWriter rWriter = new ClassWriter(aFlags);
 		aClassNode.accept(rWriter);
 		return rWriter.toByteArray();
 	}
-
+	
 	public static byte[] writeByteArraySelfReferenceFixup(ClassNode aClassNode) {
-		ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES) {
+		return writeByteArraySelfReferenceFixup(aClassNode, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+	}
+	public static byte[] writeByteArraySelfReferenceFixup(ClassNode aClassNode, final int aFlags) {
+		ClassWriter writer = new ClassWriter(aFlags) {
 			// Have to override this method because of Forge's classloader stuff, this one grabs the wrong one..
 			// And can't even use the correct classloader here because the forge remapping hadn't been done yet.
 			// Forge's classloader doesn't seem to like loading and transforming a type while transforming another...

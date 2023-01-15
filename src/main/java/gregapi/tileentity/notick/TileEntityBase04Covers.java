@@ -71,7 +71,7 @@ import gregapi.tileentity.data.ITileEntitySurface;
 import gregapi.tileentity.render.ITileEntityOnDrawBlockHighlight;
 import gregapi.util.ST;
 import gregapi.util.UT;
-import gregtechCH.config.ConfigForge_CH;
+import gregtechCH.config.ConfigForge;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -231,7 +231,7 @@ public abstract class TileEntityBase04Covers extends TileEntityBase03MultiTileEn
 		}
 		return onToolClick2(aTool, aRemainingDurability, aQuality, aPlayer, aChatReturn, aPlayerInventory, aSneaking, aStack, aSide, aHitX, aHitY, aHitZ);
 	}
-
+	
 	public boolean isEnabledTool(String aTool, long aQuality, boolean aSneaking, byte aSide, float aHitX, float aHitY, float aHitZ) {
 		return T;
 	}
@@ -324,8 +324,8 @@ public abstract class TileEntityBase04Covers extends TileEntityBase03MultiTileEn
 	public boolean setCoverItem(byte aSide, ItemStack aStack, Entity aPlayer, boolean aForce, boolean aBlockUpdate) {
 		if (SIDES_INVALID[aSide] || !allowCovers(aSide)) return F;
 		// GTCH, 潜行安装覆盖板
-		if (aStack != null && ConfigForge_CH.DATA_GTCH.sneakingMountCover && !aPlayer.isSneaking()) return F;
-
+		if (aStack != null && ConfigForge.DATA_GTCH.sneakingMountCover && !aPlayer.isSneaking()) return F;
+		
 		if (mCovers == null) mCovers = CoverRegistry.coverdata(this, null);
 		
 		if (!aForce) {

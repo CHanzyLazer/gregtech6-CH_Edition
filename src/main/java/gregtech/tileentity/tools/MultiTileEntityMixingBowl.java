@@ -125,11 +125,11 @@ public class MultiTileEntityMixingBowl extends TileEntityBase07Paintable impleme
 		if (aTool.equals(TOOL_magnifyingglass)) {
 			if (aChatReturn != null) {
 				boolean temp = T;
-				for (FluidTankGT tTank : mTanksInput) if (!tTank.isEmpty()) {
+				for (FluidTankGT tTank : mTanksInput) if (tTank.has()) {
 					temp = F;
 					aChatReturn.add("Input: " + tTank.content());
 				}
-				for (FluidTankGT tTank : mTanksOutput) if (!tTank.isEmpty()) {
+				for (FluidTankGT tTank : mTanksOutput) if (tTank.has()) {
 					temp = F;
 					aChatReturn.add("Output: " + tTank.content());
 				}
@@ -228,7 +228,8 @@ public class MultiTileEntityMixingBowl extends TileEntityBase07Paintable impleme
 				}
 			}
 			
-			if (UT.Inventories.addStackToPlayerInventory(aPlayer, slot(6), T)) {
+			if (UT.Inventories.addStackToPlayerInventory(aPlayer, slot(6), F)) {
+				playCollect();
 				slotKill(6);
 				return T;
 			}
@@ -272,6 +273,7 @@ public class MultiTileEntityMixingBowl extends TileEntityBase07Paintable impleme
 				}
 			}
 			if (!slotHas(6)) for (int i = 0; i < 6; i++) if (UT.Inventories.addStackToPlayerInventory(aPlayer, slot(i), T)) {
+				playCollect();
 				slotKill(i);
 				return T;
 			}
@@ -320,7 +322,7 @@ public class MultiTileEntityMixingBowl extends TileEntityBase07Paintable impleme
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		if (aData.length > 1) mDisplay = UT.Code.combine(aData[0], aData[1]);
-		if (aData.length > 4) setRGBData(aData[2], aData[3], aData[4], aData[aData.length-1]);
+		if (aData.length > 5) setRGBData(aData[2], aData[3], aData[4], aData[aData.length-1]);
 		return T;
 	}
 

@@ -59,6 +59,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -143,6 +144,13 @@ public class MultiTileEntitySmeltery extends TileEntityBase07Paintable implement
 	@SuppressWarnings("unchecked")
 	public void onServerTickPost(boolean aFirst) {
 		long tTemperature = WD.envTemp(worldObj, xCoord, yCoord, zCoord), tHash = mContent.hashCode();
+		
+		if (SERVER_TIME % 600 == 10 && worldObj.isRaining() && getRainOffset(0, 1, 0)) {
+			BiomeGenBase tBiome = getBiome();
+			if (tBiome.rainfall > 0 && tBiome.temperature >= 0.2) {
+				addMaterialStacks(Arrays.asList(OM.stack(MT.Water, U1000 * (long)Math.max(1, tBiome.rainfall*100) * (worldObj.isThundering()?2:1))), tTemperature);
+			}
+		}
 		
 		if (!slotHas(0)) slot(0, WD.suck(worldObj, xCoord+PX_P[2], yCoord+PX_P[2], zCoord+PX_P[2], PX_N[4], 1, PX_N[4]));
 		
@@ -543,7 +551,7 @@ public class MultiTileEntitySmeltery extends TileEntityBase07Paintable implement
 		oDisplayedFluid = mDisplayedFluid;
 		oDisplayedHeight = mDisplayedHeight;
 	}
-
+	
 	// GTCH, 重写这个方法保证和原本的逻辑一致
 	@Override
 	public IPacket getClientDataPacketNoSendAll(boolean aSendAll) {
@@ -562,9 +570,9 @@ public class MultiTileEntitySmeltery extends TileEntityBase07Paintable implement
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		mDisplayedHeight = aData[0];
-		if (aData.length >= 3) mDisplayedFluid = UT.Code.combine(aData[1], aData[2]);
-		if (aData.length >= 6) setRGBData(aData[3], aData[4], aData[5], aData[aData.length-1]);
-		if (aData.length >= 7) mMeltDown = (aData[6] != 0);
+		if (aData.length > 2) mDisplayedFluid = UT.Code.combine(aData[1], aData[2]);
+		if (aData.length > 5) setRGBData(aData[3], aData[4], aData[5], aData[aData.length-1]);
+		if (aData.length > 7) mMeltDown = (aData[6] != 0);
 		return T;
 	}
 	

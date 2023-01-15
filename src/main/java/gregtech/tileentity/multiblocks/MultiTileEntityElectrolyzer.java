@@ -19,79 +19,22 @@
 
 package gregtech.tileentity.multiblocks;
 
-import static gregapi.data.CS.*;
-
-import java.util.List;
-
-import gregapi.data.LH;
-import gregapi.data.LH.Chat;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.tileentity.machines.ITileEntityAdjacentOnOff;
-import gregapi.tileentity.multiblocks.ITileEntityMultiBlockController;
-import gregapi.tileentity.multiblocks.MultiTileEntityMultiBlockPart;
 import gregapi.tileentity.multiblocks.TileEntityBase10MultiBlockMachine;
 import gregapi.util.WD;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
+import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockElectrolyzer;
+import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockMachine;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.IFluidHandler;
+
+import static gregapi.data.CS.*;
 
 /**
  * @author Gregorius Techneticies
  */
 public class MultiTileEntityElectrolyzer extends TileEntityBase10MultiBlockMachine {
-	@Override
-	public boolean checkStructure2() {
-		int tX = getOffsetXN(mFacing)-1, tY = yCoord, tZ = getOffsetZN(mFacing)-1;
-		if (worldObj.blockExists(tX-1, tY, tZ-1) && worldObj.blockExists(tX+1, tY, tZ-1) && worldObj.blockExists(tX-1, tY, tZ+1) && worldObj.blockExists(tX+1, tY, tZ+1)) {
-			boolean tSuccess = T;
-			
-			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX  , tY  , tZ  , 18105, getMultiTileEntityRegistryID(), 1, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID_ENERGY_IN)) tSuccess = F;
-			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+1, tY  , tZ  , 18105, getMultiTileEntityRegistryID(), 1, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID_ENERGY_IN)) tSuccess = F;
-			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+2, tY  , tZ  , 18105, getMultiTileEntityRegistryID(), 1, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID_ENERGY_IN)) tSuccess = F;
-			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX  , tY  , tZ+1, 18105, getMultiTileEntityRegistryID(), 1, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID_ENERGY_IN)) tSuccess = F;
-			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+1, tY  , tZ+1, 18105, getMultiTileEntityRegistryID(), 1, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID_ENERGY_IN)) tSuccess = F;
-			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+2, tY  , tZ+1, 18105, getMultiTileEntityRegistryID(), 1, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID_ENERGY_IN)) tSuccess = F;
-			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX  , tY  , tZ+2, 18105, getMultiTileEntityRegistryID(), 1, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID_ENERGY_IN)) tSuccess = F;
-			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+1, tY  , tZ+2, 18105, getMultiTileEntityRegistryID(), 1, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID_ENERGY_IN)) tSuccess = F;
-			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+2, tY  , tZ+2, 18105, getMultiTileEntityRegistryID(), 1, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID_ENERGY_IN)) tSuccess = F;
-			
-			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX  , tY+1, tZ  , 18105, getMultiTileEntityRegistryID(), mActive?2+rng(6):0, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID_OUT)) tSuccess = F;
-			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+1, tY+1, tZ  , 18105, getMultiTileEntityRegistryID(), mActive?2+rng(6):0, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID_OUT)) tSuccess = F;
-			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+2, tY+1, tZ  , 18105, getMultiTileEntityRegistryID(), mActive?2+rng(6):0, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID_OUT)) tSuccess = F;
-			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX  , tY+1, tZ+1, 18105, getMultiTileEntityRegistryID(), mActive?2+rng(6):0, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID_OUT)) tSuccess = F;
-			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+1, tY+1, tZ+1, 18105, getMultiTileEntityRegistryID(), mActive?2+rng(6):0, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID_OUT)) tSuccess = F;
-			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+2, tY+1, tZ+1, 18105, getMultiTileEntityRegistryID(), mActive?2+rng(6):0, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID_OUT)) tSuccess = F;
-			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX  , tY+1, tZ+2, 18105, getMultiTileEntityRegistryID(), mActive?2+rng(6):0, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID_OUT)) tSuccess = F;
-			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+1, tY+1, tZ+2, 18105, getMultiTileEntityRegistryID(), mActive?2+rng(6):0, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID_OUT)) tSuccess = F;
-			if (!ITileEntityMultiBlockController.Util.checkAndSetTarget(this, tX+2, tY+1, tZ+2, 18105, getMultiTileEntityRegistryID(), mActive?2+rng(6):0, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID_OUT)) tSuccess = F;
-			
-			return tSuccess;
-		}
-		return mStructureOkay;
-	}
-	
-	static {
-		LH.add("gt.tooltip.multiblock.electrolyzer.1", "3x3x2 of Electrolyzer Parts");
-		LH.add("gt.tooltip.multiblock.electrolyzer.2", "Main Block centered on Side-Bottom and facing outwards");
-		LH.add("gt.tooltip.multiblock.electrolyzer.3", "Bottom Half accepts Input, Top Half and Main Block emit Output");
-	}
-	
-	@Override
-	protected void toolTipsMultiblock(List<String> aList) {
-		aList.add(Chat.CYAN     + LH.get(LH.STRUCTURE) + ":");
-		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.electrolyzer.1"));
-		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.electrolyzer.2"));
-		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.electrolyzer.3"));
-	}
-	
-	@Override
-	public boolean isInsideStructure(int aX, int aY, int aZ) {
-		int tX = getOffsetXN(mFacing), tY = yCoord, tZ = getOffsetZN(mFacing);
-		return aX >= tX - 1 && aY >= tY && aZ >= tZ - 1 && aX <= tX + 1 && aY <= tY + 1 && aZ <= tZ + 1;
-	}
+	@Override protected MTEC_MultiBlockMachine getNewCoreMultiBlock() {return new MTEC_MultiBlockElectrolyzer(this);}
 	
 	@Override
 	public void updateAdjacentToggleableEnergySources() {
@@ -100,19 +43,6 @@ public class MultiTileEntityElectrolyzer extends TileEntityBase10MultiBlockMachi
 			((ITileEntityAdjacentOnOff)tDelegator.mTileEntity).setAdjacentOnOff(getStateOnOff());
 		}
 	}
-	
-	@Override
-	public DelegatorTileEntity<IFluidHandler> getFluidOutputTarget(byte aSide, Fluid aOutput) {
-		return getAdjacentTank(SIDE_BOTTOM);
-	}
-	
-	@Override
-	public DelegatorTileEntity<TileEntity> getItemOutputTarget(byte aSide) {
-		return getAdjacentTileEntity(SIDE_BOTTOM);
-	}
-	
-	@Override public DelegatorTileEntity<IInventory> getItemInputTarget(byte aSide) {return null;}
-	@Override public DelegatorTileEntity<IFluidHandler> getFluidInputTarget(byte aSide) {return null;}
 	
 	@Override public boolean refreshStructureOnActiveStateChange() {return T;}
 	

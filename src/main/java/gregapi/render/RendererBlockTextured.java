@@ -38,7 +38,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer;
 
 /**
- * @author Gregorius Techneticies
+ * @author Gregorius Techneticies, CHanzy
  */
 public class RendererBlockTextured implements ISimpleBlockRenderingHandler, IItemRenderer {
 	public final int mRenderID;

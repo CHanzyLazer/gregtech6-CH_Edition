@@ -223,7 +223,7 @@ public class MultiTileEntityGeneratorHotFluid extends TileEntityBase09FacingSing
 		updateInventory();
 		return mTanks[mTanks[1].has() ? 1 : 0].drain(aMaxDrain, aDoDrain);
 	}
-
+	
 	@Override
 	public boolean breakBlock() {
 		if (isServerSide()) {
@@ -276,7 +276,7 @@ public class MultiTileEntityGeneratorHotFluid extends TileEntityBase09FacingSing
 	};
 	
 	@Override public String getTileEntityName() {return "gt.multitileentity.generator.hot_fluid";}
-
+	
 	@Override
 	public boolean canFillExtra(FluidStack aFluid) {
 		return T;

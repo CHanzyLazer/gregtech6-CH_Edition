@@ -20,6 +20,7 @@
 package gregapi.tileentity.multiblocks;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.NBT_EFFICIENCY_NUM;
 
 import java.util.Collection;
 import java.util.List;
@@ -52,7 +53,7 @@ public abstract class TileEntityBase11MultiBlockConverter extends TileEntityBase
 	public TE_Behavior_Energy_Capacitor mStorage = null;
 	public TE_Behavior_Energy_Converter mConverter = null;
 	public TE_Behavior_Active_Trinary mActivity = null;
-
+	
 	protected short mEfficiency;
 	
 	@Override
@@ -73,7 +74,20 @@ public abstract class TileEntityBase11MultiBlockConverter extends TileEntityBase
 	}
 	
 	public void readEnergyBehavior(NBTTagCompound aNBT) {
-		long tInput = aNBT.getLong(NBT_INPUT), tOutput = aNBT.getLong(NBT_OUTPUT);
+		long tInput, tOutput;
+		// GTCH, 使其可以输入效率作为参数，注意为了代码简洁，这里不考虑能量类型，仅做数值效率
+		if (aNBT.hasKey(NBT_EFFICIENCY_NUM)) {
+			if (aNBT.hasKey(NBT_INPUT)) {
+				tInput = aNBT.getLong(NBT_INPUT);
+				tOutput = UT.Code.units(tInput, 10000, UT.Code.bind_(0, 10000, aNBT.getShort(NBT_EFFICIENCY_NUM)), F);
+			} else {
+				tOutput = aNBT.getLong(NBT_OUTPUT);
+				tInput = UT.Code.units(tOutput, UT.Code.bind_(0, 10000, aNBT.getShort(NBT_EFFICIENCY_NUM)), 10000, T);
+			}
+		} else {
+			tInput = aNBT.getLong(NBT_INPUT);
+			tOutput = aNBT.getLong(NBT_OUTPUT);
+		}
 		mStorage    = new TE_Behavior_Energy_Capacitor  (this, aNBT, tInput * 2);
 		mEnergyIN   = new TE_Behavior_Energy_Stats      (this, aNBT, aNBT.hasKey(NBT_ENERGY_ACCEPTED) ? TagData.createTagData(aNBT.getString(NBT_ENERGY_ACCEPTED)) : TD.Energy.QU   , mStorage, tInput <= 16 ? 1 : tInput / 2, tInput, tInput * 2);
 		mEnergyOUT  = new TE_Behavior_Energy_Stats      (this, aNBT, aNBT.hasKey(NBT_ENERGY_EMITTED ) ? TagData.createTagData(aNBT.getString(NBT_ENERGY_EMITTED )) : mEnergyIN.mType, mStorage, tOutput / 2, tOutput, tOutput * 2);
@@ -107,9 +121,8 @@ public abstract class TileEntityBase11MultiBlockConverter extends TileEntityBase
 	}
 	
 	@Override
-	public void onTick2(long aTimer, boolean aIsServerSide) {
-		super.onTick2(aTimer, aIsServerSide);
-		if (aIsServerSide && checkStructure(F)) {
+	public void onTick3(long aTimer, boolean aIsServerSide) {
+		if (aIsServerSide && isStructureOkay()) {
 			doConversion(aTimer);
 			if (mTimer % 600 == 5 && !mActivity.mActive && mExplosionPrevention > 0) mExplosionPrevention--;
 		}

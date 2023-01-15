@@ -41,6 +41,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 /**
  * @author Gregorius Techneticies
  */
+@Deprecated
 public abstract class MultiTileEntityLargeTurbine extends TileEntityBase11MultiBlockConverter implements IMultiBlockFluidHandler, IFluidHandler_CH, ITileEntitySwitchableOnOff {
 	public short mTurbineWalls = 18022;
 	

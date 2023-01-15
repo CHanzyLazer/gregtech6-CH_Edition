@@ -53,11 +53,11 @@ public abstract class MultiTileEntitySensor extends TileEntityBase10FacingDouble
 	protected boolean mOverMaxDisplay = F, oOverMaxDisplay = F;
 	protected byte mRedstone = 0;
 	public final static int MAX_DISPLAY_NUMBER = 65535;
-
+	
 	public boolean isDisplayMode() {return T;}
 	public boolean isRedstoneMode() {return T;}
 	public boolean willRerendImmediateAny() {return !isDisplayMode();} // 在非显示模式下改变数据无论如何都需要重新渲染
-
+	
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {
 		super.readFromNBT2(aNBT);
@@ -108,7 +108,7 @@ public abstract class MultiTileEntitySensor extends TileEntityBase10FacingDouble
 		if (aTool.equals(TOOL_monkeywrench)) {byte aTargetSide = UT.Code.getSideWrenching(aSide, aHitX, aHitY, aHitZ); if (SIDES_VALID[aTargetSide] && aTargetSide != mFacing ) {mSecondFacing = aTargetSide;                         updateClientData(); causeBlockUpdate(); return 10000;}}
 		return 0;
 	}
-
+	
 	@Override
 	public boolean onTickCheck(long aTimer) {
 		mDisplayedNumber = UT.Code.bind16(mDisplayedNumber);
@@ -123,7 +123,7 @@ public abstract class MultiTileEntitySensor extends TileEntityBase10FacingDouble
 		oOverMaxDisplay = mOverMaxDisplay;
 		oDisplayedNumber = mDisplayedNumber;
 	}
-
+	
 	// GTCH, 重写这个方法保证和原本的逻辑一致
 	@Override
 	public IPacket getClientDataPacketNoSendAll(boolean aSendAll) {
@@ -138,7 +138,7 @@ public abstract class MultiTileEntitySensor extends TileEntityBase10FacingDouble
 		rList.add(6, mMode);
 		rList.add(7, (byte)(mOverMaxDisplay?1:0));
 	}
-
+	
 	@Override
 	public boolean receiveDataByte(byte aData, INetworkHandler aNetworkHandler) {
 		mDisplayedNumber = MAX_DISPLAY_NUMBER;
@@ -151,11 +151,11 @@ public abstract class MultiTileEntitySensor extends TileEntityBase10FacingDouble
 		mOverMaxDisplay = F;
 		return T;
 	}
-
+	
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		mDisplayedNumber = UT.Code.unsignS(UT.Code.combine(aData[0], aData[1]));
-		if (aData.length >= 8) {
+		if (aData.length > 8) {
 			setRGBData(aData[2], aData[3], aData[4], aData[aData.length-1]);
 			setDirectionData(aData[5]);
 			mMode = aData[6];

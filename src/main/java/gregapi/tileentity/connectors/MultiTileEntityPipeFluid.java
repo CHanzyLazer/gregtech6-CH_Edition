@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,11 +19,6 @@
 
 package gregapi.tileentity.connectors;
 
-import static gregapi.data.CS.*;
-import static gregtechCH.data.CS_CH.*;
-
-import java.util.*;
-
 import com.google.common.primitives.Longs;
 import com.mojang.realmsclient.util.Pair;
 import gregapi.GT_API_Proxy;
@@ -36,9 +31,6 @@ import gregapi.code.ArrayListNoNulls;
 import gregapi.code.HashSetNoNulls;
 import gregapi.code.TagData;
 import gregapi.data.*;
-import gregapi.data.CS.GarbageGT;
-import gregapi.data.CS.IconsGT;
-import gregapi.data.CS.SFX;
 import gregapi.data.LH.Chat;
 import gregapi.fluid.FluidTankGT;
 import gregapi.network.INetworkHandler;
@@ -59,8 +51,8 @@ import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.util.*;
 import gregtechCH.data.LH_CH;
 import gregtechCH.fluid.IFluidHandler_CH;
-import gregtechCH.tileentity.compat.PipeCompat_CH;
-import gregtechCH.tileentity.data.ITileEntityFlowrate_CH;
+import gregtechCH.tileentity.compat.PipeCompat;
+import gregtechCH.tileentity.data.ITileEntityFlowrate;
 import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCauldron;
@@ -76,22 +68,27 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fluids.IFluidTank;
 
+import java.util.*;
+
+import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.*;
+
 /**
  * @author Gregorius Techneticies
  */
-public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered implements ITileEntityFlowrate_CH, IMTE_GetOreDictItemData, ITileEntityQuickObstructionCheck, IFluidHandler_CH, ITileEntityGibbl, ITileEntityTemperature, ITileEntityProgress, ITileEntityServerTickPre, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnEntityCollidedWithBlock {
+public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered implements ITileEntityFlowrate, IMTE_GetOreDictItemData, ITileEntityQuickObstructionCheck, IFluidHandler_CH, ITileEntityGibbl, ITileEntityTemperature, ITileEntityProgress, ITileEntityServerTickPre, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnEntityCollidedWithBlock {
 	private byte[] mLastReceivedFrom = ZL_BYTE;
 	private static final byte LRF_COOLDOWN_NUM = 8;
 	private byte[][] mLRFCooldownCounters =  ZL_BI_BYTE;
-
+	
 	public byte mRenderType = 0;
 	public long mTemperature = DEF_ENV_TEMP, mMaxTemperature, mTransferredAmount = 0, mCapacity = 1000;
 	public boolean mGasProof = F, mAcidProof = F, mPlasmaProof = F, mBlocking = F;
 	public FluidTankGT[] mTanks = ZL_FT;
-
+	
 	// GTCH，用来实现限制方向传递流体
 	public byte mFluidDir = SIDE_ANY, oFluidDir = SIDE_ANY;
-	public Mode mFluidMode = Mode.DEFAULT, oFluidMode = Mode.DEFAULT;
+	public PipeMode mFluidMode = PipeMode.DEFAULT, oFluidMode = PipeMode.DEFAULT;
 	// GTCH，用来限制流量（通过限制容量）
 	public byte mCapacityLimit = 0;
 	public final static byte MAX_LIMIT = 8;
@@ -108,7 +105,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	// GTCH, 用于在建筑泡沫上显示 mark
 	public int mMarkBuffer = 0;
 	public boolean mOutMark = F, oOutMark = F;
-
+	
 	/**
 	 * Utility to quickly add a whole set of Fluid Pipes.
 	 * May use up to 20 IDs, even if it is just 7 right now!
@@ -122,13 +119,13 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	 * May use up to 20 IDs, even if it is just 7 right now!
 	 */
 	public static void addFluidPipes(int aID, int aCreativeTabID, long aStat, boolean aGasProof, boolean aAcidProof, boolean aPlasmaProof, boolean aContactDamage, boolean aFlammable, boolean aRecipe, boolean aBlocking, MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aBlock, Class<? extends TileEntity> aClass, long aMaxTemperature, OreDictMaterial aMat) {
-		OreDictManager.INSTANCE.setTarget_(OP.pipeTiny     , aMat, aRegistry.add("Tiny " + aMat.getLocal() + " Fluid Pipe"     , "Fluid Pipes", aID   , aCreativeTabID, aClass, aMat.mToolQuality, 64, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 1.0F, NBT_RESISTANCE, 6.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 4], NBT_CONTACTDAMAGE, aContactDamage, NBT_TANK_CAPACITY, aStat    , NBT_OPAQUE, aBlocking, NBT_GASPROOF, aGasProof, NBT_ACIDPROOF, aAcidProof, NBT_PLASMAPROOF, aPlasmaProof, NBT_FLAMMABILITY, aFlammable ? 150 : 0, NBT_TEMPERATURE, aMaxTemperature, NBT_TANK_COUNT, 1, NBT_ADD_BOOL+".fc", aMat==MT.Rubber, NBT_ADD_BOOL+".allowswitch.fc", aMat!=MT.Rubber), aRecipe?new Object[]{"sP ", "wzh"       , 'P', OP.plateCurved.dat(aMat)}:ZL), T, F, T);
-		OreDictManager.INSTANCE.setTarget_(OP.pipeSmall    , aMat, aRegistry.add("Small " + aMat.getLocal() + " Fluid Pipe"    , "Fluid Pipes", aID+ 1, aCreativeTabID, aClass, aMat.mToolQuality, 64, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 1.0F, NBT_RESISTANCE, 6.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 6], NBT_CONTACTDAMAGE, aContactDamage, NBT_TANK_CAPACITY, aStat* 2L, NBT_OPAQUE, aBlocking, NBT_GASPROOF, aGasProof, NBT_ACIDPROOF, aAcidProof, NBT_PLASMAPROOF, aPlasmaProof, NBT_FLAMMABILITY, aFlammable ? 150 : 0, NBT_TEMPERATURE, aMaxTemperature, NBT_TANK_COUNT, 1, NBT_ADD_BOOL+".fc", aMat==MT.Rubber, NBT_ADD_BOOL+".allowswitch.fc", aMat!=MT.Rubber), aRecipe?new Object[]{" P ", "wzh"       , 'P', OP.plateCurved.dat(aMat)}:ZL), T, F, T);
-		OreDictManager.INSTANCE.setTarget_(OP.pipeMedium   , aMat, aRegistry.add(aMat.getLocal() + " Fluid Pipe"               , "Fluid Pipes", aID+ 2, aCreativeTabID, aClass, aMat.mToolQuality, 32, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 1.0F, NBT_RESISTANCE, 6.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 8], NBT_CONTACTDAMAGE, aContactDamage, NBT_TANK_CAPACITY, aStat* 6L, NBT_OPAQUE, aBlocking, NBT_GASPROOF, aGasProof, NBT_ACIDPROOF, aAcidProof, NBT_PLASMAPROOF, aPlasmaProof, NBT_FLAMMABILITY, aFlammable ? 150 : 0, NBT_TEMPERATURE, aMaxTemperature, NBT_TANK_COUNT, 1, NBT_ADD_BOOL+".fc", aMat==MT.Rubber, NBT_ADD_BOOL+".allowswitch.fc", aMat!=MT.Rubber), aRecipe?new Object[]{"PPP", "wzh"       , 'P', OP.plateCurved.dat(aMat)}:ZL), T, F, T);
-		OreDictManager.INSTANCE.setTarget_(OP.pipeLarge    , aMat, aRegistry.add("Large " + aMat.getLocal() + " Fluid Pipe"    , "Fluid Pipes", aID+ 3, aCreativeTabID, aClass, aMat.mToolQuality, 16, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 1.0F, NBT_RESISTANCE, 6.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[12], NBT_CONTACTDAMAGE, aContactDamage, NBT_TANK_CAPACITY, aStat*12L, NBT_OPAQUE, aBlocking, NBT_GASPROOF, aGasProof, NBT_ACIDPROOF, aAcidProof, NBT_PLASMAPROOF, aPlasmaProof, NBT_FLAMMABILITY, aFlammable ? 150 : 0, NBT_TEMPERATURE, aMaxTemperature, NBT_TANK_COUNT, 1, NBT_ADD_BOOL+".fc", aMat==MT.Rubber, NBT_ADD_BOOL+".allowswitch.fc", aMat!=MT.Rubber), aRecipe?new Object[]{"PPP", "wzh", "PPP", 'P', OP.plateCurved.dat(aMat)}:ZL), T, F, T);
-		OreDictManager.INSTANCE.setTarget_(OP.pipeHuge     , aMat, aRegistry.add("Huge " + aMat.getLocal() + " Fluid Pipe"     , "Fluid Pipes", aID+ 4, aCreativeTabID, aClass, aMat.mToolQuality, 16, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 1.0F, NBT_RESISTANCE, 6.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[16], NBT_CONTACTDAMAGE, aContactDamage, NBT_TANK_CAPACITY, aStat*24L, NBT_OPAQUE, aBlocking, NBT_GASPROOF, aGasProof, NBT_ACIDPROOF, aAcidProof, NBT_PLASMAPROOF, aPlasmaProof, NBT_FLAMMABILITY, aFlammable ? 150 : 0, NBT_TEMPERATURE, aMaxTemperature, NBT_TANK_COUNT, 1, NBT_ADD_BOOL+".fc", aMat==MT.Rubber, NBT_ADD_BOOL+".allowswitch.fc", aMat!=MT.Rubber), aRecipe?new Object[]{"PPP", "wzh", "PPP", 'P', OP.plateDouble.dat(aMat)}:ZL), T, F, T);
-		OreDictManager.INSTANCE.setTarget_(OP.pipeQuadruple, aMat, aRegistry.add("Quadruple " + aMat.getLocal() + " Fluid Pipe", "Fluid Pipes", aID+ 5, aCreativeTabID, aClass, aMat.mToolQuality, 16, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 1.0F, NBT_RESISTANCE, 6.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[16], NBT_CONTACTDAMAGE, aContactDamage, NBT_TANK_CAPACITY, aStat* 6L, NBT_OPAQUE, aBlocking, NBT_GASPROOF, aGasProof, NBT_ACIDPROOF, aAcidProof, NBT_PLASMAPROOF, aPlasmaProof, NBT_FLAMMABILITY, aFlammable ? 150 : 0, NBT_TEMPERATURE, aMaxTemperature, NBT_TANK_COUNT, 4, NBT_ADD_BOOL+".fc", aMat==MT.Rubber, NBT_ADD_BOOL+".allowswitch.fc", aMat!=MT.Rubber), new Object[]{"PP" , "PP"        , 'P', OP.pipeMedium.dat(aMat)}), T, F, T);
-		OreDictManager.INSTANCE.setTarget_(OP.pipeNonuple  , aMat, aRegistry.add("Nonuple " + aMat.getLocal() + " Fluid Pipe"  , "Fluid Pipes", aID+ 6, aCreativeTabID, aClass, aMat.mToolQuality, 16, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 1.0F, NBT_RESISTANCE, 6.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[16], NBT_CONTACTDAMAGE, aContactDamage, NBT_TANK_CAPACITY, aStat* 2L, NBT_OPAQUE, aBlocking, NBT_GASPROOF, aGasProof, NBT_ACIDPROOF, aAcidProof, NBT_PLASMAPROOF, aPlasmaProof, NBT_FLAMMABILITY, aFlammable ? 150 : 0, NBT_TEMPERATURE, aMaxTemperature, NBT_TANK_COUNT, 9, NBT_ADD_BOOL+".fc", aMat==MT.Rubber, NBT_ADD_BOOL+".allowswitch.fc", aMat!=MT.Rubber), new Object[]{"PPP", "PPP", "PPP", 'P', OP.pipeSmall.dat(aMat)}), T, F, T);
+		OreDictManager.INSTANCE.setTarget_(OP.pipeTiny     , aMat, aRegistry.add("Tiny " + aMat.getLocal() + " Fluid Pipe"     , "Fluid Pipes", aID   , aCreativeTabID, aClass, aMat.mToolQuality, 64, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, aBlocking?2.0F:1.0F, NBT_RESISTANCE, aBlocking?6.0F:2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 4], NBT_CONTACTDAMAGE, aContactDamage, NBT_TANK_CAPACITY, aStat    , NBT_OPAQUE, aBlocking, NBT_GASPROOF, aGasProof, NBT_ACIDPROOF, aAcidProof, NBT_PLASMAPROOF, aPlasmaProof, NBT_FLAMMABILITY, aFlammable ? 150 : 0, NBT_TEMPERATURE, aMaxTemperature, NBT_TANK_COUNT, 1, NBT_ADD_BOOL+".fc", aMat==MT.Rubber, NBT_ADD_BOOL+".allowswitch.fc", aMat!=MT.Rubber), aRecipe?new Object[]{"sP ", "wzh"       , 'P', OP.plateCurved.dat(aMat)}:ZL), T, F, T);
+		OreDictManager.INSTANCE.setTarget_(OP.pipeSmall    , aMat, aRegistry.add("Small " + aMat.getLocal() + " Fluid Pipe"    , "Fluid Pipes", aID+ 1, aCreativeTabID, aClass, aMat.mToolQuality, 64, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, aBlocking?2.0F:1.0F, NBT_RESISTANCE, aBlocking?6.0F:2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 6], NBT_CONTACTDAMAGE, aContactDamage, NBT_TANK_CAPACITY, aStat* 2L, NBT_OPAQUE, aBlocking, NBT_GASPROOF, aGasProof, NBT_ACIDPROOF, aAcidProof, NBT_PLASMAPROOF, aPlasmaProof, NBT_FLAMMABILITY, aFlammable ? 150 : 0, NBT_TEMPERATURE, aMaxTemperature, NBT_TANK_COUNT, 1, NBT_ADD_BOOL+".fc", aMat==MT.Rubber, NBT_ADD_BOOL+".allowswitch.fc", aMat!=MT.Rubber), aRecipe?new Object[]{" P ", "wzh"       , 'P', OP.plateCurved.dat(aMat)}:ZL), T, F, T);
+		OreDictManager.INSTANCE.setTarget_(OP.pipeMedium   , aMat, aRegistry.add(aMat.getLocal() + " Fluid Pipe"               , "Fluid Pipes", aID+ 2, aCreativeTabID, aClass, aMat.mToolQuality, 32, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, aBlocking?2.0F:1.0F, NBT_RESISTANCE, aBlocking?6.0F:2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 8], NBT_CONTACTDAMAGE, aContactDamage, NBT_TANK_CAPACITY, aStat* 6L, NBT_OPAQUE, aBlocking, NBT_GASPROOF, aGasProof, NBT_ACIDPROOF, aAcidProof, NBT_PLASMAPROOF, aPlasmaProof, NBT_FLAMMABILITY, aFlammable ? 150 : 0, NBT_TEMPERATURE, aMaxTemperature, NBT_TANK_COUNT, 1, NBT_ADD_BOOL+".fc", aMat==MT.Rubber, NBT_ADD_BOOL+".allowswitch.fc", aMat!=MT.Rubber), aRecipe?new Object[]{"PPP", "wzh"       , 'P', OP.plateCurved.dat(aMat)}:ZL), T, F, T);
+		OreDictManager.INSTANCE.setTarget_(OP.pipeLarge    , aMat, aRegistry.add("Large " + aMat.getLocal() + " Fluid Pipe"    , "Fluid Pipes", aID+ 3, aCreativeTabID, aClass, aMat.mToolQuality, 16, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, aBlocking?2.0F:1.0F, NBT_RESISTANCE, aBlocking?6.0F:2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[12], NBT_CONTACTDAMAGE, aContactDamage, NBT_TANK_CAPACITY, aStat*12L, NBT_OPAQUE, aBlocking, NBT_GASPROOF, aGasProof, NBT_ACIDPROOF, aAcidProof, NBT_PLASMAPROOF, aPlasmaProof, NBT_FLAMMABILITY, aFlammable ? 150 : 0, NBT_TEMPERATURE, aMaxTemperature, NBT_TANK_COUNT, 1, NBT_ADD_BOOL+".fc", aMat==MT.Rubber, NBT_ADD_BOOL+".allowswitch.fc", aMat!=MT.Rubber), aRecipe?new Object[]{"PPP", "wzh", "PPP", 'P', OP.plateCurved.dat(aMat)}:ZL), T, F, T);
+		OreDictManager.INSTANCE.setTarget_(OP.pipeHuge     , aMat, aRegistry.add("Huge " + aMat.getLocal() + " Fluid Pipe"     , "Fluid Pipes", aID+ 4, aCreativeTabID, aClass, aMat.mToolQuality, 16, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, aBlocking?2.0F:1.0F, NBT_RESISTANCE, aBlocking?6.0F:2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[16], NBT_CONTACTDAMAGE, aContactDamage, NBT_TANK_CAPACITY, aStat*24L, NBT_OPAQUE, aBlocking, NBT_GASPROOF, aGasProof, NBT_ACIDPROOF, aAcidProof, NBT_PLASMAPROOF, aPlasmaProof, NBT_FLAMMABILITY, aFlammable ? 150 : 0, NBT_TEMPERATURE, aMaxTemperature, NBT_TANK_COUNT, 1, NBT_ADD_BOOL+".fc", aMat==MT.Rubber, NBT_ADD_BOOL+".allowswitch.fc", aMat!=MT.Rubber), aRecipe?new Object[]{"PPP", "wzh", "PPP", 'P', OP.plateDouble.dat(aMat)}:ZL), T, F, T);
+		OreDictManager.INSTANCE.setTarget_(OP.pipeQuadruple, aMat, aRegistry.add("Quadruple " + aMat.getLocal() + " Fluid Pipe", "Fluid Pipes", aID+ 5, aCreativeTabID, aClass, aMat.mToolQuality, 16, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, aBlocking?2.0F:1.0F, NBT_RESISTANCE, aBlocking?6.0F:2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[16], NBT_CONTACTDAMAGE, aContactDamage, NBT_TANK_CAPACITY, aStat* 6L, NBT_OPAQUE, aBlocking, NBT_GASPROOF, aGasProof, NBT_ACIDPROOF, aAcidProof, NBT_PLASMAPROOF, aPlasmaProof, NBT_FLAMMABILITY, aFlammable ? 150 : 0, NBT_TEMPERATURE, aMaxTemperature, NBT_TANK_COUNT, 4, NBT_ADD_BOOL+".fc", aMat==MT.Rubber, NBT_ADD_BOOL+".allowswitch.fc", aMat!=MT.Rubber), new Object[]{"PP" , "PP"        , 'P', OP.pipeMedium.dat(aMat)}), T, F, T);
+		OreDictManager.INSTANCE.setTarget_(OP.pipeNonuple  , aMat, aRegistry.add("Nonuple " + aMat.getLocal() + " Fluid Pipe"  , "Fluid Pipes", aID+ 6, aCreativeTabID, aClass, aMat.mToolQuality, 16, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, aBlocking?2.0F:1.0F, NBT_RESISTANCE, aBlocking?6.0F:2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[16], NBT_CONTACTDAMAGE, aContactDamage, NBT_TANK_CAPACITY, aStat* 2L, NBT_OPAQUE, aBlocking, NBT_GASPROOF, aGasProof, NBT_ACIDPROOF, aAcidProof, NBT_PLASMAPROOF, aPlasmaProof, NBT_FLAMMABILITY, aFlammable ? 150 : 0, NBT_TEMPERATURE, aMaxTemperature, NBT_TANK_COUNT, 9, NBT_ADD_BOOL+".fc", aMat==MT.Rubber, NBT_ADD_BOOL+".allowswitch.fc", aMat!=MT.Rubber), new Object[]{"PPP", "PPP", "PPP", 'P', OP.pipeSmall.dat(aMat)}), T, F, T);
 		
 		CR.shapeless(aRegistry.getItem(aID+2, 4), CR.DEF_NCC, new Object[] {aRegistry.getItem(aID+5)});
 		CR.shapeless(aRegistry.getItem(aID+1, 9), CR.DEF_NCC, new Object[] {aRegistry.getItem(aID+6)});
@@ -138,12 +135,12 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	public void readFromNBT2(NBTTagCompound aNBT) {
 		super.readFromNBT2(aNBT);
 		if (aNBT.hasKey(NBT_ADD_BYTE + ".dir")) mFluidDir = (byte) UT_CH.NBT.getItemNumber(aNBT.getByte(NBT_ADD_BYTE + ".dir"));
-		if (aNBT.hasKey(NBT_ADD_BYTE + ".mode")) mFluidMode = Mode.values()[(byte) UT_CH.NBT.getItemNumber(aNBT.getByte(NBT_ADD_BYTE + ".mode"))];
+		if (aNBT.hasKey(NBT_ADD_BYTE + ".mode")) mFluidMode = PipeMode.values()[(byte) UT_CH.NBT.getItemNumber(aNBT.getByte(NBT_ADD_BYTE + ".mode"))];
 		if (aNBT.hasKey(NBT_ADD_BYTE + ".limit")) mCapacityLimit = aNBT.getByte(NBT_ADD_BYTE + ".limit");
 		if (aNBT.hasKey(NBT_ADD_BOOL + ".fc")) mFlowControl = aNBT.getBoolean(NBT_ADD_BOOL + ".fc");
-
+		
 		if (aNBT.hasKey(NBT_ADD_BOOL + ".allowswitch.fc")) mAllowSwitchFC = aNBT.getBoolean(NBT_ADD_BOOL + ".allowswitch.fc");
-
+		
 		if (aNBT.hasKey("gt.mtransfer")) mTransferredAmount = aNBT.getLong("gt.mtransfer");
 		if (aNBT.hasKey(NBT_PIPERENDER)) mRenderType = aNBT.getByte(NBT_PIPERENDER);
 		if (aNBT.hasKey(NBT_OPAQUE)) mBlocking = aNBT.getBoolean(NBT_OPAQUE);
@@ -153,7 +150,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		if (aNBT.hasKey(NBT_TANK_CAPACITY)) mCapacity = aNBT.getLong(NBT_TANK_CAPACITY);
 		long tCapacity = mCapacity >> mCapacityLimit;
 		if (tCapacity <= 0 || mCapacityLimit == MAX_LIMIT) tCapacity = 0;
-
+		
 		if (aNBT.hasKey(NBT_TEMPERATURE)) mMaxTemperature = aNBT.getLong(NBT_TEMPERATURE);
 		if (aNBT.hasKey(NBT_TANK_COUNT)) {
 			int tTankCount = Math.max(1, aNBT.getInteger(NBT_TANK_COUNT));
@@ -165,7 +162,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 			mInBuffers.clear();
 			for (int i = 0; i < tTankCount; ++i)
 				mInBuffers.add(aNBT.hasKey(NBT_INPUT_BUFFER +"."+i) ? UT_CH.STL.toList(UT_CH.NBT.getNumberArray(aNBT, NBT_INPUT_BUFFER +"."+i), BUFFER_LENGTH) : new LinkedList<Long>());
-
+			
 			mTanks = new FluidTankGT[tTankCount];
 			mLastReceivedFrom = new byte[mTanks.length];
 			mLRFCooldownCounters = new byte[mTanks.length][SIDE_NUMBER];
@@ -183,9 +180,9 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 			oAmounts[0] = aNBT.getLong(NBT_TANK+".o."+0);
 			mInBuffers.clear();
 			mInBuffers.add(aNBT.hasKey(NBT_INPUT_BUFFER +"."+0) ? UT_CH.STL.toList(UT_CH.NBT.getNumberArray(aNBT, NBT_INPUT_BUFFER +"."+0), BUFFER_LENGTH) : new LinkedList<Long>());
-
+			
 			mTanks = new FluidTankGT(aNBT, NBT_TANK+".0", tCapacity).AS_ARRAY;
-
+			
 			mLastReceivedFrom = new byte[1];
 			mLastReceivedFrom[0] = aNBT.getByte("gt.mlast.0");
 			mLRFCooldownCounters = new byte[1][SIDE_NUMBER];
@@ -208,13 +205,13 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		super.writeToNBT2(aNBT);
 		// 默认值不为零（或者可能不为零）的需要专门设置
 		if (SIDES_VALID[mFluidDir]) aNBT.setByte(NBT_ADD_BYTE + ".dir", mFluidDir);
-		if (mFluidMode != Mode.DEFAULT) aNBT.setByte(NBT_ADD_BYTE + ".mode", (byte)mFluidMode.ordinal());
+		if (mFluidMode != PipeMode.DEFAULT) aNBT.setByte(NBT_ADD_BYTE + ".mode", (byte)mFluidMode.ordinal());
 		UT.NBT.setNumber(aNBT, NBT_ADD_BYTE + ".limit", mCapacityLimit);
 		UT.NBT.setBoolean(aNBT, NBT_ADD_BOOL + ".fc", mFlowControl);
 		for (int i = 0; i < mInBuffers.size(); i++) UT_CH.NBT.setNumberArray(aNBT, NBT_INPUT_BUFFER +"."+i, Longs.toArray(mInBuffers.get(i)));
 		for (int i = 0; i < oAmounts.length; i++) UT.NBT.setNumber(aNBT, NBT_TANK+".o."+i, oAmounts[i]);
 		for (int i = 0; i < mBeginIdx.length; i++) if (mBeginIdx[i] != SIDE_INVALID) aNBT.setByte(NBT_BEGIN+"."+i, mBeginIdx[i]);
-
+		
 		for (int i = 0; i < mTanks.length; i++) {
 			mTanks[i].writeToNBT(aNBT, NBT_TANK+"."+i);
 			UT.NBT.setNumber(aNBT, "gt.mlast."+i, mLastReceivedFrom[i]);
@@ -222,7 +219,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		}
 		UT.NBT.setNumber(aNBT, "gt.mtransfer", mTransferredAmount);
 	}
-
+	
 	@Override
 	public NBTTagCompound writeItemNBT2(NBTTagCompound aNBT) {
 		// 用于在拆下后保留橡胶圈
@@ -231,7 +228,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 			UT.NBT.setNumber(aNBT, NBT_ADD_BYTE + ".dir", mFluidDir);
 			// 默认值不为零（或者可能不为零）的需要专门设置
 			if (SIDES_VALID[mFluidDir]) aNBT.setByte(NBT_ADD_BYTE + ".dir", (byte) UT_CH.NBT.toItemNumber(mFluidDir));
-			if (mFluidMode != Mode.DEFAULT) aNBT.setByte(NBT_ADD_BYTE + ".mode", (byte) UT_CH.NBT.toItemNumber(mFluidMode.ordinal()));
+			if (mFluidMode != PipeMode.DEFAULT) aNBT.setByte(NBT_ADD_BYTE + ".mode", (byte) UT_CH.NBT.toItemNumber(mFluidMode.ordinal()));
 		}
 		return super.writeItemNBT2(aNBT);
 	}
@@ -313,7 +310,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 			if (!isCovered(UT.Code.getSideWrenching(aSide, aHitX, aHitY, aHitZ))) {
 				if (aChatReturn != null) {
 					boolean tPipeEmpty = T;
-					for (FluidTankGT tTank : mTanks) if (!tTank.isEmpty()) {
+					for (FluidTankGT tTank : mTanks) if (tTank.has()) {
 						aChatReturn.add(tTank.content());
 						tPipeEmpty = F;
 					}
@@ -328,7 +325,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 					
 					while (T) {
 						for (MultiTileEntityPipeFluid tPipe : tNow) {
-							for (FluidTankGT tTank : tPipe.mTanks) if (!tTank.isEmpty()) {
+							for (FluidTankGT tTank : tPipe.mTanks) if (tTank.has()) {
 								boolean temp = T;
 								for (FluidTankGT tFluid : tFluids) if (tFluid.contains(tTank.get())) {
 									tFluid.add(tTank.amount());
@@ -365,7 +362,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 				return mTanks.length;
 			}
 		}
-
+		
 		// GTCH, 直接扳手改为显示状态
 		if (aTool.equals(TOOL_magnifyingglass)) {
 			checkConnection();
@@ -388,7 +385,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 			}
 			return 1;
 		}
-
+		
 		// GTCH, 使用活动扳手调整限制输出方向
 		if (aTool.equals(TOOL_monkeywrench)) {
 			byte aTargetSide = UT.Code.getSideWrenching(aSide, aHitX, aHitY, aHitZ);
@@ -399,7 +396,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 				return 0;
 			}
 		}
-
+		
 		// TODO: 使用阀门控制容量
 		// GTCH，暂定直接使用螺丝刀调整容量
 		if (aTool.equals(TOOL_screwdriver)) {
@@ -417,45 +414,45 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		}
 		return 0;
 	}
-
+	
 	private void changeFluidMode(byte aTargetSide, boolean aReverse) {
 		// 先让模式合法
 		checkConnection();
 		// 切换模式
-		if (mFluidDir == aTargetSide && mFluidMode == Mode.LIMIT) {
+		if (mFluidDir == aTargetSide && mFluidMode == PipeMode.LIMIT) {
 			if (aReverse)
-				mFluidMode = Mode.PRIORITY;
+				mFluidMode = PipeMode.PRIORITY;
 			else {
 				mFluidDir = SIDE_ANY;
-				mFluidMode = Mode.DEFAULT;
+				mFluidMode = PipeMode.DEFAULT;
 			}
 		} else
-		if (mFluidDir == aTargetSide && mFluidMode == Mode.PRIORITY) {
+		if (mFluidDir == aTargetSide && mFluidMode == PipeMode.PRIORITY) {
 			if (aReverse) {
 				mFluidDir = SIDE_ANY;
-				mFluidMode = Mode.DEFAULT;
+				mFluidMode = PipeMode.DEFAULT;
 			}
 			else
-				mFluidMode = Mode.LIMIT;
+				mFluidMode = PipeMode.LIMIT;
 		} else {
 			mFluidDir = aTargetSide;
-			mFluidMode = aReverse?Mode.LIMIT:Mode.PRIORITY;
+			mFluidMode = aReverse? PipeMode.LIMIT: PipeMode.PRIORITY;
 		}
 	}
-
+	
 	private byte changeModeAdd(byte aCurrentMode, byte aMaxMode) {
 		return aCurrentMode < aMaxMode ? (byte) (aCurrentMode + 1) : 0;
 	}
 	private byte changeModeRed(byte aCurrentMode, byte aMaxMode) {
 		return aCurrentMode > 0 ? (byte) (aCurrentMode - 1) : aMaxMode;
 	}
-
+	
 	static {
 		LH_CH.add("gtch.tooltip.pipefluid.custom.1", "Use Wrench in sneaking to mount Rubber Rings from your Inventory");
 		LH_CH.add("gtch.tooltip.pipefluid.custom.2", "Mount the Rubber Rings to stabilize Flow Rate");
 		LH_CH.add("gtch.tooltip.pipefluid.custom.3", "Stable Flow Rate");
 	}
-
+	
 	@Override
 	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
 		toolTipsDescribe(aList);
@@ -496,18 +493,18 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	private boolean mHasToAddTimer = T;
 	
 	@Override public void onUnregisterPre() {mHasToAddTimer = T;}
-
+	
 	protected void checkConnection() {
 		if (!modeValid()) {
 			mFluidDir = SIDE_ANY;
-			mFluidMode = Mode.DEFAULT;
+			mFluidMode = PipeMode.DEFAULT;
 			for (FluidTankGT tTank : mTanks) resetOutputSoft(tTank);
 		}
 	}
 	protected boolean modeValid() {
-		return (mFluidDir == SIDE_ANY && mFluidMode == Mode.DEFAULT) || (mFluidDir != SIDE_ANY && connected(mFluidDir) && (mFluidMode == Mode.LIMIT || mFluidMode == Mode.PRIORITY));
+		return (mFluidDir == SIDE_ANY && mFluidMode == PipeMode.DEFAULT) || (mFluidDir != SIDE_ANY && connected(mFluidDir) && (mFluidMode == PipeMode.LIMIT || mFluidMode == PipeMode.PRIORITY));
 	}
-
+	
 	@Override
 	public void onTick2(long aTimer, boolean aIsServerSide) {
 		super.onTick2(aTimer, aIsServerSide);
@@ -561,11 +558,11 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		}
 		
 		boolean tCheckTemperature = T;
-
+		
 		for (FluidTankGT tTank : mTanks) {
 			// GTCH, 计算平滑的输出，只有限制流速的才会进行计算
 			if (mFlowControl) setOutputSoft(tTank);
-
+			
 			FluidStack tFluid = tTank.get();
 			if (tFluid != null && tFluid.amount > 0) {
 				mTemperature = (tCheckTemperature ? FL.temperature(tFluid) : Math.max(mTemperature, FL.temperature(tFluid)));
@@ -620,7 +617,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 						break;
 				}
 			}
-
+			
 			resetLastReceivedFrom(tTank.mIndex);
 			if (mFlowControl) oAmounts[tTank.mIndex] = tTank.amount();
 		}
@@ -630,7 +627,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 			if (mTemperature < tEnvTemp) mTemperature++; else if (mTemperature > tEnvTemp) mTemperature--;
 		}
 	}
-
+	
 	// GTCH, 用于给重置防倒流加入一个延迟
 	protected void resetLastReceivedFrom(int tTankIdx) {
 		for (byte tSide : ALL_SIDES_VALID) {
@@ -648,11 +645,11 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		else Arrays.fill(mLRFCooldownCounters[tTankIdx], LRF_COOLDOWN_NUM);
 		mLastReceivedFrom[tTankIdx] |= SBIT[aSide];
 	}
-
+	
 	protected boolean coverCheck(byte aSide, FluidStack aFluid) {
 		return isCovered(aSide) && mCovers.mBehaviours[aSide].interceptFluidDrain(aSide, mCovers, aSide, aFluid);
 	}
-
+	
 	protected byte handleDistributeOther(FluidTankGT aTank, DelegatorTileEntity<TileEntity> aTEOther) {
 		Block tBlock = aTEOther.getBlock();
 		// Filling up Cauldrons from Vanilla. Yes I need to check for both to make this work. Some Mods override the Cauldron in a bad way.
@@ -675,7 +672,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		}
 		return aTEOther.getMetaData();
 	}
-
+	
 	// GTCH, 更加智能的获取周围管道的容器的函数，可以保证多合一管道在传输液体时尽量维持在同一位置
 	// 需要注意覆盖版或者手动设置的情况
 	protected FluidTankGT getAdjacentPipeTankFillable(FluidTankGT aTank, DelegatorTileEntity<MultiTileEntityPipeFluid> aAdjacentPipe) {
@@ -703,18 +700,18 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 			return mTanks[aTankIdx].isEmpty()?0:1;
 		return mTanks[aTankIdx].amount();
 	}
-
+	
 	// 默认的输出流体逻辑
 	public void distribute(FluidTankGT aTank, DelegatorTileEntity<MultiTileEntityPipeFluid>[] aAdjacentPipes, DelegatorTileEntity<IFluidHandler>[] aAdjacentTanks, DelegatorTileEntity<TileEntity>[] aAdjacentOther) {
 		// 直接调用内部默认模式减少代码量
 		distributeDefault_(ALL_SIDES_VALID, aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther);
 	}
-
+	
 	// GTCH，限制方向输出，没有流速控制。限制方向输出可以对代码进行一定简化，所以重新写了一份
 	protected void distributeLimit(FluidTankGT aTank, DelegatorTileEntity<MultiTileEntityPipeFluid>[] aAdjacentPipes, DelegatorTileEntity<IFluidHandler>[] aAdjacentTanks, DelegatorTileEntity<TileEntity>[] aAdjacentOther) {
 		// 由于限制方向输出，相邻的只有一个，为了格式一致还是都采用数组的形式
 		// 非法调用回到默认模式
-		if (mFluidDir == SIDE_ANY || mFluidMode != Mode.LIMIT) {distribute(aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther); return;}
+		if (mFluidDir == SIDE_ANY || mFluidMode != PipeMode.LIMIT) {distribute(aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther); return;}
 		// 如果覆盖版禁止了直接退出，由于只有一个面不考虑开销问题
 		if (coverCheck(mFluidDir, aTank.get())) return;
 		// 同样还是先考虑炼药锅的情况
@@ -764,11 +761,11 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 			return;
 		}
 	}
-
+	
 	// GTCH，优先方向输出，没有流速控制。优先方向输出可以对代码进行一定简化，所以重新写了一份
 	protected void distributePriority(FluidTankGT aTank, DelegatorTileEntity<MultiTileEntityPipeFluid>[] aAdjacentPipes, DelegatorTileEntity<IFluidHandler>[] aAdjacentTanks, DelegatorTileEntity<TileEntity>[] aAdjacentOther) {
 		// 非法调用回到默认模式
-		if (mFluidDir == SIDE_ANY || mFluidMode != Mode.PRIORITY) {distribute(aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther); return;}
+		if (mFluidDir == SIDE_ANY || mFluidMode != PipeMode.PRIORITY) {distribute(aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther); return;}
 		// 如果覆盖版禁止了直接进入内部的没有流速控制的默认模式
 		if (coverCheck(mFluidDir, aTank.get())) {distributeDefault_(ALL_SIDES_VALID_BUT[mFluidDir], aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther); return;}
 		// 同样还是先考虑炼药锅的情况
@@ -830,7 +827,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 			return;
 		}
 	}
-
+	
 	// GTCH, 内部的没有流速控制的默认模式，只考虑设定的方向（注意由于输出方向不同了，还是要检查覆盖版）
 	@SuppressWarnings("rawtypes")
 	protected void distributeDefault_(byte[] aSides, FluidTankGT aTank, DelegatorTileEntity<MultiTileEntityPipeFluid>[] aAdjacentPipes, DelegatorTileEntity<IFluidHandler>[] aAdjacentTanks, DelegatorTileEntity<TileEntity>[] aAdjacentOther) {
@@ -909,7 +906,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		tAmount = (aTank.amount() - aTank.capacity()/2) / tPipes.size();
 		if (tAmount > 0) for (Pair<FluidTankGT, Long> tPair : tPipes) mTransferredAmount += aTank.remove(tPair.first().add(aTank.amount(tAmount), aTank.get()));
 	}
-
+	
 	// GTCH，默认模式，有流速控制
 	public void distributeFC(FluidTankGT aTank, DelegatorTileEntity<MultiTileEntityPipeFluid>[] aAdjacentPipes, DelegatorTileEntity<IFluidHandler>[] aAdjacentTanks, DelegatorTileEntity<TileEntity>[] aAdjacentOther) {
 		// 非法调用回到默认模式
@@ -917,12 +914,12 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		// 直接调用内部默认模式减少代码量
 		distributeDefaultFC_(ALL_SIDES_VALID, aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther);
 	}
-
+	
 	// GTCH，限制方向输出，有流速控制。限制方向输出可以对代码进行一定简化，所以重新写了一份
 	protected void distributeLimitFC(FluidTankGT aTank, DelegatorTileEntity<MultiTileEntityPipeFluid>[] aAdjacentPipes, DelegatorTileEntity<IFluidHandler>[] aAdjacentTanks, DelegatorTileEntity<TileEntity>[] aAdjacentOther) {
 		// 由于限制方向输出，相邻的只有一个，为了格式一致还是都采用数组的形式
 		// 非法调用回到默认模式
-		if (mFluidDir == SIDE_ANY || mFluidMode != Mode.LIMIT) {distributeFC(aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther); return;}
+		if (mFluidDir == SIDE_ANY || mFluidMode != PipeMode.LIMIT) {distributeFC(aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther); return;}
 		if (!mFlowControl) {distributeLimit(aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther); return;}
 		// 如果覆盖版禁止了直接退出，由于只有一个面不考虑开销问题
 		if (coverCheck(mFluidDir, aTank.get())) return;
@@ -967,11 +964,11 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 			return;
 		}
 	}
-
+	
 	// GTCH，优先方向输出，有流速控制
 	protected void distributePriorityFC(FluidTankGT aTank, DelegatorTileEntity<MultiTileEntityPipeFluid>[] aAdjacentPipes, DelegatorTileEntity<IFluidHandler>[] aAdjacentTanks, DelegatorTileEntity<TileEntity>[] aAdjacentOther) {
 		// 非法调用回到默认模式
-		if (mFluidDir == SIDE_ANY || mFluidMode != Mode.PRIORITY) {distributeFC(aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther); return;}
+		if (mFluidDir == SIDE_ANY || mFluidMode != PipeMode.PRIORITY) {distributeFC(aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther); return;}
 		if (!mFlowControl) {distributePriority(aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther); return;}
 		// 如果覆盖版禁止了直接进入内部的没有流速控制的默认模式
 		if (coverCheck(mFluidDir, aTank.get())) {distributeDefaultFC_(ALL_SIDES_VALID_BUT[mFluidDir], aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther); return;}
@@ -1027,7 +1024,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 			return;
 		}
 	}
-
+	
 	// GTCH, 内部的有流速控制的默认模式，只考虑设定的方向，不检查非法调用（注意由于输出方向不同了，还是要检查覆盖版）
 	@SuppressWarnings("rawtypes")
 	protected void distributeDefaultFC_(byte[] aSides, FluidTankGT aTank, DelegatorTileEntity<MultiTileEntityPipeFluid>[] aAdjacentPipes, DelegatorTileEntity<IFluidHandler>[] aAdjacentTanks, DelegatorTileEntity<TileEntity>[] aAdjacentOther) {
@@ -1114,7 +1111,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		}
 		// 由于流速控制，即使塞不进去也不会改变其他方向流速
 	}
-
+	
 	private void addInBuffer(int aIdx, long aInAmount) {
 		mInBuffers.get(aIdx).addLast(aInAmount);
 		while (mInBuffers.get(aIdx).size() > BUFFER_LENGTH) mInBuffers.get(aIdx).pollFirst();
@@ -1125,7 +1122,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		for (long tInAmount : mInBuffers.get(aIdx)) tSum += tInAmount;
 		return UT.Code.divup(tSum, BUFFER_LENGTH);
 	}
-
+	
 	//使用这个算法使输出平滑
 	protected void setOutputSoft(FluidTankGT aTank) {
 		if (aTank.amount() * 4 > aTank.capacity() * 3) {
@@ -1162,7 +1159,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		mOutputs[aTank.mIndex] = 0;
 		oAmounts[aTank.mIndex] = 0;
 	}
-
+	
 	@Override
 	public boolean breakBlock() {
 		clearTanks(0);
@@ -1239,16 +1236,16 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		return rFilledAmount;
 	}
 	
-	@Override public boolean canConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator)     {return PipeCompat_CH.canConnectFluid(this, aDelegator, aDelegator.mSideOfTileEntity);}
-	@Override public boolean canAutoConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator) {return PipeCompat_CH.canAutoConnectFluid(this, aDelegator, aDelegator.mSideOfTileEntity);}
-
-
+	@Override public boolean canConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator)     {return PipeCompat.canConnectFluid(this, aDelegator, aDelegator.mSideOfTileEntity);}
+	@Override public boolean canAutoConnect(byte aSide, DelegatorTileEntity<TileEntity> aDelegator) {return PipeCompat.canAutoConnectFluid(this, aDelegator, aDelegator.mSideOfTileEntity);}
+	
+	
 	// GTCH，根据状态修改是否可以输入输出
 	public boolean canEmitFluidsTo(byte aSide) {
-		return (mFluidMode == Mode.LIMIT) ? (SIDES_EQUAL[aSide][mFluidDir] && connected(aSide)) : connected(aSide);
+		return (mFluidMode == PipeMode.LIMIT) ? (SIDES_EQUAL[aSide][mFluidDir] && connected(aSide)) : connected(aSide);
 	}
 	public boolean canAcceptFluidsFrom(byte aSide) {
-		if (mFluidMode == Mode.DEFAULT) {
+		if (mFluidMode == PipeMode.DEFAULT) {
 			return connected(aSide);
 		} else {
 			return SIDES_ANY_BUT[aSide][mFluidDir] && connected(aSide);
@@ -1263,7 +1260,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	
 	@Override public long getTemperatureValue               (byte aSide) {return mTemperature;}
 	@Override public long getTemperatureMax                 (byte aSide) {return mMaxTemperature;}
-
+	
 	@Override public long getFlowrateValue					(byte aSide) {return mTransferredAmount;}
 	@Override public long getFlowrateMax					(byte aSide) {return UT.Code.divup(mTanks[0].capacity() * mTanks.length, 2);}
 	
@@ -1273,7 +1270,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		ITexture tRubber = null;
 		// 合法部分才做 mark 和 rubber
 		if (aRenderPass <= 6) {
-			tMark = BlockTextureDefault.get(Textures.BlockIcons.ARROWS[mFluidMode.ordinal()][aSide][mFluidDir], mRGBaMark, mIsGlowing);
+			tMark = BlockTextureDefault.get(Textures.BlockIcons.getArrow(DIR_ICON[aSide][mFluidDir], mFluidMode), mRGBaMark, mIsGlowing);
 			if (mFlowControl && mAllowSwitchFC) {
 				// 专门处理干掉的情况，干掉时不再需要侧边的橡胶材质
 				if (isFoamDried()) tRubber = getTextureRubber(aDiameter);
@@ -1291,7 +1288,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		}
 		return BlockTextureMulti.get(tBase, tRubber);
 	}
-
+	
 	protected ITexture getTextureRubber(float aDiameter) {
 		if (mTanks.length >= 9) {
 			return BlockTextureDefault.get(Textures.BlockIcons.PIPE_RESTRICTOR_HUGE, mRGBaRubber, mIsGlowing);
@@ -1314,10 +1311,10 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	@Override public int getIconIndexConnected              (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {return mTanks.length>=9?OP.pipeNonuple.mIconIndexBlock:mTanks.length>=4?OP.pipeQuadruple.mIconIndexBlock:aDiameter<0.37F?OP.pipeTiny.mIconIndexBlock:aDiameter<0.49F?OP.pipeSmall.mIconIndexBlock:aDiameter<0.74F?OP.pipeMedium.mIconIndexBlock:aDiameter<0.99F?OP.pipeLarge.mIconIndexBlock:OP.pipeHuge.mIconIndexBlock;}
 	@Override
 	public ITexture getTextureCFoamDry(byte aSide, byte aConnections, float aDiameter, int aRenderPass) {
-		if (mOutMark) return BlockTextureMulti.get(BlockTextureDefault.get(mOwnable?Textures.BlockIcons.CFOAM_HARDENED_OWNED:Textures.BlockIcons.CFOAM_HARDENED, mRGBaFoam), BlockTextureDefault.get(Textures.BlockIcons.ARROWS[mFluidMode.ordinal()][aSide][mFluidDir], UT_CH.Code.getMarkRGB(mRGBaFoam)));
+		if (mOutMark) return BlockTextureMulti.get(BlockTextureDefault.get(mOwnable?Textures.BlockIcons.CFOAM_HARDENED_OWNED:Textures.BlockIcons.CFOAM_HARDENED, mRGBaFoam), BlockTextureDefault.get(Textures.BlockIcons.getArrow(DIR_ICON[aSide][mFluidDir], mFluidMode), UT_CH.Code.getMarkRGB(mRGBaFoam)));
 		return BlockTextureDefault.get(mOwnable?Textures.BlockIcons.CFOAM_HARDENED_OWNED:Textures.BlockIcons.CFOAM_HARDENED, mRGBaFoam);
 	}
-
+	
 	// GTCH，图像动画数据
 	@Override
 	protected int getRenderPasses3(Block aBlock, boolean[] aShouldSideBeRendered) {
@@ -1327,25 +1324,25 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	@Override public boolean onTickCheck(long aTimer) {return mFluidDir != oFluidDir || mFluidMode != oFluidMode || mFlowControl != oFlowControl || mOutMark != oOutMark || super.onTickCheck(aTimer);}
 	@Override public void onTickResetChecks(long aTimer, boolean aIsServerSide) {super.onTickResetChecks(aTimer, aIsServerSide); oFluidDir = mFluidDir; oFluidMode = mFluidMode; oFlowControl = mFlowControl; oOutMark = mOutMark; }
 	@Override public void setVisualData(byte aData) {
-		mFluidMode = Mode.values()[(byte)(aData & 3)];
+		mFluidMode = PipeMode.values()[(byte)(aData & 3)];
 		mFlowControl = ((aData & 4) != 0);
 		mOutMark = ((aData & 8) != 0);
 		mFluidDir = (byte)((aData >> 4) & 7);
 	}
 	@Override public byte getVisualData() {return (byte)((mFluidMode.ordinal() & 3) | (mFlowControl?4:0) | (mOutMark?8:0) | ((mFluidDir & 7) << 4));}
-
+	
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		boolean tOut = super.receiveDataByteArray(aData, aNetworkHandler);
 		mRGBaMark = UT_CH.Code.getMarkRGB(mRGBa);
 		return tOut;
 	}
-
+	
 	@Override public Collection<TagData> getConnectorTypes  (byte aSide) {return TD.Connectors.PIPE_FLUID.AS_LIST;}
 	
 	@Override public String getFacingTool() {return TOOL_wrench;}
 	@Override public boolean isUsingWrenchingOverlay(ItemStack aStack, byte aSide) {return super.isUsingWrenchingOverlay(aStack, aSide) || ToolsGT.contains(TOOL_monkeywrench, aStack);}
-
+	
 	public int getRubberCount() {
 		if (mTanks.length>=9) {
 			return 36;
@@ -1368,16 +1365,16 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 			return 12;
 		}
 	}
-
+	
 	@Override
 	public List<OreDictItemData> getOreDictItemData(List<OreDictItemData> aList) {
 		// 只有能够切换状态的才会有橡胶圈
 		if (mFlowControl && mAllowSwitchFC) aList.add(new OreDictItemData(MT.Rubber, OP.ring.mAmount * getRubberCount()));
 		return aList;
 	}
-
+	
 	@Override public String getTileEntityName() {return "gt.multitileentity.connector.pipe.fluid";}
-
+	
 	@Override
 	public boolean canFillExtra(FluidStack aFluid) {
 		return T;

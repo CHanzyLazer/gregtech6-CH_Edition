@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2020 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,12 +19,6 @@
 
 package gregapi.tileentity.connectors;
 
-import static gregapi.data.CS.*;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetCollisionBoundingBoxFromPool;
@@ -35,12 +29,8 @@ import gregapi.block.multitileentity.MultiTileEntityRegistry;
 import gregapi.code.ArrayListNoNulls;
 import gregapi.code.HashSetNoNulls;
 import gregapi.code.TagData;
-import gregapi.data.LH;
+import gregapi.data.*;
 import gregapi.data.LH.Chat;
-import gregapi.data.MT;
-import gregapi.data.OP;
-import gregapi.data.RM;
-import gregapi.data.TD;
 import gregapi.old.Textures;
 import gregapi.oredict.OreDictManager;
 import gregapi.oredict.OreDictMaterial;
@@ -54,6 +44,7 @@ import gregapi.tileentity.energy.EnergyCompat;
 import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.tileentity.energy.ITileEntityEnergyDataConductor;
 import gregapi.util.UT;
+import gregtechCH.tileentity.data.ITileEntityElectric;
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.tile.IEnergySource;
 import ic2.api.energy.tile.IEnergyTile;
@@ -62,10 +53,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import static gregapi.data.CS.*;
+
 /**
  * @author Gregorius Techneticies
  */
-public class MultiTileEntityWireElectric extends TileEntityBase10ConnectorRendered implements ITileEntityQuickObstructionCheck, ITileEntityEnergy, ITileEntityEnergyDataConductor, ITileEntityProgress, IMTE_GetDebugInfo, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnEntityCollidedWithBlock {
+public class MultiTileEntityWireElectric extends TileEntityBase10ConnectorRendered implements ITileEntityElectric, ITileEntityQuickObstructionCheck, ITileEntityEnergy, ITileEntityEnergyDataConductor, ITileEntityProgress, IMTE_GetDebugInfo, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnEntityCollidedWithBlock {
 	public long mTransferredAmperes = 0, mTransferredWattage = 0, mWattageLast = 0, mLoss = 1, mAmperage = 1, mVoltage = 32;
 	public byte mRenderType = 0, mBurnCounter = 0;
 	
@@ -74,28 +71,28 @@ public class MultiTileEntityWireElectric extends TileEntityBase10ConnectorRender
 	 * May use up to 50 IDs, even if it is just 21 right now!
 	 */
 	public static void addElectricWires(int aID, int aCreativeTabID, long aVoltage, long aAmperage, long aLossWire, long aLossCable, boolean aContactDamageWire, boolean aContactDamageCable, boolean aCable, MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aBlock, Class<? extends TileEntity> aClass, OreDictMaterial aMat) {
-		OreDictManager.INSTANCE.setTarget_(OP.wireGt01 , aMat, aRegistry.add( "1x " + aMat.getLocal() + " Wire" , "Electric Wires", aID   , aCreativeTabID, aClass, aMat.mToolQuality, 64/ 1, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 2], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage* 1, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
-		OreDictManager.INSTANCE.setTarget_(OP.wireGt02 , aMat, aRegistry.add( "2x " + aMat.getLocal() + " Wire" , "Electric Wires", aID+ 1, aCreativeTabID, aClass, aMat.mToolQuality, 64/ 2, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 3], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage* 2, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
-		OreDictManager.INSTANCE.setTarget_(OP.wireGt03 , aMat, aRegistry.add( "3x " + aMat.getLocal() + " Wire" , "Electric Wires", aID+ 2, aCreativeTabID, aClass, aMat.mToolQuality, 64/ 3, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 4], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage* 3, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
-		OreDictManager.INSTANCE.setTarget_(OP.wireGt04 , aMat, aRegistry.add( "4x " + aMat.getLocal() + " Wire" , "Electric Wires", aID+ 3, aCreativeTabID, aClass, aMat.mToolQuality, 64/ 4, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 6], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage* 4, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
-		OreDictManager.INSTANCE.setTarget_(OP.wireGt05 , aMat, aRegistry.add( "5x " + aMat.getLocal() + " Wire" , "Electric Wires", aID+ 4, aCreativeTabID, aClass, aMat.mToolQuality, 64/ 5, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 7], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage* 5, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
-		OreDictManager.INSTANCE.setTarget_(OP.wireGt06 , aMat, aRegistry.add( "6x " + aMat.getLocal() + " Wire" , "Electric Wires", aID+ 5, aCreativeTabID, aClass, aMat.mToolQuality, 64/ 6, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 7], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage* 6, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
-		OreDictManager.INSTANCE.setTarget_(OP.wireGt07 , aMat, aRegistry.add( "7x " + aMat.getLocal() + " Wire" , "Electric Wires", aID+ 6, aCreativeTabID, aClass, aMat.mToolQuality, 64/ 7, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 8], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage* 7, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
-		OreDictManager.INSTANCE.setTarget_(OP.wireGt08 , aMat, aRegistry.add( "8x " + aMat.getLocal() + " Wire" , "Electric Wires", aID+ 7, aCreativeTabID, aClass, aMat.mToolQuality, 64/ 8, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 8], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage* 8, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
-		OreDictManager.INSTANCE.setTarget_(OP.wireGt09 , aMat, aRegistry.add( "9x " + aMat.getLocal() + " Wire" , "Electric Wires", aID+ 8, aCreativeTabID, aClass, aMat.mToolQuality, 64/ 9, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 9], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage* 9, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
-		OreDictManager.INSTANCE.setTarget_(OP.wireGt10 , aMat, aRegistry.add("10x " + aMat.getLocal() + " Wire" , "Electric Wires", aID+ 9, aCreativeTabID, aClass, aMat.mToolQuality, 64/10, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[10], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage*10, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
-		OreDictManager.INSTANCE.setTarget_(OP.wireGt11 , aMat, aRegistry.add("11x " + aMat.getLocal() + " Wire" , "Electric Wires", aID+10, aCreativeTabID, aClass, aMat.mToolQuality, 64/11, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[11], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage*11, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
-		OreDictManager.INSTANCE.setTarget_(OP.wireGt12 , aMat, aRegistry.add("12x " + aMat.getLocal() + " Wire" , "Electric Wires", aID+11, aCreativeTabID, aClass, aMat.mToolQuality, 64/12, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[12], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage*12, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
-		OreDictManager.INSTANCE.setTarget_(OP.wireGt13 , aMat, aRegistry.add("13x " + aMat.getLocal() + " Wire" , "Electric Wires", aID+12, aCreativeTabID, aClass, aMat.mToolQuality, 64/13, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[13], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage*13, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
-		OreDictManager.INSTANCE.setTarget_(OP.wireGt14 , aMat, aRegistry.add("14x " + aMat.getLocal() + " Wire" , "Electric Wires", aID+13, aCreativeTabID, aClass, aMat.mToolQuality, 64/14, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[14], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage*14, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
-		OreDictManager.INSTANCE.setTarget_(OP.wireGt15 , aMat, aRegistry.add("15x " + aMat.getLocal() + " Wire" , "Electric Wires", aID+14, aCreativeTabID, aClass, aMat.mToolQuality, 64/15, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[15], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage*15, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
-		OreDictManager.INSTANCE.setTarget_(OP.wireGt16 , aMat, aRegistry.add("16x " + aMat.getLocal() + " Wire" , "Electric Wires", aID+15, aCreativeTabID, aClass, aMat.mToolQuality, 64/16, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[16], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage*16, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
+		OreDictManager.INSTANCE.setTarget_(OP.wireGt01 , aMat, aRegistry.add( "1x " + aMat.getLocal() + " Wire" , "Electric Wires", aID   , aCreativeTabID, aClass, aMat.mToolQuality, 64/ 1, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 1.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 2], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage* 1, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
+		OreDictManager.INSTANCE.setTarget_(OP.wireGt02 , aMat, aRegistry.add( "2x " + aMat.getLocal() + " Wire" , "Electric Wires", aID+ 1, aCreativeTabID, aClass, aMat.mToolQuality, 64/ 2, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 1.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 3], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage* 2, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
+		OreDictManager.INSTANCE.setTarget_(OP.wireGt03 , aMat, aRegistry.add( "3x " + aMat.getLocal() + " Wire" , "Electric Wires", aID+ 2, aCreativeTabID, aClass, aMat.mToolQuality, 64/ 3, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 1.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 4], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage* 3, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
+		OreDictManager.INSTANCE.setTarget_(OP.wireGt04 , aMat, aRegistry.add( "4x " + aMat.getLocal() + " Wire" , "Electric Wires", aID+ 3, aCreativeTabID, aClass, aMat.mToolQuality, 64/ 4, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 1.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 6], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage* 4, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
+		OreDictManager.INSTANCE.setTarget_(OP.wireGt05 , aMat, aRegistry.add( "5x " + aMat.getLocal() + " Wire" , "Electric Wires", aID+ 4, aCreativeTabID, aClass, aMat.mToolQuality, 64/ 5, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 1.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 7], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage* 5, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
+		OreDictManager.INSTANCE.setTarget_(OP.wireGt06 , aMat, aRegistry.add( "6x " + aMat.getLocal() + " Wire" , "Electric Wires", aID+ 5, aCreativeTabID, aClass, aMat.mToolQuality, 64/ 6, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 1.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 7], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage* 6, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
+		OreDictManager.INSTANCE.setTarget_(OP.wireGt07 , aMat, aRegistry.add( "7x " + aMat.getLocal() + " Wire" , "Electric Wires", aID+ 6, aCreativeTabID, aClass, aMat.mToolQuality, 64/ 7, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 1.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 8], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage* 7, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
+		OreDictManager.INSTANCE.setTarget_(OP.wireGt08 , aMat, aRegistry.add( "8x " + aMat.getLocal() + " Wire" , "Electric Wires", aID+ 7, aCreativeTabID, aClass, aMat.mToolQuality, 64/ 8, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 1.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 8], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage* 8, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
+		OreDictManager.INSTANCE.setTarget_(OP.wireGt09 , aMat, aRegistry.add( "9x " + aMat.getLocal() + " Wire" , "Electric Wires", aID+ 8, aCreativeTabID, aClass, aMat.mToolQuality, 64/ 9, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 1.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 9], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage* 9, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
+		OreDictManager.INSTANCE.setTarget_(OP.wireGt10 , aMat, aRegistry.add("10x " + aMat.getLocal() + " Wire" , "Electric Wires", aID+ 9, aCreativeTabID, aClass, aMat.mToolQuality, 64/10, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 1.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[10], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage*10, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
+		OreDictManager.INSTANCE.setTarget_(OP.wireGt11 , aMat, aRegistry.add("11x " + aMat.getLocal() + " Wire" , "Electric Wires", aID+10, aCreativeTabID, aClass, aMat.mToolQuality, 64/11, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 1.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[11], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage*11, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
+		OreDictManager.INSTANCE.setTarget_(OP.wireGt12 , aMat, aRegistry.add("12x " + aMat.getLocal() + " Wire" , "Electric Wires", aID+11, aCreativeTabID, aClass, aMat.mToolQuality, 64/12, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 1.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[12], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage*12, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
+		OreDictManager.INSTANCE.setTarget_(OP.wireGt13 , aMat, aRegistry.add("13x " + aMat.getLocal() + " Wire" , "Electric Wires", aID+12, aCreativeTabID, aClass, aMat.mToolQuality, 64/13, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 1.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[13], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage*13, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
+		OreDictManager.INSTANCE.setTarget_(OP.wireGt14 , aMat, aRegistry.add("14x " + aMat.getLocal() + " Wire" , "Electric Wires", aID+13, aCreativeTabID, aClass, aMat.mToolQuality, 64/14, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 1.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[14], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage*14, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
+		OreDictManager.INSTANCE.setTarget_(OP.wireGt15 , aMat, aRegistry.add("15x " + aMat.getLocal() + " Wire" , "Electric Wires", aID+14, aCreativeTabID, aClass, aMat.mToolQuality, 64/15, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 1.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[15], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage*15, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
+		OreDictManager.INSTANCE.setTarget_(OP.wireGt16 , aMat, aRegistry.add("16x " + aMat.getLocal() + " Wire" , "Electric Wires", aID+15, aCreativeTabID, aClass, aMat.mToolQuality, 64/16, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 1.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[16], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage*16, NBT_CONTACTDAMAGE, aContactDamageWire, NBT_PIPELOSS, aLossWire)), T, F, T);
 		if (aCable) {
-		OreDictManager.INSTANCE.setTarget_(OP.cableGt01, aMat, aRegistry.add( "1x " + aMat.getLocal() + " Cable", "Electric Wires", aID+16, aCreativeTabID, aClass, aMat.mToolQuality, 64, aBlock     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 1, NBT_DIAMETER, PX_P[ 4], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage   , NBT_CONTACTDAMAGE, aContactDamageCable, NBT_PIPELOSS, aLossCable)), T, F, T);
-		OreDictManager.INSTANCE.setTarget_(OP.cableGt02, aMat, aRegistry.add( "2x " + aMat.getLocal() + " Cable", "Electric Wires", aID+17, aCreativeTabID, aClass, aMat.mToolQuality, 32, aBlock     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 1, NBT_DIAMETER, PX_P[ 6], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage* 2, NBT_CONTACTDAMAGE, aContactDamageCable, NBT_PIPELOSS, aLossCable)), T, F, T);
-		OreDictManager.INSTANCE.setTarget_(OP.cableGt04, aMat, aRegistry.add( "4x " + aMat.getLocal() + " Cable", "Electric Wires", aID+19, aCreativeTabID, aClass, aMat.mToolQuality, 16, aBlock     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 1, NBT_DIAMETER, PX_P[ 8], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage* 4, NBT_CONTACTDAMAGE, aContactDamageCable, NBT_PIPELOSS, aLossCable)), T, F, T);
-		OreDictManager.INSTANCE.setTarget_(OP.cableGt08, aMat, aRegistry.add( "8x " + aMat.getLocal() + " Cable", "Electric Wires", aID+23, aCreativeTabID, aClass, aMat.mToolQuality,  8, aBlock     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 1, NBT_DIAMETER, PX_P[12], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage* 8, NBT_CONTACTDAMAGE, aContactDamageCable, NBT_PIPELOSS, aLossCable)), T, F, T);
-		OreDictManager.INSTANCE.setTarget_(OP.cableGt12, aMat, aRegistry.add("12x " + aMat.getLocal() + " Cable", "Electric Wires", aID+27, aCreativeTabID, aClass, aMat.mToolQuality,  4, aBlock     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 1, NBT_DIAMETER, PX_P[16], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage*12, NBT_CONTACTDAMAGE, aContactDamageCable, NBT_PIPELOSS, aLossCable)), T, F, T);
+		OreDictManager.INSTANCE.setTarget_(OP.cableGt01, aMat, aRegistry.add( "1x " + aMat.getLocal() + " Cable", "Electric Wires", aID+16, aCreativeTabID, aClass, aMat.mToolQuality, 64, aBlock     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 1.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 1, NBT_DIAMETER, PX_P[ 4], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage   , NBT_CONTACTDAMAGE, aContactDamageCable, NBT_PIPELOSS, aLossCable)), T, F, T);
+		OreDictManager.INSTANCE.setTarget_(OP.cableGt02, aMat, aRegistry.add( "2x " + aMat.getLocal() + " Cable", "Electric Wires", aID+17, aCreativeTabID, aClass, aMat.mToolQuality, 32, aBlock     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 1.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 1, NBT_DIAMETER, PX_P[ 6], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage* 2, NBT_CONTACTDAMAGE, aContactDamageCable, NBT_PIPELOSS, aLossCable)), T, F, T);
+		OreDictManager.INSTANCE.setTarget_(OP.cableGt04, aMat, aRegistry.add( "4x " + aMat.getLocal() + " Cable", "Electric Wires", aID+19, aCreativeTabID, aClass, aMat.mToolQuality, 16, aBlock     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 1.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 1, NBT_DIAMETER, PX_P[ 8], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage* 4, NBT_CONTACTDAMAGE, aContactDamageCable, NBT_PIPELOSS, aLossCable)), T, F, T);
+		OreDictManager.INSTANCE.setTarget_(OP.cableGt08, aMat, aRegistry.add( "8x " + aMat.getLocal() + " Cable", "Electric Wires", aID+23, aCreativeTabID, aClass, aMat.mToolQuality,  8, aBlock     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 1.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 1, NBT_DIAMETER, PX_P[12], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage* 8, NBT_CONTACTDAMAGE, aContactDamageCable, NBT_PIPELOSS, aLossCable)), T, F, T);
+		OreDictManager.INSTANCE.setTarget_(OP.cableGt12, aMat, aRegistry.add("12x " + aMat.getLocal() + " Cable", "Electric Wires", aID+27, aCreativeTabID, aClass, aMat.mToolQuality,  4, aBlock     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 1.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 1, NBT_DIAMETER, PX_P[16], NBT_PIPESIZE, aVoltage, NBT_PIPEBANDWIDTH, aAmperage*12, NBT_CONTACTDAMAGE, aContactDamageCable, NBT_PIPELOSS, aLossCable)), T, F, T);
 		
 		RM.Laminator.addRecipe2(T, 16, 16, OP.plate.mat(MT.Rubber, 1), aRegistry.getItem(aID   ), aRegistry.getItem(aID+16   ));
 		RM.Laminator.addRecipe2(T, 16, 16, OP.plate.mat(MT.Rubber, 1), aRegistry.getItem(aID+ 1), aRegistry.getItem(aID+16+ 1));
@@ -212,7 +209,7 @@ public class MultiTileEntityWireElectric extends TileEntityBase10ConnectorRender
 	
 	@Override public boolean canDrop(int aInventorySlot) {return F;}
 	@Override public boolean isObstructingBlockAt2(byte aSide) {return F;} // Btw, Wires have this but Pipes don't. This is because Wires are flexible, while Pipes aren't.
-
+	
 	@Override public boolean isEnergyConducting(TagData aEnergyType) {return aEnergyType == TD.Energy.EU;}
 	@Override public long getEnergyMaxSize(TagData aEnergyType) {return aEnergyType == TD.Energy.EU ? mVoltage : 0;}
 	@Override public long getEnergyMaxPackets(TagData aEnergyType) {return aEnergyType == TD.Energy.EU ? mAmperage : 0;}
@@ -226,8 +223,15 @@ public class MultiTileEntityWireElectric extends TileEntityBase10ConnectorRender
 	@Override public long getProgressValue                  (byte aSide) {return mTransferredAmperes;}
 	@Override public long getProgressMax                    (byte aSide) {return mAmperage;}
 	
+	public long getWattageValue                             (byte aSide) {return mWattageLast;}
+	public long getWattageMax                               (byte aSide) {return mAmperage*mVoltage;}
+	public long getVoltageValue                             (byte aSide) {return mTransferredAmperes > 0 ? mTransferredWattage/mTransferredAmperes : 0;}
+	public long getVoltageMax                               (byte aSide) {return mVoltage;}
+	public long getAmperageValue                            (byte aSide) {return mTransferredAmperes;}
+	public long getAmperageMax                              (byte aSide) {return mAmperage;}
+	
 	@Override public ArrayList<String> getDebugInfo(int aScanLevel) {return aScanLevel > 0 ? new ArrayListNoNulls<>(F, "Transferred Power: " + mWattageLast) : null;}
-
+	
 	// 绝缘线缆不会改变半径
 	@Override public float getConnectorDiameter(byte aConnectorSide, DelegatorTileEntity<TileEntity> aDelegator) {
 		// 绝缘线缆连接非绝缘线缆时不会收缩
@@ -236,7 +240,7 @@ public class MultiTileEntityWireElectric extends TileEntityBase10ConnectorRender
 	}
 	// GTCH, 用于减少重复代码
 	private boolean isInsulated() { return mRenderType == 1 || mRenderType == 2; }
-
+	
 	// GTCH, 返回绝缘层的颜色为原本颜色
 	@Override public int getBottomRGB() {return isInsulated() ? UT.Code.getRGBInt(64, 64, 64) : super.getBottomRGB();}
 	// GTCH, 绝缘时返回绝缘层颜色
@@ -244,7 +248,7 @@ public class MultiTileEntityWireElectric extends TileEntityBase10ConnectorRender
 		if (isInsulated()) return isPainted()?mRGBa: getBottomRGB();
 		return super.colorMultiplier2();
 	}
-
+	
 	@Override public ITexture getTextureSide                (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {return isInsulated() ? BlockTextureDefault.get(Textures.BlockIcons.INSULATION_FULL, isPainted()?mRGBa:getBottomRGB()) : BlockTextureDefault.get(mMaterial, getIconIndexSide(aSide, aConnections, aDiameter, aRenderPass), F, mRGBa);}
 	@Override public ITexture getTextureConnected           (byte aSide, byte aConnections, float aDiameter, int aRenderPass) {return isInsulated() ? BlockTextureMulti.get(BlockTextureDefault.get(mMaterial, getIconIndexConnected(aSide, aConnections, aDiameter, aRenderPass), mIsGlowing), BlockTextureDefault.get(mRenderType==2?Textures.BlockIcons.INSULATION_BUNDLED:aDiameter<0.37F?Textures.BlockIcons.INSULATION_TINY:aDiameter<0.49F?Textures.BlockIcons.INSULATION_SMALL:aDiameter<0.74F?Textures.BlockIcons.INSULATION_MEDIUM:aDiameter<0.99F?Textures.BlockIcons.INSULATION_LARGE:Textures.BlockIcons.INSULATION_HUGE, isPainted()?mRGBa: getBottomRGB())) : BlockTextureDefault.get(mMaterial, getIconIndexConnected(aSide, aConnections, aDiameter, aRenderPass), mIsGlowing, mRGBa);}
 	
@@ -254,6 +258,6 @@ public class MultiTileEntityWireElectric extends TileEntityBase10ConnectorRender
 	@Override public Collection<TagData> getConnectorTypes  (byte aSide) {return TD.Connectors.WIRE_ELECTRIC.AS_LIST;}
 	
 	@Override public String getFacingTool                   () {return TOOL_cutter;}
-
+	
 	@Override public String getTileEntityName               () {return "gt.multitileentity.connector.wire.electric";}
 }

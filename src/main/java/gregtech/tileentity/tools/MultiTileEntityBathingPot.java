@@ -107,11 +107,11 @@ public class MultiTileEntityBathingPot extends TileEntityBase07Paintable impleme
 		if (aTool.equals(TOOL_magnifyingglass)) {
 			if (aChatReturn != null) {
 				boolean temp = T;
-				for (FluidTankGT tTank : mTanksInput) if (!tTank.isEmpty()) {
+				for (FluidTankGT tTank : mTanksInput) if (tTank.has()) {
 					temp = F;
 					aChatReturn.add("Input: " + tTank.content());
 				}
-				for (FluidTankGT tTank : mTanksOutput) if (!tTank.isEmpty()) {
+				for (FluidTankGT tTank : mTanksOutput) if (tTank.has()) {
 					temp = F;
 					aChatReturn.add("Output: " + tTank.content());
 				}
@@ -190,7 +190,7 @@ public class MultiTileEntityBathingPot extends TileEntityBase07Paintable impleme
 				float[] tCoords = UT.Code.getFacingCoordsClicked(aSide, aHitX, aHitY, aHitZ);
 				if (tCoords[0] <= PX_P[2] && tCoords[1] <= PX_P[2]) return T;
 				if (!UT.Entities.isPlayer(aPlayer)) return T;
-
+				
 				ItemStack [] tInputItems  = ST.array(slot(0), slot(1), slot(2), slot(3), slot(4), slot(5));
 				Recipe tRecipe = mRecipes.findRecipe(this, mLastRecipe, F, V[1], NI, mTanksInput, tInputItems);
 				if (tRecipe != null) {
@@ -208,14 +208,15 @@ public class MultiTileEntityBathingPot extends TileEntityBase07Paintable impleme
 					}
 				}
 			}
-
-			for (int i = 6; i < 12; i++) if (UT.Inventories.addStackToPlayerInventory(aPlayer, slot(i), T)) {
+			
+			for (int i = 6; i < 12; i++) if (UT.Inventories.addStackToPlayerInventory(aPlayer, slot(i), F)) {
+				playCollect();
 				slotKill(i);
 				return T;
 			}
 			ItemStack aStack = aPlayer.getCurrentEquippedItem(), tStack = ST.container(ST.amount(1, aStack), T);
 			FluidStack tFluid = FL.getFluid(ST.amount(1, aStack), T);
-
+			
 			if (aStack != null && tFluid != null && FL.fillAll_(this, SIDE_ANY, tFluid, T)) {
 				aStack.stackSize--;
 				UT.Inventories.addStackToPlayerInventoryOrDrop(aPlayer, tStack, T);
@@ -251,6 +252,7 @@ public class MultiTileEntityBathingPot extends TileEntityBase07Paintable impleme
 				}
 			}
 			if (slot(6) == null && slot(7) == null && slot(8) == null && slot(9) == null && slot(10) == null && slot(11) == null) for (int i = 0; i < 6; i++) if (UT.Inventories.addStackToPlayerInventory(aPlayer, slot(i), T)) {
+				playCollect();
 				slotKill(i);
 				return T;
 			}
@@ -283,8 +285,8 @@ public class MultiTileEntityBathingPot extends TileEntityBase07Paintable impleme
 		super.onTickResetChecks(aTimer, aIsServerSide);
 		oDisplay = mDisplay;
 	}
-
-
+	
+	
 	// GTCH, 重写这个方法保证和原本的逻辑一致
 	@Override
 	public IPacket getClientDataPacketNoSendAll(boolean aSendAll) {
@@ -296,14 +298,14 @@ public class MultiTileEntityBathingPot extends TileEntityBase07Paintable impleme
 		rList.add(0, UT.Code.toByteS(mDisplay, 0));
 		rList.add(1, UT.Code.toByteS(mDisplay, 1)); // 保持原本一致的顺序
 	}
-
+	
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		if (aData.length > 1)  mDisplay = UT.Code.combine(aData[0], aData[1]);
 		if (aData.length > 4) setRGBData(aData[2], aData[3], aData[4], aData[aData.length-1]);
 		return T;
 	}
-
+	
 	@Override
 	protected IFluidTank getFluidTankFillable2(byte aSide, FluidStack aFluidToFill) {
 		for (int i = 0; i < mTanksInput.length; i++) if (mTanksInput[i].contains(aFluidToFill)) return mTanksInput[i];
@@ -311,7 +313,7 @@ public class MultiTileEntityBathingPot extends TileEntityBase07Paintable impleme
 		for (int i = 0; i < mTanksInput.length; i++) if (mTanksInput[i].isEmpty()) return mTanksInput[i];
 		return null;
 	}
-
+	
 	@Override
 	protected IFluidTank getFluidTankDrainable2(byte aSide, FluidStack aFluidToDrain) {
 		if (aFluidToDrain == null) {
@@ -321,7 +323,7 @@ public class MultiTileEntityBathingPot extends TileEntityBase07Paintable impleme
 		}
 		return null;
 	}
-
+	
 	@Override
 	protected IFluidTank[] getFluidTanks2(byte aSide) {
 		IFluidTank[] rTanks = new IFluidTank[mTanksInput.length + mTanksOutput.length];
@@ -341,12 +343,12 @@ public class MultiTileEntityBathingPot extends TileEntityBase07Paintable impleme
 		GarbageGT.trash(mTanksOutput);
 		return super.breakBlock();
 	}
-
+	
 	@Override
 	public int getRenderPasses2(Block aBlock, boolean[] aShouldSideBeRendered) {
 		return 7;
 	}
-
+	
 	@Override
 	public boolean setBlockBounds2(Block aBlock, int aRenderPass, boolean[] aShouldSideBeRendered) {
 		switch(aRenderPass) {
@@ -360,7 +362,7 @@ public class MultiTileEntityBathingPot extends TileEntityBase07Paintable impleme
 		}
 		return F;
 	}
-
+	
 	public static IIconContainer
 	sTextureSides       = new Textures.BlockIcons.CustomIcon("machines/tools/bathing_pot/colored/sides"),
 	sTextureInsides     = new Textures.BlockIcons.CustomIcon("machines/tools/bathing_pot/colored/insides"),

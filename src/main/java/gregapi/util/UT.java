@@ -26,7 +26,6 @@ import gregapi.GT_API;
 import gregapi.code.*;
 import gregapi.damage.DamageSources;
 import gregapi.data.*;
-import gregapi.data.CS.*;
 import gregapi.data.TC.TC_AspectStack;
 import gregapi.enchants.Enchantment_Radioactivity;
 import gregapi.fluid.FluidGT;
@@ -39,6 +38,7 @@ import gregapi.oredict.OreDictManager;
 import gregapi.oredict.OreDictMaterial;
 import gregapi.oredict.OreDictMaterialStack;
 import gregapi.oredict.configurations.IOreDictConfigurationComponent;
+import gregapi.player.EntityFoodTracker;
 import gregapi.recipes.Recipe.RecipeMap;
 import gregapi.render.IIconContainer;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
@@ -62,11 +62,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.*;
-import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.*;
 import net.minecraft.nbt.NBTBase.NBTPrimitive;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.stats.AchievementList;
@@ -90,6 +87,7 @@ import java.util.Map.Entry;
 
 import static gregapi.data.CS.*;
 import static gregtechCH.threads.ThreadPools.SOUND_THREAD;
+import static gregtechCH.util.UT_CH.NBT.tag;
 
 /**
  * @author Gregorius Techneticies
@@ -661,7 +659,14 @@ public class UT {
 			if (aMat.mComponents == null && !aMat.contains(TD.Atomic.ELEMENT)) tPages--;
 			
 			if (!aMat.mByProducts.isEmpty()) tPages++;
-			if (aMat.mToolTypes > 0 || !aMat.mEnchantmentTools.isEmpty() || !aMat.mEnchantmentArmors.isEmpty()) tPages++;
+			
+			if (aMat.mToolTypes > 0) tPages++;
+			if (!aMat.mEnchantmentTools  .isEmpty()) tPages++;
+			if (!aMat.mEnchantmentWeapons.isEmpty()) tPages++;
+			if (!aMat.mEnchantmentAmmo   .isEmpty()) tPages++;
+			if (!aMat.mEnchantmentRanged .isEmpty()) tPages++;
+			if (!aMat.mEnchantmentArmors .isEmpty()) tPages++;
+			
 			if (aMat.mDescription != null) for (int i = 0; i < aMat.mDescription.length; i++) if (Code.stringValid(aMat.mDescription[i])) tPages++;
 			
 			for (TagData tTag : TD.Properties.ALL_RELEVANTS) if (aMat.contains(tTag)) {tPages++; break;}
@@ -803,15 +808,40 @@ public class UT {
 			
 			//----------
 			
-			tPage="Tool Properties\n===================\n";
 			
-			if (aMat.mToolTypes > 0) {temp = T; tPage+="Durability:\n"+aMat.mToolDurability+"\nQuality:\n"+aMat.mToolQuality+"\nSpeed:\n"+aMat.mToolSpeed+"\nHandle:\n"+aMat.mHandleMaterial.getLocal()+"\n";}
-			if (!aMat.mEnchantmentTools.isEmpty()) tPage += "Tool Enchantments:\n";
-			for (ObjectStack<Enchantment> tEnchantment : aMat.mEnchantmentTools ) {temp = T; tPage += tEnchantment.mObject.getTranslatedName((int)tEnchantment.mAmount) + "\n";}
-			if (!aMat.mEnchantmentArmors.isEmpty()) tPage += "Armor Enchantments:\n";
-			for (ObjectStack<Enchantment> tEnchantment : aMat.mEnchantmentArmors) {temp = T; tPage += tEnchantment.mObject.getTranslatedName((int)tEnchantment.mAmount) + "\n";}
-			
-			if (temp) {tBook.add(tPage+"===================\n"); temp = F;}
+			if (aMat.mToolTypes > 0) {
+				tPage="Tool Properties\n===================\n";
+				tPage+="Durability:\n"+aMat.mToolDurability;
+				tPage+="\nQuality:\n"+aMat.mToolQuality;
+				tPage+="\nSpeed:\n"+aMat.mToolSpeed;
+				tPage+="\nHandle:\n"+aMat.mHandleMaterial.getLocal()+"\n";
+				tBook.add(tPage+"===================\n");
+			}
+			if (!aMat.mEnchantmentTools  .isEmpty()) {
+				tPage = "Tool Enchantments\n===================\n";
+				for (ObjectStack<Enchantment> tEnchantment : aMat.mEnchantmentTools  ) tPage += tEnchantment.mObject.getTranslatedName((int)tEnchantment.mAmount) + "\n";
+				tBook.add(tPage+"===================\n");
+			}
+			if (!aMat.mEnchantmentWeapons.isEmpty()) {
+				tPage = "Weapon Enchantments\n===================\n";
+				for (ObjectStack<Enchantment> tEnchantment : aMat.mEnchantmentWeapons) tPage += tEnchantment.mObject.getTranslatedName((int)tEnchantment.mAmount) + "\n";
+				tBook.add(tPage+"===================\n");
+			}
+			if (!aMat.mEnchantmentAmmo   .isEmpty()) {
+				tPage = "Ammo Enchantments\n===================\n";
+				for (ObjectStack<Enchantment> tEnchantment : aMat.mEnchantmentAmmo   ) tPage += tEnchantment.mObject.getTranslatedName((int)tEnchantment.mAmount) + "\n";
+				tBook.add(tPage+"===================\n");
+			}
+			if (!aMat.mEnchantmentRanged .isEmpty()) {
+				tPage = "Ranged Enchantments\n===================\n";
+				for (ObjectStack<Enchantment> tEnchantment : aMat.mEnchantmentRanged ) tPage += tEnchantment.mObject.getTranslatedName((int)tEnchantment.mAmount) + "\n";
+				tBook.add(tPage+"===================\n");
+			}
+			if (!aMat.mEnchantmentArmors .isEmpty()) {
+				tPage = "Armor Enchantments\n===================\n";
+				for (ObjectStack<Enchantment> tEnchantment : aMat.mEnchantmentArmors ) tPage += tEnchantment.mObject.getTranslatedName((int)tEnchantment.mAmount) + "\n";
+				tBook.add(tPage+"===================\n");
+			}
 			
 			//----------
 			
@@ -1777,36 +1807,12 @@ public class UT {
 		public static NBTTagCompound make(String aFirstKey, Object aFirstValue, Object... aTags) {
 			NBTTagCompound rNBT = make();
 			
-			if (aFirstValue == null) {/* Nothing */}
-			else if (aFirstValue instanceof Boolean)           rNBT.setBoolean(aFirstKey, (Boolean)                aFirstValue);
-			else if (aFirstValue instanceof Byte)              rNBT.setByte(   aFirstKey, (Byte)                   aFirstValue);
-			else if (aFirstValue instanceof Short)             rNBT.setShort(  aFirstKey, (Short)                  aFirstValue);
-			else if (aFirstValue instanceof Integer)           rNBT.setInteger(aFirstKey, (Integer)                aFirstValue);
-			else if (aFirstValue instanceof Long)              rNBT.setLong(   aFirstKey, (Long)                   aFirstValue);
-			else if (aFirstValue instanceof Float)             rNBT.setFloat(  aFirstKey, (Float)                  aFirstValue);
-			else if (aFirstValue instanceof Double)            rNBT.setDouble( aFirstKey, (Double)                 aFirstValue);
-			else if (aFirstValue instanceof String)            rNBT.setString( aFirstKey, (String)                 aFirstValue);
-			else if (aFirstValue instanceof NBTBase)           rNBT.setTag(    aFirstKey, (NBTBase)                aFirstValue);
-			else if (aFirstValue instanceof FluidStack)        rNBT.setTag(    aFirstKey, FL.save((FluidStack)     aFirstValue));
-			else if (aFirstValue instanceof OreDictMaterial)   rNBT.setString( aFirstKey, ((OreDictMaterial)       aFirstValue).mNameInternal);
-			else if (aFirstValue instanceof RecipeMap)         rNBT.setString( aFirstKey, ((RecipeMap)             aFirstValue).mNameInternal);
-			else                                               rNBT.setString( aFirstKey, aFirstValue.toString());
+			NBTBase tTag = tag(aFirstValue);
+			if (tTag != null) rNBT.setTag(aFirstKey, tTag);
 			
 			for (int i = 1; i < aTags.length; i+=2) {
-				if (aTags[i] == null) {/* Nothing */}
-				else if (aTags[i] instanceof Boolean)          rNBT.setBoolean(aTags[i-1].toString(), (Boolean)                aTags[i]);
-				else if (aTags[i] instanceof Byte)             rNBT.setByte(   aTags[i-1].toString(), (Byte)                   aTags[i]);
-				else if (aTags[i] instanceof Short)            rNBT.setShort(  aTags[i-1].toString(), (Short)                  aTags[i]);
-				else if (aTags[i] instanceof Integer)          rNBT.setInteger(aTags[i-1].toString(), (Integer)                aTags[i]);
-				else if (aTags[i] instanceof Long)             rNBT.setLong(   aTags[i-1].toString(), (Long)                   aTags[i]);
-				else if (aTags[i] instanceof Float)            rNBT.setFloat(  aTags[i-1].toString(), (Float)                  aTags[i]);
-				else if (aTags[i] instanceof Double)           rNBT.setDouble( aTags[i-1].toString(), (Double)                 aTags[i]);
-				else if (aTags[i] instanceof String)           rNBT.setString( aTags[i-1].toString(), (String)                 aTags[i]);
-				else if (aTags[i] instanceof NBTBase)          rNBT.setTag(    aTags[i-1].toString(), (NBTBase)                aTags[i]);
-				else if (aTags[i] instanceof FluidStack)       rNBT.setTag(    aTags[i-1].toString(), FL.save((FluidStack)     aTags[i]));
-				else if (aTags[i] instanceof OreDictMaterial)  rNBT.setString( aTags[i-1].toString(), ((OreDictMaterial)       aTags[i]).mNameInternal);
-				else if (aTags[i] instanceof RecipeMap)        rNBT.setString( aTags[i-1].toString(), ((RecipeMap)             aTags[i]).mNameInternal);
-				else                                           rNBT.setString( aTags[i-1].toString(), aTags[i].toString());
+				tTag = tag(aTags[i]);
+				if (tTag != null) rNBT.setTag(aTags[i-1].toString(), tTag);
 			}
 			return rNBT;
 		}
@@ -1815,20 +1821,8 @@ public class UT {
 		public static NBTTagCompound make(NBTTagCompound aNBT, Object... aTags) {
 			if (aNBT == null) aNBT = make();
 			for (int i = 1; i < aTags.length; i+=2) {
-				if (aTags[i] == null) {/* Nothing */}
-				else if (aTags[i] instanceof Boolean)          aNBT.setBoolean(    aTags[i-1].toString(), (Boolean)                aTags[i]);
-				else if (aTags[i] instanceof Byte)             aNBT.setByte(       aTags[i-1].toString(), (Byte)                   aTags[i]);
-				else if (aTags[i] instanceof Short)            aNBT.setShort(      aTags[i-1].toString(), (Short)                  aTags[i]);
-				else if (aTags[i] instanceof Integer)          aNBT.setInteger(    aTags[i-1].toString(), (Integer)                aTags[i]);
-				else if (aTags[i] instanceof Long)             aNBT.setLong(       aTags[i-1].toString(), (Long)                   aTags[i]);
-				else if (aTags[i] instanceof Float)            aNBT.setFloat(      aTags[i-1].toString(), (Float)                  aTags[i]);
-				else if (aTags[i] instanceof Double)           aNBT.setDouble(     aTags[i-1].toString(), (Double)                 aTags[i]);
-				else if (aTags[i] instanceof String)           aNBT.setString(     aTags[i-1].toString(), (String)                 aTags[i]);
-				else if (aTags[i] instanceof NBTBase)          aNBT.setTag(        aTags[i-1].toString(), (NBTBase)                aTags[i]);
-				else if (aTags[i] instanceof FluidStack)       aNBT.setTag(        aTags[i-1].toString(), FL.save((FluidStack)     aTags[i]));
-				else if (aTags[i] instanceof OreDictMaterial)  aNBT.setString(     aTags[i-1].toString(), ((OreDictMaterial)       aTags[i]).mNameInternal);
-				else if (aTags[i] instanceof RecipeMap)        aNBT.setString(     aTags[i-1].toString(), ((RecipeMap)             aTags[i]).mNameInternal);
-				else                                           aNBT.setString(     aTags[i-1].toString(), aTags[i].toString());
+				NBTBase tTag = tag(aTags[i]);
+				if (tTag != null) aNBT.setTag(aTags[i-1].toString(), tTag);
 			}
 			return aNBT;
 		}
@@ -1844,7 +1838,7 @@ public class UT {
 		
 		public static NBTTagList makeInv(ItemStack... aStacks) {
 			NBTTagList rInventory = new NBTTagList();
-			for (int i = 0; i < aStacks.length; i++) rInventory.appendTag(makeShort(ST.save(aStacks[i]), "s", (short)i));
+			for (int i = 0; i < aStacks.length; i++) if (ST.valid(aStacks[i])) rInventory.appendTag(makeShort(ST.save(aStacks[i]), "s", (short)i));
 			return rInventory;
 		}
 		
@@ -2430,6 +2424,18 @@ public class UT {
 				Field tField = (aObject instanceof Class)?((Class<?>)aObject).getDeclaredField(aField):(aObject instanceof String)?Class.forName((String)aObject).getDeclaredField(aField):aObject.getClass().getDeclaredField(aField);
 				if (aPrivate) tField.setAccessible(T);
 				tField.set(aObject instanceof Class || aObject instanceof String ? null : aObject, aValue);
+				return T;
+			} catch (Throwable e) {
+				if (aLogErrors) e.printStackTrace(ERR);
+			}
+			return F;
+		}
+		public static boolean setFieldContent(Class<?> aClass, Object aObject, String aField, Object aValue) {return setFieldContent(aClass, aObject, aField, aValue, T, T);}
+		public static boolean setFieldContent(Class<?> aClass, Object aObject, String aField, Object aValue, boolean aPrivate, boolean aLogErrors) {
+			try {
+				Field tField = aClass.getDeclaredField(aField);
+				if (aPrivate) tField.setAccessible(T);
+				tField.set(aObject, aValue);
 				return T;
 			} catch (Throwable e) {
 				if (aLogErrors) e.printStackTrace(ERR);
@@ -3088,8 +3094,11 @@ public class UT {
 		public static int getRadioactivityLevel(ItemStack aStack, OreDictItemData aData) {
 			long rLevel = 0;
 			if (aData != null && aData.hasValidMaterialData()) {
-				for (ObjectStack<Enchantment> tEnchantment : aData.mMaterial.mMaterial.mEnchantmentTools ) if (tEnchantment.mObject instanceof Enchantment_Radioactivity) rLevel = Math.max(rLevel, tEnchantment.mAmount);
-				for (ObjectStack<Enchantment> tEnchantment : aData.mMaterial.mMaterial.mEnchantmentArmors) if (tEnchantment.mObject instanceof Enchantment_Radioactivity) rLevel = Math.max(rLevel, tEnchantment.mAmount);
+				for (ObjectStack<Enchantment> tEnchantment : aData.mMaterial.mMaterial.mEnchantmentTools  ) if (tEnchantment.mObject instanceof Enchantment_Radioactivity) rLevel = Math.max(rLevel, tEnchantment.mAmount);
+				for (ObjectStack<Enchantment> tEnchantment : aData.mMaterial.mMaterial.mEnchantmentWeapons) if (tEnchantment.mObject instanceof Enchantment_Radioactivity) rLevel = Math.max(rLevel, tEnchantment.mAmount);
+				for (ObjectStack<Enchantment> tEnchantment : aData.mMaterial.mMaterial.mEnchantmentAmmo   ) if (tEnchantment.mObject instanceof Enchantment_Radioactivity) rLevel = Math.max(rLevel, tEnchantment.mAmount);
+				for (ObjectStack<Enchantment> tEnchantment : aData.mMaterial.mMaterial.mEnchantmentRanged ) if (tEnchantment.mObject instanceof Enchantment_Radioactivity) rLevel = Math.max(rLevel, tEnchantment.mAmount);
+				for (ObjectStack<Enchantment> tEnchantment : aData.mMaterial.mMaterial.mEnchantmentArmors ) if (tEnchantment.mObject instanceof Enchantment_Radioactivity) rLevel = Math.max(rLevel, tEnchantment.mAmount);
 			}
 			rLevel = Math.max(rLevel, EnchantmentHelper.getEnchantmentLevel(Enchantment_Radioactivity.INSTANCE.effectId, aStack));
 			return Code.bindInt(rLevel);
@@ -3115,9 +3124,9 @@ public class UT {
 		}
 		
 		public static boolean applyChemDamage(Entity aEntity, float aDamage) {
-			if (aDamage > 0 && aEntity instanceof EntityLivingBase && ((EntityLivingBase)aEntity).isEntityAlive() && aEntity.getClass() != EntitySkeleton.class && !isWearingFullChemHazmat(((EntityLivingBase)aEntity))) {
+			if (aDamage > 0 && aEntity instanceof EntityLivingBase && aEntity.isEntityAlive() && aEntity.getClass() != EntitySkeleton.class && !isWearingFullChemHazmat(((EntityLivingBase)aEntity))) {
 				aEntity.attackEntityFrom(DamageSources.getChemDamage(), TFC_DAMAGE_MULTIPLIER * aDamage);
-				PotionEffect tEffect = null;
+				PotionEffect tEffect;
 				((EntityLivingBase)aEntity).addPotionEffect(new PotionEffect(Potion.poison.id, Math.max(20, (int)(aDamage * 100 + Math.max(0, ((tEffect = ((EntityLivingBase)aEntity).getActivePotionEffect(Potion.poison))==null?0:tEffect.getDuration())))), 1));
 				return T;
 			}
@@ -3125,7 +3134,7 @@ public class UT {
 		}
 		
 		public static boolean applyHeatDamage(Entity aEntity, float aDamage) {
-			if (aDamage > 0 && aEntity instanceof EntityLivingBase && ((EntityLivingBase)aEntity).isEntityAlive() && aEntity.getClass() != EntityBlaze.class && ((EntityLivingBase)aEntity).getActivePotionEffect(Potion.fireResistance) == null && !isWearingFullHeatHazmat(((EntityLivingBase)aEntity))) {
+			if (aDamage > 0 && aEntity instanceof EntityLivingBase && aEntity.isEntityAlive() && aEntity.getClass() != EntityBlaze.class && ((EntityLivingBase)aEntity).getActivePotionEffect(Potion.fireResistance) == null && !isWearingFullHeatHazmat(((EntityLivingBase)aEntity))) {
 				aEntity.attackEntityFrom(DamageSources.getHeatDamage(), TFC_DAMAGE_MULTIPLIER * aDamage);
 				return T;
 			}
@@ -3133,7 +3142,7 @@ public class UT {
 		}
 		
 		public static boolean applyFrostDamage(Entity aEntity, float aDamage) {
-			if (aDamage > 0 && aEntity instanceof EntityLivingBase && ((EntityLivingBase)aEntity).isEntityAlive() && !isWearingFullFrostHazmat(((EntityLivingBase)aEntity))) {
+			if (aDamage > 0 && aEntity instanceof EntityLivingBase && aEntity.isEntityAlive() && !isWearingFullFrostHazmat(((EntityLivingBase)aEntity))) {
 				aEntity.attackEntityFrom(DamageSources.getFrostDamage(), TFC_DAMAGE_MULTIPLIER * aDamage);
 				return T;
 			}
@@ -3142,7 +3151,7 @@ public class UT {
 		
 		public static boolean applyElectricityDamage(Entity aEntity, long aVoltage, long aAmperage) {
 			long aDamage = Code.tierMax(aVoltage) * aAmperage * 4;
-			if (aDamage > 0 && aEntity instanceof EntityLivingBase && ((EntityLivingBase)aEntity).isEntityAlive() && !isWearingFullElectroHazmat(((EntityLivingBase)aEntity))) {
+			if (aDamage > 0 && aEntity instanceof EntityLivingBase && aEntity.isEntityAlive() && !isWearingFullElectroHazmat(((EntityLivingBase)aEntity))) {
 				aEntity.attackEntityFrom(DamageSources.getElectricDamage(), TFC_DAMAGE_MULTIPLIER * aDamage);
 				return T;
 			}
@@ -3151,7 +3160,7 @@ public class UT {
 		
 		public static boolean applyElectricityDamage(Entity aEntity, long aWattage) {
 			long aDamage = Code.tierMax(aWattage) * 4;
-			if (aDamage > 0 && aEntity instanceof EntityLivingBase && ((EntityLivingBase)aEntity).isEntityAlive() && !isWearingFullElectroHazmat(((EntityLivingBase)aEntity))) {
+			if (aDamage > 0 && aEntity instanceof EntityLivingBase && aEntity.isEntityAlive() && !isWearingFullElectroHazmat(((EntityLivingBase)aEntity))) {
 				aEntity.attackEntityFrom(DamageSources.getElectricDamage(), TFC_DAMAGE_MULTIPLIER * aDamage);
 				return T;
 			}
@@ -3159,8 +3168,13 @@ public class UT {
 		}
 		
 		public static boolean applyRadioactivity(Entity aEntity, int aLevel, int aAmountOfItems) {
-			if (aLevel > 0 && aEntity instanceof EntityLivingBase && ((EntityLivingBase)aEntity).isEntityAlive() && ((EntityLivingBase)aEntity).getCreatureAttribute() != EnumCreatureAttribute.UNDEAD && ((EntityLivingBase)aEntity).getCreatureAttribute() != EnumCreatureAttribute.ARTHROPOD && !isWearingFullRadioHazmat(((EntityLivingBase)aEntity))) {
-				PotionEffect tEffect = null;
+			if (aLevel > 0 && aEntity instanceof EntityLivingBase && aEntity.isEntityAlive() && ((EntityLivingBase)aEntity).getCreatureAttribute() != EnumCreatureAttribute.UNDEAD && ((EntityLivingBase)aEntity).getCreatureAttribute() != EnumCreatureAttribute.ARTHROPOD && !isWearingFullRadioHazmat(((EntityLivingBase)aEntity))) {
+				EntityFoodTracker tTracker = EntityFoodTracker.get(aEntity);
+				if (tTracker != null) {
+					tTracker.changeRadiation(aLevel * aAmountOfItems);
+					return T;
+				}
+				PotionEffect tEffect;
 				applyPotion(aEntity, Potion.moveSlowdown    , aLevel * 140 * aAmountOfItems + Math.max(0, ((tEffect = ((EntityLivingBase)aEntity).getActivePotionEffect(Potion.moveSlowdown                         ))==null?0:tEffect.getDuration())), (int)UT.Code.bind(0, 5, (5*aLevel) / 7), F);
 				applyPotion(aEntity, Potion.digSlowdown     , aLevel * 150 * aAmountOfItems + Math.max(0, ((tEffect = ((EntityLivingBase)aEntity).getActivePotionEffect(Potion.digSlowdown                          ))==null?0:tEffect.getDuration())), (int)UT.Code.bind(0, 5, (5*aLevel) / 7), F);
 				applyPotion(aEntity, Potion.confusion       , aLevel * 130 * aAmountOfItems + Math.max(0, ((tEffect = ((EntityLivingBase)aEntity).getActivePotionEffect(Potion.confusion                            ))==null?0:tEffect.getDuration())), (int)UT.Code.bind(0, 5, (5*aLevel) / 7), F);

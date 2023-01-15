@@ -53,9 +53,9 @@ import gregapi.render.IRenderedBlockObject;
 import gregapi.render.IRenderedBlockObjectSideCheck;
 import gregapi.util.UT;
 import gregapi.util.WD;
-import gregtechCH.config.ConfigForge_CH;
-import gregtechCH.tileentity.ITEAfterUpdateRender_CH;
-import gregtechCH.tileentity.ITileEntityName_CH;
+import gregtechCH.config.ConfigForge;
+import gregtechCH.tileentity.ITEAfterUpdateRender;
+import gregtechCH.tileentity.ITileEntityNameCompat;
 import gregtechCH.util.UT_CH;
 import gregtechCH.util.WD_CH;
 import net.minecraft.entity.player.EntityPlayer;
@@ -69,7 +69,7 @@ import net.minecraftforge.common.util.FakePlayer;
 /**
  * @author Gregorius Techneticies
  */
-public abstract class TileEntityBase03MultiTileEntities extends TileEntityBase02Sync implements IMTE_ColorMultiplier, ITEAfterUpdateRender_CH, IRenderedBlockObjectSideCheck, IRenderedBlockObject, IMTE_OnPainting, IMTE_GetPickBlock, IMTE_GetStackFromBlock, IMTE_OnRegistrationFirst, IMTE_RecolourBlock, IMTE_GetDrops, IMTE_OnBlockActivated, IMTE_ShouldSideBeRendered {
+public abstract class TileEntityBase03MultiTileEntities extends TileEntityBase02Sync implements IMTE_ColorMultiplier, ITEAfterUpdateRender, IRenderedBlockObjectSideCheck, IRenderedBlockObject, IMTE_OnPainting, IMTE_GetPickBlock, IMTE_GetStackFromBlock, IMTE_OnRegistrationFirst, IMTE_RecolourBlock, IMTE_GetDrops, IMTE_OnBlockActivated, IMTE_ShouldSideBeRendered {
 	@Override
 	public void sendClientData(boolean aSendAll, EntityPlayerMP aPlayer) {
 		super.sendClientData(aSendAll, aPlayer);
@@ -90,7 +90,7 @@ public abstract class TileEntityBase03MultiTileEntities extends TileEntityBase02
 	
 	@Override
 	public void onRegistrationFirst(MultiTileEntityRegistry aRegistry, short aID) {
-		if (this instanceof ITileEntityName_CH) GameRegistry.registerTileEntity(getClass(), ((ITileEntityName_CH)this).getTileEntityName_CH()); // 注册旧的名称来兼容旧版 GTCH
+		if (this instanceof ITileEntityNameCompat) GameRegistry.registerTileEntity(getClass(), ((ITileEntityNameCompat)this).getTileEntityNameCompat()); // 注册旧的名称来兼容旧版 GTCH
 		GameRegistry.registerTileEntity(getClass(), getTileEntityName());
 	}
 	
@@ -110,7 +110,7 @@ public abstract class TileEntityBase03MultiTileEntities extends TileEntityBase02
 		// Read the Default Parameters from NBT.
 		if (aNBT != null) readFromNBT(aNBT);
 	}
-
+	
 	@Override
 	public final void readFromNBT(NBTTagCompound aNBT) {
 		super.readFromNBT(aNBT);
@@ -199,7 +199,7 @@ public abstract class TileEntityBase03MultiTileEntities extends TileEntityBase02
 		if (paint(aRGB)) {updateClientData(T); causeBlockUpdate(); worldObj.markTileEntityChunkModified(xCoord, yCoord, zCoord, this); return T;}
 		return F;
 	}
-
+	
 	@SideOnly(Side.CLIENT) @Override public int colorMultiplier() {return UNCOLORED;}
 	
 	public boolean unpaint() {return F;}
@@ -214,8 +214,8 @@ public abstract class TileEntityBase03MultiTileEntities extends TileEntityBase02
 	private boolean willRerendImmediate = F;
 	public void updateClientData(boolean aRerendImmediate) {willRerendImmediate = aRerendImmediate; updateClientData(); willRerendImmediate = F;} // 后续在需要立刻重新渲染时调用此函数即可
 	@Override
-	public final void doAfterUpdateRender_CH(IBlockAccess aWorld, int aX, int aY, int aZ) {
-		if (!ConfigForge_CH.DATA_GTCH.rerenderAll && (willRerendImmediate || willRerendImmediateAny())) WD_CH.updateRender(aWorld, aX, aY, aZ, T, F);
+	public final void doAfterUpdateRender(IBlockAccess aWorld, int aX, int aY, int aZ) {
+		if (!ConfigForge.DATA_GTCH.rerenderAll && (willRerendImmediate || willRerendImmediateAny())) WD_CH.updateRender(aWorld, aX, aY, aZ, T, F);
 		willRerendImmediate = F;
 	}
 	public boolean willRerendImmediateAny() {return F;} // 也可重写此方法，在不用 sendAll 的情况下立刻重新渲染

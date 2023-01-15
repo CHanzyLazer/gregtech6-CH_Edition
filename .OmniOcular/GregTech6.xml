@@ -1070,115 +1070,6 @@
 	<tileentity id = "gt.multitileentity.tank.boiler_steam">
 		<line displayname = "爆炸警告1">
 			if((nbt['gt.tank.1']['Amount'] / (SteamCap(nbt))) > 0.10){
-				return RED + "此时使用扳手拆除会造成威力" + ExplodeRoundSU(nbt['gt.tank.1']['Amount']) + "点的爆炸";
-			}
-		</line>
-
-		<line displayname = "爆炸警告2">
-			if((nbt['gt.tank.1']['Amount'] / (SteamCap(nbt))) > 0.46){
-				return RED + "此时使用凿子清理锅炉会造成威力" + ExplodeRoundSU(nbt['gt.tank.1']['Amount']) + "点的爆炸";
-			}
-		</line>
-
-		<line displayname = "烫伤警告1">
-			if((nbt['gt.energy'] != undefined) && (nbt['gt.tank.1']['Amount'] != undefined)){
-				if((nbt['gt.energy'] + nbt['gt.tank.1']['Amount'] / 2) > 2000){
-					return RED + "此时靠近锅炉会受到" + HeatDamageSU(nbt['gt.energy'],nbt['gt.tank.1']['Amount'],0) + "点伤害";
-				}
-			}
-
-			if(nbt['gt.energy'] != undefined){
-				if(nbt['gt.tank.1']['Amount'] != undefined){
-					if((nbt['gt.energy'] + nbt['gt.tank.1']['Amount'] / 2) > 2000){
-						return RED + "此时靠近锅炉会受到" + HeatDamageSU(nbt['gt.energy'],nbt['gt.tank.1']['Amount'],0) + "点伤害";
-					}
-				}
-				if((nbt['gt.energy']) > 2000){
-					return RED + "此时靠近锅炉会受到" + HeatDamageSU(nbt['gt.energy'],0,0) + "点伤害";
-				}
-			}
-			if(nbt['gt.tank.1']['Amount'] != undefined){
-				if((nbt['gt.tank.1']['Amount'] / 2) > 2000){
-					return RED + "此时靠近锅炉会受到" + HeatDamageSU(0,nbt['gt.tank.1']['Amount'],0) + "点伤害";
-				}
-			}
-		</line>
-
-		<line displayname = "烫伤警告2">
-			if((nbt['gt.energy'] != undefined) && (nbt['gt.tank.1']['Amount'] != undefined)){
-				if((nbt['gt.energy'] + nbt['gt.tank.1']['Amount'] / 2) > 2000){
-					return RED + "此时使用凿子清理锅炉会受到" + HeatDamageSU(nbt['gt.energy'],nbt['gt.tank.1']['Amount'],1) + "点伤害";
-				}
-			}
-
-			if(nbt['gt.energy'] != undefined){
-				if(nbt['gt.tank.1']['Amount'] != undefined){
-					if((nbt['gt.energy'] + nbt['gt.tank.1']['Amount'] / 2) > 2000){
-						return RED + "此时使用凿子清理锅炉会受到" + HeatDamageSU(nbt['gt.energy'],nbt['gt.tank.1']['Amount'],1) + "点伤害";
-					}
-				}
-				if((nbt['gt.energy']) > 2000){
-					return RED + "此时使用凿子清理锅炉会受到" + HeatDamageSU(nbt['gt.energy'],0,1) + "点伤害";
-				}
-			}
-			if(nbt['gt.tank.1']['Amount'] != undefined){
-				if((nbt['gt.tank.1']['Amount'] / 2) > 2000){
-					return RED + "此时使用凿子清理锅炉会受到" + HeatDamageSU(0,nbt['gt.tank.1']['Amount'],1) + "点伤害";
-				}
-			}
-		</line>
-
-		<line displayname = "工作状态">
-			if(nbt['gt.tank.1']['Amount'] * 2 >= (SteamCap(nbt))){
-				return GREEN + "运行";
-			}
-			if(nbt['gt.tank.0'] != undefined){
-				return BLUE + "预热";
-			}
-			if(nbt['gt.energy'] != undefined){
-				return GOLD + "干烧";
-			}
-			return RED + "停机";
-		</line>
-
-		<line displayname = "效率">
-			if(nbt['gt.eff'] != undefined){
-				return nbt['gt.eff'] / 100 + "%";
-			}
-			return "100.00%";
-		</line>
-
-		<line displayname = "热量储量">
-			if(nbt['gt.energy'] != undefined){
-				return nbt['gt.energy'] + "/" + SteamCap(nbt) + Unit("HU") + " - " + parseInt(nbt['gt.energy'] / SteamCap(nbt) * 10000) / 100 + "%";
-			}
-			return "0/" + SteamCap(nbt) + Unit("HU") + " - " + "0.00%";
-		</line>
-
-	    <line displayname = "水类型">
-			return fluidName(nbt['gt.tank.0']['FluidName']);
-		</line>
-
-		<line displayname = "水储量">
-			if(nbt['gt.tank.0'] != undefined){
-				return nbt['gt.tank.0']['Amount'] + "/4000" + Unit("L");
-			}
-			return "0/4000" + Unit("L");
-		</line>
-
-		<line displayname = "蒸汽储量">
-			if(nbt['gt.tank.1'] != undefined){
-				return nbt['gt.tank.1']['Amount'] + "/" + SteamCap(nbt) + Unit("L") + " - " + parseInt(nbt['gt.tank.1']['Amount'] / SteamCap(nbt) * 10000) / 100 + "%";
-			}
-			return "0/" + SteamCap(nbt) + Unit("L") + " - " + "0.00%";
-		</line>
-		
-	</tileentity>
-	
-	<!-- 蒸汽锅炉 CH -->
-	<tileentity id = "gtch.multitileentity.tank.boiler_steam">
-		<line displayname = "爆炸警告1">
-			if((nbt['gt.tank.1']['Amount'] / (SteamCap(nbt))) > 0.10){
 				return RED + "此时拆除会造成威力" + ExplodeRoundSU(nbt['gt.tank.1']['Amount']) + "点的爆炸";
 			}
 		</line>
@@ -1263,7 +1154,7 @@
 
 		<line displayname = "钙化程度">
 			if(nbt['gt.eff'] != undefined){
-				return 100 - nbt['gt.eff'] / 100 + "%";
+				return (10000 - nbt['gt.eff']) / 100 + "%";
 			}
 		</line>
 
@@ -1296,95 +1187,16 @@
 			return "0/" + SteamCap(nbt) + Unit("L") + " - " + "0.00%";
 		</line>
 		
-	</tileentity>
-	
-	<!-- 大型蒸汽锅炉 -->
-	<tileentity id = "gt.multitileentity.multiblock.boiler.steam">
-		<line displayname = "爆炸警告1">
-			if((nbt['gt.tank.1']['Amount'] / (SteamCap(nbt))) > 0.10){
-				return RED + "此时使用扳手拆除会造成威力" + ExplodeRoundSULarge(nbt['gt.tank.1']['Amount']) + "点的爆炸";
+		<line displayname = "内部冷却水">
+			if(nbt['gt.tank.2'] != undefined){
+				return nbt['gt.tank.2']['Amount'] + Unit("L");
 			}
-		</line>
-
-		<line displayname = "爆炸警告2">
-			if((nbt['gt.tank.1']['Amount'] / (SteamCap(nbt))) > 0.46){
-				return RED + "此时使用凿子清理锅炉会造成威力" + ExplodeRoundSULarge(nbt['gt.tank.1']['Amount']) + "点的爆炸";
-			}
-		</line>
-
-		<line displayname = "烫伤警告">
-			if((nbt['gt.energy'] != undefined) && (nbt['gt.tank.1']['Amount'] != undefined)){
-				if((nbt['gt.energy'] + nbt['gt.tank.1']['Amount'] / 2) > 2000){
-					return RED + "此时使用凿子清理锅炉会受到" + HeatDamageSU(nbt['gt.energy'],nbt['gt.tank.1']['Amount'],1) + "点伤害";
-				}
-			}
-
-			if(nbt['gt.energy'] != undefined){
-				if(nbt['gt.tank.1']['Amount'] != undefined){
-					if((nbt['gt.energy'] + nbt['gt.tank.1']['Amount'] / 2) > 2000){
-						return RED + "此时使用凿子清理锅炉会受到" + HeatDamageSU(nbt['gt.energy'],nbt['gt.tank.1']['Amount'],1) + "点伤害";
-					}
-				}
-				if((nbt['gt.energy']) > 2000){
-					return RED + "此时使用凿子清理锅炉会受到" + HeatDamageSU(nbt['gt.energy'],0,1) + "点伤害";
-				}
-			}
-			if(nbt['gt.tank.1']['Amount'] != undefined){
-				if((nbt['gt.tank.1']['Amount'] / 2) > 2000){
-					return RED + "此时使用凿子清理锅炉会受到" + HeatDamageSU(0,nbt['gt.tank.1']['Amount'],1) + "点伤害";
-				}
-			}
-		</line>
-
-		<line displayname = "工作状态">
-			if(nbt['gt.tank.1']['Amount'] * 2 >= (SteamCap(nbt))){
-				return GREEN + "运行";
-			}
-			if(nbt['gt.tank.0'] != undefined){
-				return BLUE + "预热";
-			}
-			if(nbt['gt.energy'] != undefined){
-				return GOLD + "干烧";
-			}
-			return RED + "停机";
-		</line>
-
-		<line displayname = "效率">
-			if(nbt['gt.eff'] != undefined){
-				return nbt['gt.eff'] / 100 + "%";
-			}
-			return "100.00%";
-		</line>
-
-		<line displayname = "热量储量">
-			if(nbt['gt.energy'] != undefined){
-				return nbt['gt.energy'] + "/" + SteamCap(nbt) + Unit("HU") + " - " + parseInt(nbt['gt.energy'] / SteamCap(nbt) * 10000) / 100 + "%";
-			}
-			return "0/" + SteamCap(nbt) + Unit("HU") + " - " + "0.00%";
-		</line>
-
-	    <line displayname = "水类型">
-			return fluidName(nbt['gt.tank.0']['FluidName']);
-		</line>
-
-		<line displayname = "水储量">
-			if(nbt['gt.tank.0'] != undefined){
-				return nbt['gt.tank.0']['Amount'] + "/128000" + Unit("L");
-			}
-			return "0/128000" + Unit("L");
-		</line>
-
-		<line displayname = "蒸汽储量">
-			if(nbt['gt.tank.1'] != undefined){
-				return nbt['gt.tank.1']['Amount'] + "/" + SteamCap(nbt) + Unit("L") + " - " + parseInt(nbt['gt.tank.1']['Amount'] / SteamCap(nbt) * 10000) / 100 + "%";
-			}
-			return "0/" + SteamCap(nbt) + Unit("L") + " - " + "0.00%";
 		</line>
 		
 	</tileentity>
 	
-	<!-- 大型蒸汽锅炉 CH -->
-	<tileentity id = "gtch.multitileentity.multiblock.boiler.steam">
+	<!-- 大型蒸汽锅炉 -->
+	<tileentity id = "gt.multitileentity.multiblock.boiler.steam">
 		<line displayname = "爆炸警告1">
 			if((nbt['gt.tank.1']['Amount'] / (SteamCap(nbt))) > 0.10){
 				return RED + "此时拆除会造成威力" + ExplodeRoundSULarge(nbt['gt.tank.1']['Amount']) + "点的爆炸";
@@ -1447,7 +1259,7 @@
 
 		<line displayname = "钙化程度">
 			if(nbt['gt.eff'] != undefined){
-				return 100 - nbt['gt.eff'] / 100 + "%";
+				return (10000 - nbt['gt.eff']) / 100 + "%";
 			}
 		</line>
 
@@ -1478,6 +1290,12 @@
 				return nbt['gt.tank.1']['Amount'] + "/" + SteamCap(nbt) + Unit("L") + " - " + parseInt(nbt['gt.tank.1']['Amount'] / SteamCap(nbt) * 10000) / 100 + "%";
 			}
 			return "0/" + SteamCap(nbt) + Unit("L") + " - " + "0.00%";
+		</line>
+		
+		<line displayname = "内部冷却水">
+			if(nbt['gt.tank.2'] != undefined){
+				return nbt['gt.tank.2']['Amount'] + Unit("L");
+			}
 		</line>
 		
 	</tileentity>
@@ -2026,50 +1844,17 @@
 			return fluidName(nbt['gt.tank']['FluidName'])+": "+GREEN+nbt['gt.tank']['Amount'] + Unit("L");
 		</line>
 	</tileentity>
-	
+
 	<!-- 内燃机 -->
 	<tileentity id = "gt.multitileentity.generator.motor_liquid">
-		<line displayname = "输出功率">
-			if(nbt['gt.mte.id']==9147){
-			return BLUE + 32 +Unit("RU")
-			}
-			else if(nbt['gt.mte.id']==9148){
-			return BLUE + 64 +Unit("RU")
-			}
-			else if(nbt['gt.mte.id']==9149){
-			return BLUE + 128 +Unit("RU")
-			}
-			else if(nbt['gt.mte.id']==9197){
-			return BLUE + 256 +Unit("RU")
-			}
-			else if(nbt['gt.mte.id']==9198){
-			return BLUE + 512 +Unit("RU")
-			}
-			else if(nbt['gt.mte.id']==9199){
-			return BLUE + 512 +Unit("RU")
-			}
-			else if(nbt['gt.mte.id']==9120){
-			return BLUE + 1024 +Unit("RU")
-			}
-		</line>
-		<line displayname = "燃料情况">
-			return fluidName(nbt['gt.tank.0']['FluidName'])+": "+GREEN+nbt['gt.tank.0']['Amount'] + Unit("L");
-		</line>
-		<line displayname = "废气情况">
-			return fluidName(nbt['gt.tank.1']['FluidName'])+": "+GREEN+nbt['gt.tank.1']['Amount'] + Unit("L");
-		</line>
-	</tileentity>
-
-	<!-- 内燃机 CH -->
-	<tileentity id = "gtch.multitileentity.generator.motor_liquid">
 		<line displayname = "工作状态">
 			if(nbt['gt.stopped'] != undefined){
 				return RED + "停机";
 			}
 			if(nbt['gtch.preheat'] != undefined){
-				if((nbt['gt.energy'] != undefined) && (nbt['gtch.preheat.energy'] != undefined)){
-					if(nbt['gt.energy'] < nbt['gtch.preheat.energy']){
-						return BLUE + "预热" + WHITE + " - " + parseInt(nbt['gt.energy'] / nbt['gtch.preheat.energy'] * 10000) / 100 + "%";
+				if((nbt['gt.energy'] != undefined) && (nbt['gtch.preheat.energy.oo'] != undefined)){
+					if(nbt['gt.energy'] < nbt['gtch.preheat.energy.oo']){
+						return BLUE + "预热" + WHITE + " - " + parseInt(nbt['gt.energy'] / nbt['gtch.preheat.energy.oo'] * 10000) / 100 + "%";
 					}
 				}else{
 					return BLUE + "预热" + WHITE + " - " + "0.00%";
@@ -2119,82 +1904,6 @@
 	
 	<!-- 单方块涡轮 -->
 	<tileentity id = "gt.multitileentity.turbines.rotation_steam">
-		<line displayname = "旋转警告">
-			if(nbt['gt.can.energy'] == 1 && nbt['gt.facing'] == 1){
-			return RED + "此时玩家/动物/实体/...站在RU输出面时，会被机器转动";
-			}
-		</line>
-
-		<line displayname = "工作状态">
-			if(nbt['gt.output.su'] != undefined){
-			if((nbt['gt.output.su'] / 3) > (ID2Tier(nbt['gt.mte.id'],"SU","RU",0) * 2)){
-			return BLUE + "超载";
-			}
-			}
-			if(nbt['gt.tank.0'] != undefined){
-			if((nbt['gt.tank.0']['Amount'] / 3) > (ID2Tier(nbt['gt.mte.id'],"SU","RU",0) * 2)){
-			return BLUE + "超载";
-			}
-			}
-			isRun(nbt);
-		</line>
-
-		<line displayname = "输出功率">
-			if(nbt['gt.output.su'] != undefined){
-			if((nbt['gt.output.su'] / 3) > (ID2Tier(nbt['gt.mte.id'],"SU","RU",0) * 2)){
-			return RED + "机器超载无法正常工作，请降低输入功率"
-			}
-			}
-			if(nbt['gt.tank.0'] != undefined){
-			if((nbt['gt.tank.0']['Amount'] / 3) > (ID2Tier(nbt['gt.mte.id'],"SU","RU",0) * 2)){
-			return RED + "机器超载无法正常工作，请降低输入功率"
-			}
-			}
-			if(nbt['gt.output.su'] != undefined){
-			return parseInt(nbt['gt.output.su'] / 3) + Unit("RU") + "/t";
-			}
-			if(nbt['gt.tank.0'] != undefined){
-			return parseInt(nbt['gt.tank.0']['Amount'] / 3) + Unit("RU") + "/t";
-			}
-			return "0" + Unit("RU") + "/t";
-		</line>
-
-		<line displayname = "蒸汽储量">
-			if(nbt['gt.tank.0'] != undefined){
-			return nbt['gt.tank.0']['Amount'] + "/" + bind(1,2147483647,ID2Tier(nbt['gt.mte.id'],"SU","RU",1) * 2 * 4) + Unit("L");
-			}
-			return "0/" + bind(1,2147483647,ID2Tier(nbt['gt.mte.id'],"SU","RU",1) * 2 * 4) + Unit("L");
-		</line>
-
-		<line displayname = "旋转方向">
-			if(nbt['gt.can.energy'] == 1 && nbt['gt.facing'] == 1){
-			if(nbt['gt.reversed'] != undefined){
-			return BLUE + "顺时针";
-			}
-			return BLUE + "逆时针";
-			}
-		</line>
-
-		<line displayname = "旋转速度">
-			if(nbt['gt.can.energy'] == 1 && nbt['gt.facing'] == 1){
-			if(nbt['gt.output.su'] != undefined){
-			if((nbt['gt.output.su'] / 3) > ID2Tier(nbt['gt.mte.id'],"SU","RU",0)){
-			return "10" + Unit("Angle") + "/t" + " - " + "1.8" + BLUE + " 秒" + WHITE + "/转";
-			}
-			}
-			if(nbt['gt.tank.0'] != undefined){
-			if((nbt['gt.tank.0']['Amount'] / 3) > ID2Tier(nbt['gt.mte.id'],"SU","RU",0)){
-			return "10" + Unit("Angle") + "/t" + " - " + "1.8" + BLUE + " 秒" + WHITE + "/转";
-			}
-			}
-			return "5" + Unit("Angle") + "/t" + " - " + "3.6" + BLUE + " 秒" + WHITE + "/转";
-			}
-		</line>
-
-	</tileentity>
-	
-	<!-- 单方块涡轮 CH -->
-	<tileentity id = "gtch.multitileentity.turbines.rotation_steam">
 		<line displayname = "工作状态">
 			if((nbt['gt.tank.0'] != undefined) && (nbt['gt.tankcap.0'] != undefined)){
 				if(nbt['gt.tank.0']['Amount'] >= nbt['gt.tankcap.0']/2){
@@ -2205,9 +1914,9 @@
 				return RED + "停机";
 			}
 			if(nbt['gtch.preheat'] != undefined){
-				if((nbt['gt.energy'] != undefined) && (nbt['gtch.preheat.energy'] != undefined)){
-					if(nbt['gt.energy'] < nbt['gtch.preheat.energy']){
-						return BLUE + "预热" + WHITE + " - " + parseInt(nbt['gt.energy'] / nbt['gtch.preheat.energy'] * 10000) / 100 + "%";
+				if((nbt['gt.energy'] != undefined) && (nbt['gtch.preheat.energy.oo'] != undefined)){
+					if(nbt['gt.energy'] < nbt['gtch.preheat.energy.oo']){
+						return BLUE + "预热" + WHITE + " - " + parseInt(nbt['gt.energy'] / nbt['gtch.preheat.energy.oo'] * 10000) / 100 + "%";
 					}
 				}else{
 					return BLUE + "预热" + WHITE + " - " + "0.00%";
@@ -2261,11 +1970,11 @@
 
 	</tileentity>
 	
-	<!-- 多方快涡轮 CH -->
-	<tileentity id = "gtch.multitileentity.multiblock.turbine.steam">
+	<!-- 多方快涡轮 -->
+	<tileentity id = "gt.multitileentity.multiblock.turbine.steam">
 		<line displayname = "爆炸警告">
-			if((nbt['gt.energy'] != undefined) && (nbt['gtch.preheat.energy'] != undefined)){
-				if((nbt['gt.energy'] / nbt['gtch.preheat.energy']) > 0.25){
+			if((nbt['gt.energy'] != undefined) && (nbt['gtch.preheat.energy.oo'] != undefined)){
+				if((nbt['gt.energy'] / nbt['gtch.preheat.energy.oo']) > 0.25){
 					return RED + "此时改变结构会造成" + ExplodeRoundSULarge(nbt['gt.energy']) + "点的爆炸";
 				}
 			}
@@ -2281,9 +1990,9 @@
 				return RED + "停机";
 			}
 			if(nbt['gtch.preheat'] != undefined){
-				if((nbt['gt.energy'] != undefined) && (nbt['gtch.preheat.energy'] != undefined)){
-					if(nbt['gt.energy'] < nbt['gtch.preheat.energy']){
-						return BLUE + "预热" + WHITE + " - " + parseInt(nbt['gt.energy'] / nbt['gtch.preheat.energy'] * 10000) / 100 + "%";
+				if((nbt['gt.energy'] != undefined) && (nbt['gtch.preheat.energy.oo'] != undefined)){
+					if(nbt['gt.energy'] < nbt['gtch.preheat.energy.oo']){
+						return BLUE + "预热" + WHITE + " - " + parseInt(nbt['gt.energy'] / nbt['gtch.preheat.energy.oo'] * 10000) / 100 + "%";
 					}
 				}else{
 					return BLUE + "预热" + WHITE + " - " + "0.00%";
@@ -2377,11 +2086,11 @@
 		</line>
 	</tileentity>
 	
-	<!-- 燃气涡轮 CH -->
-	<tileentity id = "gtch.multitileentity.multiblock.turbine.gas">
+	<!-- 燃气涡轮 -->
+	<tileentity id = "gt.multitileentity.multiblock.turbine.gas">
 		<line displayname = "爆炸警告">
-			if((nbt['gt.energy'] != undefined) && (nbt['gtch.preheat.energy'] != undefined)){
-				if((nbt['gt.energy'] / nbt['gtch.preheat.energy']) > 0.25){
+			if((nbt['gt.energy'] != undefined) && (nbt['gtch.preheat.energy.oo'] != undefined)){
+				if((nbt['gt.energy'] / nbt['gtch.preheat.energy.oo']) > 0.25){
 					return RED + "此时改变结构会造成" + ExplodeRoundSULarge(nbt['gt.energy']) + "点的爆炸";
 				}
 			}
@@ -2392,9 +2101,9 @@
 				return RED + "停机";
 			}
 			if(nbt['gtch.preheat'] != undefined){
-				if((nbt['gt.energy'] != undefined) && (nbt['gtch.preheat.energy'] != undefined)){
-					if(nbt['gt.energy'] < nbt['gtch.preheat.energy']){
-						return BLUE + "预热" + WHITE + " - " + parseInt(nbt['gt.energy'] / nbt['gtch.preheat.energy'] * 10000) / 100 + "%";
+				if((nbt['gt.energy'] != undefined) && (nbt['gtch.preheat.energy.oo'] != undefined)){
+					if(nbt['gt.energy'] < nbt['gtch.preheat.energy.oo']){
+						return BLUE + "预热" + WHITE + " - " + parseInt(nbt['gt.energy'] / nbt['gtch.preheat.energy.oo'] * 10000) / 100 + "%";
 					}
 				}else{
 					return BLUE + "预热" + WHITE + " - " + "0.00%";
@@ -3811,246 +3520,9 @@
 	<tileentity id = "gt.multitileentity.pump.rotation">
 		
 	</tileentity>
-
+	
 	<!-- 加工机器 -->
 	<tileentity id = "gt.multitileentity.machine.basic">
-		<line displayname = "工作状态">
-			if(nbt['gt.active'] != undefined){
-				return BLUE + "正在加工";
-			}
-			if(nbt['gt.running'] != undefined){
-				if(nbt['gt.mte.id'] < 22000){
-					return BLUE + "待机 - 耗电";
-				}
-				return BLUE + "待机";
-			}
-			return RED + "停机";
-		</line>
-
-		<line displayname = "工作进程">
-			if(nbt['gt.progress'] != undefined){
-				return (nbt['gt.progress'] / 20 / nbt['gt.minenergy']).toFixed(1) + Unit("S") + " / " + (nbt['gt.maxprogress'] / 20 / nbt['gt.minenergy']).toFixed(1) + Unit("S") + " - " + parseInt(nbt['gt.progress'] * 10000 / nbt['gt.maxprogress']) / 100 + " %";
-			}
-		</line>
-
-		<line displayname = "能量需求">
-			if(nbt['gt.minenergy'] != undefined){
-				return nbt['gt.minenergy'] + Unit(ID2EnergyType(nbt['gt.mte.id']));
-			}
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.0']['Count'] + Unit("个 ") + name(nbt['gt.invout.0']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.1']['Count'] + Unit("个 ") + name(nbt['gt.invout.1']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.2']['Count'] + Unit("个 ") + name(nbt['gt.invout.2']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.3']['Count'] + Unit("个 ") + name(nbt['gt.invout.3']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.4']['Count'] + Unit("个 ") + name(nbt['gt.invout.4']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.5']['Count'] + Unit("个 ") + name(nbt['gt.invout.5']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.6']['Count'] + Unit("个 ") + name(nbt['gt.invout.6']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.7']['Count'] + Unit("个 ") + name(nbt['gt.invout.7']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.8']['Count'] + Unit("个 ") + name(nbt['gt.invout.8']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.9']['Count'] + Unit("个 ") + name(nbt['gt.invout.9']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.10']['Count'] + Unit("个 ") + name(nbt['gt.invout.10']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.11']['Count'] + Unit("个 ") + name(nbt['gt.invout.11']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.tankout.0']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tankout.0']['FluidName']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.tankout.1']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tankout.1']['FluidName']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.tankout.2']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tankout.2']['FluidName']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.tankout.3']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tankout.3']['FluidName']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.tankout.4']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tankout.4']['FluidName']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.tankout.5']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tankout.5']['FluidName']);
-		</line>
-
-		<line displayname = "物品输入">
-			IOInv(nbt,0,'I');
-		</line>
-
-		<line displayname = "物品输入">
-			IOInv(nbt,1,'I');
-		</line>
-
-		<line displayname = "物品输入">
-			IOInv(nbt,2,'I');
-		</line>
-
-		<line displayname = "物品输入">
-			IOInv(nbt,3,'I');
-		</line>
-
-		<line displayname = "物品输入">
-			IOInv(nbt,4,'I');
-		</line>
-
-		<line displayname = "物品输入">
-			IOInv(nbt,5,'I');
-		</line>
-
-		<line displayname = "物品输入">
-			IOInv(nbt,6,'I');
-		</line>
-
-		<line displayname = "物品输入">
-			IOInv(nbt,7,'I');
-		</line>
-
-		<line displayname = "物品输入">
-			IOInv(nbt,8,'I');
-		</line>
-
-		<line displayname = "所放蓝图">
-			IOInv(nbt,0,'B');
-		</line>
-
-		<line displayname = "流体输入">
-			return nbt['gt.tank.in.0']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.in.0']['FluidName']);
-		</line>
-
-		<line displayname = "流体输入">
-			return nbt['gt.tank.in.1']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.in.1']['FluidName']);
-		</line>
-
-		<line displayname = "流体输入">
-			return nbt['gt.tank.in.2']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.in.2']['FluidName']);
-		</line>
-
-		<line displayname = "流体输入">
-			return nbt['gt.tank.in.3']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.in.3']['FluidName']);
-		</line>
-
-		<line displayname = "流体输入">
-			return nbt['gt.tank.in.4']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.in.4']['FluidName']);
-		</line>
-
-		<line displayname = "流体输入">
-			return nbt['gt.tank.in.5']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.in.5']['FluidName']);
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,0,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,1,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,2,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,3,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,4,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,5,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,6,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,7,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,8,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,9,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,10,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,11,'O');
-		</line>
-
-		<line displayname = "流体输出">
-			return nbt['gt.tank.out.0']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.out.0']['FluidName']);
-		</line>
-
-		<line displayname = "流体输出">
-			return nbt['gt.tank.out.1']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.out.1']['FluidName']);
-		</line>
-
-		<line displayname = "流体输出">
-			return nbt['gt.tank.out.2']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.out.2']['FluidName']);
-		</line>
-
-		<line displayname = "流体输出">
-			return nbt['gt.tank.out.3']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.out.3']['FluidName']);
-		</line>
-
-		<line displayname = "流体输出">
-			return nbt['gt.tank.out.4']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.out.4']['FluidName']);
-		</line>
-
-		<line displayname = "流体输出">
-			return nbt['gt.tank.out.5']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.out.5']['FluidName']);
-		</line>
-
-	</tileentity>
-	
-	<!-- 加工机器 CH -->
-	<tileentity id = "gtch.multitileentity.machine.basic">
 		<line displayname = "工作状态">
 			if(nbt['gt.active'] != undefined){
 				return BLUE + "正在加工";
@@ -4290,246 +3762,9 @@
 		</line>
 
 	</tileentity>
-
+	
 	<!-- 电力加工机器 -->
 	<tileentity id = "gt.multitileentity.machine.basic.electric">
-		<line displayname = "工作状态">
-			if(nbt['gt.active'] != undefined){
-				return BLUE + "正在加工";
-			}
-			if(nbt['gt.running'] != undefined){
-				if(nbt['gt.mte.id'] < 22000){
-					return BLUE + "待机 - 耗电";
-				}
-				return BLUE + "待机";
-			}
-			return RED + "停机";
-		</line>
-
-		<line displayname = "工作进程">
-			if(nbt['gt.progress'] != undefined){
-				return (nbt['gt.progress'] / 20 / nbt['gt.minenergy']).toFixed(1) + Unit("S") + " / " + (nbt['gt.maxprogress'] / 20 / nbt['gt.minenergy']).toFixed(1) + Unit("S") + " - " + parseInt(nbt['gt.progress'] * 10000 / nbt['gt.maxprogress']) / 100 + " %";
-			}
-		</line>
-
-		<line displayname = "能量需求">
-			if(nbt['gt.minenergy'] != undefined){
-				return nbt['gt.minenergy'] + Unit(ID2EnergyType(nbt['gt.mte.id']));
-			}
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.0']['Count'] + Unit("个 ") + name(nbt['gt.invout.0']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.1']['Count'] + Unit("个 ") + name(nbt['gt.invout.1']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.2']['Count'] + Unit("个 ") + name(nbt['gt.invout.2']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.3']['Count'] + Unit("个 ") + name(nbt['gt.invout.3']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.4']['Count'] + Unit("个 ") + name(nbt['gt.invout.4']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.5']['Count'] + Unit("个 ") + name(nbt['gt.invout.5']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.6']['Count'] + Unit("个 ") + name(nbt['gt.invout.6']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.7']['Count'] + Unit("个 ") + name(nbt['gt.invout.7']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.8']['Count'] + Unit("个 ") + name(nbt['gt.invout.8']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.9']['Count'] + Unit("个 ") + name(nbt['gt.invout.9']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.10']['Count'] + Unit("个 ") + name(nbt['gt.invout.10']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.11']['Count'] + Unit("个 ") + name(nbt['gt.invout.11']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.tankout.0']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tankout.0']['FluidName']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.tankout.1']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tankout.1']['FluidName']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.tankout.2']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tankout.2']['FluidName']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.tankout.3']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tankout.3']['FluidName']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.tankout.4']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tankout.4']['FluidName']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.tankout.5']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tankout.5']['FluidName']);
-		</line>
-
-		<line displayname = "物品输入">
-			IOInv(nbt,0,'I');
-		</line>
-
-		<line displayname = "物品输入">
-			IOInv(nbt,1,'I');
-		</line>
-
-		<line displayname = "物品输入">
-			IOInv(nbt,2,'I');
-		</line>
-
-		<line displayname = "物品输入">
-			IOInv(nbt,3,'I');
-		</line>
-
-		<line displayname = "物品输入">
-			IOInv(nbt,4,'I');
-		</line>
-
-		<line displayname = "物品输入">
-			IOInv(nbt,5,'I');
-		</line>
-
-		<line displayname = "物品输入">
-			IOInv(nbt,6,'I');
-		</line>
-
-		<line displayname = "物品输入">
-			IOInv(nbt,7,'I');
-		</line>
-
-		<line displayname = "物品输入">
-			IOInv(nbt,8,'I');
-		</line>
-
-		<line displayname = "所放蓝图">
-			IOInv(nbt,0,'B');
-		</line>
-
-		<line displayname = "流体输入">
-			return nbt['gt.tank.in.0']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.in.0']['FluidName']);
-		</line>
-
-		<line displayname = "流体输入">
-			return nbt['gt.tank.in.1']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.in.1']['FluidName']);
-		</line>
-
-		<line displayname = "流体输入">
-			return nbt['gt.tank.in.2']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.in.2']['FluidName']);
-		</line>
-
-		<line displayname = "流体输入">
-			return nbt['gt.tank.in.3']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.in.3']['FluidName']);
-		</line>
-
-		<line displayname = "流体输入">
-			return nbt['gt.tank.in.4']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.in.4']['FluidName']);
-		</line>
-
-		<line displayname = "流体输入">
-			return nbt['gt.tank.in.5']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.in.5']['FluidName']);
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,0,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,1,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,2,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,3,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,4,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,5,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,6,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,7,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,8,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,9,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,10,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,11,'O');
-		</line>
-
-		<line displayname = "流体输出">
-			return nbt['gt.tank.out.0']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.out.0']['FluidName']);
-		</line>
-
-		<line displayname = "流体输出">
-			return nbt['gt.tank.out.1']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.out.1']['FluidName']);
-		</line>
-
-		<line displayname = "流体输出">
-			return nbt['gt.tank.out.2']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.out.2']['FluidName']);
-		</line>
-
-		<line displayname = "流体输出">
-			return nbt['gt.tank.out.3']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.out.3']['FluidName']);
-		</line>
-
-		<line displayname = "流体输出">
-			return nbt['gt.tank.out.4']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.out.4']['FluidName']);
-		</line>
-
-		<line displayname = "流体输出">
-			return nbt['gt.tank.out.5']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.out.5']['FluidName']);
-		</line>
-
-	</tileentity>
-	
-	<!-- 电力加工机器 CH -->
-	<tileentity id = "gtch.multitileentity.machine.basic.electric">
 		<line displayname = "工作状态">
 			if(nbt['gt.active'] != undefined){
 				return BLUE + "正在加工";
@@ -4772,246 +4007,6 @@
 	
 	<!-- 多方块机器 -->
 	<tileentity id = "gt.multitileentity.multiblock.*">
-		<line displayname = "工作状态">
-			if(id != "gt.multitileentity.multiblock.cokeoven" || id != "gt.multitileentity.multiblock.turbine.gas"){
-				if(nbt['gt.active'] != undefined){
-				return BLUE + "正在加工";
-				}
-				if(nbt['gt.running'] != undefined){
-				if(nbt['gt.mte.id'] < 22000){
-				return BLUE + "待机 - 耗电";
-				}
-				return BLUE + "待机";
-				}
-				return RED + "停机";
-			}
-			
-		</line>
-
-		<line displayname = "工作进程">
-			if(nbt['gt.progress'] != undefined){
-			return (nbt['gt.progress'] / 20 / nbt['gt.minenergy']).toFixed(1) + Unit("S") + " / " + (nbt['gt.maxprogress'] / 20 / nbt['gt.minenergy']).toFixed(1) + Unit("S") + " - " + parseInt(nbt['gt.progress'] * 10000 / nbt['gt.maxprogress']) / 100 + " %";
-			}
-		</line>
-
-		<line displayname = "能量需求">
-			if(nbt['gt.minenergy'] != undefined){
-			return nbt['gt.minenergy'] + Unit(ID2EnergyType(nbt['gt.mte.id']));
-			}
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.0']['Count'] + Unit("个 ") + name(nbt['gt.invout.0']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.1']['Count'] + Unit("个 ") + name(nbt['gt.invout.1']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.2']['Count'] + Unit("个 ") + name(nbt['gt.invout.2']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.3']['Count'] + Unit("个 ") + name(nbt['gt.invout.3']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.4']['Count'] + Unit("个 ") + name(nbt['gt.invout.4']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.5']['Count'] + Unit("个 ") + name(nbt['gt.invout.5']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.6']['Count'] + Unit("个 ") + name(nbt['gt.invout.6']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.7']['Count'] + Unit("个 ") + name(nbt['gt.invout.7']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.8']['Count'] + Unit("个 ") + name(nbt['gt.invout.8']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.9']['Count'] + Unit("个 ") + name(nbt['gt.invout.9']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.10']['Count'] + Unit("个 ") + name(nbt['gt.invout.10']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.11']['Count'] + Unit("个 ") + name(nbt['gt.invout.11']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.tankout.0']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tankout.0']['FluidName']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.tankout.1']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tankout.1']['FluidName']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.tankout.2']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tankout.2']['FluidName']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.tankout.3']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tankout.3']['FluidName']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.tankout.4']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tankout.4']['FluidName']);
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.tankout.5']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tankout.5']['FluidName']);
-		</line>
-
-		<line displayname = "物品输入">
-			IOInv(nbt,0,'I');
-		</line>
-
-		<line displayname = "物品输入">
-			IOInv(nbt,1,'I');
-		</line>
-
-		<line displayname = "物品输入">
-			IOInv(nbt,2,'I');
-		</line>
-
-		<line displayname = "物品输入">
-			IOInv(nbt,3,'I');
-		</line>
-
-		<line displayname = "物品输入">
-			IOInv(nbt,4,'I');
-		</line>
-
-		<line displayname = "物品输入">
-			IOInv(nbt,5,'I');
-		</line>
-
-		<line displayname = "物品输入">
-			IOInv(nbt,6,'I');
-		</line>
-
-		<line displayname = "物品输入">
-			IOInv(nbt,7,'I');
-		</line>
-
-		<line displayname = "物品输入">
-			IOInv(nbt,8,'I');
-		</line>
-
-		<line displayname = "所放蓝图">
-			IOInv(nbt,0,'B');
-		</line>
-
-		<line displayname = "流体输入">
-			return nbt['gt.tank.in.0']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.in.0']['FluidName']);
-		</line>
-
-		<line displayname = "流体输入">
-			return nbt['gt.tank.in.1']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.in.1']['FluidName']);
-		</line>
-
-		<line displayname = "流体输入">
-			return nbt['gt.tank.in.2']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.in.2']['FluidName']);
-		</line>
-
-		<line displayname = "流体输入">
-			return nbt['gt.tank.in.3']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.in.3']['FluidName']);
-		</line>
-
-		<line displayname = "流体输入">
-			return nbt['gt.tank.in.4']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.in.4']['FluidName']);
-		</line>
-
-		<line displayname = "流体输入">
-			return nbt['gt.tank.in.5']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.in.5']['FluidName']);
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,0,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,1,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,2,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,3,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,4,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,5,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,6,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,7,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,8,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,9,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,10,'O');
-		</line>
-
-		<line displayname = "物品输出">
-			IOInv(nbt,11,'O');
-		</line>
-
-		<line displayname = "流体输出">
-			return nbt['gt.tank.out.0']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.out.0']['FluidName']);
-		</line>
-
-		<line displayname = "流体输出">
-			return nbt['gt.tank.out.1']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.out.1']['FluidName']);
-		</line>
-
-		<line displayname = "流体输出">
-			return nbt['gt.tank.out.2']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.out.2']['FluidName']);
-		</line>
-
-		<line displayname = "流体输出">
-			return nbt['gt.tank.out.3']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.out.3']['FluidName']);
-		</line>
-
-		<line displayname = "流体输出">
-			return nbt['gt.tank.out.4']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.out.4']['FluidName']);
-		</line>
-
-		<line displayname = "流体输出">
-			return nbt['gt.tank.out.5']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.out.5']['FluidName']);
-		</line>
-
-	</tileentity>
-	
-	<!-- 多方块机器 CH -->
-	<tileentity id = "gtch.multitileentity.multiblock.*">
 		<line displayname = "工作状态">
 			if(id != "gtch.multitileentity.multiblock.cokeoven" || id != "gtch.multitileentity.multiblock.turbine.gas" || id != "gtch.multitileentity.multiblock.turbine.steam"){
 				if(nbt['gt.active'] != undefined){

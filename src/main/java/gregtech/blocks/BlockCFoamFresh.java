@@ -59,7 +59,7 @@ public class BlockCFoamFresh extends BlockColored implements IBlockFoamable {
 	protected BlockCFoamFresh(Class<? extends ItemBlock> aItemClass, Material aVanillaMaterial, SoundType aVanillaSoundType, String aName, String aDefaultLocalised, OreDictMaterial aMaterial, float aResistanceMultiplier, float aHardnessMultiplier, int aHarvestLevel, int aCount, IIconContainer[] aIcons, byte aSlabType, BlockMetaType aBlock) {
 		super(aItemClass, aVanillaMaterial, aVanillaSoundType, aName, aDefaultLocalised, aMaterial, aResistanceMultiplier, aHardnessMultiplier, aHarvestLevel, aCount, aIcons, aSlabType, aBlock);
 	}
-
+	
 	@Override
 	public int getLightOpacity() {
 		return LIGHT_OPACITY_WATER;
@@ -134,14 +134,14 @@ public class BlockCFoamFresh extends BlockColored implements IBlockFoamable {
 	public boolean driedFoam(World aWorld, int aX, int aY, int aZ, byte aSide) {
 		return F;
 	}
-
+	
 	// GTCH, 在这里加入材料的颜色属性
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int getRenderColor(int aMeta) {
 		return DYES_INT_CFoam[UT.Code.bind4(aMeta)];
 	}
-
+	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int colorMultiplier(IBlockAccess aWorld, int aX, int aY, int aZ) {

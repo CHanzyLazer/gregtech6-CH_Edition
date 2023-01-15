@@ -25,7 +25,6 @@ import gregapi.GT_API;
 import gregapi.block.multitileentity.MultiTileEntityRegistry;
 import gregapi.code.TagData;
 import gregapi.data.*;
-import gregapi.data.LH.Chat;
 import gregapi.fluid.FluidTankGT;
 import gregapi.gui.ContainerClientBasicMachine;
 import gregapi.gui.ContainerCommonBasicMachine;
@@ -47,10 +46,15 @@ import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregtechCH.fluid.IFluidHandler_CH;
-import gregtechCH.tileentity.connectors.ITEInterceptAutoConnectFluid_CH;
-import gregtechCH.tileentity.connectors.ITEInterceptAutoConnectItem_CH;
-import gregtechCH.tileentity.connectors.ITEInterceptModConnectFluid_CH;
-import gregtechCH.tileentity.connectors.ITEInterceptModConnectItem_CH;
+import gregtechCH.tileentity.ITileEntityNameCompat;
+import gregtechCH.tileentity.connectors.ITEInterceptAutoConnectFluid;
+import gregtechCH.tileentity.connectors.ITEInterceptAutoConnectItem;
+import gregtechCH.tileentity.connectors.ITEInterceptModConnectFluid;
+import gregtechCH.tileentity.connectors.ITEInterceptModConnectItem;
+import gregtechCH.tileentity.cores.basicmachines.IMTEC_BasicMachine;
+import gregtechCH.tileentity.cores.IMTEC_ToolTips;
+import gregtechCH.tileentity.cores.basicmachines.MTEC_BasicMachine_Greg;
+import gregtechCH.tileentity.cores.basicmachines.MTEC_BasicMachine;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -65,7 +69,6 @@ import java.util.Collection;
 import java.util.List;
 
 import static gregapi.data.CS.*;
-import static gregtechCH.data.CS_CH.NBT_CANFILL_STEAM;
 
 /**
  * @author Gregorius Techneticies
@@ -93,9 +96,9 @@ import static gregtechCH.data.CS_CH.NBT_CANFILL_STEAM;
 @Optional.InterfaceList(value = {
 	@Optional.Interface(iface = "buildcraft.api.tiles.IHasWork", modid = ModIDs.BC)
 })
-public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle implements ITEInterceptModConnectItem_CH, ITEInterceptModConnectFluid_CH, ITEInterceptAutoConnectItem_CH, ITEInterceptAutoConnectFluid_CH, IHasWork, ITileEntityFunnelAccessible, ITileEntityTapAccessible, ITileEntitySwitchableOnOff, ITileEntityRunningSuccessfully, ITileEntityAdjacentInventoryUpdatable, ITileEntityEnergy, ITileEntityProgress, ITileEntityGibbl, IFluidHandler_CH {
-	public boolean mCanFillSteam = F;
-
+public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle implements IMTEC_ToolTips, ITileEntityNameCompat, ITEInterceptModConnectItem, ITEInterceptModConnectFluid, ITEInterceptAutoConnectItem, ITEInterceptAutoConnectFluid, IHasWork, ITileEntityFunnelAccessible, ITileEntityTapAccessible, ITileEntitySwitchableOnOff, ITileEntityRunningSuccessfully, ITileEntityAdjacentInventoryUpdatable, ITileEntityEnergy, ITileEntityProgress, ITileEntityGibbl, IFluidHandler_CH {
+	protected MTEC_BasicMachine_Greg mCore; // 暂时使用类而不是接口
+	
 	public boolean mSpecialIsStartEnergy = F, mNoConstantEnergy = F, mCheapOverclocking = F, mCouldUseRecipe = F, mStopped = F, oActive = F, oRunning = F, mStateNew = F, mStateOld = F, mDisabledItemInput = F, mDisabledItemOutput = F, mDisabledFluidInput = F, mDisabledFluidOutput = F, mRequiresIgnition = F, mParallelDuration = F, mCanUseOutputTanks = F;
 	public byte mEnergyInputs = 127, mEnergyOutput = SIDE_UNDEFINED, mOutputBlocked = 0, mMode = 0, mIgnited = 0;
 	public byte mItemInputs   = 127, mItemOutputs  = 127, mItemAutoInput  = SIDE_UNDEFINED, mItemAutoOutput  = SIDE_UNDEFINED;
@@ -117,10 +120,10 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 	
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {
+		// GTCH, core init
+		if (mCore == null) mCore = new MTEC_BasicMachine(this);
 		super.readFromNBT2(aNBT);
-		//GTCH
-		if (aNBT.hasKey(NBT_CANFILL_STEAM)) mCanFillSteam = aNBT.getBoolean(NBT_CANFILL_STEAM);
-
+		
 		mGUITexture = mRecipes.mGUIPath;
 		mEnergy = aNBT.getLong(NBT_ENERGY);
 		if (aNBT.hasKey(NBT_ACTIVE)) mCouldUseRecipe = mActive = aNBT.getBoolean(NBT_ACTIVE);
@@ -225,6 +228,9 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 		}
 		
 		updateAccessibleSlots();
+		
+		// GTCH, core init
+		mCore.readFromNBT(aNBT);
 	}
 	
 	@Override
@@ -254,10 +260,16 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 		for (int i = 0; i < mTanksOutput .length; i++) mTanksOutput[i].writeToNBT(aNBT, NBT_TANK+".out."+i);
 		for (int i = 0; i < mOutputFluids.length; i++) FL.save(aNBT, NBT_TANK_OUT+"."+i, mOutputFluids[i]);
 		for (int i = 0; i < mOutputItems .length; i++) ST.save(aNBT, NBT_INV_OUT +"."+i, mOutputItems [i]);
+		
+		// GTCH, core save
+		mCore.writeToNBT(aNBT);
 	}
 	
 	@Override
 	public NBTTagCompound writeItemNBT2(NBTTagCompound aNBT) {
+		// GTCH, core save
+		mCore.writeItemNBT(aNBT);
+		
 		UT.NBT.setNumber(aNBT, NBT_MODE, mMode);
 		UT.NBT.setBoolean(aNBT, NBT_INV_DISABLED_IN, mDisabledItemInput);
 		UT.NBT.setBoolean(aNBT, NBT_INV_DISABLED_OUT, mDisabledItemOutput);
@@ -265,101 +277,19 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 		UT.NBT.setBoolean(aNBT, NBT_TANK_DISABLED_OUT, mDisabledFluidOutput);
 		return super.writeItemNBT2(aNBT);
 	}
-	// tooltips
-	@Override
-	public final void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
-		toolTipsMultiblock(aList);
-		toolTipsEnergy(aList);
-		addToolTipsSided(aList, aStack, aF3_H);
-		toolTipsUseful(aList);
-		toolTipsImportant(aList);
-		toolTipsHazard(aList);
-		toolTipsOther(aList, aStack, aF3_H);
-	}
-	protected void toolTipsMultiblock(List<String> aList) {/**/}
-	protected void toolTipsEnergy(List<String> aList) {
-		aList.add(Chat.CYAN + LH.get(LH.RECIPES) + ": " + Chat.WHITE + LH.get(mRecipes.mNameInternal) + (mParallel > 1 ? " (up to "+mParallel+"x processed per run)" : ""));
-		if (mCheapOverclocking)
-			aList.add(Chat.YELLOW + LH.get(LH.CHEAP_OVERCLOCKING));
-		if (mEfficiency != 10000)
-			aList.add(LH.getToolTipEfficiency(mEfficiency));
-	}
-	protected void toolTipsUseful(List<String> aList) {/**/}
-	protected void toolTipsImportant(List<String> aList) {
-		if (mRequiresIgnition) aList.add(Chat.ORANGE   + LH.get(LH.REQUIREMENT_IGNITE_FIRE));
-	}
-	protected void toolTipsHazard(List<String> aList) {/**/}
-	protected void toolTipsOther(List<String> aList, ItemStack aStack, boolean aF3_H) {
-		aList.add(Chat.DGRAY    + LH.get(LH.TOOL_TO_TOGGLE_SCREWDRIVER));
-		if (SIDES_VALID[mFluidAutoInput] || SIDES_VALID[mItemAutoInput])
-			aList.add(Chat.DGRAY    + LH.get(LH.TOOL_TO_TOGGLE_AUTO_INPUTS_MONKEY_WRENCH));
-		if (SIDES_VALID[mFluidAutoOutput] || SIDES_VALID[mItemAutoOutput])
-			aList.add(Chat.DGRAY    + LH.get(LH.TOOL_TO_TOGGLE_AUTO_OUTPUTS_MONKEY_WRENCH));
-		aList.add(Chat.DGRAY    + LH.get(LH.TOOL_TO_RESET_SOFT_HAMMER));
-		aList.add(Chat.DGRAY    + LH.get(LH.TOOL_TO_DETAIL_MAGNIFYINGGLASS));
-		super.addToolTips(aList, aStack, aF3_H);
-	}
 	
-	public void addToolTipsSided(List<String> aList, ItemStack aStack, boolean aF3_H) {
-		String tSideNames = "";
-		if (mEnergyTypeAccepted != TD.Energy.TU) {
-			if (mEnergyInputs != 127) {
-				for (byte tSide : ALL_SIDES_VALID) if (FACE_CONNECTED[tSide][mEnergyInputs]) {tSideNames += (UT.Code.stringValid(tSideNames)?", ":"")+LH.get(LH.FACES[tSide]);}
-			}
-			LH.addEnergyToolTips(this, aList, mEnergyTypeAccepted, null, tSideNames, null);
-			tSideNames = "";
-		}
-		if (mEnergyTypeCharged != TD.Energy.TU) {
-			if (mEnergyInputs != 127) {
-				for (byte tSide : ALL_SIDES_VALID) if (FACE_CONNECTED[tSide][mEnergyInputs]) {tSideNames += (UT.Code.stringValid(tSideNames)?", ":"")+LH.get(LH.FACES[tSide]);}
-			}
-			LH.addEnergyToolTips(this, aList, mEnergyTypeCharged, null, tSideNames, null);
-			tSideNames = "";
-		}
-		if (mRecipes.mInputItemsCount > 0) {
-			if (mItemInputs != 127) {
-				for (byte tSide : ALL_SIDES_VALID) if (FACE_CONNECTED[tSide][mItemInputs  ]) {tSideNames += (UT.Code.stringValid(tSideNames)?", ":"")+LH.get(LH.FACES[tSide])+(tSide==mItemAutoInput  ?" (auto)":"");}
-				if (UT.Code.stringValid(tSideNames)) aList.add(Chat.GREEN   + LH.get(LH.ITEM_INPUT)     + ": " + Chat.WHITE + tSideNames);
-				tSideNames = "";
-			} else if (SIDES_VALID[mItemAutoInput]) {
-				aList.add(Chat.GREEN + LH.get(LH.ITEM_INPUT) + ": " + Chat.WHITE + LH.get(LH.FACES[mItemAutoInput]) + " (auto, otherwise any)");
-			} else {
-				aList.add(Chat.GREEN + LH.get(LH.ITEM_INPUT) + ": " + Chat.WHITE + LH.get(LH.FACE_ANY) + " (no auto)");
-			}
-		}
-		if (mRecipes.mOutputItemsCount > 0) {
-			if (mItemOutputs != 127) {
-				for (byte tSide : ALL_SIDES_VALID) if (FACE_CONNECTED[tSide][mItemOutputs ]) {tSideNames += (UT.Code.stringValid(tSideNames)?", ":"")+LH.get(LH.FACES[tSide])+(tSide==mItemAutoOutput ?" (auto)":"");}
-				if (UT.Code.stringValid(tSideNames)) aList.add(Chat.RED     + LH.get(LH.ITEM_OUTPUT)    + ": " + Chat.WHITE + tSideNames);
-				tSideNames = "";
-			} else if (SIDES_VALID[mItemAutoOutput]) {
-				aList.add(Chat.RED + LH.get(LH.ITEM_OUTPUT) + ": " + Chat.WHITE + LH.get(LH.FACES[mItemAutoOutput]) + " (auto, otherwise any)");
-			} else {
-				aList.add(Chat.RED + LH.get(LH.ITEM_OUTPUT) + ": " + Chat.WHITE + LH.get(LH.FACE_ANY) + " (no auto)");
-			}
-		}
-		if (mRecipes.mInputFluidCount > 0) {
-			if (mFluidInputs != 127) {
-				for (byte tSide : ALL_SIDES_VALID) if (FACE_CONNECTED[tSide][mFluidInputs ]) {tSideNames += (UT.Code.stringValid(tSideNames)?", ":"")+LH.get(LH.FACES[tSide])+(tSide==mFluidAutoInput ?" (auto)":"");}
-				if (UT.Code.stringValid(tSideNames)) aList.add(Chat.GREEN   + LH.get(LH.FLUID_INPUT)    + ": " + Chat.WHITE + tSideNames);
-				tSideNames = "";
-			} else if (SIDES_VALID[mFluidAutoInput]) {
-				aList.add(Chat.GREEN + LH.get(LH.FLUID_INPUT) + ": " + Chat.WHITE + LH.get(LH.FACES[mFluidAutoInput]) + " (auto, otherwise any)");
-			} else {
-				aList.add(Chat.GREEN + LH.get(LH.FLUID_INPUT) + ": " + Chat.WHITE + LH.get(LH.FACE_ANY) + " (no auto)");
-			}
-		}
-		if (mRecipes.mOutputFluidCount > 0) {
-			if (mFluidOutputs != 127) {
-				for (byte tSide : ALL_SIDES_VALID) if (FACE_CONNECTED[tSide][mFluidOutputs]) {tSideNames += (UT.Code.stringValid(tSideNames)?", ":"")+LH.get(LH.FACES[tSide])+(tSide==mFluidAutoOutput?" (auto)":"");}
-				if (UT.Code.stringValid(tSideNames)) aList.add(Chat.RED     + LH.get(LH.FLUID_OUTPUT)   + ": " + Chat.WHITE + tSideNames);
-			} else if (SIDES_VALID[mFluidAutoOutput]) {
-				aList.add(Chat.RED + LH.get(LH.FLUID_OUTPUT) + ": " + Chat.WHITE + LH.get(LH.FACES[mFluidAutoOutput]) + " (auto, otherwise any)");
-			} else {
-				aList.add(Chat.RED + LH.get(LH.FLUID_OUTPUT) + ": " + Chat.WHITE + LH.get(LH.FACE_ANY) + " (no auto)");
-			}
-		}
-	}
+	// tooltips
+	@Override public final void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {IMTEC_ToolTips.Util.addToolTips(this, aList, aStack, aF3_H); super.addToolTips(aList, aStack, aF3_H);}
+	// 这种写法可以既让子类实体可以用额外的 core 来重写 tooltips，又可以让 core 的重写来补充 tooltips
+	@Override public void toolTipsMultiblock(List<String> aList) {mCore.toolTipsMultiblock(aList);}
+	@Override public void toolTipsRecipe(List<String> aList) {mCore.toolTipsRecipe(aList);}
+	@Override public void toolTipsEnergy(List<String> aList) {mCore.toolTipsEnergy(aList);}
+	@Override public void toolTipsUseful(List<String> aList) {mCore.toolTipsUseful(aList);}
+	@Override public void toolTipsImportant(List<String> aList) {mCore.toolTipsImportant(aList);}
+	@Override public void toolTipsHazard(List<String> aList) {mCore.toolTipsHazard(aList);}
+	@Override public void toolTipsOther(List<String> aList, ItemStack aStack, boolean aF3_H) {mCore.toolTipsOther(aList, aStack, aF3_H);}
+	@Override public void addToolTipsSided(List<String> aList, ItemStack aStack, boolean aF3_H) {mCore.addToolTipsSided(aList, aStack, aF3_H);}
+	
 	
 	public long onToolClick3(String aTool, long aRemainingDurability, long aQuality, Entity aPlayer, List<String> aChatReturn, IInventory aPlayerInventory, boolean aSneaking, ItemStack aStack, byte aSide, float aHitX, float aHitY, float aHitZ, ChunkCoordinates aFrom) {
 		return onToolClick2(aTool, aRemainingDurability, aQuality, aPlayer, aChatReturn, aPlayerInventory, aSneaking, aStack, aSide, aHitX, aHitY, aHitZ);
@@ -433,18 +363,12 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 		return 0;
 	}
 	
-	public void onMagnifyingGlass(List<String> aChatReturn) {
-		aChatReturn.add((mMode & 1) != 0 ?"Only produce when Output is completely empty":"Produce whenever there is space");
-		aChatReturn.add((mMode & 2) != 0 ?"Only accept Input on empty Input Slots":"Accept Input on all Input Slots");
-		if (SIDES_VALID[mItemAutoInput  ]) aChatReturn.add(mDisabledItemInput  ?"Auto Item Input Disabled"  :"Auto Item Input Enabled"  );
-		if (SIDES_VALID[mItemAutoOutput ]) aChatReturn.add(mDisabledItemOutput ?"Auto Item Output Disabled" :"Auto Item Output Enabled" );
-		if (SIDES_VALID[mFluidAutoInput ]) aChatReturn.add(mDisabledFluidInput ?"Auto Fluid Input Disabled" :"Auto Fluid Input Enabled" );
-		if (SIDES_VALID[mFluidAutoOutput]) aChatReturn.add(mDisabledFluidOutput?"Auto Fluid Output Disabled":"Auto Fluid Output Enabled");
-	}
+	public void onMagnifyingGlass(List<String> aChatReturn) {mCore.onMagnifyingGlass(aChatReturn);}
 	
 	@Override
 	public void onCoordinateChange() {
 		updateAdjacentToggleableEnergySources();
+		checkStructure(T);
 	}
 	
 	@Override
@@ -477,7 +401,12 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 			
 			doWork(aTimer);
 			
-			if (mTimer % 600 == 5 && mRunning) doDefaultStructuralChecks();
+			if (mTimer % 600 == 5) {
+				if (!checkStructure(F)) checkStructure(T);
+				if (isStructureOkay() && mRunning) doDefaultStructuralChecks();
+			} else {
+				checkStructure(F); // 为了保证结构能够及时失效，这里每 tick 都要检测一次结构是否改变并且在改变后进行检测。也能保证 only 的检测不会有过多的无用检测
+			}
 			
 			for (int i = 0; i < mTanksInput .length; i++) slot(mRecipes.mInputItemsCount + mRecipes.mOutputItemsCount + 1 + i                       , FL.display(mTanksInput [i], T, T));
 			for (int i = 0; i < mTanksOutput.length; i++) slot(mRecipes.mInputItemsCount + mRecipes.mOutputItemsCount + 1 + i + mTanksInput.length  , FL.display(mTanksOutput[i], T, T));
@@ -581,9 +510,9 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 	public IFluidTank getFluidTankFillable2(byte aSide, FluidStack aFluidToFill) {
 		if (!mDisabledFluidOutput && SIDES_VALID[mFluidAutoOutput] && FACING_TO_SIDE[mFacing][mFluidAutoOutput] == aSide) return null;
 		if (!FACE_CONNECTED[FACING_ROTATIONS[mFacing][aSide]][mFluidInputs]) return null;
-		for (int i = 0; i < mTanksInput.length; i++) if (mTanksInput[i].contains(aFluidToFill)) return mTanksInput[i];
+		for (FluidTankGT fluidTankGT : mTanksInput) if (fluidTankGT.contains(aFluidToFill)) return fluidTankGT;
 		if (!mRecipes.containsInput(aFluidToFill, this, slot(mRecipes.mInputItemsCount + mRecipes.mOutputItemsCount))) return null;
-		for (int i = 0; i < mTanksInput.length; i++) if (mTanksInput[i].isEmpty()) return mTanksInput[i];
+		for (FluidTankGT fluidTankGT : mTanksInput) if (fluidTankGT.isEmpty()) return fluidTankGT;
 		return null;
 	}
 	
@@ -613,12 +542,12 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 		return ZL_FT;
 	}
 	// GTCH, 阻止非自动输入输出面的自动连接
-	@Override public boolean interceptAutoConnectFluid(byte aSide) {if (SIDES_VALID[aSide] && (FACING_TO_SIDE[mFacing][mFluidAutoInput] == aSide || FACING_TO_SIDE[mFacing][mFluidAutoOutput] == aSide)) return F; else return T;}
-	@Override public boolean interceptAutoConnectItem(byte aSide)  {if (SIDES_VALID[aSide] && (FACING_TO_SIDE[mFacing][mItemAutoInput]  == aSide || FACING_TO_SIDE[mFacing][mItemAutoOutput]  == aSide)) return F; else return T;}
+	@Override public boolean interceptAutoConnectItem(byte aSide)  {return mCore.interceptAutoConnectItem(aSide);}
+	@Override public boolean interceptAutoConnectFluid(byte aSide) {return mCore.interceptAutoConnectFluid(aSide);}
 	// GTCH, 不能输入和输出的面阻止 MOD 管道连接
-	@Override public boolean interceptModConnectItem(byte aSide)   {return !FACE_CONNECTED[FACING_ROTATIONS[mFacing][aSide]][mItemInputs]  && !FACE_CONNECTED[FACING_ROTATIONS[mFacing][aSide]][mItemOutputs];}
-	@Override public boolean interceptModConnectFluid(byte aSide)  {return !FACE_CONNECTED[FACING_ROTATIONS[mFacing][aSide]][mFluidInputs] && !FACE_CONNECTED[FACING_ROTATIONS[mFacing][aSide]][mFluidOutputs];}
-
+	@Override public boolean interceptModConnectItem(byte aSide)   {return mCore.interceptModConnectItem(aSide);}
+	@Override public boolean interceptModConnectFluid(byte aSide)  {return mCore.interceptModConnectFluid(aSide);}
+	
 	@Override
 	public boolean breakBlock() {
 		setStateOnOff(T);
@@ -638,316 +567,12 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 		}
 	}
 	
-	// Stuff to Override
-	// 你不会希望重写这么复杂的函数的，将其中的一些过程改成独立的函数单独重写
-	public final int canOutput(Recipe aRecipe) {
-		int rMaxTimes = calMaxProcessCountFirst(aRecipe);
-		
-		for (int i = 0, j = mRecipes.mInputItemsCount; i < mRecipes.mOutputItemsCount && i < aRecipe.mOutputs.length; i++, j++) if (ST.valid(aRecipe.mOutputs[i])) {
-			if (slotHas(j)) {
-				if ((mMode & 1) != 0 || aRecipe.mNeedsEmptyOutput) {
-					mOutputBlocked++;
-					return 0;
-				}
-				if (!ST.equal(slot(j), aRecipe.mOutputs[i], F)) {
-					mOutputBlocked++;
-					return 0;
-				}
-				rMaxTimes = Math.min(rMaxTimes, (slot(j).getMaxStackSize() - slot(j).stackSize) / aRecipe.mOutputs[i].stackSize);
-				if (rMaxTimes <= 0) {
-					mOutputBlocked++;
-					return 0;
-				}
-			} else {
-				rMaxTimes = Math.min(rMaxTimes, Math.max(1, 64 / aRecipe.mOutputs[i].stackSize));
-			}
-		}
-		if (aRecipe.mFluidOutputs.length > 0) {
-			int tEmptyOutputTanks = 0, tRequiredEmptyTanks = aRecipe.mFluidOutputs.length;
-			for (FluidTankGT fluidTankGT : mTanksOutput) if (fluidTankGT.isEmpty()) tEmptyOutputTanks++; else if (aRecipe.mNeedsEmptyOutput || (mMode & 1) != 0) return 0;
-			// This optimisation would not work! The Tanks would not have an Output Amount Limiter if this was in the Code!
-			//if (tRequiredEmptyTanks <= tEmptyOutputTanks) {
-			for (int j = 0; j < aRecipe.mFluidOutputs.length; j++) {
-				if (aRecipe.mFluidOutputs[j] == null) {
-					tRequiredEmptyTanks--;
-				} else for (FluidTankGT fluidTankGT : mTanksOutput) if (fluidTankGT.contains(aRecipe.mFluidOutputs[j])) {
-					if (fluidTankGT.has(Math.max(16000, 1+aRecipe.mFluidOutputs[j].amount*mParallel)) && !FluidsGT.VOID_OVERFLOW.contains(aRecipe.mFluidOutputs[j].getFluid().getName())) return 0;
-					tRequiredEmptyTanks--;
-					break;
-				}
-			}
-			if (tRequiredEmptyTanks > tEmptyOutputTanks) return 0;
-			//}
-		}
-		return rMaxTimes;
-	}
-
-	// 根据配方类型计算初步的最大并行数，是并行数的下界，用于重写
-	protected int calMaxProcessCountFirst(Recipe aRecipe) {
-		// Don't do more than 30 to 120 Seconds worth of Input at a time, when doing Chain Processing.
-		if (mParallelDuration) {
-			// Ugh, I do not feel like Maths right now, but the previous incarnation of this seemed a tiny bit wrong, so I will make sure it works properly.
-//			while (rMaxTimes > 1 && aRecipe.getAbsoluteTotalPower() * rMaxTimes > mInputMax * 600) rMaxTimes--;
-			// 重写原本的算法，并行不影响最低功率，保留原本结果
-			return (int) UT.Code.bind(1, mParallel, mInputMax * 600 / aRecipe.getAbsoluteTotalPower());
-		}
-		return mParallel;
-	}
-	
-	/** return codes for checkRecipe() */
-	public static final int
-	DID_NOT_FIND_RECIPE = 0,
-	FOUND_RECIPE_BUT_DID_NOT_MEET_REQUIREMENTS = 1,
-	FOUND_AND_SUCCESSFULLY_USED_RECIPE = 2,
-	FOUND_AND_COULD_HAVE_USED_RECIPE = 3;
-	
-	/**
-	 * Override this to check the Recipes yourself, super calls to this could be useful if you just want to add a special case
-	 * I thought about Enum too, but Enum doesn't add support for people adding other return Systems.
-	 * Funny how Eclipse marks the word Enum as not correctly spelled.
-	 * @return see constants above
-	 */
-	// 你不会希望重写这么复杂的函数的，将其中的一些过程改成独立的函数单独重写
-	public final int checkRecipe(boolean aApplyRecipe, boolean aUseAutoInputs) {
-		mCouldUseRecipe = F;
-		if (mRecipes == null) return DID_NOT_FIND_RECIPE;
-		
-		byte tAutoInput = FACING_TO_SIDE[mFacing][mItemAutoInput];
-		
-		if (aUseAutoInputs && !mDisabledItemInput && SIDES_VALID[tAutoInput]) {
-			ST.moveAll(getItemInputTarget(tAutoInput), delegator(tAutoInput));
-		}
-		
-		int tInputItemsCount = 0, tInputFluidsCount = 0;
-		ItemStack[] tInputs = new ItemStack[mRecipes.mInputItemsCount];
-		for (int i = 0; i < mRecipes.mInputItemsCount; i++) {
-			tInputs[i] = slot(i);
-			if (ST.valid(tInputs[i])) tInputItemsCount++;
-		}
-		
-		tAutoInput = FACING_TO_SIDE[mFacing][mFluidAutoInput];
-		if (aUseAutoInputs && !mDisabledFluidInput && SIDES_VALID[tAutoInput]) {
-			DelegatorTileEntity<IFluidHandler> tTileEntity = getFluidInputTarget(tAutoInput);
-			if (tTileEntity != null && tTileEntity.mTileEntity != null) {
-				FluidTankInfo[] tInfos = tTileEntity.mTileEntity.getTankInfo(FORGE_DIR[tTileEntity.mSideOfTileEntity]);
-				if (tInfos != null) for (FluidTankInfo tInfo : tInfos) if (tInfo != null && tInfo.fluid != null && tInfo.fluid.amount > 0 && getFluidTankFillable(SIDE_ANY, tInfo.fluid) != null) {
-					if (FL.move_(tTileEntity, delegator(tAutoInput), tInfo.fluid) > 0) updateInventory();
-				}
-			}
-		}
-		for (FluidTankGT tTank : mTanksInput) if (tTank.has()) tInputFluidsCount++;
-		
-		if (tInputItemsCount                     < mRecipes.mMinimalInputItems ) return DID_NOT_FIND_RECIPE;
-		if (tInputFluidsCount                    < mRecipes.mMinimalInputFluids) return DID_NOT_FIND_RECIPE;
-		if (tInputItemsCount + tInputFluidsCount < mRecipes.mMinimalInputs     ) return DID_NOT_FIND_RECIPE;
-		
-		Recipe tRecipe = mRecipes.findRecipe(this, mLastRecipe, F, mEnergyTypeAccepted == TD.Energy.RF ? mInputMax / RF_PER_EU : mInputMax, slot(mRecipes.mInputItemsCount+mRecipes.mOutputItemsCount), mTanksInput, tInputs);
-		
-		int tMaxProcessCount = 0;
-		
-		if (tRecipe == null) {
-			if (!mCanUseOutputTanks) return DID_NOT_FIND_RECIPE;
-			tRecipe = mRecipes.findRecipe(this, mLastRecipe, F, mEnergyTypeAccepted == TD.Energy.RF ? mInputMax / RF_PER_EU : mInputMax, slot(mRecipes.mInputItemsCount+mRecipes.mOutputItemsCount), mTanksOutput, tInputs);
-			if (tRecipe == null) return DID_NOT_FIND_RECIPE;
-			
-			if (tRecipe.mCanBeBuffered) mLastRecipe = tRecipe;
-			tMaxProcessCount = canOutput(tRecipe);
-			if (tMaxProcessCount <= 0) return FOUND_RECIPE_BUT_DID_NOT_MEET_REQUIREMENTS;
-			if (aApplyRecipe) aApplyRecipe = (!mRequiresIgnition || mIgnited > 0 || mActive);
-			if (!tRecipe.isRecipeInputEqual(aApplyRecipe, F, mTanksOutput, tInputs)) return FOUND_RECIPE_BUT_DID_NOT_MEET_REQUIREMENTS;
-			mCouldUseRecipe = T;
-			if (!aApplyRecipe) return FOUND_AND_COULD_HAVE_USED_RECIPE;
-			
-			if (tMaxProcessCount > 1) {
-				if (!mParallelDuration && mEnergyTypeAccepted != TD.Energy.TU) tMaxProcessCount = (int)UT.Code.bind(1, tMaxProcessCount, getBoundInput() / Math.max(1, (mEnergyTypeAccepted == TD.Energy.RF ? tRecipe.mEUt * RF_PER_EU : tRecipe.mEUt)));
-				tMaxProcessCount = 1+tRecipe.isRecipeInputEqual(tMaxProcessCount-1, mTanksOutput, tInputs);
-			}
-		} else {
-			if (tRecipe.mCanBeBuffered) mLastRecipe = tRecipe;
-			tMaxProcessCount = canOutput(tRecipe);
-			if (tMaxProcessCount <= 0) return FOUND_RECIPE_BUT_DID_NOT_MEET_REQUIREMENTS;
-			if (aApplyRecipe) aApplyRecipe = (!mRequiresIgnition || mIgnited > 0 || mActive);
-			if (!tRecipe.isRecipeInputEqual(aApplyRecipe, F, mTanksInput, tInputs)) return FOUND_RECIPE_BUT_DID_NOT_MEET_REQUIREMENTS;
-			mCouldUseRecipe = T;
-			if (!aApplyRecipe) return FOUND_AND_COULD_HAVE_USED_RECIPE;
-			
-			if (tMaxProcessCount > 1) {
-				if (!mParallelDuration && mEnergyTypeAccepted != TD.Energy.TU) tMaxProcessCount = (int)UT.Code.bind(1, tMaxProcessCount, getBoundInput() / Math.max(1, (mEnergyTypeAccepted == TD.Energy.RF ? tRecipe.mEUt * RF_PER_EU : tRecipe.mEUt)));
-				tMaxProcessCount = 1+tRecipe.isRecipeInputEqual(tMaxProcessCount-1, mTanksInput, tInputs);
-			}
-		}
-		
-		for (byte tSide : ALL_SIDES_VALID_FIRST[FACING_TO_SIDE[mFacing][mItemAutoInput]]) if (FACE_CONNECTED[FACING_ROTATIONS[mFacing][tSide]][mItemInputs]) {
-			DelegatorTileEntity<IInventory> tDelegator = getItemInputTarget(tSide);
-			if (tDelegator != null && tDelegator.mTileEntity instanceof ITileEntityAdjacentInventoryUpdatable) {
-				((ITileEntityAdjacentInventoryUpdatable)tDelegator.mTileEntity).adjacentInventoryUpdated(tDelegator.mSideOfTileEntity, this);
-			}
-		}
-		
-		if (mSpecialIsStartEnergy && (!mActive || (mCurrentRecipe != null && mCurrentRecipe != tRecipe))) mChargeRequirement = tRecipe.mSpecialValue;
-		
-		mCurrentRecipe = tRecipe;
-		mOutputItems   = tRecipe.getOutputs(RNGSUS, tMaxProcessCount);
-		mOutputFluids  = tRecipe.getFluidOutputs(RNGSUS, tMaxProcessCount);
-		
-		if (tRecipe.mEUt < 0) {
-			mOutputEnergy = -tRecipe.mEUt;
-			mMaxProgress = tRecipe.mDuration;
-			mMinEnergy = 0;
-		} else {
-			calMaxProgress(tMaxProcessCount, tRecipe);
-		}
-		
-		removeAllDroppableNullStacks();
-		return FOUND_AND_SUCCESSFULLY_USED_RECIPE;
-	}
-
-	// 返回限制并行达到的最低功率 ，用于重写来实现自适应并行数
-	protected long getBoundInput() {
-		return mInput;
-	}
-
-	// 根据并行数，配方类型等计算处理需要的能量和最低能量，用于重写
-	protected void calMaxProgress(int aProcessCount, Recipe aRecipe) {
-		if (mParallelDuration) {
-			mMinEnergy = Math.max(1, (mEnergyTypeAccepted == TD.Energy.RF ? aRecipe.mEUt * RF_PER_EU : mEnergyTypeAccepted == TD.Energy.TU ? aRecipe.mEUt : aRecipe.mEUt));
-			mMaxProgress = Math.max(1, UT.Code.units(mMinEnergy * Math.max(1, aRecipe.mDuration) * aProcessCount, mEfficiency, 10000, T));
-		} else {
-			mMinEnergy = Math.max(1, (mEnergyTypeAccepted == TD.Energy.RF ? aRecipe.mEUt * RF_PER_EU * aProcessCount : mEnergyTypeAccepted == TD.Energy.TU ? aRecipe.mEUt : aRecipe.mEUt * aProcessCount));
-			mMaxProgress = Math.max(1, UT.Code.units(mMinEnergy * Math.max(1, aRecipe.mDuration), mEfficiency, 10000, T));
-		}
-		if (mMinEnergy > 0 && !mCheapOverclocking) while (mMinEnergy < mInputMin && mMinEnergy * 4 <= mInputMax) {mMinEnergy *= 4; mMaxProgress *= 2;}
-	}
-	
-	public void doWork(long aTimer) {
-		if ((mEnergy >= mInputMin || mEnergyTypeAccepted == TD.Energy.TU) && mEnergy >= mMinEnergy && checkStructure(F)) {
-			mActive = doActive(aTimer, Math.min(mInputMax, mEnergy));
-			mRunning = T;
-		} else {
-			if (aTimer > 40) {
-				mActive = doInactive(aTimer);
-				mRunning = F;
-			}
-			mSuccessful = F;
-		}
-		mEnergy -= mInputMax; if (mEnergy < 0) mEnergy = 0;
-		if (mIgnited > 0) mIgnited--;
-	}
-
-	// 你不会希望重写这么复杂的函数的，将其中的一些过程改成独立的函数单独重写
-	public final boolean doActive(long aTimer, long aEnergy) {
-		boolean rActive = F;
-		
-		if (mMaxProgress <= 0) {
-			// Successfully produced something or just got ignited || Some Inventory Stuff changes || The Machine has just been turned ON || Check once every Minute
-			if ((mIgnited > 0 || mInventoryChanged || !mRunning || aTimer%1200 == 5) && checkRecipe(!mStopped, T) == FOUND_AND_SUCCESSFULLY_USED_RECIPE) {
-				onProcessStarted();
-			} else {
-				mProgress = 0;
-			}
-		}
-		
-		mSuccessful = F;
-		
-		if (mMaxProgress > 0 && !(mSpecialIsStartEnergy && mChargeRequirement > 0)) {
-			rActive = T;
-			if (mProgress <= mMaxProgress) {
-				if (mOutputEnergy > 0) doOutputEnergy();
-				mProgress += aEnergy;
-			}
-			if (mProgress >= mMaxProgress && (mStateOld&&!mStateNew || !TD.Energy.ALL_ALTERNATING.contains(mEnergyTypeAccepted))) {
-				for (int i = 0; i < mOutputItems .length; i++) {
-					if (mOutputItems [i] != null && addStackToSlot(mRecipes.mInputItemsCount+(i % mRecipes.mOutputItemsCount), mOutputItems[i])) {
-						mSuccessful = T;
-						mIgnited = 40;
-						mOutputItems[i] = null;
-						continue;
-					}
-				}
-				for (int i = 0; i < mOutputFluids.length; i++) if (mOutputFluids[i] != null) for (int j = 0; j < mTanksOutput.length; j++) {
-					if (mTanksOutput[j].contains(mOutputFluids[i])) {
-						updateInventory();
-						mTanksOutput[j].add(mOutputFluids[i].amount);
-						mSuccessful = T;
-						mIgnited = 40;
-						mOutputFluids[i] = null;
-						break;
-					}
-				}
-				for (int i = 0; i < mOutputFluids.length; i++) if (mOutputFluids[i] != null) for (int j = 0; j < mTanksOutput.length; j++) {
-					if (mTanksOutput[j].isEmpty()) {
-						mTanksOutput[j].setFluid(mOutputFluids[i]);
-						mSuccessful = T;
-						mIgnited = 40;
-						mOutputFluids[i] = null;
-						break;
-					}
-				}
-				
-				if (UT.Code.containsSomething(mOutputItems) || UT.Code.containsSomething(mOutputFluids)) {
-					mMinEnergy = 0;
-					mOutputEnergy = 0;
-					mChargeRequirement = 0;
-					mProgress = mMaxProgress;
-				} else {
-					mProgress -= mMaxProgress; // this way the leftover energy can be used on the next processed thing, unless it gets stuck on an output.
-					mMinEnergy = 0;
-					mMaxProgress = 0;
-					mOutputEnergy = 0;
-					mChargeRequirement = 0;
-					mOutputItems = ZL_IS;
-					mOutputFluids = ZL_FS;
-					mSuccessful = T;
-					mIgnited = 40;
-					
-					for (byte tSide : ALL_SIDES_VALID_FIRST[FACING_TO_SIDE[mFacing][mItemAutoOutput]]) if (FACE_CONNECTED[FACING_ROTATIONS[mFacing][tSide]][mItemOutputs]) {
-						DelegatorTileEntity<TileEntity> tDelegator = getItemOutputTarget(tSide);
-						if (tDelegator != null && tDelegator.mTileEntity instanceof ITileEntityAdjacentInventoryUpdatable) {
-							((ITileEntityAdjacentInventoryUpdatable)tDelegator.mTileEntity).adjacentInventoryUpdated(tDelegator.mSideOfTileEntity, this);
-						}
-					}
-					
-					onProcessFinished();
-				}
-			}
-		}
-		
-		mStateOld = mStateNew;
-		
-		if (!mDisabledItemOutput && SIDES_VALID[mItemAutoOutput]) {
-			boolean
-			tOutputEmpty = T;
-			for (int i = mRecipes.mInputItemsCount, j = i + mRecipes.mOutputItemsCount; i < j; i++) if (slotHas(i)) {tOutputEmpty = F; break;}
-			
-			// Output not Empty && (Successfully produced something or just got ignited || Some Inventory Stuff changes || The Machine has just been turned ON || Output has been blocked since 256 active ticks || Check once every 10 Seconds)
-			if (!tOutputEmpty && (mIgnited > 0 || mInventoryChanged || !mRunning || mOutputBlocked == 1 || aTimer%200 == 5)) {
-				boolean tInventoryChanged = mInventoryChanged;
-				mInventoryChanged = F;
-				doOutputItems();
-				if (mInventoryChanged) mOutputBlocked = 0; else mInventoryChanged |= tInventoryChanged;
-			}
-			
-			tOutputEmpty = T;
-			for (int i = mRecipes.mInputItemsCount, j = i + mRecipes.mOutputItemsCount; i < j; i++) if (slotHas(i)) {tOutputEmpty = F; mOutputBlocked++; break;}
-			
-			if (tOutputEmpty) mOutputBlocked = 0;
-		}
-		
-		return rActive;
-	}
-	
-	public boolean doInactive(long aTimer) {
-		if (mActive) {
-			doSoundInterrupt();
-			if (!mDisabledItemOutput) doOutputItems();
-		}
-		if (CONSTANT_ENERGY && !mNoConstantEnergy) mProgress = 0;
-		if (mRunning || mIgnited > 0 || mInventoryChanged || aTimer % 1200 == 5) {
-			if (!checkStructure(F)) checkStructure(T);
-			checkRecipe(F, T);
-		}
-		return F;
-	}
+	// Override the code in MTEC_BasicMachine instead
+//	public final int canOutput(Recipe aRecipe) {return mCore.canOutput(aRecipe);}
+	public final int checkRecipe(boolean aApplyRecipe, boolean aUseAutoInputs) {return mCore.checkRecipe(aApplyRecipe, aUseAutoInputs);}
+	public final void doWork(long aTimer) {IMTEC_BasicMachine.Util.doWork(mCore, aTimer);}
+//	public final boolean doActive(long aTimer, long aEnergy) {return mCore.doActive(aTimer, aEnergy);}
+//	public final boolean doInactive(long aTimer) {return mCore.doInactive(aTimer);}
 	
 	@Override
 	public int funnelFill(byte aSide, FluidStack aFluid, boolean aDoFill) {
@@ -1009,9 +634,8 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 		return UT.Sounds.send(mRequiresIgnition?SFX.MC_FIZZ:mNoConstantEnergy?SFX.IC_MACHINE_INTERRUPT:SFX.MC_CLICK, this);
 	}
 	
-	public boolean checkStructure(boolean aForceReset) {
-		return T;
-	}
+	public boolean checkStructure(boolean aForceReset) {return T;}
+	public boolean isStructureOkay() {return T;}
 	
 	public DelegatorTileEntity<IInventory> getItemInputTarget(byte aSide) {
 		return getAdjacentInventory(aSide);
@@ -1070,17 +694,15 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 	@Override public boolean setStateOnOff(boolean aOnOff) {if (mStopped == aOnOff) {mStopped = !aOnOff; updateAdjacentToggleableEnergySources();} return !mStopped;}
 	@Override public boolean getStateOnOff() {return !mStopped;}
 	
+	@Override public String getTileEntityNameCompat() {return "gtch.multitileentity.machine.basic";}
 	@Override public String getTileEntityName() {return "gt.multitileentity.machine.basic";}
 	
 	@Override
 	public void adjacentInventoryUpdated(byte aSide, IInventory aTileEntity) {
 		if (FACE_CONNECTED[FACING_ROTATIONS[mFacing][aSide]][mItemInputs|mItemOutputs]) updateInventory();
 	}
-
+	
 	// 虽然机器都只接受能合成的流体，但是还是以防万一进行白名单写法
 	@Override
-	public boolean canFillExtra(FluidStack aFluid) {
-		if (mCanFillSteam) return FL.anysteam(aFluid);
-		return F;
-	}
+	public boolean canFillExtra(FluidStack aFluid) {return mCore.canFillExtra(aFluid);}
 }

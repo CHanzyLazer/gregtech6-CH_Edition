@@ -300,12 +300,12 @@ public class Loader_Recipes_Ores implements Runnable {
 		RM.Smelter      .addRecipe1(T, 64,  160, 5000, OM.dust(MT.Monazite,  U9), NF, MT.He.gas(U18, F), OM.dust(MT.RareEarth,  U9));
 		
 		
-		RM.Lightning    .addRecipe2(T,512, 2304, ST.tag(1), crushedPurified       .mat(MT.Dolamide , 1), crushedCentrifuged    .mat(MT.Dolamide , 1));
-		RM.Lightning    .addRecipe2(T,512,  256, ST.tag(1), crushedPurifiedTiny   .mat(MT.Dolamide , 1), crushedCentrifugedTiny.mat(MT.Dolamide , 1));
-		RM.Nanofab      .addRecipe2(T, 64, 2048, ST.tag(0), crushedCentrifuged    .mat(MT.Dolamide , 1), gem.mat(MT.Dilithium, 2));
-		RM.Nanofab      .addRecipe2(T, 64, 2048, ST.tag(0), crushedCentrifugedTiny.mat(MT.Dolamide , 9), gem.mat(MT.Dilithium, 2));
-		RM.Nanofab      .addRecipe2(T,512, 2048, ST.tag(0), dust                  .mat(MT.Dolamide , 2), gem.mat(MT.Dilithium, 1)); // Maybe don't just turn everything you see into Dust ;)
-		RM.Nanofab      .addRecipe2(T,512, 4096, ST.tag(0), dust                  .mat(MT.Dilithium, 2), gem.mat(MT.Dilithium, 1)); // Maybe don't just turn everything you see into Dust ;)
+		RM.Lightning    .addRecipe2(T,512, 2304, new long[] {8000}, ST.tag(1), crushedPurified       .mat(MT.Dolamide , 1), crushedCentrifugedTiny.mat(MT.Dolamide ,18));
+		RM.Lightning    .addRecipe2(T,512,  256, new long[] {8000}, ST.tag(1), crushedPurifiedTiny   .mat(MT.Dolamide , 1), crushedCentrifugedTiny.mat(MT.Dolamide , 2));
+		RM.Nanofab      .addRecipe2(T, 64, 2048                   , ST.tag(0), crushedCentrifuged    .mat(MT.Dolamide , 1), gem.mat(MT.Dilithium, 2));
+		RM.Nanofab      .addRecipe2(T, 64, 2048                   , ST.tag(0), crushedCentrifugedTiny.mat(MT.Dolamide , 9), gem.mat(MT.Dilithium, 2));
+		RM.Nanofab      .addRecipe2(T,512, 2048                   , ST.tag(0), dust                  .mat(MT.Dolamide , 2), gem.mat(MT.Dilithium, 1)); // Maybe don't just turn everything you see into Dust ;)
+		RM.Nanofab      .addRecipe2(T,512, 4096                   , ST.tag(0), dust                  .mat(MT.Dilithium, 2), gem.mat(MT.Dilithium, 1)); // Maybe don't just turn everything you see into Dust ;)
 		
 		
 		RM.Mixer        .addRecipe2(T, 16,  256, crushedPurified    .mat(MT.Yellorite, 1), dust.mat(MT.Al, 1), crushedCentrifuged.mat(MT.Yellorium, 1));
@@ -333,11 +333,8 @@ public class Loader_Recipes_Ores implements Runnable {
 		RM.Centrifuge   .addRecipe1(T, 512, 256, new long[] {10000,  300      }, crushedCentrifugedTiny.mat(MT.Co       , 1), dustTiny.mat(MT.Co       , 1), dustTiny.mat(MT.Co_60    , 8));
 		RM.Centrifuge   .addRecipe1(T, 512,2304, new long[] {10000, 2700      }, crushedCentrifuged    .mat(MT.Co       , 1), dust    .mat(MT.Co       , 1), dustTiny.mat(MT.Co_60    , 8));
 		if (ConfigsGT.GREGTECH.get("general", "EasyU235Extraction", F)) {
-			RM.Centrifuge   .addRecipe1(T,1024, 256, new long[] {10000,  300      }, crushedCentrifugedTiny.mat(MT.U_238    , 1), dustTiny.mat(MT.U_238    , 1), dustTiny.mat(MT.U_235    , 8));
-			RM.Centrifuge   .addRecipe1(T,1024,2304, new long[] {10000, 2700      }, crushedCentrifuged    .mat(MT.U_238    , 1), dust    .mat(MT.U_238    , 1), dustTiny.mat(MT.U_235    , 8));
-		} else {
-			RM.Centrifuge   .addRecipe1(T,1024, 256, new long[] {10000,  300      }, crushedCentrifugedTiny.mat(MT.U_238    , 1), dustTiny.mat(MT.U_238    , 1), dustTiny.mat(MT.U_238    , 8));
-			RM.Centrifuge   .addRecipe1(T,1024,2304, new long[] {10000, 2700      }, crushedCentrifuged    .mat(MT.U_238    , 1), dust    .mat(MT.U_238    , 1), dustTiny.mat(MT.U_238    , 8));
+		RM.Centrifuge   .addRecipe1(T,1024, 256, new long[] {10000,  200,  100}, crushedCentrifugedTiny.mat(MT.U_238    , 1), dustTiny.mat(MT.U_238    , 1), dustTiny.mat(MT.U_235    , 8), dustTiny.mat(MT.U_233, 8));
+		RM.Centrifuge   .addRecipe1(T,1024,2304, new long[] {10000, 1800,  900}, crushedCentrifuged    .mat(MT.U_238    , 1), dust    .mat(MT.U_238    , 1), dustTiny.mat(MT.U_235    , 8), dustTiny.mat(MT.U_233, 8));
 		}
 		RM.Centrifuge   .addRecipe1(T,1024, 256, new long[] {10000,  150,  150}, crushedCentrifugedTiny.mat(MT.Pu       , 1), dustTiny.mat(MT.Pu       , 1), dustTiny.mat(MT.Pu_241   , 8), dustTiny.mat(MT.Pu_243, 8));
 		RM.Centrifuge   .addRecipe1(T,1024,2304, new long[] {10000, 1350, 1350}, crushedCentrifuged    .mat(MT.Pu       , 1), dust    .mat(MT.Pu       , 1), dustTiny.mat(MT.Pu_241   , 8), dustTiny.mat(MT.Pu_243, 8));
@@ -345,16 +342,6 @@ public class Loader_Recipes_Ores implements Runnable {
 		RM.Centrifuge   .addRecipe1(T,1024,2304, new long[] {10000, 2700      }, crushedCentrifuged    .mat(MT.Am       , 1), dust    .mat(MT.Am       , 1), dustTiny.mat(MT.Am_241   , 8));
 		RM.Centrifuge   .addRecipe1(T,1536, 256, new long[] {10000,  300      }, crushedCentrifugedTiny.mat(MT.Fl       , 1), dustTiny.mat(MT.Fl       , 1), dustTiny.mat(MT.Fl_298   , 8));
 		RM.Centrifuge   .addRecipe1(T,1536,2304, new long[] {10000, 2700      }, crushedCentrifuged    .mat(MT.Fl       , 1), dust    .mat(MT.Fl       , 1), dustTiny.mat(MT.Fl_298   , 8));
-		RM.Centrifuge   .addRecipe1(T,2048, 256, new long[] {10000,  150,  150}, crushedCentrifugedTiny.mat(MT.Nq       , 1), dustTiny.mat(MT.Nq       , 1), dustTiny.mat(MT.Nq_522   , 8), dustTiny.mat(MT.Nq_528, 8));
-		RM.Centrifuge   .addRecipe1(T,2048,2304, new long[] {10000, 1350, 1350}, crushedCentrifuged    .mat(MT.Nq       , 1), dust    .mat(MT.Nq       , 1), dustTiny.mat(MT.Nq_522   , 8), dustTiny.mat(MT.Nq_528, 8));
-		RM.Centrifuge   .addRecipe1(T,1024, 256, new long[] {10000,  600      }, crushedCentrifugedTiny.mat(MT.Cyanite  , 1), dustTiny.mat(MT.Cyanite  , 1), dustTiny.mat(MT.Cyanite  , 8));
-		RM.Centrifuge   .addRecipe1(T,1024,2304, new long[] {10000, 5400      }, crushedCentrifuged    .mat(MT.Cyanite  , 1), dust    .mat(MT.Cyanite  , 1), dustTiny.mat(MT.Cyanite  , 8));
-		RM.Centrifuge   .addRecipe1(T,1024, 256, new long[] {10000,  600      }, crushedCentrifugedTiny.mat(MT.Yellorium, 1), dustTiny.mat(MT.Yellorium, 1), dustTiny.mat(MT.Yellorium, 8));
-		RM.Centrifuge   .addRecipe1(T,1024,2304, new long[] {10000, 5400      }, crushedCentrifuged    .mat(MT.Yellorium, 1), dust    .mat(MT.Yellorium, 1), dustTiny.mat(MT.Yellorium, 8));
-		RM.Centrifuge   .addRecipe1(T,1024, 256, new long[] {10000,  600      }, crushedCentrifugedTiny.mat(MT.Blutonium, 1), dustTiny.mat(MT.Blutonium, 1), dustTiny.mat(MT.Blutonium, 8));
-		RM.Centrifuge   .addRecipe1(T,1024,2304, new long[] {10000, 5400      }, crushedCentrifuged    .mat(MT.Blutonium, 1), dust    .mat(MT.Blutonium, 1), dustTiny.mat(MT.Blutonium, 8));
-		RM.Centrifuge   .addRecipe1(T,1024, 256, new long[] {10000,  600      }, crushedCentrifugedTiny.mat(MT.Ludicrite, 1), dustTiny.mat(MT.Ludicrite, 1), dustTiny.mat(MT.Ludicrite, 8));
-		RM.Centrifuge   .addRecipe1(T,1024,2304, new long[] {10000, 5400      }, crushedCentrifuged    .mat(MT.Ludicrite, 1), dust    .mat(MT.Ludicrite, 1), dustTiny.mat(MT.Ludicrite, 8));
 		
 		
 		final long[] tSluice = {10000, 300, 300, 300, 300, 300, 300, 300, 300}, tMagnet = {10000, 600, 600, 600, 600, 600}, tCentrifuge = {10000, 1000, 1000, 1000};

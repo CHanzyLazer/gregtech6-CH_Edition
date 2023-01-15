@@ -160,9 +160,9 @@ public interface IMultiTileEntity extends ITileEntitySpecificPlacementBehavior {
 	public static interface IMTE_RegisterIcons                      extends IMultiTileEntity {@SideOnly(Side.CLIENT) public void registerIcons(IIconRegister aIconRegister);}
 	public static interface IMTE_AddHitEffects                      extends IMultiTileEntity {@SideOnly(Side.CLIENT) public boolean addHitEffects(World aWorld, MovingObjectPosition aTarget, EffectRenderer aRenderer);}
 	public static interface IMTE_AddDestroyEffects                  extends IMultiTileEntity {@SideOnly(Side.CLIENT) public boolean addDestroyEffects(int aMetaData, EffectRenderer aRenderer);}
-    // GTCH, 使实体方块可以重写方块的附加颜色（主要是粒子特效的颜色）
+	// GTCH, 使实体方块可以重写方块的附加颜色（主要是粒子特效的颜色）
 	public static interface IMTE_ColorMultiplier                    extends IMultiTileEntity {@SideOnly(Side.CLIENT) public int colorMultiplier();}
-
+	
 	public static interface IMTE_SyncDataByte extends IMultiTileEntity {
 		/**
 		 * If you have something that causes a Crash here, the Connection gets terminated.
@@ -316,7 +316,7 @@ public interface IMultiTileEntity extends ITileEntitySpecificPlacementBehavior {
 	public static interface IMTE_OnItemRightClick extends IMultiTileEntity {
 		public ItemStack onItemRightClick(MultiTileEntityItemInternal aItem, ItemStack aStack, World aWorld, EntityPlayer aPlayer);
 	}
-
+	
 	// GTCH, 使用这个方法使得实体也能通过潜行右键交互方块
 	public static interface IMTE_DoesSneakBypassUse extends IMultiTileEntity {
 		public boolean doesSneakBypassUse(World aWorld, int aX, int aY, int aZ, EntityPlayer aPlayer);

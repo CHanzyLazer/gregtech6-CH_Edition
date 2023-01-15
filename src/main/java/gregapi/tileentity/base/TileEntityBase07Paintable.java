@@ -24,7 +24,6 @@ import static gregapi.data.CS.*;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.google.common.collect.Lists;
 import com.google.common.primitives.Bytes;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -42,7 +41,7 @@ import gregapi.network.IPacket;
 import gregapi.oredict.OreDictMaterial;
 import gregapi.tileentity.ITileEntityDecolorable;
 import gregapi.util.UT;
-import gregtechCH.tileentity.ITEPaintable_CH;
+import gregtechCH.tileentity.IMTEPaintable;
 import gregtechCH.util.UT_CH;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -53,17 +52,18 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author Gregorius Techneticies
  */
-public abstract class TileEntityBase07Paintable extends TileEntityBase06Covers implements ITEPaintable_CH, IItemColorableRGB, ITileEntityDecolorable, IMTE_GetSubItems, IMTE_GetExplosionResistance, IMTE_GetBlockHardness, IMTE_GetLightOpacity, IMTE_SyncDataByte, IMTE_SyncDataByteArray {
+public abstract class TileEntityBase07Paintable extends TileEntityBase06Covers implements IMTEPaintable, IItemColorableRGB, ITileEntityDecolorable, IMTE_GetSubItems, IMTE_GetExplosionResistance, IMTE_GetBlockHardness, IMTE_GetLightOpacity, IMTE_SyncDataByte, IMTE_SyncDataByteArray {
 	protected boolean mIsPainted = F;
 	protected int mFlammability = 0;
 	protected float mHardness = 1.0F, mResistance = 3.0F;
 	protected OreDictMaterial mMaterial = MT.NULL;
-
+	
 	// GTCH, 用于在染色后保留一定原本颜色
 	protected int mRGBPaint = UNCOLORED;
 	// 仅客户端有效
 	protected int mRGBa = UNCOLORED;
-
+	@Override public int getRGBa() {return mRGBa;}
+	
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {
 		super.readFromNBT2(aNBT);
@@ -73,7 +73,7 @@ public abstract class TileEntityBase07Paintable extends TileEntityBase06Covers i
 		if (aNBT.hasKey(NBT_RESISTANCE)) mResistance = aNBT.getFloat(NBT_RESISTANCE);
 		if (aNBT.hasKey(NBT_FLAMMABILITY)) mFlammability = aNBT.getInteger(NBT_FLAMMABILITY);
 		if (aNBT.hasKey(NBT_MATERIAL)) mMaterial = OreDictMaterial.get(aNBT.getString(NBT_MATERIAL));
-
+		
 		// 需要分情况讨论，考虑有不允许染色的，带有默认颜色的，并且不是材料颜色的方块
 		if (isPainted()) {
 			if (aNBT.hasKey(NBT_COLOR)) mRGBPaint = (int) UT_CH.NBT.getItemNumber(aNBT.getInteger(NBT_COLOR)); // mRGBaPaint 替代原本的 NBT_COLOR
@@ -84,7 +84,7 @@ public abstract class TileEntityBase07Paintable extends TileEntityBase06Covers i
 			else mRGBa = getOriginalRGB(); // 可以防止一些问题
 		}
 	}
-
+	
 	// 禁用重写来避免合并时出现意料外的重写
 	@Override
 	public final IPacket getClientDataPacket(boolean aSendAll) {
@@ -133,13 +133,13 @@ public abstract class TileEntityBase07Paintable extends TileEntityBase06Covers i
 			onPaintChangeClient(oRGBPaint); // 仅客户端，用于在染色改变时客户端更改对应的显示颜色
 		}
 	}
-
+	
 	/* 仅客户端，用于在染色改变时客户端更改对应的显示颜色 */
 	@SideOnly(Side.CLIENT)
 	public void onPaintChangeClient(int aPreviousRGBaPaint) {
 		mRGBa = isPainted() ? UT_CH.Code.getPaintRGB(getBottomRGB(), mRGBPaint) : getOriginalRGB();
 	}
-
+	
 	// GTCH, 返回染色中用于叠底的颜色，用于给有外套层的机器重写，也用于客户端判断是否有染色
 	@Override public int getBottomRGB() {return UT.Code.getRGBInt(mMaterial.fRGBaSolid);}
 	// GTCH, 返回机器原本的颜色，一般都是材料颜色

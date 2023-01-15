@@ -29,14 +29,14 @@ import gregapi.network.IPacket;
 import gregapi.tileentity.ITileEntityScheduledUpdate;
 import gregapi.tileentity.ITileEntitySynchronising;
 import gregapi.tileentity.base.TileEntityBase01Root;
-import gregtechCH.tileentity.ITEScheduledUpdate_CH;
+import gregtechCH.tileentity.IMTEScheduledUpdate_CH;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 /**
  * @author Gregorius Techneticies
  */
-public abstract class TileEntityBase02Sync extends TileEntityBase01Root implements ITEScheduledUpdate_CH, ITileEntitySynchronising, ITileEntityScheduledUpdate {
+public abstract class TileEntityBase02Sync extends TileEntityBase01Root implements IMTEScheduledUpdate_CH, ITileEntitySynchronising, ITileEntityScheduledUpdate {
 	/** Gets set if/when needed. */
 	public UUID mOwner = null;
 	

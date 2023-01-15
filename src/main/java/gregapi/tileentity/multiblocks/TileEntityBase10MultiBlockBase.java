@@ -52,10 +52,10 @@ import net.minecraftforge.fluids.IFluidTank;
  */
 public abstract class TileEntityBase10MultiBlockBase extends TileEntityBase09FacingSingle implements ITileEntityMultiBlockController {
 	public boolean mStructureChanged = F;
-
+	
 	// 用 private 封装防止意料外的修改
 	private boolean mStructureOkay = F;
-	public final boolean isStructureOkay() {return mStructureOkay;}
+	@Override public final boolean isStructureOkay() {return mStructureOkay;}
 	// GTCH, 用于子类重写实现在结构改变时更新不透明度
 	private void setStructureOkay(boolean aStructureOkay) {
 		if (aStructureOkay == mStructureOkay) return;
@@ -127,15 +127,19 @@ public abstract class TileEntityBase10MultiBlockBase extends TileEntityBase09Fac
 	}
 	
 	@Override
-	public void onTick2(long aTimer, boolean aIsServerSide) {
+	public final void onTick2(long aTimer, boolean aIsServerSide) {
 		super.onTick2(aTimer, aIsServerSide);
 		if (aIsServerSide) {
 			if (mTimer % 600 == 5) {
 				if (!checkStructure(F)) checkStructure(T);
 				doDefaultStructuralChecks();
+			} else {
+				checkStructure(F); // 为了保证结构能够及时失效，这里每 tick 都要检测一次结构是否改变并且在改变后进行检测。也能保证 only 的检测不会有过多的无用检测
 			}
 		}
+		onTick3(aTimer, aIsServerSide);
 	}
+	public void onTick3(long aTimer, boolean aIsServerSide) {/**/}
 	
 	@Override
 	public long onToolClickMultiBlock(String aTool, long aRemainingDurability, long aQuality, Entity aPlayer, List<String> aChatReturn, IInventory aPlayerInventory, boolean aSneaking, ItemStack aStack, byte aSide, float aHitX, float aHitY, float aHitZ, ChunkCoordinates aFrom) {
@@ -156,20 +160,20 @@ public abstract class TileEntityBase10MultiBlockBase extends TileEntityBase09Fac
 		return 0;
 	}
 	
+	// 放大镜永远都要强制检测结构
 	public void onMagnifyingGlass(List<String> aChatReturn) {
-		if (checkStructureOnly(F)) {
-			onMagnifyingGlass2(aChatReturn);
+		boolean tOldStructureOkay = isStructureOkay();
+		if (checkStructureOnly(T)) {
+			onMagnifyingGlassSuccess(aChatReturn, tOldStructureOkay);
 		} else {
-			if (checkStructureOnly(T)) {
-				aChatReturn.add("Structure did form just now!");
-			} else {
-				aChatReturn.add("Structure did not form!");
-			}
+			onMagnifyingGlassFail(aChatReturn, tOldStructureOkay);
 		}
 	}
-	
-	public void onMagnifyingGlass2(List<String> aChatReturn) {
-		aChatReturn.add("Structure is formed already!");
+	public void onMagnifyingGlassSuccess(List<String> aChatReturn, boolean aOldStructureOkay) {
+		aChatReturn.add(aOldStructureOkay ? "Structure is formed already!" : "Structure did form just now!");
+	}
+	public void onMagnifyingGlassFail(List<String> aChatReturn, boolean aOldStructureOkay) {
+		aChatReturn.add("Structure did not form!");
 	}
 	
 	@Override
@@ -194,6 +198,9 @@ public abstract class TileEntityBase10MultiBlockBase extends TileEntityBase09Fac
 	
 	@Override
 	public ITexture getTexture2(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
+		return getBaseTexture(aSide, aShouldSideBeRendered);
+	}
+	public final ITexture getBaseTexture(byte aSide, boolean[] aShouldSideBeRendered) {
 		return aShouldSideBeRendered[aSide] ? BlockTextureMulti.get(BlockTextureDefault.get((aSide==mFacing?mTexturesFront:mTextures)[FACES_TBS[aSide]], mRGBa), BlockTextureDefault.get((aSide==mFacing?mTexturesFront:mTextures)[FACES_TBS[aSide]+3])) : null;
 	}
 	

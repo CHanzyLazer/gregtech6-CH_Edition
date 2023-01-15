@@ -81,14 +81,14 @@ public class MultiTileEntitySafeMechanical extends MultiTileEntitySafe {
 		}
 		return super.allowInteraction(aEntity);
 	}
-
+	
 	// GTCH, 重写这个方法来扩展客户端数据
 	@Override
 	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
 		// 禁用 VisualData
 		rList.add(3, getDirectionData());
 	}
-
+	
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		setRGBData(aData[0], aData[1], aData[1], aData[aData.length-1]);

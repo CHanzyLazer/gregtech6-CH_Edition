@@ -65,7 +65,7 @@ public class RM {
 	, CatalyticCracking         = new RecipeMap                     (null, "gt.recipe.catalyticcracking"            , "Catalytic Cracking"              , null, 0, 1, RES_PATH_GUI+"machines/CatalyticCracking"         ,/*IN-OUT-MIN-ITEM=*/ 1, 3, 0,/*IN-OUT-MIN-FLUID=*/ 2, 9, 1,/*MIN*/ 2,/*AMP=*/ 1, ""                    ,    1, ""      , T, T, T, T, F, T, T)
 	, Fermenter                 = new RecipeMap                     (null, "gt.recipe.fermenter"                    , "Fermenter"                       , null, 0, 1, RES_PATH_GUI+"machines/Fermenter"                 ,/*IN-OUT-MIN-ITEM=*/ 1, 1, 1,/*IN-OUT-MIN-FLUID=*/ 1, 1, 0,/*MIN*/ 1,/*AMP=*/ 1, ""                    ,    1, ""      , T, T, T, T, F, T, T)
 	, Distillery                = new RecipeMap                     (null, "gt.recipe.distillery"                   , "Distillery"                      , null, 0, 1, RES_PATH_GUI+"machines/Distillery"                ,/*IN-OUT-MIN-ITEM=*/ 1, 2, 1,/*IN-OUT-MIN-FLUID=*/ 1, 2, 1,/*MIN*/ 2,/*AMP=*/ 1, ""                    ,    1, ""      , T, T, T, T, F, F, F)
-	, Drying                    = new RecipeMap                     (null, "gt.recipe.drying"                       , "Dryer"                           , null, 0, 1, RES_PATH_GUI+"machines/Dryer"                     ,/*IN-OUT-MIN-ITEM=*/ 1, 1, 0,/*IN-OUT-MIN-FLUID=*/ 1, 1, 0,/*MIN*/ 1,/*AMP=*/ 1, ""                    ,    1, ""      , T, T, T, T, F, T, T)
+	, Drying                    = new RecipeMap                     (null, "gt.recipe.drying"                       , "Dryer"                           , null, 0, 1, RES_PATH_GUI+"machines/Dryer"                     ,/*IN-OUT-MIN-ITEM=*/ 1, 1, 0,/*IN-OUT-MIN-FLUID=*/ 1, 3, 0,/*MIN*/ 1,/*AMP=*/ 1, ""                    ,    1, ""      , T, T, T, T, F, T, T)
 	, Coagulator                = new RecipeMap                     (null, "gt.recipe.coagulator"                   , "Coagulator"                      , null, 0, 1, RES_PATH_GUI+"machines/Coagulator"                ,/*IN-OUT-MIN-ITEM=*/ 0, 1, 0,/*IN-OUT-MIN-FLUID=*/ 1, 0, 1,/*MIN*/ 0,/*AMP=*/ 1, ""                    ,    1, ""      , T, T, T, T, F, T, T)
 	, CrystallisationCrucible   = new RecipeMap                     (null, "gt.recipe.crystallisationcrucible"      , "Crystallisation Crucible"        , null, 0, 1, RES_PATH_GUI+"machines/CrystallisationCrucible"   ,/*IN-OUT-MIN-ITEM=*/ 1, 1, 1,/*IN-OUT-MIN-FLUID=*/ 2, 0, 1,/*MIN*/ 1,/*AMP=*/ 1, ""                    ,    1, ""      , T, T, T, T, F, T, T)
 	, Mixer                     = new RecipeMap                     (null, "gt.recipe.mixer"                        , "Mixer"                           , null, 0, 1, RES_PATH_GUI+"machines/Mixer"                     ,/*IN-OUT-MIN-ITEM=*/ 6, 1, 0,/*IN-OUT-MIN-FLUID=*/ 6, 2, 0,/*MIN*/ 2,/*AMP=*/ 1, ""                    ,    1, ""      , T, T, T, T, F, T, T)
@@ -176,17 +176,23 @@ public class RM {
 		if (ST.invalid(aStack1) || ST.invalid(aStack2)) return F;
 		return RM.Generifier.addRecipe1(F, T, F, F, F, 0, 1, aStack1, aStack2) != null;
 	}
+	public static boolean genericycle(ItemStack... aStacks) {
+		ArrayListNoNulls<ItemStack> aStackList = new ArrayListNoNulls<>(F, aStacks);
+		for (int i = 0; i < aStackList.size(); i++) if (ST.invalid(aStackList.get(i))) aStackList.remove(i--);
+		if (aStackList.size() < 2) return F;
+		for (int i = 0; i < aStackList.size(); i++) generify(aStackList.get(i), aStackList.get((i+1) % aStackList.size()));
+		return T;
+	}
 	
 	public static boolean generify(FluidStack aFluid1, FluidStack aFluid2) {
 		if (aFluid1 == null || aFluid2 == null) return F;
 		return RM.Generifier.addRecipe0(F, T, F, F, F, 0, 1, aFluid1, aFluid2, ZL_IS) != null;
 	}
-	
 	public static boolean genericycle(FluidStack... aFluids) {
 		ArrayListNoNulls<FluidStack> aFluidList = new ArrayListNoNulls<>(F, aFluids);
 		for (int i = 0; i < aFluidList.size(); i++) if (FL.Error.is(aFluidList.get(i))) aFluidList.remove(i--);
 		if (aFluidList.size() < 2) return F;
-		for (int i = 0; i < aFluidList.size(); i++) RM.Generifier.addRecipe0(F, T, F, F, F, 0, 1, aFluidList.get(i), aFluidList.get((i+1) % aFluidList.size()), ZL_IS);
+		for (int i = 0; i < aFluidList.size(); i++) generify(aFluidList.get(i), aFluidList.get((i+1) % aFluidList.size()));
 		return T;
 	}
 	
@@ -297,6 +303,7 @@ public class RM {
 		RM.Fermenter.addRecipe1(F, 16, (aSpeed * 2) / tSize, aBiomass, FL.Soup_Mushroom.make(             1080 / tSize), FL.BiomassIC2.make(3240    / tSize, FL.Biomass), ZL_IS);
 		for (String tFluid : FluidsGT.WATER) if (FL.exists(tFluid))
 		RM.Fermenter.addRecipe1(F, 16, (aSpeed * 4) / tSize, aBiomass, FL.make(tFluid                   , 1080 / tSize), FL.BiomassIC2.make(1080    / tSize, FL.Biomass), ZL_IS);
+		RM.Fermenter.addRecipe1(F, 16, (aSpeed * 4) / tSize, aBiomass, FL.MnWtr.make(              1080 / tSize), FL.BiomassIC2.make(1080    / tSize, FL.Biomass), ZL_IS);
 		for (String tFluid : FluidsGT.MILK ) if (FL.exists(tFluid))
 		RM.Fermenter.addRecipe1(F, 16, (aSpeed * 3) / tSize, aBiomass, FL.make(tFluid                   , 1080 / tSize), FL.BiomassIC2.make(2160    / tSize, FL.Biomass), ZL_IS);
 		for (String tFluid : FluidsGT.JUICE) if (FL.exists(tFluid) && !"potion.idunsapplejuice".equals(tFluid) && !"potion.goldenapplejuice".equals(tFluid) && !"goldencarrotjuice".equals(tFluid))
@@ -325,6 +332,7 @@ public class RM {
 		if (aLubricantAmount <= 0) aLubricantAmount = 1;
 		Cutter.addRecipe1(T, aEUt, aDuration*4, aInput, FL.Water.make(aLubricantAmount*4), NF, aOutputs);
 		Cutter.addRecipe1(T, aEUt, aDuration*4, aInput, FL.SpDew.make(aLubricantAmount*4), NF, aOutputs);
+		Cutter.addRecipe1(T, aEUt, aDuration*4, aInput, FL.MnWtr.make(aLubricantAmount*4), NF, aOutputs);
 		Cutter.addRecipe1(T, aEUt, aDuration*3, aInput, FL.DistW.make(aLubricantAmount*3), NF, aOutputs);
 		if (!aIsFoodItem) for (String tFluidName : FluidsGT.LUBRICANT) {
 			FluidStack tFluid = FL.make(tFluidName, aLubricantAmount);
@@ -357,20 +365,25 @@ public class RM {
 		return F;
 	}
 	
-	public static boolean crop_veggie(ItemStack aStack, FL aFluid, long aAmount                    , long aChance, String aCannedName, int aAlcohol, int aCaffeine, int aDehydration, int aSugar, int aFat) {return crop(aStack, aFluid       , aAmount, IL.Remains_Veggie    .get( 1), aChance, aCannedName, IL.CANS_VEGGIE      , aAlcohol, aCaffeine, aDehydration, aSugar, aFat);}
-	public static boolean crop_veggie(ItemStack aStack, FL aFluid, long aAmount, ItemStack aRemains, long aChance, String aCannedName, int aAlcohol, int aCaffeine, int aDehydration, int aSugar, int aFat) {return crop(aStack, aFluid       , aAmount, aRemains                     , aChance, aCannedName, IL.CANS_VEGGIE      , aAlcohol, aCaffeine, aDehydration, aSugar, aFat);}
-	public static boolean crop_fruit (ItemStack aStack, FL aFluid, long aAmount                    , long aChance, String aCannedName, int aAlcohol, int aCaffeine, int aDehydration, int aSugar, int aFat) {return crop(aStack, aFluid       , aAmount, IL.Remains_Fruit     .get( 1), aChance, aCannedName, IL.CANS_FRUIT       , aAlcohol, aCaffeine, aDehydration, aSugar, aFat);}
-	public static boolean crop_fruit (ItemStack aStack, FL aFluid, long aAmount, ItemStack aRemains, long aChance, String aCannedName, int aAlcohol, int aCaffeine, int aDehydration, int aSugar, int aFat) {return crop(aStack, aFluid       , aAmount, aRemains                     , aChance, aCannedName, IL.CANS_FRUIT       , aAlcohol, aCaffeine, aDehydration, aSugar, aFat);}
-	public static boolean crop_nut   (ItemStack aStack           , long aAmount                    , long aChance, String aCannedName                                                                     ) {return crop(aStack, FL.Oil_Nut   , aAmount, IL.Remains_Nut       .get( 1), aChance, aCannedName, IL.CANS_UNDEFINED   , 0, 0, 0, 0,16);}
-	public static boolean crop_nut   (ItemStack aStack           , long aAmount, ItemStack aRemains, long aChance, String aCannedName                                                                     ) {return crop(aStack, FL.Oil_Nut   , aAmount, aRemains                     , aChance, aCannedName, IL.CANS_UNDEFINED   , 0, 0, 0, 0,16);}
+	public static boolean crop_veggie(ItemStack aStack, FL aFluid, long aAmount                    , long aChance, String aCannedName, int aAlcohol, int aCaffeine, int aDehydration, int aSugar, int aFat, int aRadiation) {return crop(aStack, aFluid    , aAmount, IL.Remains_Veggie.get( 1), aChance, aCannedName, IL.CANS_VEGGIE   , aAlcohol, aCaffeine, aDehydration, aSugar, aFat, aRadiation);}
+	public static boolean crop_veggie(ItemStack aStack, FL aFluid, long aAmount, ItemStack aRemains, long aChance, String aCannedName, int aAlcohol, int aCaffeine, int aDehydration, int aSugar, int aFat, int aRadiation) {return crop(aStack, aFluid    , aAmount, aRemains                 , aChance, aCannedName, IL.CANS_VEGGIE   , aAlcohol, aCaffeine, aDehydration, aSugar, aFat, aRadiation);}
+	public static boolean crop_fruit (ItemStack aStack, FL aFluid, long aAmount                    , long aChance, String aCannedName, int aAlcohol, int aCaffeine, int aDehydration, int aSugar, int aFat, int aRadiation) {return crop(aStack, aFluid    , aAmount, IL.Remains_Fruit .get( 1), aChance, aCannedName, IL.CANS_FRUIT    , aAlcohol, aCaffeine, aDehydration, aSugar, aFat, aRadiation);}
+	public static boolean crop_fruit (ItemStack aStack, FL aFluid, long aAmount, ItemStack aRemains, long aChance, String aCannedName, int aAlcohol, int aCaffeine, int aDehydration, int aSugar, int aFat, int aRadiation) {return crop(aStack, aFluid    , aAmount, aRemains                 , aChance, aCannedName, IL.CANS_FRUIT    , aAlcohol, aCaffeine, aDehydration, aSugar, aFat, aRadiation);}
+	public static boolean crop_veggie(ItemStack aStack, FL aFluid, long aAmount                    , long aChance, String aCannedName, int aAlcohol, int aCaffeine, int aDehydration, int aSugar, int aFat                ) {return crop(aStack, aFluid    , aAmount, IL.Remains_Veggie.get( 1), aChance, aCannedName, IL.CANS_VEGGIE   , aAlcohol, aCaffeine, aDehydration, aSugar, aFat, 0);}
+	public static boolean crop_veggie(ItemStack aStack, FL aFluid, long aAmount, ItemStack aRemains, long aChance, String aCannedName, int aAlcohol, int aCaffeine, int aDehydration, int aSugar, int aFat                ) {return crop(aStack, aFluid    , aAmount, aRemains                 , aChance, aCannedName, IL.CANS_VEGGIE   , aAlcohol, aCaffeine, aDehydration, aSugar, aFat, 0);}
+	public static boolean crop_fruit (ItemStack aStack, FL aFluid, long aAmount                    , long aChance, String aCannedName, int aAlcohol, int aCaffeine, int aDehydration, int aSugar, int aFat                ) {return crop(aStack, aFluid    , aAmount, IL.Remains_Fruit .get( 1), aChance, aCannedName, IL.CANS_FRUIT    , aAlcohol, aCaffeine, aDehydration, aSugar, aFat, 0);}
+	public static boolean crop_fruit (ItemStack aStack, FL aFluid, long aAmount, ItemStack aRemains, long aChance, String aCannedName, int aAlcohol, int aCaffeine, int aDehydration, int aSugar, int aFat                ) {return crop(aStack, aFluid    , aAmount, aRemains                 , aChance, aCannedName, IL.CANS_FRUIT    , aAlcohol, aCaffeine, aDehydration, aSugar, aFat, 0);}
+	public static boolean crop_nut   (ItemStack aStack           , long aAmount                    , long aChance, String aCannedName                                                                                     ) {return crop(aStack, FL.Oil_Nut, aAmount, IL.Remains_Nut   .get( 1), aChance, aCannedName, IL.CANS_UNDEFINED, 0, 0, 0, 0,16,0);}
+	public static boolean crop_nut   (ItemStack aStack           , long aAmount, ItemStack aRemains, long aChance, String aCannedName                                                                                     ) {return crop(aStack, FL.Oil_Nut, aAmount, aRemains                 , aChance, aCannedName, IL.CANS_UNDEFINED, 0, 0, 0, 0,16,0);}
 	
-	public static boolean crop(ItemStack aStack, FL aFluid, long aAmount, ItemStack aRemains, long aChance, String aCannedName, IItemContainer[] aCans, int aAlcohol, int aCaffeine, int aDehydration, int aSugar, int aFat) {
+	public static boolean crop(ItemStack aStack, FL aFluid, long aAmount, ItemStack aRemains, long aChance, String aCannedName, IItemContainer[] aCans, int aAlcohol, int aCaffeine, int aDehydration, int aSugar, int aFat) {return crop(aStack, aFluid, aAmount, aRemains, aChance, aCannedName, aCans, aAlcohol, aCaffeine, aDehydration, aSugar, aFat, 0);}
+	public static boolean crop(ItemStack aStack, FL aFluid, long aAmount, ItemStack aRemains, long aChance, String aCannedName, IItemContainer[] aCans, int aAlcohol, int aCaffeine, int aDehydration, int aSugar, int aFat, int aRadiation) {
 		if (aCans != null && UT.Code.stringValid(aCannedName)) food_can(aStack, Math.max(1, ST.food(aStack)), aCannedName, aCans);
-		if (aFluid   != null) Squeezer.addRecipe1(T, 16, 16, aChance-1000 , aStack, NF, (aFluid.exists()?aFluid:FL.Juice).make(aAmount)                                               , aRemains);
-		if (aFluid   != null) Juicer  .addRecipe1(T, 16, 16, aChance      , aStack, NF, (aFluid.exists()?aFluid:FL.Juice).make(aAmount-(aAmount<100?aAmount/3:1+(aAmount/250))*25)    , aRemains);
+		if (aFluid   != null) Squeezer.addRecipe1(T, 16, 16, aChance-1000 , aStack, NF, (aFluid.exists()?aFluid:FL.Juice).make(aAmount)                                           , aRemains);
+		if (aFluid   != null) Juicer  .addRecipe1(T, 16, 16, aChance      , aStack, NF, (aFluid.exists()?aFluid:FL.Juice).make(aAmount-(aAmount<100?aAmount/3:1+(aAmount/250))*25), aRemains);
 		if (aRemains != null) Shredder.addRecipe1(T, 16, 16, aChance      , aStack, aRemains);
 		if (aRemains != null) Mortar  .addRecipe1(T, 16, 16, aChance/2    , aStack, aRemains);
-		if (!(aStack.getItem() instanceof MultiItemRandom)) FoodsGT.put(aStack, aAlcohol, aCaffeine, aDehydration, aSugar, aFat);
+		if (!(aStack.getItem() instanceof MultiItemRandom)) FoodsGT.put(aStack, aAlcohol, aCaffeine, aDehydration, aSugar, aFat, aRadiation);
 		return T;
 	}
 	

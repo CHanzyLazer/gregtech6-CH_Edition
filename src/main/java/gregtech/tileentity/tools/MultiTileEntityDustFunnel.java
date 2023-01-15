@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,11 +19,6 @@
 
 package gregtech.tileentity.tools;
 
-import static gregapi.data.CS.*;
-
-import java.util.List;
-
-import com.google.common.primitives.Bytes;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_AddToolTips;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_SyncDataShort;
 import gregapi.data.*;
@@ -51,6 +46,10 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
+import static gregapi.data.CS.*;
 
 /**
  * @author Gregorius Techneticies
@@ -154,15 +153,15 @@ public class MultiTileEntityDustFunnel extends TileEntityBase07Paintable impleme
 	
 	@Override
 	public boolean onTickCheck(long aTimer) {
-		return super.onTickCheck(aTimer) || (mDust != oDust && isTopVisible());
+		return super.onTickCheck(aTimer) || (SYNC_SECOND && mDust != oDust && isTopVisible());
 	}
 	
 	@Override
-	public void onTickResetChecks(long aTimer, boolean aIsServerSide) {
-		super.onTickResetChecks(aTimer, aIsServerSide);
+	public void onTickChecked(long aTimer) {
+		super.onTickChecked(aTimer);
 		oDust = mDust;
 	}
-
+	
 	// GTCH, 重写这个方法保证和原本的逻辑一致
 	@Override
 	public IPacket getClientDataPacketNoSendAll(boolean aSendAll) {
@@ -175,7 +174,7 @@ public class MultiTileEntityDustFunnel extends TileEntityBase07Paintable impleme
 		rList.add(1, UT.Code.toByteS(mDust, 1)); // 保持原本一致的顺序
 		rList.add(2, mMode);
 	}
-
+	
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		mDust = UT.Code.combine(aData[0], aData[1]);

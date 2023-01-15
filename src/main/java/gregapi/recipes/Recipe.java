@@ -33,6 +33,7 @@ import gregapi.tileentity.ITileEntityInventoryGUI;
 import gregapi.util.OM;
 import gregapi.util.ST;
 import gregapi.util.UT;
+import gregtechCH.data.LH_CH;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -41,6 +42,7 @@ import net.minecraftforge.fluids.IFluidTank;
 import java.util.*;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.RegType;
 
 /**
  * @author Gregorius Techneticies
@@ -101,6 +103,9 @@ public class Recipe {
 		 * @param aNEIAllowed if NEI is allowed to display this Recipe Handler in general.
 		 */
 		public RecipeMap(Collection<Recipe> aRecipeList, String aNameInternal, String aNameLocal, String aNameNEI, long aProgressBarDirection, long aProgressBarAmount, String aNEIGUIPath, long aInputItemsCount, long aOutputItemsCount, long aMinimalInputItems, long aInputFluidCount, long aOutputFluidCount, long aMinimalInputFluids, long aMinimalInputs, long aPower, String aNEISpecialValuePre, long aNEISpecialValueMultiplier, String aNEISpecialValuePost, boolean aShowVoltageAmperageInNEI, boolean aNEIAllowed, boolean aConfigAllowed, boolean aNeedsOutputs, boolean aCombinePower, boolean aUseBucketSizeIn, boolean aUseBucketSizeOut) {
+			this(RegType.GREG, aRecipeList, aNameInternal, aNameLocal, aNameNEI, aProgressBarDirection, aProgressBarAmount, aNEIGUIPath, aInputItemsCount, aOutputItemsCount, aMinimalInputItems, aInputFluidCount, aOutputFluidCount, aMinimalInputFluids, aMinimalInputs, aPower, aNEISpecialValuePre, aNEISpecialValueMultiplier, aNEISpecialValuePost, aShowVoltageAmperageInNEI, aNEIAllowed, aConfigAllowed, aNeedsOutputs, aCombinePower, aUseBucketSizeIn, aUseBucketSizeOut);
+		}
+		public RecipeMap(RegType aRegType, Collection<Recipe> aRecipeList, String aNameInternal, String aNameLocal, String aNameNEI, long aProgressBarDirection, long aProgressBarAmount, String aNEIGUIPath, long aInputItemsCount, long aOutputItemsCount, long aMinimalInputItems, long aInputFluidCount, long aOutputFluidCount, long aMinimalInputFluids, long aMinimalInputs, long aPower, String aNEISpecialValuePre, long aNEISpecialValueMultiplier, String aNEISpecialValuePost, boolean aShowVoltageAmperageInNEI, boolean aNEIAllowed, boolean aConfigAllowed, boolean aNeedsOutputs, boolean aCombinePower, boolean aUseBucketSizeIn, boolean aUseBucketSizeOut) {
 			mNEIAllowed = aNEIAllowed;
 			mShowVoltageAmperageInNEI = aShowVoltageAmperageInNEI;
 			mNeedsOutputs = aNeedsOutputs;
@@ -132,7 +137,8 @@ public class Recipe {
 			mMinimalInputs = (int)aMinimalInputs;
 			mProgressBarDirection = (byte)aProgressBarDirection;
 			mProgressBarAmount = (byte)aProgressBarAmount;
-			LH.add(mNameInternal, mNameLocal);
+			if (aRegType == RegType.GREG) LH.add(mNameInternal, mNameLocal);
+			else LH_CH.add(aRegType, mNameInternal, mNameLocal);
 			if (RECIPE_MAPS.containsKey(mNameInternal)) throw new IllegalArgumentException("Recipe Map Name already exists: " + mNameInternal);
 			RECIPE_MAPS.put(mNameInternal, this);
 			RECIPE_MAP_LIST.add(this);

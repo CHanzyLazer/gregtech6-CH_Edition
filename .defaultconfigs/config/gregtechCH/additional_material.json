@@ -1,9 +1,0 @@
-{
-	"IM_Init":[],
-	"IM_PostInit":[
-		{
-			"data":["WoodTreated:8.0"],
-			"item":"gregtech:gt.multitileentity:24803"
-		}
-	]
-}

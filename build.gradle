@@ -1,7 +1,6 @@
 buildscript {
 	repositories {
 		mavenCentral()
-		jcenter()
 		//maven {
 		//	name = "forge"
 		//	url = "https://files.minecraftforge.net/maven"
@@ -11,12 +10,17 @@ buildscript {
 			url = "https://gregtech.mechaenetia.com/"
 		}
 		maven {
+			name = "gtnh"
+			url = "http://jenkins.usrv.eu:8081/nexus/content/groups/public/"
+		}
+		maven {
 			name = "sonatype"
 			url = "https://oss.sonatype.org/content/repositories/snapshots/"
 		}
 	}
 	dependencies {
-		classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+		classpath 'net.minecraftforge.gradle:ForgeGradle:1.2.11'
+		//classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
 		//classpath 'net.onedaybeard.artemis:artemis-odb-gradle-plugin:2.2.0'
 		//classpath 'net.onedaybeard.artemis:artemis-fluid-gradle-plugin:2.2.0'
 	}
@@ -154,9 +158,9 @@ group = "com.gregoriust.gregtech"
 archivesBaseName = "gregtech_1.7.10"
 version = "<UNKNOWN>"
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
-compileJava.options.bootClasspath = org.gradle.internal.jvm.Jvm.current().getJre().getHomeDir().toString() +"/lib/rt.jar"
+if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
+	throw new GradleException("This project requires Java 8, but it's running on " + JavaVersion.current())
+}
 compileJava {
 	options.encoding = "UTF-8"
 }
@@ -181,28 +185,31 @@ dependencies {
 	//shade 'net.mostlyoriginal.artemis-odb:contrib-core:2.3.0'
 	//shade 'net.mostlyoriginal.artemis-odb:contrib-eventbus:2.3.0'
 	//shade 'net.fbridault.eeel:artemis-odb-eeel:1.2'
-	shade 'com.alibaba:fastjson:1.2.79'            // CHanzy json
-	runtime 'org.apache.commons:commons-math3:3.2' // Needed for dev opis because it doesn't know how to specify dependencies properly
-	runtime 'org.jfree:jcommon:1.0.21'             // Needed for dev opis because it doesn't know how to specify dependencies properly
-	runtime 'org.jfree:jfreechart:1.0.17'          // Needed for dev opis because it doesn't know how to specify dependencies properly
-	runtime 'com.miglayout:miglayout-swing:4.2'    // Needed for dev opis because it doesn't know how to specify dependencies properly
-	runtime 'net.sf.opencsv:opencsv:2.3'           // Needed for dev opis because it doesn't know how to specify dependencies properly
-	runtime "io.netty-opis:Netty-opis:4.0.23"      // Needed for dev opis because it doesn't know how to specify dependencies properly
-	runtime "mcp.mobius.opis:Opis:1.2.5_1.7.10:dev"
-	compile "mcp.mobius.waila:Waila:1.5.11-RC2-NONEI_1.7.10:dev"
-	compile "codechicken:CodeChickenLib:1.7.10-1.1.3.140:dev"
-	compile "codechicken:CodeChickenCore:1.7.10-1.0.7.47:dev"
-	compile "codechicken:NotEnoughItems:1.7.10-1.0.5.120:dev"
+//	shade 'com.alibaba:fastjson:1.2.79'            // CHanzy json, now use google.gson instead
+//	shade 'org.apache.commons:commons-collections4:4.2' // CHanzy collestions, used the ListOrderedMap on it, now no longer need this
+	runtimeOnly 'org.apache.commons:commons-math3:3.2' // Needed for dev opis because it doesn't know how to specify dependencies properly
+	runtimeOnly 'org.jfree:jcommon:1.0.21'             // Needed for dev opis because it doesn't know how to specify dependencies properly
+	runtimeOnly 'org.jfree:jfreechart:1.0.17'          // Needed for dev opis because it doesn't know how to specify dependencies properly
+	runtimeOnly 'com.miglayout:miglayout-swing:4.2'    // Needed for dev opis because it doesn't know how to specify dependencies properly
+	runtimeOnly 'net.sf.opencsv:opencsv:2.3'           // Needed for dev opis because it doesn't know how to specify dependencies properly
+	runtimeOnly "io.netty-opis:Netty-opis:4.0.23"      // Needed for dev opis because it doesn't know how to specify dependencies properly
+	runtimeOnly "mcp.mobius.opis:Opis:1.2.5_1.7.10:dev"
+	implementation "mcp.mobius.waila:Waila:1.5.11-RC2-NONEI_1.7.10:dev"
+	implementation "codechicken:CodeChickenLib:1.7.10-1.1.3.140:dev"
+	implementation "codechicken:CodeChickenCore:1.7.10-1.0.7.47:dev"
+	implementation "codechicken:ForgeMultipart:1.7.10-1.2.0.347:dev"
+	implementation "codechicken:NotEnoughItems:1.7.10-1.0.5.120:dev"
 	compileOnly files("dirtyLibs/NotEnoughIDs-1.4.3.4.jar")
 	compileOnly files("dirtyLibs/journeymap-1.7.10-5.1.4p2-unlimited.jar")
 	compileOnly files("dirtyLibs/Immibiss-Microblocks-Mod-1.7.10.jar")
 	compileOnly files("dirtyLibs/EnderCore-1.7.10-0.2.0.39_beta-dev.jar")
-	compileOnly "com.enderio:EnderIO:1.7.10-2.3.0.430_beta:dev"
+	compileOnly files("dirtyLibs/EnderIO-1.7.10-2.3.0.429_beta-dev.jar")
 	compileOnly "inventorytweaks:InventoryTweaks:1.59-dev:deobf"
 	compileOnly "net.electricalage.eln:ElectricalAge-jrddunbr:1.16.3:dev"
 	compileOnly "net.sengir.forestry:forestry_1.7.10:4.2.16.64:dev"
 	compileOnly "com.mod-buildcraft:buildcraft:7.1.23:dev"
 	compileOnly "com.azanor.baubles:Baubles:1.7.10-1.0.1.10:deobf"
+	compileOnly "cr0s.warpdrive:WarpDrive-1.7.10:1.4.2.1:dev"
 	compileOnly "micdoodle8.mods:MicdoodleCore:1.7-3.0.12.504:Dev"
 	compileOnly "micdoodle8.mods:GalacticraftCore:1.7-3.0.12.504:Dev"
 	compileOnly "micdoodle8.mods:Galacticraft-Planets:1.7-3.0.12.504:Dev"
@@ -232,7 +239,7 @@ dependencies {
 	compileOnly "com.builtbroken:ICBM-classic:1.7.10-2.16.4b239:deobf"
 	compileOnly "com.builtbroken:Mffs:1.7.10-4.0.0b160:deobf"
 	compileOnly "com.builtbroken:MilitaryBaseDecor:1.7.10-0.1.0b203:deobf"
-	compileOnly "com.builtbroken:VoltzEngine:1.7.10-1.11.0b466:deobf" // MARK
+	compileOnly "com.builtbroken:VoltzEngine:1.7.10-1.11.0b466:deobf"
 	compileOnly "com.hbm:hbm:1.0.27:dev"
 	compileOnly "com.celestek.hexcraft:HEXCraft:1.7.10-0.13.1:dev"
 	compileOnly "team.chisel.ctmlib:CTMLib:MC1.7.10-1.4.1.5:deobf"
@@ -287,6 +294,7 @@ dependencies {
 	//compileOnly "com.shedar.IC2NuclearControl:IC2NuclearControl:2.4.3a:dev"
 	//compileOnly "com.wayoftime.bloodmagic:BloodMagic:1.7.10-1.3.3-18:deobf"
 	//compileOnly "com.xcompwiz:mystcraft:1.7.10-0.12.3.04:dev"
+	//compileOnly "cr0s.warpdrive:WarpDrive-1.7.10:1.4.2.1:dev"
 	//compileOnly "dan200.computercraft:ComputerCraft:1.75" // Hack
 	//compileOnly "delvr.streams:Streams:1.7.10-0.3.4:deobf"
 	//compileOnly "enviromine:EnviroMine:1.3.124:deobf"
@@ -426,10 +434,6 @@ sourceSets.main.java.srcDir "$buildDir/generated-source/java"
 compileJava.dependsOn generateBuildInfo
 compileJava.options.incremental = true
 
-task wrapper(type: Wrapper) {
-	gradleVersion = '3.5.1'
-}
-
 //weave {
 //	classesDir = sourceSets.main.output.classesDir
 //	enableArtemisPlugin = true
@@ -555,10 +559,13 @@ task supporterlistgold(type: Copy) {
 }
 
 task defaultConfigPack(type: Zip) {
+	doFirst {
+		mkdir "${project.buildDir}/${project.libsDirName}"
+	}
 	from('./.defaultconfigs/')
 	include('**/')
 	classifier = 'defaultConfigPack'
-	destinationDir = new File('./build/libs/')
+	destinationDir = new File("${project.buildDir}/${project.libsDirName}")
 }
 
 task OmniOcular_CH(type: Zip) {
@@ -608,9 +615,9 @@ if ( !project.buildInfo.tag.contains("-dirty") && (System.getenv().ONLY_RELEASES
 	task testIfUploadable {}
 
 	uploadArchives {
+		dependsOn jar
 		repositories {
 			mavenDeployer {
-				uniqueVersion = false
 				repository(url: mavenURL) {
 					authentication(userName: mavenUsername, password: mavenPassword)
 				}

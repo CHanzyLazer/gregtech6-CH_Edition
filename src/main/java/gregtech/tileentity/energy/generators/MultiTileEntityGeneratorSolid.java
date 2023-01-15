@@ -27,31 +27,37 @@ import java.util.List;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetCollisionBoundingBoxFromPool;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_OnEntityCollidedWithBlock;
 import gregapi.code.TagData;
-import gregapi.data.FM;
-import gregapi.data.IL;
-import gregapi.data.LH;
+import gregapi.data.*;
 import gregapi.data.LH.Chat;
-import gregapi.data.TD;
+import gregapi.oredict.OreDictItemData;
+import gregapi.oredict.OreDictMaterialStack;
+import gregapi.oredict.OreDictPrefix;
 import gregapi.recipes.Recipe;
 import gregapi.recipes.Recipe.RecipeMap;
 import gregapi.tileentity.base.TileEntityBase09FacingSingle;
 import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.tileentity.machines.ITileEntityRunningActively;
+import gregapi.util.OM;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
+import gregtechCH.code.Triplet;
+import gregtechCH.tileentity.cores.dust.IMTEC_HasDusts;
+import gregtechCH.tileentity.cores.dust.MTEC_Dusts;
+import gregtechCH.util.OM_CH;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Gregorius Techneticies
  */
-public abstract class MultiTileEntityGeneratorSolid extends TileEntityBase09FacingSingle implements ITileEntityEnergy, ITileEntityRunningActively, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnEntityCollidedWithBlock {
-	private static int FLAME_RANGE = 3;
+public abstract class MultiTileEntityGeneratorSolid extends TileEntityBase09FacingSingle implements IMTEC_HasDusts, ITileEntityEnergy, ITileEntityRunningActively, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnEntityCollidedWithBlock {
+	private static final int FLAME_RANGE = 3;
 	
 	protected short mEfficiency = 10000;
 	protected long mEnergy = 0, mRate = 1;
@@ -59,7 +65,15 @@ public abstract class MultiTileEntityGeneratorSolid extends TileEntityBase09Faci
 	protected TagData mEnergyTypeEmitted = TD.Energy.HU;
 	protected RecipeMap mRecipes = FM.Furnace;
 	protected Recipe mLastRecipe = null;
-	protected ItemStack mOutput1 = null;
+	protected ItemStack mOutput1 = null; // 为了物质守恒，依旧需要这个变量
+	
+	// GTCH, 使用专门的 dust core 来实现灰烬永远都是标准大小的功能
+	protected MTEC_Dusts mDust = new MTEC_Dusts(this, 1);
+	// 实现必要的接口
+	public MTEC_Dusts dust() {return mDust;}
+	public ItemStack getItem(int aIdx) {return slot(aIdx+1);}
+	public void setItem(int aIdx, ItemStack aItem) {setInventorySlotContents(aIdx+1, aItem);}
+	public boolean addItem(int aIdx, ItemStack aItem) {return addStackToSlot(aIdx+1, aItem);}
 	
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {
@@ -71,6 +85,8 @@ public abstract class MultiTileEntityGeneratorSolid extends TileEntityBase09Faci
 		if (aNBT.hasKey(NBT_FUELMAP)) mRecipes = RecipeMap.RECIPE_MAPS.get(aNBT.getString(NBT_FUELMAP));
 		if (aNBT.hasKey(NBT_EFFICIENCY)) mEfficiency = (short)UT.Code.bind_(0, 10000, aNBT.getShort(NBT_EFFICIENCY));
 		if (aNBT.hasKey(NBT_ENERGY_EMITTED)) mEnergyTypeEmitted = TagData.createTagData(aNBT.getString(NBT_ENERGY_EMITTED));
+		// GTCH, core 初始化
+		mDust.readFromNBT(aNBT);
 	}
 	
 	@Override
@@ -79,6 +95,8 @@ public abstract class MultiTileEntityGeneratorSolid extends TileEntityBase09Faci
 		UT.NBT.setNumber(aNBT, NBT_ENERGY, mEnergy);
 		UT.NBT.setBoolean(aNBT, NBT_ACTIVE, mBurning);
 		ST.save(aNBT, NBT_INV_OUT + ".1", mOutput1);
+		// GTCH, core 保存
+		mDust.writeToNBT(aNBT);
 	}
 	
 	@Override
@@ -99,6 +117,7 @@ public abstract class MultiTileEntityGeneratorSolid extends TileEntityBase09Faci
 	@Override
 	public void onTick2(long aTimer, boolean aIsServerSide) {
 		if (aIsServerSide) {
+			if (mOutput1 != null && mDust.insert(0, mOutput1)) mOutput1 = null; // 无论怎样都先尝试将暂存的输出转为 dust
 			if (mBurning) {
 				if (mEnergy >= mRate) {
 					ITileEntityEnergy.Util.emitEnergyToNetwork(mEnergyTypeEmitted, 1, Math.min(mRate, mEnergy), this);
@@ -109,20 +128,15 @@ public abstract class MultiTileEntityGeneratorSolid extends TileEntityBase09Faci
 				}
 				if (mEnergy < mRate * 2) {
 					WD.burn(worldObj, getOffset(mFacing, 1), T, T);
-					if (addStackToSlot(1, mOutput1)) mOutput1 = null;
-					if (mOutput1 == null && slotHas(0) && !WD.hasCollide(worldObj, getOffsetX(mFacing), getOffsetY(mFacing), getOffsetZ(mFacing)) && !getBlockAtSide(mFacing).getMaterial().isLiquid() && WD.oxygen(worldObj, getOffsetX(mFacing), getOffsetY(mFacing), getOffsetZ(mFacing))) {
+					mDust.convert(0);
+					if (mOutput1 == null && !mDust.full(0) && slotHas(0) && !WD.hasCollide(worldObj, getOffsetX(mFacing), getOffsetY(mFacing), getOffsetZ(mFacing)) && !getBlockAtSide(mFacing).getMaterial().isLiquid() && WD.oxygen(worldObj, getOffsetX(mFacing), getOffsetY(mFacing), getOffsetZ(mFacing))) {
 						if (IL.RC_Firestone_Refined.equal(slot(0), T, T)) {
 							ItemStack tStack = ST.container(slot(0), F);
 							if (ST.invalid(tStack)) {
-								// Just dump the empty Firestone to the Output. This should not happen, unless you insert an empty Firestone.
+								// Just dump the empty Firestone to the Output.
 								if (addStackToSlot(1, slot(0))) slotKill(0);
-							} else if (ST.invalid(ST.container(tStack, F))) {
-								// 80% of whatever Heat Energy you get from Lava. This is over 10 times the normal Firestone Furnace burn Value.
-								mEnergy += 800 * EU_PER_LAVA;
-								// Prevent using up the Firestone entirely.
-								slotKill(0);
-								mOutput1 = tStack;
 							} else {
+								// 不需要增加额外判断防止耗尽，因为空的火石不会燃烧
 								// 80% of whatever Heat Energy you get from Lava. This is over 10 times the normal Firestone Furnace burn Value.
 								mEnergy += 800 * EU_PER_LAVA;
 								// Continue using the Firestone.
@@ -131,17 +145,12 @@ public abstract class MultiTileEntityGeneratorSolid extends TileEntityBase09Faci
 						} else if (IL.RC_Firestone_Cracked.equal(slot(0), T, T)) {
 							ItemStack tStack = ST.container(slot(0), F);
 							if (ST.invalid(tStack)) {
-								// Just dump the empty Firestone to the Output. This should not happen, unless you insert an empty Firestone.
+								// Just dump the empty Firestone to the Output.
 								if (addStackToSlot(1, slot(0))) slotKill(0);
-							} else if (ST.invalid(ST.container(tStack, F))) {
-								// Less Power for the broken Firestone, so 60%.
-								mEnergy += 600 * EU_PER_LAVA;
-								// Prevent using up the Firestone entirely.
-								slotKill(0);
-								mOutput1 = tStack;
 							} else {
-								// Less Power for the broken Firestone, so 60%.
-								mEnergy += 600 * EU_PER_LAVA;
+								// 不需要增加额外判断防止耗尽，因为空的火石不会燃烧
+								// Less Power for the broken Firestone, so 40%.
+								mEnergy += 400 * EU_PER_LAVA;
 								// Continue using the Firestone.
 								slot(0, tStack);
 								// Cracked Firestones cause Fire to be released way more often.
@@ -152,7 +161,8 @@ public abstract class MultiTileEntityGeneratorSolid extends TileEntityBase09Faci
 							if (tRecipe != null && tRecipe.isRecipeInputEqual(T, F, ZL_FS, slot(0))) {
 								mLastRecipe = tRecipe;
 								ItemStack[] tOutputs = tRecipe.getOutputs();
-								if (tOutputs.length > 0) mOutput1 = ST.copy(tOutputs[0]);
+								// 和原本逻辑一样，只考虑第一个输出的物品
+								if (tOutputs.length > 0) if (!mDust.insert(0, tOutputs[0])) mOutput1 = tOutputs[0]; // 注入失败暂存这个输出
 								mEnergy += UT.Code.units(tRecipe.getAbsoluteTotalPower(), 10000, mEfficiency, F);
 								removeAllDroppableNullStacks();
 							}
@@ -176,6 +186,17 @@ public abstract class MultiTileEntityGeneratorSolid extends TileEntityBase09Faci
 	
 	@Override public boolean attachCoversFirst(byte aSide) {return F;}
 	
+	
+	// 破坏时释放 buffer 的灰烬
+	@Override
+	public boolean breakBlock() {
+		if (isServerSide()) {
+			ST.drop(worldObj, getCoords(), mDust.item(0));
+			mDust.kill(0);
+		}
+		return super.breakBlock();
+	}
+	
 	@Override
 	public boolean onBlockActivated3(EntityPlayer aPlayer, byte aSide, float aHitX, float aHitY, float aHitZ) {
 		if (aSide != mFacing) return F;
@@ -185,6 +206,13 @@ public abstract class MultiTileEntityGeneratorSolid extends TileEntityBase09Faci
 				if (slotHas(1)) {
 					aPlayer.inventory.setInventorySlotContents(aPlayer.inventory.currentItem, slot(1));
 					slotKill(1);
+					if (mBurning) UT.Entities.applyHeatDamage(aPlayer, Math.max(1.0F, Math.min(5.0F, mRate / 20.0F)));
+					return T;
+				}
+				ItemStack tRestDust = mDust.item(0);
+				if (tRestDust != null && tRestDust.stackSize > 0) {
+					aPlayer.inventory.setInventorySlotContents(aPlayer.inventory.currentItem, tRestDust);
+					mDust.kill(0);
 					if (mBurning) UT.Entities.applyHeatDamage(aPlayer, Math.max(1.0F, Math.min(5.0F, mRate / 20.0F)));
 					return T;
 				}
@@ -226,7 +254,7 @@ public abstract class MultiTileEntityGeneratorSolid extends TileEntityBase09Faci
 		if (aTool.equals(TOOL_igniter       ) && (aSide == mFacing || aPlayer == null)) {mBurning = T; return 10000;}
 		if (aTool.equals(TOOL_extinguisher  ) && (aSide == mFacing || aPlayer == null)) {mBurning = F; return 10000;}
 		if (aTool.equals(TOOL_shovel        ) &&  aSide == mFacing && slotHas(1)) {
-			long rDamage = 1000 * slot(1).stackSize;
+			long rDamage = 1000L * slot(1).stackSize;
 			UT.Inventories.addStackToPlayerInventoryOrDrop(aPlayer instanceof EntityPlayer ? (EntityPlayer)aPlayer : null, slot(1), worldObj, xCoord, yCoord, zCoord);
 			slotKill(1);
 			return rDamage;
@@ -275,7 +303,7 @@ public abstract class MultiTileEntityGeneratorSolid extends TileEntityBase09Faci
 	@Override public Collection<TagData> getEnergyTypes(byte aSide) {return mEnergyTypeEmitted.AS_LIST;}
 	
 	@Override public boolean getStateRunningPassively() {return mBurning;}
-	@Override public boolean getStateRunningPossible() {return mBurning || (mOutput1 == null && slotHas(0) && !WD.hasCollide(worldObj, getOffsetX(mFacing), getOffsetY(mFacing), getOffsetZ(mFacing)) && !getBlockAtSide(mFacing).getMaterial().isLiquid() && WD.oxygen(worldObj, getOffsetX(mFacing), getOffsetY(mFacing), getOffsetZ(mFacing)));}
+	@Override public boolean getStateRunningPossible() {return mBurning || (mOutput1 == null && !mDust.full(0) && slotHas(0) && !WD.hasCollide(worldObj, getOffsetX(mFacing), getOffsetY(mFacing), getOffsetZ(mFacing)) && !getBlockAtSide(mFacing).getMaterial().isLiquid() && WD.oxygen(worldObj, getOffsetX(mFacing), getOffsetY(mFacing), getOffsetZ(mFacing)));}
 	@Override public boolean getStateRunningActively() {return mBurning;}
 	
 	@Override public float getBlockHardness() {return mBurning ? super.getBlockHardness() * 16 : super.getBlockHardness();}

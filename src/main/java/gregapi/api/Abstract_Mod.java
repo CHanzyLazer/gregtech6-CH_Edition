@@ -34,7 +34,6 @@ import gregapi.code.ArrayListNoNulls;
 import gregapi.compat.ICompat;
 import gregapi.util.CR;
 import gregapi.util.UT;
-import gregtechCH.config.ConfigJson_CH;
 
 /**
  * @author Gregorius Techneticies

@@ -121,7 +121,7 @@ public class BI {
 	, CHAR_KILONEUTRON = new Icon("overlays/characters/kiloneutron")
 	, CHAR_LPT = new Icon("overlays/characters/lpt")
 	, CHAR_BPT = new Icon("overlays/characters/bpt")
-
+	
 	, CHAR_SCALE = new Icon("overlays/characters/scale")
 	, CHAR_GREG = new Icon("overlays/characters/greg")
 	, CHAR_NEI = new Icon("overlays/characters/nei")

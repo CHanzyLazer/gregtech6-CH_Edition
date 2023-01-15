@@ -1,10 +1,11 @@
 package gregtechCH;
 
 import gregapi.tileentity.ITileEntityErrorable;
-import gregtechCH.config.ConfigJson_CH;
+import gregtechCH.config.ConfigJson;
+import gregtechCH.data.CS_CH;
 import gregtechCH.threads.ThreadPools.ITaskNumberExecutor;
-import gregtechCH.tileentity.ITEScheduledUpdate_CH;
-import gregtechCH.tileentity.compat.PipeCompat_CH;
+import gregtechCH.tileentity.IMTEScheduledUpdate_CH;
+import gregtechCH.tileentity.compat.PipeCompat;
 import gregtechCH.util.WD_CH;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,44 +17,44 @@ import static gregapi.data.CS.*;
 
 /**
  * @author CHanzy
- *
  * Main class of GTCH
-**/
+ */
 public class GTCH_Main {
     public static String getModNameForLog() {return "GTCH";}
-
+    
     // 几个初始化阶段的 hook
     public static void preInit() {
         OUT.println(getModNameForLog() + ": ======================");
         OUT.println(getModNameForLog() + ": PreInit-Phase started!");
-
-        ConfigJson_CH.initJsonFile();
-
+        
+        ConfigJson.initJsonFile();
+        
         OUT.println(getModNameForLog() + ": PreInit-Phase finished!");
         OUT.println(getModNameForLog() + ": ======================");
     }
-
+    
     public static void init() {
         OUT.println(getModNameForLog() + ": ======================");
         OUT.println(getModNameForLog() + ": Init-Phase started!");
-
-        ConfigJson_CH.readJsonFile();
-
+    
+        CS_CH.initCS_CH();
+        ConfigJson.readJsonFile();
+        
         OUT.println(getModNameForLog() + ": Init-Phase finished!");
         OUT.println(getModNameForLog() + ": ======================");
     }
-
+    
     public static void postInit() {
         OUT.println(getModNameForLog() + ": ======================");
         OUT.println(getModNameForLog() + ": PostInit-Phase started!");
-
-        ConfigJson_CH.readJsonFilePost();
-        PipeCompat_CH.checkAvailabilities();
-
+        
+        ConfigJson.readJsonFilePost();
+        PipeCompat.checkAvailabilities();
+        
         OUT.println(getModNameForLog() + ": PostInit-Phase finished!");
         OUT.println(getModNameForLog() + ": ======================");
     }
-
+    
     // 重写了原本的更新 tick，用于实现在每 tick 更新时进行调用内部函数。全大写代表不能随便调用
     public static void RESET_SERVER_TIME() {
         sCurrentHandlesServer = 0;
@@ -73,17 +74,17 @@ public class GTCH_Main {
         ++CLIENT_TIME;
         sCurrentHandlesClient = 0;
     }
-
+    
     // 实现自用的实体计划任务 api，服务端和客户端通用
     // 不使用 greg 自带的用来防止相互干扰
     // 使用 Set 来支持自动排除已有的计划
     // 客户端和服务端应该必须手动使用的不同的数据（java 并行不是 mpi）
-    private final static LinkedList<Set<ITEScheduledUpdate_CH>> TE_SCHEDULED_UPDATERS_LIST_SERVER = new LinkedList<>();
-    private final static LinkedList<Set<ITEScheduledUpdate_CH>> TE_SCHEDULED_UPDATERS_LIST_CLIENT = new LinkedList<>();
-    public static void pushScheduled(boolean aIsServerSide, ITEScheduledUpdate_CH aScheduleUpdater) {
-        LinkedList<Set<ITEScheduledUpdate_CH>> tUpdatersList = aIsServerSide?TE_SCHEDULED_UPDATERS_LIST_SERVER:TE_SCHEDULED_UPDATERS_LIST_CLIENT;
+    private final static LinkedList<Set<IMTEScheduledUpdate_CH>> TE_SCHEDULED_UPDATERS_LIST_SERVER = new LinkedList<>();
+    private final static LinkedList<Set<IMTEScheduledUpdate_CH>> TE_SCHEDULED_UPDATERS_LIST_CLIENT = new LinkedList<>();
+    public static void pushScheduled(boolean aIsServerSide, IMTEScheduledUpdate_CH aScheduleUpdater) {
+        LinkedList<Set<IMTEScheduledUpdate_CH>> tUpdatersList = aIsServerSide?TE_SCHEDULED_UPDATERS_LIST_SERVER:TE_SCHEDULED_UPDATERS_LIST_CLIENT;
         synchronized(aIsServerSide?TE_SCHEDULED_UPDATERS_LIST_SERVER:TE_SCHEDULED_UPDATERS_LIST_CLIENT) {
-            if (tUpdatersList.isEmpty()) tUpdatersList.addLast(new LinkedHashSet<ITEScheduledUpdate_CH>()); // 不再限制每 tick 的任务数
+            if (tUpdatersList.isEmpty()) tUpdatersList.addLast(new LinkedHashSet<IMTEScheduledUpdate_CH>()); // 不再限制每 tick 的任务数
             tUpdatersList.getLast().add(aScheduleUpdater);
         }
     }
@@ -91,13 +92,13 @@ public class GTCH_Main {
     // 加锁防止并行修改队列
     private static void doScheduled(boolean aIsServerSide) {
         // 先提取本 tick 需要执行的计划，然后将其移除出总 LIST
-        Set<ITEScheduledUpdate_CH> tScheduledUpdatersDo;
+        Set<IMTEScheduledUpdate_CH> tScheduledUpdatersDo;
         synchronized(aIsServerSide?TE_SCHEDULED_UPDATERS_LIST_SERVER:TE_SCHEDULED_UPDATERS_LIST_CLIENT) {
             tScheduledUpdatersDo = (aIsServerSide?TE_SCHEDULED_UPDATERS_LIST_SERVER:TE_SCHEDULED_UPDATERS_LIST_CLIENT).pollFirst();
         }
         if (tScheduledUpdatersDo == null) return;
         // 遍历执行
-        for (ITEScheduledUpdate_CH tTileEntity : tScheduledUpdatersDo) {
+        for (IMTEScheduledUpdate_CH tTileEntity : tScheduledUpdatersDo) {
             try {
                 tTileEntity.onScheduledUpdate_CH(aIsServerSide);
             } catch(Throwable e) {
@@ -106,7 +107,7 @@ public class GTCH_Main {
             }
         }
     }
-
+    
     // 用于实现限制每 tick 的函数运行次数
     private static final int MIN_HANDLES_SERVER = 1;
     private static final int MIN_HANDLES_CLIENT = 1;
@@ -133,5 +134,5 @@ public class GTCH_Main {
         }
         return F;
     }
-
+    
 }

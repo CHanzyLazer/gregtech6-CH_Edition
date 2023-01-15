@@ -50,7 +50,7 @@ import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
 import gregtechCH.fluid.IFluidHandler_CH;
-import gregtechCH.tileentity.ITEScheduledUpdate_CH;
+import gregtechCH.tileentity.IMTEScheduledUpdate_CH;
 import gregtechCH.util.UT_CH;
 import gregtechCH.util.WD_CH;
 import ic2.api.energy.event.EnergyTileLoadEvent;
@@ -370,7 +370,7 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 		mIsAddedToEnet = F;
 	}
 	
-	protected void doEnetUpdate() {
+	public void doEnetUpdate() {
 		if (isServerSide() && mIsAddedToEnet && mDoEnetCheck) try {unloadFromEnet(); loadIntoEnet();} catch(Throwable e) {mDoEnetCheck = F;}
 	}
 	
@@ -389,9 +389,9 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 	public void updateEntity() {
 		// Well, if the TileEntity gets ticked, it is alive.
 		if (isDead()) setAlive();
-
+		
 		if (isServerSide() && !mIsAddedToEnet && mDoEnetCheck) try {loadIntoEnet();} catch(Throwable e) {mDoEnetCheck = F;}
-
+		
 		if (mExplosionStrength > 0) {
 			setToAir();
 			if (mExplosionStrength < 1) {
@@ -402,7 +402,7 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 			setDead();
 			return;
 		}
-
+		
 		if (mDoesBlockUpdate) doBlockUpdate();
 	}
 	// GTCH，使用专门的计划更新来延迟更新，并且避免污染原本的代码
@@ -422,16 +422,16 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 			mScheduleOldOpacity = -1;
 		}
 	}
-
+	
 	private boolean mMarkedLightValueUpdate = F;
 	private boolean mMarkedLightOpacityUpdate = F;
 	private int mScheduleOldOpacity = -1; // 用来记录的旧不透明度，新的旧不透明度取最大值
-
+	
 	// GTCH, 还是使用子类调用更新的方式来实现
 	// 标记式更新，可以用于在 NBT 读取阶段进行更新
-	public void updateLightValueMark() 					{if (this instanceof ITEScheduledUpdate_CH) {pushScheduled(isServerSide(), (ITEScheduledUpdate_CH)this); mMarkedLightValueUpdate = T;}}
-	public void updateLightOpacityMark(int aOldOpacity) {if (this instanceof ITEScheduledUpdate_CH) {pushScheduled(isServerSide(), (ITEScheduledUpdate_CH)this); mScheduleOldOpacity = Math.max(aOldOpacity, mScheduleOldOpacity); mMarkedLightOpacityUpdate = T;}}
-	public void updateLightOpacityMark() 				{if (this instanceof ITEScheduledUpdate_CH) {pushScheduled(isServerSide(), (ITEScheduledUpdate_CH)this); mScheduleOldOpacity = LIGHT_OPACITY_MAX; mMarkedLightOpacityUpdate = T;}}
+	public void updateLightValueMark() 					{if (this instanceof IMTEScheduledUpdate_CH) {pushScheduled(isServerSide(), (IMTEScheduledUpdate_CH)this); mMarkedLightValueUpdate = T;}}
+	public void updateLightOpacityMark(int aOldOpacity) {if (this instanceof IMTEScheduledUpdate_CH) {pushScheduled(isServerSide(), (IMTEScheduledUpdate_CH)this); mScheduleOldOpacity = Math.max(aOldOpacity, mScheduleOldOpacity); mMarkedLightOpacityUpdate = T;}}
+	public void updateLightOpacityMark() 				{if (this instanceof IMTEScheduledUpdate_CH) {pushScheduled(isServerSide(), (IMTEScheduledUpdate_CH)this); mScheduleOldOpacity = LIGHT_OPACITY_MAX; mMarkedLightOpacityUpdate = T;}}
 	// 一般的调用更新，更新前需要先设置区块存储的不透光度数据；并入接口避免非法重写
 	public void updateLightValue() 						{UT_CH.Light.updateLightValue(getWorld(), getX(), getY(), getZ());}
 	public void updateLightOpacity(int aOldOpacity) 	{if (getWorld() != null && isServerSide()) WD_CH.setBlockGTLightOpacity(getWorld(), getX(), getY(), getZ(), (short)getBlock(getCoords()).getLightOpacity(getWorld(), getX(), getY(), getZ())); UT_CH.Light.updateLightOpacity(aOldOpacity, getWorld(), getX(), getY(), getZ());}
@@ -453,9 +453,9 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 	@Override
 	public void readFromNBT(NBTTagCompound aNBT) {
 		super.readFromNBT(aNBT);
-		// 仅服务端加入计划，因为不好加入世界加载和区块加载时的载入，为了避免客户端卡顿只向服务端加入计划（TODO，考虑看看世界加载和区块加载时的逻辑？）
-		if (isServerSide() && this instanceof ITEScheduledUpdate_CH) {
-			pushScheduled(T, (ITEScheduledUpdate_CH)this);
+		// 仅服务端加入计划，因为不好加入世界加载和区块加载时的载入，为了避免客户端卡顿只向服务端加入计划
+		if (isServerSide() && this instanceof IMTEScheduledUpdate_CH) {
+			pushScheduled(T, (IMTEScheduledUpdate_CH)this);
 			mMarkNBTFinished = T;
 		}
 	}
@@ -464,12 +464,12 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 	public long getTimer() {
 		return 0;
 	}
-
+	
 	@Override
 	public final boolean canUpdate() {
 		return mIsTicking && mShouldRefresh && canUpdate2();
 	}
-
+	
 	public boolean canUpdate2() {return T;}
 	
 	@Override
@@ -569,13 +569,13 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 	@SideOnly(Side.CLIENT) public final IRenderedBlockObject passRenderingToObject(IBlockAccess aWorld, int aX, int aY, int aZ) {return ERROR_MESSAGE == null ? passRenderingToObject2(aWorld, aX, aY, aZ) : ErrorRenderer.INSTANCE;}
 	@SideOnly(Side.CLIENT) public IRenderedBlockObject passRenderingToObject2(ItemStack aStack) {return (IRenderedBlockObject)this;}
 	@SideOnly(Side.CLIENT) public IRenderedBlockObject passRenderingToObject2(IBlockAccess aWorld, int aX, int aY, int aZ) {return (IRenderedBlockObject)this;}
-
+	
 	public void updateInventory() {/**/}
 	public void updateAdjacentInventories() {for (byte tSide : ALL_SIDES_VALID) {DelegatorTileEntity<TileEntity> tDelegator = getAdjacentTileEntity(tSide); if (tDelegator.mTileEntity instanceof ITileEntityAdjacentInventoryUpdatable) ((ITileEntityAdjacentInventoryUpdatable)tDelegator.mTileEntity).adjacentInventoryUpdated(tDelegator.mSideOfTileEntity, (IInventory)this);}}
 	
 	public void playClick() {UT.Sounds.send(worldObj, SFX.MC_CLICK, 1, 1, getCoords());}
 	public void playCollect() {UT.Sounds.send(worldObj, SFX.MC_COLLECT, 0.2F, ((RNGSUS.nextFloat() - RNGSUS.nextFloat()) * 0.7F + 1) * 2, getCoords());}
-
+	
 	// 注释掉避免后续更新意外调用
 //	public void updateLightValue() {/* REMOVED */}
 	
@@ -634,7 +634,7 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 		if (rFilledAmount > 0 && aDoFill) updateInventory();
 		return rFilledAmount;
 	}
-
+	
 	// GTCH 通过在 gt 自己的实体的 drain 和 FL 中的 fill （gt 实体 fill 其他实体）添加检测来实现白名单的效果
 	public FluidStack drain(ForgeDirection aDirection, FluidStack aFluid, boolean aDoDrain) {
 		if (aFluid == null || aFluid.amount <= 0) return null;
@@ -643,7 +643,7 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 		if (tTank == null || tTank.getFluid() == null || tTank.getFluidAmount() == 0 || !tTank.getFluid().isFluidEqual(aFluid)) return null;
 		FluidStack rDrained = tTank.drain(aFluid.amount, aDoDrain);
 		if (rDrained != null && aDoDrain) updateInventory();
-
+		
 		IFluidHandler tOutTank = getAdjacentTank(tSide).mTileEntity;
 		if (((tOutTank instanceof IFluidHandler_CH) && ((IFluidHandler_CH)tOutTank).canFillExtra(rDrained) || FL.canFillDefault(rDrained)) ||
 			(!(tOutTank instanceof IFluidHandler_CH) && FL.canFillDefault(rDrained))) {
@@ -666,7 +666,7 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 		if (tTank == null || tTank.getFluid() == null || tTank.getFluidAmount() == 0) return null;
 		FluidStack rDrained = tTank.drain(aAmountToDrain, aDoDrain);
 		if (rDrained != null && aDoDrain) updateInventory();
-
+		
 		IFluidHandler tOutTank = getAdjacentTank(tSide).mTileEntity;
 		if (((tOutTank instanceof IFluidHandler_CH) && ((IFluidHandler_CH)tOutTank).canFillExtra(rDrained) || FL.canFillDefault(rDrained)) ||
 				(!(tOutTank instanceof IFluidHandler_CH) && FL.canFillDefault(rDrained))) {
@@ -1039,7 +1039,7 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 	}
 	
 	public boolean onDrawBlockHighlight2(DrawBlockHighlightEvent aEvent) {return F;}
-
+	
 	// GTCH, 更多种类的 Overlay
 	public boolean isUsingFullBlockOverlay(ItemStack aStack, byte aSide) {
 		return F;

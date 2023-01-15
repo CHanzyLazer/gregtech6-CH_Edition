@@ -11,7 +11,9 @@ import net.minecraft.tileentity.TileEntity;
 
 import static gregapi.data.CS.CA_YELLOW_255;
 
-
+/**
+ * @author Gregorius Techneticies, CHanzy
+ */
 public class MultiTileEntityGibblometerKilo extends MultiTileEntitySensorTE {
 	static {LH_CH.add("gt.tooltip.sensor.gibblometerkilo", "Measures Compression (In Kilo-Gibbl)");}
 	@Override public String getSensorDescription() {return LH_CH.get("gt.tooltip.sensor.gibblometerkilo");}

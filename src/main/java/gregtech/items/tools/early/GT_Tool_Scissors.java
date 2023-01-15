@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2020 GregTech-6 Team
+ * Copyright (c) 2022 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,9 +19,6 @@
 
 package gregtech.items.tools.early;
 
-import static gregapi.data.CS.*;
-
-import gregapi.data.CS.SFX;
 import gregapi.data.IL;
 import gregapi.data.MT;
 import gregapi.item.multiitem.MultiItemTool;
@@ -31,9 +28,17 @@ import gregapi.item.multiitem.behaviors.Behavior_TripwireCutting;
 import gregapi.item.multiitem.tools.ToolStats;
 import gregapi.old.Textures;
 import gregapi.render.IIconContainer;
+import gregapi.util.ST;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.event.world.BlockEvent;
+
+import java.util.List;
+
+import static gregapi.data.CS.*;
 
 public class GT_Tool_Scissors extends ToolStats {
 	@Override
@@ -79,9 +84,18 @@ public class GT_Tool_Scissors extends ToolStats {
 	@Override public boolean canCollect()                                                   {return T;}
 	
 	@Override
+	public int convertBlockDrops(List<ItemStack> aDrops, ItemStack aStack, EntityPlayer aPlayer, Block aBlock, long aAvailableDurability, int aX, int aY, int aZ, byte aMetaData, int aFortune, boolean aSilkTouch, BlockEvent.HarvestDropsEvent aEvent) {
+		if (aBlock == Blocks.vine) {
+			aDrops.clear();
+			aDrops.add(ST.make(Blocks.vine, 1, 0));
+		}
+		return 0;
+	}
+	
+	@Override
 	public boolean isMinableBlock(Block aBlock, byte aMetaData) {
 		String tTool = aBlock.getHarvestTool(aMetaData);
-		return (tTool != null && (tTool.equalsIgnoreCase(TOOL_scissors) || tTool.equalsIgnoreCase(TOOL_shears))) || aBlock.getMaterial() == Material.cloth || aBlock.getMaterial() == Material.web || IL.TF_Mazehedge.equal(aBlock);
+		return (tTool != null && (tTool.equalsIgnoreCase(TOOL_scissors) || tTool.equalsIgnoreCase(TOOL_shears))) || aBlock.getMaterial() == Material.cloth || aBlock.getMaterial() == Material.web || aBlock == Blocks.vine || IL.TF_Mazehedge.equal(aBlock);
 	}
 	
 	@Override

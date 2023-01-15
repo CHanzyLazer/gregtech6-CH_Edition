@@ -21,7 +21,6 @@ package gregapi.tileentity.tank;
 
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_AddToolTips;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetMaxStackSize;
-import gregapi.data.CS.*;
 import gregapi.data.FL;
 import gregapi.data.LH;
 import gregapi.data.LH.Chat;
@@ -112,6 +111,9 @@ public abstract class TileEntityBase08Barrel extends TileEntityBase07Paintable i
 		if (aTool.equals(TOOL_softhammer)) {
 			if (mTank.amount() <= 0) {
 				mTank.setEmpty();
+				mMaxSealedTime = 0;
+				mSealedTime = 0;
+				mMode &= +B[1];
 				return 10000;
 			}
 			if (canBeSealed()) {
@@ -139,7 +141,7 @@ public abstract class TileEntityBase08Barrel extends TileEntityBase07Paintable i
 			if (aChatReturn != null) {
 				aChatReturn.add((mMode & B[0]) == 0 ? "Won't fill vertically adjacent Tanks" : "Will fill vertically adjacent Tanks (depending on Gravity and State of Matter)");
 				aChatReturn.add(mTank.contentcap());
-				if (!mTank.isEmpty() && (mMode & B[1]) != 0) {
+				if (mTank.has() && (mMode & B[1]) != 0) {
 					if (mMaxSealedTime > 0) {
 						aChatReturn.add("Sealed (" + mSealedTime + " / " + mMaxSealedTime + ")");
 					} else {

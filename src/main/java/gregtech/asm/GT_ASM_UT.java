@@ -106,6 +106,7 @@ public class GT_ASM_UT {
     
         C_Object("java/lang/Object"),
         C_Class("java/lang/Class"),
+        C_String("java/lang/String"),
         C_List("java/util/List"),
         C_HashSet("java/util/HashSet"),
         C_ACL("net/minecraft/world/chunk/storage/AnvilChunkLoader", "aqk"),
@@ -143,6 +144,9 @@ public class GT_ASM_UT {
         C_NEI_ItemList("codechicken/nei/ItemList"),
         C_NEI_RestartableTask("codechicken/nei/RestartableTask"),
         C_NEI_ThreadOperationTimer("codechicken/nei/ThreadOperationTimer"),
+        C_ForgeVersion("net/minecraftforge/common/ForgeVersion"),
+    
+        M_run(null, "run", null, null, "()V"), // 属于匿名类，这里的 api 暂不支持对匿名类做高级操作
         
         M_NEI_ItemListConstInit(C_NEI_ItemList, "<clinit>", null, null, "()V"),
         M_NEI_damageSearch(null, "damageSearch", null, null, "("+toDesc(C_Item, C_List)+")V"), // 属于匿名类，这里的 api 暂不支持对匿名类做高级操作
@@ -212,6 +216,7 @@ public class GT_ASM_UT {
         M_MultiTileEntityBlock(C_GTASM_R, "getMultiTileEntityBlock", null, null, "()"+toDesc(C_Class)),
         M_PrefixBlock(C_GTASM_R, "getPrefixBlock", null, null, "()"+toDesc(C_Class)),
         M_BlockBase(C_GTASM_R, "getBlockBase", null, null, "()"+toDesc(C_Class)),
+        M_getForgeVersionUrl(C_GTASM_R, "getForgeVersionUrl", null, null, "()"+toDesc(C_String)),
         M_interceptModConnectItem(C_GTASM_R, "interceptModConnectItem", null, null, "("+toDesc(C_TileEntity, C_ForgeDirection)+")Z"),
         M_interceptModConnectFluid(C_GTASM_R, "interceptModConnectFluid", null, null, "("+toDesc(C_TileEntity, C_ForgeDirection)+")Z"),
         M_MCItemDoesSneakBypassUse(C_GTASM_R, "MCItemDoesSneakBypassUse", null, null, "("+toDesc(C_Item, C_World)+"III"+toDesc(C_Player)+")Z"),

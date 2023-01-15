@@ -115,6 +115,7 @@ public class GT_ASM implements IFMLLoadingPlugin {
 			transformers.put(Journeymap_BlockGTColorFix_CH.class.getName(), true);
 			transformers.put(BuildCraft_PipeAutoConnectFix_CH.class.getName(), true);
 			transformers.put(NEI_ItemListLoaderCrashFix_CH.class.getName(), true);
+			transformers.put(Forge_VersionDownloadFailFix_CH.class.getName(), true);
 			
 			mclocation = new File(mclocation, "/config/gregtech");
 			mclocation.mkdirs();

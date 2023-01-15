@@ -13,7 +13,7 @@ import static gregtech.asm.GT_ASM_UT.removeLine;
  * @author CHanzy
  * 修复进入世界时有概率 nei 物品列表加载失败导致游戏崩溃的问题
  */
-public class NEI_ItemListLoaderCrashFix_CH implements IClassTransformer  {
+public class NEI_ItemListLoaderCrashFix_CH implements IClassTransformer {
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
         // 为了避免匿名类在不同打包下顺序不同的问题，这里匹配所有的匿名类

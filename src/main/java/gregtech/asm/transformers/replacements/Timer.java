@@ -69,7 +69,7 @@ public class Timer {
     protected StoppableAndTimeoutable mCurrentTimer;
     
     public void reset(Object aItem) {
-        mCurrentTimer = new SubTimer(500, mScheduledThread, aItem); // 依旧为 500 ms（注意这个版本的 asm 不支持添加 SIPUSH 和 LDA 等节点）
+        mCurrentTimer = new SubTimer(500, mScheduledThread, aItem); // 依旧为 500 ms（注意这个版本的 asm 不支持添加 SIPUSH 和 LDC 等节点）
         // 注意需要串行加入计划
         synchronized (mScheduledThread) {
             mScheduledThread.execute(mCurrentTimer);

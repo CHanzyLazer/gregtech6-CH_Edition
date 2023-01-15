@@ -160,10 +160,11 @@ public class Methods {
         }
     }
     
-    // 使用这些方法来间接获取 class
+    // 使用这些方法来间接获取需要的复杂对象，因为此版本的 asm 不能使用 LDC
     public static Class<MultiTileEntityBlock> getMultiTileEntityBlock() {return MultiTileEntityBlock.class;}
     public static Class<PrefixBlock> getPrefixBlock() {return PrefixBlock.class;}
     public static Class<BlockBase> getBlockBase() {return BlockBase.class;}
+    public static String getForgeVersionUrl() {return "https://files.minecraftforge.net/net/minecraftforge/forge/promotions_slim.json";}
     
     // 插入自己的判断，这里在 bc 中，side 是 tile 相对 bc 管道的方向，和 GT 的方向相反
     public static boolean interceptModConnectItem(TileEntity aTile, ForgeDirection aSide) {

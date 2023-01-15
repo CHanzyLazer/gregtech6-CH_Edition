@@ -37,6 +37,7 @@ import gregapi.util.UT;
 import gregapi.util.WD;
 import gregtechCH.config.ConfigForge.DATA_GTCH;
 import gregtechCH.data.LH_CH;
+import gregtechCH.item.IItemDisableNEIDamageSearch;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -54,7 +55,7 @@ import static gregtechCH.data.CS_CH.ALL_COVER_PREFIX;
 /**
  * @author Gregorius Techneticies
  */
-public class PrefixItem extends Item implements Runnable, IItemUpdatable, IPrefixItem, IItemGT, IItemNoGTOverride {
+public class PrefixItem extends Item implements IItemDisableNEIDamageSearch, Runnable, IItemUpdatable, IPrefixItem, IItemGT, IItemNoGTOverride {
 	public final String mNameInternal;
 	public final OreDictPrefix mPrefix;
 	public final OreDictMaterial[] mMaterialList;
@@ -239,4 +240,7 @@ public class PrefixItem extends Item implements Runnable, IItemUpdatable, IPrefi
 		}
 		return F;
 	}
+	
+	// GTCH, 禁止此物品的 DamageSearch
+	@Override public boolean disableNEIDamageSearch() {return T;}
 }

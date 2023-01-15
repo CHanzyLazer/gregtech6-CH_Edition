@@ -9,6 +9,7 @@ import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
 import gregtechCH.config.ConfigForge;
+import gregtechCH.item.IItemDisableNEIDamageSearch;
 import gregtechCH.tileentity.connectors.ITEInterceptModConnectFluid;
 import gregtechCH.tileentity.connectors.ITEInterceptModConnectItem;
 import gregtechCH.util.WD_CH;
@@ -181,6 +182,12 @@ public class Methods {
             TileEntity tTileEntity = WD.te(aWorld, aX, aY, aZ, F);
             if (tTileEntity instanceof MultiTileEntityWireRedstoneInsulated) return true; // 仅红石线缆会穿透 sneak
         }
+        return false;
+    }
+    
+    // 插入自己的判断，此物品是否关闭了 nei 的 damageSearch
+    public static boolean disableNEIDamageSearch(Item item) {
+        if (item instanceof IItemDisableNEIDamageSearch) return ((IItemDisableNEIDamageSearch)item).disableNEIDamageSearch();
         return false;
     }
 }

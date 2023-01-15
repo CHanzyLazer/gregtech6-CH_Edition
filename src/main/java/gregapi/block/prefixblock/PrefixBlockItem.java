@@ -44,6 +44,7 @@ import gregapi.oredict.OreDictPrefix;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregtech.asm.transformers.replacements.Timer;
+import gregtechCH.item.IItemDisableNEIDamageSearch;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -60,7 +61,7 @@ import vazkii.botania.api.subtile.SubTileEntity;
 @Optional.InterfaceList(value = {
   @Optional.Interface(iface = "vazkii.botania.api.item.IFlowerPlaceable", modid = ModIDs.BOTA)
 })
-public class PrefixBlockItem extends ItemBlock implements IItemUpdatable, IPrefixItem, IItemGT, IItemNoGTOverride, IFlowerPlaceable {
+public class PrefixBlockItem extends ItemBlock implements IItemDisableNEIDamageSearch, IItemUpdatable, IPrefixItem, IItemGT, IItemNoGTOverride, IFlowerPlaceable {
 	public final PrefixBlock mBlock;
 	
 	public PrefixBlockItem(Block aBlock) {
@@ -185,4 +186,7 @@ public class PrefixBlockItem extends ItemBlock implements IItemUpdatable, IPrefi
 		return (AspectList)GT_API.sCompatTC.getAspectList(rAspects);
 	}
 	*/
+	
+	// GTCH, 禁止此物品的 DamageSearch
+	@Override public boolean disableNEIDamageSearch() {return T;}
 }

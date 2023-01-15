@@ -36,6 +36,7 @@ import gregapi.util.CR;
 import gregapi.util.OM;
 import gregapi.util.ST;
 import gregapi.util.UT;
+import gregtechCH.item.IItemDisableNEIDamageSearch;
 import ic2.api.item.IMetalArmor;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -65,7 +66,7 @@ import net.minecraftforge.common.util.EnumHelper;
   @Optional.Interface(iface = "ic2.api.item.IMetalArmor", modid = ModIDs.IC2),
   @Optional.Interface(iface = "forestry.api.apiculture.IArmorApiarist", modid = ModIDs.FR)
 })
-public class ItemArmorBase extends ItemArmor implements IItemUpdatable, IItemGT, IItemNoGTOverride, ISpecialArmor, IMetalArmor, IArmorApiarist {
+public class ItemArmorBase extends ItemArmor implements IItemDisableNEIDamageSearch, IItemUpdatable, IItemGT, IItemNoGTOverride, ISpecialArmor, IMetalArmor, IArmorApiarist {
 	protected IIcon mIcon;
 	protected final String mModID;
 	protected final String mName, mTooltip;
@@ -165,4 +166,7 @@ public class ItemArmorBase extends ItemArmor implements IItemUpdatable, IItemGT,
 	public boolean isItemStackUsable(ItemStack aStack) {return T;}
 	public ItemStack make(long aMetaData) {return ST.make(this, 1, aMetaData);}
 	public ItemStack make(long aAmount, long aMetaData) {return ST.make(this, aAmount, aMetaData);}
+	
+	// GTCH, 禁止此物品的 DamageSearch
+	@Override public boolean disableNEIDamageSearch() {return T;}
 }

@@ -56,6 +56,7 @@ import gregapi.util.OM;
 import gregapi.util.UT;
 import gregapi.util.WD;
 import gregtech.tileentity.energy.reactors.MultiTileEntityReactorCore;
+import gregtechCH.item.IItemDisableNEIDamageSearch;
 import ic2.api.item.IElectricItemManager;
 import ic2.api.item.ISpecialElectricItem;
 import micdoodle8.mods.galacticraft.api.item.IItemElectric;
@@ -92,7 +93,7 @@ import vazkii.botania.api.subtile.SubTileEntity;
 , @Optional.Interface(iface = "micdoodle8.mods.galacticraft.api.item.IItemElectric", modid = ModIDs.GC)
 , @Optional.Interface(iface = "vazkii.botania.api.item.IFlowerPlaceable", modid = ModIDs.BOTA)
 })
-public class MultiTileEntityItemInternal extends ItemBlock implements squeek.applecore.api.food.IEdible, IItemReactorRod, IItemUpdatable, IItemColorableRGB, IOreDictItemDataOverrideItem, IItemGT, IItemNoGTOverride, IFluidContainerItem, ISpecialElectricItem, IElectricItemManager, IItemEnergy, IItemElectric, IItemRottable, IFlowerPlaceable {
+public class MultiTileEntityItemInternal extends ItemBlock implements squeek.applecore.api.food.IEdible, IItemDisableNEIDamageSearch, IItemReactorRod, IItemUpdatable, IItemColorableRGB, IOreDictItemDataOverrideItem, IItemGT, IItemNoGTOverride, IFluidContainerItem, ISpecialElectricItem, IElectricItemManager, IItemEnergy, IItemElectric, IItemRottable, IFlowerPlaceable {
 	public final MultiTileEntityBlockInternal mBlock;
 	
 	public MultiTileEntityItemInternal(Block aBlock) {
@@ -674,4 +675,7 @@ public class MultiTileEntityItemInternal extends ItemBlock implements squeek.app
 	@Override public boolean getIsRepairable(ItemStack aStack, ItemStack aMaterial) {return F;}
 	@Override public int getItemEnchantability() {return 0;}
 	@Override public final boolean getShareTag() {return T;} // just to be sure.
+	
+	// GTCH, 禁止此物品的 DamageSearch
+	@Override public boolean disableNEIDamageSearch() {return T;}
 }

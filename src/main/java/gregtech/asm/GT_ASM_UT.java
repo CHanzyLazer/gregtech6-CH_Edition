@@ -107,6 +107,7 @@ public class GT_ASM_UT {
         C_Object("java/lang/Object"),
         C_Class("java/lang/Class"),
         C_List("java/util/List"),
+        C_HashSet("java/util/HashSet"),
         C_ACL("net/minecraft/world/chunk/storage/AnvilChunkLoader", "aqk"),
         C_Block("net/minecraft/block/Block", "aji"),
         C_Chunk("net/minecraft/world/chunk/Chunk", "apx"),
@@ -214,6 +215,7 @@ public class GT_ASM_UT {
         M_interceptModConnectItem(C_GTASM_R, "interceptModConnectItem", null, null, "("+toDesc(C_TileEntity, C_ForgeDirection)+")Z"),
         M_interceptModConnectFluid(C_GTASM_R, "interceptModConnectFluid", null, null, "("+toDesc(C_TileEntity, C_ForgeDirection)+")Z"),
         M_MCItemDoesSneakBypassUse(C_GTASM_R, "MCItemDoesSneakBypassUse", null, null, "("+toDesc(C_Item, C_World)+"III"+toDesc(C_Player)+")Z"),
+        M_disableNEIDamageSearch(C_GTASM_R, "disableNEIDamageSearch", null, null, "("+toDesc(C_Item)+")Z"),
         F_GTLO(C_EBS, "blockGTLightOpacityArray", null, null, toDesc(C_NA));
         
         public final Name clazz; // 所属类

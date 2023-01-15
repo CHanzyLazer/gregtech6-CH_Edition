@@ -28,6 +28,34 @@ public class NEI_ItemListLoaderCrashFix_CH implements IClassTransformer  {
             }
             if (!tMatched) break; // 不匹配直接跳过此类
             
+            // 增加部分物品禁用 damageSearch，这可能会造成崩溃
+            for (MethodNode m: classNode.methods) if (M_NEI_damageSearch.matches(m)) {
+                GT_ASM.logger.info("Transforming " + C_NEI_ItemList+"$"+i + "." + M_NEI_damageSearch);
+                AbstractInsnNode at = m.instructions.getFirst();
+                // 跳转到第一个 NEW java/util/HashSet 行（第一行）
+                while (at != null) {
+                    if (at.getOpcode() == Opcodes.NEW) {
+                        assert at instanceof TypeInsnNode;
+                        TypeInsnNode tNode = (TypeInsnNode)at;
+                        if (tNode.desc.equals(C_HashSet.deobf)) break;
+                    }
+                    at = at.getNext();
+                }
+                if (at == null) {
+                    GT_ASM.logger.warn("Reached `null` in `at` too soon!  No changes made, bailing!");
+                    return GT_ASM.writeByteArraySelfReferenceFixup(classNode);
+                }
+                // 在 at 前插入额外的判断
+                InsnList insert = new InsnList();
+                insert.add(new VarInsnNode(Opcodes.ALOAD, 1));          // Load item
+                insert.add(M_disableNEIDamageSearch.staticInvocation(isObfuscated()));
+                LabelNode after = new LabelNode();
+                insert.add(new JumpInsnNode(Opcodes.IFEQ, after));     // 如果满足（为一）阻止连接的条件则继续后续，直接 return 跳过此 item，因此不满足（为零）则需要跳过这段
+                insert.add(new InsnNode(Opcodes.RETURN));
+                insert.add(after);                                                  // 不满足则跳转到这里
+                m.instructions.insertBefore(at, insert);
+            }
+            
             // 将 execute 中的 timer 改为自用的方法，仅打印超时的结果
             for (MethodNode m: classNode.methods) if (M_NEI_execute.matches(m)) {
                 GT_ASM.logger.info("Transforming " + C_NEI_ItemList+"$"+i + "." + M_NEI_execute);

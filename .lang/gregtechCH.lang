@@ -7,13 +7,18 @@ enablelangfile {
 
 languagefile {
     S:gt.multitileentity.10110.name=发电机 (ULV)
+    S:gt.multitileentity.29903.name=新电线 (WIP)
+    S:gt.multitileentity.29904.name=新电线 (WIP)
     S:gt.multitileentity.31030.name=流体流速传感器 (单位: 升/tick)
     S:gt.multitileentity.31031.name=流体流速传感器 (单位: 桶/tick)
+    S:gt.multitileentity.31032.name=电压传感器
+    S:gt.multitileentity.31034.name=电流传感器
     S:gt.multitileentity.31040.name=大量程锅炉压力传感器 (单位: 千 Gibbl)
     S:gt.multitileentity.31041.name=大量程盖革传感器
     S:gt.multitileentity.31042.name=大量程电力传感器
     S:gt.multitileentity.31043.name=大量程转速传感器
     S:gt.multitileentity.31044.name=大量程激光传感器
+    S:gt.tooltip.boiler.calcification=钙化:
     S:gt.tooltip.sensor.electrometerkilo=测量电力流 (单位: 千 EU)
     S:gt.tooltip.sensor.flowometer=测量流体流速 (单位: 升/tick)
     S:gt.tooltip.sensor.flowometerbucket=测量流体流速 (单位: 桶/tick)
@@ -46,11 +51,16 @@ languagefile {
     S:gtch.tooltip.gearbox.custom.1=齿轮不吻合!
     S:gtch.tooltip.gearbox.custom.2=使用扳手来装上物品栏里的齿轮
     S:gtch.tooltip.gearbox.custom.3=潜行使用扳手来改变轴的朝向
+    S:gtch.tooltip.motor_gas.useful.1=涡轮拥有更高的输出但是需要预热更久
+    S:gtch.tooltip.motor_liquid.useful.1=引擎输出较低但是预热更快
+    S:gtch.tooltip.multiblock.cryodistillationtower.2=3x3x8 实心 %s
     S:gtch.tooltip.multiblock.gasturbine.1=3x3xN 制造此方块的致密壁板
     S:gtch.tooltip.multiblock.gasturbine.2=主方块在正面 3x3 的中心, 正面朝外
     S:gtch.tooltip.multiblock.gasturbine.3=仅能在正面 3x3 处输入燃气
     S:gtch.tooltip.multiblock.gasturbine.4=依旧能从底层泵出废气
     S:gtch.tooltip.multiblock.gasturbine.5=N 可以从 %d 到 %d
+    S:gtch.tooltip.multiblock.heatexchanger.1=3x3 环状热吸收装置，中心放置和主方块相同材料的致密壁板
+    S:gtch.tooltip.multiblock.heatexchanger.2=3x3 环状和主方块相同材料的致密壁板，中心放置主方块
     S:gtch.tooltip.multiblock.steamturbine.1=3x3xN 制造此方块的致密壁板
     S:gtch.tooltip.multiblock.steamturbine.2=主方块在正面 3x3 的中心, 正面朝外
     S:gtch.tooltip.multiblock.steamturbine.3=仅能在正面 3x3 处输入蒸汽

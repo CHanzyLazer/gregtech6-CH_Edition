@@ -127,8 +127,8 @@ public class MultiTileEntityLargeHeatExchanger extends TileEntityBase10MultiBloc
 	}
 	
 	static {
-		LH_CH.add(RegType.GT6U, "gt.tooltip.multiblock.heatexchanger.1", "3x3 Ring of 8 Heat Transmitters and the Thermomechanical Block inside with the Main material");
-		LH_CH.add(RegType.GT6U, "gt.tooltip.multiblock.heatexchanger.2", "3x3 Ring of 8 the Thermomechanical Block with the Main material and the Main inside");
+		LH_CH.add("gtch.tooltip.multiblock.heatexchanger.1", "3x3 Ring of 8 Heat Transmitters and the Thermomechanical Block inside with the Main material");
+		LH_CH.add("gtch.tooltip.multiblock.heatexchanger.2", "3x3 Ring of 8 the Thermomechanical Block with the Main material and the Main inside");
 		LH.add("gt.tooltip.multiblock.heatexchanger.3", "Energy Output split over the 8 Heat Transmitters (Top)");
 		LH.add("gt.tooltip.multiblock.heatexchanger.4", "Input at Bottom Layer, Fluid Output at Main Block");
 	}
@@ -136,8 +136,8 @@ public class MultiTileEntityLargeHeatExchanger extends TileEntityBase10MultiBloc
 	@Override
 	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
 		aList.add(Chat.CYAN     + LH.get(LH.STRUCTURE) + ":");
-		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.heatexchanger.1"));
-		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.heatexchanger.2"));
+		aList.add(Chat.WHITE    + LH_CH.get("gtch.tooltip.multiblock.heatexchanger.1"));
+		aList.add(Chat.WHITE    + LH_CH.get("gtch.tooltip.multiblock.heatexchanger.2"));
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.heatexchanger.3"));
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.heatexchanger.4"));
 		aList.add(Chat.CYAN     + LH.get(LH.RECIPES) + ": " + Chat.WHITE + LH.get(mRecipes.mNameInternal));

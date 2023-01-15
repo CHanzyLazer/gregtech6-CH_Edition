@@ -14,7 +14,7 @@ GregTech 6 CH Edition (GTCH) 是本人（b 站：[潘多拉茶壶](https://space
 和原版一样，此版本需要 [Minecraft Forge 1614](https://files.minecraftforge.net/maven/net/minecraftforge/forge/1.7.10-10.13.4.1614-1.7.10/forge-1.7.10-10.13.4.1614-1.7.10-installer.jar)
 和前置 mod [CodeChickenCore](https://gregtech.overminddl1.com/codechicken/CodeChickenCore/1.7.10-1.0.7.47/CodeChickenCore-1.7.10-1.0.7.47-universal.jar) 以及 [CodeChickenLib](https://gregtech.overminddl1.com/codechicken/CodeChickenLib/1.7.10-1.1.3.140/CodeChickenLib-1.7.10-1.1.3.140-universal.jar)
 
-如有任何问题可以参看 [**如何开始**](https://github.com/CHanzyLazer/gregtech6-CH_Edition/wiki/begin)
+如有任何问题可以参看 [**如何开始**](https://github.com/CHanzyLazer/gregtech6-CH_Edition/wiki/begin)，或者加入 qq 群 752292640
 
 更新可以参看 [**Changelog**](https://github.com/CHanzyLazer/gregtech6-CH_Edition/wiki/changelog)
 

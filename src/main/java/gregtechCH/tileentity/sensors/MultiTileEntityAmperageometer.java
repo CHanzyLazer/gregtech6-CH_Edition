@@ -6,6 +6,7 @@ import gregapi.old.Textures;
 import gregapi.render.IIconContainer;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.tileentity.machines.MultiTileEntitySensorTE;
+import gregtechCH.data.LH_CH;
 import gregtechCH.tileentity.data.ITileEntityElectric;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -18,8 +19,8 @@ import static gregapi.data.CS.CA_BLUE_255;
  * @author Gregorius Techneticies, CHanzy
  */
 public class MultiTileEntityAmperageometer extends MultiTileEntitySensorTE {
-    static {LH.add("gt.tooltip.sensor.amperageometer", "Measures Amperage (Package number)");}
-    @Override public String getSensorDescription() {return LH.get("gt.tooltip.sensor.amperageometer");}
+    static {LH_CH.add("gt.tooltip.sensor.amperageometer", "Measures Amperage (Package number)");}
+    @Override public String getSensorDescription() {return LH_CH.get("gt.tooltip.sensor.amperageometer");}
     
     @Override
     public long getCurrentValue(DelegatorTileEntity<TileEntity> aDelegator) {

@@ -63,6 +63,8 @@ task eclipseForgeWorkspace(type: Copy) {
 }
 
 import org.apache.tools.ant.taskdefs.condition.Os
+import org.codehaus.groovy.runtime.GStringImpl
+
 task eclipseForgeProject {
 	doLast {
 		if(!(new File("eclipse/Minecraft")).exists()) {
@@ -575,10 +577,10 @@ task OmniOcular_CH(type: Zip) {
 	destinationDir = new File('./build/libs/')
 }
 
-task langrage_CH(type: Zip) {
+task language_CH(type: Zip) {
 	from('./.lang/')
 	include('**/')
-	classifier = 'langrage_CH'
+	classifier = 'language_CH'
 	destinationDir = new File('./build/libs/')
 }
 
@@ -587,28 +589,28 @@ jar.dependsOn supporterlistgold
 jar.dependsOn changelog
 jar.dependsOn defaultConfigPack
 jar.dependsOn OmniOcular_CH
-jar.dependsOn langrage_CH
+jar.dependsOn language_CH
 
 reobf {
-	//reobf(coreJar) {
+	//reobf(coreJar) {F
 	//	spec -> spec.classpath = sourceSets.main.compileClasspath
 	//}
 }
 
 artifacts {
-	archives devJar, sourceJar, changelog.output, supporterlist.output, supporterlistgold.output, defaultConfigPack, OmniOcular_CH, langrage_CH //, coreJar
+	archives devJar, sourceJar, changelog.output, supporterlist.output, supporterlistgold.output, defaultConfigPack, OmniOcular_CH, language_CH //, coreJar
 }
 
 if (!hasProperty("mavenUsername")) {
-	ext.mavenUsername="${System.getenv().MAVEN_USERNAME}"
+	ext.mavenUsername= "${System.getenv().MAVEN_USERNAME}" as GStringImpl
 }
 
 if (!hasProperty("mavenPassword")) {
-	ext.mavenPassword="${System.getenv().MAVEN_PASSWORD}"
+	ext.mavenPassword= "${System.getenv().MAVEN_PASSWORD}" as GStringImpl
 }
 
 if (!hasProperty("mavenURL")) {
-	ext.mavenURL="${System.getenv().MAVEN_URL}"
+	ext.mavenURL= "${System.getenv().MAVEN_URL}" as GStringImpl
 }
 
 if ( !project.buildInfo.tag.contains("-dirty") && (System.getenv().ONLY_RELEASES!="true" || project.buildInfo.isRelease) ) {

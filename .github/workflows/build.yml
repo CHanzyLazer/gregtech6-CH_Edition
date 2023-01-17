@@ -42,7 +42,7 @@ jobs:
         body: |
           mod 本体：gregtech_1.7.10-${{ steps.version_number.outputs.version_number }}.jar
           默认配置文件：gregtech_1.7.10-${{ steps.version_number.outputs.version_number }}-defaultConfigPack.zip
-          附加汉化文件：gregtech_1.7.10-${{ steps.version_number.outputs.version_number }}-langrage_CH.zip
+          附加汉化文件：gregtech_1.7.10-${{ steps.version_number.outputs.version_number }}-language_CH.zip
           OmniOcular配置文件：gregtech_1.7.10-${{ steps.version_number.outputs.version_number }}-OmniOcular_CH.zip
         files: build/libs/!(*changelog*|*supporterlist*)
         token: ${{ secrets.CHANZY_TOKEN }}

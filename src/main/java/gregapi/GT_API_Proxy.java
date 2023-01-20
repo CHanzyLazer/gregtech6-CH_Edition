@@ -427,6 +427,8 @@ public abstract class GT_API_Proxy extends Abstract_Proxy implements IGuiHandler
 					}
 				}
 				
+				GTCH_Main.SERVER_TICK();
+				
 				DELAYED_BLOCK_UPDATES_2.clear();
 				List tList = DELAYED_BLOCK_UPDATES_2;
 				DELAYED_BLOCK_UPDATES_2 = DELAYED_BLOCK_UPDATES;

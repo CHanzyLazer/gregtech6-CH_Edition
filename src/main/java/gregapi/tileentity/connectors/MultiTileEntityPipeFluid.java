@@ -524,7 +524,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	@Override
 	public void onTick2(long aTimer, boolean aIsServerSide) {
 		super.onTick2(aTimer, aIsServerSide);
-		if (aIsServerSide) {
+		if (aIsServerSide && worldObj != null) {
 			if (mHasToAddTimer) {
 				if (WD.even(this)) {
 					GT_API_Proxy.SERVER_TICK_PRE.add(this);

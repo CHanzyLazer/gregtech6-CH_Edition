@@ -406,7 +406,7 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 		if (mDoesBlockUpdate) doBlockUpdate();
 	}
 	// GTCH，使用专门的计划更新来延迟更新，并且避免污染原本的代码
-	public void onScheduledUpdate_CH(boolean aIsServerSide) {
+	public final void onScheduledUpdate_CH(boolean aIsServerSide) {
 		// GTCH, 执行 mark 的任务
 		if (mMarkNBTFinished) {
 			initNBTFinish();

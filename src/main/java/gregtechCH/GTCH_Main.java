@@ -1,10 +1,6 @@
 package gregtechCH;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import gregapi.code.ArrayListNoNulls;
 import gregapi.tileentity.ITileEntityErrorable;
-import gregapi.tileentity.ITileEntityServerTickPre;
 import gregtechCH.config.ConfigJson;
 import gregtechCH.data.CS_CH;
 import gregtechCH.threads.GroupTaskPool;
@@ -13,7 +9,10 @@ import gregtechCH.tileentity.IMTEServerTickParallel;
 import gregtechCH.tileentity.compat.PipeCompat;
 import gregtechCH.util.WD_CH;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.Set;
 
 import static gregapi.data.CS.*;
 import static gregtechCH.threads.ThreadPools.TICK_THREAD;

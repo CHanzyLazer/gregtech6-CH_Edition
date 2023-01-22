@@ -516,7 +516,7 @@ public class WD {
 	
 	public static boolean even(TileEntity aTileEntity) {return even(aTileEntity.xCoord, aTileEntity.yCoord, aTileEntity.zCoord);}
 	public static boolean even(ChunkCoordinates aCoords) {return even(aCoords.posX, aCoords.posY, aCoords.posZ);}
-	public static boolean even(int... aCoords) {int i = 0; for (int tCoord : aCoords) if (tCoord % 2 == 0) i++; return i % 2 == 0;}
+	public static boolean even(int... aCoords) {int i = 0; for (int tCoord : aCoords) if (tCoord % 2 == 0) ++i; return i % 2 == 0;}
 	
 	public static int evenness(TileEntity aTileEntity) {return evenness(aTileEntity.xCoord, aTileEntity.yCoord, aTileEntity.zCoord);}
 	public static int evenness(ChunkCoordinates aCoords) {return evenness(aCoords.posX, aCoords.posY, aCoords.posZ);}

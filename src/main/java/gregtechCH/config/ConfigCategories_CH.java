@@ -10,7 +10,8 @@ public enum ConfigCategories_CH {
     nbt,
     colour,
     fluid,
-    optimize;
+    optimize,
+    multithread;
     public enum Machines {
         basic,
         boiler,

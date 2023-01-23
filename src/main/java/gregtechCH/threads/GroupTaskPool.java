@@ -23,8 +23,10 @@ public class GroupTaskPool {
         }
     };
     
-    public GroupTaskPool(int MaxPoolSize) {
-        mThreadPool = new ThreadPoolExecutor(1, MaxPoolSize, 100L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
+    final int mPoolSize;
+    public GroupTaskPool(int aPoolSize) {
+        mPoolSize = aPoolSize;
+        mThreadPool = Executors.newFixedThreadPool(aPoolSize);
     }
     
     public void runAll(Collection<? extends CountRunnable> aTasks) {
@@ -37,13 +39,10 @@ public class GroupTaskPool {
     
     public abstract class CountRunnable implements Runnable {
         public abstract void run2();
-        public void doCatch(Throwable e) {/**/}
-        public void doFinal() {/**/}
         @Override
         public final void run() {
             try {run2();}
-            catch (Throwable e) {doCatch(e);}
-            finally {doFinal(); mLatch.countDown();}
+            finally {mLatch.countDown();}
         }
     }
     

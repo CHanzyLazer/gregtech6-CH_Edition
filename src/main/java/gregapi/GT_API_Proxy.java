@@ -80,6 +80,7 @@ import gregapi.util.*;
 import gregapi.worldgen.GT6WorldGenerator;
 import gregtechCH.GTCH_Main;
 import gregtech.items.behaviors.Behavior_Gun;
+import gregtechCH.util.WD_CH;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHugeMushroom;
 import net.minecraft.block.BlockJukebox.TileEntityJukebox;
@@ -216,10 +217,21 @@ public abstract class GT_API_Proxy extends Abstract_Proxy implements IGuiHandler
 		MultiTileEntityRegistry.onServerStop();
 	}
 	
+	// GTCH, 在世界加载或者卸载时清空静态数据
 	@SubscribeEvent public void onWorldSave  (WorldEvent.Save   aEvent) {checkSaveLocation(aEvent.world.getSaveHandler().getWorldDirectory(), F);}
-	@SubscribeEvent public void onWorldLoad  (WorldEvent.Load   aEvent) {checkSaveLocation(aEvent.world.getSaveHandler().getWorldDirectory(), F);}
-	@SubscribeEvent public void onWorldUnload(WorldEvent.Unload aEvent) {checkSaveLocation(aEvent.world.getSaveHandler().getWorldDirectory(), F);}
+	@SubscribeEvent public void onWorldLoad  (WorldEvent.Load   aEvent) {clearStatic(!aEvent.world.isRemote); checkSaveLocation(aEvent.world.getSaveHandler().getWorldDirectory(), F);}
+	@SubscribeEvent public void onWorldUnload(WorldEvent.Unload aEvent) {clearStatic(!aEvent.world.isRemote); checkSaveLocation(aEvent.world.getSaveHandler().getWorldDirectory(), F);}
 	
+	private static void clearStatic(boolean aIsServerSide) {
+		if (aIsServerSide) {
+			for (ITileEntityServerTickPre  te : SERVER_TICK_PRE)  te.onUnregisterPre();  SERVER_TICK_PRE.clear();
+			for (ITileEntityServerTickPre  te : SERVER_TICK_PR2)  te.onUnregisterPre();  SERVER_TICK_PR2.clear();
+			for (ITileEntityServerTickPost te : SERVER_TICK_POST) te.onUnregisterPost(); SERVER_TICK_POST.clear();
+			for (ITileEntityServerTickPost te : SERVER_TICK_PO2T) te.onUnregisterPost(); SERVER_TICK_PO2T.clear();
+		}
+		GTCH_Main.clearStatic(aIsServerSide); // GTCH, 我提供的额外的一些 tick 队列
+		WD_CH.clearStatic(aIsServerSide); // GTCH, 优化的渲染队列
+	}
 	public  static final List<ITileEntityServerTickPre  > SERVER_TICK_PRE                = new ArrayListNoNulls<>(), SERVER_TICK_PR2  = new ArrayListNoNulls<>();
 	public  static final List<ITileEntityServerTickPost > SERVER_TICK_POST               = new ArrayListNoNulls<>(), SERVER_TICK_PO2T = new ArrayListNoNulls<>();
 	public  static       List<IHasWorldAndCoords>         DELAYED_BLOCK_UPDATES          = new ArrayListNoNulls<>();

@@ -46,6 +46,10 @@ public class ConfigForge {
         public static int rerenderMainLength;
         public static int rerenderAroundMaxChunk;
         public static int rerenderAroundLength;
+        
+        public static int overrideTickThread;
+        public static int minGroupSize;
+        public static int maxGroupedMulti;
     }
     public static class DATA_MACHINES {
         public static boolean motorExplodeCheck;
@@ -103,6 +107,9 @@ public class ConfigForge {
         tList.addFirst(RerenderTick.INIT); // 保证第一个是 INIT
         DATA_GTCH.rerenderTickList = tList.toArray(new RerenderTick[0]);
         
+        DATA_GTCH.overrideTickThread        = ConfigsGTCH.GTCH.get(ConfigCategories_CH.multithread, "override_tick_thread_(gt6_1)",  0);
+        DATA_GTCH.minGroupSize              = ConfigsGTCH.GTCH.get(ConfigCategories_CH.multithread, "minimum_group_size_(gt6_?)",  500);
+        DATA_GTCH.maxGroupedMulti           = ConfigsGTCH.GTCH.get(ConfigCategories_CH.multithread, "maximum_grouped_multi_(gt6_?)",  10);
         
         DATA_MACHINES.motorExplodeCheck = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.generatorMotor, "motor_explode_check_(gt6_?)", T);
         DATA_MACHINES.motorExplodeByLength = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.generatorMotor, "motor_explode_by_length_(gt6_false)", T);

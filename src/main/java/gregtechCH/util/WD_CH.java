@@ -43,10 +43,6 @@ public class WD_CH {
     }
 
     /* 区块渲染更新部分 */
-    // 客户端世界加载或者卸载时清空渲染队列
-    @SubscribeEvent public void onWorldLoad(WorldEvent.Load   aEvent) {if (aEvent.world.isRemote) clearStatic();}
-    @SubscribeEvent public void onWorldUnload(WorldEvent.Unload aEvent) {if (aEvent.world.isRemote) clearStatic();}
-
     @SideOnly(Side.CLIENT)
     public static void doChunkRerender(long aTimer) {
         switch (DATA_GTCH.rerenderTickList[(int)(aTimer%DATA_GTCH.rerenderTickList.length)]) {
@@ -179,14 +175,16 @@ public class WD_CH {
     @SideOnly(Side.CLIENT) private static EntityPlayer sPlayer = null;
     // 记录是否成功更新，没有则不能刷新下次渲染队列
     @SideOnly(Side.CLIENT) private static boolean sUpdated = T;
-    // 清空的接口
+    // 清空的接口，客户端世界加载或者卸载时清空渲染队列
     @SideOnly(Side.CLIENT)
-    private static void clearStatic() {
-        sChunkRenderList.clear();
-        sMainChunkRenderList.clear();
-        sAroundChunkRenderList.clear();
-        sPlayer = null;
-        sUpdated = T;
+    public static void clearStatic(boolean aIsServerSide) {
+        if (!aIsServerSide) {
+            sChunkRenderList.clear();
+            sMainChunkRenderList.clear();
+            sAroundChunkRenderList.clear();
+            sPlayer = null;
+            sUpdated = T;
+        }
     }
 
     // 标记方块（所在区块）用于计划重新渲染

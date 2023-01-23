@@ -558,7 +558,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		super.onCoordinateChange();
 		GTCH_Main.removeFromServerTickParallel(this);
 		GTCH_Main.removeFromServerTickParallel2(this);
-		onUnregisterPar();
+//		onUnregisterPar(); // 现在移除方法已经包含了这个部分
 		GT_API_Proxy.SERVER_TICK_PRE.remove(this);
 		GT_API_Proxy.SERVER_TICK_PR2.remove(this);
 		onUnregisterPre();

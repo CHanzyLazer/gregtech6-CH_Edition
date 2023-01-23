@@ -1,15 +1,17 @@
 package gregtechCH;
 
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import gregapi.tileentity.ITileEntityErrorable;
 import gregtechCH.config.ConfigJson;
 import gregtechCH.data.CS_CH;
-import gregtechCH.threads.GroupTaskPool;
+import gregtechCH.threads.GroupLongTimeTask;
+import gregtechCH.threads.TickTask;
 import gregtechCH.tileentity.IMTEScheduledUpdate_CH;
 import gregtechCH.tileentity.IMTEServerTickParallel;
 import gregtechCH.tileentity.compat.PipeCompat;
 import gregtechCH.util.WD_CH;
+import net.minecraftforge.event.world.WorldEvent;
 
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Set;
@@ -57,6 +59,14 @@ public class GTCH_Main {
         OUT.println(getModNameForLog() + ": ======================");
     }
     
+    // 世界保存加载或者卸载时清空 TICK 队列
+    public static void clearStatic(boolean aIsServerSide) {
+        if (aIsServerSide) {
+            TE_SERVER_TICK_PAR.clear();
+            TE_SERVER_TICK_PA2.clear();
+        }
+    }
+    
     // 重写了原本的更新 tick，用于实现在每 tick 更新时进行调用内部函数。全大写代表不能随便调用
     public static void RESET_SERVER_TIME() {
         SERVER_TIME = 0;
@@ -75,32 +85,16 @@ public class GTCH_Main {
     }
     
     // 实现对于一些机器强制并行 tick
-    private static class TETickRun extends GroupTaskPool.CountRunnable {
-        private final IMTEServerTickParallel mTE;
+    private static class TETickRun extends TickTask<IMTEServerTickParallel> {
         private final boolean mFirst;
-        private boolean mError = F;
-        public TETickRun(IMTEServerTickParallel aTE, boolean aFirst) {TICK_THREAD.super(); mTE = aTE; mFirst = aFirst;}
-        public boolean isDead() {return mError || mTE.isDead();}
-        public void onRemove() {if (!mError) mTE.onUnregisterPar();}
-        @Override
-        public void run2() {mTE.onServerTickPar(mFirst);}
-        @Override
-        public void doCatch(Throwable e) {
-            mError = T;
-            mTE.setError(mFirst?"Server Tick Pre 1 - ":"Server Tick Pre 2 - " + e);
-            synchronized (ERR) {e.printStackTrace(ERR);}
-        }
-        // 重写 hashCode 以及 equals 来方便移除
-        @Override public int hashCode() {return mTE.hashCode();}
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return T;
-            if (o == null) return F;
-            if (o instanceof TETickRun) return mTE.equals(((TETickRun)o).mTE);
-            return F;
-        }
+        public TETickRun(IMTEServerTickParallel aTE, boolean aFirst) {super(aTE); mFirst = aFirst;}
+        
+        @Override protected void onRemove2() {mTE.onUnregisterPar();}
+        @Override protected void run2() {mTE.onServerTickPar(mFirst);}
+        @Override protected String errorMessage() {return mFirst?"Server Tick Pre 1 - ":"Server Tick Pre 2 - ";}
     }
-    private static final Set<TETickRun> TE_SERVER_TICK_PAR  = new LinkedHashSet<>(), TE_SERVER_TICK_PA2  = new LinkedHashSet<>();
+    
+    private static final GroupLongTimeTask TE_SERVER_TICK_PAR = new GroupLongTimeTask(TICK_THREAD), TE_SERVER_TICK_PA2 = new GroupLongTimeTask(TICK_THREAD);
     // 添加实体到并行 tick 的队列中，使用此方法进行 tick 会高度并行，一定要注意线程安全
     public static void addToServerTickParallel(IMTEServerTickParallel aTE) {
         synchronized (TE_SERVER_TICK_PAR) {TE_SERVER_TICK_PAR.add(new TETickRun(aTE, T));}
@@ -117,30 +111,15 @@ public class GTCH_Main {
     
     // 专门的 server tick 方法，在 pre 之后，在 post 之前，用来将耗时部分专门并行处理
     public static void SERVER_TICK() {
-        // 先遍历删除非法的实体
-        Iterator<TETickRun>
-        tIt = TE_SERVER_TICK_PAR.iterator();
-        while (tIt.hasNext()) {
-            TETickRun tTickRun = tIt.next();
-            if (tTickRun.isDead()) {
-                tIt.remove();
-                tTickRun.onRemove();
-            }
-        }
-        // 直接执行，会自动等待全部执行完成
-        TICK_THREAD.runAll(TE_SERVER_TICK_PAR);
+        // 先删除非法的实体
+        TE_SERVER_TICK_PAR.clearDeadTask();
+        // 直接执行，会自动分组执行并且等待全部执行完成
+        TE_SERVER_TICK_PAR.runGrouped();
         
-        // 先遍历删除非法的实体
-        tIt = TE_SERVER_TICK_PA2.iterator();
-        while (tIt.hasNext()) {
-            TETickRun tTickRun = tIt.next();
-            if (tTickRun.isDead()) {
-                tIt.remove();
-                tTickRun.onRemove();
-            }
-        }
-        // 直接执行，会自动等待全部执行完成
-        TICK_THREAD.runAll(TE_SERVER_TICK_PA2);
+        // 先删除非法的实体
+        TE_SERVER_TICK_PA2.clearDeadTask();
+        // 直接执行，会自动分组执行并且等待全部执行完成
+        TE_SERVER_TICK_PA2.runGrouped();
     }
     
     // 实现自用的实体计划任务 api，服务端和客户端通用

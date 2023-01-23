@@ -145,6 +145,9 @@ public class GT_ASM_UT {
         C_NEI_RestartableTask("codechicken/nei/RestartableTask"),
         C_NEI_ThreadOperationTimer("codechicken/nei/ThreadOperationTimer"),
         C_ForgeVersion("net/minecraftforge/common/ForgeVersion"),
+        C_OptiFine_ShadersTess("shadersmod/client/ShadersTess"),
+        
+        M_OptiFine_addVertex(C_OptiFine_ShadersTess, "addVertex", null, null, "(Lbmh;DDD)V"),
     
         M_run(null, "run", null, null, "()V"), // 属于匿名类，这里的 api 暂不支持对匿名类做高级操作
         

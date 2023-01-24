@@ -29,6 +29,7 @@ import gregapi.data.OP;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
+import gregtechCH.block.IBlockDisableNEIDamageSearch;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFalling;
 import net.minecraft.block.material.Material;
@@ -53,7 +54,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 /**
  * @author Gregorius Techneticies
  */
-public abstract class BlockBase extends Block implements IBlockBase {
+public abstract class BlockBase extends Block implements IBlockDisableNEIDamageSearch, IBlockBase {
 	public final String mNameInternal;
 	
 	public BlockBase(Class<? extends ItemBlock> aItemClass, String aNameInternal, Material aMaterial, SoundType aSoundType) {
@@ -170,4 +171,7 @@ public abstract class BlockBase extends Block implements IBlockBase {
 	}
 	
 	@Override public final int quantityDropped(Random aRandom) {return quantityDropped(0, 0, aRandom);}
+	
+	// GTCH, 禁止此方块的 DamageSearch
+	@Override public boolean disableNEIDamageSearch() {return T;}
 }

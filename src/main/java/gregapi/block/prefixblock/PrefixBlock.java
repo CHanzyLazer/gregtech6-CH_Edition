@@ -40,6 +40,7 @@ import gregapi.util.OM;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
+import gregtechCH.block.IBlockDisableNEIDamageSearch;
 import gregtechCH.data.LH_CH;
 import mekanism.api.MekanismAPI;
 import mods.railcraft.common.carts.EntityTunnelBore;
@@ -82,7 +83,7 @@ import static gregapi.data.CS.*;
 /**
  * @author Gregorius Techneticies
  */
-public class PrefixBlock extends Block implements Runnable, ITileEntityProvider, IBlockSyncData, IRenderedBlock, IBlockToolable, IPrefixBlock {
+public class PrefixBlock extends Block implements IBlockDisableNEIDamageSearch, Runnable, ITileEntityProvider, IBlockSyncData, IRenderedBlock, IBlockToolable, IPrefixBlock {
 	public Drops mDrops;
 	public boolean mRegisterToOreDict = T, mHidden = F;
 	
@@ -672,4 +673,7 @@ public class PrefixBlock extends Block implements Runnable, ITileEntityProvider,
 	@Override public void receiveDataLong     (IBlockAccess aWorld, int aX, int aY, int aZ, long   aData, INetworkHandler aNetworkHandler) {/**/}
 	@Override public void receiveDataByteArray(IBlockAccess aWorld, int aX, int aY, int aZ, byte[] aData, INetworkHandler aNetworkHandler) {/**/}
 	@Override public void receiveDataName     (IBlockAccess aWorld, int aX, int aY, int aZ, String aData, INetworkHandler aNetworkHandler) {if (UT.Code.stringValid(aData)) {TileEntity aTileEntity = aWorld.getTileEntity(aX, aY, aZ); if (aTileEntity instanceof PrefixBlockTileEntity) {if (((PrefixBlockTileEntity)aTileEntity).mItemNBT == null) ((PrefixBlockTileEntity)aTileEntity).mItemNBT = UT.NBT.make(); ((PrefixBlockTileEntity)aTileEntity).mItemNBT.setTag("display", UT.NBT.makeString(((PrefixBlockTileEntity)aTileEntity).mItemNBT.getCompoundTag("display"), "Name", aData));}}}
+	
+	// GTCH, 禁止此方块的 DamageSearch
+	@Override public boolean disableNEIDamageSearch() {return T;}
 }

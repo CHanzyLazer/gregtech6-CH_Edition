@@ -86,14 +86,14 @@ public class NEI_ItemListLoaderCrashFix_CH implements IClassTransformer {
                 for (int j = 0; j < m.localVariables.size(); ++j) {
                     LocalVariableNode tLocalVariable = m.localVariables.get(j);
                     if (tLocalVariable.index != timerIdx) continue;
-                    m.localVariables.set(j, new LocalVariableNode(tLocalVariable.name, C_Timer.toDesc(), null, tLocalVariable.start, tLocalVariable.end, timerIdx));
+                    m.localVariables.set(j, new LocalVariableNode(tLocalVariable.name, C_TimerNEI.toDesc(), null, tLocalVariable.start, tLocalVariable.end, timerIdx));
                 }
                 
                 // 修改为创建我的 timer
                 InsnList insert = new InsnList();
-                insert.add(new TypeInsnNode(Opcodes.NEW, C_Timer.deobf));   // 创建 timer
+                insert.add(new TypeInsnNode(Opcodes.NEW, C_TimerNEI.deobf));   // 创建 timer
                 insert.add(new InsnNode(Opcodes.DUP));
-                insert.add(M_Timer_init.specialInvocation(isObfuscated()));             // 调用构造函数
+                insert.add(M_TimerNEI_init.specialInvocation(isObfuscated()));             // 调用构造函数
                 insert.add(new VarInsnNode(Opcodes.ASTORE, timerIdx));      // 存储到临时变量
                 m.instructions.insert(at, insert);
                 
@@ -136,7 +136,7 @@ public class NEI_ItemListLoaderCrashFix_CH implements IClassTransformer {
                 }
                 FrameNode tFrameNode = (FrameNode)at;
                 Object[] tLocalList = tFrameNode.local.toArray();
-                tLocalList[1] = C_Timer.deobf;
+                tLocalList[1] = C_TimerNEI.deobf;
                 tAt = at.getNext();
                 m.instructions.set(at, new FrameNode(Opcodes.F_FULL, tFrameNode.local.size(), tLocalList, tFrameNode.stack.size(), tFrameNode.stack.toArray()));
                 at = tAt;
@@ -163,7 +163,7 @@ public class NEI_ItemListLoaderCrashFix_CH implements IClassTransformer {
                     return GT_ASM.writeByteArraySelfReferenceFixup(classNode);
                 }
                 // 添加自己的调用
-                m.instructions.insert(at, M_Timer_reset.virtualInvocation(isObfuscated())); // 调用 reset
+                m.instructions.insert(at, M_TimerNEI_reset.virtualInvocation(isObfuscated())); // 调用 reset
                 
                 // 匹配不带参数的 reset 方法，替换为 check 方法
                 while (at != null) {
@@ -187,7 +187,7 @@ public class NEI_ItemListLoaderCrashFix_CH implements IClassTransformer {
                     return GT_ASM.writeByteArraySelfReferenceFixup(classNode);
                 }
                 // 添加自己的调用
-                m.instructions.insert(at, M_Timer_check.virtualInvocation(isObfuscated()));
+                m.instructions.insert(at, M_TimerNEI_check.virtualInvocation(isObfuscated()));
                 
                 // 匹配所有的 RETURN，在函数结束前手动关闭 timer
                 at = m.instructions.getFirst();
@@ -195,7 +195,7 @@ public class NEI_ItemListLoaderCrashFix_CH implements IClassTransformer {
                     if (at.getOpcode() == Opcodes.RETURN) {
                         insert.clear();
                         insert.add(new VarInsnNode(Opcodes.ALOAD, timerIdx)); // load timer
-                        insert.add(M_Timer_close.virtualInvocation(isObfuscated()));      // close method
+                        insert.add(M_TimerNEI_close.virtualInvocation(isObfuscated()));      // close method
                         m.instructions.insertBefore(at, insert);
                     }
                     at = at.getNext();

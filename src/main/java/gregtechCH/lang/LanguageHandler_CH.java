@@ -1,8 +1,8 @@
 package gregtechCH.lang;
 
-import com.mojang.realmsclient.util.Pair;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import gregapi.lang.LanguageHandler;
+import gregtechCH.code.Pair;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
@@ -40,13 +40,13 @@ public class LanguageHandler_CH extends LanguageHandler {
         if (aKey.length() <= 0) return;
         BACKUPMAP.put(aKey, aEnglish);
         if (sLangFile == null) {
-            BUFFERMAP.put(aKey, Pair.of(aRegType, aEnglish));
+            BUFFERMAP.put(aKey, new Pair<>(aRegType, aEnglish));
         } else {
             mUseFile = sLangFile.get("EnableLangFile", "UseThisFileAsLanguageFile", F).getBoolean(F);
             if (!BUFFERMAP.isEmpty()) {
                 for (Map.Entry<String, Pair<RegType, String>> tEntry : BUFFERMAP.entrySet()) {
-                    Property tProperty = sLangFile.get(getCategory(tEntry.getValue().first()), tEntry.getKey(), tEntry.getValue().second());
-                    TEMPMAP.put(tEntry.getKey(), mUseFile?tProperty.getString():tEntry.getValue().second());
+                    Property tProperty = sLangFile.get(getCategory(tEntry.getValue().first), tEntry.getKey(), tEntry.getValue().second);
+                    TEMPMAP.put(tEntry.getKey(), mUseFile?tProperty.getString():tEntry.getValue().second);
                     LanguageRegistry.instance().injectLanguage("en_US", TEMPMAP);
                     TEMPMAP.clear();
                 }

@@ -34,21 +34,48 @@ public abstract class MTEC_BasicMachine_Greg implements IMTEC_BasicMachine, IMTE
     // the instance of MultiTileEntityBasicMachine
     protected final MultiTileEntityBasicMachine mTE;
     protected MTEC_BasicMachine_Greg(MultiTileEntityBasicMachine aTE) {mTE = aTE;}
-
-
+    
+    
     /* main code */
+    public boolean mParallelDuration = F;
+    public int mParallel = 1;
+    public long mEnergy = 0, mInputMin = 16, mInput = 32, mInputMax = 64, mMinEnergy = 0, mOutputEnergy = 0, mChargeRequirement = 0;
+    public long mProgress = 0, mMaxProgress = 0;
+    
     protected boolean mCanFillSteam = F;
     public void readFromNBT(NBTTagCompound aNBT) {
-        if (aNBT.hasKey(NBT_CANFILL_STEAM)) mCanFillSteam = aNBT.getBoolean(NBT_CANFILL_STEAM);
+        mEnergy = aNBT.getLong(NBT_ENERGY);
+        if (aNBT.hasKey(NBT_INPUT))             {mInput = aNBT.getLong(NBT_INPUT); mInputMin = mInput / 2; mInputMax = mInput * 2;}
+        if (aNBT.hasKey(NBT_INPUT_MIN))         mInputMin = aNBT.getLong(NBT_INPUT_MIN);
+        if (aNBT.hasKey(NBT_INPUT_MAX))         mInputMax = aNBT.getLong(NBT_INPUT_MAX);
+        if (aNBT.hasKey(NBT_MINENERGY))         mMinEnergy = aNBT.getLong(NBT_MINENERGY);
+        if (aNBT.hasKey(NBT_OUTPUT))            mOutputEnergy = aNBT.getLong(NBT_OUTPUT);
+        if (aNBT.hasKey(NBT_INPUT_EU))          mChargeRequirement = aNBT.getLong(NBT_INPUT_EU);
+        
+        if (aNBT.hasKey(NBT_PROGRESS))          mProgress = aNBT.getLong(NBT_PROGRESS);
+        if (aNBT.hasKey(NBT_MAXPROGRESS))       mMaxProgress = aNBT.getLong(NBT_MAXPROGRESS);
+        
+        if (aNBT.hasKey(NBT_PARALLEL_DURATION)) mParallelDuration = aNBT.getBoolean(NBT_PARALLEL_DURATION);
+        if (aNBT.hasKey(NBT_PARALLEL))          mParallel = Math.max(1, aNBT.getInteger(NBT_PARALLEL));
+        
+        if (aNBT.hasKey(NBT_CANFILL_STEAM))     mCanFillSteam = aNBT.getBoolean(NBT_CANFILL_STEAM);
     }
-    public void writeToNBT(NBTTagCompound aNBT) {/**/}
+    public void writeToNBT(NBTTagCompound aNBT) {
+        UT.NBT.setNumber(aNBT, NBT_ENERGY, mEnergy);
+        UT.NBT.setNumber(aNBT, NBT_MINENERGY, mMinEnergy);
+        UT.NBT.setNumber(aNBT, NBT_OUTPUT, mOutputEnergy);
+        UT.NBT.setNumber(aNBT, NBT_INPUT_EU, mChargeRequirement);
+    
+        UT.NBT.setNumber(aNBT, NBT_PROGRESS, mProgress);
+        UT.NBT.setNumber(aNBT, NBT_MAXPROGRESS, mMaxProgress);
+    }
     public void writeItemNBT(NBTTagCompound aNBT) {/**/}
-
+    
     // tooltips
     @Override public void toolTipsMultiblock(List<String> aList) {/**/}
     @Override public void toolTipsRecipe(List<String> aList) {/**/}
     @Override public void toolTipsEnergy(List<String> aList) {
-        aList.add(LH.Chat.CYAN + LH.get(LH.RECIPES) + ": " + LH.Chat.WHITE + LH.get(mTE.mRecipes.mNameInternal) + (mTE.mParallel > 1 ? " (up to "+mTE.mParallel+"x processed per run)" : ""));
+        aList.add(LH.Chat.CYAN + LH.get(LH.RECIPES) + ": " + LH.Chat.WHITE + LH.get(mTE.mRecipes.mNameInternal) + (mParallel > 1 ? " (up to "+mParallel+"x processed per run)" : ""));
         if (mTE.mCheapOverclocking)
             aList.add(LH.Chat.YELLOW + LH.get(LH.CHEAP_OVERCLOCKING));
         if (mTE.mEfficiency != 10000)
@@ -128,7 +155,7 @@ public abstract class MTEC_BasicMachine_Greg implements IMTEC_BasicMachine, IMTE
             }
         }
     }
-
+    
     public void onMagnifyingGlass(List<String> aChatReturn) {
         aChatReturn.add((mTE.mMode & 1) != 0 ?"Only produce when Output is completely empty":"Produce whenever there is space");
         aChatReturn.add((mTE.mMode & 2) != 0 ?"Only accept Input on empty Input Slots":"Accept Input on all Input Slots");
@@ -137,20 +164,20 @@ public abstract class MTEC_BasicMachine_Greg implements IMTEC_BasicMachine, IMTE
         if (SIDES_VALID[mTE.mFluidAutoInput ]) aChatReturn.add(mTE.mDisabledFluidInput ?"Auto Fluid Input Disabled" :"Auto Fluid Input Enabled" );
         if (SIDES_VALID[mTE.mFluidAutoOutput]) aChatReturn.add(mTE.mDisabledFluidOutput?"Auto Fluid Output Disabled":"Auto Fluid Output Enabled");
     }
-
+    
     // GTCH, 阻止非自动输入输出面的自动连接
     public boolean interceptAutoConnectItem(byte aSide)  {if (SIDES_VALID[aSide] && (FACING_TO_SIDE[mTE.mFacing][mTE.mItemAutoInput]  == aSide || FACING_TO_SIDE[mTE.mFacing][mTE.mItemAutoOutput]  == aSide)) return F; else return T;}
     public boolean interceptAutoConnectFluid(byte aSide) {if (SIDES_VALID[aSide] && (FACING_TO_SIDE[mTE.mFacing][mTE.mFluidAutoInput] == aSide || FACING_TO_SIDE[mTE.mFacing][mTE.mFluidAutoOutput] == aSide)) return F; else return T;}
     // GTCH, 不能输入和输出的面阻止 MOD 管道连接
     public boolean interceptModConnectItem(byte aSide)   {return !FACE_CONNECTED[FACING_ROTATIONS[mTE.mFacing][aSide]][mTE.mItemInputs]  && !FACE_CONNECTED[FACING_ROTATIONS[mTE.mFacing][aSide]][mTE.mItemOutputs];}
     public boolean interceptModConnectFluid(byte aSide)  {return !FACE_CONNECTED[FACING_ROTATIONS[mTE.mFacing][aSide]][mTE.mFluidInputs] && !FACE_CONNECTED[FACING_ROTATIONS[mTE.mFacing][aSide]][mTE.mFluidOutputs];}
-
-
-    // 配方处理相关, TODO 部分成员变量移动到 core
+    
+    
+    // 配方处理相关
     // 你不会希望重写这么复杂的函数的，将其中的一些过程改成独立的函数单独重写
     protected final int canOutput(Recipe aRecipe) {
         int rMaxTimes = calMaxProcessCountFirst(aRecipe);
-
+        
         for (int i = 0, j = mTE.mRecipes.mInputItemsCount; i < mTE.mRecipes.mOutputItemsCount && i < aRecipe.mOutputs.length; i++, j++) if (ST.valid(aRecipe.mOutputs[i])) {
             if (mTE.slotHas(j)) {
                 if ((mTE.mMode & 1) != 0 || aRecipe.mNeedsEmptyOutput) {
@@ -179,7 +206,7 @@ public abstract class MTEC_BasicMachine_Greg implements IMTEC_BasicMachine, IMTE
                 if (aRecipe.mFluidOutputs[j] == null) {
                     tRequiredEmptyTanks--;
                 } else for (FluidTankGT fluidTankGT : mTE.mTanksOutput) if (fluidTankGT.contains(aRecipe.mFluidOutputs[j])) {
-                    if (fluidTankGT.has(Math.max(16000, 1+aRecipe.mFluidOutputs[j].amount*mTE.mParallel)) && !FluidsGT.VOID_OVERFLOW.contains(aRecipe.mFluidOutputs[j].getFluid().getName())) return 0;
+                    if (fluidTankGT.has(Math.max(16000, 1+aRecipe.mFluidOutputs[j].amount*mParallel)) && !FluidsGT.VOID_OVERFLOW.contains(aRecipe.mFluidOutputs[j].getFluid().getName())) return 0;
                     tRequiredEmptyTanks--;
                     break;
                 }
@@ -189,26 +216,26 @@ public abstract class MTEC_BasicMachine_Greg implements IMTEC_BasicMachine, IMTE
         }
         return rMaxTimes;
     }
-
+    
     // 根据配方类型计算初步的最大并行数，是并行数的下界，用于重写
     protected int calMaxProcessCountFirst(Recipe aRecipe) {
         // Don't do more than 30 to 120 Seconds worth of Input at a time, when doing Chain Processing.
-        if (mTE.mParallelDuration) {
+        if (mParallelDuration) {
             // Ugh, I do not feel like Maths right now, but the previous incarnation of this seemed a tiny bit wrong, so I will make sure it works properly.
 //			while (rMaxTimes > 1 && aRecipe.getAbsoluteTotalPower() * rMaxTimes > mInputMax * 600) rMaxTimes--;
             // 重写原本的算法，并行不影响最低功率，保留原本结果
-            return (int) UT.Code.bind(1, mTE.mParallel, mTE.mInputMax * 600 / aRecipe.getAbsoluteTotalPower());
+            return (int) UT.Code.bind(1, mParallel, mInputMax * 600 / aRecipe.getAbsoluteTotalPower());
         }
-        return mTE.mParallel;
+        return mParallel;
     }
-
+    
     /** return codes for checkRecipe() */
     public static final int
     DID_NOT_FIND_RECIPE = 0,
     FOUND_RECIPE_BUT_DID_NOT_MEET_REQUIREMENTS = 1,
     FOUND_AND_SUCCESSFULLY_USED_RECIPE = 2,
     FOUND_AND_COULD_HAVE_USED_RECIPE = 3;
-
+    
     /**
      * Override this to check the Recipes yourself, super calls to this could be useful if you just want to add a special case
      * I thought about Enum too, but Enum doesn't add support for people adding other return Systems.
@@ -219,20 +246,20 @@ public abstract class MTEC_BasicMachine_Greg implements IMTEC_BasicMachine, IMTE
     public final int checkRecipe(boolean aApplyRecipe, boolean aUseAutoInputs) {
         mTE.mCouldUseRecipe = F;
         if (mTE.mRecipes == null) return DID_NOT_FIND_RECIPE;
-
+        
         byte tAutoInput = FACING_TO_SIDE[mTE.mFacing][mTE.mItemAutoInput];
-
+        
         if (aUseAutoInputs && !mTE.mDisabledItemInput && SIDES_VALID[tAutoInput]) {
             ST.moveAll(mTE.getItemInputTarget(tAutoInput), mTE.delegator(tAutoInput));
         }
-
+        
         int tInputItemsCount = 0, tInputFluidsCount = 0;
         ItemStack[] tInputs = new ItemStack[mTE.mRecipes.mInputItemsCount];
         for (int i = 0; i < mTE.mRecipes.mInputItemsCount; i++) {
             tInputs[i] = mTE.slot(i);
             if (ST.valid(tInputs[i])) tInputItemsCount++;
         }
-
+        
         tAutoInput = FACING_TO_SIDE[mTE.mFacing][mTE.mFluidAutoInput];
         if (aUseAutoInputs && !mTE.mDisabledFluidInput && SIDES_VALID[tAutoInput]) {
             DelegatorTileEntity<IFluidHandler> tTileEntity = mTE.getFluidInputTarget(tAutoInput);
@@ -244,18 +271,18 @@ public abstract class MTEC_BasicMachine_Greg implements IMTEC_BasicMachine, IMTE
             }
         }
         for (FluidTankGT tTank : mTE.mTanksInput) if (tTank.has()) tInputFluidsCount++;
-
+        
         if (tInputItemsCount                     < mTE.mRecipes.mMinimalInputItems ) return DID_NOT_FIND_RECIPE;
         if (tInputFluidsCount                    < mTE.mRecipes.mMinimalInputFluids) return DID_NOT_FIND_RECIPE;
         if (tInputItemsCount + tInputFluidsCount < mTE.mRecipes.mMinimalInputs     ) return DID_NOT_FIND_RECIPE;
-
-        Recipe tRecipe = mTE.mRecipes.findRecipe(mTE, mTE.mLastRecipe, F, mTE.mEnergyTypeAccepted == TD.Energy.RF ? mTE.mInputMax / RF_PER_EU : mTE.mInputMax, mTE.slot(mTE.mRecipes.mInputItemsCount+mTE.mRecipes.mOutputItemsCount), mTE.mTanksInput, tInputs);
-
+        
+        Recipe tRecipe = mTE.mRecipes.findRecipe(mTE, mTE.mLastRecipe, F, mTE.mEnergyTypeAccepted == TD.Energy.RF ? mInputMax / RF_PER_EU : mInputMax, mTE.slot(mTE.mRecipes.mInputItemsCount+mTE.mRecipes.mOutputItemsCount), mTE.mTanksInput, tInputs);
+        
         int tMaxProcessCount = 0;
-
+        
         if (tRecipe == null) {
             if (!mTE.mCanUseOutputTanks) return DID_NOT_FIND_RECIPE;
-            tRecipe = mTE.mRecipes.findRecipe(mTE, mTE.mLastRecipe, F, mTE.mEnergyTypeAccepted == TD.Energy.RF ? mTE.mInputMax / RF_PER_EU : mTE.mInputMax, mTE.slot(mTE.mRecipes.mInputItemsCount+mTE.mRecipes.mOutputItemsCount), mTE.mTanksOutput, tInputs);
+            tRecipe = mTE.mRecipes.findRecipe(mTE, mTE.mLastRecipe, F, mTE.mEnergyTypeAccepted == TD.Energy.RF ? mInputMax / RF_PER_EU : mInputMax, mTE.slot(mTE.mRecipes.mInputItemsCount+mTE.mRecipes.mOutputItemsCount), mTE.mTanksOutput, tInputs);
             if (tRecipe == null) return DID_NOT_FIND_RECIPE;
 
             if (tRecipe.mCanBeBuffered) mTE.mLastRecipe = tRecipe;
@@ -265,9 +292,9 @@ public abstract class MTEC_BasicMachine_Greg implements IMTEC_BasicMachine, IMTE
             if (!tRecipe.isRecipeInputEqual(aApplyRecipe, F, mTE.mTanksOutput, tInputs)) return FOUND_RECIPE_BUT_DID_NOT_MEET_REQUIREMENTS;
             mTE.mCouldUseRecipe = T;
             if (!aApplyRecipe) return FOUND_AND_COULD_HAVE_USED_RECIPE;
-
+            
             if (tMaxProcessCount > 1) {
-                if (!mTE.mParallelDuration && mTE.mEnergyTypeAccepted != TD.Energy.TU) tMaxProcessCount = (int)UT.Code.bind(1, tMaxProcessCount, getBoundInput() / Math.max(1, (mTE.mEnergyTypeAccepted == TD.Energy.RF ? tRecipe.mEUt * RF_PER_EU : tRecipe.mEUt)));
+                if (!mParallelDuration && mTE.mEnergyTypeAccepted != TD.Energy.TU) tMaxProcessCount = (int)UT.Code.bind(1, tMaxProcessCount, getBoundInput() / Math.max(1, (mTE.mEnergyTypeAccepted == TD.Energy.RF ? tRecipe.mEUt * RF_PER_EU : tRecipe.mEUt)));
                 tMaxProcessCount = 1+tRecipe.isRecipeInputEqual(tMaxProcessCount-1, mTE.mTanksOutput, tInputs);
             }
         } else {
@@ -278,60 +305,62 @@ public abstract class MTEC_BasicMachine_Greg implements IMTEC_BasicMachine, IMTE
             if (!tRecipe.isRecipeInputEqual(aApplyRecipe, F, mTE.mTanksInput, tInputs)) return FOUND_RECIPE_BUT_DID_NOT_MEET_REQUIREMENTS;
             mTE.mCouldUseRecipe = T;
             if (!aApplyRecipe) return FOUND_AND_COULD_HAVE_USED_RECIPE;
-
+            
             if (tMaxProcessCount > 1) {
-                if (!mTE.mParallelDuration && mTE.mEnergyTypeAccepted != TD.Energy.TU) tMaxProcessCount = (int)UT.Code.bind(1, tMaxProcessCount, getBoundInput() / Math.max(1, (mTE.mEnergyTypeAccepted == TD.Energy.RF ? tRecipe.mEUt * RF_PER_EU : tRecipe.mEUt)));
+                if (!mParallelDuration && mTE.mEnergyTypeAccepted != TD.Energy.TU) tMaxProcessCount = (int)UT.Code.bind(1, tMaxProcessCount, getBoundInput() / Math.max(1, (mTE.mEnergyTypeAccepted == TD.Energy.RF ? tRecipe.mEUt * RF_PER_EU : tRecipe.mEUt)));
                 tMaxProcessCount = 1+tRecipe.isRecipeInputEqual(tMaxProcessCount-1, mTE.mTanksInput, tInputs);
             }
         }
-
+        
         for (byte tSide : ALL_SIDES_VALID_FIRST[FACING_TO_SIDE[mTE.mFacing][mTE.mItemAutoInput]]) if (FACE_CONNECTED[FACING_ROTATIONS[mTE.mFacing][tSide]][mTE.mItemInputs]) {
             DelegatorTileEntity<IInventory> tDelegator = mTE.getItemInputTarget(tSide);
             if (tDelegator != null && tDelegator.mTileEntity instanceof ITileEntityAdjacentInventoryUpdatable) {
                 ((ITileEntityAdjacentInventoryUpdatable)tDelegator.mTileEntity).adjacentInventoryUpdated(tDelegator.mSideOfTileEntity, mTE);
             }
         }
-
-        if (mTE.mSpecialIsStartEnergy && (!mTE.mActive || (mTE.mCurrentRecipe != null && mTE.mCurrentRecipe != tRecipe))) mTE.mChargeRequirement = tRecipe.mSpecialValue;
-
+        
+        if (mTE.mSpecialIsStartEnergy && (!mTE.mActive || (mTE.mCurrentRecipe != null && mTE.mCurrentRecipe != tRecipe))) mChargeRequirement = tRecipe.mSpecialValue;
+        
         mTE.mCurrentRecipe = tRecipe;
         mTE.mOutputItems   = tRecipe.getOutputs(RNGSUS, tMaxProcessCount);
         mTE.mOutputFluids  = tRecipe.getFluidOutputs(RNGSUS, tMaxProcessCount);
-
+        
         if (tRecipe.mEUt < 0) {
-            mTE.mOutputEnergy = -tRecipe.mEUt;
-            mTE.mMaxProgress = tRecipe.mDuration;
-            mTE.mMinEnergy = 0;
+            mOutputEnergy = -tRecipe.mEUt;
+            mMaxProgress = tRecipe.mDuration;
+            mMinEnergy = 0;
         } else {
             calMaxProgress(tMaxProcessCount, tRecipe);
         }
-
+        
         mTE.removeAllDroppableNullStacks();
         return FOUND_AND_SUCCESSFULLY_USED_RECIPE;
     }
-
+    
     // 返回限制并行达到的最低功率 ，用于重写来实现自适应并行数
     protected long getBoundInput() {
-        return mTE.mInput;
+        return mInput;
     }
-
+    
     // 根据并行数，配方类型等计算处理需要的能量和最低能量，用于重写
     protected void calMaxProgress(int aProcessCount, Recipe aRecipe) {
-        if (mTE.mParallelDuration) {
-            mTE.mMinEnergy = Math.max(1, (mTE.mEnergyTypeAccepted == TD.Energy.RF ? aRecipe.mEUt * RF_PER_EU : mTE.mEnergyTypeAccepted == TD.Energy.TU ? aRecipe.mEUt : aRecipe.mEUt));
-            mTE.mMaxProgress = Math.max(1, UT.Code.units(mTE.mMinEnergy * Math.max(1, aRecipe.mDuration) * aProcessCount, mTE.mEfficiency, 10000, T));
+        if (mParallelDuration) {
+            mMinEnergy = Math.max(1, (mTE.mEnergyTypeAccepted == TD.Energy.RF ? aRecipe.mEUt * RF_PER_EU : mTE.mEnergyTypeAccepted == TD.Energy.TU ? aRecipe.mEUt : aRecipe.mEUt));
+            mMaxProgress = Math.max(1, UT.Code.units(mMinEnergy * Math.max(1, aRecipe.mDuration) * aProcessCount, mTE.mEfficiency, 10000, T));
         } else {
-            mTE.mMinEnergy = Math.max(1, (mTE.mEnergyTypeAccepted == TD.Energy.RF ? aRecipe.mEUt * RF_PER_EU * aProcessCount : mTE.mEnergyTypeAccepted == TD.Energy.TU ? aRecipe.mEUt : aRecipe.mEUt * aProcessCount));
-            mTE.mMaxProgress = Math.max(1, UT.Code.units(mTE.mMinEnergy * Math.max(1, aRecipe.mDuration), mTE.mEfficiency, 10000, T));
+            mMinEnergy = Math.max(1, (mTE.mEnergyTypeAccepted == TD.Energy.RF ? aRecipe.mEUt * RF_PER_EU * aProcessCount : mTE.mEnergyTypeAccepted == TD.Energy.TU ? aRecipe.mEUt : aRecipe.mEUt * aProcessCount));
+            mMaxProgress = Math.max(1, UT.Code.units(mMinEnergy * Math.max(1, aRecipe.mDuration), mTE.mEfficiency, 10000, T));
         }
-        if (mTE.mMinEnergy > 0 && !mTE.mCheapOverclocking) while (mTE.mMinEnergy < mTE.mInputMin && mTE.mMinEnergy * 4 <= mTE.mInputMax) {mTE.mMinEnergy *= 4; mTE.mMaxProgress *= 2;}
+        if (mMinEnergy > 0 && !mTE.mCheapOverclocking) while (mMinEnergy < mInputMin && mMinEnergy * 4 <= mInputMax) {mMinEnergy *= 4; mMaxProgress *= 2;}
     }
-
+    
+    @Override public void doWorkFirst(long aTimer) {/**/}
+    
     @Override public boolean doWorkCheck(long aTimer) {
-        return (mTE.mEnergy >= mTE.mInputMin || mTE.mEnergyTypeAccepted == TD.Energy.TU) && mTE.mEnergy >= mTE.mMinEnergy && mTE.checkStructure(F);
+        return (mEnergy >= mInputMin || mTE.mEnergyTypeAccepted == TD.Energy.TU) && mEnergy >= mMinEnergy && mTE.isStructureOkay();
     }
     @Override public void doWorkActive(long aTimer) {
-        mTE.mActive = doActive(aTimer, Math.min(mTE.mInputMax, mTE.mEnergy));
+        mTE.mActive = doActive(aTimer, Math.min(mInputMax, mEnergy));
         mTE.mRunning = T;
     }
     @Override public void doWorkInactive(long aTimer) {
@@ -342,32 +371,32 @@ public abstract class MTEC_BasicMachine_Greg implements IMTEC_BasicMachine, IMTE
         mTE.mSuccessful = F;
     }
     @Override public void doWorkFinal(long aTimer) {
-        mTE.mEnergy -= mTE.mInputMax; if (mTE.mEnergy < 0) mTE.mEnergy = 0;
+        mEnergy -= mInputMax; if (mEnergy < 0) mEnergy = 0;
         if (mTE.mIgnited > 0) mTE.mIgnited--;
     }
-
+    
     // 你不会希望重写这么复杂的函数的，将其中的一些过程改成独立的函数单独重写
     protected final boolean doActive(long aTimer, long aEnergy) {
         boolean rActive = F;
 
-        if (mTE.mMaxProgress <= 0) {
+        if (mMaxProgress <= 0) {
             // Successfully produced something or just got ignited || Some Inventory Stuff changes || The Machine has just been turned ON || Check once every Minute
             if ((mTE.mIgnited > 0 || mTE.mInventoryChanged || !mTE.mRunning || aTimer%1200 == 5) && checkRecipe(!mTE.mStopped, T) == FOUND_AND_SUCCESSFULLY_USED_RECIPE) {
                 mTE.onProcessStarted();
             } else {
-                mTE.mProgress = 0;
+                mProgress = 0;
             }
         }
-
+        
         mTE.mSuccessful = F;
-
-        if (mTE.mMaxProgress > 0 && !(mTE.mSpecialIsStartEnergy && mTE.mChargeRequirement > 0)) {
+        
+        if (mMaxProgress > 0 && !(mTE.mSpecialIsStartEnergy && mChargeRequirement > 0)) {
             rActive = T;
-            if (mTE.mProgress <= mTE.mMaxProgress) {
-                if (mTE.mOutputEnergy > 0) mTE.doOutputEnergy();
-                mTE.mProgress += aEnergy;
+            if (mProgress <= mMaxProgress) {
+                if (mOutputEnergy > 0) mTE.doOutputEnergy();
+                mProgress += aEnergy;
             }
-            if (mTE.mProgress >= mTE.mMaxProgress && (mTE.mStateOld&&!mTE.mStateNew || !TD.Energy.ALL_ALTERNATING.contains(mTE.mEnergyTypeAccepted))) {
+            if (mProgress >= mMaxProgress && (mTE.mStateOld&&!mTE.mStateNew || !TD.Energy.ALL_ALTERNATING.contains(mTE.mEnergyTypeAccepted))) {
                 for (int i = 0; i < mTE.mOutputItems .length; i++) {
                     if (mTE.mOutputItems [i] != null && mTE.addStackToSlot(mTE.mRecipes.mInputItemsCount+(i % mTE.mRecipes.mOutputItemsCount), mTE.mOutputItems[i])) {
                         mTE.mSuccessful = T;
@@ -395,18 +424,18 @@ public abstract class MTEC_BasicMachine_Greg implements IMTEC_BasicMachine, IMTE
                         break;
                     }
                 }
-
+                
                 if (UT.Code.containsSomething(mTE.mOutputItems) || UT.Code.containsSomething(mTE.mOutputFluids)) {
-                    mTE.mMinEnergy = 0;
-                    mTE.mOutputEnergy = 0;
-                    mTE.mChargeRequirement = 0;
-                    mTE.mProgress = mTE.mMaxProgress;
+                    mMinEnergy = 0;
+                    mOutputEnergy = 0;
+                    mChargeRequirement = 0;
+                    mProgress = mMaxProgress;
                 } else {
-                    mTE.mProgress -= mTE.mMaxProgress; // this way the leftover energy can be used on the next processed thing, unless it gets stuck on an output.
-                    mTE.mMinEnergy = 0;
-                    mTE.mMaxProgress = 0;
-                    mTE.mOutputEnergy = 0;
-                    mTE.mChargeRequirement = 0;
+                    mProgress -= mMaxProgress; // this way the leftover energy can be used on the next processed thing, unless it gets stuck on an output.
+                    mMinEnergy = 0;
+                    mMaxProgress = 0;
+                    mOutputEnergy = 0;
+                    mChargeRequirement = 0;
                     mTE.mOutputItems = ZL_IS;
                     mTE.mOutputFluids = ZL_FS;
                     mTE.mSuccessful = T;
@@ -418,19 +447,19 @@ public abstract class MTEC_BasicMachine_Greg implements IMTEC_BasicMachine, IMTE
                             ((ITileEntityAdjacentInventoryUpdatable)tDelegator.mTileEntity).adjacentInventoryUpdated(tDelegator.mSideOfTileEntity, mTE);
                         }
                     }
-
+                    
                     mTE.onProcessFinished();
                 }
             }
         }
-
+        
         mTE.mStateOld = mTE.mStateNew;
-
+        
         if (!mTE.mDisabledItemOutput && SIDES_VALID[mTE.mItemAutoOutput]) {
             boolean
             tOutputEmpty = T;
             for (int i = mTE.mRecipes.mInputItemsCount, j = i + mTE.mRecipes.mOutputItemsCount; i < j; i++) if (mTE.slotHas(i)) {tOutputEmpty = F; break;}
-
+            
             // Output not Empty && (Successfully produced something or just got ignited || Some Inventory Stuff changes || The Machine has just been turned ON || Output has been blocked since 256 active ticks || Check once every 10 Seconds)
             if (!tOutputEmpty && (mTE.mIgnited > 0 || mTE.mInventoryChanged || !mTE.mRunning || mTE.mOutputBlocked == 1 || aTimer%200 == 5)) {
                 boolean tInventoryChanged = mTE.mInventoryChanged;
@@ -438,30 +467,33 @@ public abstract class MTEC_BasicMachine_Greg implements IMTEC_BasicMachine, IMTE
                 mTE.doOutputItems();
                 if (mTE.mInventoryChanged) mTE.mOutputBlocked = 0; else mTE.mInventoryChanged |= tInventoryChanged;
             }
-
+            
             tOutputEmpty = T;
             for (int i = mTE.mRecipes.mInputItemsCount, j = i + mTE.mRecipes.mOutputItemsCount; i < j; i++) if (mTE.slotHas(i)) {tOutputEmpty = F; mTE.mOutputBlocked++; break;}
-
+            
             if (tOutputEmpty) mTE.mOutputBlocked = 0;
         }
-
+        
         return rActive;
     }
-
+    
     protected boolean doInactive(long aTimer) {
         if (mTE.mActive) {
             mTE.doSoundInterrupt();
             if (!mTE.mDisabledItemOutput) mTE.doOutputItems();
         }
-        if (CONSTANT_ENERGY && !mTE.mNoConstantEnergy) mTE.mProgress = 0;
+        if (CONSTANT_ENERGY && !mTE.mNoConstantEnergy) mProgress = 0;
         if (mTE.mRunning || mTE.mIgnited > 0 || mTE.mInventoryChanged || aTimer % 1200 == 5) {
-            if (!mTE.checkStructure(F)) mTE.checkStructure(T);
             mTE.checkRecipe(F, T);
         }
         return F;
     }
-
-
+    
+    
+    public boolean hasWork() {return mMaxProgress > 0 || mChargeRequirement > 0;}
+    public long getProgressValue(byte aSide) {return mTE.mSuccessful ? getProgressMax(aSide) : mMinEnergy < 1 ? mProgress    : mProgress    / mMinEnergy + (mProgress    % mMinEnergy == 0 ? 0 : 1) ;}
+    public long getProgressMax  (byte aSide) {return Math.max(1,                           mMinEnergy < 1 ? mMaxProgress : mMaxProgress / mMinEnergy + (mMaxProgress % mMinEnergy == 0 ? 0 : 1));}
+    
     public boolean canFillExtra(FluidStack aFluid) {
         if (mCanFillSteam) return FL.anysteam(aFluid);
         return F;

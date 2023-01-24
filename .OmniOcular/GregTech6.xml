@@ -3430,44 +3430,21 @@
 				return RED + "请放入待加工的物品";
 			}
 		</line>
-
+		
 		<line displayname = "输入警告">
 			if((nbt['gt.running'] != undefined) && (nbt['gt.invlist']['0']['s'] == 0) && (nbt['gt.active'] != 1)){
 				return RED + "若多次点火失败，请检查是否存在相应合成表";
 			}
 		</line>
-
-		<line displayname = "工作进程">
-			if(nbt['gt.progress'] != undefined){
-				return nbt['gt.progress'] / 20 + Unit("S") + " / " + nbt['gt.maxprogress'] / 20 + Unit("S") + " - " + parseInt(nbt['gt.progress'] * 10000 / nbt['gt.maxprogress']) / 100 + " %";
-			}
-		</line>
-
-		<line displayname = "正在加工">
-			return nbt['gt.invout.0']['Count'] + Unit("个 ") + name(nbt['gt.invout.0']) + " - " + nbt['gt.tankout.0']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tankout.0']['FluidName']);
-		</line>
-
+		
 		<line displayname = "输入物品">
 			if(nbt['gt.invlist']['0']['s'] == 0){
 				return nbt['gt.invlist']['0']['Count'] + Unit("个 ") + name(nbt['gt.invlist']['0']);
 			}
 		</line>
-
-		<line displayname = "输出物品">
-			if(nbt['gt.invlist']['0']['s'] == 1){
-				return nbt['gt.invlist']['0']['Count'] + Unit("个 ") + name(nbt['gt.invlist']['0']);
-			}
-			else if(nbt['gt.invlist']['1']['s'] == 1){
-				return nbt['gt.invlist']['1']['Count'] + Unit("个 ") + name(nbt['gt.invlist']['1']);
-			}
-		</line>
-
-		<line displayname = "输出流体">
-			return nbt['gt.tank.out.0']['Amount'] + Unit("L") + " " + fluidName(nbt['gt.tank.out.0']['FluidName']);
-		</line>
-
+		
 	</tileentity>
-
+	
 	<!-- 地表岩石 -->
 	<tileentity id = "gt.multitileentity.rock">
 		<line displayname = "所含物品">
@@ -4008,7 +3985,7 @@
 	<!-- 多方块机器 -->
 	<tileentity id = "gt.multitileentity.multiblock.*">
 		<line displayname = "工作状态">
-			if(id != "gtch.multitileentity.multiblock.cokeoven" || id != "gtch.multitileentity.multiblock.turbine.gas" || id != "gtch.multitileentity.multiblock.turbine.steam"){
+			if(id != "gt.multitileentity.multiblock.cokeoven" || id != "gt.multitileentity.multiblock.turbine.gas" || id != "gt.multitileentity.multiblock.turbine.steam"){
 				if(nbt['gt.active'] != undefined){
 				return BLUE + "正在加工";
 				}
@@ -4020,25 +3997,35 @@
 				}
 				return RED + "停机";
 			}
-			
 		</line>
-
+		
 		<line displayname = "工作进程">
 			if(nbt['gt.progress'] != undefined){
 			return (nbt['gt.progress'] / 20 / nbt['gt.minenergy']).toFixed(1) + Unit("S") + " / " + (nbt['gt.maxprogress'] / 20 / nbt['gt.minenergy']).toFixed(1) + Unit("S") + " - " + parseInt(nbt['gt.progress'] * 10000 / nbt['gt.maxprogress']) / 100 + " %";
 			}
 		</line>
-
+		
+		<line displayname = "工作效率">
+			if((nbt['gtch.input.now'] != undefined) && (nbt['gt.minenergy'] != undefined) && (nbt['gtch.eff'] != undefined)){
+				if((nbt['gtch.input.now'] >= nbt['gt.minenergy']) && (nbt['gt.active'] != undefined) && (nbt['gtch.progress.rate'] != undefined)){
+					return parseInt(nbt['gtch.progress.rate'] * nbt['gtch.eff'] / nbt['gtch.input.now']) / 100 + " %";
+				}
+				else if(nbt['gtch.input.now'] < nbt['gt.minenergy']){
+					return RED + "功率不足, 需要: " + WHITE + nbt['gt.minenergy'] + Unit(ID2EnergyType(nbt['gt.mte.id']));
+				}
+			}
+		</line>
+		
 		<line displayname = "能量需求">
 			if(nbt['gt.minenergy'] != undefined){
 			return nbt['gt.minenergy'] + Unit(ID2EnergyType(nbt['gt.mte.id']));
 			}
 		</line>
-
+		
 		<line displayname = "正在加工">
 			return nbt['gt.invout.0']['Count'] + Unit("个 ") + name(nbt['gt.invout.0']);
 		</line>
-
+		
 		<line displayname = "正在加工">
 			return nbt['gt.invout.1']['Count'] + Unit("个 ") + name(nbt['gt.invout.1']);
 		</line>

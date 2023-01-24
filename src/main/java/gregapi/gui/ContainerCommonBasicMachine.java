@@ -30,6 +30,7 @@ import gregapi.recipes.Recipe.RecipeMap;
 import gregapi.tileentity.ITileEntityInventoryGUI;
 import gregapi.tileentity.machines.MultiTileEntityBasicMachine;
 import gregapi.util.UT;
+import gregtechCH.tileentity.cores.basicmachines.MTEC_BasicMachine;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
 
@@ -277,10 +278,11 @@ public class ContainerCommonBasicMachine extends ContainerCommon {
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
 		for (ICrafting tUpdate : (List<ICrafting>)crafters) {
+			MTEC_BasicMachine tCore = ((MultiTileEntityBasicMachine)mTileEntity).core();
 			if (((MultiTileEntityBasicMachine)mTileEntity).mSuccessful) {
 				tUpdate.sendProgressBarUpdate(this, 0, Short.MAX_VALUE);
-			} else if (((MultiTileEntityBasicMachine)mTileEntity).mMaxProgress > 0) {
-				tUpdate.sendProgressBarUpdate(this, 0, (short)UT.Code.units(Math.min(((MultiTileEntityBasicMachine)mTileEntity).mMaxProgress, ((MultiTileEntityBasicMachine)mTileEntity).mProgress), ((MultiTileEntityBasicMachine)mTileEntity).mMaxProgress, Short.MAX_VALUE, T));
+			} else if (tCore.mMaxProgress > 0) {
+				tUpdate.sendProgressBarUpdate(this, 0, (short)UT.Code.units(Math.min(tCore.mMaxProgress, tCore.mProgress), tCore.mMaxProgress, Short.MAX_VALUE, T));
 			} else {
 				tUpdate.sendProgressBarUpdate(this, 0, -1);
 			}

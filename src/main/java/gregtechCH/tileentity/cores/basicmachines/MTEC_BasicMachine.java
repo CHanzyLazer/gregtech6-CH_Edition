@@ -19,37 +19,30 @@ import static gregtechCH.data.CS_CH.*;
  */
 public class MTEC_BasicMachine extends MTEC_BasicMachine_Greg {
     public MTEC_BasicMachine(MultiTileEntityBasicMachine aTE) {super(aTE);}
-
+    
     /* main code */
-    public long mProgressRate = Math.min(mTE.mInputMax, mTE.mEnergy);
-    public long mInputNow = mTE.mEnergy;
+    protected long mProgressRate = 0;
+    protected long mInputNow = 0;
     // NBT 读写
-    @Override
-    public void readFromNBT(NBTTagCompound aNBT) {
-        super.readFromNBT(aNBT);
-        if (aNBT.hasKey(NBT_PROGRESS_RATE)) mProgressRate = aNBT.getLong(NBT_PROGRESS_RATE);
-    }
-
     @Override
     public void writeToNBT(NBTTagCompound aNBT) {
         super.writeToNBT(aNBT);
-        UT.NBT.setNumber(aNBT, NBT_PROGRESS_RATE, mProgressRate);
-
-        UT.NBT.setNumber(aNBT, NBT_INPUT_NOW, mInputNow);  // for OmniOcular usage
-        UT.NBT.setNumber(aNBT, NBT_EFFICIENCY_CH, mTE.mEfficiency);  // for OmniOcular usage
+        UT.NBT.setNumber(aNBT, NBT_PROGRESS_RATE, mProgressRate);   // for OmniOcular usage
+        UT.NBT.setNumber(aNBT, NBT_INPUT_NOW, mInputNow);           // for OmniOcular usage
+        UT.NBT.setNumber(aNBT, NBT_EFFICIENCY_CH, mTE.mEfficiency); // for OmniOcular usage
     }
-
+    
     // tooltips
     @Override
     public void toolTipsEnergy(List<String> aList) {
-        aList.add(LH.Chat.CYAN + LH.get(LH.RECIPES) + ": " + LH.Chat.WHITE + LH.get(mTE.mRecipes.mNameInternal) + (mTE.mParallel > 1 ? " (" + LH_CH.getNumber(LH_CH.ENERGY_PARALLEL, mTE.mParallel) + ")" : ""));
+        aList.add(LH.Chat.CYAN + LH.get(LH.RECIPES) + ": " + LH.Chat.WHITE + LH.get(mTE.mRecipes.mNameInternal) + (mParallel > 1 ? " (" + LH_CH.getNumber(LH_CH.ENERGY_PARALLEL, mParallel) + ")" : ""));
         if (mTE.mEfficiency != 10000)
             aList.add(LH.getToolTipEfficiency(mTE.mEfficiency));
     }
     @Override
     public void toolTipsUseful(List<String> aList) {
         if (mTE.mEnergyTypeAccepted == TD.Energy.TU) {
-            if (!mTE.mParallelDuration && mTE.mParallel>1) {
+            if (!mParallelDuration && mParallel>1) {
                 aList.add(LH.Chat.YELLOW + LH_CH.get(LH_CH.OVERCLOCK_PARALLEL_TU));
             }
         } else {
@@ -58,12 +51,12 @@ public class MTEC_BasicMachine extends MTEC_BasicMachine_Greg {
             } else {
                 aList.add(LH.Chat.YELLOW + LH_CH.get(LH_CH.OVERCLOCK_EXPENSIVE)+ " (" + LH_CH.get(LH_CH.OVERCLOCK_SQRT) + ")");
             }
-            if (!mTE.mParallelDuration && mTE.mParallel>1) {
+            if (!mParallelDuration && mParallel>1) {
                 aList.add(LH.Chat.YELLOW + LH_CH.get(LH_CH.OVERCLOCK_PARALLEL));
             }
         }
     }
-
+    
     // 工具右键
     @Override
     public void onMagnifyingGlass(List<String> aChatReturn) {
@@ -73,37 +66,39 @@ public class MTEC_BasicMachine extends MTEC_BasicMachine_Greg {
     public void onMagnifyingGlassEnergy(List<String> aChatReturn) {
         if (mTE.mActive) aChatReturn.add("Processing, " + LH.get(LH.EFFICIENCY) + ": " + LH.percent(UT.Code.units(mTE.mEfficiency, mInputNow, mProgressRate, F)) + "%");
     }
-
+    
     // 处理计算
     @Override
     protected long getBoundInput() {
-        return Math.max(Math.min(mTE.mInputMax, mInputNow), mTE.mInputMin);
+        return Math.max(Math.min(mInputMax, mInputNow), mInputMin);
     }
-
+    
     @Override
     protected void calMaxProgress(int aProcessCount, Recipe aRecipe) {
         // 保持代码简洁这里不考虑 RF 输入
-        if (mTE.mParallelDuration) {
-            mTE.mMinEnergy = Math.max(1, aRecipe.mEUt);
-            mTE.mMaxProgress = Math.max(1, UT.Code.units(aRecipe.mEUt * Math.max(1, aRecipe.mDuration) * aProcessCount, mTE.mEfficiency, 10000, T));
+        if (mParallelDuration) {
+            mMinEnergy = Math.max(1, aRecipe.mEUt);
+            mMaxProgress = Math.max(1, UT.Code.units(mMinEnergy * Math.max(1, aRecipe.mDuration) * aProcessCount, mTE.mEfficiency, 10000, T));
         } else if (mTE.mEnergyTypeAccepted == TD.Energy.TU) {
-            mTE.mMinEnergy = Math.max(1, aRecipe.mEUt);
-            mTE.mMaxProgress = Math.max(1, UT.Code.units(aRecipe.mEUt * Math.max(1, aRecipe.mDuration), mTE.mEfficiency, 10000, T));
+            mMinEnergy = Math.max(1, aRecipe.mEUt);
+            mMaxProgress = Math.max(1, UT.Code.units(mMinEnergy * Math.max(1, aRecipe.mDuration), mTE.mEfficiency, 10000, T));
         } else {
-            mTE.mMinEnergy = Math.max(1, aRecipe.mEUt * aProcessCount);
-            mTE.mMaxProgress = Math.max(1, UT.Code.units(aRecipe.mEUt * Math.max(1, aRecipe.mDuration) * aProcessCount, mTE.mEfficiency, 10000, T));
+            mMinEnergy = Math.max(1, aRecipe.mEUt * aProcessCount);
+            mMaxProgress = Math.max(1, UT.Code.units(mMinEnergy * Math.max(1, aRecipe.mDuration), mTE.mEfficiency, 10000, T));
         }
     }
-
+    
+    @Override public void doWorkFirst(long aTimer) {mInputNow = mEnergy;}
     @Override public void doWorkActive(long aTimer) {
         if (!mTE.mCheapOverclocking) {
             // 有损超频，采用连续公式 rate = sqrt(input * minEnergy)，和原本一样不过连续化了
-            mProgressRate = (long) Math.sqrt(Math.min(mTE.mInputMax, mTE.mEnergy) * mTE.mMinEnergy);
+            mProgressRate = (long) Math.sqrt(Math.min(mInputMax, mEnergy) * mMinEnergy);
         } else {
             // 无损超频，处理速度直接是输入能量
-            mProgressRate = Math.min(mTE.mInputMax, mTE.mEnergy);
+            mProgressRate = Math.min(mInputMax, mEnergy);
         }
-        super.doWorkActive(aTimer);
+        mTE.mActive = doActive(aTimer, mProgressRate);
+        mTE.mRunning = T;
     }
     @Override public void doWorkInactive(long aTimer) {
         super.doWorkInactive(aTimer);

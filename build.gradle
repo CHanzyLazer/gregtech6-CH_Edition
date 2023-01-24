@@ -63,6 +63,8 @@ task eclipseForgeWorkspace(type: Copy) {
 }
 
 import org.apache.tools.ant.taskdefs.condition.Os
+import org.codehaus.groovy.runtime.GStringImpl
+
 task eclipseForgeProject {
 	doLast {
 		if(!(new File("eclipse/Minecraft")).exists()) {
@@ -185,7 +187,7 @@ dependencies {
 	//shade 'net.mostlyoriginal.artemis-odb:contrib-core:2.3.0'
 	//shade 'net.mostlyoriginal.artemis-odb:contrib-eventbus:2.3.0'
 	//shade 'net.fbridault.eeel:artemis-odb-eeel:1.2'
-//	shade 'com.alibaba:fastjson:1.2.79'            // CHanzy json, now use google.gson instead
+//	shade 'com.alibaba:fastjson:1.2.79'                // CHanzy json, now use google.gson instead
 //	shade 'org.apache.commons:commons-collections4:4.2' // CHanzy collestions, used the ListOrderedMap on it, now no longer need this
 	runtimeOnly 'org.apache.commons:commons-math3:3.2' // Needed for dev opis because it doesn't know how to specify dependencies properly
 	runtimeOnly 'org.jfree:jcommon:1.0.21'             // Needed for dev opis because it doesn't know how to specify dependencies properly
@@ -204,6 +206,7 @@ dependencies {
 	compileOnly files("dirtyLibs/Immibiss-Microblocks-Mod-1.7.10.jar")
 	compileOnly files("dirtyLibs/EnderCore-1.7.10-0.2.0.39_beta-dev.jar")
 	compileOnly files("dirtyLibs/EnderIO-1.7.10-2.3.0.429_beta-dev.jar")
+	compileOnly files("dirtyLibs/OptiFine_1.7.10_HD_U_E7.jar")
 	compileOnly "inventorytweaks:InventoryTweaks:1.59-dev:deobf"
 	compileOnly "net.electricalage.eln:ElectricalAge-jrddunbr:1.16.3:dev"
 	compileOnly "net.sengir.forestry:forestry_1.7.10:4.2.16.64:dev"
@@ -575,10 +578,10 @@ task OmniOcular_CH(type: Zip) {
 	destinationDir = new File('./build/libs/')
 }
 
-task langrage_CH(type: Zip) {
+task language_CH(type: Zip) {
 	from('./.lang/')
 	include('**/')
-	classifier = 'langrage_CH'
+	classifier = 'language_CH'
 	destinationDir = new File('./build/libs/')
 }
 
@@ -587,28 +590,28 @@ jar.dependsOn supporterlistgold
 jar.dependsOn changelog
 jar.dependsOn defaultConfigPack
 jar.dependsOn OmniOcular_CH
-jar.dependsOn langrage_CH
+jar.dependsOn language_CH
 
 reobf {
-	//reobf(coreJar) {
+	//reobf(coreJar) {F
 	//	spec -> spec.classpath = sourceSets.main.compileClasspath
 	//}
 }
 
 artifacts {
-	archives devJar, sourceJar, changelog.output, supporterlist.output, supporterlistgold.output, defaultConfigPack, OmniOcular_CH, langrage_CH //, coreJar
+	archives devJar, sourceJar, changelog.output, supporterlist.output, supporterlistgold.output, defaultConfigPack, OmniOcular_CH, language_CH //, coreJar
 }
 
 if (!hasProperty("mavenUsername")) {
-	ext.mavenUsername="${System.getenv().MAVEN_USERNAME}"
+	ext.mavenUsername= "${System.getenv().MAVEN_USERNAME}" as GStringImpl
 }
 
 if (!hasProperty("mavenPassword")) {
-	ext.mavenPassword="${System.getenv().MAVEN_PASSWORD}"
+	ext.mavenPassword= "${System.getenv().MAVEN_PASSWORD}" as GStringImpl
 }
 
 if (!hasProperty("mavenURL")) {
-	ext.mavenURL="${System.getenv().MAVEN_URL}"
+	ext.mavenURL= "${System.getenv().MAVEN_URL}" as GStringImpl
 }
 
 if ( !project.buildInfo.tag.contains("-dirty") && (System.getenv().ONLY_RELEASES!="true" || project.buildInfo.isRelease) ) {

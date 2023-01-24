@@ -27,6 +27,8 @@ import gregapi.util.WD;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 
+import java.util.Arrays;
+
 /**
  * @author Gregorius Techneticies
  * 
@@ -54,7 +56,7 @@ public abstract class TileEntityBase02AdjacentTEBuffer extends TileEntityBase01R
 	}
 	
 	private void clearEverythingFromTileEntityBuffer() {
-		for (int i = 0; i < mBufferedTileEntities.length; i++) mBufferedTileEntities[i] = null;
+		Arrays.fill(mBufferedTileEntities, null);
 	}
 	
 	/**
@@ -143,15 +145,15 @@ public abstract class TileEntityBase02AdjacentTEBuffer extends TileEntityBase01R
 		super.updateEntity();
 		
 		if (!isDead()) {
-			mTimer++;
+			++mTimer;
 			
 			if (isServerSide()) {
 				if (mTimer == 1) {
-					oX = xCoord; oY = yCoord; oZ = zCoord; mDoesBlockUpdate = T;
+					mDoesBlockUpdate = T;
 					clearEverythingFromTileEntityBuffer();
 				}
-				if (oX != xCoord || oY != yCoord || oZ != zCoord) {
-					clearEverythingFromTileEntityBuffer();
+				if (oX != xCoord || oY != yCoord || oZ != zCoord) { // 现在第一个 tick 的坐标修改也会被考虑进去
+					if (mTimer != 1) clearEverythingFromTileEntityBuffer();
 					onCoordinateChange(worldObj, oX, oY, oZ);
 					oX = xCoord; oY = yCoord; oZ = zCoord;
 				}

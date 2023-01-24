@@ -456,10 +456,12 @@ public class MultiTileEntityRegistry {
 		MultiTileEntityContainer rContainer = new MultiTileEntityContainer((TileEntity)UT.Reflection.callConstructor(tClass.mClass, -1, null, T), tClass.mBlock, tClass.mBlockMetaData);
 		if (rContainer.mTileEntity == null) return null;
 		rContainer.mTileEntity.setWorldObj(aWorld);
-		rContainer.mTileEntity.xCoord = aX;
-		rContainer.mTileEntity.yCoord = aY;
-		rContainer.mTileEntity.zCoord = aZ;
-		((IMultiTileEntity)rContainer.mTileEntity).initFromNBT(aNBT == null || aNBT.hasNoTags() ? tClass.mParameters : UT.NBT.fuse(aNBT, tClass.mParameters), (short)aID, (short)Block.getIdFromBlock(mBlock));
+		// 由于还会从 nbt 中读取坐标，所以原本直接设置是无效的，必须要直接设置到 nbt 中（需要注意即使这样也不能保证坐标是一定准确的）
+		NBTTagCompound tNBT = aNBT == null || aNBT.hasNoTags() ? tClass.mParameters : UT.NBT.fuse(aNBT, tClass.mParameters);
+		tNBT.setInteger("x", aX);
+		tNBT.setInteger("y", aY);
+		tNBT.setInteger("z", aZ);
+		((IMultiTileEntity)rContainer.mTileEntity).initFromNBT(tNBT, (short)aID, (short)Block.getIdFromBlock(mBlock));
 		return rContainer;
 	}
 	

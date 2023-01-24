@@ -117,6 +117,10 @@ public abstract class TileEntityBase04MultiTileEntities extends TileEntityBase03
 				}
 			}
 		}
+		// read the Coords if it has them.
+		if (aNBT.hasKey("x")) oX = xCoord = aNBT.getInteger("x");
+		if (aNBT.hasKey("y")) oY = yCoord = aNBT.getInteger("y");
+		if (aNBT.hasKey("z")) oZ = zCoord = aNBT.getInteger("z");
 		// read the custom Name.
 		if (aNBT.hasKey("display")) mCustomName = aNBT.getCompoundTag("display").getString("Name");
 		// And now your custom readFromNBT.

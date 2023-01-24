@@ -116,6 +116,7 @@ public class GT_ASM implements IFMLLoadingPlugin {
 			transformers.put(BuildCraft_PipeAutoConnectFix_CH.class.getName(), true);
 			transformers.put(NEI_ItemListLoaderCrashFix_CH.class.getName(), true);
 			transformers.put(Forge_VersionDownloadFailFix_CH.class.getName(), true);
+			transformers.put(OptiFine_ExpandMaxTesselatorBuffer_CH.class.getName(), true);
 			
 			mclocation = new File(mclocation, "/config/gregtech");
 			mclocation.mkdirs();

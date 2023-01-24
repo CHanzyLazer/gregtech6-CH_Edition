@@ -145,6 +145,9 @@ public class GT_ASM_UT {
         C_NEI_RestartableTask("codechicken/nei/RestartableTask"),
         C_NEI_ThreadOperationTimer("codechicken/nei/ThreadOperationTimer"),
         C_ForgeVersion("net/minecraftforge/common/ForgeVersion"),
+        C_OptiFine_ShadersTess("shadersmod/client/ShadersTess"),
+        
+        M_OptiFine_addVertex(C_OptiFine_ShadersTess, "addVertex", null, null, "(Lbmh;DDD)V"),
     
         M_run(null, "run", null, null, "()V"), // 属于匿名类，这里的 api 暂不支持对匿名类做高级操作
         
@@ -198,11 +201,11 @@ public class GT_ASM_UT {
         // my hooks
         C_GTASM_LO("gregtech/interfaces/asm/LO_CH"),
         C_GTASM_R("gregtech/asm/transformers/replacements/Methods"),
-        C_Timer("gregtech/asm/transformers/replacements/Timer"),
-        M_Timer_init(C_Timer, "<init>", null, null, "()V"),
-        M_Timer_reset(C_Timer, "reset", null, null, "("+toDesc(C_Object)+")V"),
-        M_Timer_check(C_Timer, "check", null, null, "()V"),
-        M_Timer_close(C_Timer, "close", null, null, "()V"),
+        C_TimerNEI("gregtech/asm/transformers/replacements/TimerNEI"),
+        M_TimerNEI_init(C_TimerNEI, "<init>", null, null, "()V"),
+        M_TimerNEI_reset(C_TimerNEI, "reset", null, null, "("+toDesc(C_Object)+")V"),
+        M_TimerNEI_check(C_TimerNEI, "check", null, null, "()V"),
+        M_TimerNEI_close(C_TimerNEI, "close", null, null, "()V"),
         M_enabledLO(C_GTASM_LO, "isEnableAsmBlockGtLightOpacity", null, null, "()Z"),
         M_getLO(C_GTASM_LO, "getLightOpacityNA", null, null, "("+toDesc(C_EBS)+")"+toDesc(C_NA)),
         M_initLO(C_GTASM_LO, "initLightOpacityNA", null, null, "("+toDesc(C_EBS, C_NA)+")V"),

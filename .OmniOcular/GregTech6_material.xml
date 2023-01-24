@@ -12,7 +12,6 @@
                 case 3:{return "Neutron";}
                 case 4:{return "Proton";}
                 case 5:{return "Electron";}
-                case 4000:{return "Magic";}
                 case 10:{return "Hydrogen";}
                 case 11:{return "Deuterium";}
                 case 12:{return "Tritium";}
@@ -21,7 +20,10 @@
                 case 30:{return "Lithium";}
                 case 31:{return "Lithium6";}
                 case 40:{return "Beryllium";}
+                case 41:{return "Beryllium7";}
+                case 42:{return "Beryllium8";}
                 case 50:{return "Boron";}
+                case 51:{return "Boron11";}
                 case 60:{return "Carbon";}
                 case 61:{return "Carbon13";}
                 case 62:{return "Carbon14";}
@@ -76,7 +78,7 @@
                 case 540:{return "Xenon";}
                 case 550:{return "Caesium";}
                 case 560:{return "Barium";}
-                case 570:{return "Lantanium";}
+                case 570:{return "Lanthanium";}
                 case 580:{return "Cerium";}
                 case 590:{return "Praseodymium";}
                 case 600:{return "Neodymium";}
@@ -99,6 +101,7 @@
                 case 770:{return "Iridium";}
                 case 780:{return "Platinum";}
                 case 790:{return "Gold";}
+                case 791:{return "Gold198";}
                 case 800:{return "Mercury";}
                 case 810:{return "Thallium";}
                 case 820:{return "Lead";}
@@ -113,12 +116,17 @@
                 case 910:{return "Protactinium";}
                 case 920:{return "Uranium";}
                 case 921:{return "Uranium235";}
+                case 922:{return "Uranium233";}
                 case 930:{return "Neptunium";}
                 case 940:{return "Plutonium";}
+                case 942:{return "Plutonium240";}
                 case 943:{return "Plutonium241";}
                 case 945:{return "Plutonium243";}
+                case 946:{return "Plutonium238";}
+                case 947:{return "Plutonium239";}
                 case 950:{return "Americium";}
                 case 951:{return "Americium241";}
+                case 952:{return "Americium242";}
                 case 960:{return "Curium";}
                 case 970:{return "Berkelium";}
                 case 980:{return "Californium";}
@@ -182,7 +190,7 @@
                 case 1550:{return "Unpentpentium";}
                 case 1560:{return "Unpenthexium";}
                 case 1570:{return "Unpentseptium";}
-                case 1580:{return "Unpentoctium";}
+                case 1580:{return "AntiUnpentoctium";}
                 case 1590:{return "Unpentennium";}
                 case 1600:{return "Unhexnilium";}
                 case 1610:{return "Unhexunium";}
@@ -211,12 +219,12 @@
                 case 1820:{return "Unoctbium";}
                 case 1830:{return "Unocttrium";}
                 case 1840:{return "Unoctquadium";}
-                case 1850:{return "Unoctpentium";}
-                case 1860:{return "Unocthexium";}
-                case 1870:{return "Unoctseptium";}
-                case 1880:{return "Unoctoctium";}
+                case 1850:{return "Abyssalnite";}
+                case 1860:{return "Coralium";}
+                case 1870:{return "Dreadium";}
+                case 1880:{return "Ethaxium";}
                 case 1890:{return "Unoctennium";}
-                case 1900:{return "Unennilium";}
+                case 1900:{return "Unennnilium";}
                 case 1910:{return "Unennunium";}
                 case 1920:{return "Unennbium";}
                 case 1930:{return "Unenntrium";}
@@ -247,7 +255,7 @@
                 case 2180:{return "Biunoctium";}
                 case 2190:{return "Biunennium";}
                 case 2200:{return "Bibinilium";}
-                case 2210:{return "Bibiunium";}
+                case 2210:{return "Atlarus";}
                 case 2220:{return "Adamantium";}
                 case 2230:{return "Bibitrium";}
                 case 2240:{return "Bibiquadium";}
@@ -316,7 +324,7 @@
                 case 2870:{return "Bioctseptium";}
                 case 2880:{return "Bioctoctium";}
                 case 2890:{return "Bioctennium";}
-                case 2900:{return "Biennilium";}
+                case 2900:{return "Biennnilium";}
                 case 2910:{return "Biennunium";}
                 case 2920:{return "Biennbium";}
                 case 2930:{return "Bienntrium";}
@@ -416,7 +424,7 @@
                 case 3870:{return "Trioctseptium";}
                 case 3880:{return "Trioctoctium";}
                 case 3890:{return "Trioctennium";}
-                case 3900:{return "Triennilium";}
+                case 3900:{return "Triennnilium";}
                 case 3910:{return "Triennunium";}
                 case 3920:{return "Triennbium";}
                 case 3930:{return "Trienntrium";}
@@ -426,197 +434,519 @@
                 case 3970:{return "Triennseptium";}
                 case 3980:{return "Triennoctium";}
                 case 3990:{return "Triennennium";}
-                case 9800:{return "Water";}
-                case 9801:{return "Snow";}
-                case 9802:{return "Ice";}
-                case 9803:{return "FreshWater";}
-                case 9805:{return "HolyWater";}
-                case 9806:{return "SeaWater";}
-                case 9807:{return "WaterDirty";}
-                case 9808:{return "WaterDistilled";}
-                case 9830:{return "Air";}
-                case 9703:{return "Sugar";}
-                case 8242:{return "IodineSalt";}
-                case 8243:{return "SilverIodide";}
+                case 4000:{return "Magic";}
+                case 4001:{return "AntiPhoton";}
+                case 4002:{return "AntiNeutrino";}
+                case 4003:{return "AntiNeutron";}
+                case 4004:{return "AntiProton";}
+                case 4005:{return "Positron";}
+                case 4010:{return "AntiHydrogen";}
+                case 4011:{return "AntiDeuterium";}
+                case 4012:{return "AntiTritium";}
+                case 4020:{return "AntiHelium";}
+                case 4021:{return "AntiHelium3";}
+                case 4030:{return "AntiLithium";}
+                case 4031:{return "AntiLithium6";}
+                case 4040:{return "AntiBeryllium";}
+                case 4050:{return "AntiBoron";}
+                case 4060:{return "AntiCarbon";}
+                case 4061:{return "AntiCarbon13";}
+                case 4062:{return "AntiCarbon14";}
+                case 4070:{return "AntiNitrogen";}
+                case 4080:{return "AntiOxygen";}
+                case 4090:{return "AntiFluorine";}
+                case 4100:{return "AntiNeon";}
+                case 4110:{return "AntiSodium";}
+                case 4120:{return "AntiMagnesium";}
+                case 4130:{return "AntiAluminium";}
+                case 4140:{return "AntiSilicon";}
+                case 4150:{return "AntiPhosphor";}
+                case 4160:{return "AntiSulfur";}
+                case 4170:{return "AntiChlorine";}
+                case 4180:{return "AntiArgon";}
+                case 4190:{return "AntiPotassium";}
+                case 4200:{return "AntiCalcium";}
+                case 4210:{return "AntiScandium";}
+                case 4220:{return "AntiTitanium";}
+                case 4230:{return "AntiVanadium";}
+                case 4240:{return "AntiChromium";}
+                case 4250:{return "AntiManganese";}
+                case 4260:{return "AntiIron";}
+                case 4270:{return "AntiCobalt";}
+                case 4278:{return "AntiCobalt60";}
+                case 4280:{return "AntiNickel";}
+                case 4290:{return "AntiCopper";}
+                case 4300:{return "AntiZinc";}
+                case 4310:{return "AntiGallium";}
+                case 4320:{return "AntiGermanium";}
+                case 4330:{return "AntiArsenic";}
+                case 4340:{return "AntiSelenium";}
+                case 4350:{return "AntiBromine";}
+                case 4360:{return "AntiKrypton";}
+                case 4370:{return "AntiRubidium";}
+                case 4380:{return "AntiStrontium";}
+                case 4390:{return "AntiYttrium";}
+                case 4400:{return "AntiZirconium";}
+                case 4410:{return "AntiNiobium";}
+                case 4420:{return "AntiMolybdenum";}
+                case 4430:{return "AntiTechnetium";}
+                case 4440:{return "AntiRuthenium";}
+                case 4450:{return "AntiRhodium";}
+                case 4460:{return "AntiPalladium";}
+                case 4470:{return "AntiSilver";}
+                case 4480:{return "AntiCadmium";}
+                case 4490:{return "AntiIndium";}
+                case 4500:{return "AntiTin";}
+                case 4510:{return "AntiAntimony";}
+                case 4520:{return "AntiTellurium";}
+                case 4530:{return "AntiIodine";}
+                case 4540:{return "AntiXenon";}
+                case 4550:{return "AntiCaesium";}
+                case 4560:{return "AntiBarium";}
+                case 4570:{return "AntiLanthanum";}
+                case 4580:{return "AntiCerium";}
+                case 4590:{return "AntiPraseodymium";}
+                case 4600:{return "AntiNeodymium";}
+                case 4610:{return "AntiPromethium";}
+                case 4620:{return "AntiSamarium";}
+                case 4630:{return "AntiEuropium";}
+                case 4640:{return "AntiGadolinium";}
+                case 4650:{return "AntiTerbium";}
+                case 4660:{return "AntiDysprosium";}
+                case 4670:{return "AntiHolmium";}
+                case 4680:{return "AntiErbium";}
+                case 4690:{return "AntiThulium";}
+                case 4700:{return "AntiYtterbium";}
+                case 4710:{return "AntiLutetium";}
+                case 4720:{return "AntiHafnium";}
+                case 4730:{return "AntiTantalum";}
+                case 4740:{return "AntiTungsten";}
+                case 4750:{return "AntiRhenium";}
+                case 4760:{return "AntiOsmium";}
+                case 4770:{return "AntiIridium";}
+                case 4780:{return "AntiPlatinum";}
+                case 4790:{return "AntiGold";}
+                case 4800:{return "AntiMercury";}
+                case 4810:{return "AntiThallium";}
+                case 4820:{return "AntiLead";}
+                case 4830:{return "AntiBismuth";}
+                case 4840:{return "AntiPolonium";}
+                case 4850:{return "AntiAstatine";}
+                case 4860:{return "AntiRadon";}
+                case 4870:{return "AntiFrancium";}
+                case 4880:{return "AntiRadium";}
+                case 4890:{return "AntiActinium";}
+                case 4900:{return "AntiThorium";}
+                case 4910:{return "AntiProtactinium";}
+                case 4920:{return "AntiUranium";}
+                case 4921:{return "AntiUranium235";}
+                case 4930:{return "AntiNeptunium";}
+                case 4940:{return "AntiPlutonium";}
+                case 4943:{return "AntiPlutonium241";}
+                case 4945:{return "AntiPlutonium243";}
+                case 4950:{return "AntiAmericium";}
+                case 4951:{return "AntiAmericium241";}
+                case 4960:{return "AntiCurium";}
+                case 4970:{return "AntiBerkelium";}
+                case 4980:{return "AntiCalifornium";}
+                case 4990:{return "AntiEinsteinium";}
+                case 5000:{return "AntiFermium";}
+                case 5010:{return "AntiMendelevium";}
+                case 5020:{return "AntiNobelium";}
+                case 5030:{return "AntiLawrencium";}
+                case 5040:{return "AntiRutherfordium";}
+                case 5050:{return "AntiDubnium";}
+                case 5060:{return "AntiSeaborgium";}
+                case 5070:{return "AntiBohrium";}
+                case 5080:{return "AntiHassium";}
+                case 5090:{return "AntiMeitnerium";}
+                case 5100:{return "AntiDarmstadtium";}
+                case 5110:{return "AntiRoentgenium";}
+                case 5120:{return "AntiCopernicium";}
+                case 5130:{return "AntiUnuntrium";}
+                case 5140:{return "AntiFlerovium";}
+                case 5148:{return "AntiFlerovium298";}
+                case 5150:{return "AntiUnunpentium";}
+                case 5160:{return "AntiLivermorium";}
+                case 5170:{return "AntiFarnsium";}
+                case 5180:{return "AntiUnunoctium";}
+                case 5190:{return "AntiUnunennium";}
+                case 5200:{return "AntiUnbinilium";}
+                case 5210:{return "AntiUnbiunium";}
+                case 5220:{return "AntiUnbibium";}
+                case 5230:{return "AntiUnbitrium";}
+                case 5240:{return "AntiUnbiquadium";}
+                case 5250:{return "AntiUnbipentium";}
+                case 5260:{return "AntiUnbihexium";}
+                case 5270:{return "AntiUnbiseptium";}
+                case 5280:{return "AntiUnbioctium";}
+                case 5290:{return "AntiUnbiennium";}
+                case 5300:{return "AntiUntrinilium";}
+                case 5310:{return "AntiUntriunium";}
+                case 5320:{return "AntiUntribium";}
+                case 5330:{return "AntiUntritrium";}
+                case 5340:{return "AntiUntriquadium";}
+                case 5350:{return "AntiUntripentium";}
+                case 5360:{return "AntiUntrihexium";}
+                case 5370:{return "AntiUntriseptium";}
+                case 5380:{return "AntiUntrioctium";}
+                case 5390:{return "AntiUntriennium";}
+                case 5400:{return "AntiUnquadnilium";}
+                case 5410:{return "AntiUnquadunium";}
+                case 5420:{return "AntiUnquadbium";}
+                case 5430:{return "AntiUnquadtrium";}
+                case 5440:{return "AntiUnquadquadium";}
+                case 5450:{return "AntiUnquadpentium";}
+                case 5460:{return "AntiUnquadhexium";}
+                case 5470:{return "AntiUnquadseptium";}
+                case 5480:{return "AntiUnquadoctium";}
+                case 5490:{return "AntiUnquadennium";}
+                case 5500:{return "AntiUnpentnilium";}
+                case 5510:{return "AntiUnpentunium";}
+                case 5520:{return "AntiVibranium";}
+                case 5530:{return "AntiUnpenttrium";}
+                case 5540:{return "AntiUnpentquadium";}
+                case 5550:{return "AntiUnpentpentium";}
+                case 5560:{return "AntiUnpenthexium";}
+                case 5570:{return "AntiUnpentseptium";}
+                case 5590:{return "AntiUnpentennium";}
+                case 5600:{return "AntiUnhexnilium";}
+                case 5610:{return "AntiUnhexunium";}
+                case 5620:{return "AntiUnhexbium";}
+                case 5630:{return "AntiUnhextrium";}
+                case 5640:{return "AntiUnhexquadium";}
+                case 5650:{return "AntiUnhexpentium";}
+                case 5660:{return "AntiUnhexhexium";}
+                case 5670:{return "AntiUnhexseptium";}
+                case 5680:{return "AntiUnhexoctium";}
+                case 5690:{return "AntiUnhexennium";}
+                case 5700:{return "AntiUnseptnilium";}
+                case 5710:{return "AntiUnseptunium";}
+                case 5720:{return "AntiUnseptbium";}
+                case 5730:{return "AntiUnsepttrium";}
+                case 5740:{return "AntiNaquadah";}
+                case 5741:{return "AntiNaquadahEnriched";}
+                case 5742:{return "AntiNaquadria";}
+                case 5750:{return "AntiUnseptpentium";}
+                case 5760:{return "AntiUnsepthexium";}
+                case 5770:{return "AntiUnseptseptium";}
+                case 5780:{return "AntiUnseptoctium";}
+                case 5790:{return "AntiUnseptennium";}
+                case 5800:{return "AntiUnoctnilium";}
+                case 5810:{return "AntiUnoctunium";}
+                case 5820:{return "AntiUnoctbium";}
+                case 5830:{return "AntiUnocttrium";}
+                case 5840:{return "AntiUnoctquadium";}
+                case 5850:{return "AntiUnoctpentium";}
+                case 5860:{return "AntiUnocthexium";}
+                case 5870:{return "AntiUnoctseptium";}
+                case 5880:{return "AntiUnoctoctium";}
+                case 5890:{return "AntiUnoctennium";}
+                case 5900:{return "AntiUnennilium";}
+                case 5910:{return "AntiUnennunium";}
+                case 5920:{return "AntiUnennbium";}
+                case 5930:{return "AntiUnenntrium";}
+                case 5940:{return "AntiUnennquadium";}
+                case 5950:{return "AntiUnennpentium";}
+                case 5960:{return "AntiUnennhexium";}
+                case 5970:{return "AntiUnennseptium";}
+                case 5980:{return "AntiUnennoctium";}
+                case 5990:{return "AntiUnennennium";}
+                case 6000:{return "AntiBinilnilium";}
+                case 6010:{return "AntiBinilunium";}
+                case 6020:{return "AntiBinilbium";}
+                case 6030:{return "AntiBiniltrium";}
+                case 6040:{return "AntiBinilquadium";}
+                case 6050:{return "AntiBinilpentium";}
+                case 6060:{return "AntiBinilhexium";}
+                case 6070:{return "AntiBinilseptium";}
+                case 6080:{return "AntiBiniloctium";}
+                case 6090:{return "AntiBinilennium";}
+                case 6100:{return "AntiBiunnilium";}
+                case 6110:{return "AntiBiununium";}
+                case 6120:{return "AntiBiunbium";}
+                case 6130:{return "AntiBiuntrium";}
+                case 6140:{return "AntiBiunquadium";}
+                case 6150:{return "AntiBiunpentium";}
+                case 6160:{return "AntiBiunhexium";}
+                case 6170:{return "AntiBiunseptium";}
+                case 6180:{return "AntiBiunoctium";}
+                case 6190:{return "AntiBiunennium";}
+                case 6200:{return "AntiBibinilium";}
+                case 6210:{return "AntiBibiunium";}
+                case 6220:{return "AntiAdamantium";}
+                case 6230:{return "AntiBibitrium";}
+                case 6240:{return "AntiBibiquadium";}
+                case 6250:{return "AntiBibipentium";}
+                case 6260:{return "AntiBibihexium";}
+                case 6270:{return "AntiBibiseptium";}
+                case 6280:{return "AntiBibioctium";}
+                case 6290:{return "AntiBibiennium";}
+                case 6300:{return "AntiBitrinilium";}
+                case 6310:{return "AntiBitriunium";}
+                case 6320:{return "AntiBitribium";}
+                case 6330:{return "AntiBitritrium";}
+                case 6340:{return "AntiBitriquadium";}
+                case 6350:{return "AntiBitripentium";}
+                case 6360:{return "AntiBitrihexium";}
+                case 6370:{return "AntiBitriseptium";}
+                case 6380:{return "AntiBitrioctium";}
+                case 6390:{return "AntiMacGuffium";}
+                case 6400:{return "AntiBiquadnilium";}
+                case 6410:{return "AntiBiquadunium";}
+                case 6420:{return "AntiBiquadbium";}
+                case 6430:{return "AntiBiquadtrium";}
+                case 6440:{return "AntiBiquadquadium";}
+                case 6450:{return "AntiBiquadpentium";}
+                case 6460:{return "AntiBiquadhexium";}
+                case 6470:{return "AntiBiquadseptium";}
+                case 6480:{return "AntiBiquadoctium";}
+                case 6490:{return "AntiBiquadennium";}
+                case 6500:{return "AntiBipentnilium";}
+                case 6510:{return "AntiBipentunium";}
+                case 6520:{return "AntiBipentbium";}
+                case 6530:{return "AntiBipenttrium";}
+                case 6540:{return "AntiBipentquadium";}
+                case 6550:{return "AntiBipentpentium";}
+                case 6560:{return "AntiBipenthexium";}
+                case 6570:{return "AntiBipentseptium";}
+                case 6580:{return "AntiBipentoctium";}
+                case 6590:{return "AntiBipentennium";}
+                case 6600:{return "AntiBihexnilium";}
+                case 6610:{return "AntiBihexunium";}
+                case 6620:{return "AntiBihexbium";}
+                case 6630:{return "AntiBihextrium";}
+                case 6640:{return "AntiBihexquadium";}
+                case 6650:{return "AntiBihexpentium";}
+                case 6660:{return "AntiBihexhexium";}
+                case 6670:{return "AntiBihexseptium";}
+                case 6680:{return "AntiBihexoctium";}
+                case 6690:{return "AntiBihexennium";}
+                case 6700:{return "AntiBiseptnilium";}
+                case 6710:{return "AntiBiseptunium";}
+                case 6720:{return "AntiBiseptbium";}
+                case 6730:{return "AntiBisepttrium";}
+                case 6740:{return "AntiBiseptquadium";}
+                case 6750:{return "AntiBiseptpentium";}
+                case 6760:{return "AntiBisepthexium";}
+                case 6770:{return "AntiBiseptseptium";}
+                case 6780:{return "AntiBiseptoctium";}
+                case 6790:{return "AntiBiseptennium";}
+                case 6800:{return "AntiBioctnilium";}
+                case 6810:{return "AntiBioctunium";}
+                case 6820:{return "AntiBioctbium";}
+                case 6830:{return "AntiBiocttrium";}
+                case 6840:{return "AntiBioctquadium";}
+                case 6850:{return "AntiBioctpentium";}
+                case 6860:{return "AntiBiocthexium";}
+                case 6870:{return "AntiBioctseptium";}
+                case 6880:{return "AntiBioctoctium";}
+                case 6890:{return "AntiBioctennium";}
+                case 6900:{return "AntiBiennilium";}
+                case 6910:{return "AntiBiennunium";}
+                case 6920:{return "AntiBiennbium";}
+                case 6930:{return "AntiBienntrium";}
+                case 6940:{return "AntiBiennquadium";}
+                case 6950:{return "AntiBiennpentium";}
+                case 6960:{return "AntiBiennhexium";}
+                case 6970:{return "AntiBiennseptium";}
+                case 6980:{return "AntiBiennoctium";}
+                case 6990:{return "AntiBiennennium";}
+                case 7000:{return "AntiTrinilnilium";}
+                case 7010:{return "AntiTrinilunium";}
+                case 7020:{return "AntiTrinilbium";}
+                case 7030:{return "AntiTriniltrium";}
+                case 7040:{return "AntiTrinilquadium";}
+                case 7050:{return "AntiTrinilpentium";}
+                case 7060:{return "AntiTrinilhexium";}
+                case 7070:{return "AntiTrinilseptium";}
+                case 7080:{return "AntiTriniloctium";}
+                case 7090:{return "AntiTrinilennium";}
+                case 7100:{return "AntiTriunnilium";}
+                case 7110:{return "AntiTriununium";}
+                case 7120:{return "AntiTriunbium";}
+                case 7130:{return "AntiTriuntrium";}
+                case 7140:{return "AntiTriunquadium";}
+                case 7150:{return "AntiTriunpentium";}
+                case 7160:{return "AntiTriunhexium";}
+                case 7170:{return "AntiTriunseptium";}
+                case 7180:{return "AntiTriunoctium";}
+                case 7190:{return "AntiTriunennium";}
+                case 7200:{return "AntiTribinilium";}
+                case 7210:{return "AntiTribiunium";}
+                case 7220:{return "AntiTribibium";}
+                case 7230:{return "AntiTribitrium";}
+                case 7240:{return "AntiTribiquadium";}
+                case 7250:{return "AntiTribipentium";}
+                case 7260:{return "AntiTribihexium";}
+                case 7270:{return "AntiTribiseptium";}
+                case 7280:{return "AntiTribioctium";}
+                case 7290:{return "AntiTribiennium";}
+                case 7300:{return "AntiTritrinilium";}
+                case 7310:{return "AntiTritriunium";}
+                case 7320:{return "AntiTritribium";}
+                case 7330:{return "AntiTritritrium";}
+                case 7340:{return "AntiTritriquadium";}
+                case 7350:{return "AntiTritripentium";}
+                case 7360:{return "AntiTritrihexium";}
+                case 7370:{return "AntiTritriseptium";}
+                case 7380:{return "AntiTritrioctium";}
+                case 7390:{return "AntiTritriennium";}
+                case 7400:{return "AntiTriquadnilium";}
+                case 7410:{return "AntiTriquadunium";}
+                case 7420:{return "AntiTriquadbium";}
+                case 7430:{return "AntiTriquadtrium";}
+                case 7440:{return "AntiTriquadquadium";}
+                case 7450:{return "AntiTriquadpentium";}
+                case 7460:{return "AntiTriquadhexium";}
+                case 7470:{return "AntiTriquadseptium";}
+                case 7480:{return "AntiTriquadoctium";}
+                case 7490:{return "AntiTriquadennium";}
+                case 7500:{return "AntiTripentnilium";}
+                case 7510:{return "AntiTripentunium";}
+                case 7520:{return "AntiTripentbium";}
+                case 7530:{return "AntiTripenttrium";}
+                case 7540:{return "AntiTripentquadium";}
+                case 7550:{return "AntiTripentpentium";}
+                case 7560:{return "AntiTripenthexium";}
+                case 7570:{return "AntiTripentseptium";}
+                case 7580:{return "AntiTripentoctium";}
+                case 7590:{return "AntiTripentennium";}
+                case 7600:{return "AntiTrihexnilium";}
+                case 7610:{return "AntiTrihexunium";}
+                case 7620:{return "AntiTrihexbium";}
+                case 7630:{return "AntiTrihextrium";}
+                case 7640:{return "AntiTrihexquadium";}
+                case 7650:{return "AntiTrihexpentium";}
+                case 7660:{return "AntiTrihexhexium";}
+                case 7670:{return "AntiTrihexseptium";}
+                case 7680:{return "AntiTrihexoctium";}
+                case 7690:{return "AntiTrihexennium";}
+                case 7700:{return "AntiTriseptnilium";}
+                case 7710:{return "AntiTriseptunium";}
+                case 7720:{return "AntiGravitonium";}
+                case 7730:{return "AntiTrisepttrium";}
+                case 7740:{return "AntiTriseptquadium";}
+                case 7750:{return "AntiTriseptpentium";}
+                case 7760:{return "AntiTrisepthexium";}
+                case 7770:{return "AntiTriseptseptium";}
+                case 7780:{return "AntiTriseptoctium";}
+                case 7790:{return "AntiTriseptennium";}
+                case 7800:{return "AntiTrioctnilium";}
+                case 7810:{return "AntiTrioctunium";}
+                case 7820:{return "AntiTrioctbium";}
+                case 7830:{return "AntiTriocttrium";}
+                case 7840:{return "AntiTrioctquadium";}
+                case 7850:{return "AntiTrioctpentium";}
+                case 7860:{return "AntiTriocthexium";}
+                case 7870:{return "AntiTrioctseptium";}
+                case 7880:{return "AntiTrioctoctium";}
+                case 7890:{return "AntiTrioctennium";}
+                case 7900:{return "AntiTriennilium";}
+                case 7910:{return "AntiTriennunium";}
+                case 7920:{return "AntiTriennbium";}
+                case 7930:{return "AntiTrienntrium";}
+                case 7940:{return "AntiTriennquadium";}
+                case 7950:{return "AntiTriennpentium";}
+                case 7960:{return "AntiTriennhexium";}
+                case 7970:{return "AntiTriennseptium";}
+                case 7980:{return "AntiTriennoctium";}
+                case 7990:{return "AntiTriennennium";}
                 case 8000:{return "SiliconDioxide";}
+                case 8001:{return "Glass";}
+                case 8002:{return "Flint";}
                 case 8003:{return "Carborundum";}
+                case 8004:{return "LithiumOxide";}
+                case 8005:{return "Ferrite";}
                 case 8006:{return "Datolite";}
                 case 8007:{return "HydrogenBorate";}
                 case 8008:{return "Alumina";}
+                case 8009:{return "Cryolite";}
                 case 8010:{return "AluminiumFluoride";}
+                case 8011:{return "HexafluorosilicicAcid";}
+                case 8012:{return "SodiumAluminate";}
+                case 8013:{return "SodiumCarbonate";}
                 case 8014:{return "AluminiumHydroxide";}
-                case 8234:{return "VanadiumPentoxide";}
-                case 8207:{return "Phosphate";}
+                case 8015:{return "PotassiumHydroxide";}
+                case 8016:{return "MagnesiumCarbonate";}
+                case 8017:{return "FerricChloride";}
+                case 8018:{return "MagnesiumChloride";}
+                case 8019:{return "SodiumNitrate";}
+                case 8020:{return "PotassiumCarbonate";}
+                case 8021:{return "PotassiumSulfite";}
+                case 8022:{return "PotassiumPersulfate";}
+                case 8023:{return "PotassiumAluminate";}
+                case 8024:{return "HydrosulfuricAcid";}
+                case 8025:{return "Ammonia";}
                 case 8026:{return "TungstenTrioxide";}
                 case 8027:{return "TungsticAcid";}
-                case 9192:{return "Rutile";}
-                case 8030:{return "FerrousChloride";}
-                case 8017:{return "FerricChloride";}
-                case 8031:{return "ManganeseChloride";}
-                case 8018:{return "MagnesiumChloride";}
-                case 8016:{return "MagnesiumCarbonate";}
                 case 8028:{return "CalciumChloride";}
-                case 8274:{return "CalciumSulfate";}
-                case 9107:{return "Calcite";}
-                case 9215:{return "Fluorite";}
                 case 8029:{return "LithiumChloride";}
-                case 8004:{return "LithiumOxide";}
-                case 8005:{return "Ferrite";}
-                case 8204:{return "Salt";}
-                case 8019:{return "SodiumNitrate";}
-                case 8268:{return "SodiumHydroxide";}
-                case 8230:{return "SodiumBisulfate";}
-                case 9822:{return "SodiumPersulfate";}
-                case 9823:{return "SodiumSulfide";}
-                case 8269:{return "SodiumSulfite";}
-                case 8270:{return "SodiumSulfate";}
-                case 8231:{return "SodiumPyrosulfate";}
-                case 8013:{return "SodiumCarbonate";}
-                case 8012:{return "SodiumAluminate";}
-                case 8009:{return "Cryolite";}
-                case 8203:{return "RockSalt";}
-                case 8205:{return "PotassiumNitrate";}
-                case 8015:{return "PotassiumHydroxide";}
-                case 8232:{return "PotassiumBisulfate";}
-                case 8022:{return "PotassiumPersulfate";}
-                case 8272:{return "PotassiumSulfide";}
-                case 8021:{return "PotassiumSulfite";}
-                case 8271:{return "PotassiumSulfate";}
-                case 8233:{return "PotassiumPyrosulfate";}
-                case 8020:{return "PotassiumCarbonate";}
-                case 8023:{return "PotassiumAluminate";}
-                case 9809:{return "HydrogenPeroxide";}
-                case 9821:{return "Glyceryl";}
-                case 9828:{return "Glycerol";}
-                case 9824:{return "SulfuricAcid";}
-                case 9825:{return "NitricAcid";}
-                case 8011:{return "HexafluorosilicicAcid";}
-                case 8400:{return "ChloroauricAcid";}
-                case 8401:{return "ChloroplatinicAcid";}
-                case 8413:{return "TitaniumTetrachloride";}
-                case 8402:{return "StannicChloride";}
-                case 8403:{return "BlackVitriol";}
-                case 8404:{return "BlueVitriol";}
-                case 8405:{return "GreenVitriol";}
-                case 8406:{return "RedVitriol";}
-                case 8407:{return "PinkVitriol";}
-                case 8408:{return "CyanVitriol";}
-                case 8409:{return "WhiteVitriol";}
-                case 8410:{return "GrayVitriol";}
-                case 8411:{return "MartianVitriol";}
-                case 9838:{return "CarbonMonoxide";}
-                case 9836:{return "CarbonDioxide";}
-                case 9837:{return "NitrogenMonoxide";}
-                case 9831:{return "NitrogenDioxide";}
-                case 9834:{return "SulfurDioxide";}
-                case 9835:{return "SulfurTrioxide";}
-                case 9832:{return "Methane";}
-                case 9826:{return "HydrochloricAcid";}
-                case 8024:{return "HydrosulfuricAcid";}
-                case 9829:{return "HydrogenFluoride";}
-                case 8025:{return "Ammonia";}
-                case 9839:{return "HeliumNeon";}
-                case 9827:{return "AquaRegia";}
-                case 8412:{return "VitriolOfClay";}
-                case 9804:{return "SaltWater";}
-                case 8229:{return "CobaltHexahydrate";}
-                case 9833:{return "MethaneIce";}
-                case 9820:{return "NitroCarbon";}
-                case 9810:{return "Lava";}
-                case 9840:{return "Biomass";}
-                case 9841:{return "BioFuel";}
-                case 9842:{return "Ethanol";}
-                case 9850:{return "Oil";}
-                case 9851:{return "Oilsands";}
-                case 9853:{return "Oilshale";}
-                case 9852:{return "CrudeOil";}
-                case 9860:{return "Fuel";}
-                case 9861:{return "NitroFuel";}
-                case 9862:{return "Kerosine";}
-                case 9863:{return "Diesel";}
-                case 9864:{return "Petrol";}
-                case 9865:{return "Propane";}
-                case 9866:{return "Butane";}
-                case 9870:{return "Creosote";}
-                case 9871:{return "FishOil";}
-                case 9872:{return "SeedOil";}
-                case 9873:{return "HempOil";}
-                case 9874:{return "LinOil";}
-                case 9875:{return "SunflowerOil";}
-                case 9876:{return "NutOil";}
-                case 9877:{return "OliveOil";}
-                case 9880:{return "FryingOilHot";}
-                case 9881:{return "Glue";}
-                case 9882:{return "Lubricant";}
-                case 9883:{return "ConstructionFoam";}
-                case 9884:{return "UUAmplifier";}
-                case 9885:{return "UUMatter";}
-                case 9886:{return "Latex";}
-                case 8001:{return "Glass";}
-                case 8002:{return "Flint";}
-                case 9100:{return "RareEarth";}
-                case 9112:{return "Chalk";}
-                case 9163:{return "Dolomite";}
-                case 9103:{return "Asbestos";}
-                case 9168:{return "Talc";}
-                case 9169:{return "Soapstone";}
-                case 9125:{return "Pyrite";}
-                case 9140:{return "PotassiumFeldspar";}
-                case 9141:{return "Biotite";}
-                case 9183:{return "Emery";}
-                case 9172:{return "Greenstone";}
-                case 9185:{return "Bluestone";}
-                case 9182:{return "Epidote";}
-                case 9170:{return "Gneiss";}
-                case 9173:{return "Greywacke";}
-                case 9178:{return "Siltstone";}
-                case 9179:{return "Rhyolite";}
-                case 9181:{return "Migmatite";}
-                case 9186:{return "Chert";}
-                case 9187:{return "Dacite";}
-                case 9190:{return "Shale";}
-                case 9191:{return "Eclogite";}
+                case 8030:{return "FerrousChloride";}
+                case 8031:{return "ManganeseChloride";}
+                case 8032:{return "LithiumHydroxide";}
+                case 8033:{return "LithiumChlorate";}
+                case 8034:{return "LithiumPerchlorate";}
+                case 8035:{return "FerricOxyhydroxide";}
+                case 8036:{return "PotassiumFluoride";}
+                case 8037:{return "SodiumFluoride";}
+                case 8038:{return "PotassiumHeptafluorotantalate";}
+                case 8100:{return "Sand";}
+                case 8101:{return "Soulsand";}
+                case 8102:{return "SluiceSand";}
+                case 8103:{return "PlatinumGroupSludge";}
+                case 8104:{return "RedSand";}
+                case 8105:{return "EndSand";}
                 case 8200:{return "Ashes";}
                 case 8201:{return "DarkAshes";}
                 case 8202:{return "VolcanicAshes";}
-                case 9174:{return "Graphite";}
+                case 8203:{return "RockSalt";}
+                case 8204:{return "Salt";}
+                case 8205:{return "PotassiumNitrate";}
                 case 8206:{return "Niter";}
+                case 8207:{return "Phosphate";}
                 case 8208:{return "Phosphorus";}
                 case 8209:{return "Apatite";}
-                case 8226:{return "Phosphorite";}
-                case 8247:{return "Basalz";}
-                case 8248:{return "Blitz";}
                 case 8210:{return "Blizz";}
                 case 8211:{return "Blaze";}
+                case 8212:{return "Pyrotheum";}
+                case 8213:{return "Cryotheum";}
                 case 8214:{return "Obsidian";}
                 case 8215:{return "Clay";}
-                case 8276:{return "ClayBrown";}
-                case 8225:{return "Ceramic";}
-                case 8273:{return "Porcelain";}
                 case 8216:{return "Paper";}
                 case 8217:{return "Rubber";}
                 case 8218:{return "Plastic";}
                 case 8219:{return "Bone";}
                 case 8220:{return "Gunpowder";}
-                case 8275:{return "Bark";}
                 case 8221:{return "Wood";}
-                case 8222:{return "WoodSealed";}
-                case 8267:{return "WoodPolished";}
+                case 8222:{return "WoodTreated";}
                 case 8223:{return "LiveRoot";}
                 case 8224:{return "WoodRubber";}
-                case -8227:{return "PeanutWood";}
-                case 8277:{return "PetrifiedWood";}
-                case 8249:{return "Dynamite";}
-                case 8266:{return "Asphalt";}
+                case 8225:{return "Ceramic";}
+                case 8226:{return "Phosphorite";}
+                case 8227:{return "PeanutWood";}
                 case 8228:{return "Indigo";}
+                case 8229:{return "CobaltHexahydrate";}
+                case 8230:{return "SodiumBisulfate";}
+                case 8231:{return "SodiumPyrosulfate";}
+                case 8232:{return "PotassiumBisulfate";}
+                case 8233:{return "PotassiumPyrosulfate";}
+                case 8234:{return "VanadiumPentoxide";}
                 case 8235:{return "Wax";}
                 case 8236:{return "WaxBee";}
                 case 8237:{return "WaxRefractory";}
                 case 8238:{return "WaxParaffin";}
                 case 8239:{return "WaxPlant";}
                 case 8240:{return "WaxMagic";}
-                case 8244:{return "Tallow";}
                 case 8241:{return "Leather";}
+                case 8242:{return "IodineSalt";}
+                case 8243:{return "SilverIodide";}
+                case 8244:{return "Tallow";}
+                case 8245:{return "Petrotheum";}
+                case 8246:{return "Aerotheum";}
+                case 8247:{return "Basalz";}
+                case 8248:{return "Blitz";}
+                case 8249:{return "Dynamite";}
                 case 8250:{return "Black";}
                 case 8251:{return "Red";}
                 case 8252:{return "Green";}
@@ -633,138 +963,115 @@
                 case 8263:{return "Magenta";}
                 case 8264:{return "Orange";}
                 case 8265:{return "White";}
-                case 9701:{return "MeatCooked";}
-                case 9700:{return "MeatRaw";}
-                case 9710:{return "MeatRotten";}
-                case 9711:{return "FishCooked";}
-                case 9712:{return "FishRaw";}
-                case 9713:{return "FishRotten";}
-                case 9702:{return "Wheat";}
-                case 9704:{return "Barley";}
-                case 9705:{return "Rye";}
-                case 9706:{return "Rice";}
-                case 9707:{return "Oat";}
-                case 9708:{return "Corn";}
-                case 9709:{return "Potato";}
-                case 9778:{return "Tofu";}
-                case 9779:{return "SoylentGreen";}
-                case 9780:{return "Cheese";}
-                case 9781:{return "Chili";}
-                case 9782:{return "Cocoa";}
-                case 9783:{return "Chocolate";}
-                case 9784:{return "Coffee";}
-                case 9785:{return "Cinnamon";}
-                case 9786:{return "Nutmeg";}
-                case 9795:{return "Peanut";}
-                case 9796:{return "Hazelnut";}
-                case 9797:{return "Pistachio";}
-                case 9714:{return "Almond";}
-                case 9787:{return "Vanilla";}
-                case 9788:{return "PepperBlack";}
-                case 9789:{return "Curry";}
-                case 9790:{return "Milk";}
-                case 9798:{return "Butter";}
-                case 9799:{return "SaltedButter";}
-                case 9791:{return "Honey";}
-                case 9793:{return "Honeydew";}
-                case 9792:{return "Tea";}
-                case 9794:{return "Mint";}
-                case 8100:{return "Sand";}
-                case 8101:{return "Soulsand";}
-                case 8102:{return "SluiceSand";}
-                case 8103:{return "PlatinumGroupSludge";}
+                case 8266:{return "Asphalt";}
+                case 8267:{return "WoodPolished";}
+                case 8268:{return "SodiumHydroxide";}
+                case 8269:{return "SodiumSulfite";}
+                case 8270:{return "SodiumSulfate";}
+                case 8271:{return "PotassiumSulfate";}
+                case 8272:{return "PotassiumSulfide";}
+                case 8273:{return "Porcelain";}
+                case 8274:{return "CalciumSulfate";}
+                case 8275:{return "Bark";}
+                case 8276:{return "ClayBrown";}
+                case 8277:{return "PetrifiedWood";}
+                case 8278:{return "ManaDiamond";}
+                case 8279:{return "ElvenDragonstone";}
+                case 8280:{return "WaxAmnesic";}
+                case 8281:{return "WaxSoulful";}
+                case 8282:{return "CrimsonMiddle";}
+                case 8283:{return "GreenMiddle";}
+                case 8284:{return "AquaMiddle";}
+                case 8285:{return "Valonite";}
+                case 8286:{return "Weedwood";}
+                case 8287:{return "SlimyBone";}
+                case 8288:{return "Scabyst";}
+                case 8289:{return "Livingwood";}
+                case 8290:{return "Dreamwood";}
+                case 8291:{return "Skyroot";}
+                case 8292:{return "Zanite";}
+                case 8293:{return "Ambrosium";}
+                case 8294:{return "Gravitite";}
+                case 8295:{return "Continuum";}
+                case 8296:{return "Greatwood";}
+                case 8297:{return "Silverwood";}
+                case 8298:{return "EnergiumRed";}
+                case 8299:{return "EnergiumCyan";}
                 case 8300:{return "Diamond";}
                 case 8301:{return "Emerald";}
-                case 8323:{return "Aquamarine";}
-                case 8324:{return "Morganite";}
-                case 8384:{return "Heliodor";}
-                case 8385:{return "Goshenite";}
-                case 8386:{return "Bixbite";}
-                case 8387:{return "Maxixe";}
+                case 8302:{return "Ruby";}
+                case 8303:{return "BalasRuby";}
                 case 8304:{return "Sapphire";}
                 case 8305:{return "GreenSapphire";}
-                case 8315:{return "YellowSapphire";}
-                case 8314:{return "OrangeSapphire";}
-                case 8328:{return "BlueSapphire";}
-                case 8383:{return "PurpleSapphire";}
-                case 8302:{return "Ruby";}
-                case 8326:{return "Spinel";}
-                case 8303:{return "BalasRuby";}
-                case 9101:{return "Almandine";}
-                case 9119:{return "Grossular";}
-                case 9127:{return "Pyrope";}
-                case 9129:{return "Spessartine";}
-                case 9102:{return "Andradite";}
-                case 9135:{return "Uvarovite";}
                 case 8306:{return "Topaz";}
                 case 8307:{return "BlueTopaz";}
                 case 8308:{return "Tanzanite";}
-                case 8388:{return "Alexandrite";}
-                case 8312:{return "Opal";}
-                case 8309:{return "Jasper";}
-                case 8311:{return "Olivine";}
-                case 8313:{return "Amethyst";}
-                case 8325:{return "Dioptase";}
+                case 8309:{return "RedJasper";}
                 case 8310:{return "Amber";}
-                case 8321:{return "Jade";}
-                case 8322:{return "Craponite";}
+                case 8311:{return "Olivine";}
+                case 8312:{return "Opal";}
+                case 8313:{return "Amethyst";}
+                case 8314:{return "OrangeSapphire";}
+                case 8315:{return "YellowSapphire";}
                 case 8316:{return "Vinteum";}
-                case 8327:{return "VinteumPurified";}
-                case 8367:{return "ArcaneAshes";}
-                case 8366:{return "ArcaneCompound";}
-                case 8278:{return "ManaDiamond";}
-                case 8279:{return "ElvenDragonstone";}
-                case 8329:{return "AmethystEnder";}
+                case 8317:{return "Dilithium";}
                 case 8318:{return "EnderPearl";}
                 case 8319:{return "EnderEye";}
                 case 8320:{return "NetherStar";}
-                case 8391:{return "Frezarite";}
-                case 8392:{return "RedMeteor";}
-                case 8317:{return "Dilithium";}
+                case 8321:{return "Jade";}
+                case 8322:{return "Craponite";}
+                case 8323:{return "Aquamarine";}
+                case 8324:{return "Morganite";}
+                case 8325:{return "Dioptase";}
+                case 8326:{return "Spinel";}
+                case 8327:{return "VinteumPurified";}
+                case 8328:{return "BlueSapphire";}
+                case 8329:{return "AmethystEnder";}
                 case 8330:{return "Lazurite";}
                 case 8331:{return "Sodalite";}
                 case 8332:{return "Lapis";}
                 case 8333:{return "Redstone";}
-                case 9175:{return "Graphene";}
                 case 8334:{return "Coal";}
-                case 8349:{return "CoalCoke";}
-                case 8390:{return "PetroleumCoke";}
                 case 8335:{return "HydratedCoal";}
                 case 8336:{return "Charcoal";}
                 case 8337:{return "Lignite";}
-                case 8365:{return "LigniteCoke";}
+                case 8338:{return "Monazite";}
+                case 8340:{return "Nikolite";}
+                case 8340:{return "Nikolite";}
+                case 8341:{return "Glowstone";}
+                case 8342:{return "Firestone";}
+                case 8343:{return "Force";}
+                case 8344:{return "Forcicium";}
+                case 8345:{return "Forcillium";}
+                case 8346:{return "NetherQuartz";}
+                case 8347:{return "CertusQuartz";}
+                case 8348:{return "ChargedCertusQuartz";}
+                case 8349:{return "CoalCoke";}
+                case 8350:{return "InfusedDull";}
+                case 8351:{return "InfusedVis";}
+                case 8352:{return "InfusedAir";}
+                case 8353:{return "InfusedFire";}
+                case 8354:{return "InfusedEarth";}
+                case 8355:{return "InfusedWater";}
+                case 8356:{return "InfusedEntropy";}
+                case 8357:{return "InfusedOrder";}
+                case 8358:{return "InfusedBalance";}
+                case 8340:{return "Nikolite";}
                 case 8360:{return "Peat";}
                 case 8361:{return "PeatBituminous";}
                 case 8362:{return "Anthracite";}
                 case 8363:{return "Prismane";}
                 case 8364:{return "Lonsdaleite";}
-                case 8338:{return "Monazite";}
-                case 8339:{return "Teslatite";}
-                case 8340:{return "Nikolite";}
-                case 8359:{return "Electrotine";}
-                case 8341:{return "Glowstone";}
+                case 8365:{return "LigniteCoke";}
+                case 8366:{return "ArcaneCompound";}
+                case 8367:{return "ArcaneAshes";}
                 case 8368:{return "GlowstoneCeres";}
                 case 8369:{return "GlowstoneIo";}
                 case 8370:{return "GlowstoneEnceladus";}
                 case 8371:{return "GlowstoneProteus";}
                 case 8372:{return "GlowstonePluto";}
                 case 8373:{return "Ectoplasm";}
-                case 8343:{return "Force";}
-                case 8344:{return "Forcicium";}
-                case 8345:{return "Forcillium";}
-                case 8342:{return "Firestone";}
-                case 8393:{return "SunnyQuartz";}
-                case 8394:{return "LavenderQuartz";}
-                case 8395:{return "RedQuartz";}
-                case 8396:{return "BlazeQuartz";}
-                case 8397:{return "SmokeyQuartz";}
-                case 8398:{return "ManaQuartz";}
-                case 8399:{return "ElvenQuartz";}
-                case 8346:{return "NetherQuartz";}
                 case 8374:{return "QuartzBlack";}
-                case 8347:{return "CertusQuartz";}
-                case 8348:{return "ChargedCertusQuartz";}
-                case 8389:{return "Fluix";}
                 case 8375:{return "Redstonia";}
                 case 8376:{return "Palis";}
                 case 8377:{return "Diamantine";}
@@ -773,78 +1080,117 @@
                 case 8380:{return "Enori";}
                 case 8381:{return "DarkMatter";}
                 case 8382:{return "RedMatter";}
-                case -8350:{return "InfusedDull";}
-                case -8351:{return "InfusedVis";}
-                case 8352:{return "InfusedAir";}
-                case 8353:{return "InfusedFire";}
-                case 8354:{return "InfusedEarth";}
-                case 8355:{return "InfusedWater";}
-                case 8356:{return "InfusedEntropy";}
-                case 8357:{return "InfusedOrder";}
-                case -8358:{return "InfusedBalance";}
-                case 8245:{return "Petrotheum";}
-                case 8246:{return "Aerotheum";}
-                case 8212:{return "Pyrotheum";}
-                case 8213:{return "Cryotheum";}
+                case 8383:{return "PurpleSapphire";}
+                case 8384:{return "Heliodor";}
+                case 8385:{return "Goshenite";}
+                case 8386:{return "Bixbite";}
+                case 8387:{return "Maxixe";}
+                case 8388:{return "Alexandrite";}
+                case 8389:{return "Fluix";}
+                case 8390:{return "PetroleumCoke";}
+                case 8391:{return "Frezarite";}
+                case 8392:{return "RedMeteor";}
+                case 8393:{return "SunnyQuartz";}
+                case 8394:{return "LavenderQuartz";}
+                case 8395:{return "RedQuartz";}
+                case 8396:{return "BlazeQuartz";}
+                case 8397:{return "SmokeyQuartz";}
+                case 8398:{return "ManaQuartz";}
+                case 8399:{return "ElvenQuartz";}
+                case 8400:{return "ChloroauricAcid";}
+                case 8401:{return "ChloroplatinicAcid";}
+                case 8402:{return "StannicChloride";}
+                case 8403:{return "BlackVitriol";}
+                case 8404:{return "BlueVitriol";}
+                case 8405:{return "GreenVitriol";}
+                case 8406:{return "RedVitriol";}
+                case 8407:{return "PinkVitriol";}
+                case 8408:{return "CyanVitriol";}
+                case 8409:{return "WhiteVitriol";}
+                case 8410:{return "GrayVitriol";}
+                case 8411:{return "MartianVitriol";}
+                case 8412:{return "VitriolOfClay";}
+                case 8413:{return "TitaniumTetrachloride";}
+                case 8414:{return "Shimmerwood";}
+                case 8415:{return "OnyxRed";}
+                case 8416:{return "OnyxBlack";}
+                case 8417:{return "Amazonite";}
+                case 8418:{return "Bamboo";}
+                case 8419:{return "Zircon";}
+                case 8420:{return "Azurite";}
+                case 8421:{return "Eudialyte";}
+                case 8422:{return "DominicanAmber";}
+                case 8423:{return "DiamondIndustrial";}
+                case 8424:{return "PinkDiamond";}
+                case 8425:{return "OceanJasper";}
+                case 8426:{return "RainforestJasper";}
+                case 8427:{return "BlueJasper";}
+                case 8428:{return "GreenJasper";}
+                case 8429:{return "YellowJasper";}
+                case 8430:{return "TigerEye";}
+                case 8431:{return "CatsEye";}
+                case 8432:{return "DragonEye";}
+                case 8433:{return "HawksEye";}
+                case 8434:{return "BlackEye";}
+                case 8435:{return "TigerIron";}
+                case 8436:{return "RedFluorite";}
+                case 8437:{return "PinkFluorite";}
+                case 8438:{return "BlueFluorite";}
+                case 8439:{return "GreenFluorite";}
+                case 8440:{return "BlackFluorite";}
+                case 8441:{return "WhiteFluorite";}
+                case 8442:{return "YellowFluorite";}
+                case 8443:{return "OrangeFluorite";}
+                case 8444:{return "MagentaFluorite";}
+                case 8445:{return "MilkyQuartz";}
+                case 8446:{return "BrownAventurine";}
+                case 8447:{return "YellowAventurine";}
+                case 8448:{return "GreenAventurine";}
+                case 8449:{return "BlackAventurine";}
+                case 8450:{return "BlueAventurine";}
+                case 8451:{return "RedAventurine";}
+                case 8452:{return "Moonstone";}
+                case 8453:{return "Sunstone";}
+                case 8454:{return "Chimerite";}
+                case 8455:{return "ClayRed";}
+                case 8456:{return "Gloomstone";}
+                case 8457:{return "VoidQuartz";}
+                case 8458:{return "BluePhosphorus";}
+                case 8459:{return "RedPhosphorus";}
+                case 8460:{return "WhitePhosphorus";}
+                case 8461:{return "NiobiumPentoxide";}
+                case 8462:{return "TantalumPentoxide";}
+                case 8463:{return "Sugilite";}
+                case 8464:{return "BlueDiamond";}
+                case 8465:{return "GreenDiamond";}
+                case 8466:{return "PurpleDiamond";}
+                case 8467:{return "RedDiamond";}
+                case 8468:{return "YellowDiamond";}
                 case 8500:{return "Stone";}
                 case 8501:{return "Concrete";}
                 case 8502:{return "Netherrack";}
                 case 8503:{return "NetherBrick";}
                 case 8504:{return "Endstone";}
+                case 8505:{return "Basalt";}
+                case 8506:{return "Marble";}
+                case 8507:{return "GraniteRed";}
+                case 8508:{return "GraniteBlack";}
+                case 8509:{return "Redrock";}
+                case 8500:{return "Stone";}
+                case 8511:{return "Diorite";}
                 case 8512:{return "SpaceStone";}
                 case 8513:{return "MoonStone";}
                 case 8514:{return "MoonTurf";}
                 case 8515:{return "MarsStone";}
                 case 8516:{return "MarsSand";}
                 case 8517:{return "Umber";}
-                case 8509:{return "Redrock";}
-                case 9176:{return "Gabbro";}
-                case 9177:{return "Komatiite";}
-                case 8505:{return "Basalt";}
-                case 8506:{return "Marble";}
-                case 9189:{return "Limestone";}
-                case 9171:{return "Greenschist";}
-                case 9184:{return "Blueschist";}
-                case 9218:{return "Kimberlite";}
-                case 9180:{return "Quartzite";}
-                case 8507:{return "GraniteRed";}
-                case 8508:{return "GraniteBlack";}
                 case 8518:{return "Granite";}
-                case 9188:{return "Andesite";}
-                case 8511:{return "Diorite";}
-                case 8510:{return "Gravel";}
+                case 8519:{return "Betweenstone";}
+                case 8520:{return "Pitstone";}
+                case 8521:{return "Livingrock";}
+                case 8522:{return "Holystone";}
+                case 8523:{return "Deadrock";}
                 case 8599:{return "Bedrock";}
-                case 8643:{return "WroughtIron";}
-                case 8760:{return "Alduorite";}
-                case 8761:{return "Infuscolium";}
-                case 8762:{return "Rubracium";}
-                case 8763:{return "Meutoite";}
-                case 8764:{return "Lemurite";}
-                case 8765:{return "Ceruclase";}
-                case 8766:{return "Atlarus";}
-                case 8767:{return "Oureclase";}
-                case 8768:{return "Kalendrite";}
-                case 8769:{return "Orichalcum";}
-                case 8770:{return "Carmot";}
-                case 8771:{return "Sanguinite";}
-                case 8772:{return "Vyroxeres";}
-                case 8773:{return "Eximite";}
-                case 8774:{return "Prometheum";}
-                case 8775:{return "Ignatius";}
-                case 8776:{return "Vulcanite";}
-                case 8641:{return "DeepIron";}
-                case 8670:{return "ShadowIron";}
-                case 8784:{return "Adamantine";}
-                case 8676:{return "AstralSilver";}
-                case 8677:{return "Midasium";}
-                case 8678:{return "Mithril";}
-                case 8671:{return "ShadowSteel";}
-                case 8777:{return "Inolashite";}
-                case 8778:{return "Haderoth";}
-                case 8779:{return "Celenegil";}
-                case 8781:{return "Desichalkos";}
-                case 8782:{return "Tartarite";}
-                case 8783:{return "Amordrine";}
                 case 8600:{return "Electrum";}
                 case 8601:{return "SterlingSilver";}
                 case 8602:{return "RoseGold";}
@@ -852,25 +1198,27 @@
                 case 8604:{return "GoldInductive";}
                 case 8605:{return "CdInAgAlloy";}
                 case 8606:{return "GildedIron";}
-                case 8620:{return "Brass";}
-                case 8621:{return "CobaltBrass";}
-                case 8622:{return "AluminiumAlloy";}
                 case 8610:{return "Bronze";}
                 case 8611:{return "BlackBronze";}
                 case 8612:{return "BismuthBronze";}
                 case 8613:{return "Hepatizon";}
+                case 8620:{return "Brass";}
+                case 8621:{return "CobaltBrass";}
+                case 8622:{return "AluminiumAlloy";}
                 case 8630:{return "Steel";}
                 case 8631:{return "BlackSteel";}
-                case 8632:{return "RedSteel";}
-                case 8633:{return "BlueSteel";}
+                case 8632:{return "BlueSteel";}
+                case 8633:{return "RedSteel";}
                 case 8634:{return "DamascusSteel";}
-                case 8653:{return "VanadiumSteel";}
                 case 8635:{return "Tungstensteel";}
-                case 8638:{return "TungstenCarbide";}
+                case 8636:{return "StainlessSteel";}
                 case 8637:{return "HSLASteel";}
+                case 8638:{return "TungstenCarbide";}
                 case 8639:{return "HSLASpringSteel";}
                 case 8640:{return "AnnealedCopper";}
+                case 8641:{return "DeepIron";}
                 case 8642:{return "PigIron";}
+                case 8643:{return "WroughtIron";}
                 case 8644:{return "IronCompressed";}
                 case 8645:{return "IronMagnetic";}
                 case 8646:{return "SteelMagnetic";}
@@ -880,70 +1228,91 @@
                 case 8650:{return "MeteoricSteel";}
                 case 8651:{return "SteelGalvanized";}
                 case 8652:{return "TungstenSintered";}
-                case 8658:{return "ElectrotineAlloy";}
-                case 8660:{return "RedAlloy";}
-                case 8659:{return "BlueAlloy";}
+                case 8653:{return "VanadiumSteel";}
+                case 8654:{return "TitaniumGold";}
                 case 8657:{return "PurpleAlloy";}
+                case 8658:{return "ElectrotineAlloy";}
+                case 8659:{return "BlueAlloy";}
+                case 8660:{return "RedAlloy";}
                 case 8661:{return "Invar";}
                 case 8662:{return "Constantan";}
                 case 8663:{return "Nichrome";}
                 case 8664:{return "Kanthal";}
                 case 8665:{return "Magnalium";}
-                case 8636:{return "StainlessSteel";}
                 case 8666:{return "Ultimet";}
                 case 8667:{return "TinAlloy";}
                 case 8668:{return "BatteryAlloy";}
                 case 8669:{return "SolderingAlloy";}
-                case 8672:{return "IronWood";}
+                case 8670:{return "ShadowIron";}
+                case 8671:{return "ShadowSteel";}
+                case 8672:{return "Ironwood";}
                 case 8673:{return "Steeleaf";}
                 case 8674:{return "Knightmetal";}
                 case 8675:{return "FierySteel";}
+                case 8676:{return "AstralSilver";}
+                case 8677:{return "Midasium";}
+                case 8678:{return "Mithril";}
                 case 8679:{return "Thaumium";}
                 case 8680:{return "DarkThaumium";}
                 case 8681:{return "VoidMetal";}
                 case 8682:{return "Osmiridium";}
                 case 8683:{return "Sunnarium";}
+                case 8684:{return "Trinaquadalloy";}
                 case 8685:{return "ChromiumDioxide";}
                 case 8686:{return "VanadiumGallium";}
                 case 8687:{return "YttriumBariumCuprate";}
                 case 8688:{return "NiobiumNitride";}
                 case 8689:{return "NiobiumTitanium";}
+                case 8690:{return "MeteoricBlackSteel";}
+                case 8691:{return "MeteoricBlueSteel";}
+                case 8692:{return "MeteoricRedSteel";}
                 case 8700:{return "AluminiumBrass";}
-                case 8707:{return "Ardite";}
                 case 8701:{return "Aredrite";}
                 case 8702:{return "Alumite";}
                 case 8703:{return "Manyullyn";}
                 case 8704:{return "VibraniumSteel";}
                 case 8705:{return "VibraniumSilver";}
                 case 8706:{return "Vibramantium";}
+                case 8707:{return "Ardite";}
                 case 8708:{return "Signalum";}
                 case 8709:{return "Lumium";}
-                case 8729:{return "EnderiumBase";}
                 case 8710:{return "Enderium";}
-                case 8712:{return "InfusedGold";}
+                case 8711:{return "ElectrumFlux";}
                 case 8713:{return "GlowstoneRefined";}
                 case 8714:{return "ObsidianRefined";}
                 case 8715:{return "Yellorium";}
                 case 8716:{return "Blutonium";}
                 case 8717:{return "Cyanite";}
+                case 8718:{return "BedrockHSLAAlloy";}
+                case 320:{return "Germanium";}
+                case 8720:{return "Manasteel";}
+                case 8721:{return "Terrasteel";}
+                case 8722:{return "ElvenElementium";}
                 case 8723:{return "Ludicrite";}
                 case 8724:{return "Yellorite";}
-                case 8718:{return "BedrockHSLAAlloy";}
-                case 8719:{return "Osmium";}
                 case 8725:{return "PulsatingIron";}
+                case 8726:{return "VibrantAlloy";}
                 case 8727:{return "ConductiveIron";}
                 case 8728:{return "EnergeticAlloy";}
-                case 8726:{return "VibrantAlloy";}
-                case 8711:{return "ElectrumFlux";}
+                case 8729:{return "EnderiumBase";}
                 case 8730:{return "ElectricalSteel";}
                 case 8731:{return "ObsidianSteel";}
                 case 8732:{return "Soularium";}
                 case 8733:{return "RedstoneAlloy";}
                 case 8734:{return "SpectreIron";}
-                case 8720:{return "Manasteel";}
-                case 8721:{return "Terrasteel";}
-                case 8722:{return "ElvenElementium";}
                 case 8735:{return "GaiaSpirit";}
+                case 8736:{return "Endium";}
+                case 8737:{return "NikolineAlloy";}
+                case 8737:{return "NikolineAlloy";}
+                case 8739:{return "Mauftrium";}
+                case 8740:{return "Elvorium";}
+                case 8741:{return "NiflheimPower";}
+                case 8742:{return "MuspelheimPower";}
+                case 8743:{return "Iffesal";}
+                case 8744:{return "AncientDebris";}
+                case 8745:{return "Netherite";}
+                case 8746:{return "NetherizedDiamond";}
+                case 8747:{return "Efrine";}
                 case 8750:{return "Desh";}
                 case 8751:{return "Duranium";}
                 case 8752:{return "Tritanium";}
@@ -954,74 +1323,167 @@
                 case 8757:{return "Meteorite";}
                 case 8758:{return "FrozenIron";}
                 case 8759:{return "Kreknorite";}
+                case 8760:{return "Alduorite";}
+                case 8761:{return "Infuscolium";}
+                case 8762:{return "Rubracium";}
+                case 8763:{return "Meutoite";}
+                case 8764:{return "Lemurite";}
+                case 8765:{return "Ceruclase";}
+                case 8766:{return "HSLATungstenAlloy";}
+                case 8767:{return "Oureclase";}
+                case 8768:{return "Kalendrite";}
+                case 8769:{return "Orichalcum";}
+                case 8770:{return "Carmot";}
+                case 8771:{return "Sanguinite";}
+                case 8772:{return "Vyroxeres";}
+                case 8773:{return "Eximite";}
+                case 8774:{return "Prometheum";}
+                case 8775:{return "Ignatius";}
+                case 8776:{return "Vulcanite";}
+                case 8777:{return "Inolashite";}
+                case 8778:{return "Haderoth";}
+                case 8779:{return "Celenegil";}
+                case 8780:{return "WorkersAlloy";}
+                case 8781:{return "Desichalkos";}
+                case 8782:{return "Tartarite";}
+                case 8783:{return "Amordrine";}
+                case 8784:{return "Adamantine";}
+                case 8785:{return "Syrmorite";}
+                case 8786:{return "Octine";}
+                case 8790:{return "Trinitanium";}
                 case 8791:{return "Draconium";}
                 case 8792:{return "DraconiumAwakened";}
-                case 8684:{return "Trinaquadalloy";}
-                case 8790:{return "Trinitanium";}
                 case 8793:{return "TitaniumIridium";}
                 case 8794:{return "TitaniumAluminide";}
+                case 8795:{return "Bedrockium";}
+                case 8796:{return "HSSG";}
+                case 8797:{return "HSSE";}
+                case 8798:{return "HSSS";}
+                case 8799:{return "CrystalMatrix";}
+                case 8800:{return "CosmicNeutronium";}
+                case 8801:{return "Infinity";}
+                case 8802:{return "TantalumHafniumCarbide";}
+                case 8803:{return "CastIron";}
+                case 8804:{return "Mingrade";}
+                case 8805:{return "Unstable";}
+                case 8806:{return "ClayCompound";}
+                case 8807:{return "EndSteel";}
+                case 8808:{return "EnergeticSilver";}
+                case 8809:{return "MelodicAlloy";}
+                case 8810:{return "StellarAlloy";}
+                case 8811:{return "VividAlloy";}
+                case 8812:{return "CrystallineAlloy";}
+                case 8813:{return "CrystallinePinkSlime";}
+                case 9000:{return "Pumice";}
+                case 9001:{return "Diatomite";}
+                case 9003:{return "BasalticMineralSand";}
+                case 9004:{return "GraniticMineralSand";}
+                case 9005:{return "GarnetSand";}
+                case 9006:{return "QuartzSand";}
+                case 9007:{return "UraniumTetrafluoride";}
+                case 9008:{return "UraniumHexafluoride";}
+                case 9009:{return "Uranium238Tetrafluoride";}
+                case 9010:{return "Uranium238Hexafluoride";}
+                case 9011:{return "Uranium235Tetrafluoride";}
+                case 9012:{return "Uranium235Hexafluoride";}
+                case 9100:{return "RareEarth";}
+                case 9101:{return "Almandine";}
+                case 9102:{return "Andradite";}
+                case 9103:{return "Asbestos";}
                 case 9104:{return "Hematite";}
-                case 9122:{return "Magnetite";}
-                case 9108:{return "Cassiterite";}
-                case 9118:{return "Garnierite";}
-                case 9126:{return "Pyrolusite";}
-                case 9134:{return "Uraninite";}
-                case 9114:{return "Cinnabar";}
-                case 9123:{return "Molybdenite";}
-                case 9130:{return "Sphalerite";}
-                case 9131:{return "Stibnite";}
-                case 9145:{return "Pentlandite";}
-                case 9111:{return "Chalcopyrite";}
-                case 9216:{return "Arsenopyrite";}
-                case 9115:{return "Cobaltite";}
-                case 9117:{return "Galena";}
-                case 9116:{return "Cooperite";}
-                case 9132:{return "Tetrahedrite";}
-                case 9213:{return "Kesterite";}
-                case 9214:{return "Stannite";}
-                case 9160:{return "Barite";}
-                case 9110:{return "Celestine";}
-                case 9128:{return "Scheelite";}
-                case 9217:{return "Wolframite";}
-                case 9194:{return "Ferberite";}
-                case 9195:{return "Huebnerite";}
-                case 9133:{return "Tungstate";}
-                case 9193:{return "Stolzite";}
-                case 9196:{return "Russellite";}
-                case 9197:{return "Pinalite";}
-                case 9164:{return "Wollastonite";}
-                case 9120:{return "Ilmenite";}
                 case 9105:{return "Bauxite";}
                 case 9106:{return "BrownLimonite";}
+                case 9107:{return "Calcite";}
+                case 9108:{return "Cassiterite";}
+                case 9109:{return "Realgar";}
+                case 9110:{return "Celestine";}
+                case 9111:{return "Chalcopyrite";}
+                case 9112:{return "Chalk";}
                 case 9113:{return "Chromite";}
-                case 9121:{return "Magnesite";}
+                case 9114:{return "Cinnabar";}
+                case 9115:{return "Cobaltite";}
+                case 9116:{return "Cooperite";}
+                case 9117:{return "Galena";}
+                case 9118:{return "Garnierite";}
+                case 9119:{return "Grossular";}
+                case 9120:{return "Ilmenite";}
+                case 8016:{return "MagnesiumCarbonate";}
+                case 9122:{return "Magnetite";}
+                case 9123:{return "Molybdenite";}
                 case 9124:{return "Powellite";}
+                case 9125:{return "Pyrite";}
+                case 9126:{return "Pyrolusite";}
+                case 9127:{return "Pyrope";}
+                case 9128:{return "Scheelite";}
+                case 9129:{return "Spessartine";}
+                case 9130:{return "Sphalerite";}
+                case 9131:{return "Stibnite";}
+                case 9132:{return "Tetrahedrite";}
+                case 9133:{return "Tungstate";}
+                case 9134:{return "Uraninite";}
+                case 9135:{return "Uvarovite";}
                 case 9136:{return "Wulfenite";}
                 case 9137:{return "YellowLimonite";}
                 case 9138:{return "Perlite";}
                 case 9139:{return "Borax";}
-                case 9142:{return "Chrysotile";}
-                case 9143:{return "Ferrovanadium";}
+                case 9140:{return "PotassiumFeldspar";}
+                case 9141:{return "Biotite";}
+                case 9103:{return "Asbestos";}
+                case 9143:{return "VanadiumMagnetite";}
                 case 9144:{return "Bastnasite";}
+                case 9145:{return "Pentlandite";}
                 case 9146:{return "Spodumene";}
                 case 9147:{return "Pollucite";}
                 case 9148:{return "Tantalite";}
                 case 9149:{return "Lepidolite";}
                 case 9150:{return "Glauconite";}
-                case 9151:{return "GlauconiteSand";}
+                case 9150:{return "Glauconite";}
                 case 9152:{return "Vermiculite";}
                 case 9153:{return "Bentonite";}
-                case 9154:{return "FullersEarth";}
+                case 9154:{return "Palygorskite";}
                 case 9155:{return "Pitchblende";}
                 case 9156:{return "Malachite";}
                 case 9157:{return "Mirabilite";}
                 case 9158:{return "Mica";}
                 case 9159:{return "Trona";}
+                case 9160:{return "Barite";}
                 case 9161:{return "Gypsum";}
                 case 9162:{return "Alunite";}
+                case 9163:{return "Dolomite";}
+                case 9164:{return "Wollastonite";}
                 case 9165:{return "Zeolite";}
                 case 9166:{return "Kyanite";}
                 case 9167:{return "Kaolinite";}
+                case 9169:{return "Talc";}
+                case 9169:{return "Talc";}
+                case 9170:{return "Gneiss";}
+                case 9171:{return "Greenschist";}
+                case 9172:{return "Greenstone";}
+                case 9173:{return "Greywacke";}
+                case 9174:{return "Graphite";}
+                case 9175:{return "Graphene";}
+                case 9176:{return "Gabbro";}
+                case 9177:{return "Komatiite";}
+                case 9178:{return "Siltstone";}
+                case 9179:{return "Rhyolite";}
+                case 9180:{return "Quartzite";}
+                case 9181:{return "Migmatite";}
+                case 9182:{return "Epidote";}
+                case 9183:{return "Emery";}
+                case 9184:{return "Blueschist";}
+                case 9185:{return "Bluestone";}
+                case 9186:{return "Chert";}
+                case 9187:{return "Dacite";}
+                case 9188:{return "Andesite";}
+                case 9189:{return "Limestone";}
+                case 9190:{return "Shale";}
+                case 9191:{return "Eclogite";}
+                case 9192:{return "Rutile";}
+                case 9193:{return "Stolzite";}
+                case 9194:{return "Ferberite";}
+                case 9195:{return "Huebnerite";}
+                case 9196:{return "Russellite";}
+                case 9197:{return "Pinalite";}
                 case 9198:{return "DiduraniumTrioxide";}
                 case 9199:{return "DuraniumHexafluoride";}
                 case 9200:{return "DuraniumHexachloride";}
@@ -1037,12 +1499,272 @@
                 case 9210:{return "Bromargyrite";}
                 case 9211:{return "Smithsonite";}
                 case 9212:{return "Sperrylite";}
-                case 9000:{return "Pumice";}
-                case 9001:{return "Diatomite";}
-                case 9003:{return "BasalticMineralSand";}
-                case 9004:{return "GraniticMineralSand";}
-                case 9005:{return "GarnetSand";}
-                case 9006:{return "QuartzSand";}
+                case 9213:{return "Kesterite";}
+                case 9214:{return "Stannite";}
+                case 9215:{return "Fluorite";}
+                case 9216:{return "Arsenopyrite";}
+                case 9217:{return "Wolframite";}
+                case 9218:{return "Kimberlite";}
+                case 9219:{return "Prismarine";}
+                case 9220:{return "PrismarineDark";}
+                case 9221:{return "Bischofite";}
+                case 9222:{return "Slate";}
+                case 9223:{return "Blackstone";}
+                case 9224:{return "HexoriumBlack";}
+                case 9225:{return "HexoriumRed";}
+                case 9226:{return "HexoriumGreen";}
+                case 9228:{return "HexoriumBlue";}
+                case 9239:{return "HexoriumWhite";}
+                case 9243:{return "ClayBrick";}
+                case 9244:{return "Grayschist";}
+                case 9245:{return "Pinkschist";}
+                case 9246:{return "Columbite";}
+                case 9247:{return "Coltan";}
+                case 9248:{return "Deepslate";}
+                case 9249:{return "PhobosRock";}
+                case 9250:{return "DeimosRock";}
+                case 9251:{return "VenusRock";}
+                case 9252:{return "MercuryRock";}
+                case 9253:{return "CeresRock";}
+                case 9254:{return "JupiterRock";}
+                case 9255:{return "IoRock";}
+                case 9256:{return "EuropaRock";}
+                case 9257:{return "GanymedeRock";}
+                case 9258:{return "CallistoRock";}
+                case 9259:{return "SaturnRock";}
+                case 9260:{return "RheaRock";}
+                case 9261:{return "TitanRock";}
+                case 9262:{return "OberonRock";}
+                case 9263:{return "IapetusRock";}
+                case 9264:{return "UranusRock";}
+                case 9265:{return "TitaniaRock";}
+                case 9266:{return "NeptuneRock";}
+                case 9267:{return "TritonRock";}
+                case 9268:{return "PlutoRock";}
+                case 9269:{return "ErisRock";}
+                case 9270:{return "Kepler22bRock";}
+                case 9271:{return "Quicklime";}
+                case 9300:{return "Oak";}
+                case 9301:{return "Birch";}
+                case 9302:{return "Spruce";}
+                case 9303:{return "Junglewood";}
+                case 9304:{return "Acacia";}
+                case 9305:{return "DarkOak";}
+                case 9306:{return "Crimsonwood";}
+                case 9307:{return "Warpedwood";}
+                case 9308:{return "WoodCompressed";}
+                case 9309:{return "WoodDead";}
+                case 9310:{return "WoodRotten";}
+                case 9311:{return "WoodMossy";}
+                case 9312:{return "WoodFrozen";}
+                case 9313:{return "Maple";}
+                case 9314:{return "Willow";}
+                case 9315:{return "BlueMahoe";}
+                case 9316:{return "Hazel";}
+                case 9317:{return "Cinnamonwood";}
+                case 9318:{return "Coconutwood";}
+                case 9319:{return "Rainbowood";}
+                case 9320:{return "Towerwood";}
+                case 9321:{return "Witchwood";}
+                case 9322:{return "Ogrewood";}
+                case 9323:{return "Wyvernwood";}
+                case 9324:{return "Aspen";}
+                case 9325:{return "DouglasFir";}
+                case 9326:{return "Sycamore";}
+                case 9327:{return "WhiteCedar";}
+                case 9328:{return "WhiteElm";}
+                case 9329:{return "Thorntree";}
+                case 9330:{return "SilverPine";}
+                case 9331:{return "Alder";}
+                case 9332:{return "Hawthorn";}
+                case 9333:{return "Rowan";}
+                case 9334:{return "Autumnwood";}
+                case 9335:{return "Pine";}
+                case 9336:{return "Cypress";}
+                case 9337:{return "Fir";}
+                case 9338:{return "JapaneseMaple";}
+                case 9339:{return "RainbowEucalyptus";}
+                case 9340:{return "Redwood";}
+                case 9341:{return "Sakura";}
+                case 9342:{return "Balsa";}
+                case 9343:{return "Baobab";}
+                case 9344:{return "Cherrywood";}
+                case 9345:{return "Chestnutwood";}
+                case 9346:{return "Citruswood";}
+                case 9347:{return "Cocobolowood";}
+                case 9348:{return "Ebony";}
+                case 9349:{return "Giganteumwood";}
+                case 9350:{return "Greenheart";}
+                case 9351:{return "Ipe";}
+                case 9352:{return "Kapok";}
+                case 9353:{return "Larch";}
+                case 9354:{return "Limewood";}
+                case 9355:{return "Mahoe";}
+                case 9356:{return "Mahogany";}
+                case 9357:{return "Padauk";}
+                case 9358:{return "Palm";}
+                case 9359:{return "Papayawood";}
+                case 9360:{return "Plumwood";}
+                case 9361:{return "Poplar";}
+                case 9362:{return "Sequoia";}
+                case 9363:{return "Teak";}
+                case 9364:{return "Walnutwood";}
+                case 9365:{return "Wenge";}
+                case 9366:{return "Zebrawood";}
+                case 9367:{return "Darkwood";}
+                case 9368:{return "Etherealwood";}
+                case 9369:{return "Goldwood";}
+                case 9370:{return "Hellbark";}
+                case 9371:{return "Jacaranda";}
+                case 9372:{return "Mangrove";}
+                case 9373:{return "SacredOak";}
+                case 9374:{return "Magicwood";}
+                case 9375:{return "Applewood";}
+                case 9376:{return "Ashwood";}
+                case 9377:{return "Beech";}
+                case 9378:{return "Boxwood";}
+                case 9379:{return "Brazilwood";}
+                case 9380:{return "Butternutwood";}
+                case 9381:{return "Cedar";}
+                case 9382:{return "Elderwood";}
+                case 9383:{return "Elm";}
+                case 9384:{return "Eucalyptus";}
+                case 9385:{return "Figwood";}
+                case 9386:{return "Gingko";}
+                case 9387:{return "Hemlock";}
+                case 9388:{return "Hickory";}
+                case 9389:{return "Holly";}
+                case 9390:{return "Hornbeam";}
+                case 9391:{return "Iroko";}
+                case 9392:{return "Locust";}
+                case 9393:{return "Logwood";}
+                case 9394:{return "Maclura";}
+                case 9395:{return "Olivewood";}
+                case 9396:{return "Pearwood";}
+                case 9397:{return "PinkIvory";}
+                case 9398:{return "Purpleheart";}
+                case 9399:{return "Rosewood";}
+                case 9400:{return "Sweetgum";}
+                case 9401:{return "Syzgium";}
+                case 9402:{return "Whitebeam";}
+                case 9403:{return "Yew";}
+                case 9404:{return "WoodScorched";}
+                case 9405:{return "WoodVarnished";}
+                case 9406:{return "WoodTainted";}
+                case 9407:{return "WoodBleached";}
+                case 9408:{return "Foxfirewood";}
+                case 9409:{return "BlueSpruce";}
+                case 9700:{return "MeatRaw";}
+                case 9701:{return "MeatCooked";}
+                case 9702:{return "Wheat";}
+                case 9703:{return "Sugar";}
+                case 9704:{return "Barley";}
+                case 9705:{return "Rye";}
+                case 9706:{return "Rice";}
+                case 9707:{return "Oat";}
+                case 9708:{return "Corn";}
+                case 9709:{return "Potato";}
+                case 9710:{return "MeatRotten";}
+                case 9711:{return "FishCooked";}
+                case 9712:{return "FishRaw";}
+                case 9713:{return "FishRotten";}
+                case 9714:{return "Almond";}
+                case 9715:{return "Marshmallow";}
+                case 9716:{return "PEZ";}
+                case 9717:{return "Licorice";}
+                case 9718:{return "Nougat";}
+                case 9719:{return "AbyssalOat";}
+                case 9778:{return "Tofu";}
+                case 9779:{return "SoylentGreen";}
+                case 9780:{return "Cheese";}
+                case 9781:{return "Chili";}
+                case 9782:{return "Cocoa";}
+                case 9783:{return "Chocolate";}
+                case 9784:{return "Coffee";}
+                case 9785:{return "Cinnamon";}
+                case 9786:{return "Nutmeg";}
+                case 9787:{return "Vanilla";}
+                case 9788:{return "PepperBlack";}
+                case 9789:{return "Curry";}
+                case 9790:{return "Milk";}
+                case 9791:{return "Honey";}
+                case 9792:{return "Tea";}
+                case 9793:{return "Honeydew";}
+                case 9794:{return "Mint";}
+                case 9795:{return "Peanut";}
+                case 9796:{return "Hazelnut";}
+                case 9797:{return "Pistachio";}
+                case 9798:{return "Butter";}
+                case 9799:{return "SaltedButter";}
+                case 9800:{return "Water";}
+                case 9801:{return "Snow";}
+                case 9802:{return "Ice";}
+                case 9803:{return "FreshWater";}
+                case 9804:{return "Saltwater";}
+                case 9805:{return "HolyWater";}
+                case 9806:{return "SeaWater";}
+                case 9807:{return "WaterDirty";}
+                case 9808:{return "WaterDistilled";}
+                case 9809:{return "HydrogenPeroxide";}
+                case 9810:{return "Lava";}
+                case 9811:{return "SemiheavyWater";}
+                case 9812:{return "HeavyWater";}
+                case 9813:{return "TritiatedWater";}
+                case 9814:{return "Steam";}
+                case 9820:{return "NitroCarbon";}
+                case 9821:{return "Glyceryl";}
+                case 9822:{return "SodiumPersulfate";}
+                case 9823:{return "SodiumSulfide";}
+                case 9824:{return "SulfuricAcid";}
+                case 9825:{return "NitricAcid";}
+                case 9826:{return "HydrochloricAcid";}
+                case 9827:{return "AquaRegia";}
+                case 9828:{return "Glycerol";}
+                case 9829:{return "HydrogenFluoride";}
+                case 9830:{return "Air";}
+                case 9831:{return "NitrogenDioxide";}
+                case 9832:{return "Methane";}
+                case 9833:{return "MethaneIce";}
+                case 9834:{return "SulfurDioxide";}
+                case 9835:{return "SulfurTrioxide";}
+                case 9836:{return "CarbonDioxide";}
+                case 9837:{return "NitrogenMonoxide";}
+                case 9838:{return "CarbonMonoxide";}
+                case 9839:{return "HeliumNeon";}
+                case 9840:{return "Biomass";}
+                case 9841:{return "BioFuel";}
+                case 9842:{return "Ethanol";}
+                case 9843:{return "CarbonTrioxide";}
+                case 9844:{return "DisulfuricAcid";}
+                case 9850:{return "Oil";}
+                case 9851:{return "OilSand";}
+                case 9852:{return "CrudeOil";}
+                case 9853:{return "OilShale";}
+                case 9860:{return "Fuel";}
+                case 9861:{return "NitroFuel";}
+                case 9862:{return "Kerosine";}
+                case 9863:{return "Diesel";}
+                case 9864:{return "Petrol";}
+                case 9865:{return "Propane";}
+                case 9866:{return "Butane";}
+                case 9867:{return "Propylene";}
+                case 9868:{return "Ethylene";}
+                case 9870:{return "Creosote";}
+                case 9871:{return "FishOil";}
+                case 9872:{return "SeedOil";}
+                case 9873:{return "HempOil";}
+                case 9874:{return "LinOil";}
+                case 9875:{return "SunflowerOil";}
+                case 9876:{return "NutOil";}
+                case 9877:{return "OliveOil";}
+                case 9880:{return "FryingOilHot";}
+                case 9881:{return "Glue";}
+                case 9882:{return "Lubricant";}
+                case 9883:{return "ConstructionFoam";}
+                case 9884:{return "UUAmplifier";}
+                case 9885:{return "UUMatter";}
+                case 9886:{return "Latex";}
+                case 9887:{return "WhaleOil";}
             }
         }
     </init>

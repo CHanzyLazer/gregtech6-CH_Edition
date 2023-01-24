@@ -9,6 +9,7 @@ package gregtechCH.tileentity.cores.basicmachines;
  * TE 继承并将自身作为 core 传入来指定每个子项使用何种 core
  */
 public interface IMTEC_BasicMachine {
+    public void doWorkFirst(long aTimer);
     public boolean doWorkCheck(long aTimer);
     public void doWorkActive(long aTimer);
     public void doWorkInactive(long aTimer);
@@ -16,6 +17,7 @@ public interface IMTEC_BasicMachine {
 
     public static class Util {
         public static void doWork(IMTEC_BasicMachine aCore, long aTimer) {
+            aCore.doWorkFirst(aTimer);
             if (aCore.doWorkCheck(aTimer)) {
                 aCore.doWorkActive(aTimer);
             }

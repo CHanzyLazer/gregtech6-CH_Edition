@@ -43,7 +43,6 @@ import gregapi.oredict.OreDictMaterial;
 import gregapi.oredict.OreDictPrefix;
 import gregapi.util.ST;
 import gregapi.util.UT;
-import gregtech.asm.transformers.replacements.Timer;
 import gregtechCH.item.IItemDisableNEIDamageSearch;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;

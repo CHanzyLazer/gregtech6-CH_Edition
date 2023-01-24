@@ -4,12 +4,12 @@ GregTech 6 CH Edition (GTCH) 是本人（b 站：[潘多拉茶壶](https://space
 
 是否希望给物品添加 GT6 的材料？是否感觉 GT6 的机器数值不够平衡？甚至觉得 GT6 还不够科学？在这里你能找到你想要的版本！
 
-下载地址 [Release](https://github.com/CHanzyLazer/gregtech6-CH_Edition/releases/tag/v6.15.10-CH-0.3.0)
+下载地址 [Release](https://github.com/CHanzyLazer/gregtech6-CH_Edition/releases/tag/v6.15.10-CH-0.3.1)
 ，包含：
-- mod 本体 [gregtech_1.7.10-6.15.10-CH-0.3.0.jar](https://github.com/CHanzyLazer/gregtech6-CH_Edition/releases/download/v6.15.10-CH-0.3.0/gregtech_1.7.10-6.15.10-CH-0.3.0.jar),
-- 默认配置文件 [gregtech_1.7.10-6.15.10-CH-0.3.0-defaultConfigPack.zip](https://github.com/CHanzyLazer/gregtech6-CH_Edition/releases/download/v6.15.10-CH-0.3.0/gregtech_1.7.10-6.15.10-CH-0.3.0-defaultConfigPack.zip),
-- 此版本专用的 OmniOcular 配置文件（可选） [gregtech_1.7.10-6.15.10-CH-0.3.0-OmniOcular_CH.zip](https://github.com/CHanzyLazer/gregtech6-CH_Edition/releases/download/v6.15.10-CH-0.3.0/gregtech_1.7.10-6.15.10-CH-0.3.0-OmniOcular_CH.zip),
-- 此版本额外增加文本的汉化文件 [gregtech_1.7.10-6.15.10-CH-0.3.0-langrage_CH.zip](https://github.com/CHanzyLazer/gregtech6-CH_Edition/releases/download/v6.15.10-CH-0.3.0/gregtech_1.7.10-6.15.10-CH-0.3.0-langrage_CH.zip)
+- mod 本体 [gregtech_1.7.10-6.15.10-CH-0.3.1.jar](https://github.com/CHanzyLazer/gregtech6-CH_Edition/releases/download/v6.15.10-CH-0.3.1/gregtech_1.7.10-6.15.10-CH-0.3.1.jar),
+- 默认配置文件 [gregtech_1.7.10-6.15.10-CH-0.3.1-defaultConfigPack.zip](https://github.com/CHanzyLazer/gregtech6-CH_Edition/releases/download/v6.15.10-CH-0.3.1/gregtech_1.7.10-6.15.10-CH-0.3.1-defaultConfigPack.zip),
+- 此版本专用的 OmniOcular 配置文件（可选） [gregtech_1.7.10-6.15.10-CH-0.3.1-OmniOcular_CH.zip](https://github.com/CHanzyLazer/gregtech6-CH_Edition/releases/download/v6.15.10-CH-0.3.1/gregtech_1.7.10-6.15.10-CH-0.3.1-OmniOcular_CH.zip),
+- 此版本额外增加文本的汉化文件 [gregtech_1.7.10-6.15.10-CH-0.3.1-langrage_CH.zip](https://github.com/CHanzyLazer/gregtech6-CH_Edition/releases/download/v6.15.10-CH-0.3.1/gregtech_1.7.10-6.15.10-CH-0.3.1-langrage_CH.zip)
 
 和原版一样，此版本需要 [Minecraft Forge 1614](https://files.minecraftforge.net/maven/net/minecraftforge/forge/1.7.10-10.13.4.1614-1.7.10/forge-1.7.10-10.13.4.1614-1.7.10-installer.jar)
 和前置 mod [CodeChickenCore](https://gregtech.overminddl1.com/codechicken/CodeChickenCore/1.7.10-1.0.7.47/CodeChickenCore-1.7.10-1.0.7.47-universal.jar) 以及 [CodeChickenLib](https://gregtech.overminddl1.com/codechicken/CodeChickenLib/1.7.10-1.1.3.140/CodeChickenLib-1.7.10-1.1.3.140-universal.jar)

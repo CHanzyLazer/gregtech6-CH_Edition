@@ -36,7 +36,7 @@ public class MultiTileEntityFusionReactor extends TileEntityBase10MultiBlockMach
 	@Override
 	public void doOutputEnergy() {
 		int tX = getOffsetXN(mFacing, 2), tY = yCoord, tZ = getOffsetZN(mFacing, 2);
-		for (byte tSide : ALL_SIDES_HORIZONTAL) if (ITileEntityEnergy.Util.insertEnergyInto(mEnergyTypeEmitted, mOutputEnergy, 1, this, WD.te(worldObj, tX+OFFX[tSide]*10, tY, tZ+OFFZ[tSide]*10, OPOS[tSide], F)) > 0) return;
+		for (byte tSide : ALL_SIDES_HORIZONTAL) if (ITileEntityEnergy.Util.insertEnergyInto(mEnergyTypeEmitted, mCore.mOutputEnergy, 1, this, WD.te(worldObj, tX+OFFX[tSide]*10, tY, tZ+OFFZ[tSide]*10, OPOS[tSide], F)) > 0) return;
 	}
 	
 	@Override public boolean refreshStructureOnActiveStateChange() {return T;}

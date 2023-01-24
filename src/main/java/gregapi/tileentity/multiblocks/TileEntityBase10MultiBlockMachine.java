@@ -94,6 +94,7 @@ public abstract class TileEntityBase10MultiBlockMachine extends MultiTileEntityB
 		boolean tOldStructureOkay = isStructureOkay();
 		if (checkStructureOnly(T)) {
 			onMagnifyingGlassSuccess(aChatReturn, tOldStructureOkay);
+			super.onMagnifyingGlass(aChatReturn);
 		} else {
 			onMagnifyingGlassFail(aChatReturn, tOldStructureOkay);
 		}

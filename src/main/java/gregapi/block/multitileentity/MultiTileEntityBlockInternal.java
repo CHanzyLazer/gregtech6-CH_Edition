@@ -33,6 +33,7 @@ import gregapi.render.RendererBlockTextured;
 import gregapi.tileentity.ITileEntity;
 import gregapi.tileentity.ITileEntityMachineBlockUpdateable;
 import gregapi.util.WD;
+import gregtechCH.block.IBlockDisableNEIDamageSearch;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -46,7 +47,7 @@ import net.minecraft.world.World;
 /**
  * @author Gregorius Techneticies
  */
-public class MultiTileEntityBlockInternal extends Block implements IBlock, IItemGT, IRenderedBlock, IBlockPlacable {
+public class MultiTileEntityBlockInternal extends Block implements IBlockDisableNEIDamageSearch, IBlock, IItemGT, IRenderedBlock, IBlockPlacable {
 	public MultiTileEntityRegistry mMultiTileEntityRegistry;
 	
 	public MultiTileEntityBlockInternal() {
@@ -133,4 +134,7 @@ public class MultiTileEntityBlockInternal extends Block implements IBlock, IItem
 		} catch(Throwable e) {e.printStackTrace(ERR);}
 		return T;
 	}
+	
+	// GTCH, 禁止此方块的 DamageSearch
+	@Override public boolean disableNEIDamageSearch() {return T;}
 }

@@ -44,6 +44,7 @@ import gregapi.tileentity.inventories.ITileEntityBookShelf;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
+import gregtechCH.block.IBlockDisableNEIDamageSearch;
 import gregtechCH.tileentity.ITEAfterUpdateRender;
 import gregtechCH.util.WD_CH;
 import mekanism.api.MekanismAPI;
@@ -90,7 +91,7 @@ import static gregtechCH.config.ConfigForge.DATA_GTCH;
 , @Optional.Interface(iface = "vazkii.botania.api.mana.IManaTrigger", modid = ModIDs.BOTA)
 })
 @SuppressWarnings("deprecation")
-public class MultiTileEntityBlock extends Block implements IBlock, IItemGT, IBlockDebugable, IBlockErrorable, IBlockOnWalkOver, IBlockSealable, IOxygenReliantBlock, IPaintableBlock, IBlockSyncDataAndCoversAndIDs, IRenderedBlock, ITileEntityProvider, IBlockToolable, IBlockRetrievable, IBlockMaterial, IManaTrigger {
+public class MultiTileEntityBlock extends Block implements IBlockDisableNEIDamageSearch, IBlock, IItemGT, IBlockDebugable, IBlockErrorable, IBlockOnWalkOver, IBlockSealable, IOxygenReliantBlock, IPaintableBlock, IBlockSyncDataAndCoversAndIDs, IRenderedBlock, ITileEntityProvider, IBlockToolable, IBlockRetrievable, IBlockMaterial, IManaTrigger {
 	private static final Map<String, MultiTileEntityBlock> MULTITILEENTITYBLOCKMAP = new HashMap<>();
 	
 	private final int mHarvestLevelOffset, mHarvestLevelMinimum, mHarvestLevelMaximum;
@@ -340,5 +341,8 @@ public class MultiTileEntityBlock extends Block implements IBlock, IItemGT, IBlo
 		return (tTELightOpacity!=null) ? tTELightOpacity : super.getLightOpacity(aWorld, aX, aY, aZ);
 	}
 	// 亮度其实没有这个问题，直接用默认的亮度逻辑即可
+	
+	// GTCH, 禁止此方块的 DamageSearch
+	@Override public boolean disableNEIDamageSearch() {return T;}
 }
 

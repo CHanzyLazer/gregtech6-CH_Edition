@@ -8,6 +8,7 @@ import gregapi.tileentity.connectors.MultiTileEntityWireRedstoneInsulated;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
+import gregtechCH.block.IBlockDisableNEIDamageSearch;
 import gregtechCH.config.ConfigForge;
 import gregtechCH.item.IItemDisableNEIDamageSearch;
 import gregtechCH.tileentity.connectors.ITEInterceptModConnectFluid;
@@ -23,6 +24,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -189,6 +191,8 @@ public class Methods {
     // 插入自己的判断，此物品是否关闭了 nei 的 damageSearch
     public static boolean disableNEIDamageSearch(Item item) {
         if (item instanceof IItemDisableNEIDamageSearch) return ((IItemDisableNEIDamageSearch)item).disableNEIDamageSearch();
+        // 添加对于纯 Block 的支持
+        if (item instanceof ItemBlock && ((ItemBlock)item).field_150939_a instanceof IBlockDisableNEIDamageSearch) return ((IBlockDisableNEIDamageSearch)((ItemBlock)item).field_150939_a).disableNEIDamageSearch();
         return false;
     }
 }

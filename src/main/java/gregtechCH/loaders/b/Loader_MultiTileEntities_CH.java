@@ -4,7 +4,6 @@ import gregapi.block.multitileentity.MultiTileEntityBlock;
 import gregapi.block.multitileentity.MultiTileEntityRegistry;
 import gregapi.data.*;
 import gregapi.oredict.OreDictMaterial;
-import gregapi.tileentity.connectors.MultiTileEntityWireElectric;
 import gregapi.tileentity.multiblocks.MultiTileEntityMultiBlockPart;
 import gregapi.util.OM;
 import gregapi.util.ST;
@@ -454,9 +453,239 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
     }
     
     
+    // 提供通用的代码来直接修改这种材料的所有种类电线的参数，减少重复代码
+    private static void setElectricWiresVoltage(MultiTileEntityRegistry aRegistry, int aID, long aVoltage) {
+        aRegistry.addReplacer(aID+ 0).setParameters(NBT_PIPESIZE, aVoltage);
+        aRegistry.addReplacer(aID+ 1).setParameters(NBT_PIPESIZE, aVoltage);
+        aRegistry.addReplacer(aID+ 2).setParameters(NBT_PIPESIZE, aVoltage);
+        aRegistry.addReplacer(aID+ 3).setParameters(NBT_PIPESIZE, aVoltage);
+        aRegistry.addReplacer(aID+ 4).setParameters(NBT_PIPESIZE, aVoltage);
+        aRegistry.addReplacer(aID+ 5).setParameters(NBT_PIPESIZE, aVoltage);
+        aRegistry.addReplacer(aID+ 6).setParameters(NBT_PIPESIZE, aVoltage);
+        aRegistry.addReplacer(aID+ 7).setParameters(NBT_PIPESIZE, aVoltage);
+        aRegistry.addReplacer(aID+ 8).setParameters(NBT_PIPESIZE, aVoltage);
+        aRegistry.addReplacer(aID+ 9).setParameters(NBT_PIPESIZE, aVoltage);
+        aRegistry.addReplacer(aID+10).setParameters(NBT_PIPESIZE, aVoltage);
+        aRegistry.addReplacer(aID+11).setParameters(NBT_PIPESIZE, aVoltage);
+        aRegistry.addReplacer(aID+12).setParameters(NBT_PIPESIZE, aVoltage);
+        aRegistry.addReplacer(aID+13).setParameters(NBT_PIPESIZE, aVoltage);
+        aRegistry.addReplacer(aID+14).setParameters(NBT_PIPESIZE, aVoltage);
+        aRegistry.addReplacer(aID+15).setParameters(NBT_PIPESIZE, aVoltage);
+    }
+    private static void setElectricCablesVoltage(MultiTileEntityRegistry aRegistry, int aID, long aVoltage) {
+        aRegistry.addReplacer(aID+16).setParameters(NBT_PIPESIZE, aVoltage);
+        aRegistry.addReplacer(aID+17).setParameters(NBT_PIPESIZE, aVoltage);
+        aRegistry.addReplacer(aID+19).setParameters(NBT_PIPESIZE, aVoltage);
+        aRegistry.addReplacer(aID+23).setParameters(NBT_PIPESIZE, aVoltage);
+        aRegistry.addReplacer(aID+27).setParameters(NBT_PIPESIZE, aVoltage);
+    }
+    private static void setElectricWiresAmperage(MultiTileEntityRegistry aRegistry, int aID, long aAmperage) {
+        aRegistry.addReplacer(aID+ 0).setParameters(NBT_PIPEBANDWIDTH, aAmperage* 1);
+        aRegistry.addReplacer(aID+ 1).setParameters(NBT_PIPEBANDWIDTH, aAmperage* 2);
+        aRegistry.addReplacer(aID+ 2).setParameters(NBT_PIPEBANDWIDTH, aAmperage* 3);
+        aRegistry.addReplacer(aID+ 3).setParameters(NBT_PIPEBANDWIDTH, aAmperage* 4);
+        aRegistry.addReplacer(aID+ 4).setParameters(NBT_PIPEBANDWIDTH, aAmperage* 5);
+        aRegistry.addReplacer(aID+ 5).setParameters(NBT_PIPEBANDWIDTH, aAmperage* 6);
+        aRegistry.addReplacer(aID+ 6).setParameters(NBT_PIPEBANDWIDTH, aAmperage* 7);
+        aRegistry.addReplacer(aID+ 7).setParameters(NBT_PIPEBANDWIDTH, aAmperage* 8);
+        aRegistry.addReplacer(aID+ 8).setParameters(NBT_PIPEBANDWIDTH, aAmperage* 9);
+        aRegistry.addReplacer(aID+ 9).setParameters(NBT_PIPEBANDWIDTH, aAmperage*10);
+        aRegistry.addReplacer(aID+10).setParameters(NBT_PIPEBANDWIDTH, aAmperage*11);
+        aRegistry.addReplacer(aID+11).setParameters(NBT_PIPEBANDWIDTH, aAmperage*12);
+        aRegistry.addReplacer(aID+12).setParameters(NBT_PIPEBANDWIDTH, aAmperage*13);
+        aRegistry.addReplacer(aID+13).setParameters(NBT_PIPEBANDWIDTH, aAmperage*14);
+        aRegistry.addReplacer(aID+14).setParameters(NBT_PIPEBANDWIDTH, aAmperage*15);
+        aRegistry.addReplacer(aID+15).setParameters(NBT_PIPEBANDWIDTH, aAmperage*16);
+    }
+    private static void setElectricCablesAmperage(MultiTileEntityRegistry aRegistry, int aID, long aAmperage) {
+        aRegistry.addReplacer(aID+16).setParameters(NBT_PIPEBANDWIDTH, aAmperage* 1);
+        aRegistry.addReplacer(aID+17).setParameters(NBT_PIPEBANDWIDTH, aAmperage* 2);
+        aRegistry.addReplacer(aID+19).setParameters(NBT_PIPEBANDWIDTH, aAmperage* 4);
+        aRegistry.addReplacer(aID+23).setParameters(NBT_PIPEBANDWIDTH, aAmperage* 8);
+        aRegistry.addReplacer(aID+27).setParameters(NBT_PIPEBANDWIDTH, aAmperage*12);
+    }
+    private static void setElectricWiresResistance(MultiTileEntityRegistry aRegistry, int aID, long aResistance) {
+        aRegistry.addReplacer(aID+ 0).setParameters(NBT_RESISTANCE+".electric", aResistance   );
+        aRegistry.addReplacer(aID+ 1).setParameters(NBT_RESISTANCE+".electric", aResistance/2 );
+        aRegistry.addReplacer(aID+ 2).setParameters(NBT_RESISTANCE+".electric", aResistance/3 );
+        aRegistry.addReplacer(aID+ 3).setParameters(NBT_RESISTANCE+".electric", aResistance/4 );
+        aRegistry.addReplacer(aID+ 4).setParameters(NBT_RESISTANCE+".electric", aResistance/5 );
+        aRegistry.addReplacer(aID+ 5).setParameters(NBT_RESISTANCE+".electric", aResistance/6 );
+        aRegistry.addReplacer(aID+ 6).setParameters(NBT_RESISTANCE+".electric", aResistance/7 );
+        aRegistry.addReplacer(aID+ 7).setParameters(NBT_RESISTANCE+".electric", aResistance/8 );
+        aRegistry.addReplacer(aID+ 8).setParameters(NBT_RESISTANCE+".electric", aResistance/9 );
+        aRegistry.addReplacer(aID+ 9).setParameters(NBT_RESISTANCE+".electric", aResistance/10);
+        aRegistry.addReplacer(aID+10).setParameters(NBT_RESISTANCE+".electric", aResistance/11);
+        aRegistry.addReplacer(aID+11).setParameters(NBT_RESISTANCE+".electric", aResistance/12);
+        aRegistry.addReplacer(aID+12).setParameters(NBT_RESISTANCE+".electric", aResistance/13);
+        aRegistry.addReplacer(aID+13).setParameters(NBT_RESISTANCE+".electric", aResistance/14);
+        aRegistry.addReplacer(aID+14).setParameters(NBT_RESISTANCE+".electric", aResistance/15);
+        aRegistry.addReplacer(aID+15).setParameters(NBT_RESISTANCE+".electric", aResistance/16);
+    }
+    private static void setElectricCablesResistance(MultiTileEntityRegistry aRegistry, int aID, long aResistance) {
+        aRegistry.addReplacer(aID+16).setParameters(NBT_RESISTANCE+".electric", aResistance   );
+        aRegistry.addReplacer(aID+17).setParameters(NBT_RESISTANCE+".electric", aResistance/2 );
+        aRegistry.addReplacer(aID+19).setParameters(NBT_RESISTANCE+".electric", aResistance/4 );
+        aRegistry.addReplacer(aID+23).setParameters(NBT_RESISTANCE+".electric", aResistance/8 );
+        aRegistry.addReplacer(aID+27).setParameters(NBT_RESISTANCE+".electric", aResistance/12);
+    }
     @Override protected void connectorsBeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
         /// 修改项
+        // 调整部分电线的电压电流电阻的参数，直接选用现实的真实值，取 2.4 时为 1，加上绝缘后电阻减少为原来的 0.75
+        // Sn 11.5
+        setElectricWiresAmperage   (aRegistry, 28050, 1);
+        setElectricCablesAmperage  (aRegistry, 28050, 1);
+        setElectricWiresResistance (aRegistry, 28050, 115 * U24);
+        setElectricCablesResistance(aRegistry, 28050, 115 * U32);
+        // Pb 20.8
+        setElectricWiresAmperage   (aRegistry, 28100, 1);
+        setElectricCablesAmperage  (aRegistry, 28100, 1);
+        setElectricWiresResistance (aRegistry, 28100, 208 * U24);
+        setElectricCablesResistance(aRegistry, 28100, 208 * U32);
         
+        // Constantan 49
+        setElectricWiresAmperage   (aRegistry, 28300, 4);
+        setElectricCablesAmperage  (aRegistry, 28300, 4);
+        setElectricWiresResistance (aRegistry, 28300, 490 * U24);
+        setElectricCablesResistance(aRegistry, 28300, 490 * U32);
+        // Cu 1.68
+        setElectricWiresAmperage   (aRegistry, 28350, 3);
+        setElectricCablesAmperage  (aRegistry, 28350, 3);
+        setElectricWiresResistance (aRegistry, 28350, 168 * U240);
+        setElectricCablesResistance(aRegistry, 28350, 168 * U320);
+        // AnnealedCopper 1.72
+        setElectricWiresAmperage   (aRegistry, 28400, 3);
+        setElectricCablesAmperage  (aRegistry, 28400, 3);
+        setElectricWiresResistance (aRegistry, 28400, 172 * U240);
+        setElectricCablesResistance(aRegistry, 28400, 172 * U320);
+        // Efrine
+        setElectricWiresAmperage   (aRegistry, 28450, 1);
+        setElectricCablesAmperage  (aRegistry, 28450, 1);
+        setElectricWiresResistance (aRegistry, 28450, 100 * U24);
+        setElectricCablesResistance(aRegistry, 28450, 100 * U32);
+        
+        // Kanthal 140
+        setElectricWiresAmperage   (aRegistry, 28600, 4);
+        setElectricCablesAmperage  (aRegistry, 28600, 4);
+        setElectricWiresResistance (aRegistry, 28600, 1400 * U24);
+        setElectricCablesResistance(aRegistry, 28600, 1400 * U32);
+        // Ag 1.59
+        setElectricWiresAmperage   (aRegistry, 28650, 3);
+        setElectricCablesAmperage  (aRegistry, 28650, 3);
+        setElectricWiresResistance (aRegistry, 28650, 159 * U240);
+        setElectricCablesResistance(aRegistry, 28650, 159 * U320);
+        // Au 2.21
+        setElectricWiresAmperage   (aRegistry, 28700, 4);
+        setElectricCablesAmperage  (aRegistry, 28700, 4);
+        setElectricWiresResistance (aRegistry, 28700, 22 * U24);
+        setElectricCablesResistance(aRegistry, 28700, 22 * U32);
+        // Electrum
+        setElectricWiresAmperage   (aRegistry, 28750, 2);
+        setElectricCablesAmperage  (aRegistry, 28750, 2);
+        setElectricWiresResistance (aRegistry, 28750, 80 * U24);
+        setElectricCablesResistance(aRegistry, 28750, 80 * U32);
+        // BlueAlloy
+        setElectricWiresAmperage   (aRegistry, 28800, 2);
+        setElectricCablesAmperage  (aRegistry, 28800, 2);
+        setElectricWiresResistance (aRegistry, 28800, 120 * U24);
+        setElectricCablesResistance(aRegistry, 28800, 120 * U32);
+        // ElectrotineAlloy
+        setElectricWiresAmperage   (aRegistry, 28850, 3);
+        setElectricCablesAmperage  (aRegistry, 28850, 3);
+        setElectricWiresResistance (aRegistry, 28850, 75 * U24);
+        setElectricCablesResistance(aRegistry, 28850, 75 * U32);
+        
+        // Nichrome 100
+        setElectricWiresAmperage   (aRegistry, 28900, 4);
+        setElectricCablesAmperage  (aRegistry, 28900, 4);
+        setElectricWiresResistance (aRegistry, 28900, 1000 * U24);
+        setElectricCablesResistance(aRegistry, 28900, 1000 * U32);
+        // Steel 9.8
+        setElectricWiresAmperage   (aRegistry, 28950, 2);
+        setElectricCablesAmperage  (aRegistry, 28950, 2);
+        setElectricWiresResistance (aRegistry, 28950, 98 * U24);
+        setElectricCablesResistance(aRegistry, 28950, 98 * U32);
+        // HSLA
+        setElectricWiresAmperage   (aRegistry, 28250, 3);
+        setElectricCablesAmperage  (aRegistry, 28250, 3);
+        setElectricWiresResistance (aRegistry, 28250, 98 * U24);
+        setElectricCablesResistance(aRegistry, 28250, 98 * U32);
+        // Al 2.65
+        setElectricWiresAmperage   (aRegistry, 29000, 1);
+        setElectricCablesAmperage  (aRegistry, 29000, 1);
+        setElectricWiresResistance (aRegistry, 29000, 265 * U240);
+        setElectricCablesResistance(aRegistry, 29000, 265 * U320);
+        // TungstenSteel
+        setElectricWiresAmperage   (aRegistry, 29050, 4);
+        setElectricCablesAmperage  (aRegistry, 29050, 4);
+        setElectricWiresResistance (aRegistry, 29050, 150 * U24);
+        setElectricCablesResistance(aRegistry, 29050, 150 * U32);
+        // W 5.28
+        setElectricWiresAmperage   (aRegistry, 29100, 8);
+        setElectricCablesAmperage  (aRegistry, 29100, 8);
+        setElectricWiresResistance (aRegistry, 29100, 528 * U240);
+        setElectricCablesResistance(aRegistry, 29100, 528 * U320);
+        // Netherite
+        setElectricWiresAmperage   (aRegistry, 29150, 1);
+        setElectricCablesAmperage  (aRegistry, 29150, 1);
+        setElectricWiresResistance (aRegistry, 29150, 200 * U24);
+        setElectricCablesResistance(aRegistry, 29150, 200 * U32);
+        
+        // Os 8.12
+        setElectricWiresAmperage   (aRegistry, 29200, 4);
+        setElectricCablesAmperage  (aRegistry, 29200, 4);
+        setElectricWiresResistance (aRegistry, 29200, 81 * U24);
+        setElectricCablesResistance(aRegistry, 29200, 81 * U32);
+        // Pt 10.5
+        setElectricWiresAmperage   (aRegistry, 29250, 2);
+        setElectricCablesAmperage  (aRegistry, 29250, 2);
+        setElectricWiresResistance (aRegistry, 29250, 105 * U24);
+        setElectricCablesResistance(aRegistry, 29250, 105 * U32);
+        // Osmiridium
+        setElectricWiresAmperage   (aRegistry, 29300, 4);
+        setElectricCablesAmperage  (aRegistry, 29300, 4);
+        setElectricWiresResistance (aRegistry, 29300, 120 * U24);
+        setElectricCablesResistance(aRegistry, 29300, 120 * U32);
+        // SiC
+        setElectricWiresAmperage   (aRegistry, 29350, 4);
+        setElectricCablesAmperage  (aRegistry, 29350, 4);
+        setElectricWiresResistance (aRegistry, 29350, 10000 * U24);
+        setElectricCablesResistance(aRegistry, 29350, 10000 * U32);
+        // Ir 4.7
+        setElectricWiresAmperage   (aRegistry, 29400, 4);
+        setElectricCablesAmperage  (aRegistry, 29400, 4);
+        setElectricWiresResistance (aRegistry, 29400, 47 * U24);
+        setElectricCablesResistance(aRegistry, 29400, 47 * U32);
+        
+        // Nq
+        setElectricWiresAmperage   (aRegistry, 29500, 4);
+        setElectricCablesAmperage  (aRegistry, 29500, 4);
+        setElectricWiresResistance (aRegistry, 29500, 50 * U24);
+        setElectricCablesResistance(aRegistry, 29500, 50 * U32);
+        // NiobiumTitanium
+        setElectricWiresAmperage   (aRegistry, 29550, 4);
+        setElectricCablesAmperage  (aRegistry, 29550, 4);
+        setElectricWiresResistance (aRegistry, 29550, 300 * U24);
+        setElectricCablesResistance(aRegistry, 29550, 300 * U32);
+        // VanadiumGallium
+        setElectricWiresAmperage   (aRegistry, 29600, 4);
+        setElectricCablesAmperage  (aRegistry, 29600, 4);
+        setElectricWiresResistance (aRegistry, 29600, 350 * U24);
+        setElectricCablesResistance(aRegistry, 29600, 350 * U32);
+        // YttriumBariumCuprate
+        setElectricWiresAmperage   (aRegistry, 29650, 4);
+        setElectricCablesAmperage  (aRegistry, 29650, 4);
+        setElectricWiresResistance (aRegistry, 29650, 400 * U24);
+        setElectricCablesResistance(aRegistry, 29650, 400 * U32);
+        
+        // Graphene (high resistance in reality)
+        setElectricWiresAmperage   (aRegistry, 29800, 1);
+        setElectricWiresResistance (aRegistry, 29800, 100 * U24);
+        
+        // Superconductor
+        setElectricWiresVoltage    (aRegistry, 29950, V[7]);
+        setElectricWiresAmperage   (aRegistry, 29950, 64);
+        setElectricWiresResistance (aRegistry, 29950, U1000);
     }
     
     

@@ -21,6 +21,8 @@ import static gregapi.data.OP.*;
  * Extension of CS
  */
 public class CS_CH {
+    public static final long U320 = U/320;
+    
     // Gson stuff
     public static final Gson GSON = new Gson();
     

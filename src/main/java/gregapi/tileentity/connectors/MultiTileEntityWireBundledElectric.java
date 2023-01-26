@@ -35,7 +35,10 @@ import net.minecraft.tileentity.TileEntity;
  * @author Gregorius Techneticies
  * 
  * Experimental thingy, likely unfinished.
+ *
+ * 这里直接标记为弃用，我还未打算实现
  */
+@Deprecated
 public class MultiTileEntityWireBundledElectric extends MultiTileEntityWireElectric {
 	@Override
 	@SuppressWarnings("deprecation")

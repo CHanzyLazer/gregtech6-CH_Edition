@@ -19,6 +19,7 @@ languagefile {
     S:gt.multitileentity.31043.name=大量程转速传感器
     S:gt.multitileentity.31044.name=大量程激光传感器
     S:gt.tooltip.boiler.calcification=钙化:
+    S:gt.tooltip.sensor.amperageometer=测量电流 (包的数目)
     S:gt.tooltip.sensor.electrometerkilo=测量电力流 (单位: 千 EU)
     S:gt.tooltip.sensor.flowometer=测量流体流速 (单位: 升/tick)
     S:gt.tooltip.sensor.flowometerbucket=测量流体流速 (单位: 桶/tick)
@@ -26,6 +27,7 @@ languagefile {
     S:gt.tooltip.sensor.gibblometerkilo=测量压力 (单位: 千 Gibbl)
     S:gt.tooltip.sensor.laserometerkilo=测量通过光纤的功率 (单位: 千 LU)
     S:gt.tooltip.sensor.tachometerkilo=测量轴的转速 (单位: 千 RU)
+    S:gt.tooltip.sensor.voltageometer=测量电压 (单位: EU)
     S:gtch.lang.axle.stats.power=功率限制:
     S:gtch.lang.axle.stats.speed=速度限制:
     S:gtch.lang.energy.motor.length=当长度为 %d 时:

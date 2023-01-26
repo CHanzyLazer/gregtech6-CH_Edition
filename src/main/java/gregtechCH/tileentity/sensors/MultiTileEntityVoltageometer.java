@@ -5,15 +5,20 @@ import gregapi.data.LH;
 import gregapi.old.Textures;
 import gregapi.render.IIconContainer;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
+import gregapi.tileentity.energy.EnergyCompat;
 import gregapi.tileentity.machines.MultiTileEntitySensorTE;
 import gregtechCH.data.LH_CH;
 import gregtechCH.tileentity.data.ITileEntityElectric;
+import ic2.api.energy.EnergyNet;
+import ic2.api.energy.NodeStats;
+import ic2.api.energy.tile.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
 import java.util.List;
 
 import static gregapi.data.CS.CA_BLUE_255;
+import static gregapi.data.CS.V;
 
 /**
  * @author Gregorius Techneticies, CHanzy
@@ -25,14 +30,31 @@ public class MultiTileEntityVoltageometer extends MultiTileEntitySensorTE {
     @Override
     public long getCurrentValue(DelegatorTileEntity<TileEntity> aDelegator) {
         if (aDelegator.mTileEntity instanceof ITileEntityElectric) return ((ITileEntityElectric)aDelegator.mTileEntity).getVoltageValue(aDelegator.mSideOfTileEntity);
-        // TODO 对其他 mod 的兼容
+        
+        if (EnergyCompat.IC_ENERGY && EnergyNet.instance != null) {
+            TileEntity tTileEntity = EnergyNet.instance.getTileEntity(aDelegator.mWorld, aDelegator.mX, aDelegator.mY, aDelegator.mZ);
+            if (tTileEntity != null) {
+                NodeStats tStats = EnergyNet.instance.getNodeStats(tTileEntity);
+                if (tStats != null) {
+                    if (tTileEntity instanceof IEnergyConductor) return (long)tStats.getEnergyOut();
+                    if (tTileEntity instanceof IEnergyEmitter  ) return (long)tStats.getEnergyOut();
+                    if (tTileEntity instanceof IEnergyAcceptor ) return (long)tStats.getEnergyIn();
+                }
+            }
+        }
         return 0;
     }
     
     @Override
     public long getCurrentMax(DelegatorTileEntity<TileEntity> aDelegator) {
         if (aDelegator.mTileEntity instanceof ITileEntityElectric) return ((ITileEntityElectric)aDelegator.mTileEntity).getVoltageMax(aDelegator.mSideOfTileEntity);
-        // TODO 对其他 mod 的兼容
+        
+        if (EnergyCompat.IC_ENERGY) {
+            TileEntity tTileEntity = aDelegator.mTileEntity instanceof IEnergyTile || EnergyNet.instance == null ? aDelegator.mTileEntity : EnergyNet.instance.getTileEntity(aDelegator.mWorld, aDelegator.mX, aDelegator.mY, aDelegator.mZ);
+            if (tTileEntity instanceof IEnergyConductor ) return (long)((IEnergyConductor)tTileEntity).getConductorBreakdownEnergy();
+            if (tTileEntity instanceof IEnergySink      ) return V[((IEnergySink)tTileEntity).getSinkTier()];
+            if (tTileEntity instanceof IEnergySource    ) return V[((IEnergySource)tTileEntity).getSourceTier()];
+        }
         return 0;
     }
     

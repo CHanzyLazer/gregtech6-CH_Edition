@@ -478,6 +478,7 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         aRegistry.add(RegType.GTCH, "Bucket Flow-O-Meter Sensor"               , "Sensors"                             , 31031, 31015, MultiTileEntityFlowometerBucket.class                ,                 1, 16, aUtilMetal     , null, "WYW", "ZXZ", "WPW", 'P', OP.plateDouble.dat(MT.TinAlloy), 'W', OP.wireFine.dat(MT.RedAlloy), 'R', OD.itemRedstone, 'G', OD.blockGlassColorless, 'B', OP.bolt.dat(MT.TinAlloy), 'C', Items.comparator, 'X', OD.pressurePlateIron, 'Y', OP.rotor.dat(MT.TinAlloy), 'Z', OP.ring.dat(MT.Rubber));
         // TODO 暂时没有合成
         aRegistry.add(RegType.GTCH, "Voltage-O-Meter Sensor"                   , "Sensors"                             , 31032, 31015, MultiTileEntityVoltageometer.class                   ,                 1, 16, aUtilMetal     , null);
+        aRegistry.add(RegType.GTCH, "Large Range Voltage-O-Meter Sensor"       , "Sensors"                             , 31033, 31015, MultiTileEntityVoltageometerKilo.class               ,                 1, 16, aUtilMetal     , null);
         aRegistry.add(RegType.GTCH, "Amperage-O-Meter Sensor"                  , "Sensors"                             , 31034, 31015, MultiTileEntityAmperageometer.class                  ,                 1, 16, aUtilMetal     , null);
     }
     

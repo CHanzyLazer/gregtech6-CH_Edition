@@ -136,6 +136,7 @@ public class MTEC_ElectricWiresManager {
             if (!super.valid(aManager)) {mInputBuffers.clear(); mInputAmperages.clear(); mInputPaths.clear(); return F;}
             // 遍历清除非法元素，注意需要使用迭代器来清除
             Iterator<InputObject> keyIt = mInputBuffers.keySet().iterator();
+            //noinspection Java8CollectionRemoveIf
             while (keyIt.hasNext()) {
                 InputObject tKey = keyIt.next();
                 if (!aManager.mInputs.containsKey(tKey) || !tKey.valid(aManager)) keyIt.remove();
@@ -182,6 +183,7 @@ public class MTEC_ElectricWiresManager {
                     openSet.add(tNode);
                     int tValue = tNode.mDistance + tNode.getDistanceToEnd(aOutputObject.mIOCore);
                     LinkedList<Node> tNodeList = openSetWithValue.get(tValue);
+                    //noinspection Java8MapApi
                     if (tNodeList == null) {
                         tNodeList = new LinkedList<>();
                         openSetWithValue.put(tValue, tNodeList);
@@ -259,11 +261,13 @@ public class MTEC_ElectricWiresManager {
     public void update() {
         // 遍历清除非法元素，注意需要使用迭代器来清除
         Iterator<InputObject> inputIt = mInputs.values().iterator();
+        //noinspection Java8CollectionRemoveIf
         while (inputIt.hasNext()) {
             InputObject tInput = inputIt.next();
             if (!tInput.valid(this)) inputIt.remove();
         }
         Iterator<OutputObject> outputIt = mOutputs.values().iterator();
+        //noinspection Java8CollectionRemoveIf
         while (outputIt.hasNext()) {
             OutputObject tOutput = outputIt.next();
             if (!tOutput.valid(this)) outputIt.remove();
@@ -374,7 +378,7 @@ public class MTEC_ElectricWiresManager {
         for (OutputObject tOutput : mOutputs.values()) tOutput.doOutput();
     }
     
-    // 分配电流需要进行的操作，这里暂时同时直接注入，返回成功分配是数目
+    // 分配电流需要进行的操作，这里暂时同时直接注入，返回成功分配的数目
     public long assignAmperage(InputObject aInput, Pair<OutputObject, Long> rPairToAssign, long aAmperage) {
         aAmperage = Math.min(aAmperage, rPairToAssign.second);
         rPairToAssign.second -= aAmperage;

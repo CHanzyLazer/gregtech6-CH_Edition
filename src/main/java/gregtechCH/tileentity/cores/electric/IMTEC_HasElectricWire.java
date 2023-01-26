@@ -15,4 +15,5 @@ public interface IMTEC_HasElectricWire extends ITileEntityElectric {
     boolean connected(byte aSide);
     // 此方向能否注入能量
     boolean isEnergyAcceptingFrom(TagData aEnergyType, byte aSide, boolean aTheoretical);
+    boolean canAcceptEnergyFrom(byte aSide);
 }

@@ -6,9 +6,14 @@ import gregapi.data.LH;
 import gregapi.data.TD;
 import gregapi.tileentity.base.TileEntityBase01Root;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
+import gregapi.tileentity.energy.EnergyCompat;
+import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.util.UT;
 import gregtechCH.code.Pair;
 import gregtechCH.util.UT_CH;
+import ic2.api.energy.EnergyNet;
+import ic2.api.energy.tile.IEnergySource;
+import ic2.api.energy.tile.IEnergyTile;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -103,13 +108,23 @@ public class MTEC_ElectricWireBase {
     
     private int tickOrder(int aMax) {return hashCode()%aMax;}
     // ticking
+    @SuppressWarnings("deprecation")
     public void onTick(long aTimer, boolean aIsServerSide) {
         if (aIsServerSide) {
             // 更新 Manager
             if (mManager == null || mManager.needUpdate()) mManagerUpdated = F; // 在 tick 之前，对于非法的 manager 需要进行更新
             if (aTimer % 8 == (2+tickOrder(6)) && !mManagerUpdated) updateNetworkManager(); // 不那么积极的更新网络
-            // TODO 兼容输入
-            
+            // 兼容输入
+            if (mManager != null && EnergyCompat.IC_ENERGY) for (byte tSide : ALL_SIDES_VALID) if (te().canAcceptEnergyFrom(tSide)) {
+                DelegatorTileEntity<TileEntity> tDelegator = mTE.getAdjacentTileEntity(tSide);
+                //noinspection ConditionCoveredByFurtherCondition
+                if (!(tDelegator.mTileEntity instanceof ITileEntityEnergy) && !(tDelegator.mTileEntity instanceof gregapi.tileentity.ITileEntityEnergy)) {
+                    TileEntity tEmitter = tDelegator.mTileEntity instanceof IEnergyTile || EnergyNet.instance == null ? tDelegator.mTileEntity : EnergyNet.instance.getTileEntity(tDelegator.mWorld, tDelegator.mX, tDelegator.mY, tDelegator.mZ);
+                    if (tEmitter instanceof IEnergySource && ((IEnergySource)tEmitter).emitsEnergyTo(mTE, tDelegator.getForgeSideOfTileEntity())) {
+                        mManager.doEnergyInjection(this, tSide, (long)((IEnergySource)tEmitter).getOfferedEnergy(), 1);
+                    }
+                }
+            }
             // tick Manager
             if (mManagerUpdated && mManager != null) mManager.onTick(); // 非法的网络依旧会进行 tick，进行 counter 但是不会输出
             // 更新属性用于检测以及下一 tick 的累计统计

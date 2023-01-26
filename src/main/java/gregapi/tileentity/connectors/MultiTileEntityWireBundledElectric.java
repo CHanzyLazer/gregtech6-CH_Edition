@@ -36,69 +36,68 @@ import net.minecraft.tileentity.TileEntity;
  * 
  * Experimental thingy, likely unfinished.
  *
- * 这里直接标记为弃用，我还未打算实现
+ * 这里直接弃用，我还未打算实现
  */
-@Deprecated
 public class MultiTileEntityWireBundledElectric extends MultiTileEntityWireElectric {
-	@Override
-	@SuppressWarnings("deprecation")
-	public void onTick2(long aTimer, boolean aIsServerSide) {
-		super.onTick2(aTimer, aIsServerSide);
-		
-		if (aIsServerSide) {
-			mWattageLast = mTransferredWattage;
-			mTransferredWattage = 0;
-			mTransferredAmperes = 0;
-			if (EnergyCompat.IC_ENERGY) for (byte tSide : ALL_SIDES_VALID) if (canAcceptEnergyFrom(tSide)) {
-				DelegatorTileEntity<TileEntity> tDelegator = getAdjacentTileEntity(tSide);
-				if (!(tDelegator.mTileEntity instanceof gregapi.tileentity.ITileEntityEnergy)) {
-					TileEntity tEmitter = tDelegator.mTileEntity instanceof IEnergyTile || EnergyNet.instance == null ? tDelegator.mTileEntity : EnergyNet.instance.getTileEntity(tDelegator.mWorld, tDelegator.mX, tDelegator.mY, tDelegator.mZ);
-					if (tEmitter instanceof IEnergySource && ((IEnergySource)tEmitter).emitsEnergyTo(this, tDelegator.getForgeSideOfTileEntity())) {
-						long tEU = (long)((IEnergySource)tEmitter).getOfferedEnergy();
-						if (transferElectricity(tSide, tEU, 1, -1, new HashSetNoNulls<TileEntity>(F, this)) > 0) ((IEnergySource)tEmitter).drawEnergy(tEU);
-					}
-				}
-			}
-		}
-	}
-	
-	@Override
-	public long transferElectricity(byte aSide, long aVoltage, long aAmperage, long aChannel, HashSetNoNulls<TileEntity> aAlreadyPassed) {
-		long rUsedAmperes = 0;
-		
-		if (mTimer < 1) return rUsedAmperes;
-		
-		if (Math.abs(aVoltage) > mLoss) {
-			if (aVoltage > 0) aVoltage -= mLoss; else aVoltage += mLoss;
-			for (byte tSide : ALL_SIDES_VALID_BUT[aSide]) if (canEmitEnergyTo(tSide)) {
-				if (aAmperage <= rUsedAmperes) break;
-				DelegatorTileEntity<TileEntity> tDelegator = getAdjacentTileEntity(tSide);
-				if (aAlreadyPassed.add(tDelegator.mTileEntity)) {
-					if (tDelegator.mTileEntity instanceof MultiTileEntityWireElectric) {
-						if (((MultiTileEntityWireElectric)tDelegator.mTileEntity).isEnergyAcceptingFrom(TD.Energy.EU, tDelegator.mSideOfTileEntity, F)) {
-							rUsedAmperes += ((MultiTileEntityWireElectric)tDelegator.mTileEntity).transferElectricity(tDelegator.mSideOfTileEntity, aVoltage, aAmperage-rUsedAmperes, aChannel, aAlreadyPassed);
-						}
-					} else {
-						rUsedAmperes += ITileEntityEnergy.Util.insertEnergyInto(TD.Energy.EU, aVoltage, aAmperage-rUsedAmperes, this, tDelegator);
-					}
-				}
-			}
-		} else {
-			aVoltage = 0;
-		}
-		return addToEnergyTransferred(aVoltage, rUsedAmperes)?rUsedAmperes:aAmperage;
-	}
-	
-	@Override
-	public boolean addToEnergyTransferred(long aVoltage, long aAmperage) {
-		mTransferredAmperes += aAmperage;
-		mTransferredWattage += Math.abs(aVoltage * aAmperage);
-		if (mTimer > 1 && (Math.abs(aVoltage) > mVoltage || mTransferredAmperes > mAmperage)) {
-			setToFire();
-			return F;
-		}
-		return T;
-	}
+//	@Override
+//	@SuppressWarnings("deprecation")
+//	public void onTick2(long aTimer, boolean aIsServerSide) {
+//		super.onTick2(aTimer, aIsServerSide);
+//
+//		if (aIsServerSide) {
+//			mWattageLast = mTransferredWattage;
+//			mTransferredWattage = 0;
+//			mTransferredAmperes = 0;
+//			if (EnergyCompat.IC_ENERGY) for (byte tSide : ALL_SIDES_VALID) if (canAcceptEnergyFrom(tSide)) {
+//				DelegatorTileEntity<TileEntity> tDelegator = getAdjacentTileEntity(tSide);
+//				if (!(tDelegator.mTileEntity instanceof gregapi.tileentity.ITileEntityEnergy)) {
+//					TileEntity tEmitter = tDelegator.mTileEntity instanceof IEnergyTile || EnergyNet.instance == null ? tDelegator.mTileEntity : EnergyNet.instance.getTileEntity(tDelegator.mWorld, tDelegator.mX, tDelegator.mY, tDelegator.mZ);
+//					if (tEmitter instanceof IEnergySource && ((IEnergySource)tEmitter).emitsEnergyTo(this, tDelegator.getForgeSideOfTileEntity())) {
+//						long tEU = (long)((IEnergySource)tEmitter).getOfferedEnergy();
+//						if (transferElectricity(tSide, tEU, 1, -1, new HashSetNoNulls<TileEntity>(F, this)) > 0) ((IEnergySource)tEmitter).drawEnergy(tEU);
+//					}
+//				}
+//			}
+//		}
+//	}
+//
+//	@Override
+//	public long transferElectricity(byte aSide, long aVoltage, long aAmperage, long aChannel, HashSetNoNulls<TileEntity> aAlreadyPassed) {
+//		long rUsedAmperes = 0;
+//
+//		if (mTimer < 1) return rUsedAmperes;
+//
+//		if (Math.abs(aVoltage) > mLoss) {
+//			if (aVoltage > 0) aVoltage -= mLoss; else aVoltage += mLoss;
+//			for (byte tSide : ALL_SIDES_VALID_BUT[aSide]) if (canEmitEnergyTo(tSide)) {
+//				if (aAmperage <= rUsedAmperes) break;
+//				DelegatorTileEntity<TileEntity> tDelegator = getAdjacentTileEntity(tSide);
+//				if (aAlreadyPassed.add(tDelegator.mTileEntity)) {
+//					if (tDelegator.mTileEntity instanceof MultiTileEntityWireElectric) {
+//						if (((MultiTileEntityWireElectric)tDelegator.mTileEntity).isEnergyAcceptingFrom(TD.Energy.EU, tDelegator.mSideOfTileEntity, F)) {
+//							rUsedAmperes += ((MultiTileEntityWireElectric)tDelegator.mTileEntity).transferElectricity(tDelegator.mSideOfTileEntity, aVoltage, aAmperage-rUsedAmperes, aChannel, aAlreadyPassed);
+//						}
+//					} else {
+//						rUsedAmperes += ITileEntityEnergy.Util.insertEnergyInto(TD.Energy.EU, aVoltage, aAmperage-rUsedAmperes, this, tDelegator);
+//					}
+//				}
+//			}
+//		} else {
+//			aVoltage = 0;
+//		}
+//		return addToEnergyTransferred(aVoltage, rUsedAmperes)?rUsedAmperes:aAmperage;
+//	}
+//
+//	@Override
+//	public boolean addToEnergyTransferred(long aVoltage, long aAmperage) {
+//		mTransferredAmperes += aAmperage;
+//		mTransferredWattage += Math.abs(aVoltage * aAmperage);
+//		if (mTimer > 1 && (Math.abs(aVoltage) > mVoltage || mTransferredAmperes > mAmperage)) {
+//			setToFire();
+//			return F;
+//		}
+//		return T;
+//	}
 	
 	@Override public String getTileEntityName               () {return "gt.multitileentity.connector.wire.bundled.electric";}
 }

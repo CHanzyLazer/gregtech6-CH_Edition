@@ -121,7 +121,8 @@ public class MTEC_ElectricWireBase {
                 if (!(tDelegator.mTileEntity instanceof ITileEntityEnergy) && !(tDelegator.mTileEntity instanceof gregapi.tileentity.ITileEntityEnergy)) {
                     TileEntity tEmitter = tDelegator.mTileEntity instanceof IEnergyTile || EnergyNet.instance == null ? tDelegator.mTileEntity : EnergyNet.instance.getTileEntity(tDelegator.mWorld, tDelegator.mX, tDelegator.mY, tDelegator.mZ);
                     if (tEmitter instanceof IEnergySource && ((IEnergySource)tEmitter).emitsEnergyTo(mTE, tDelegator.getForgeSideOfTileEntity())) {
-                        mManager.doEnergyInjection(this, tSide, (long)((IEnergySource)tEmitter).getOfferedEnergy(), 1);
+                        long tEU = (long)((IEnergySource)tEmitter).getOfferedEnergy();
+                        if (mManager.doEnergyInjection(this, tSide, tEU, 1) == 1) ((IEnergySource)tEmitter).drawEnergy(tEU);
                     }
                 }
             }

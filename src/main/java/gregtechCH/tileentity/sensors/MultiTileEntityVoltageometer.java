@@ -58,12 +58,6 @@ public class MultiTileEntityVoltageometer extends MultiTileEntitySensorTE {
         return 0;
     }
     
-    @Override
-    public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
-        super.addToolTips(aList, aStack, aF3_H);
-        aList.add(LH.Chat.RAINBOW  + "This Sensor is WIP");
-    }
-    
     @Override public short[] getSymbolColor() {return CA_BLUE_255;}
     @Override public IIconContainer getSymbolIcon() {return BI.CHAR_EU;}
     @Override public IIconContainer getTextureFront() {return sTextureFront;}

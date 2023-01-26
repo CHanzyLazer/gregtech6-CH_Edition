@@ -4,6 +4,7 @@ import gregapi.block.multitileentity.MultiTileEntityBlock;
 import gregapi.block.multitileentity.MultiTileEntityRegistry;
 import gregapi.data.*;
 import gregapi.oredict.OreDictMaterial;
+import gregapi.tileentity.connectors.MultiTileEntityWireElectric;
 import gregapi.tileentity.multiblocks.MultiTileEntityMultiBlockPart;
 import gregapi.util.OM;
 import gregapi.util.ST;
@@ -17,7 +18,6 @@ import gregtechCH.config.data.DataMultiTileEntity;
 import gregtechCH.data.RM_CH;
 import gregtechCH.tileentity.batteries.eu.MultiTileEntityBatteryAdvEU8192;
 import gregtechCH.tileentity.batteries.eu.MultiTileEntityBatteryEU8192;
-import gregtechCH.tileentity.connectors.MultiTileEntityWireElectric_CH;
 import gregtechCH.tileentity.energy.MultiTileEntityMotorGas;
 import gregtechCH.tileentity.multiblocks.*;
 import gregtechCH.tileentity.sensors.*;
@@ -455,12 +455,8 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
     
     
     @Override protected void connectorsBeforeLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
-    }
-    @Override protected void connectorsFinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
-        /// 添加项
-        aMat = MT.Superconductor; // 随便选个材料
-        aRegistry.add(RegType.GTCH, "New Wire (WIP)" , "Electric Wires", 29903, 28366, MultiTileEntityWireElectric_CH.class, aMat.mToolQuality, 64/4, aMetalWires, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, DYE_INT_Red,   NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 6], NBT_PIPESIZE, 512, NBT_PIPEBANDWIDTH, 8, NBT_CONTACTDAMAGE, F, NBT_RESISTANCE+".electric", U));
-        aRegistry.add(RegType.GTCH, "New Wire (WIP)" , "Electric Wires", 29904, 28366, MultiTileEntityWireElectric_CH.class, aMat.mToolQuality, 64/4, aMetalWires, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 2.0F, NBT_COLOR, DYE_INT_Green, NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[ 6], NBT_PIPESIZE, 512, NBT_PIPEBANDWIDTH, 8, NBT_CONTACTDAMAGE, F, NBT_RESISTANCE+".electric", U8));
+        /// 修改项
+        
     }
     
     

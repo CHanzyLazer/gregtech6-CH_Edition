@@ -53,6 +53,13 @@ public class CS_CH {
             , COLOR_END_STONE        = 0xebf8b6
             , COLOR_GREG_O_LANTERN   = 0xe3901d
             ;
+    // 更多的可选颜色
+    public static final short[]
+              CA_BLUE_LIGHT_10         = {  0,  10, 255, 255}
+            , CA_BLUE_LIGHT_30         = {  0,  30, 255, 255}
+            , CA_BLUE_LIGHT_50         = {  0,  50, 255, 255}
+            , CA_BLUE_LIGHT_70         = {  0,  70, 255, 255}
+            ;
     // 事先计算的一些方块的颜色，可以避免调用时频繁计算颜色值
     public static final int[] DYES_INT_Asphalt  = new int[DYES_INT.length];
     public static final int[] DYES_INT_CFoam    = new int[DYES_INT.length];

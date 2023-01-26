@@ -12,6 +12,7 @@ languagefile {
     S:gt.multitileentity.31030.name=流体流速传感器 (单位: 升/tick)
     S:gt.multitileentity.31031.name=流体流速传感器 (单位: 桶/tick)
     S:gt.multitileentity.31032.name=电压传感器
+    S:gt.multitileentity.31033.name=大量程电压传感器
     S:gt.multitileentity.31034.name=电流传感器
     S:gt.multitileentity.31040.name=大量程锅炉压力传感器 (单位: 千 Gibbl)
     S:gt.multitileentity.31041.name=大量程盖革传感器
@@ -28,6 +29,7 @@ languagefile {
     S:gt.tooltip.sensor.laserometerkilo=测量通过光纤的功率 (单位: 千 LU)
     S:gt.tooltip.sensor.tachometerkilo=测量轴的转速 (单位: 千 RU)
     S:gt.tooltip.sensor.voltageometer=测量电压 (单位: EU)
+    S:gt.tooltip.sensor.voltageometerkilo=测量电压 (单位: 千 EU)
     S:gtch.lang.axle.stats.power=功率限制:
     S:gtch.lang.axle.stats.speed=速度限制:
     S:gtch.lang.energy.motor.length=当长度为 %d 时:

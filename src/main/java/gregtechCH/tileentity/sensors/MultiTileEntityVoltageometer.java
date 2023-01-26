@@ -1,7 +1,6 @@
 package gregtechCH.tileentity.sensors;
 
 import gregapi.data.BI;
-import gregapi.data.LH;
 import gregapi.old.Textures;
 import gregapi.render.IIconContainer;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
@@ -12,13 +11,10 @@ import gregtechCH.tileentity.data.ITileEntityElectric;
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.NodeStats;
 import ic2.api.energy.tile.*;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
-import java.util.List;
-
-import static gregapi.data.CS.CA_BLUE_255;
 import static gregapi.data.CS.V;
+import static gregtechCH.data.CS_CH.CA_BLUE_LIGHT_50;
 
 /**
  * @author Gregorius Techneticies, CHanzy
@@ -58,7 +54,7 @@ public class MultiTileEntityVoltageometer extends MultiTileEntitySensorTE {
         return 0;
     }
     
-    @Override public short[] getSymbolColor() {return CA_BLUE_255;}
+    @Override public short[] getSymbolColor() {return CA_BLUE_LIGHT_50;}
     @Override public IIconContainer getSymbolIcon() {return BI.CHAR_EU;}
     @Override public IIconContainer getTextureFront() {return sTextureFront;}
     @Override public IIconContainer getTextureBack () {return sTextureBack;}
@@ -67,14 +63,13 @@ public class MultiTileEntityVoltageometer extends MultiTileEntitySensorTE {
     @Override public IIconContainer getOverlayBack () {return sOverlayBack;}
     @Override public IIconContainer getOverlaySide () {return sOverlaySide;}
     
-    // TODO 专属材质
     public static IIconContainer
-        sTextureFront   = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/electrometer/colored/front"),
-        sTextureBack    = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/electrometer/colored/back"),
-        sTextureSide    = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/electrometer/colored/side"),
-        sOverlayFront   = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/electrometer/overlay/front"),
-        sOverlayBack    = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/electrometer/overlay/back"),
-        sOverlaySide    = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/electrometer/overlay/side");
+        sTextureFront   = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/voltageometer/colored/front"),
+        sTextureBack    = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/voltageometer/colored/back"),
+        sTextureSide    = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/voltageometer/colored/side"),
+        sOverlayFront   = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/voltageometer/overlay/front"),
+        sOverlayBack    = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/voltageometer/overlay/back"),
+        sOverlaySide    = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/voltageometer/overlay/side");
     
     @Override public String getTileEntityName() {return "gt.multitileentity.redstone.sensors.voltageometer";}
 }

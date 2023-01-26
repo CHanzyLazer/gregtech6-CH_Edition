@@ -7,7 +7,7 @@ import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregtechCH.data.LH_CH;
 import net.minecraft.tileentity.TileEntity;
 
-import static gregapi.data.CS.CA_BLUE_255;
+import static gregtechCH.data.CS_CH.CA_BLUE_LIGHT_50;
 
 /**
  * @author Gregorius Techneticies, CHanzy
@@ -26,7 +26,7 @@ public class MultiTileEntityVoltageometerKilo extends MultiTileEntityVoltageomet
         return super.getCurrentMax(aDelegator)/1000;
     }
     
-    @Override public short[] getSymbolColor() {return CA_BLUE_255;}
+    @Override public short[] getSymbolColor() {return CA_BLUE_LIGHT_50;}
     @Override public IIconContainer getSymbolIcon() {return BI.CHAR_KILOEU;}
     @Override public IIconContainer getTextureFront() {return sTextureFront;}
     @Override public IIconContainer getTextureBack () {return sTextureBack;}
@@ -35,14 +35,13 @@ public class MultiTileEntityVoltageometerKilo extends MultiTileEntityVoltageomet
     @Override public IIconContainer getOverlayBack () {return sOverlayBack;}
     @Override public IIconContainer getOverlaySide () {return sOverlaySide;}
     
-    // TODO 专属材质
     public static IIconContainer
-        sTextureFront   = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/electrometerkilo/colored/front"),
-        sTextureBack    = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/electrometerkilo/colored/back"),
-        sTextureSide    = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/electrometerkilo/colored/side"),
-        sOverlayFront   = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/electrometerkilo/overlay/front"),
-        sOverlayBack    = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/electrometerkilo/overlay/back"),
-        sOverlaySide    = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/electrometerkilo/overlay/side");
+        sTextureFront   = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/voltageometerkilo/colored/front"),
+        sTextureBack    = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/voltageometerkilo/colored/back"),
+        sTextureSide    = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/voltageometerkilo/colored/side"),
+        sOverlayFront   = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/voltageometerkilo/overlay/front"),
+        sOverlayBack    = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/voltageometerkilo/overlay/back"),
+        sOverlaySide    = new Textures.BlockIcons.CustomIcon("machines/redstone/sensors/voltageometerkilo/overlay/side");
     
     @Override public String getTileEntityName() {return "gt.multitileentity.redstone.sensors.voltageometerkilo";}
 }

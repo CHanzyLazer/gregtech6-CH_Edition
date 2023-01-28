@@ -17,7 +17,7 @@ public class ThreadPools {
     public static final ITaskNumberExecutor RENDER_THREAD   = newSingleThreadExecutor();
     public static final ITaskNumberExecutor SOUND_THREAD    = newSingleThreadExecutor();
     public static final ITaskNumberExecutor MACHINE_THREAD  = newSingleThreadExecutor();
-    public static final GroupTaskPool       TICK_THREAD     = new GroupTaskPool(DATA_GTCH.overrideTickThread > 0 ? DATA_GTCH.overrideTickThread : Runtime.getRuntime().availableProcessors() / 2 + 1);
+    public static final ParRunPool          TICK_THREAD     = new ParRunPool(DATA_GTCH.overrideTickThread > 0 ? DATA_GTCH.overrideTickThread : Runtime.getRuntime().availableProcessors() / 2 + 1);
     
     // 直接照搬 Executor 的方法实现自定义的线程池
     public static ITaskNumberExecutor newSingleThreadExecutor() {return new TaskNumberExecutor (new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>()));}

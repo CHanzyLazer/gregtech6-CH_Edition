@@ -1,16 +1,15 @@
 package gregtechCH;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import gregapi.tileentity.ITileEntityErrorable;
+import gregtechCH.config.ConfigForge;
 import gregtechCH.config.ConfigJson;
 import gregtechCH.data.CS_CH;
-import gregtechCH.threads.GroupLongTimeTask;
+import gregtechCH.threads.ParRunScheduler;
 import gregtechCH.threads.TickTask;
 import gregtechCH.tileentity.IMTEScheduledUpdate_CH;
 import gregtechCH.tileentity.IMTEServerTickParallel;
 import gregtechCH.tileentity.compat.PipeCompat;
 import gregtechCH.util.WD_CH;
-import net.minecraftforge.event.world.WorldEvent;
 
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -94,7 +93,8 @@ public class GTCH_Main {
         @Override protected String errorMessage() {return mFirst?"Server Tick Pre 1 - ":"Server Tick Pre 2 - ";}
     }
     
-    private static final GroupLongTimeTask TE_SERVER_TICK_PAR = new GroupLongTimeTask(TICK_THREAD), TE_SERVER_TICK_PA2 = new GroupLongTimeTask(TICK_THREAD);
+    private static final ParRunScheduler TE_SERVER_TICK_PAR = new ParRunScheduler(TICK_THREAD, ConfigForge.DATA_GTCH.minGroupSize, ConfigForge.DATA_GTCH.maxGroupedMulti);
+    private static final ParRunScheduler TE_SERVER_TICK_PA2 = new ParRunScheduler(TICK_THREAD, ConfigForge.DATA_GTCH.minGroupSize, ConfigForge.DATA_GTCH.maxGroupedMulti);
     // 添加实体到并行 tick 的队列中，使用此方法进行 tick 会高度并行，一定要注意线程安全
     public static void addToServerTickParallel(IMTEServerTickParallel aTE) {
         synchronized (TE_SERVER_TICK_PAR) {TE_SERVER_TICK_PAR.add(new TETickRun(aTE, T));}
@@ -111,15 +111,10 @@ public class GTCH_Main {
     
     // 专门的 server tick 方法，在 pre 之后，在 post 之前，用来将耗时部分专门并行处理
     public static void SERVER_TICK() {
-        // 先删除非法的实体
-        TE_SERVER_TICK_PAR.clearDeadTask();
-        // 直接执行，会自动分组执行并且等待全部执行完成
-        TE_SERVER_TICK_PAR.runGrouped();
-        
-        // 先删除非法的实体
-        TE_SERVER_TICK_PA2.clearDeadTask();
-        // 直接执行，会自动分组执行并且等待全部执行完成
-        TE_SERVER_TICK_PA2.runGrouped();
+        // 直接执行，会自动清空非法实体，分组执行并且等待全部执行完成
+        TE_SERVER_TICK_PAR.runAll();
+        // 直接执行，会自动清空非法实体，分组执行并且等待全部执行完成
+        TE_SERVER_TICK_PA2.runAll();
     }
     
     // 实现自用的实体计划任务 api，服务端和客户端通用

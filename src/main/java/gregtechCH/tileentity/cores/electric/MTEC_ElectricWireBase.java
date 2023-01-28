@@ -113,9 +113,9 @@ public class MTEC_ElectricWireBase {
         if (aIsServerSide) {
             // 更新 Manager
             if (mManager == null || mManager.needUpdate()) mManagerUpdated = F; // 在 tick 之前，对于非法的 manager 需要进行更新
-            if (aTimer % 8 == (2+tickOrder(6)) && !mManagerUpdated) updateNetworkManager(); // 不那么积极的更新网络
+            if (!mManagerUpdated && aTimer % 8 == (2+tickOrder(6))) updateNetworkManager(); // 不那么积极的更新网络
             // 兼容输入
-            if (mManager != null && EnergyCompat.IC_ENERGY) for (byte tSide : ALL_SIDES_VALID) if (te().canAcceptEnergyFrom(tSide)) {
+            if (mManagerUpdated && mManager != null && EnergyCompat.IC_ENERGY) for (byte tSide : ALL_SIDES_VALID) if (te().canAcceptEnergyFrom(tSide)) {
                 DelegatorTileEntity<TileEntity> tDelegator = mTE.getAdjacentTileEntity(tSide);
                 //noinspection ConditionCoveredByFurtherCondition
                 if (!(tDelegator.mTileEntity instanceof ITileEntityEnergy) && !(tDelegator.mTileEntity instanceof gregapi.tileentity.ITileEntityEnergy)) {
@@ -134,7 +134,7 @@ public class MTEC_ElectricWireBase {
             clearTemporary();
             // 熔毁计数
             if (mLastAmperage > mMaxAmperage || mLastVoltage > mMaxVoltage) if (mBurnCounter < 16) ++mBurnCounter;
-            if (aTimer % 512 == (2+tickOrder(510)) && mBurnCounter > 0) mBurnCounter--;
+            if (mBurnCounter > 0 && aTimer % 512 == (2+tickOrder(510))) --mBurnCounter;
         }
     }
     

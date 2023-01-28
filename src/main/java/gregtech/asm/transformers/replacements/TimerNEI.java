@@ -13,7 +13,7 @@ import net.minecraft.item.ItemStack;
 public class TimerNEI extends Timer {
     public TimerNEI() {super(500);} // 依旧为 500 ms（注意这个版本的 asm 不支持添加 SIPUSH 和 LDC 等节点）
     
-    @Override public StoppableAndTimeoutable getSubTimer(Object aObject) {
+    @Override public StoppableAndTimeoutable getSubTimer(final Object aObject) {
         return new StoppableAndTimeoutable() {
             @Override public void doTimeOut(int aTime) {
                 String tItemName = "'" + aObject.toString() + "'";

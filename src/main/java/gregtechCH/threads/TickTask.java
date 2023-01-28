@@ -4,13 +4,14 @@ import gregapi.tileentity.ITileEntityErrorable;
 import gregapi.tileentity.ITileEntityUnloadable;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.threads.IRepeatRunnable.*;
 
 /**
  * @author CHanzy
  * 提供专门的 tick 任务
  * 可以出错，消亡，以及消亡后需要需要进行一些操作
  */
-public abstract class TickTask<TE extends ITileEntityUnloadable & ITileEntityErrorable> implements ILongTimeTask {
+public abstract class TickTask<TE extends ITileEntityUnloadable & ITileEntityErrorable> implements IRR_onRemove, IRR_isDead {
     protected final TE mTE;
     private boolean mError = F;
     @Override public final boolean isDead() {return mError || mTE.isDead();}

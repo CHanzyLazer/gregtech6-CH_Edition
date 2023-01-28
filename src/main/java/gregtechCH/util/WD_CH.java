@@ -1,6 +1,5 @@
 package gregtechCH.util;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.GT_API;
@@ -14,7 +13,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.NibbleArray;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
-import net.minecraftforge.event.world.WorldEvent;
 
 import java.util.HashMap;
 import java.util.LinkedList;

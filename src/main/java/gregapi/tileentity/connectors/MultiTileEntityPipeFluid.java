@@ -78,9 +78,9 @@ import static gregapi.data.CS.*;
 import static gregtechCH.data.CS_CH.*;
 
 /**
- * @author Gregorius Techneticies
+ * @author Gregorius Techneticies, CHanzy
  */
-public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered implements IMTEServerTickParallel, ITileEntityFlowrate, IMTE_GetOreDictItemData, ITileEntityQuickObstructionCheck, IFluidHandler_CH, ITileEntityGibbl, ITileEntityTemperature, ITileEntityProgress, ITileEntityServerTickPre, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnEntityCollidedWithBlock {
+public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered implements IMTEServerTickParallel, ITileEntityFlowrate, IMTE_GetOreDictItemData, ITileEntityQuickObstructionCheck, IFluidHandler_CH, ITileEntityGibbl, ITileEntityTemperature, ITileEntityProgress, IMTE_GetCollisionBoundingBoxFromPool, IMTE_OnEntityCollidedWithBlock {
 	private byte[] mLastReceivedFrom = ZL_BYTE;
 	private static final byte LRF_COOLDOWN_NUM = 8;
 	private byte[][] mLRFCooldownCounters =  ZL_BI_BYTE;
@@ -195,14 +195,6 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		}
 		
 		if (worldObj != null && isServerSide()) {
-			if (mHasToAddTimer) {
-				if (WD.even(this)) {
-					GT_API_Proxy.SERVER_TICK_PRE.add(this);
-				} else {
-					GT_API_Proxy.SERVER_TICK_PR2.add(this);
-				}
-				mHasToAddTimer = F;
-			}
 			if (mHasToAddTimerPar) {
 				if (WD.even(this)) {
 					GTCH_Main.addToServerTickParallel(this);
@@ -504,11 +496,16 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		aList.add(Chat.DGRAY    + LH_CH.get(LH_CH.TOOL_TO_DETAIL_MAGNIFYINGGLASS_SNEAK));
 	}
 	
-	private boolean mHasToAddTimer = T;
 	private boolean mHasToAddTimerPar = T;
-	
-	@Override public void onUnregisterPre() {mHasToAddTimer = T;}
 	@Override public void onUnregisterPar() {mHasToAddTimerPar = T;}
+	
+	@Override
+	public void onCoordinateChange() {
+		super.onCoordinateChange();
+		GTCH_Main.removeFromServerTickParallel(this);
+		GTCH_Main.removeFromServerTickParallel2(this);
+//		onUnregisterPar(); // 现在移除方法已经包含了这个部分
+	}
 	
 	protected void checkConnection() {
 		if (!modeValid()) {
@@ -524,25 +521,16 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	@Override
 	public void onTick2(long aTimer, boolean aIsServerSide) {
 		super.onTick2(aTimer, aIsServerSide);
-		if (aIsServerSide && worldObj != null) {
-			if (mHasToAddTimer) {
-				if (WD.even(this)) {
-					GT_API_Proxy.SERVER_TICK_PRE.add(this);
-				} else {
-					GT_API_Proxy.SERVER_TICK_PR2.add(this);
-				}
-				mHasToAddTimer = F;
+		if (aIsServerSide && mHasToAddTimerPar && worldObj != null) {
+			if (WD.even(this)) {
+				GTCH_Main.addToServerTickParallel(this);
+			} else {
+				GTCH_Main.addToServerTickParallel2(this);
 			}
-			if (mHasToAddTimerPar) {
-				if (WD.even(this)) {
-					GTCH_Main.addToServerTickParallel(this);
-				} else {
-					GTCH_Main.addToServerTickParallel2(this);
-				}
-				mHasToAddTimerPar = F;
-			}
+			mHasToAddTimerPar = F;
 		}
 		if (aIsServerSide) {
+			onTickTemperatureAndContainerCheck(); // 温度和内容检测单独放到自带的 tick 中
 			if (isFoamDried() && mOutMark) {
 				--mMarkBuffer;
 				if (mMarkBuffer < 0) {
@@ -553,19 +541,8 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		}
 	}
 	
-	@Override
-	public void onCoordinateChange() {
-		super.onCoordinateChange();
-		GTCH_Main.removeFromServerTickParallel(this);
-		GTCH_Main.removeFromServerTickParallel2(this);
-//		onUnregisterPar(); // 现在移除方法已经包含了这个部分
-		GT_API_Proxy.SERVER_TICK_PRE.remove(this);
-		GT_API_Proxy.SERVER_TICK_PR2.remove(this);
-		onUnregisterPre();
-	}
-	
 	@SuppressWarnings("unchecked")
-	public void onServerTickPre(boolean aFirst) {
+	public void onTickTemperatureAndContainerCheck() {
 		boolean tCheckTemperature = T;
 		
 		for (FluidTankGT tTank : mTanks) {
@@ -618,8 +595,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	private final ReentrantReadWriteLock mRWL = new ReentrantReadWriteLock(); // 这个对象的读写锁
 	// 由于 tick 的机制，在自身进行 tick 的时候，自己的内容是一定不会被同时访问的，因此只需要在读取临近管道时加锁
 	// 对于管道间使用读写锁，对于到其他实体的，有写入的部分需要加入 synchronized，并且对应的读取的部分也要加入 synchronized
-	@Override
-	@SuppressWarnings("unchecked")
+	@Override @SuppressWarnings("unchecked")
 	public void onServerTickPar(boolean aFirst) {
 		mTransferredAmount = 0;
 		

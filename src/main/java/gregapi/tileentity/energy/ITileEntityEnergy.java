@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -30,7 +30,7 @@ import gregapi.util.WD;
 import net.minecraft.tileentity.TileEntity;
 
 /**
- * @author Gregorius Techneticies
+ * @author Gregorius Techneticies, CHanzy
  * 
  * Interface for getting connected to any Energy Network.
  * 
@@ -39,6 +39,8 @@ import net.minecraft.tileentity.TileEntity;
  * Client Side Worlds (worldObj.isRemote == true) should never access any of these Functions nor expect anything from calling them.
  * 
  * This is the moved Version of the Interface, so better use this instead.
+ *
+ * Fixed some thread-safe bugs (GTCH)
  */
 @SuppressWarnings("deprecation")
 public interface ITileEntityEnergy extends gregapi.tileentity.ITileEntityEnergy {
@@ -261,15 +263,17 @@ public interface ITileEntityEnergy extends gregapi.tileentity.ITileEntityEnergy 
 		 * @param aReceiver The TileEntity which receives the Energy.
 		 * @return the amount of used Energy Packets.
 		 */
-		public static final long insertEnergyInto(TagData aEnergyType, byte aSideInto, long aSize, long aAmount, Object aEmitter, TileEntity aReceiver) {
-			return aReceiver instanceof ITileEntityEnergy ? ((ITileEntityEnergy)aReceiver).doEnergyInjection(aEnergyType, aSideInto, aSize, aAmount, T) : EnergyCompat.insertEnergyInto(aEnergyType, aSideInto, aSize, aAmount, aEmitter, aReceiver);
+		public static final long insertEnergyInto(TagData aEnergyType, byte aSideInto, long aSize, long aAmount, Object aEmitter, final TileEntity aReceiver) {
+			if (aReceiver == null) return 0;
+			synchronized (aReceiver) {
+			return aReceiver instanceof ITileEntityEnergy ? ((ITileEntityEnergy) aReceiver).doEnergyInjection(aEnergyType, aSideInto, aSize, aAmount, T) : EnergyCompat.insertEnergyInto(aEnergyType, aSideInto, aSize, aAmount, aEmitter, aReceiver);
+			}
 		}
 		
 		/**
 		 * Inserts Energy into the TileEntity.
 		 * Also compatible with IC2 TileEntities when electric and RF TileEntities when RedstoneFlux.
 		 * @param aEnergyType The Type of Energy to be emitted
-		 * @param aSideInto The Side of the receiving TileEntity to insert the Energy into.
 		 * @param aSize The Minimum Transfer Rate of Energy (like Voltage for example). This can be negative too in case it has a direction for example (clockwise/counterclockwise)
 		 * @param aAmount The Amount of Packets in size of aSize to be emitted (like Amperage for example)
 		 * @param aEmitter The TileEntity which emits the Energy. May be null!

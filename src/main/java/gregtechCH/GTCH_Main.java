@@ -1,7 +1,6 @@
 package gregtechCH;
 
 import gregapi.tileentity.ITileEntityErrorable;
-import gregtechCH.config.ConfigForge;
 import gregtechCH.config.ConfigJson;
 import gregtechCH.data.CS_CH;
 import gregtechCH.threads.ParRunScheduler;
@@ -17,6 +16,7 @@ import java.util.Set;
 
 import static gregapi.data.CS.*;
 import static gregtechCH.threads.ThreadPools.TICK_THREAD;
+import static gregtechCH.config.ConfigForge.*;
 
 /**
  * @author CHanzy
@@ -93,8 +93,8 @@ public class GTCH_Main {
         @Override protected String errorMessage() {return mFirst?"Server Tick Pre 1 - ":"Server Tick Pre 2 - ";}
     }
     
-    private static final ParRunScheduler TE_SERVER_TICK_PAR = new ParRunScheduler(TICK_THREAD, ConfigForge.DATA_GTCH.minGroupSize, ConfigForge.DATA_GTCH.maxGroupedMulti);
-    private static final ParRunScheduler TE_SERVER_TICK_PA2 = new ParRunScheduler(TICK_THREAD, ConfigForge.DATA_GTCH.minGroupSize, ConfigForge.DATA_GTCH.maxGroupedMulti);
+    private static final ParRunScheduler TE_SERVER_TICK_PAR = new ParRunScheduler(TICK_THREAD, DATA_GTCH.minGroupSize, DATA_GTCH.maxGroupedMulti);
+    private static final ParRunScheduler TE_SERVER_TICK_PA2 = new ParRunScheduler(TICK_THREAD, DATA_GTCH.minGroupSize, DATA_GTCH.maxGroupedMulti);
     // 添加实体到并行 tick 的队列中，使用此方法进行 tick 会高度并行，一定要注意线程安全
     public static void addToServerTickParallel(IMTEServerTickParallel aTE) {
         synchronized (TE_SERVER_TICK_PAR) {TE_SERVER_TICK_PAR.add(new TETickRun(aTE, T));}

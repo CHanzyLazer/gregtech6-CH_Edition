@@ -32,43 +32,39 @@ public class ParRunScheduler {
     }
     
     // 添加和删除的接口
-    public void add(@NotNull Runnable aTask) {
+    public synchronized void add(@NotNull Runnable aTask) {
         mTasks.add(aTask);
         mNeedRegroup = T;
     }
-    public void remove(@NotNull Runnable aTask) {
+    public synchronized void remove(@NotNull Runnable aTask) {
+        OUT.println("removed task: " + aTask);
         mTasks.remove(aTask);
         if (aTask instanceof IRR_onRemove) ((IRR_onRemove)aTask).onRemove(); // Hook
         mNeedRegroup = T;
     }
-    public void clear() {
+    public synchronized void clear() {
         for (Runnable tTask : mTasks) if (tTask instanceof IRR_onRemove) ((IRR_onRemove)tTask).onRemove(); // Hook
         mTasks.clear();
         mNeedRegroup = T;
     }
     
-    public final List<GroupedTask> getGroupedTasks() {
+    public synchronized final List<GroupedTask> getGroupedTasks() {
         if (mNeedRegroup) {
             mGrouped.clear();
             int tGroupedLen = Math.max(1, mTasks.size() / mMinGroupSize);
             if (tGroupedLen > mMaxThreadNumber) {
                 tGroupedLen = Math.min(mMaxGroupedMulti, tGroupedLen / mMaxThreadNumber) * mMaxThreadNumber; // 保证分组数目是最大线程数的整数倍
             }
-            if (tGroupedLen > 1) {
-                // 进行分组
-                int tGroupSize = (int)UT.Code.divup(mTasks.size(), tGroupedLen);
-                List<Runnable> tSubGroupedList = null;
-                for (Runnable tTask : mTasks) {
-                    if (tSubGroupedList == null) {
-                        tSubGroupedList = new ArrayListNoNulls<>(tGroupSize);
-                        mGrouped.add(new GroupedTask(tSubGroupedList));
-                    }
-                    tSubGroupedList.add(tTask);
-                    if (tSubGroupedList.size() >= tGroupSize) tSubGroupedList = null;
+            // 直接进行分组，无论 tGroupedLen 是否是 1，因为需要保证在遍历过程中删除 mTasks 元素是安全的
+            int tGroupSize = (int)UT.Code.divup(mTasks.size(), tGroupedLen);
+            List<Runnable> tSubGroupedList = null;
+            for (Runnable tTask : mTasks) {
+                if (tSubGroupedList == null) {
+                    tSubGroupedList = new ArrayListNoNulls<>(tGroupSize);
+                    mGrouped.add(new GroupedTask(tSubGroupedList));
                 }
-            } else {
-                // 只有一个线程，不需要遍历分组
-                mGrouped.add(new GroupedTask(mTasks));
+                tSubGroupedList.add(tTask);
+                if (tSubGroupedList.size() >= tGroupSize) tSubGroupedList = null;
             }
             mNeedRegroup = F;
         }
@@ -76,24 +72,19 @@ public class ParRunScheduler {
     }
     
     // 提供直接执行全部的接口，因为已经存放了 pool
-    public final void runAll() {
-        // 执行前先清除已经死亡的 task，Hook
-        Iterator<Runnable> tIt = mTasks.iterator();
-        while (tIt.hasNext()) {
-            Runnable tTask = tIt.next();
-            if (tTask instanceof IRR_isDead && ((IRR_isDead)tTask).isDead()) {
-                tIt.remove();
-                if (tTask instanceof IRR_onRemove) ((IRR_onRemove)tTask).onRemove(); // Hook
-                mNeedRegroup = T;
+    public final void runAll() {mParRunPool.runAll(getGroupedTasks());} // 此方法一定不能加 synchronized ！！！！新线程执行后获取不到这个锁
+    
+    
+    private class GroupedTask implements Runnable {
+        private final Collection<? extends Runnable> mTaskGroup;
+        GroupedTask(Collection<? extends Runnable> aTaskGroup) {mTaskGroup = aTaskGroup;}
+        // 在执行之前检测是否已经死亡，死亡则需要移除并且不再执行，需要注意线程安全
+        @Override
+        public void run() {
+            for (Runnable tTask : mTaskGroup) {
+                if (tTask instanceof IRR_isDead && ((IRR_isDead)tTask).isDead()) remove(tTask);
+                else tTask.run();
             }
         }
-        mParRunPool.runAll(getGroupedTasks());
-    }
-    
-    
-    private static class GroupedTask implements Runnable {
-        private final Collection<? extends Runnable> mTasks;
-        GroupedTask(Collection<? extends Runnable> aTasks) {mTasks = aTasks;}
-        @Override public void run() {for (Runnable tTask : mTasks) tTask.run();}
     }
 }

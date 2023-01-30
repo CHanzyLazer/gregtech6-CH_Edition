@@ -3,35 +3,22 @@ package gregtechCH.threads;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * @author CHanzy
  * 自用的计时类型
  */
 public abstract class Timer {
-    // 使用读写锁控制，通过周期检测的方式来判断是否需要停止
     public abstract class StoppableAndTimeoutable implements Runnable {
         protected StoppableAndTimeoutable() {mBeginTime = System.currentTimeMillis();}
         private boolean mStop = false;
         private final long mBeginTime;
-        private final ReentrantReadWriteLock mRWL = new ReentrantReadWriteLock(); // 这个对象的读写锁
         
-        // 使用读写锁获取和修改数值（直接 synchronized 也可，这里只作为读写锁的例子）
-        public boolean getStop() {
-            mRWL.readLock().lock();
-            boolean tOut = mStop;
-            mRWL.readLock().unlock();
-            return tOut;
-        }
-        public void setStop(boolean aStop) {
-            mRWL.writeLock().lock();
-            mStop = aStop;
-            mRWL.writeLock().unlock();
-        }
+        public synchronized boolean getStop() {return mStop;}
+        public synchronized void setStop(boolean aStop) {mStop = aStop;}
         
         @Override
-        public void run() {
+        public final void run() {
             if (getStop()) return;
             int tTime = (int)(System.currentTimeMillis() - mBeginTime);
             if (tTime > mLimit) {

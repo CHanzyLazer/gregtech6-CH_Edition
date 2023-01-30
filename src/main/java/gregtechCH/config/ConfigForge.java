@@ -108,11 +108,11 @@ public class ConfigForge {
         DATA_GTCH.rerenderTickList = tList.toArray(new RerenderTick[0]);
         
         DATA_GTCH.overrideTickThread        = ConfigsGTCH.GTCH.get(ConfigCategories_CH.multithread, "override_tick_thread_(gt6_1)",  0);
-        DATA_GTCH.targetRunTime             = ConfigsGTCH.GTCH.get(ConfigCategories_CH.multithread, "target_run_time_(gt6_?)",  4);
+        DATA_GTCH.targetRunTime             = ConfigsGTCH.GTCH.get(ConfigCategories_CH.multithread, "target_run_time_(gt6_?)",  6);
         DATA_GTCH.growthFactor              = (float)ConfigsGTCH.GTCH.get(ConfigCategories_CH.multithread, "growth_factor_(gt6_?)",  2.0F);
         
-        DATA_MACHINES.motorExplodeCheck = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.generatorMotor, "motor_explode_check_(gt6_?)", T);
-        DATA_MACHINES.motorExplodeByLength = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.generatorMotor, "motor_explode_by_length_(gt6_false)", T);
+        DATA_MACHINES.motorExplodeCheck     = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.generatorMotor, "motor_explode_check_(gt6_?)", T);
+        DATA_MACHINES.motorExplodeByLength  = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.generatorMotor, "motor_explode_by_length_(gt6_false)", T);
         DATA_MACHINES.motorExplodeByPlunger = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.generatorMotor, "motor_explode_by_plunger_(gt6_false)", T);
         
         DATA_REACTORS.adjustCoolantOtherDiv = ConfigsGTCH.REACTORS.get(ConfigCategories_CH.Reactors.adjustemission, "adjust_coolant_other_div_(gt6_1)", 8);

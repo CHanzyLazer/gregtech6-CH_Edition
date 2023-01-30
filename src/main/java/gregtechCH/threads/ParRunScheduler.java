@@ -24,7 +24,7 @@ public class ParRunScheduler {
     private final float mGrowthFactor;  // 使用线程数目的增长系数
     
     protected boolean mNeedRegroup = T; // 记录是否需要重新分组，用来避免频繁的重新分组
-    protected int mUsedTolerate = 0;    // 已使用的容忍度
+    protected int mChangeThreadTolerate = 0, mRegroupTolerate = 0; // 已使用的容忍度，分别是调整线程数目的和重新分组的
     protected int mUsedThreadNumber = 1;// 已使用的线程数
     
     // 输入的目标时间单位为 ms
@@ -52,45 +52,54 @@ public class ParRunScheduler {
     }
     
     public final List<GroupedTask> getGroupedTasks() {
-        // 如果不需要重新分组，则需要判断每组时间是否符合要求，如果超过了容忍则进行重新分组
-        if (!mNeedRegroup) {
-            // 获取最长的运行时间
-            long tMaxRunTime = 0;
-            for (GroupedTask gt : mGrouped) if (gt.mTotalRunTime > tMaxRunTime) tMaxRunTime = gt.mTotalRunTime;
+        // 如果不需要重新分组，则需要判断每组时间是否符合要求，如果超过了容忍则进行重新分组。同样只在每 10 tick 考虑一次
+        if (!mNeedRegroup && SERVER_TIME%10 == 0 && !mGrouped.isEmpty()) {
+            // 获取最长最短的运行时间（可能需要考虑第二最短运行时间，由于重新分组基本没有太多损耗，因此不考虑）
+            long tMaxRunTime = 0, tMinRunTime = Long.MAX_VALUE >> 1;
+            for (GroupedTask gt : mGrouped) {
+                if (gt.mTotalRunTime > tMaxRunTime) tMaxRunTime = gt.mTotalRunTime;
+                if (gt.mTotalRunTime < tMinRunTime) tMinRunTime = gt.mTotalRunTime;
+            }
             // 考虑是否需要调整线程数
-            if (mUsedThreadNumber < mMaxThreadNumber && tMaxRunTime > mTargetRunTime) ++mUsedTolerate;
-            else if (mUsedThreadNumber > 1 && tMaxRunTime < mTargetRunTime / Math.ceil(mGrowthFactor)) --mUsedTolerate; // 耗时很短也需要考虑减少使用的线程数
-            else mUsedTolerate = 0;
+            if (mUsedThreadNumber < mMaxThreadNumber && tMaxRunTime > mTargetRunTime) ++mChangeThreadTolerate;
+            else if (mUsedThreadNumber > 1 && tMaxRunTime < mTargetRunTime / Math.ceil(mGrowthFactor)) --mChangeThreadTolerate; // 耗时很短也需要考虑减少使用的线程数
+            else mChangeThreadTolerate = 0;
             // 调整使用的线程数目
             int rUsedThreadNumber = mUsedThreadNumber;
-            if (mUsedTolerate > mTolerate) rUsedThreadNumber = Math.min(mMaxThreadNumber, (int)Math.ceil(mUsedThreadNumber * mGrowthFactor));
-            if (mUsedTolerate < -mTolerate) rUsedThreadNumber = 1; // 减少直接减少到 1 即可
+            if (mChangeThreadTolerate > mTolerate) rUsedThreadNumber = Math.min(mMaxThreadNumber, (int)Math.ceil(mUsedThreadNumber * mGrowthFactor));
+            if (mChangeThreadTolerate < -mTolerate) rUsedThreadNumber = 1; // 减少直接减少到 1 即可
             if (rUsedThreadNumber != mUsedThreadNumber) {
                 if (DATA_GTCH.debugging) OUT.println("DEBUG: Change Thread Number from " + mUsedThreadNumber + " to " + rUsedThreadNumber + ", MaxRunTime: " + tMaxRunTime + " ns");
                 mNeedRegroup = T;
                 mUsedThreadNumber = rUsedThreadNumber;
             }
+            // 考虑是否需要重新分组（最长最短时间差距过大）
+            if (tMaxRunTime > tMinRunTime * 2) ++mRegroupTolerate;
+            else mRegroupTolerate = 0;
+            if (mRegroupTolerate > mTolerate) {
+                if (DATA_GTCH.debugging) OUT.println("DEBUG: Regroup for More Uniform RunTime, MaxRunTime: " + tMaxRunTime + " ns, MinRunTime: " + tMinRunTime + " ns");
+                mNeedRegroup = T;
+            }
         }
         // 重新分组
         if (mNeedRegroup) {
-            mUsedTolerate = 0;
+            mChangeThreadTolerate = 0;
+            mRegroupTolerate = 0;
             // 先遍历 mGrouped 获取运行时间，因为可能在执行后 mTasks 和 GroupedTask 不一致
             double tMeanRunTime = 0.0;
-            for (GroupedTask gt : mGrouped) {
-                int i = 0;
-                for (long tRunTime : gt.mTaskRunTime) {
-                    Runnable tTask = gt.mTaskGroup.get(i);
-                    if (mTasks.containsKey(tTask)) {
-                        mTasks.put(tTask, tRunTime);
-                        tMeanRunTime += tRunTime;
-                    }
-                    ++i;
+            for (GroupedTask gt : mGrouped) for (int i = 0; i < gt.mTaskRunTime.size(); ++i) {
+                long tRunTime = gt.mTaskRunTime.get(i);
+                Runnable tTask = gt.mTaskGroup.get(i);
+                if (mTasks.containsKey(tTask)) {
+                    mTasks.put(tTask, tRunTime);
+                    tMeanRunTime += tRunTime;
                 }
             }
             tMeanRunTime /= mUsedThreadNumber;
+            if (tMeanRunTime <= 0.0) mUsedThreadNumber = 1;
             // 根据运行时间来分组
             mGrouped.clear();
-            int tGroupSize = (int)UT.Code.divup(mTasks.size(), mUsedThreadNumber) * 2; // 估计分组后的容量，减少扩容的损耗
+            int tGroupSize = mUsedThreadNumber <= 1 ? mTasks.size() : (int)UT.Code.divup(mTasks.size(), mUsedThreadNumber) * 2; // 估计分组后的容量，减少扩容的损耗
             List<Runnable> tSubGroupedList = null;
             double tTime = 0.0;
             for (Map.Entry<Runnable, Long> tEntry : mTasks.entrySet()) {
@@ -100,7 +109,7 @@ public class ParRunScheduler {
                 }
                 tSubGroupedList.add(tEntry.getKey());
                 tTime += tEntry.getValue();
-                if (tTime > tMeanRunTime) {
+                if (tTime > tMeanRunTime && mGrouped.size() < mUsedThreadNumber) {
                     tSubGroupedList = null;
                     tTime = 0.0;
                 }
@@ -117,19 +126,37 @@ public class ParRunScheduler {
         protected long mTotalRunTime = 0;         // in ns
         GroupedTask(@NotNull List<Runnable> aTaskGroup) {mTaskGroup = aTaskGroup; mTaskRunTime = new ArrayList<>(aTaskGroup.size());}
         @Override public void run() {
-            mTaskRunTime.clear();
-            mTotalRunTime = 0;
-            for (Runnable tTask : mTaskGroup) {
+            // 如果总时间为 0 且队列不为空，则全部都需要统计
+            final boolean tStatAll = mTotalRunTime == 0 && !mTaskGroup.isEmpty();
+            if (tStatAll) mTaskRunTime.clear();
+            // 遍历执行任务
+            for (int i = 0; i < mTaskGroup.size(); ++i) {
+                Runnable tTask = mTaskGroup.get(i);
                 // 在执行之前检测是否已经死亡，死亡则需要移除并且不再执行，需要注意线程安全
                 if (tTask instanceof IRR_isDead && ((IRR_isDead)tTask).isDead()) {
                     remove(tTask);
                 } else {
-                    // 统计耗时
-                    long tRunTime = System.nanoTime();
-                    tTask.run();
-                    tRunTime = System.nanoTime() - tRunTime;
-                    mTaskRunTime.add(tRunTime);
-                    mTotalRunTime += tRunTime;
+                    // 如果需要统计全部耗时，则进行常规的统计
+                    if (tStatAll) {
+                        long tRunTime = System.nanoTime();
+                        tTask.run();
+                        tRunTime = System.nanoTime() - tRunTime;
+                        mTotalRunTime += tRunTime;
+                        mTaskRunTime.add(tRunTime);
+                    } else
+                    // 如果已经全部统计过了则只需要每次更新其中的 1/10
+                    if (i%10 == SERVER_TIME%10) {
+                        long tRunTime = System.nanoTime();
+                        tTask.run();
+                        tRunTime = System.nanoTime() - tRunTime;
+                        // 总时间进行更新
+                        mTotalRunTime -= mTaskRunTime.get(i);
+                        mTotalRunTime += tRunTime;
+                        // 每个任务的时间进行更新
+                        mTaskRunTime.set(i, tRunTime);
+                    } else {
+                        tTask.run();
+                    }
                 }
             }
         }

@@ -40,9 +40,9 @@ public class ParRunScheduler {
         mNeedRegroup = T;
     }
     public synchronized void remove(@NotNull Runnable aTask) {
-        mTasks.remove(aTask);
+        Long tOut = mTasks.remove(aTask);
         if (aTask instanceof IRR_onRemove) ((IRR_onRemove)aTask).onRemove(); // Hook
-        mNeedRegroup = T;
+        if (tOut != null) mNeedRegroup = T; // 原本不包含移除后不需要更新
     }
     public synchronized void clear() {
         for (Runnable tTask : mTasks.keySet()) if (tTask instanceof IRR_onRemove) ((IRR_onRemove)tTask).onRemove(); // Hook
@@ -61,7 +61,7 @@ public class ParRunScheduler {
             }
             // 考虑是否需要调整线程数
             if (mUsedThreadNumber < mMaxThreadNumber && tMaxRunTime > mTargetRunTime) ++mChangeThreadTolerate;
-            else if (mUsedThreadNumber > 1 && tMaxRunTime < mTargetRunTime / Math.ceil(mGrowthFactor)) --mChangeThreadTolerate; // 耗时很短也需要考虑减少使用的线程数
+            else if (mUsedThreadNumber > 1 && tMaxRunTime < mTargetRunTime / (Math.ceil(mGrowthFactor)*1.5)) --mChangeThreadTolerate; // 耗时很短也需要考虑减少使用的线程数
             else mChangeThreadTolerate = 0;
             // 调整使用的线程数目
             int rUsedThreadNumber = mUsedThreadNumber;

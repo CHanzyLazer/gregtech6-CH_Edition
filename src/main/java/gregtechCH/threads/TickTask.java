@@ -25,6 +25,7 @@ public abstract class TickTask<TE extends ITileEntityUnloadable & ITileEntityErr
         } catch (Throwable e) {
             mError = T;
             mTE.setError(errorMessage() + e);
+            //noinspection SynchronizeOnNonFinalField
             synchronized (ERR) {e.printStackTrace(ERR);}
         }
     }

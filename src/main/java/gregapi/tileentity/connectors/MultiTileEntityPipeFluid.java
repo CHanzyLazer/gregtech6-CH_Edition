@@ -891,9 +891,11 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		// Amount to distribute normally.
 		tAmount = UT.Code.divup(tAmount, tTargetCount);
 		// Distribute to Pipes first.
-		for (Triplet<FluidTankGT, Long, MultiTileEntityPipeFluid> tTriplet : tPipes) synchronized (tTriplet.c) {
+		for (Triplet<FluidTankGT, Long, MultiTileEntityPipeFluid> tTriplet : tPipes) {
+		//noinspection SynchronizeOnNonFinalField
+		synchronized (tTriplet.c) {
 			mTransferredAmount += aTank.remove(tTriplet.a.add(aTank.amount(tAmount-tTriplet.b), aTank.get()));
-		}
+		}}
 		// Check if we are empty.
 		if (aTank.isEmpty()) return;
 		// Distribute to Tanks afterwards.
@@ -906,9 +908,11 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		if (tPipes.isEmpty()) return;
 		// And then if there still is pressure, distribute to Pipes again.
 		tAmount = (aTank.amount() - aTank.capacity()/2) / tPipes.size();
-		if (tAmount > 0) for (Triplet<FluidTankGT, Long, MultiTileEntityPipeFluid> tTriplet : tPipes) synchronized (tTriplet.c) {
+		if (tAmount > 0) for (Triplet<FluidTankGT, Long, MultiTileEntityPipeFluid> tTriplet : tPipes) {
+		//noinspection SynchronizeOnNonFinalField
+		synchronized (tTriplet.c) {
 			mTransferredAmount += aTank.remove(tTriplet.a.add(aTank.amount(tAmount), aTank.get()));
-		}
+		}}
 	}
 	
 	
@@ -1084,10 +1088,12 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		tAmount = tAmount/tTargetCount;
 		if (tAmount > 0) {
 			// 直接完全均分
-			for (Pair<FluidTankGT, MultiTileEntityPipeFluid> tPair : tPipes) synchronized (tPair.second) {
+			for (Pair<FluidTankGT, MultiTileEntityPipeFluid> tPair : tPipes) {
+			//noinspection SynchronizeOnNonFinalField
+			synchronized (tPair.second) {
 				// 直接进行填充，虽然一定不会超过容量，但是为了以防万一还是加上 aTank.amount()
 				mTransferredAmount += aTank.remove(tPair.first.add(aTank.amount(tAmount), aTank.get()));
-			}
+			}}
 			for (DelegatorTileEntity tTank : tTanks) synchronized (tTank.mTileEntity) {
 				mTransferredAmount += aTank.remove(FL.fill(tTank, aTank.get(tAmount), T));
 			}
@@ -1103,6 +1109,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 				if (tDistributed < tPipes.size()) {
 					Pair<FluidTankGT, MultiTileEntityPipeFluid> tPair = tPipes.get(tDistributed);
 					// 直接进行填充，虽然一定不会超过容量，但是为了以防万一还是加上 aTank.amount()
+					//noinspection SynchronizeOnNonFinalField
 					synchronized (tPair.second) {mTransferredAmount += aTank.remove(tPair.first.add(aTank.amount(1), aTank.get()));}
 				}
 				else {

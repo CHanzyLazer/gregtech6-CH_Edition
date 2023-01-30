@@ -55,6 +55,7 @@ public class WD_CH {
                         formMainChunkList();
                         formAroundChunkList();
                     } catch (Exception e) {
+                        //noinspection SynchronizeOnNonFinalField
                         synchronized (ERR) {e.printStackTrace(ERR);}
                     }
                 });

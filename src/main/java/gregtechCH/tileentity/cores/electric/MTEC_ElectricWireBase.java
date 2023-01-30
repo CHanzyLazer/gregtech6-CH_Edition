@@ -125,7 +125,7 @@ public class MTEC_ElectricWireBase implements IMTEServerTickParallel {
     
     private int tickOrder(int aMax) {return hashCode()%aMax;}
     // ticking
-    @SuppressWarnings({"deprecation", "SynchronizeOnNonFinalField"})
+    @SuppressWarnings("deprecation")
     public void onTick(long aTimer, boolean aIsServerSide) {
         if (aIsServerSide) {
             // 更新 Manager
@@ -144,12 +144,14 @@ public class MTEC_ElectricWireBase implements IMTEServerTickParallel {
                 }
             }
             // 将 Manager 加入到并行 tick 中
-            if (mManagerUpdated && mManager != null) synchronized (mManager) {
+            if (mManagerUpdated && mManager != null) {
+            //noinspection SynchronizeOnNonFinalField
+            synchronized (mManager) {
                 if (mManager.mHasToAddTimerPar){
                     GTCH_Main.addToServerTickParallel(this);
                     mManager.mHasToAddTimerPar = F;
                 }
-            }
+            }}
             // 更新属性用于检测以及下一 tick 的累计统计
             mLastVoltage = mVoltage.first + (RNGSUS.nextInt((int)U) < mVoltage.second ? 1 : 0); // 电压小数部分随机取值
             mLastAmperage = mAmperage;
@@ -211,7 +213,6 @@ public class MTEC_ElectricWireBase implements IMTEServerTickParallel {
     }
     
     // 更新 Manager，注意由于存在拆开网络的情况，无论如何都需要使用新的 Manager 来覆盖旧的，并且注意需要串行执行
-    @SuppressWarnings("SynchronizeOnNonFinalField")
     protected void updateNetworkManager() {
         Set<MTEC_ElectricWiresManager> tManagersToMerge;
         // 需要对所有的对象都串行执行，因为其他的 core 会因为这个 core 更新完成后不再需要进行进行更新
@@ -237,6 +238,7 @@ public class MTEC_ElectricWireBase implements IMTEServerTickParallel {
             }
         }
         // 此部分不需要串行，对不同的 mManager 可以并行；增加对 mManager 的锁保险
+        //noinspection SynchronizeOnNonFinalField
         synchronized(mManager) {
             if (mManager.valid()) return;
             // 处理合并 Manager

@@ -93,8 +93,8 @@ public class GTCH_Main {
         @Override protected String errorMessage() {return mFirst?"Server Tick Pre 1 - ":"Server Tick Pre 2 - ";}
     }
     
-    private static final ParRunScheduler TE_SERVER_TICK_PAR = new ParRunScheduler(TICK_THREAD, DATA_GTCH.minGroupSize, DATA_GTCH.maxGroupedMulti);
-    private static final ParRunScheduler TE_SERVER_TICK_PA2 = new ParRunScheduler(TICK_THREAD, DATA_GTCH.minGroupSize, DATA_GTCH.maxGroupedMulti);
+    private static final ParRunScheduler TE_SERVER_TICK_PAR = new ParRunScheduler(TICK_THREAD.getPoolSize(), DATA_GTCH.targetRunTime, 10, DATA_GTCH.growthFactor);
+    private static final ParRunScheduler TE_SERVER_TICK_PA2 = new ParRunScheduler(TICK_THREAD.getPoolSize(), DATA_GTCH.targetRunTime, 10, DATA_GTCH.growthFactor);
     // 添加实体到并行 tick 的队列中，使用此方法进行 tick 会高度并行，一定要注意线程安全
     public static void addToServerTickParallel(IMTEServerTickParallel aTE) {
         synchronized (TE_SERVER_TICK_PAR) {TE_SERVER_TICK_PAR.add(new TETickRun(aTE, T));}
@@ -111,10 +111,10 @@ public class GTCH_Main {
     
     // 专门的 server tick 方法，在 pre 之后，在 post 之前，用来将耗时部分专门并行处理
     public static void SERVER_TICK() {
-        // 直接执行，会自动清空非法实体，分组执行并且等待全部执行完成
-        TE_SERVER_TICK_PAR.runAll();
-        // 直接执行，会自动清空非法实体，分组执行并且等待全部执行完成
-        TE_SERVER_TICK_PA2.runAll();
+        // 分组执行，会自动清空非法实体并且等待全部执行完成
+        TICK_THREAD.runAll(TE_SERVER_TICK_PAR.getGroupedTasks());
+        // 分组执行，会自动清空非法实体并且等待全部执行完成
+        TICK_THREAD.runAll(TE_SERVER_TICK_PA2.getGroupedTasks());
     }
     
     // 实现自用的实体计划任务 api，服务端和客户端通用

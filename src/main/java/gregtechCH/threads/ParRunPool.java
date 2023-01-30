@@ -14,7 +14,8 @@ import static gregapi.data.CS.OUT;
 public class ParRunPool {
     private final ExecutorService mThreadPool;
     private final Timer mTimer;
-    final int mPoolSize;
+    private final int mPoolSize;
+    public final int getPoolSize() {return mPoolSize;}
     
     public ParRunPool(int aPoolSize) {this(aPoolSize, 100);}
     public ParRunPool(int aPoolSize, int aWarnTime) {

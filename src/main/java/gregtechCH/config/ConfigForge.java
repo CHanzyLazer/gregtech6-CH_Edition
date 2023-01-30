@@ -48,8 +48,8 @@ public class ConfigForge {
         public static int rerenderAroundLength;
         
         public static int overrideTickThread;
-        public static int minGroupSize;
-        public static int maxGroupedMulti;
+        public static int targetRunTime;
+        public static float growthFactor;
     }
     public static class DATA_MACHINES {
         public static boolean motorExplodeCheck;
@@ -73,15 +73,15 @@ public class ConfigForge {
         
         DATA_GTCH.debugging = ConfigsGTCH.GTCH.get(ConfigCategories_CH.general, "debugging_(gt6_false)", F);
         
-        DATA_GTCH.enableGT6U = ConfigsGTCH.GTCH.get(ConfigCategories_CH.gameplay, "enableGT6U_(gt6_false)", F);
+        DATA_GTCH.enableGT6U = ConfigsGTCH.GTCH.get(ConfigCategories_CH.general, "enableGT6U_(gt6_false)", F);
         
         DATA_GTCH.enableChangeLoader_Fluids = ConfigsGTCH.GTCH.get(ConfigCategories_CH.loader, "enableChangeLoader_fluids_(gt6_false)", T);
         DATA_GTCH.enableChangeLoader_MultiTileEntities = ConfigsGTCH.GTCH.get(ConfigCategories_CH.loader, "enableChangeLoader_MultiTileEntities_(gt6_false)",  T);
         
         DATA_GTCH.sneakingMountCover = ConfigsGTCH.GTCH.get(ConfigCategories_CH.general, "sneaking_mount_cover_(gt6_false)", T);
-        DATA_GTCH.itemNBTSensor = ConfigsGTCH.GTCH.get(ConfigCategories_CH.nbt, "item_nbt_sensor_(gt6_true)", F);
+        DATA_GTCH.itemNBTSensor = ConfigsGTCH.GTCH.get(ConfigCategories_CH.general, "item_nbt_sensor_(gt6_true)", F);
         
-        DATA_GTCH.disableAllStoragePowerconducting = ConfigsGTCH.GTCH.get(ConfigCategories_CH.fluid, "disable_all_storage_powerconducting_(gt6_false)", T);
+        DATA_GTCH.disableAllStoragePowerconducting = ConfigsGTCH.GTCH.get(ConfigCategories_CH.general, "disable_all_storage_powerconducting_(gt6_false)", T);
         
         DATA_GTCH.markRatio = Math.min(1.0F, Math.max((float)ConfigsGTCH.GTCH.get(ConfigCategories_CH.colour, "mark_ratio_(gt6_?)", 0.125), 0.0F));
         DATA_GTCH.mixBaseRatio = Math.min(1.0F, Math.max((float)ConfigsGTCH.GTCH.get(ConfigCategories_CH.colour, "colour_mix_base_ratio_(gt6_0.0)", 0.5), 0.0F));
@@ -108,8 +108,8 @@ public class ConfigForge {
         DATA_GTCH.rerenderTickList = tList.toArray(new RerenderTick[0]);
         
         DATA_GTCH.overrideTickThread        = ConfigsGTCH.GTCH.get(ConfigCategories_CH.multithread, "override_tick_thread_(gt6_1)",  0);
-        DATA_GTCH.minGroupSize              = ConfigsGTCH.GTCH.get(ConfigCategories_CH.multithread, "minimum_group_size_(gt6_?)",  500);
-        DATA_GTCH.maxGroupedMulti           = ConfigsGTCH.GTCH.get(ConfigCategories_CH.multithread, "maximum_grouped_multi_(gt6_?)",  10);
+        DATA_GTCH.targetRunTime             = ConfigsGTCH.GTCH.get(ConfigCategories_CH.multithread, "target_run_time_(gt6_?)",  4);
+        DATA_GTCH.growthFactor              = (float)ConfigsGTCH.GTCH.get(ConfigCategories_CH.multithread, "growth_factor_(gt6_?)",  2.0F);
         
         DATA_MACHINES.motorExplodeCheck = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.generatorMotor, "motor_explode_check_(gt6_?)", T);
         DATA_MACHINES.motorExplodeByLength = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.generatorMotor, "motor_explode_by_length_(gt6_false)", T);

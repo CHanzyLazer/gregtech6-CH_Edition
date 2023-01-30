@@ -5,11 +5,8 @@ package gregtechCH.config;
  */
 public enum ConfigCategories_CH {
     general,
-    gameplay,
     loader,
-    nbt,
     colour,
-    fluid,
     optimize,
     multithread;
     public enum Machines {

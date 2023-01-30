@@ -17,6 +17,9 @@ import static gregapi.data.CS.*;
  * 根据输入来调整上限，并且存储输入用于最近搜索
  */
 public class MTEC_ElectricWiresManager {
+    // manager tick stuff
+    boolean mHasToAddTimerPar = T;
+    
     // 通用电力 buffer，标记电压电流和能量
     static class EnergyBuffer {
         public long mVoltage = 128, mAmperage = 1, mEnergy = 0; // 为了让代码简洁，保证实际 buffer 的电流都大于等于 1
@@ -230,7 +233,6 @@ public class MTEC_ElectricWiresManager {
         public boolean equalToCore(MTEC_ElectricWireBase aCore) {return mCore==aCore;}
     }
     
-    private long mTimer = 0; // 用来保证每 tick 只会 tick 一次
     private boolean mInited = F, mValid = T; // 初始一定合法，非法后一定需要创建新的 manager 来进行替代
     private int mValidCounter = 0; // 设置非法后用于计数延迟更新
     public void setInvalid() {mValid = F; mValidCounter = 4;}
@@ -277,19 +279,9 @@ public class MTEC_ElectricWiresManager {
     }
     
     /* main code */
-    // ticking，由拥有此 Manager 的 core 竞争 tick 即可
-    public final void onTick() {
-        if (mTimer == SERVER_TIME || !mInited) return; // 直接和 server_time 比较保证只会 tick 一次
-        // 使用序列化的方法保证一次一定只会有一个线程调用，并且是一定要初始化后才会调用
-        onTickSy();
-    }
-    
     private final Set<MTEC_ElectricWireBase> mCoresActive = new LinkedHashSet<>(); // linked 用于加速遍历，临时变量暂存上一步的结果
-    // java 的非静态 synchronized 不会影响不同对象之间的并行
-    protected synchronized void onTickSy() {
-        if (mTimer == SERVER_TIME || !mInited) return; // 考虑到有可能并行执行，因此需要在这里再次进行判断
-        mTimer = SERVER_TIME;
-        
+    // ticking
+    public void onServerTickPar() {
         // 每 tick 进行 counter 计数
         if (mValidCounter > 0) --mValidCounter;
         if (!mValid) return; // 非法 manager 不进行输出

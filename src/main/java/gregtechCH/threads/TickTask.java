@@ -30,8 +30,7 @@ public abstract class TickTask<TE extends ITileEntityUnloadable & ITileEntityErr
     }
     // 重写 hashCode 以及 equals 来方便移除
     @Override public int hashCode() {return mTE.hashCode();}
-    @Override
-    public boolean equals(Object o) {
+    @Override public boolean equals(Object o) {
         if (this == o) return T;
         if (o == null) return F;
         if (o instanceof TickTask<?>) return mTE.equals(((TickTask<?>)o).mTE);

@@ -83,6 +83,7 @@ public class ParRunScheduler {
         }
         // 重新分组
         if (mNeedRegroup) {
+            if (DATA_GTCH.debugging) OUT.println("DEBUG: Regrouping ParRunTasks(" + this + ")...");
             mChangeThreadTolerate = 0;
             mRegroupTolerate = 0;
             // 先遍历 mGrouped 获取运行时间，因为可能在执行后 mTasks 和 GroupedTask 不一致
@@ -115,6 +116,12 @@ public class ParRunScheduler {
                 }
             }
             mNeedRegroup = F;
+            if (DATA_GTCH.debugging) {
+                OUT.println("DEBUG: Regrouping ParRunTasks(" + this + ") Finished, Info: ");
+                OUT.println("    UsedThreadNumber: " + mUsedThreadNumber);
+                OUT.printf ("    MeanRunTime: %.4f ms%n", tMeanRunTime*0.000001);
+                OUT.println("    Tasks Size: " + mTasks.size());
+            }
         }
         return mGrouped;
     }

@@ -9,7 +9,10 @@ import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.tileentity.energy.EnergyCompat;
 import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.util.UT;
+import gregtechCH.GTCH_Main;
 import gregtechCH.code.Pair;
+import gregtechCH.threads.TickTask;
+import gregtechCH.tileentity.IMTEServerTickParallel;
 import gregtechCH.util.UT_CH;
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.tile.IEnergySource;
@@ -33,7 +36,21 @@ import static gregtechCH.config.ConfigForge.*;
  * @author CHanzy
  * 基本电线的类，存储此电线的电压，电流等数值
  */
-public class MTEC_ElectricWireBase {
+public class MTEC_ElectricWireBase implements IMTEServerTickParallel {
+    // manager tick stuff
+    @Override public void setError(String aError) {mTE.setError(aError);}
+    @Override public boolean isDead() {return mTE.isDead() || mManager.needUpdate();}
+    @Override public void onServerTickPar(boolean aFirst) {mManager.onServerTickPar();}
+    @Override public void onUnregisterPar() {mManager.mHasToAddTimerPar = T;}
+    // 重写 hashCode 以及 equals 来保证不会有相同的 Manager 在 tick list 中
+    @Override public int hashCode() {return mManager == null ? 0 : mManager.hashCode();}
+    @Override public boolean equals(Object o) {
+        if (this == o) return T;
+        if (o == null) return F;
+        if (o instanceof MTEC_ElectricWireBase) return mManager.equals(((MTEC_ElectricWireBase)o).mManager);
+        return F;
+    }
+    
     protected MTEC_ElectricWiresManager mManager = null; // reference of Manager
     protected final TileEntityBase01Root mTE; // reference of te
     
@@ -108,7 +125,7 @@ public class MTEC_ElectricWireBase {
     
     private int tickOrder(int aMax) {return hashCode()%aMax;}
     // ticking
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings({"deprecation", "SynchronizeOnNonFinalField"})
     public void onTick(long aTimer, boolean aIsServerSide) {
         if (aIsServerSide) {
             // 更新 Manager
@@ -126,8 +143,13 @@ public class MTEC_ElectricWireBase {
                     }
                 }
             }
-            // tick Manager
-            if (mManagerUpdated && mManager != null) mManager.onTick(); // 非法的网络依旧会进行 tick，进行 counter 但是不会输出
+            // 将 Manager 加入到并行 tick 中
+            if (mManagerUpdated && mManager != null) synchronized (mManager) {
+                if (mManager.mHasToAddTimerPar){
+                    GTCH_Main.addToServerTickParallel(this);
+                    mManager.mHasToAddTimerPar = F;
+                }
+            }
             // 更新属性用于检测以及下一 tick 的累计统计
             mLastVoltage = mVoltage.first + (RNGSUS.nextInt((int)U) < mVoltage.second ? 1 : 0); // 电压小数部分随机取值
             mLastAmperage = mAmperage;
@@ -198,8 +220,11 @@ public class MTEC_ElectricWireBase {
             tManagersToMerge = new HashSetNoNulls<>();
     
             if (mTE.getTimer() < 2) return; // 此时近邻未加载，直接退出
-            // 如果自身不为 null 则需要加入合并
-            if (mManager != null) tManagersToMerge.add(mManager);
+            // 如果自身不为 null 则需要加入合并，并且需要移出 tick 列表
+            if (mManager != null) {
+                tManagersToMerge.add(mManager);
+                GTCH_Main.removeFromServerTickParallel(this);
+            }
             // 无论如何都需要使用新的 Manager
             mManager = new MTEC_ElectricWiresManager();
             mManagerUpdated = T;
@@ -224,8 +249,11 @@ public class MTEC_ElectricWireBase {
     private void setNetworkManager(@NotNull MTEC_ElectricWiresManager aManager, @NotNull Set<MTEC_ElectricWiresManager> aManagersToMerge) {
         if (mTE.getTimer() < 2) return; // 此时近邻未加载，直接退出
         if (mManager == aManager) return; // 已经设置过则 Manager 相同，退出
-        // 设置自身的 Manager，如果不为 null 则需要放入 aManagersToMerge 用于合并
-        if (mManager != null) aManagersToMerge.add(mManager);
+        // 设置自身的 Manager，如果不为 null 则需要放入 aManagersToMerge 用于合并，并且需要移出 tick 列表
+        if (mManager != null) {
+            aManagersToMerge.add(mManager);
+            GTCH_Main.removeFromServerTickParallel(this);
+        }
         mManager = aManager; mManagerUpdated = T;
         clearTemporary(); // 更新 manager 后需要清空临时的数据，保证第一次 tick 的电压电流也是正确的
         // 获取周围连接的 core，同样设置 Manager

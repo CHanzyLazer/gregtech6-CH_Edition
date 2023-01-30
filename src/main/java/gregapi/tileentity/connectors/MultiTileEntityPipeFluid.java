@@ -757,7 +757,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	}
 	
 	// GTCH，限制方向输出，没有流速控制。限制方向输出可以对代码进行一定简化，所以重新写了一份
-	protected synchronized void distributeLimit(FluidTankGT aTank, DelegatorTileEntity<MultiTileEntityPipeFluid>[] aAdjacentPipes, DelegatorTileEntity<IFluidHandler>[] aAdjacentTanks, DelegatorTileEntity<TileEntity>[] aAdjacentOther) {
+	protected void distributeLimit(FluidTankGT aTank, DelegatorTileEntity<MultiTileEntityPipeFluid>[] aAdjacentPipes, DelegatorTileEntity<IFluidHandler>[] aAdjacentTanks, DelegatorTileEntity<TileEntity>[] aAdjacentOther) {
 		// 由于限制方向输出，相邻的只有一个，为了格式一致还是都采用数组的形式
 		// 非法调用回到默认模式
 		if (mFluidDir == SIDE_ANY || mFluidMode != PipeMode.LIMIT) {distribute(aTank, aAdjacentPipes, aAdjacentTanks, aAdjacentOther); return;}

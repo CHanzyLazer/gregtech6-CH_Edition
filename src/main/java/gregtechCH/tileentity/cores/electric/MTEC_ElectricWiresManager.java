@@ -4,6 +4,7 @@ import gregapi.data.TD;
 import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.util.UT;
 import gregtechCH.code.Pair;
+import gregtechCH.tileentity.IMTEServerTickParallel;
 import gregtechCH.util.UT_CH;
 import net.minecraft.tileentity.TileEntity;
 
@@ -16,8 +17,17 @@ import static gregapi.data.CS.*;
  * 电网的公用类，用来接受和输出能量
  * 根据输入来调整上限，并且存储输入用于最近搜索
  */
-public class MTEC_ElectricWiresManager {
-    // manager tick stuff
+public class MTEC_ElectricWiresManager implements IMTEServerTickParallel {
+    // par tick stuff
+    @Override public void setError(String aError) {/**/}
+    // 根据输入来判断是否被卸载
+    @Override public boolean isDead() {
+        if (needUpdate()) return T;
+        if (mInputs.isEmpty()) return T;
+        for (InputObject input : mInputs.values()) if (!input.mIOCore.isDead()) return F;
+        return T;
+    }
+    @Override public void onUnregisterPar() {mHasToAddTimerPar = T;}
     boolean mHasToAddTimerPar = T;
     
     // 通用电力 buffer，标记电压电流和能量
@@ -46,7 +56,7 @@ public class MTEC_ElectricWiresManager {
         // 重写 equals 和 hashCode 来使其作为 key 时可以按照我希望的方式运行
         @Override public boolean equals(Object aRHS) {return aRHS instanceof IOObject ? equals((IOObject) aRHS) : F;}
         public boolean equals(IOObject aRHS) {return mIOCore==aRHS.mIOCore && mIOSide==aRHS.mIOSide;}
-        @Override public int hashCode() {return (mIOCore.hashCode()) ^ (mIOSide<<24);}
+        @Override public int hashCode() {return Objects.hash(mIOCore, mIOSide);}
     }
     // 输入需要暂存电压电流用来统计此 tick 所有的输入，buffer 能量来比较简单实现能量守恒
     static class InputObject extends IOObject {
@@ -281,7 +291,7 @@ public class MTEC_ElectricWiresManager {
     /* main code */
     private final Set<MTEC_ElectricWireBase> mCoresActive = new LinkedHashSet<>(); // linked 用于加速遍历，临时变量暂存上一步的结果
     // ticking
-    public void onServerTickPar() {
+    @Override public void onServerTickPar(boolean aFirst) {
         // 每 tick 进行 counter 计数
         if (mValidCounter > 0) --mValidCounter;
         if (!mValid) return; // 非法 manager 不进行输出

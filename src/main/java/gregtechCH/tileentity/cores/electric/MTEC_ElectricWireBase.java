@@ -11,7 +11,6 @@ import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.util.UT;
 import gregtechCH.GTCH_Main;
 import gregtechCH.code.Pair;
-import gregtechCH.threads.TickTask;
 import gregtechCH.tileentity.IMTEServerTickParallel;
 import gregtechCH.util.UT_CH;
 import ic2.api.energy.EnergyNet;
@@ -30,26 +29,19 @@ import java.util.Map;
 import java.util.Set;
 
 import static gregapi.data.CS.*;
-import static gregtechCH.config.ConfigForge.*;
+import static gregtechCH.config.ConfigForge.DATA_GTCH;
 
 /**
  * @author CHanzy
  * 基本电线的类，存储此电线的电压，电流等数值
+ * 相比原本的逻辑更加复杂，加入并行来抵消这种影响
  */
 public class MTEC_ElectricWireBase implements IMTEServerTickParallel {
-    // manager tick stuff
+    // par tick stuff
     @Override public void setError(String aError) {mTE.setError(aError);}
-    @Override public boolean isDead() {return mTE.isDead() || mManager.needUpdate();}
-    @Override public void onServerTickPar(boolean aFirst) {mManager.onServerTickPar();}
-    @Override public void onUnregisterPar() {mManager.mHasToAddTimerPar = T;}
-    // 重写 hashCode 以及 equals 来保证不会有相同的 Manager 在 tick list 中
-    @Override public int hashCode() {return mManager == null ? 0 : mManager.hashCode();}
-    @Override public boolean equals(Object o) {
-        if (this == o) return T;
-        if (o == null) return F;
-        if (o instanceof MTEC_ElectricWireBase) return mManager.equals(((MTEC_ElectricWireBase)o).mManager);
-        return F;
-    }
+    @Override public boolean isDead() {return mTE.isDead();}
+    @Override public void onUnregisterPar() {mHasToAddTimerPar = T;}
+    boolean mHasToAddTimerPar = T;
     
     protected MTEC_ElectricWiresManager mManager = null; // reference of Manager
     protected final TileEntityBase01Root mTE; // reference of te
@@ -125,41 +117,48 @@ public class MTEC_ElectricWireBase implements IMTEServerTickParallel {
     
     private int tickOrder(int aMax) {return hashCode()%aMax;}
     // ticking
-    @SuppressWarnings("deprecation")
     public void onTick(long aTimer, boolean aIsServerSide) {
         if (aIsServerSide) {
-            // 更新 Manager
-            if (mManager == null || mManager.needUpdate()) mManagerUpdated = F; // 在 tick 之前，对于非法的 manager 需要进行更新
-            if (!mManagerUpdated && aTimer % 8 == (2+tickOrder(6))) updateNetworkManager(); // 不那么积极的更新网络
-            // 兼容输入
-            if (mManagerUpdated && mManager != null && EnergyCompat.IC_ENERGY) for (byte tSide : ALL_SIDES_VALID) if (te().canAcceptEnergyFrom(tSide)) {
-                DelegatorTileEntity<TileEntity> tDelegator = mTE.getAdjacentTileEntity(tSide);
-                //noinspection ConditionCoveredByFurtherCondition
-                if (!(tDelegator.mTileEntity instanceof ITileEntityEnergy) && !(tDelegator.mTileEntity instanceof gregapi.tileentity.ITileEntityEnergy)) {
-                    TileEntity tEmitter = tDelegator.mTileEntity instanceof IEnergyTile || EnergyNet.instance == null ? tDelegator.mTileEntity : EnergyNet.instance.getTileEntity(tDelegator.mWorld, tDelegator.mX, tDelegator.mY, tDelegator.mZ);
-                    if (tEmitter instanceof IEnergySource && ((IEnergySource)tEmitter).emitsEnergyTo(mTE, tDelegator.getForgeSideOfTileEntity())) {
-                        long tEU = (long)((IEnergySource)tEmitter).getOfferedEnergy();
-                        if (mManager.doEnergyInjection(this, tSide, tEU, 1) == 1) ((IEnergySource)tEmitter).drawEnergy(tEU);
-                    }
-                }
-            }
             // 将 Manager 加入到并行 tick 中
             if (mManagerUpdated && mManager != null) {
             //noinspection SynchronizeOnNonFinalField
             synchronized (mManager) {
-                if (mManager.mHasToAddTimerPar){
-                    GTCH_Main.addToServerTickParallel(this);
+                if (mManager.mHasToAddTimerPar && !mManager.isDead()) { // 一定要求 mManager 没有死亡才能添加回去（因为不是在 mManager 的 tick 中添加），不适用仅输入的 core 可以添加来减少耦合
+                    GTCH_Main.addToServerTickParallel(mManager);
                     mManager.mHasToAddTimerPar = F;
                 }
             }}
-            // 更新属性用于检测以及下一 tick 的累计统计
-            mLastVoltage = mVoltage.first + (RNGSUS.nextInt((int)U) < mVoltage.second ? 1 : 0); // 电压小数部分随机取值
-            mLastAmperage = mAmperage;
-            clearTemporary();
-            // 熔毁计数
-            if (mLastAmperage > mMaxAmperage || mLastVoltage > mMaxVoltage) if (mBurnCounter < 16) ++mBurnCounter;
-            if (mBurnCounter > 0 && aTimer % 512 == (2+tickOrder(510))) --mBurnCounter;
+            // 将自己也加入到并行 tick 中，加入到 pa2 保证在 manager 之后
+            if (mHasToAddTimerPar) {
+                GTCH_Main.addToServerTickParallel2(this);
+                mHasToAddTimerPar = F;
+            }
         }
+    }
+    @SuppressWarnings("deprecation")
+    @Override public void onServerTickPar(boolean aFirst) {
+        // 更新 Manager
+        if (mManager == null || mManager.needUpdate()) mManagerUpdated = F; // 在 tick 之前，对于非法的 manager 需要进行更新
+        if (!mManagerUpdated && mTE.getTimer() % 8 == (2+tickOrder(6))) updateNetworkManager(); // 不那么积极的更新网络
+        // 兼容输入
+        if (mManagerUpdated && mManager != null && EnergyCompat.IC_ENERGY) for (byte tSide : ALL_SIDES_VALID) if (te().canAcceptEnergyFrom(tSide)) {
+            DelegatorTileEntity<TileEntity> tDelegator = mTE.getAdjacentTileEntity(tSide);
+            //noinspection ConditionCoveredByFurtherCondition
+            if (!(tDelegator.mTileEntity instanceof ITileEntityEnergy) && !(tDelegator.mTileEntity instanceof gregapi.tileentity.ITileEntityEnergy)) {
+                TileEntity tEmitter = tDelegator.mTileEntity instanceof IEnergyTile || EnergyNet.instance == null ? tDelegator.mTileEntity : EnergyNet.instance.getTileEntity(tDelegator.mWorld, tDelegator.mX, tDelegator.mY, tDelegator.mZ);
+                if (tEmitter instanceof IEnergySource && ((IEnergySource)tEmitter).emitsEnergyTo(mTE, tDelegator.getForgeSideOfTileEntity())) {
+                    long tEU = (long)((IEnergySource)tEmitter).getOfferedEnergy();
+                    if (mManager.doEnergyInjection(this, tSide, tEU, 1) == 1) ((IEnergySource)tEmitter).drawEnergy(tEU);
+                }
+            }
+        }
+        // 更新属性用于检测以及下一 tick 的累计统计
+        mLastVoltage = mVoltage.first + (RNGSUS.nextInt((int)U) < mVoltage.second ? 1 : 0); // 电压小数部分随机取值
+        mLastAmperage = mAmperage;
+        clearTemporary();
+        // 熔毁计数
+        if (mLastAmperage > mMaxAmperage || mLastVoltage > mMaxVoltage) if (mBurnCounter < 16) ++mBurnCounter;
+        if (mBurnCounter > 0 && mTE.getTimer() % 512 == (2+tickOrder(510))) --mBurnCounter;
     }
     
     // tooltips

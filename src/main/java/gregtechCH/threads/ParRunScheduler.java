@@ -1,6 +1,5 @@
 package gregtechCH.threads;
 
-import gregapi.code.ArrayListNoNulls;
 import gregapi.util.UT;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,7 +16,7 @@ import static gregtechCH.config.ConfigForge.*;
  */
 public class ParRunScheduler {
     protected final Map<Runnable, Long> mTasks = new LinkedHashMap<>(); // task 和对应的执行时间，ns
-    private final List<GroupedTask> mGrouped = new ArrayListNoNulls<>();
+    private final List<GroupedTask> mGrouped = new ArrayList<>();
     private final int mMaxThreadNumber; // 最大线程数
     private final long mTargetRunTime;  // 目标执行时间 ns
     private final int mTolerate;        // 容忍度
@@ -105,7 +104,7 @@ public class ParRunScheduler {
             double tTime = 0.0;
             for (Map.Entry<Runnable, Long> tEntry : mTasks.entrySet()) {
                 if (tSubGroupedList == null) {
-                    tSubGroupedList = new ArrayListNoNulls<>(tGroupSize);
+                    tSubGroupedList = new ArrayList<>(tGroupSize);
                     mGrouped.add(new GroupedTask(tSubGroupedList));
                 }
                 tSubGroupedList.add(tEntry.getKey());

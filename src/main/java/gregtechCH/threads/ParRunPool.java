@@ -1,5 +1,7 @@
 package gregtechCH.threads;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Collection;
 import java.util.concurrent.*;
 
@@ -31,7 +33,9 @@ public class ParRunPool {
     }
     
     // 无论如何都无法避免子类使用了不同的 CountDownLatch 从而死循环，因此只能使用 lambda 表达式来构造 “临时子类”
-    public void runAll(Collection<? extends Runnable> aTasks) {
+    public void runAll(@NotNull Collection<? extends Runnable> aTasks) {
+        if (aTasks.isEmpty()) return;
+        if (aTasks.size()==1) {aTasks.iterator().next().run(); return;} // 对于只有一项的直接遍历不调用线程池
         final CountDownLatch tLatch = new CountDownLatch(aTasks.size());
         for (final Runnable tTask : aTasks) mThreadPool.execute(()->{try {tTask.run();} finally {tLatch.countDown();}});
         mTimer.reset(this);

@@ -1,9 +1,11 @@
 package gregtechCH.tileentity.cores.electric;
 
+import gregapi.GT_API_Proxy;
 import gregapi.code.HashSetNoNulls;
 import gregapi.code.TagData;
 import gregapi.data.LH;
 import gregapi.data.TD;
+import gregapi.tileentity.ITileEntityServerTickPre;
 import gregapi.tileentity.base.TileEntityBase01Root;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.tileentity.energy.EnergyCompat;
@@ -36,12 +38,14 @@ import static gregtechCH.config.ConfigForge.DATA_GTCH;
  * 基本电线的类，存储此电线的电压，电流等数值
  * 相比原本的逻辑更加复杂，加入并行来抵消这种影响
  */
-public class MTEC_ElectricWireBase implements IMTEServerTickParallel {
+public class MTEC_ElectricWireBase implements IMTEServerTickParallel, ITileEntityServerTickPre {
     // par tick stuff
     @Override public void setError(String aError) {mTE.setError(aError);}
     @Override public boolean isDead() {return mTE.isDead();}
     @Override public void onUnregisterPar() {mHasToAddTimerPar = T;}
-    boolean mHasToAddTimerPar = T;
+    private boolean mHasToAddTimerPar = T;
+    @Override public void onUnregisterPre() {mHasToAddTimerPre = T;}
+    private boolean mHasToAddTimerPre = T;
     
     protected MTEC_ElectricWiresManager mManager = null; // reference of Manager
     protected final TileEntityBase01Root mTE; // reference of te
@@ -115,7 +119,6 @@ public class MTEC_ElectricWireBase implements IMTEServerTickParallel {
         if (aNBT.hasKey(NBT_PIPEBANDWIDTH)) mMaxAmperage = Math.max(1, aNBT.getLong(NBT_PIPEBANDWIDTH));
     }
     
-    private int tickOrder(int aMax) {return hashCode()%aMax;}
     // ticking
     public void onTick(long aTimer, boolean aIsServerSide) {
         if (aIsServerSide) {
@@ -123,25 +126,34 @@ public class MTEC_ElectricWireBase implements IMTEServerTickParallel {
             if (mManagerUpdated && mManager != null) {
             //noinspection SynchronizeOnNonFinalField
             synchronized (mManager) {
-                if (mManager.mHasToAddTimerPar && !mManager.isDead()) { // 一定要求 mManager 没有死亡才能添加回去（因为不是在 mManager 的 tick 中添加），不适用仅输入的 core 可以添加来减少耦合
+                if (mManager.mHasToAddTimerPar && (aTimer % 8 == 2) && !mManager.isDead()) { // 一定要求 mManager 没有死亡才能添加回去（因为不是在 mManager 的 tick 中添加），不适用仅输入的 core 可以添加来减少耦合
                     GTCH_Main.addToServerTickParallel(mManager);
                     mManager.mHasToAddTimerPar = F;
                 }
             }}
-            // 将自己也加入到并行 tick 中，加入到 pa2 保证在 manager 之后
+            // 将自己的网络更新部分加入到串行的 pre tick 中，保证网络更新是串行的，不干扰其他部分的 tick
+            if (mHasToAddTimerPre) {
+                GT_API_Proxy.SERVER_TICK_PRE.add(this);
+                mHasToAddTimerPre = F;
+            }
+            // 将自己的其余部分加入到并行 tick 中，加入到 pa2 保证在 manager 之后
             if (mHasToAddTimerPar) {
                 GTCH_Main.addToServerTickParallel2(this);
                 mHasToAddTimerPar = F;
             }
         }
     }
+    
+    // 将自己的网络更新部分加入到串行的 pre tick 中，保证网络更新是串行的，不干扰其他部分的 tick
+    @Override public void onServerTickPre(boolean aFirst) {
+        if (!mManagerUpdated && mTE.getTimer() > 2) updateNetworkManager();
+    }
     @SuppressWarnings("deprecation")
     @Override public void onServerTickPar(boolean aFirst) {
         // 更新 Manager
         if (mManager == null || mManager.needUpdate()) mManagerUpdated = F; // 在 tick 之前，对于非法的 manager 需要进行更新
-        if (!mManagerUpdated && mTE.getTimer() % 8 == (2+tickOrder(6))) updateNetworkManager(); // 不那么积极的更新网络
         // 兼容输入
-        if (mManagerUpdated && mManager != null && EnergyCompat.IC_ENERGY) for (byte tSide : ALL_SIDES_VALID) if (te().canAcceptEnergyFrom(tSide)) {
+        if (EnergyCompat.IC_ENERGY && mManagerUpdated && mManager != null) for (byte tSide : ALL_SIDES_VALID) if (te().canAcceptEnergyFrom(tSide)) {
             DelegatorTileEntity<TileEntity> tDelegator = mTE.getAdjacentTileEntity(tSide);
             //noinspection ConditionCoveredByFurtherCondition
             if (!(tDelegator.mTileEntity instanceof ITileEntityEnergy) && !(tDelegator.mTileEntity instanceof gregapi.tileentity.ITileEntityEnergy)) {
@@ -158,7 +170,7 @@ public class MTEC_ElectricWireBase implements IMTEServerTickParallel {
         clearTemporary();
         // 熔毁计数
         if (mLastAmperage > mMaxAmperage || mLastVoltage > mMaxVoltage) if (mBurnCounter < 16) ++mBurnCounter;
-        if (mBurnCounter > 0 && mTE.getTimer() % 512 == (2+tickOrder(510))) --mBurnCounter;
+        if (mBurnCounter > 0 && (mTE.getTimer() % 512 == 2)) --mBurnCounter;
     }
     
     // tooltips
@@ -211,41 +223,36 @@ public class MTEC_ElectricWireBase implements IMTEServerTickParallel {
         return null;
     }
     
-    // 更新 Manager，注意由于存在拆开网络的情况，无论如何都需要使用新的 Manager 来覆盖旧的，并且注意需要串行执行
-    protected void updateNetworkManager() {
-        Set<MTEC_ElectricWiresManager> tManagersToMerge;
-        // 需要对所有的对象都串行执行，因为其他的 core 会因为这个 core 更新完成后不再需要进行进行更新
-        synchronized(MTEC_ElectricWireBase.class) {
-            if (mManagerUpdated) return; // 考虑到有可能并行执行，因此需要在这里再次进行判断
-            tManagersToMerge = new HashSetNoNulls<>();
-    
-            if (mTE.getTimer() < 2) return; // 此时近邻未加载，直接退出
-            // 如果自身不为 null 则需要加入合并，并且需要移出 tick 列表
-            if (mManager != null) {
-                tManagersToMerge.add(mManager);
-                GTCH_Main.removeFromServerTickParallel(this);
-            }
-            // 无论如何都需要使用新的 Manager
-            mManager = new MTEC_ElectricWiresManager();
-            mManagerUpdated = T;
-            clearTemporary(); // 更新 manager 后需要清空临时的数据，保证第一次 tick 的电压电流也是正确的
-            // 获取周围连接的 core，同样设置 Manager
-            for (byte tSide : ALL_SIDES) {
-                MTEC_ElectricWireBase tCore = getAdjacentCoreAndPutOutput(tSide, mManager);
-                if (tCore == null) continue;
-                tCore.setNetworkManager(mManager, tManagersToMerge);
-            }
+    // 更新 Manager，注意由于存在拆开网络的情况，无论如何都需要使用新的 Manager 来覆盖旧的，串行执行
+    private void updateNetworkManager() {
+        UT_CH.Debug.assertWhenDebug(!mManagerUpdated, "Update an updated network.");
+        UT_CH.Debug.assertWhenDebug(mTE.getTimer() > 2, "Update network too early");
+        
+        Set<MTEC_ElectricWiresManager> tManagersToMerge = new HashSetNoNulls<>();
+        // 如果自身不为 null 则需要加入合并，并且需要移出 tick 列表
+        if (mManager != null) {
+            tManagersToMerge.add(mManager);
+            GTCH_Main.removeFromServerTickParallel(mManager);
         }
-        // 此部分不需要串行，对不同的 mManager 可以并行；增加对 mManager 的锁保险
-        //noinspection SynchronizeOnNonFinalField
-        synchronized(mManager) {
-            if (mManager.valid()) return;
-            // 处理合并 Manager
-            for (MTEC_ElectricWiresManager tManager : tManagersToMerge) mManager.mergeManager(tManager);
-            // 更新 Manager，表示已经初始化
-            mManager.update();
+        // 无论如何都需要使用新的 Manager
+        mManager = new MTEC_ElectricWiresManager();
+        mManagerUpdated = T;
+        clearTemporary(); // 更新 manager 后需要清空临时的数据，保证第一次 tick 的电压电流也是正确的
+        // 获取周围连接的 core，同样设置 Manager
+        for (byte tSide : ALL_SIDES) {
+            MTEC_ElectricWireBase tCore = getAdjacentCoreAndPutOutput(tSide, mManager);
+            if (tCore == null) continue;
+            tCore.setNetworkManager(mManager, tManagersToMerge);
         }
+        
+        /// 使 Manager 合法
+        UT_CH.Debug.assertWhenDebug(!mManager.valid());
+        // 处理合并 Manager
+        for (MTEC_ElectricWiresManager tManager : tManagersToMerge) mManager.mergeManager(tManager);
+        // 更新 Manager，表示已经初始化
+        mManager.update();
     }
+    
     // 向周围传递的方式来初始化 Manager，递归实现
     private void setNetworkManager(@NotNull MTEC_ElectricWiresManager aManager, @NotNull Set<MTEC_ElectricWiresManager> aManagersToMerge) {
         if (mTE.getTimer() < 2) return; // 此时近邻未加载，直接退出
@@ -253,7 +260,7 @@ public class MTEC_ElectricWireBase implements IMTEServerTickParallel {
         // 设置自身的 Manager，如果不为 null 则需要放入 aManagersToMerge 用于合并，并且需要移出 tick 列表
         if (mManager != null) {
             aManagersToMerge.add(mManager);
-            GTCH_Main.removeFromServerTickParallel(this);
+            GTCH_Main.removeFromServerTickParallel(mManager);
         }
         mManager = aManager; mManagerUpdated = T;
         clearTemporary(); // 更新 manager 后需要清空临时的数据，保证第一次 tick 的电压电流也是正确的

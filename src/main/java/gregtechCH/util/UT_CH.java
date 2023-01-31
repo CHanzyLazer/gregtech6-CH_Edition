@@ -764,10 +764,6 @@ public class UT_CH {
     // 一些 debug 用的接口
     public static class Debug {
         public static void assertWhenDebug(boolean a) {assertWhenDebug(a, "Assert Failed Bug");}
-        public static void assertWhenDebug(boolean a, String aMessage) {
-            if (DATA_GTCH.debugging && !a) {
-                throw new RuntimeException(aMessage);
-            }
-        }
+        public static void assertWhenDebug(boolean a, String aMessage) {if (DATA_GTCH.debugging && !a) {throw new RuntimeException(aMessage);}}
     }
 }

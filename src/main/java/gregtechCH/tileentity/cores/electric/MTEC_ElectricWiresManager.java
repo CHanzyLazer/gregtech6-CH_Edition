@@ -7,6 +7,7 @@ import gregtechCH.code.Pair;
 import gregtechCH.tileentity.IMTEServerTickParallel;
 import gregtechCH.util.UT_CH;
 import net.minecraft.tileentity.TileEntity;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -21,7 +22,7 @@ public class MTEC_ElectricWiresManager implements IMTEServerTickParallel {
     // par tick stuff
     @Override public void setError(String aError) {/**/}
     // 根据输入来判断是否被卸载
-    @Override public boolean isDead() {
+    @Override public synchronized boolean isDead() {
         if (needUpdate()) return T;
         if (mInputs.isEmpty()) return T;
         for (InputObject input : mInputs.values()) if (!input.mIOCore.isDead()) return F;
@@ -245,26 +246,29 @@ public class MTEC_ElectricWiresManager implements IMTEServerTickParallel {
     
     private boolean mInited = F, mValid = T; // 初始一定合法，非法后一定需要创建新的 manager 来进行替代
     private int mValidCounter = 0; // 设置非法后用于计数延迟更新
-    public void setInvalid() {mValid = F; mValidCounter = 4;}
-    public boolean needUpdate() {return !mValid && mValidCounter == 0;}
+    public synchronized void setInvalid() {mValid = F; mValidCounter = 8;}
+    public synchronized boolean needUpdate() {return !mValid && mValidCounter == 0;}
     public boolean valid() {return mInited && mValid;}
     protected final Map<IOObject, InputObject> mInputs = new LinkedHashMap<>(); // linked 用于加速遍历
     protected final Map<IOObject, OutputObject> mOutputs = new LinkedHashMap<>(); // linked 用于加速遍历
     
     // 合并 Manager
-    public void mergeManager(MTEC_ElectricWiresManager aManagerToMerge) {
-        if (!mInited && aManagerToMerge.mInited) {
-            // 仅已存在的并且 te 相同的，能够继承旧的能量数据
-            for (InputObject tInput : aManagerToMerge.mInputs.values()) {
-                IOObject existIO = mOutputs.get(tInput);
-                if (existIO != null && existIO.mIOTE == tInput.mIOTE) {
-                    mInputs.put(tInput, tInput);
+    public void mergeManager(@NotNull MTEC_ElectricWiresManager aManagerToMerge) {
+        //noinspection SynchronizationOnLocalVariableOrMethodParameter
+        synchronized (aManagerToMerge) {
+            if (!mInited && aManagerToMerge.mInited) {
+                // 仅已存在的并且 te 相同的，能够继承旧的能量数据
+                for (InputObject tInput : aManagerToMerge.mInputs.values()) {
+                    IOObject existIO = mOutputs.get(tInput);
+                    if (existIO != null && existIO.mIOTE == tInput.mIOTE) {
+                        mInputs.put(tInput, tInput);
+                    }
                 }
-            }
-            for (OutputObject tOutput : aManagerToMerge.mOutputs.values()) {
-                IOObject existIO = mOutputs.get(tOutput);
-                if (existIO != null && existIO.mIOTE == tOutput.mIOTE) {
-                    mOutputs.put(tOutput, tOutput);
+                for (OutputObject tOutput : aManagerToMerge.mOutputs.values()) {
+                    IOObject existIO = mOutputs.get(tOutput);
+                    if (existIO != null && existIO.mIOTE == tOutput.mIOTE) {
+                        mOutputs.put(tOutput, tOutput);
+                    }
                 }
             }
         }
@@ -381,28 +385,18 @@ public class MTEC_ElectricWiresManager implements IMTEServerTickParallel {
     }
     
     // 分配电流需要进行的操作，这里暂时同时直接注入，返回成功分配的数目
-    public long assignAmperage(InputObject aInput, Pair<OutputObject, Long> rPairToAssign, long aAmperage) {
+    protected long assignAmperage(InputObject aInput, Pair<OutputObject, Long> rPairToAssign, long aAmperage) {
         aAmperage = Math.min(aAmperage, rPairToAssign.second);
         rPairToAssign.second -= aAmperage;
         rPairToAssign.first.injectAmperageToPath(aInput, aAmperage);
         return aAmperage;
     }
     
-    // 一些并行处理时等待初始化的方法（注意仅服务端调用来避免卡顿）
-    public boolean waitUtilInited(int aMaxWait) throws InterruptedException {
-        if (mInited) return T;
-        for (int i = 0; i < aMaxWait; ++i) {
-            Thread.sleep(10);
-            if (mInited) return T;
-        }
-        return F;
-    }
     
     // 能量注入，标记输入，并获取成功注入的电流量
     public synchronized long doEnergyInjection(MTEC_ElectricWireBase aInputCore, byte aInputSide, long aVoltage, long aAmperage) {
         // 严格起见，需要保证网络已经初始化
-        try {if (aInputCore.mTE.isServerSide() && !waitUtilInited(100)) return 0;} catch (InterruptedException e) {/**/}
-        if (aVoltage == 0 || aAmperage == 0) return 0;
+        if (!mInited || aVoltage == 0 || aAmperage == 0) return 0;
         aVoltage = Math.abs(aVoltage);
         InputObject tInput = new InputObject(aInputCore, aInputSide);
         InputObject existInput = mInputs.get(tInput);

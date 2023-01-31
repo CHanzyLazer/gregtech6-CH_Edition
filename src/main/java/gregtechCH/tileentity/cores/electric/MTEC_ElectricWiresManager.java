@@ -91,6 +91,29 @@ public class MTEC_ElectricWiresManager implements IMTEServerTickParallel {
         protected final Map<InputObject, EnergyBuffer> mInputBuffers = new LinkedHashMap<>(); // linked 用于加速遍历
         protected final Map<InputObject, LinkedList<MTEC_ElectricWireBase>> mInputPaths = new LinkedHashMap<>(); // linked 用于加速遍历
         private OutputObject(MTEC_ElectricWireBase aOutputCore, byte aOutputSide, TileEntity aOutputTE) {super(aOutputCore, aOutputSide, aOutputTE);}
+    
+        // 仅用于网络非法后延迟网络更新时使用，检测对应输入的路径是否合法且带有缓存优化，因此结果也只是一次性的
+        protected final Map<InputObject, Boolean> mPathValidBuffer = new LinkedHashMap<>(); // linked 用于加速遍历
+        private boolean checkPathValid(InputObject aInputObject) {
+            UT_CH.Debug.assertWhenDebug(!mIOCore.mManager.mValid);
+            if (mPathValidBuffer.containsKey(aInputObject)) return mPathValidBuffer.get(aInputObject);
+            LinkedList<MTEC_ElectricWireBase> tPath = mInputPaths.get(aInputObject);
+            if (tPath == null || tPath.isEmpty()) {mPathValidBuffer.put(aInputObject, F); return F;}
+            // 路径上的实体是否都存在的检测
+            for (MTEC_ElectricWireBase tCore : tPath) if (tCore.isDead()) {mPathValidBuffer.put(aInputObject, F); return F;}
+            // 路径连接是否正确的检测
+            Iterator<MTEC_ElectricWireBase> it1 = tPath.iterator(), it2 = tPath.iterator();
+            MTEC_ElectricWireBase tCore2 = it2.next();
+            while (it2.hasNext()) {
+                MTEC_ElectricWireBase
+                tCore1 = it1.next();
+                tCore2 = it2.next();
+                if (!tCore1.isAdjacentCore(tCore2)) {mPathValidBuffer.put(aInputObject, F); return F;}
+            }
+            // 还需检测最后是否连接到了输出
+            if (tCore2.getAdjacentTE(mIOSide) != mIOTE) {mPathValidBuffer.put(aInputObject, F); return F;}
+            mPathValidBuffer.put(aInputObject, T); return T;
+        }
         
         // 获取对应输入需要注入的电流量
         public long getNeededAmperage(InputObject aInputObject) {
@@ -103,19 +126,20 @@ public class MTEC_ElectricWiresManager implements IMTEServerTickParallel {
             }
             return tEnergyBuffer.neededAmperage();
         }
-        // 为路径注入电流，如果没有路径需要进行初始化，一定会成功
+        // 为路径注入电流，如果没有路径需要进行初始化，合法时一定会成功
         public void injectAmperageToPath(InputObject aInputObject, long aAmperage) {
             if (aAmperage == 0) return;
             LinkedList<MTEC_ElectricWireBase> tPath = mInputPaths.get(aInputObject);
             if (tPath == null) {
                 tPath = new LinkedList<>();
                 boolean tSuccess = getPath(aInputObject, this, tPath);
-                if (!tSuccess) {mIOCore.mManager.setInvalid(); return;} // 总会有各种原因导致网络意外失效，标记对应的 manager 非法然后退出
+                if (!tSuccess) {mIOCore.mManager.setInvalid(); return;} // 总会有各种原因导致网络意外失效（例如过早的区块卸载，未触发近邻更新的近邻更新之类的），直接标记对应的 manager 非法然后退出
                 mInputPaths.put(aInputObject, tPath);
             }
-            for (MTEC_ElectricWireBase tCore : tPath) {
-                tCore.appendAmperage(aInputObject, aAmperage);
-            }
+            // 检测路径是否完整合法，为了性能仅在设置网络非法时进行路径路径检测
+            if (!mIOCore.mManager.mValid && !checkPathValid(aInputObject)) return;
+            // 注入电流
+            for (MTEC_ElectricWireBase tCore : tPath) tCore.appendAmperage(aInputObject, aAmperage);
             Long tAmperage = mInputAmperages.get(aInputObject);
             mInputAmperages.put(aInputObject, tAmperage == null ? aAmperage : tAmperage + aAmperage);
         }
@@ -246,7 +270,11 @@ public class MTEC_ElectricWiresManager implements IMTEServerTickParallel {
     
     private boolean mInited = F, mValid = T; // 初始一定合法，非法后一定需要创建新的 manager 来进行替代
     private int mValidCounter = 0; // 设置非法后用于计数延迟更新
-    public synchronized void setInvalid() {mValid = F; mValidCounter = 8;}
+    public synchronized void setInvalid() {
+        if (mValid) {mValidCounter = 8; mValid = F;}
+        // 无论如何都需要将 output 暂存的路径合法值清空
+        for (OutputObject tOutput : mOutputs.values()) tOutput.mPathValidBuffer.clear();
+    }
     public synchronized boolean needUpdate() {return !mValid && mValidCounter == 0;}
     public boolean valid() {return mInited && mValid;}
     protected final Map<IOObject, InputObject> mInputs = new LinkedHashMap<>(); // linked 用于加速遍历
@@ -298,7 +326,7 @@ public class MTEC_ElectricWiresManager implements IMTEServerTickParallel {
     @Override public void onServerTickPar(boolean aFirst) {
         // 每 tick 进行 counter 计数
         if (mValidCounter > 0) --mValidCounter;
-        if (!mValid) return; // 非法 manager 不进行输出
+        // 非法 manager 依旧需要进行输出，避免延迟更新造成的闪断
         
         // 每 tick 分配输入进行输出
         // 电流电压分配前先清空路径的临时值（上一步没有激活的 core 也不需要清空路径的暂存值）
@@ -309,10 +337,10 @@ public class MTEC_ElectricWiresManager implements IMTEServerTickParallel {
         {
         Integer tRestIdx = null; // 用来保证多个输入会接着上一个输入进行分配
         List<Pair<OutputObject, Long>> tActiveOutputs = new LinkedList<>();
-        for (InputObject tInput : mInputs.values()) if (tInput.active()) {
+        for (InputObject tInput : mInputs.values()) if (tInput.active()) { // 输入不需要考虑 dead，因为 dead 的不会注入能量到电网
             // 对于每个输入，统计所有需要的输出，并且将其放入 list 中，并存储每个输出需要的电流数
             tActiveOutputs.clear();
-            for (OutputObject tOutput : mOutputs.values()) {
+            for (OutputObject tOutput : mOutputs.values()) if (!tOutput.mIOCore.isDead()) { // 因为区块卸载等原因 dead 的输出不会进行注入
                 long tNeedA = tOutput.getNeededAmperage(tInput);
                 if (tNeedA > 0) tActiveOutputs.add(new Pair<>(tOutput, tNeedA));
             }

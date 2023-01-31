@@ -27,7 +27,9 @@ import gregapi.util.WD;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Gregorius Techneticies
@@ -50,6 +52,18 @@ public abstract class TileEntityBase02AdjacentTEBuffer extends TileEntityBase01R
 	 * "this" means that there is no TileEntity, while "null" means that it doesn't know if there is even a TileEntity and still needs to check that if needed.
 	 */
 	private final TileEntity[] mBufferedTileEntities = new TileEntity[6];
+	
+	// GTCH, 在清空 NullMarkers 的基础上刷新 mBufferedTileEntities 并且获取所有的改变了的方向，包含 null -> null
+	public final List<Byte> clearNullMarkersAndGetChangedSide() {
+		List<Byte> rSides = new ArrayList<>(6);
+		for (byte tSide : ALL_SIDES_VALID) {
+			TileEntity oTE = mBufferedTileEntities[tSide];
+			if (oTE == this) mBufferedTileEntities[tSide] = null;
+			TileEntity nTE = getTileEntityAtSideAndDistance(tSide, 1);
+			if (nTE == null || nTE != oTE) rSides.add(tSide);
+		}
+		return rSides;
+	}
 	
 	private void clearNullMarkersFromTileEntityBuffer() {
 		for (int i = 0; i < mBufferedTileEntities.length; i++) if (mBufferedTileEntities[i] == this) mBufferedTileEntities[i] = null;
@@ -75,10 +89,13 @@ public abstract class TileEntityBase02AdjacentTEBuffer extends TileEntityBase01R
 	@Override
 	public final void onAdjacentBlockChange(int aTileX, int aTileY, int aTileZ) {
 		super.onAdjacentBlockChange(aTileX, aTileY, aTileZ);
-		clearNullMarkersFromTileEntityBuffer();
+		onAdjacentBlockChangeBefore(); // GTCH, 默认为 clearNullMarkersFromTileEntityBuffer，重写此部分配合 clearNullMarkersAndGetChangedSide 可以获取具体改变的近邻
 		onAdjacentBlockChange2(aTileX, aTileY, aTileZ);
 	}
 	
+	public void onAdjacentBlockChangeBefore() {
+		clearNullMarkersFromTileEntityBuffer();
+	}
 	public void onAdjacentBlockChange2(int aTileX, int aTileY, int aTileZ) {
 		//
 	}
@@ -87,7 +104,7 @@ public abstract class TileEntityBase02AdjacentTEBuffer extends TileEntityBase01R
 	 * Highly optimised in order to return adjacent TileEntities much faster.
 	 */
 	@Override
-	public TileEntity getTileEntityAtSideAndDistance(byte aSide, int aDistance) {
+	public TileEntity getTileEntityAtSideAndDistance(final byte aSide, int aDistance) {
 		if (worldObj == null) return null;
 		if (aDistance != 1) return super.getTileEntityAtSideAndDistance(aSide, aDistance);
 		if (SIDES_INVALID[aSide] || mBufferedTileEntities[aSide] == this) return null;

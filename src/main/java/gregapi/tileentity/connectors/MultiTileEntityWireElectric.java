@@ -16,14 +16,12 @@ import gregapi.render.BlockTextureDefault;
 import gregapi.render.BlockTextureMulti;
 import gregapi.render.ITexture;
 import gregapi.tileentity.ITileEntityQuickObstructionCheck;
-import gregapi.tileentity.connectors.TileEntityBase10ConnectorRendered;
 import gregapi.tileentity.data.ITileEntityProgress;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.tileentity.energy.EnergyCompat;
 import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.tileentity.energy.ITileEntityEnergyDataConductor;
 import gregapi.util.UT;
-import gregtechCH.tileentity.ITileEntityNameCompat;
 import gregtechCH.tileentity.cores.electric.IMTEC_HasElectricWire;
 import gregtechCH.tileentity.cores.electric.MTEC_ElectricWireBase;
 import net.minecraft.entity.Entity;
@@ -111,7 +109,13 @@ public class MultiTileEntityWireElectric extends TileEntityBase10ConnectorRender
 	
 	@Override public boolean breakBlock() {mCore.markUpdateManager(); return super.breakBlock();}
 	@Override public void onConnectionChange(byte aPreviousConnections) {super.onConnectionChange(aPreviousConnections); mCore.markUpdateManager();}
-	@Override public void onAdjacentBlockChange2(int aTileX, int aTileY, int aTileZ) {super.onAdjacentBlockChange2(aTileX, aTileY, aTileZ); mCore.markUpdateManager();}
+	@Override public void onAdjacentBlockChangeBefore() {
+		List<Byte> tChangedSides = clearNullMarkersAndGetChangedSide();
+		// 只有连接的方向发生了改变才更新 manager
+		for (byte tSide : tChangedSides) if (connected(tSide)) {
+			mCore.markUpdateManager(); return;
+		}
+	}
 	
 	@Override
 	public void onTick2(long aTimer, boolean aIsServerSide) {

@@ -55,7 +55,7 @@ public class MTEC_ElectricWireBase implements IMTEServerTickParallel, ITileEntit
     
     /* main code */
     private boolean mManagerUpdated = F; // 用于在第一次放置时，连接发生改变或者近邻更改时设置为 F，然后通过 ticking 来进行更新
-    public void markUpdateManager() {if (mManager != null) mManager.setInvalid(); else mManagerUpdated = F;} // 优先通过网络标记需要更新
+    public void markUpdateManager() {if (mManager != null) mManager.setInvalid(); else mManagerUpdated = F;} // 优先通过网络标记需要更新，对于已经有网络的延迟更新
     
     private final Map<MTEC_ElectricWiresManager.InputObject, Pair<Long, Long>> mVoltageList = new LinkedHashMap<>(); // linked 用于加速遍历，后一项为小数部分
     private final Map<MTEC_ElectricWiresManager.InputObject, Long> mAmperageList = new LinkedHashMap<>(); // linked 用于加速遍历
@@ -203,7 +203,7 @@ public class MTEC_ElectricWireBase implements IMTEServerTickParallel, ITileEntit
         return 0;
     }
     
-    // 为了减少重复代码，获取一个方向的 core，如果不是 core 则返回 null，如果是 te 则添加到输出列表中
+    // 实用方法（考虑了连接）
     protected MTEC_ElectricWireBase getAdjacentCore(byte aSide) {
         if (!te().connected(aSide)) return null;
         DelegatorTileEntity<TileEntity> tDelegator = mTE.getAdjacentTileEntity(aSide);
@@ -212,6 +212,13 @@ public class MTEC_ElectricWireBase implements IMTEServerTickParallel, ITileEntit
             return ((IMTEC_HasElectricWire)tDelegator.mTileEntity).core();
         return null;
     }
+    protected TileEntity getAdjacentTE(byte aSide) {
+        if (!te().connected(aSide)) return null;
+        DelegatorTileEntity<TileEntity> tDelegator = mTE.getAdjacentTileEntity(aSide);
+        if (tDelegator.mTileEntity != null) return tDelegator.mTileEntity;
+        return null;
+    }
+    // 为了减少重复代码，获取一个方向的 core，如果不是 core 则返回 null，如果是 te 则添加到输出列表中
     protected MTEC_ElectricWireBase getAdjacentCoreAndPutOutput(byte aSide, @NotNull MTEC_ElectricWiresManager aManager) {
         if (!te().connected(aSide)) return null;
         DelegatorTileEntity<TileEntity> tDelegator = mTE.getAdjacentTileEntity(aSide);
@@ -221,6 +228,11 @@ public class MTEC_ElectricWireBase implements IMTEServerTickParallel, ITileEntit
         // 如果不是 core，并且有 te，则添加到输出
         if (tDelegator.mTileEntity != null) aManager.putOutput(this, aSide, tDelegator.mTileEntity);
         return null;
+    }
+    // 判断一个 core 是否是相邻的，考虑了连接。虽然可以使用坐标但是直接遍历应该差距不大
+    protected boolean isAdjacentCore(MTEC_ElectricWireBase aCore) {
+        for (byte tSide : ALL_SIDES_VALID) if (aCore == getAdjacentCore(tSide)) return T;
+        return F;
     }
     
     // 更新 Manager，注意由于存在拆开网络的情况，无论如何都需要使用新的 Manager 来覆盖旧的，串行执行
@@ -246,11 +258,16 @@ public class MTEC_ElectricWireBase implements IMTEServerTickParallel, ITileEntit
         }
         
         /// 使 Manager 合法
-        UT_CH.Debug.assertWhenDebug(!mManager.valid());
+        UT_CH.Debug.assertWhenDebug(mManager.mHasToAddTimerPar && !mManager.valid());
         // 处理合并 Manager
         for (MTEC_ElectricWiresManager tManager : tManagersToMerge) mManager.mergeManager(tManager);
         // 更新 Manager，表示已经初始化
         mManager.update();
+        // 添加到 tick 中
+        if (!mManager.isDead()) {
+            GTCH_Main.addToServerTickParallel(mManager);
+            mManager.mHasToAddTimerPar = F;
+        }
     }
     
     // 向周围传递的方式来初始化 Manager，递归实现

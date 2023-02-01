@@ -122,10 +122,10 @@ public class MTEC_ElectricWireBase implements IMTEServerTickParallel, ITileEntit
     public void onTick(long aTimer, boolean aIsServerSide) {
         if (aIsServerSide) {
             // 将 Manager 加入到并行 tick 中
-            if (mManagerUpdated && mManager != null) {
+            if (mManagerUpdated && mManager != null && (aTimer % 8 == 2)) {
             //noinspection SynchronizeOnNonFinalField
             synchronized (mManager) {
-                if (mManager.mHasToAddTimerPar && (aTimer % 8 == 2) && !mManager.isDead()) { // 一定要求 mManager 没有死亡才能添加回去（因为不是在 mManager 的 tick 中添加），不适用仅输入的 core 可以添加来减少耦合
+                if (mManager.mHasToAddTimerPar && !mManager.isDead()) { // 一定要求 mManager 没有死亡才能添加回去（因为不是在 mManager 的 tick 中添加），不适用仅输入的 core 可以添加来减少耦合
                     GTCH_Main.addToServerTickParallel(mManager);
                     mManager.mHasToAddTimerPar = F;
                 }

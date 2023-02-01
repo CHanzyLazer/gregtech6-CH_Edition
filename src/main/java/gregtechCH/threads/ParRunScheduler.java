@@ -114,12 +114,12 @@ public class ParRunScheduler {
                 }
             }
             mNeedRegroup = F;
-            if (DATA_GTCH.debugging) {
-                OUT.println("DEBUG: Regroup ParRunTasks(" + this + "), Info: ");
-                OUT.println("    UsedThreadNumber: " + mUsedThreadNumber);
-                OUT.printf ("    MeanRunTime: %.4f ms%n", tMeanRunTime*0.000001);
-                OUT.println("    Tasks Size: " + mTasks.size());
-            }
+//            if (DATA_GTCH.debugging) {
+//                OUT.println("DEBUG: Regroup ParRunTasks(" + this + "), Info: ");
+//                OUT.println("    UsedThreadNumber: " + mUsedThreadNumber);
+//                OUT.printf ("    MeanRunTime: %.4f ms%n", tMeanRunTime*0.000001);
+//                OUT.println("    Tasks Size: " + mTasks.size());
+//            }
         }
         return mGrouped;
     }

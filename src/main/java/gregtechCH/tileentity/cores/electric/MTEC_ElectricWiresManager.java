@@ -28,7 +28,12 @@ public class MTEC_ElectricWiresManager implements IMTEServerTickParallel {
         for (InputObject input : mInputs.values()) if (!input.mIOCore.isDead()) return F;
         return T;
     }
-    @Override public void onUnregisterPar() {mHasToAddTimerPar = T;}
+    @Override public void onUnregisterPar() {
+        // 从 tick 中注销时也需要清空上步路径中的数值，保证电压电流的显示准确
+        for (MTEC_ElectricWireBase tCore : mCoresActive) tCore.clearTemporary();
+        mCoresActive.clear();
+        mHasToAddTimerPar = T;
+    }
     boolean mHasToAddTimerPar = T;
     
     // 通用电力 buffer，标记电压电流和能量
@@ -270,8 +275,11 @@ public class MTEC_ElectricWiresManager implements IMTEServerTickParallel {
     
     private boolean mInited = F, mValid = T; // 初始一定合法，非法后一定需要创建新的 manager 来进行替代
     private int mValidCounter = 0; // 设置非法后用于计数延迟更新
-    public synchronized void setInvalid() {
-        if (mValid) {mValidCounter = 8; mValid = F;}
+    public void setInvalid() {setInvalid(F);}
+    public synchronized void setInvalid(boolean aImmediate) {
+        if (aImmediate)  mValidCounter = 0;
+        else if (mValid) mValidCounter = 8;
+        mValid = F;
         // 无论如何都需要将 output 暂存的路径合法值清空
         for (OutputObject tOutput : mOutputs.values()) tOutput.mPathValidBuffer.clear();
     }
@@ -316,7 +324,6 @@ public class MTEC_ElectricWiresManager implements IMTEServerTickParallel {
             OutputObject tOutput = outputIt.next();
             if (!tOutput.valid(this)) outputIt.remove();
         }
-        mCoresActive.clear();
         mInited = T;
     }
     

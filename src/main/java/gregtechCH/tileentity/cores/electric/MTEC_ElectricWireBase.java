@@ -62,19 +62,19 @@ public class MTEC_ElectricWireBase implements IMTEServerTickParallel, ITileEntit
     private final Pair<Long, Long> mVoltage = new Pair<>(0L, 0L); // 暂存这个电线的电压值
     private long mAmperage = 0L; // 暂存这个电线的电流值
     // 提供这些接口来方便的修改电压电流值
-    protected void clearTemporary() {
+    protected synchronized void clearTemporary() {
         // 清空临时变量值，在修改前统一调用保证永远都是正确值
         mVoltage.first = 0L; mVoltage.second = 0L;
         mVoltageList.clear();
         mAmperage = 0L;
         mAmperageList.clear();
     }
-    protected void appendAmperage(MTEC_ElectricWiresManager.InputObject aInputObject, long aAmperage) {
+    protected synchronized void appendAmperage(MTEC_ElectricWiresManager.InputObject aInputObject, long aAmperage) {
         Long tAmperage = mAmperageList.get(aInputObject);
         mAmperageList.put(aInputObject, tAmperage == null ? aAmperage : tAmperage + aAmperage);
         mAmperage += aAmperage;
     }
-    protected Pair<Long, Long> setAndGetVoltageFromSourceVoltage(MTEC_ElectricWiresManager.InputObject aInputObject, Pair<Long, Long> aSourceVoltage) {
+    protected synchronized Pair<Long, Long> setAndGetVoltageFromSourceVoltage(MTEC_ElectricWiresManager.InputObject aInputObject, Pair<Long, Long> aSourceVoltage) {
         // 只会也只需要设置一次电压
         if (mVoltageList.containsKey(aInputObject)) return mVoltageList.get(aInputObject);
         if (aSourceVoltage.first == 0 && aSourceVoltage.second == 0) {
@@ -94,14 +94,13 @@ public class MTEC_ElectricWireBase implements IMTEServerTickParallel, ITileEntit
         return tVoltage;
     }
     // 通过对应的输出得到输出的电压
-    protected long getOutputVoltage(MTEC_ElectricWiresManager.InputObject aInputObject) {
+    protected synchronized long getOutputVoltage(MTEC_ElectricWiresManager.InputObject aInputObject) {
         Pair<Long, Long> tVoltage = mVoltageList.get(aInputObject);
         return tVoltage.first + (RNGSUS.nextInt((int)U) < tVoltage.second ? 1 : 0); // 电压小数部分随机取值
     }
     
-    protected long mLastVoltage = 0, mLastAmperage = 0; // 用于显示和检测
-    public long getVoltage() {return mLastVoltage;}
-    public long getAmperage() {return mLastAmperage;}
+    public long getVoltage() {return mVoltage.first + (RNGSUS.nextInt((int)U) < mVoltage.second ? 1 : 0);}
+    public long getAmperage() {return mAmperage;}
     
     private long mMaxVoltage = 128, mMaxAmperage = 1, mResistance = U; // 固定属性，最大的电压电流和电阻
     public long getMaxVoltage() {return mMaxVoltage;}
@@ -164,12 +163,8 @@ public class MTEC_ElectricWireBase implements IMTEServerTickParallel, ITileEntit
                 }
             }
         }
-        // 更新属性用于检测以及下一 tick 的累计统计
-        mLastVoltage = mVoltage.first + (RNGSUS.nextInt((int)U) < mVoltage.second ? 1 : 0); // 电压小数部分随机取值
-        mLastAmperage = mAmperage;
-        clearTemporary();
         // 熔毁计数
-        if (mLastAmperage > mMaxAmperage || mLastVoltage > mMaxVoltage) if (mBurnCounter < 16) ++mBurnCounter;
+        if (mAmperage > mMaxAmperage || (mVoltage.first >= mMaxVoltage && (mVoltage.first != mMaxVoltage || mVoltage.second > 0))) {++mBurnCounter;}
         if (mBurnCounter > 0 && (mTE.getTimer() % 512 == 2)) --mBurnCounter;
     }
     
@@ -241,15 +236,11 @@ public class MTEC_ElectricWireBase implements IMTEServerTickParallel, ITileEntit
         UT_CH.Debug.assertWhenDebug(mTE.getTimer() > 2, "Update network too early");
         
         Set<MTEC_ElectricWiresManager> tManagersToMerge = new HashSetNoNulls<>();
-        // 如果自身不为 null 则需要加入合并，并且需要移出 tick 列表
-        if (mManager != null) {
-            tManagersToMerge.add(mManager);
-            GTCH_Main.removeFromServerTickParallel(mManager);
-        }
+        // 如果自身不为 null 则需要加入合并
+        if (mManager != null) tManagersToMerge.add(mManager);
         // 无论如何都需要使用新的 Manager
         mManager = new MTEC_ElectricWiresManager();
         mManagerUpdated = T;
-        clearTemporary(); // 更新 manager 后需要清空临时的数据，保证第一次 tick 的电压电流也是正确的
         // 获取周围连接的 core，同样设置 Manager
         for (byte tSide : ALL_SIDES) {
             MTEC_ElectricWireBase tCore = getAdjacentCoreAndPutOutput(tSide, mManager);
@@ -259,8 +250,12 @@ public class MTEC_ElectricWireBase implements IMTEServerTickParallel, ITileEntit
         
         /// 使 Manager 合法
         UT_CH.Debug.assertWhenDebug(mManager.mHasToAddTimerPar && !mManager.valid());
-        // 处理合并 Manager
-        for (MTEC_ElectricWiresManager tManager : tManagersToMerge) mManager.mergeManager(tManager);
+        // 处理合并 Manager，并将被合并的 manager 设置非法
+        for (MTEC_ElectricWiresManager tManager : tManagersToMerge) {
+            mManager.mergeManager(tManager);
+            tManager.setInvalid(T);
+            // 不需要手动移出 tick，因为非法的 manager 会自动被移除，并且移除过程中上步设置的电压电流值都会清空
+        }
         // 更新 Manager，表示已经初始化
         mManager.update();
         // 添加到 tick 中
@@ -274,13 +269,9 @@ public class MTEC_ElectricWireBase implements IMTEServerTickParallel, ITileEntit
     private void setNetworkManager(@NotNull MTEC_ElectricWiresManager aManager, @NotNull Set<MTEC_ElectricWiresManager> aManagersToMerge) {
         if (mTE.getTimer() < 2) return; // 此时近邻未加载，直接退出
         if (mManager == aManager) return; // 已经设置过则 Manager 相同，退出
-        // 设置自身的 Manager，如果不为 null 则需要放入 aManagersToMerge 用于合并，并且需要移出 tick 列表
-        if (mManager != null) {
-            aManagersToMerge.add(mManager);
-            GTCH_Main.removeFromServerTickParallel(mManager);
-        }
+        // 设置自身的 Manager，如果不为 null 则需要放入 aManagersToMerge 用于合并
+        if (mManager != null) aManagersToMerge.add(mManager);
         mManager = aManager; mManagerUpdated = T;
-        clearTemporary(); // 更新 manager 后需要清空临时的数据，保证第一次 tick 的电压电流也是正确的
         // 获取周围连接的 core，同样设置 Manager
         for (byte tSide : ALL_SIDES) {
             MTEC_ElectricWireBase tCore = getAdjacentCoreAndPutOutput(tSide, aManager);

@@ -29,18 +29,21 @@ import net.minecraft.util.*;
  */
 public class DamageSources {
 	public static DamageSource getElectricDamage() {
-		try {return ic2.api.info.Info.DMG_ELECTRIC;} catch(Throwable e) {/**/}
-		return getHeatDamage();
+		DamageSource tOut = null;
+		try {tOut = ic2.api.info.Info.DMG_ELECTRIC;} catch(Throwable e) {/**/}
+		return tOut == null ? getHeatDamage() : tOut;
 	}
 	
 	public static DamageSource getRadioactiveDamage() {
-		try {return ic2.api.info.Info.DMG_RADIATION;} catch(Throwable e) {/**/}
-		return getHeatDamage();
+		DamageSource tOut = null;
+		try {tOut = ic2.api.info.Info.DMG_RADIATION;} catch(Throwable e) {/**/}
+		return tOut == null ? getHeatDamage() : tOut;
 	}
 	
 	public static DamageSource getNukeExplosionDamage() {
-		try {return ic2.api.info.Info.DMG_NUKE_EXPLOSION;} catch(Throwable e) {/**/}
-		return getHeatDamage();
+		DamageSource tOut = null;
+		try {tOut = ic2.api.info.Info.DMG_NUKE_EXPLOSION;} catch(Throwable e) {/**/}
+		return tOut == null ? getHeatDamage() : tOut;
 	}
 	
 	public static DamageSource getExplodingDamage() {

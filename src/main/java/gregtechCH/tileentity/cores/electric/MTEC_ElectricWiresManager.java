@@ -19,17 +19,11 @@ import static gregapi.data.CS.*;
  * 根据输入来调整上限，并且存储输入用于最近搜索
  */
 public class MTEC_ElectricWiresManager implements IMTEServerTickParallel {
-    // par tick stuff
+    // par tick stuff，这里完全交给 MTEC_ElectricWireBase 来手动控制其 tick 的生命周期
     @Override public void setError(String aError) {/**/}
-    // 根据输入来判断是否被卸载
-    @Override public synchronized boolean isDead() {
-        if (needUpdate()) return T;
-        if (mInputs.isEmpty()) return T;
-        for (InputObject input : mInputs.values()) if (!input.mIOCore.isDead()) return F;
-        return T;
-    }
+    @Override public boolean isDead() {return needUpdate();} // 可以防止意外情况，并且最后一个电线移除后剩下的网络需要自己将自己移出 tick（目前考虑的情况下都会是线程安全的）
     @Override public void onUnregisterPar() {
-        // 从 tick 中注销时也需要清空上步路径中的数值，保证电压电流的显示准确
+        // 从 tick 中注销时需要清空上步路径中的数值，保证 mCoresActive 有完整的生命周期
         for (MTEC_ElectricWireBase tCore : mCoresActive) tCore.clearTemporary();
         mCoresActive.clear();
         mHasToAddTimerPar = T;
@@ -278,7 +272,7 @@ public class MTEC_ElectricWiresManager implements IMTEServerTickParallel {
     public void setInvalid() {setInvalid(F);}
     public synchronized void setInvalid(boolean aImmediate) {
         if (aImmediate)  mValidCounter = 0;
-        else if (mValid) mValidCounter = 8;
+        else if (mValid) mValidCounter = 4;
         mValid = F;
         // 无论如何都需要将 output 暂存的路径合法值清空
         for (OutputObject tOutput : mOutputs.values()) tOutput.mPathValidBuffer.clear();

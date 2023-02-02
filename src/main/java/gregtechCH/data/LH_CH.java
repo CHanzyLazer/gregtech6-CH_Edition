@@ -6,7 +6,6 @@ import gregapi.lang.LanguageHandler;
 import gregapi.oredict.OreDictMaterial;
 import gregapi.oredict.OreDictPrefix;
 import gregtechCH.lang.LanguageHandler_CH;
-import net.minecraft.item.ItemStack;
 
 import static gregtechCH.data.CS_CH.RegType;
 
@@ -39,6 +38,7 @@ public class LH_CH {
             , TRANSFORMER_NORMAL                        = "gtch.lang.transformer.normal"
             , TRANSFORMER_REVERSED                      = "gtch.lang.transformer.reversed"
             , HAZARD_EXPLOSION_LENGTH                   = "gtch.lang.hazard.explosion.motor.length"
+            , WIRE_STATS_RESISTANCE                     = "gtch.lang.wire.stats.resistance"
             ;
 
     public static final String add(String aKey, String aEnglish) {LanguageHandler_CH.add(RegType.GTCH, aKey, aEnglish); return aKey;}
@@ -86,5 +86,6 @@ public class LH_CH {
         add(TRANSFORMER_NORMAL,                         "Normal Mode:");
         add(TRANSFORMER_REVERSED,                       "Reversed Mode:");
         add(HAZARD_EXPLOSION_LENGTH,                    "Explodes when Change Structure while machine is running!");
+        add(WIRE_STATS_RESISTANCE,                      "Electrical Resistance:");
     }
 }

@@ -92,8 +92,12 @@ public class LanguageHandler {
 	public static String translate(String aKey) {
 		return translate(aKey, aKey);
 	}
-	
 	public static String translate(String aKey, String aDefault) {
+		String rOut = translate_(aKey, aDefault);
+		if (rOut.endsWith(":")) rOut += " ";
+		return rOut;
+	}
+	private static String translate_(String aKey, String aDefault) {
 		if (aKey == null) return "";
 		aKey = aKey.trim();
 		if (aKey.isEmpty()) return "";

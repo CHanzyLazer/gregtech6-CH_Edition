@@ -19,7 +19,6 @@ languagefile {
     S:gt.multitileentity.31042.name=大量程电力传感器
     S:gt.multitileentity.31043.name=大量程转速传感器
     S:gt.multitileentity.31044.name=大量程激光传感器
-    S:gt.tooltip.boiler.calcification=钙化:
     S:gt.tooltip.sensor.amperageometer=测量电流 (包的数目)
     S:gt.tooltip.sensor.electrometerkilo=测量电力流 (单位: 千 EU)
     S:gt.tooltip.sensor.flowometer=测量流体流速 (单位: 升/tick)
@@ -30,6 +29,9 @@ languagefile {
     S:gt.tooltip.sensor.tachometerkilo=测量轴的转速 (单位: 千 RU)
     S:gt.tooltip.sensor.voltageometer=测量电压 (单位: EU)
     S:gt.tooltip.sensor.voltageometerkilo=测量电压 (单位: 千 EU)
+    S:gtch.chat.boiler.calcification=钙化:
+    S:gtch.chat.boiler.nocalcification=此锅炉没有钙化
+    S:gtch.chat.boiler.nowater=警告: 没有水!!!
     S:gtch.lang.axle.stats.power=功率限制:
     S:gtch.lang.axle.stats.speed=速度限制:
     S:gtch.lang.energy.motor.length=当长度为 %d 时:
@@ -52,6 +54,7 @@ languagefile {
     S:gtch.lang.use.monkey.wrench.to.set.io.side=使用活动扳手设置输出输入方向
     S:gtch.lang.use.monkey.wrench.to.set.mode.side=使用活动扳手来改变模式
     S:gtch.lang.use.sneak.magnifyingglass.to.detail=潜行使用放大镜观察更多细节
+    S:gtch.lang.wire.stats.resistance=电阻:
     S:gtch.tooltip.gearbox.custom.1=齿轮不吻合!
     S:gtch.tooltip.gearbox.custom.2=使用扳手来装上物品栏里的齿轮
     S:gtch.tooltip.gearbox.custom.3=潜行使用扳手来改变轴的朝向
@@ -74,6 +77,7 @@ languagefile {
     S:gtch.tooltip.pipefluid.custom.2=安装橡胶圈来保证流速稳定
     S:gtch.tooltip.pipefluid.custom.3=流速稳定
     S:gtch.tooltip.transformer.rotation.1=反向模式下会保留至少 1 功率
+    S:gtch.tooltip.wire.ohm=电流越大，实际的损耗越大 (欧姆定律)
 }
 
 

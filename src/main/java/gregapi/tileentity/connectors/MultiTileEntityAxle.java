@@ -105,8 +105,8 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 	
 	@Override
 	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
-		aList.add(Chat.CYAN + LH_CH.get(LH_CH.AXLE_STATS_SPEED) + " " + mSpeed + " " + TD.Energy.RU.getLocalisedNameShort());
-		aList.add(Chat.CYAN + LH_CH.get(LH_CH.AXLE_STATS_POWER) + " " + mPower);
+		aList.add(Chat.CYAN + LH_CH.get(LH_CH.AXLE_STATS_SPEED) + mSpeed + " " + TD.Energy.RU.getLocalisedNameShort());
+		aList.add(Chat.CYAN + LH_CH.get(LH_CH.AXLE_STATS_POWER) + mPower);
 		super.addToolTips(aList, aStack, aF3_H);
 		aList.add(Chat.DGRAY + LH.get(LH.TOOL_TO_SET_OUTPUT_MONKEY_WRENCH));
 		aList.add(Chat.DGRAY + LH.get(LH.TOOL_TO_DETAIL_MAGNIFYINGGLASS));

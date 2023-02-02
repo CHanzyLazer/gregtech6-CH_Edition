@@ -13,6 +13,7 @@ import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.util.UT;
 import gregtechCH.GTCH_Main;
 import gregtechCH.code.Pair;
+import gregtechCH.data.LH_CH;
 import gregtechCH.tileentity.IMTEServerTickParallel;
 import gregtechCH.util.UT_CH;
 import ic2.api.energy.EnergyNet;
@@ -170,9 +171,13 @@ public class MTEC_ElectricWireBase implements IMTEServerTickParallel, ITileEntit
     
     // tooltips
     public void addToolTips(List<String> aList) {
-        aList.add(LH.Chat.CYAN     + LH.get(LH.WIRE_STATS_VOLTAGE)  + mMaxVoltage + " " + TD.Energy.EU.getLocalisedNameShort() + " (" + VN[UT.Code.tierMin(mMaxVoltage)] + ")");
-        aList.add(LH.Chat.CYAN     + LH.get(LH.WIRE_STATS_AMPERAGE) + mMaxAmperage);
-        aList.add(LH.Chat.CYAN     + LH.get(LH.WIRE_STATS_LOSS)     + LH.numberU(mResistance) + " " + "Ω/m");
+        aList.add(LH.Chat.CYAN     + LH.get(LH.WIRE_STATS_VOLTAGE)          + mMaxVoltage + " " + TD.Energy.EU.getLocalisedNameShort() + " (" + VN[UT.Code.tierMin(mMaxVoltage)] + ")");
+        aList.add(LH.Chat.CYAN     + LH.get(LH.WIRE_STATS_AMPERAGE)         + mMaxAmperage);
+        aList.add(LH.Chat.CYAN     + LH_CH.get(LH_CH.WIRE_STATS_RESISTANCE) + LH.numberU(mResistance) + " " + "Ω/m");
+        aList.add(LH.Chat.GREEN    + LH_CH.get("gtch.tooltip.wire.ohm"));
+    }
+    static {
+        LH_CH.add("gtch.tooltip.wire.ohm", "The Larger the Amperage, the Greater the actual Loss (Ohm's Law)");
     }
     
     // toolclick

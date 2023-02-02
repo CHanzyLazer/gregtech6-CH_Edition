@@ -69,19 +69,31 @@ public class MTEC_BoilerTank extends MTEC_BoilerTank_Greg {
     public void toolTipsRecipe(List<String> aList) {
         aList.add(LH.Chat.CYAN     + LH.get(LH.CONVERTS_FROM_X)        + " 1 L " + FL.name(FluidRegistry.WATER, T) + " " + LH.get(LH.CONVERTS_TO_Y) + " " + STEAM_PER_WATER + " L " + FL.name(FL.Steam.make(0), T) + " " + LH.get(LH.CONVERTS_USING_Z) + " " + UT.Code.units(EU_PER_WATER, mEfficiencyCH, 10000, F) + " " + mEnergyTypeAccepted.getLocalisedNameShort());
     }
-    static {
-        LH_CH.add("gt.tooltip.boiler.calcification", "Calcification:");
-    }
     @Override
     public void toolTipsEnergy(List<String> aList) {
         aList.add(LH.getToolTipEfficiency(mEfficiencyCH));
-        if (mEfficiency < 10000) aList.add(LH.Chat.YELLOW + LH_CH.get("gt.tooltip.boiler.calcification") + " " + LH.percent(10000 - mEfficiency) + "%");
+        if (mEfficiency < 10000) aList.add(LH.Chat.YELLOW + LH_CH.get("gtch.chat.boiler.calcification") + LH.percent(10000 - mEfficiency) + "%");
         aList.add(LH.Chat.GREEN    + LH.get(LH.ENERGY_INPUT)           + ": " + LH.Chat.WHITE + mInput       + " - " + (mInput*2)  + " " + mEnergyTypeAccepted.getLocalisedChatNameShort() + LH.Chat.WHITE + "/t ("+LH.get(LH.FACE_ANY)+")");
         aList.add(LH.Chat.RED      + LH.get(LH.ENERGY_OUTPUT)          + ": " + LH.Chat.WHITE + realOutput() + " - " + (mOutput*2) + " " + TD.Energy.STEAM.getLocalisedChatNameLong() + LH.Chat.WHITE + "/t ("+LH.get(LH.FACE_TOP)+")");
     }
     @Override
     public void toolTipsUseful(List<String> aList) {
         aList.add(LH.Chat.GREEN    + LH_CH.get(LH_CH.TOOLTIP_PREHEAT));
+    }
+    
+    static {
+        LH_CH.add("gtch.chat.boiler.calcification", "Calcification:");
+        LH_CH.add("gtch.chat.boiler.nocalcification", "No Calcification in this Boiler");
+        LH_CH.add("gtch.chat.boiler.nowater", "WARNING: NO WATER!!!");
+    }
+    @Override
+    public void onMagnifyingGlass(List<String> aChatReturn) {
+        if (mEfficiency < 10000) {
+            aChatReturn.add(LH_CH.get("gtch.chat.boiler.calcification") + LH.percent(10000 - mEfficiency) + "%");
+        } else {
+            aChatReturn.add(LH_CH.get("gtch.chat.boiler.nocalcification"));
+        }
+        aChatReturn.add(mTanks[0].content(LH_CH.get("gtch.chat.boiler.nowater")));
     }
     
     // 改写部分原版锅炉运行逻辑

@@ -108,7 +108,7 @@ public class ConfigForge {
         DATA_GTCH.rerenderTickList = tList.toArray(new RerenderTick[0]);
         
         DATA_GTCH.overrideTickThread        = ConfigsGTCH.GTCH.get(ConfigCategories_CH.multithread, "override_tick_thread_(gt6_1)",  0);
-        DATA_GTCH.targetRunTime             = ConfigsGTCH.GTCH.get(ConfigCategories_CH.multithread, "target_run_time_(gt6_?)",  6);
+        DATA_GTCH.targetRunTime             = ConfigsGTCH.GTCH.get(ConfigCategories_CH.multithread, "target_run_time_(gt6_?)",  10);
         DATA_GTCH.growthFactor              = (float)ConfigsGTCH.GTCH.get(ConfigCategories_CH.multithread, "growth_factor_(gt6_?)",  2.0F);
         
         DATA_MACHINES.motorExplodeCheck     = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.generatorMotor, "motor_explode_check_(gt6_?)", T);

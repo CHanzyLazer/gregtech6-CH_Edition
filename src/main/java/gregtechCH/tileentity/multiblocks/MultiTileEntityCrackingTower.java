@@ -24,7 +24,7 @@ import static gregapi.data.CS.*;
  * @author Gregorius Techneticies, YueSha, CHanzy
  * stuff from GT6U
  */
-public class MultiTileEntityCrackingTower extends TileEntityBase10MultiBlockMachine implements IDistillationTower {
+public class MultiTileEntityCrackingTower extends TileEntityBase10MultiBlockMachine {
     @Override protected MTEC_MultiBlockMachine getNewCoreMultiBlock() {return new MTEC_MultiBlockCrackingTower(this);}
     
     @Override

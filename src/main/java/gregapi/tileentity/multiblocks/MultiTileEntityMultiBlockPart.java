@@ -36,7 +36,6 @@ import gregapi.render.ITexture;
 import gregapi.tileentity.ITileEntityAdjacentInventoryUpdatable;
 import gregapi.tileentity.ITileEntityFunnelAccessible;
 import gregapi.tileentity.ITileEntityTapAccessible;
-import gregapi.tileentity.base.TileEntityBase09FacingSingle;
 import gregapi.tileentity.data.ITileEntityGibbl;
 import gregapi.tileentity.data.ITileEntityProgress;
 import gregapi.tileentity.data.ITileEntityTemperature;
@@ -54,7 +53,6 @@ import gregtechCH.tileentity.connectors.ITEInterceptAutoConnectFluid;
 import gregtechCH.tileentity.connectors.ITEInterceptAutoConnectItem;
 import gregtechCH.tileentity.connectors.ITEInterceptModConnectFluid;
 import gregtechCH.tileentity.connectors.ITEInterceptModConnectItem;
-import gregtechCH.tileentity.multiblocks.IDistillationTower;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -88,14 +86,6 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 	
 	// 用 private 封装防止意料外的修改
 	private short mDesign = 0;
-	// GTCH, 用于子类重写实现在结构改变时更新不透明度
-	private void setDesignInternal(short aDesign) {
-		if (aDesign == mDesign) return;
-		int tOldOpacity = getLightOpacity();
-		mDesign = aDesign;
-		if (tOldOpacity == getLightOpacity()) return;
-		updateLightOpacity(tOldOpacity); // 改为强制更新的版本来避免更新失效
-	}
 	
 	public int mMode = 0;
 	
@@ -142,11 +132,39 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 	, NOTHING                    = ~EVERYTHING
 	;
 	
+	// GTCH, 增加 designMode 来更加灵活的控制外观
+	private int mDesignMode = 0;
+	// 记录所有的 designMode
+	@SuppressWarnings("CStyleArrayDeclaration")
+	public static final int
+	  DEFAULT      = 0
+	
+	, NO_Y_NEG     = SBIT[SIDE_Y_NEG]
+	, NO_Y_POS     = SBIT[SIDE_Y_POS]
+	, NO_Z_NEG     = SBIT[SIDE_Z_NEG]
+	, NO_Z_POS     = SBIT[SIDE_Z_POS]
+	, NO_X_NEG     = SBIT[SIDE_X_NEG]
+	, NO_X_POS     = SBIT[SIDE_X_POS]
+	, GLOW         = 64  // 发光多方快部件
+	, TRANSPARENT  = 128 // 透明多方快部件
+	, AUTO_CONNECT = 256 // 是否允许染色管道自动连接（需要这个面没有被禁用 overlay）
+	
+	, ONLY_Y_NEG   =            NO_Y_POS | NO_Z_NEG | NO_Z_POS | NO_X_NEG | NO_X_POS
+	, ONLY_Y_POS   = NO_Y_NEG |            NO_Z_NEG | NO_Z_POS | NO_X_NEG | NO_X_POS
+	, ONLY_Z_NEG   = NO_Y_NEG | NO_Y_POS |            NO_Z_POS | NO_X_NEG | NO_X_POS
+	, ONLY_Z_POS   = NO_Y_NEG | NO_Y_POS | NO_Z_NEG |            NO_X_NEG | NO_X_POS
+	, ONLY_X_NEG   = NO_Y_NEG | NO_Y_POS | NO_Z_NEG | NO_Z_POS |            NO_X_POS
+	, ONLY_X_POS   = NO_Y_NEG | NO_Y_POS | NO_Z_NEG | NO_Z_POS | NO_X_NEG
+	
+	, ONLY_SIDES[] = {ONLY_Y_NEG, ONLY_Y_POS, ONLY_Z_NEG, ONLY_Z_POS, ONLY_X_NEG, ONLY_X_POS, DEFAULT}
+	;
+	
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {
 		super.readFromNBT2(aNBT);
 		if (aNBT.hasKey(NBT_TARGET)) {mTargetPos = new ChunkCoordinates(UT.Code.bindInt(aNBT.getLong(NBT_TARGET_X)), UT.Code.bindInt(aNBT.getLong(NBT_TARGET_Y)), UT.Code.bindInt(aNBT.getLong(NBT_TARGET_Z)));}
-		if (aNBT.hasKey(NBT_DESIGN)) mDesign = aNBT.getShort(NBT_DESIGN); // NBT 修改会有统一的更新和优化，不需要在这里再次调用
+		if (aNBT.hasKey(NBT_DESIGN)) mDesign = UT.Code.unsignB(aNBT.getByte(NBT_DESIGN));
+		if (aNBT.hasKey(NBT_DESIGN+".mode")) mDesignMode = aNBT.getInteger(NBT_DESIGN+".mode"); // NBT 修改会有统一的更新和优化，不需要在这里再次调用
 		if (aNBT.hasKey(NBT_MODE)) mMode = aNBT.getInteger(NBT_MODE);
 		
 		if (CODE_CLIENT) {
@@ -173,9 +191,10 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 	@Override
 	public void writeToNBT2(NBTTagCompound aNBT) {
 		super.writeToNBT2(aNBT);
-		if (mDesign != 0) aNBT.setShort(NBT_DESIGN, mDesign);
-		if (mMode   != 0) aNBT.setInteger(NBT_MODE, mMode);
-		if (mTargetPos != null) {
+		if (mDesign     != 0) aNBT.setByte(NBT_DESIGN, (byte)mDesign);
+		if (mDesignMode != 0) aNBT.setInteger(NBT_DESIGN+".mode", mDesignMode);
+		if (mMode       != 0) aNBT.setInteger(NBT_MODE, mMode);
+		if (mTargetPos  != null) {
 		UT.NBT.setBoolean(aNBT, NBT_TARGET, T);
 		UT.NBT.setNumber(aNBT, NBT_TARGET_X, mTargetPos.posX);
 		UT.NBT.setNumber(aNBT, NBT_TARGET_Y, mTargetPos.posY);
@@ -223,124 +242,114 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 					mTarget = (ITileEntityMultiBlockController)tTarget;
 				} else {
 					mTargetPos = null;
-					setDesign(0);
+					boolean
+					tIsSet  = setDesign_(0);
+					tIsSet |= setDesignMode_(DEFAULT);
+					if (tIsSet) sendClientData(F, null); // 只进行图像更新，不需要 sendAll
 				}
 			}
 		}
 		return aCheckValidity && mTarget != null && !mTarget.checkStructureOnly(F) ? null : mTarget;
 	}
 	
-	public void setTarget(ITileEntityMultiBlockController aTarget, int aDesign, int aMode) {
+	public void setTarget(ITileEntityMultiBlockController aTarget, int aDesign, int aMode) {setTarget(aTarget, aDesign, aMode, DEFAULT);}
+	public void setTarget(ITileEntityMultiBlockController aTarget, int aDesign, int aMode, int aDesignMode) {
 		mTarget = aTarget;
 		mTargetPos = (mTarget == null ? null : mTarget.getCoords());
 		mMode = aMode;
-		setDesign(aDesign);
+		boolean
+		tIsSet  = setDesign_(aDesign);
+		tIsSet |= setDesignMode_(aDesignMode);
+		if (tIsSet) sendClientData(F, null); // 只进行图像更新，不需要 sendAll
 	}
 	
-	// 图像部分
-	// 技术原因所有图像情况还是只能都放在这里
-	public static final byte
-			  TRANSPARENT 			= -1	// 透明多方快部件，这里方便起见不考虑方向
-			, FLUID_EMITTER 		= -2	// 仅在主方块背面绘制的流体输出
-			, ENERGY_EMITTER_RU 	= -4	// 仅在主方块背面绘制的RU输出
-			;
+	/// GTCH, 图像部分
+	// 需要在其是透明部件或者发光部件时设置透光
+	@Override public int getLightOpacity() {return (mDesignMode & (GLOW | TRANSPARENT)) != 0 ? LIGHT_OPACITY_NONE : super.getLightOpacity();}
 	
-	// GTCH, 需要在其是透明部件时设置透光
-	@Override public int getLightOpacity() {return mDesign == TRANSPARENT ? LIGHT_OPACITY_NONE : super.getLightOpacity();}
-	
-	public boolean setDesign(int aDesign) {
-		if (aDesign != mDesign) {
-			setDesignInternal((short)aDesign);
-			refreshVisual();
-			return T;
-		}
-		return F;
+	private boolean setDesign_(int aDesign) {
+		short tDesign = UT.Code.unsignB((byte)aDesign);
+		if (tDesign == mDesign) return F;
+		mDesign = tDesign;
+		return T;
+	}
+	// 增加的用于主方块直接调用的调整 Design 的接口
+	public void setDesign(int aDesign) {
+		if (setDesign_(aDesign)) sendClientData(F, null); // 只进行图像更新，不需要 sendAll
+	}
+	private boolean setDesignMode_(int aDesignMode) {
+		if (aDesignMode == mDesignMode) return F;
+		int tOldOpacity = getLightOpacity();
+		mDesignMode = aDesignMode;
+		if (tOldOpacity != getLightOpacity()) updateLightOpacity(tOldOpacity); // 改为强制更新的版本来避免更新失效
+		return T;
+	}
+	// 增加的用于主方块直接调用的调整 DesignMode 的接口
+	public final void setDesignMode(int aDesignMode) {
+		if (setDesignMode_(aDesignMode)) sendClientData(F, null); // 只进行图像更新，不需要 sendAll
 	}
 	
-	// 用来给主方块调用，材质改变刷新
-	// 是否改变检测和调用交给主方块，数据同步读取交给这里
-	public void refreshVisual() {
-		setVisualDataDesign();
-		sendClientData(F, null);
-	}
 	
-	// 额外的数据
-	// 朝向
-	public byte mPartFacing = getDefaultSide();
-	public byte getDefaultSide() {return SIDE_UP;}
-	protected byte getTargetFacing() {
-		if (mTarget instanceof TileEntityBase09FacingSingle) {
-			return ((TileEntityBase09FacingSingle) mTarget).mFacing;
-		}
-		return getDefaultSide();
-	}
-	protected void setVisualDataDesign() {
-		switch (mDesign) {
-			case FLUID_EMITTER:
-			case ENERGY_EMITTER_RU: {
-				mPartFacing = OPOS[getTargetFacing()];
-				return;
-			}
-			default:
-				mPartFacing = getDefaultSide();
-		}
-	}
-	
-	// 得到材质
+	/// 得到材质
 	@Override
 	public ITexture getTexture2(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
-		if (mDesign >= 0 && mDesign < mTextures.length) return aShouldSideBeRendered[aSide] ? BlockTextureMulti.get(BlockTextureDefault.get(mTextures[mDesign][FACES_TBS[aSide]], mRGBa), BlockTextureDefault.get(mTextures[mDesign][FACES_TBS[aSide]+3])) : null;
-		if (mDesign == TRANSPARENT) return null;
-		if (mDesign <= -1) {
-			return aShouldSideBeRendered[aSide] ? BlockTextureMulti.get(BlockTextureDefault.get(mTextures[0][FACES_TBS[aSide]], mRGBa), getStructurePartTexture(aBlock, aRenderPass, aSide, aShouldSideBeRendered)) : null;
-		}
-		return aShouldSideBeRendered[aSide] ? BlockTextureMulti.get(BlockTextureDefault.get(mTextures[0][FACES_TBS[aSide]], mRGBa), BlockTextureDefault.get(mTextures[0][FACES_TBS[aSide]+3])) : null;
+		if (!aShouldSideBeRendered[aSide]) return null;
+		if ((mDesignMode & TRANSPARENT) != 0) return null; // 透明即不输出任何材质
+		boolean tGlow = (mDesignMode & GLOW) != 0;
+		short tDesign = mDesign >= mTextures.length ? 0 : mDesign;
+		ITexture tBase = BlockTextureDefault.get(mTextures[tDesign][FACES_TBS[aSide]], mRGBa, tGlow);
+		ITexture tOverlay = sideNoOverlay(aSide) ? null : BlockTextureDefault.get(mTextures[tDesign][FACES_TBS[aSide] + 3], tGlow);
+		return BlockTextureMulti.get(tBase, tOverlay);
 	}
-	protected ITexture getStructurePartTexture(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
-		if (aShouldSideBeRendered[aSide]) {
-			switch (mDesign) {
-			case ENERGY_EMITTER_RU:
-				return (aSide == mPartFacing) ? BlockTextureDefault.get(mTextures[3][3]) : null;
-			case FLUID_EMITTER :
-				return (aSide == mPartFacing) ? BlockTextureDefault.get(mTextures[1][3]) : null;
-			default: return null;
-			}
-		}
-		return null;
+	private boolean sideNoOverlay(byte aSide) {
+		if (SIDES_INVALID[aSide]) return T;
+		return (mDesignMode & SBIT[aSide]) != 0;
 	}
 	
 	
-	// 更多显示数据的收发
-	// GTCH, 重写这个方法保证和原本的逻辑一致
+	// 添加 mDesignMode 的同步
+	// GTCH, 重写这个方法保证和原本的逻辑一致，这里直接禁用 VisualData
 	@Override
+	@SuppressWarnings("SuspiciousIndentAfterControlStatement")
 	public IPacket getClientDataPacketNoSendAll(boolean aSendAll) {
-		return getClientDataPacketByteArray(aSendAll, getVisualData(), getVisualData_CH());
+		if (mDesignMode == 0)               return getClientDataPacketByteArray(aSendAll, (byte)mDesign);
+		if (mDesignMode <= Byte.MAX_VALUE)  return getClientDataPacketByteArray(aSendAll, (byte)mDesign, (byte)mDesignMode);
+		if (mDesignMode <= Short.MAX_VALUE) return getClientDataPacketByteArray(aSendAll, (byte)mDesign, UT.Code.toByteS((short)mDesignMode, 0), UT.Code.toByteS((short)mDesignMode, 1));
+		                                    return getClientDataPacketByteArray(aSendAll, (byte)mDesign, UT.Code.toByteI(mDesignMode, 0), UT.Code.toByteI(mDesignMode, 1), UT.Code.toByteI(mDesignMode, 2), UT.Code.toByteI(mDesignMode, 3));
 	}
 	@Override
 	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
-		super.writeToClientDataPacketByteList(rList);
-		rList.add(4, getVisualData_CH());
+		rList.add(3, (byte)mDesign);
+		rList.add(4, UT.Code.toByteI(mDesignMode, 0));
+		rList.add(5, UT.Code.toByteI(mDesignMode, 1));
+		rList.add(6, UT.Code.toByteI(mDesignMode, 2));
+		rList.add(7, UT.Code.toByteI(mDesignMode, 3));
 	}
 	
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
-		if(aData.length > 5){
+		if (aData.length > 8) {
 			setRGBData(aData[0], aData[1], aData[2], aData[aData.length-1]);
-			setVisualData(aData[3]);
-			setVisualData_CH(aData[4]);
-		} else if (aData.length > 1) {
-			setVisualData(aData[0]);
-			setVisualData_CH(aData[1]);
+			setDesign_(aData[3]);
+			setDesignMode_(UT.Code.combine(aData[4], aData[5], aData[6], aData[7]));
+		} else
+		if (aData.length > 4) {
+			setDesign_(aData[0]);
+			setDesignMode_(UT.Code.combine(aData[1], aData[2], aData[3], aData[4]));
+		} else
+		if (aData.length > 2) {
+			setDesign_(aData[0]);
+			setDesignMode_(UT.Code.combine(aData[1], aData[2]));
+		} else
+		if (aData.length > 1) {
+			setDesign_(aData[0]);
+			setDesignMode_(aData[1]);
+		} else {
+			setDesign_(aData[0]);
+			setDesignMode_(0);
 		}
 		return T;
 	}
-	
-	@Override public byte getVisualData() {return (byte)mDesign;}
-	@Override public void setVisualData(byte aData) {setDesignInternal(aData);}
-	
-	// 用于我的额外的图像信息，朝向，是否在运行，等等
-	public byte getVisualData_CH() {return (byte)(mPartFacing & 7);}
-	public void setVisualData_CH(byte aData) {mPartFacing = (byte)(aData & 7);}
 	
 	@Override public String getTileEntityName() {return "gt.multitileentity.multiblock.part";}
 	
@@ -527,18 +536,18 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 	// GTCH, 阻止非输入输出面的自动连接
 	@Override
 	public boolean interceptAutoConnectFluid(byte aSide) {
+		// 如果不能输入输出流体则一定阻止自动连接
 		if ((mMode & NO_FLUID) == NO_FLUID) return T;
-		if (mDesign == FLUID_EMITTER && (mMode & NO_FLUID_IN) != 0 && aSide != mPartFacing) return T; // 仅一个面输出并且不能输入时其他面也要阻止自动连接
-		ITileEntityMultiBlockController tTileEntity = getTarget(T);
-		if (tTileEntity instanceof IDistillationTower && mDesign == 0) return T; // 对于蒸馏塔特殊讨论，仅输出口可以自动连接（TODO，以后可以根据第二个 Design 来灵活判断）
-		return F;
+		// 如果有专门启用自动连接并且这面没有被禁用 overlay 才会自动连接
+		if ((mDesignMode & AUTO_CONNECT) != 0 && (mDesignMode & SBIT[aSide]) == 0) return F;
+		return T;
 	}
 	@Override
 	public boolean interceptAutoConnectItem(byte aSide)  {
 		if ((mMode & NO_ITEM) == NO_ITEM) return T;
-		ITileEntityMultiBlockController tTileEntity = getTarget(T);
-		if (tTileEntity instanceof IDistillationTower && mDesign == 0) return T; // 对于蒸馏塔特殊讨论，仅输出口可以自动连接（TODO，以后可以根据第二个 Design 来灵活判断）
-		return F;
+		// 如果有专门启用自动连接并且这面没有被禁用 overlay 才会自动连接
+		if ((mDesignMode & AUTO_CONNECT) != 0 && (mDesignMode & SBIT[aSide]) == 0) return F;
+		return T;
 	}
 	// GTCH, 不能输入和输出的面阻止 MOD 管道连接
 	@Override public boolean interceptModConnectFluid(byte aSide) {return (mMode & NO_FLUID) == NO_FLUID;}

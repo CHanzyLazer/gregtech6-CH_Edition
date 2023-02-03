@@ -30,9 +30,7 @@ import gregapi.tileentity.multiblocks.TileEntityBase10MultiBlockMachine;
 import gregapi.util.ST;
 import gregapi.util.WD;
 import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockCryoDistillationTower;
-import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockDistillationTower;
 import gregtechCH.tileentity.cores.basicmachines.MTEC_MultiBlockMachine;
-import gregtechCH.tileentity.multiblocks.IDistillationTower;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -45,7 +43,7 @@ import static gregapi.data.CS.*;
 /**
  * @author Gregorius Techneticies
  */
-public class MultiTileEntityCryoDistillationTower extends TileEntityBase10MultiBlockMachine implements IDistillationTower {
+public class MultiTileEntityCryoDistillationTower extends TileEntityBase10MultiBlockMachine {
 	@Override protected MTEC_MultiBlockMachine getNewCoreMultiBlock() {return new MTEC_MultiBlockCryoDistillationTower(this);}
 	protected MTEC_MultiBlockCryoDistillationTower coreM() {return (MTEC_MultiBlockCryoDistillationTower)mCoreMultiBlock;}
 	

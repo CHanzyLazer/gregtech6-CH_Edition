@@ -4,6 +4,7 @@ import gregapi.data.TD;
 import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.util.UT;
 import gregtechCH.code.Pair;
+import gregtechCH.code.Triplet;
 import gregtechCH.tileentity.IMTEServerTickParallel;
 import gregtechCH.util.UT_CH;
 import net.minecraft.tileentity.TileEntity;
@@ -337,40 +338,44 @@ public class MTEC_ElectricWiresManager implements IMTEServerTickParallel {
         // 电流分配
         {
         Integer tRestIdx = null; // 用来保证多个输入会接着上一个输入进行分配
-        List<Pair<OutputObject, Long>> tActiveOutputs = new LinkedList<>();
+        List<Triplet<OutputObject, Long, Long>> tActiveOutputs = new LinkedList<>(); // <output, neededAmperage, assignedAmperage>
         for (InputObject tInput : mInputs.values()) if (tInput.active()) { // 输入不需要考虑 dead，因为 dead 的不会注入能量到电网
             // 对于每个输入，统计所有需要的输出，并且将其放入 list 中，并存储每个输出需要的电流数
             tActiveOutputs.clear();
             for (OutputObject tOutput : mOutputs.values()) if (!tOutput.mIOCore.isDead()) { // 因为区块卸载等原因 dead 的输出不会进行注入
                 long tNeedA = tOutput.getNeededAmperage(tInput);
-                if (tNeedA > 0) tActiveOutputs.add(new Pair<>(tOutput, tNeedA));
+                if (tNeedA > 0) tActiveOutputs.add(new Triplet<>(tOutput, tNeedA, 0L));
             }
             int tRestActiveNum = tActiveOutputs.size();
             long tTotalAmperage = tInput.mEnergyBuffer.mAmperage;
             // 根据输入获取每个输出分配的电流，直到没有需要分配的目标或者没有剩余的电流
             while (tRestActiveNum > 0 && tTotalAmperage >= tRestActiveNum) {
                 long tAmperage = tTotalAmperage / tRestActiveNum;
-                for (Pair<OutputObject, Long> tPair : tActiveOutputs) if (tPair.second > 0) {
-                    tTotalAmperage -= assignAmperage(tInput, tPair, tAmperage);
-                    if (tPair.second == 0) --tRestActiveNum;
+                for (Triplet<OutputObject, Long, Long> tTriplet : tActiveOutputs) if (tTriplet.b > 0) {
+                    tTotalAmperage -= assignAmperage(tTriplet, tAmperage);
+                    if (tTriplet.b == 0) --tRestActiveNum;
                 }
             }
-            // 剩下不能均分的从上一个结束的位置开始遍历，如果没有则随机位置开始
-            if (tRestActiveNum == 0 || tTotalAmperage == 0) continue;
-            Iterator<Pair<OutputObject, Long>> outputIt = tActiveOutputs.iterator();
-            if (tRestIdx == null) tRestIdx = RNGSUS.nextInt(tActiveOutputs.size());
-            if (tRestIdx >= tActiveOutputs.size()) tRestIdx %= tActiveOutputs.size();
-            for (int i = 0; i < tRestIdx; ++i) outputIt.next();
-            while (tRestActiveNum > 0 && tTotalAmperage > 0) {
-                if (!outputIt.hasNext()) outputIt = tActiveOutputs.iterator();
-                Pair<OutputObject, Long> tPair = outputIt.next();
-                if (tPair.second > 0) {
-                    tTotalAmperage -= assignAmperage(tInput, tPair, 1);
-                    if (tPair.second == 0) --tRestActiveNum;
+            // 如果还没有分配完成，剩下的按照这个逻辑进行分配
+            if (tRestActiveNum != 0 && tTotalAmperage != 0) {
+                // 剩下不能均分的从上一个结束的位置开始遍历，如果没有则随机位置开始
+                Iterator<Triplet<OutputObject, Long, Long>> outputIt = tActiveOutputs.iterator();
+                if (tRestIdx == null) tRestIdx = RNGSUS.nextInt(tActiveOutputs.size());
+                if (tRestIdx >= tActiveOutputs.size()) tRestIdx %= tActiveOutputs.size();
+                for (int i = 0; i < tRestIdx; ++i) outputIt.next();
+                while (tRestActiveNum > 0 && tTotalAmperage > 0) {
+                    if (!outputIt.hasNext()) outputIt = tActiveOutputs.iterator();
+                    Triplet<OutputObject, Long, Long> tTriplet = outputIt.next();
+                    if (tTriplet.b > 0) {
+                        tTotalAmperage -= assignAmperage(tTriplet, 1);
+                        if (tTriplet.b == 0) --tRestActiveNum;
+                    }
+                    ++tRestIdx;
+                    if (tRestIdx == tActiveOutputs.size()) tRestIdx = 0;
                 }
-                ++tRestIdx;
-                if (tRestIdx == tActiveOutputs.size()) tRestIdx = 0;
             }
+            // 最后将分配结果注入电流
+            for (Triplet<OutputObject, Long, Long> tTriplet : tActiveOutputs) tTriplet.a.injectAmperageToPath(tInput, tTriplet.c);
         }
         }
         // 根据分配的电流计算路径的电压值，必须要求这个输出有电流（在工作）才会计算对应电压
@@ -413,11 +418,11 @@ public class MTEC_ElectricWiresManager implements IMTEServerTickParallel {
         for (OutputObject tOutput : mOutputs.values()) tOutput.doOutput();
     }
     
-    // 分配电流需要进行的操作，这里暂时同时直接注入，返回成功分配的数目
-    protected long assignAmperage(InputObject aInput, Pair<OutputObject, Long> rPairToAssign, long aAmperage) {
-        aAmperage = Math.min(aAmperage, rPairToAssign.second);
-        rPairToAssign.second -= aAmperage;
-        rPairToAssign.first.injectAmperageToPath(aInput, aAmperage);
+    // 分配电流需要进行的通用操作，减少需要的电流，增加已分配的电流，返回成功分配的数目
+    private long assignAmperage(Triplet<OutputObject, Long, Long> rTripletToAssign, long aAmperage) {
+        aAmperage = Math.min(aAmperage, rTripletToAssign.b);
+        rTripletToAssign.b -= aAmperage;
+        rTripletToAssign.c += aAmperage;
         return aAmperage;
     }
     

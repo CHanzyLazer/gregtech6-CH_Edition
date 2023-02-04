@@ -40,7 +40,7 @@ public class MTEC_Dusts {
         // 原版兼容，将原版的灰烬槽中的灰烬全部转换成 dust 类型（尝试转换，如果失败则保留）
         for (int i = 0; i < mDustBuffers.length; ++i) if (needConvert(te().getItem(i))) {
             Triplet<Boolean, ItemStack, OreDictMaterialStack> tResult = convert(te().getItem(i), mDustBuffers[i]);
-            if (tResult.a) {te().setItem(1, tResult.b); mDustBuffers[i] = tResult.c;}
+            if (tResult.a) {te().setItem(0, tResult.b); mDustBuffers[i] = tResult.c;}
         }
     }
     public void writeToNBT(NBTTagCompound aNBT) {

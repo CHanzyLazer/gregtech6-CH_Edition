@@ -54,9 +54,10 @@ public interface ITileEntityMultiBlockController extends ITileEntityUnloadable, 
 			}
 			return F;
 		}
-		public static void setTarget(ITileEntityMultiBlockController aController, int aX, int aY, int aZ, int aDesign, int aMode) {
+		public static void setTarget(ITileEntityMultiBlockController aController, int aX, int aY, int aZ, int aDesign, int aMode) {setTarget(aController, aX, aY, aZ, aDesign, aMode, MultiTileEntityMultiBlockPart.DEFAULT);}
+		public static void setTarget(ITileEntityMultiBlockController aController, int aX, int aY, int aZ, int aDesign, int aMode, int aDesignMode) {
 			TileEntity tTileEntity = aController.getTileEntity(aX, aY, aZ);
-			if (tTileEntity instanceof MultiTileEntityMultiBlockPart) ((MultiTileEntityMultiBlockPart)tTileEntity).setTarget(aController, aDesign, aMode);
+			if (tTileEntity instanceof MultiTileEntityMultiBlockPart) ((MultiTileEntityMultiBlockPart)tTileEntity).setTarget(aController, aDesign, aMode, aDesignMode);
 		}
 		public static void checkAndResetTarget(ITileEntityMultiBlockController aController, int aX, int aY, int aZ, int aRegistryMeta, int aRegistryID) {
 			TileEntity tTileEntity = aController.getTileEntity(aX, aY, aZ);
@@ -67,14 +68,14 @@ public interface ITileEntityMultiBlockController extends ITileEntityUnloadable, 
 				}
 			}
 		}
-		
-		public static boolean checkAndSetTarget(ITileEntityMultiBlockController aController, int aX, int aY, int aZ, int aRegistryMeta, int aRegistryID, int aDesign, int aMode) {
+		public static boolean checkAndSetTarget(ITileEntityMultiBlockController aController, int aX, int aY, int aZ, int aRegistryMeta, int aRegistryID, int aDesign, int aMode) {return checkAndSetTarget(aController, aX, aY, aZ, aRegistryMeta, aRegistryID, aDesign, aMode, MultiTileEntityMultiBlockPart.DEFAULT);}
+		public static boolean checkAndSetTarget(ITileEntityMultiBlockController aController, int aX, int aY, int aZ, int aRegistryMeta, int aRegistryID, int aDesign, int aMode, int aDesignMode) {
 			TileEntity tTileEntity = aController.getTileEntity(aX, aY, aZ);
 			if (tTileEntity == aController) return T;
 			if (tTileEntity instanceof MultiTileEntityMultiBlockPart && ((MultiTileEntityMultiBlockPart)tTileEntity).getMultiTileEntityID() == aRegistryMeta && ((MultiTileEntityMultiBlockPart)tTileEntity).getMultiTileEntityRegistryID() == aRegistryID) {
 				ITileEntityMultiBlockController tTarget = ((MultiTileEntityMultiBlockPart)tTileEntity).getTarget(F);
 				if (tTarget != aController && tTarget != null && tTarget.isInsideStructure(aX, aY, aZ)) return F;
-				((MultiTileEntityMultiBlockPart)tTileEntity).setTarget(aController, aDesign, aMode);
+				((MultiTileEntityMultiBlockPart)tTileEntity).setTarget(aController, aDesign, aMode, aDesignMode);
 				return T;
 			}
 			return F;
@@ -87,12 +88,18 @@ public interface ITileEntityMultiBlockController extends ITileEntityUnloadable, 
 		public static void setTargetOffset(ITileEntityMultiBlockController aController, int aX, int aY, int aZ, int aDesign, int aMode) {
 			setTarget(aController, aX+aController.getX(), aY+aController.getY(), aZ+aController.getZ(), aDesign, aMode);
 		}
+		public static void setTargetOffset(ITileEntityMultiBlockController aController, int aX, int aY, int aZ, int aDesign, int aMode, int aDesignMode) {
+			setTarget(aController, aX+aController.getX(), aY+aController.getY(), aZ+aController.getZ(), aDesign, aMode, aDesignMode);
+		}
 		public static void checkAndResetTargetOffset(ITileEntityMultiBlockController aController, int aX, int aY, int aZ, int aRegistryMeta, int aRegistryID) {
 			checkAndResetTarget(aController, aX+aController.getX(), aY+aController.getY(), aZ+aController.getZ(), aRegistryMeta, aRegistryID);
 		}
 		
 		public static boolean checkAndSetTargetOffset(ITileEntityMultiBlockController aController, int aX, int aY, int aZ, int aRegistryMeta, int aRegistryID, int aDesign, int aMode) {
 			return checkAndSetTarget(aController, aX+aController.getX(), aY+aController.getY(), aZ+aController.getZ(), aRegistryMeta, aRegistryID, aDesign, aMode);
+		}
+		public static boolean checkAndSetTargetOffset(ITileEntityMultiBlockController aController, int aX, int aY, int aZ, int aRegistryMeta, int aRegistryID, int aDesign, int aMode, int aDesignMode) {
+			return checkAndSetTarget(aController, aX+aController.getX(), aY+aController.getY(), aZ+aController.getZ(), aRegistryMeta, aRegistryID, aDesign, aMode, aDesignMode);
 		}
 	}
 }

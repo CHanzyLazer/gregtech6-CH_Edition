@@ -13,8 +13,6 @@ import net.minecraft.tileentity.TileEntity;
 import java.util.Arrays;
 
 import static gregapi.data.CS.*;
-import static gregapi.tileentity.multiblocks.MultiTileEntityMultiBlockPart.ENERGY_EMITTER_RU;
-import static gregapi.tileentity.multiblocks.MultiTileEntityMultiBlockPart.FLUID_EMITTER;
 import static gregtechCH.data.CS_CH.*;
 
 /**
@@ -161,32 +159,35 @@ public class MTEC_MultiBlockMotorBase {
         int[] tOutEnergyIJK = {0, 0, mLength-1};
         boolean tHasFluidOut = F;
         int tMinY = mCore.mTE.yCoord-(SIDE_Y_NEG==mCore.mTE.mFacing?0:SIDE_Y_POS==mCore.mTE.mFacing?(mLength-1):1); //用于检测得到机器底层，目前只想到这个方法
-        int tBits;
+        int tMode;
         int[] tIJK = new int[3];
         int[] tXYZ = new int[3];
         for (tIJK[2] = aStartIJK[2]; tIJK[2] <= aEndIJK[2]; ++tIJK[2]) for (tIJK[0] = aStartIJK[0]; tIJK[0] <= aEndIJK[0]; ++tIJK[0]) for (tIJK[1] = aStartIJK[1]; tIJK[1] <= aEndIJK[1]; ++tIJK[1]) {
             setCoorByOrder(tXYZ, tIJK);
             if (Arrays.equals(tIJK, tOutEnergyIJK)) {
-                tBits = MultiTileEntityMultiBlockPart.ONLY_ENERGY_OUT;
-                ITileEntityMultiBlockController.Util.setTarget(mCore.te(), tXYZ[0], tXYZ[1], tXYZ[2], ENERGY_EMITTER_RU, tBits);
+                tMode = MultiTileEntityMultiBlockPart.ONLY_ENERGY_OUT;
+                ITileEntityMultiBlockController.Util.setTarget(mCore.te(), tXYZ[0], tXYZ[1], tXYZ[2], 3, tMode, MultiTileEntityMultiBlockPart.ONLY_SIDES[OPOS[mCore.mTE.mFacing]]);
                 TileEntity tTileEntity = mCore.mTE.getTileEntity(tXYZ[0], tXYZ[1], tXYZ[2]);
                 mEnergyEmitter = (tTileEntity instanceof ITileEntityUnloadable) ? (ITileEntityUnloadable)tTileEntity : mCore.mTE;
             } else
             if (tIJK[2] == mLength-1 && (tIJK[0]==0 || tIJK[1]==0) && tXYZ[1] == tMinY && !tHasFluidOut) { // 自动输出孔，可以没有，最多有一个
-                tBits = (tIJK[2] == 0 ? MultiTileEntityMultiBlockPart.ONLY_FLUID : MultiTileEntityMultiBlockPart.ONLY_FLUID_OUT);
-                ITileEntityMultiBlockController.Util.setTarget(mCore.te(), tXYZ[0], tXYZ[1], tXYZ[2], FLUID_EMITTER, tBits);
+                tMode = (tIJK[2] == 0 ? MultiTileEntityMultiBlockPart.ONLY_FLUID : MultiTileEntityMultiBlockPart.ONLY_FLUID_OUT);
+                ITileEntityMultiBlockController.Util.setTarget(mCore.te(), tXYZ[0], tXYZ[1], tXYZ[2], 1, tMode, MultiTileEntityMultiBlockPart.ONLY_SIDES[mCore.getFluidEmittingSide()]);
                 TileEntity tTileEntity = mCore.mTE.getTileEntity(tXYZ[0], tXYZ[1], tXYZ[2]);
                 if (tTileEntity instanceof ITileEntityUnloadable) {
                     mFluidEmitter = (ITileEntityUnloadable) tTileEntity;
                     tHasFluidOut = T;
                 }
             } else {
+                int tDesignMode;
                 if (tIJK[2] == 0) {
-                    tBits = (tXYZ[1] == tMinY ? MultiTileEntityMultiBlockPart.ONLY_FLUID     : MultiTileEntityMultiBlockPart.ONLY_FLUID_IN);
+                    tMode = (tXYZ[1] == tMinY ? MultiTileEntityMultiBlockPart.ONLY_FLUID     : MultiTileEntityMultiBlockPart.ONLY_FLUID_IN);
+                    tDesignMode = MultiTileEntityMultiBlockPart.DEFAULT;
                 } else {
-                    tBits = (tXYZ[1] == tMinY ? MultiTileEntityMultiBlockPart.ONLY_FLUID_OUT : MultiTileEntityMultiBlockPart.NOTHING);
+                    tMode = (tXYZ[1] == tMinY ? MultiTileEntityMultiBlockPart.ONLY_FLUID_OUT : MultiTileEntityMultiBlockPart.NOTHING);
+                    tDesignMode = MultiTileEntityMultiBlockPart.INTERCEPT_AUTO_CONNECT;
                 }
-                ITileEntityMultiBlockController.Util.setTarget(mCore.te(), tXYZ[0], tXYZ[1], tXYZ[2], 0, tBits);
+                ITileEntityMultiBlockController.Util.setTarget(mCore.te(), tXYZ[0], tXYZ[1], tXYZ[2], 0, tMode, tDesignMode);
             }
         }
     }

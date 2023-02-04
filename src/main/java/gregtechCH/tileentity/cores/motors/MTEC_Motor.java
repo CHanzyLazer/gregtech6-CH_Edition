@@ -38,16 +38,16 @@ public abstract class MTEC_Motor implements IMTEC_MotorTick, IMTEC_ToolTips, IMT
     // the instance of IMTEC_Texture
     protected IMTEC_Texture mDI; // Data icon
     protected MTEC_Motor(TileEntityBase09FacingSingle aTE) {UT_CH.Debug.assertWhenDebug(aTE instanceof ITileEntityEnergy); mTE = aTE;}
-
+    
     /* stuff to override */
     protected abstract MTEC_MotorMainBase getNewCoreMain();
     protected abstract IMTEC_Texture getNewCoreIcon();
     protected ITileEntityEnergy getEnergyEmitter() {return (ITileEntityEnergy)mTE;}
     protected TileEntityBase01Root getFluidEmitter() {return mTE;}
-    protected byte getFluidEmittingSide() {return OPOS[mTE.mFacing];}
+    protected byte getFluidEmittingSide()  {return OPOS[mTE.mFacing];}
     protected void convertToTanks(FluidStack... aFluids) {/**/}
     protected void convertAutoOutput() {/**/}
-
+    
     /* main code */
     // init of core
     // pre: 内部 core 的对象创建，不需要读取 NBT 的初始化
@@ -63,10 +63,10 @@ public abstract class MTEC_Motor implements IMTEC_MotorTick, IMTEC_ToolTips, IMT
     protected void postInitNBT(NBTTagCompound aNBT) {mD.postInitNBT(aNBT);}
     protected void postInitRate(NBTTagCompound aNBT) {mD.postInitRate(aNBT);}
     protected void postInitTank() {mD.postInitTank();}
-
+    
     // NBT读写
     public void writeToNBT(NBTTagCompound aNBT) {mD.writeToNBT(aNBT);}
-
+    
     // Motor 基本方法
     @Override public boolean onTickStopCheck(long aTimer) {return mD.onTickStopCheck(aTimer);}
     @Override public void onTickConvert(long aTimer) {mD.onTickConvert(aTimer);}
@@ -81,7 +81,7 @@ public abstract class MTEC_Motor implements IMTEC_MotorTick, IMTEC_ToolTips, IMT
     protected void onTickDoActive2(long aTimer) {mD.onTickDoActive(aTimer);}
     @Override public void onTickDoElse(long aTimer) {mD.onTickDoElse(aTimer);}
     @Override public void onTickExplodeCheck(long aTimer) {mD.onTickExplodeCheck(aTimer);}
-
+    
     // tooltips
     @Override public void toolTipsMultiblock(List<String> aList) {/**/}
     @Override public void toolTipsRecipe(List<String> aList) {/**/}
@@ -97,20 +97,20 @@ public abstract class MTEC_Motor implements IMTEC_MotorTick, IMTEC_ToolTips, IMT
         aList.add(LH.Chat.DGRAY    + LH.get(LH.TOOL_TO_SET_DIRECTION_MONKEY_WRENCH));
         aList.add(LH.Chat.DGRAY    + LH.get(LH.TOOL_TO_DETAIL_MAGNIFYINGGLASS));
     }
-
+    
     // 工具右键
     public long onToolClick(String aTool, long aRemainingDurability, long aQuality, Entity aPlayer, List<String> aChatReturn, IInventory aPlayerInventory, boolean aSneaking, ItemStack aStack, byte aSide, float aHitX, float aHitY, float aHitZ) {
-
+        
         if (toolCheckMonkeyWrench(aTool)) {
             onMonkeyWrench(aChatReturn);
             return 10000;
         }
-
+        
         if (toolCheckMagnifyingGlass(aTool)) {
             onMagnifyingGlass(aChatReturn);
             return 1;
         }
-
+        
         return 0;
     }
     protected boolean toolCheckMonkeyWrench(String aTool) {return aTool.equals(TOOL_monkeywrench);}
@@ -136,7 +136,7 @@ public abstract class MTEC_Motor implements IMTEC_MotorTick, IMTEC_ToolTips, IMT
             aChatReturn.add(LH.get(LH.ENERGY_OUTPUT)  + ": " + mD.mOutput + " " + mD.mEnergyTypeEmitted.getLocalisedChatNameShort()  + LH.Chat.WHITE + "/t");
         }
     }
-
+    
     // data sync
     public boolean onTickCheck(long aTimer) {
         return mD.oActive != mD.mActive || mD.oPreheat != mD.mPreheat || mD.oCooldown != mD.mCooldown || mD.mCounterClockwise != mD.oCounterClockwise;
@@ -161,29 +161,29 @@ public abstract class MTEC_Motor implements IMTEC_MotorTick, IMTEC_ToolTips, IMT
     public void onFacingChange(byte aPreviousFacing) {/**/}
     public void onWalkOver(EntityLivingBase aEntity) {if (SIDES_TOP[mTE.mFacing] && mD.mActive) {aEntity.rotationYaw=aEntity.rotationYaw+(mD.mCounterClockwise?-5.0F:+5.0F)*entityRotationSpeed(); aEntity.rotationYawHead=aEntity.rotationYawHead+(mD.mCounterClockwise?-5.0F:+5.0F)*entityRotationSpeed();}}
     protected float entityRotationSpeed() {return 1.0F;}
-
+    
     // surface
     public float getSurfaceSizeAttachable(byte aSide) {return mTE.getSurfaceSize(aSide);}
     public boolean isSideSolid           (byte aSide) {return T;}
     public boolean isSurfaceOpaque       (byte aSide) {return T;}
-
+    
     // tanks
     public IFluidTank getFluidTankFillable(byte aSide, FluidStack aFluidToFill) {return mD.getFluidTankFillable(aSide, aFluidToFill);}
     public IFluidTank getFluidTankDrainable(byte aSide, FluidStack aFluidToDrain) {return mD.getFluidTankDrainable(aSide, aFluidToDrain);}
     public IFluidTank[] getFluidTanks(byte aSide) {return mD.getFluidTanks(aSide);}
     public int funnelFill(byte aSide, FluidStack aFluid, boolean aDoFill) {return mD.funnelFill(aSide, aFluid, aDoFill);}
     public FluidStack tapDrain(byte aSide, int aMaxDrain, boolean aDoDrain) {return mD.tapDrain(aSide, aMaxDrain, aDoDrain);}
-
+    
     public boolean canFillExtra(FluidStack aFluid) {return mD.canFillExtra(aFluid);}
-
+    
     // inventory
     public ItemStack[] getDefaultInventory(NBTTagCompound aNBT) {return mD.getDefaultInventory(aNBT);}
     public boolean canDrop(int aInventorySlot) {return mD.canDrop(aInventorySlot);}
-
+    
     // energy interfaces
     protected abstract boolean isInput (byte aSide);
     protected abstract boolean isOutput(byte aSide);
-
+    
     public boolean allowCovers(byte aSide) {return T;}
     public boolean isEnergyType(TagData aEnergyType, byte aSide, boolean aEmitting) {return mD.isEnergyType(aEnergyType, aSide, aEmitting);}
     public boolean isEnergyAcceptingFrom(TagData aEnergyType, byte aSide, boolean aTheoretical) {return mD.isEnergyAcceptingFrom(aEnergyType, aSide, aTheoretical);}
@@ -196,17 +196,17 @@ public abstract class MTEC_Motor implements IMTEC_MotorTick, IMTEC_ToolTips, IMT
     public long getEnergySizeInputMin(TagData aEnergyType, byte aSide) {return mD.getEnergySizeInputMin(aEnergyType, aSide);}
     public long getEnergySizeInputMax(TagData aEnergyType, byte aSide) {return mD.getEnergySizeInputMax(aEnergyType, aSide);}
     public Collection<TagData> getEnergyTypes(byte aSide) {return mD.getEnergyTypes(aSide);}
-
+    
     public boolean getStateRunningPossible() {return mD.getStateRunningPossible();}
     public boolean getStateRunningPassively() {return mD.getStateRunningPassively();}
     public boolean getStateRunningActively() {return mD.getStateRunningActively();}
     public boolean setAdjacentOnOff(boolean aOnOff) {return mD.setAdjacentOnOff(aOnOff);}
     public boolean setStateOnOff(boolean aOnOff) {return mD.setStateOnOff(aOnOff);}
     public boolean getStateOnOff() {return mD.getStateOnOff();}
-
+    
     // Icons，图像动画
     public ITexture getTexture(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {return mDI.getTexture(aBlock, aRenderPass, aSide, aShouldSideBeRendered);}
-
+    
     public byte getDefaultSide() {return SIDE_UP;}
     public boolean[] getValidSides() {return SIDES_VALID;}
 }

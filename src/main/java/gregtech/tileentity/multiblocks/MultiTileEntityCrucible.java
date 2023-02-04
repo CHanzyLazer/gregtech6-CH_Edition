@@ -117,9 +117,9 @@ public class MultiTileEntityCrucible extends TileEntityBase10MultiBlockBase impl
 			if (getAir(xCoord, yCoord+2, zCoord)) worldObj.setBlockToAir(xCoord, yCoord+2, zCoord); else {resetStructurePart(); return F;}
 			
 			for (int i = -1; i < 2; i++) for (int j = -1; j < 2; j++) if (i != 0 || j != 0) {
-				if (!ITileEntityMultiBlockController.Util.checkAndSetTargetOffset(this, i, 0, j, mWalls, getMultiTileEntityRegistryID(), MultiTileEntityMultiBlockPart.TRANSPARENT, MultiTileEntityMultiBlockPart.ONLY_ENERGY_IN)) {resetStructurePart(); return F;}
-				if (!ITileEntityMultiBlockController.Util.checkAndSetTargetOffset(this, i, 1, j, mWalls, getMultiTileEntityRegistryID(), MultiTileEntityMultiBlockPart.TRANSPARENT, MultiTileEntityMultiBlockPart.ONLY_CRUCIBLE)) {resetStructurePart(); return F;}
-				if (!ITileEntityMultiBlockController.Util.checkAndSetTargetOffset(this, i, 2, j, mWalls, getMultiTileEntityRegistryID(), MultiTileEntityMultiBlockPart.TRANSPARENT, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID)) {resetStructurePart(); return F;}
+				if (!ITileEntityMultiBlockController.Util.checkAndSetTargetOffset(this, i, 0, j, mWalls, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.ONLY_ENERGY_IN , MultiTileEntityMultiBlockPart.TRANSPARENT)) {resetStructurePart(); return F;}
+				if (!ITileEntityMultiBlockController.Util.checkAndSetTargetOffset(this, i, 1, j, mWalls, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.ONLY_CRUCIBLE  , MultiTileEntityMultiBlockPart.TRANSPARENT)) {resetStructurePart(); return F;}
+				if (!ITileEntityMultiBlockController.Util.checkAndSetTargetOffset(this, i, 2, j, mWalls, getMultiTileEntityRegistryID(), 0, MultiTileEntityMultiBlockPart.ONLY_ITEM_FLUID, MultiTileEntityMultiBlockPart.TRANSPARENT)) {resetStructurePart(); return F;}
 			}
 			return T;
 		}

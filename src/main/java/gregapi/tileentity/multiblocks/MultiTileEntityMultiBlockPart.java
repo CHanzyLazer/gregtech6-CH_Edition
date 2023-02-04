@@ -137,26 +137,26 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 	// 记录所有的 designMode
 	@SuppressWarnings("CStyleArrayDeclaration")
 	public static final int
-	  DEFAULT      = 0
+	  DEFAULT                = 0
 	
-	, NO_Y_NEG     = SBIT[SIDE_Y_NEG]
-	, NO_Y_POS     = SBIT[SIDE_Y_POS]
-	, NO_Z_NEG     = SBIT[SIDE_Z_NEG]
-	, NO_Z_POS     = SBIT[SIDE_Z_POS]
-	, NO_X_NEG     = SBIT[SIDE_X_NEG]
-	, NO_X_POS     = SBIT[SIDE_X_POS]
-	, GLOW         = 64  // 发光多方快部件
-	, TRANSPARENT  = 128 // 透明多方快部件
-	, AUTO_CONNECT = 256 // 是否允许染色管道自动连接（需要这个面没有被禁用 overlay）
+	, NO_Y_NEG               = SBIT[SIDE_Y_NEG]
+	, NO_Y_POS               = SBIT[SIDE_Y_POS]
+	, NO_Z_NEG               = SBIT[SIDE_Z_NEG]
+	, NO_Z_POS               = SBIT[SIDE_Z_POS]
+	, NO_X_NEG               = SBIT[SIDE_X_NEG]
+	, NO_X_POS               = SBIT[SIDE_X_POS]
+	, GLOW                   = 64  // 发光多方快部件
+	, TRANSPARENT            = 128 // 透明多方快部件
+	, INTERCEPT_AUTO_CONNECT = 256 // 是否开启阻止染色管道的自动连接（需要有 target 并且对应面的 overlay 没有被禁用），还是单独放到 mDesignMode 中防止受到 mMode 的混乱 api 的干扰
 	
-	, ONLY_Y_NEG   =            NO_Y_POS | NO_Z_NEG | NO_Z_POS | NO_X_NEG | NO_X_POS
-	, ONLY_Y_POS   = NO_Y_NEG |            NO_Z_NEG | NO_Z_POS | NO_X_NEG | NO_X_POS
-	, ONLY_Z_NEG   = NO_Y_NEG | NO_Y_POS |            NO_Z_POS | NO_X_NEG | NO_X_POS
-	, ONLY_Z_POS   = NO_Y_NEG | NO_Y_POS | NO_Z_NEG |            NO_X_NEG | NO_X_POS
-	, ONLY_X_NEG   = NO_Y_NEG | NO_Y_POS | NO_Z_NEG | NO_Z_POS |            NO_X_POS
-	, ONLY_X_POS   = NO_Y_NEG | NO_Y_POS | NO_Z_NEG | NO_Z_POS | NO_X_NEG
+	, ONLY_Y_NEG             =            NO_Y_POS | NO_Z_NEG | NO_Z_POS | NO_X_NEG | NO_X_POS
+	, ONLY_Y_POS             = NO_Y_NEG |            NO_Z_NEG | NO_Z_POS | NO_X_NEG | NO_X_POS
+	, ONLY_Z_NEG             = NO_Y_NEG | NO_Y_POS |            NO_Z_POS | NO_X_NEG | NO_X_POS
+	, ONLY_Z_POS             = NO_Y_NEG | NO_Y_POS | NO_Z_NEG |            NO_X_NEG | NO_X_POS
+	, ONLY_X_NEG             = NO_Y_NEG | NO_Y_POS | NO_Z_NEG | NO_Z_POS |            NO_X_POS
+	, ONLY_X_POS             = NO_Y_NEG | NO_Y_POS | NO_Z_NEG | NO_Z_POS | NO_X_NEG
 	
-	, ONLY_SIDES[] = {ONLY_Y_NEG, ONLY_Y_POS, ONLY_Z_NEG, ONLY_Z_POS, ONLY_X_NEG, ONLY_X_POS, DEFAULT}
+	, ONLY_SIDES[]           = {ONLY_Y_NEG, ONLY_Y_POS, ONLY_Z_NEG, ONLY_Z_POS, ONLY_X_NEG, ONLY_X_POS, DEFAULT}
 	;
 	
 	@Override
@@ -536,18 +536,27 @@ public class MultiTileEntityMultiBlockPart extends TileEntityBase05Paintable imp
 	// GTCH, 阻止非输入输出面的自动连接
 	@Override
 	public boolean interceptAutoConnectFluid(byte aSide) {
-		// 如果不能输入输出流体则一定阻止自动连接
+		// 如果禁用了自动连接直接阻止自动连接
+		if ((mDesignMode & INTERCEPT_AUTO_CONNECT) != 0) return T;
+		// 如果不能输入输出流体也阻止自动连接
 		if ((mMode & NO_FLUID) == NO_FLUID) return T;
-		// 如果有专门启用自动连接并且这面没有被禁用 overlay 才会自动连接
-		if ((mDesignMode & AUTO_CONNECT) != 0 && (mDesignMode & SBIT[aSide]) == 0) return F;
-		return T;
+		// 如果有专门禁用 overlay，禁用的面也阻止自动连接
+		if ((mDesignMode & SBIT[aSide]) != 0) return T;
+		// 如果 target 和流体无关也禁用自动连接
+		if (!(getTarget(T) instanceof IMultiBlockFluidHandler)) return T;
+		return F;
 	}
 	@Override
 	public boolean interceptAutoConnectItem(byte aSide)  {
+		// 如果禁用了自动连接直接阻止自动连接
+		if ((mDesignMode & INTERCEPT_AUTO_CONNECT) != 0) return T;
+		// 如果不能输入输出物品也阻止自动连接
 		if ((mMode & NO_ITEM) == NO_ITEM) return T;
-		// 如果有专门启用自动连接并且这面没有被禁用 overlay 才会自动连接
-		if ((mDesignMode & AUTO_CONNECT) != 0 && (mDesignMode & SBIT[aSide]) == 0) return F;
-		return T;
+		// 如果有专门禁用 overlay，禁用的面也阻止自动连接
+		if ((mDesignMode & SBIT[aSide]) != 0) return T;
+		// 如果 target 和物品无关也禁用自动连接
+		if (!(getTarget(T) instanceof IMultiBlockInventory)) return T;
+		return F;
 	}
 	// GTCH, 不能输入和输出的面阻止 MOD 管道连接
 	@Override public boolean interceptModConnectFluid(byte aSide) {return (mMode & NO_FLUID) == NO_FLUID;}

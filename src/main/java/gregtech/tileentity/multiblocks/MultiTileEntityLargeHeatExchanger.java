@@ -51,6 +51,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 
+import static gregtechCH.config.ConfigForge.*;
+
 /**
  * @author Gregorius Techneticies
  */
@@ -63,7 +65,7 @@ public class MultiTileEntityLargeHeatExchanger extends TileEntityBase10MultiBloc
 	public FluidTankGT[] mTanks = {new FluidTankGT(10000), new FluidTankGT()};
 	public TE_Behavior_Active_Trinary mActivity = null;
 	// GT6U, 用于可以自定义多方快部件 MARK 默认改为钨的
-	public short mHeatWalls = 18110;
+	public short mHeatWalls = 18024;
 	
 	@Override
 	public void readFromNBT2(NBTTagCompound aNBT) {
@@ -127,8 +129,13 @@ public class MultiTileEntityLargeHeatExchanger extends TileEntityBase10MultiBloc
 	}
 	
 	static {
-		LH_CH.add("gtch.tooltip.multiblock.heatexchanger.1", "3x3 Ring of 8 Heat Transmitters and the Thermomechanical Block inside with the Main material");
-		LH_CH.add("gtch.tooltip.multiblock.heatexchanger.2", "3x3 Ring of 8 the Thermomechanical Block with the Main material and the Main inside");
+		if (DATA_GTCH.enableGT6U) {
+			LH_CH.add(RegType.GT6U, "gt6u.tooltip.multiblock.heatexchanger.1", "3x3 Ring of 8 Heat Transmitters and the Thermomechanical Block inside with the Main material");
+			LH_CH.add(RegType.GT6U, "gt6u.tooltip.multiblock.heatexchanger.2", "3x3 Ring of 8 the Thermomechanical Block with the Main material and the Main inside");
+		} else {
+			LH_CH.add("gtch.tooltip.multiblock.heatexchanger.1", "3x3 Ring of 8 Heat Transmitters and the Dense Walls inside with the Main material");
+			LH_CH.add("gtch.tooltip.multiblock.heatexchanger.2", "3x3 Ring of 8 the Dense Walls with the Main material and the Main inside");
+		}
 		LH.add("gt.tooltip.multiblock.heatexchanger.3", "Energy Output split over the 8 Heat Transmitters (Top)");
 		LH.add("gt.tooltip.multiblock.heatexchanger.4", "Input at Bottom Layer, Fluid Output at Main Block");
 	}
@@ -136,8 +143,8 @@ public class MultiTileEntityLargeHeatExchanger extends TileEntityBase10MultiBloc
 	@Override
 	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
 		aList.add(Chat.CYAN     + LH.get(LH.STRUCTURE) + ":");
-		aList.add(Chat.WHITE    + LH_CH.get("gtch.tooltip.multiblock.heatexchanger.1"));
-		aList.add(Chat.WHITE    + LH_CH.get("gtch.tooltip.multiblock.heatexchanger.2"));
+		aList.add(Chat.WHITE    + LH_CH.get(DATA_GTCH.enableGT6U ? "gt6u.tooltip.multiblock.heatexchanger.1" : "gtch.tooltip.multiblock.heatexchanger.1"));
+		aList.add(Chat.WHITE    + LH_CH.get(DATA_GTCH.enableGT6U ? "gt6u.tooltip.multiblock.heatexchanger.2" : "gtch.tooltip.multiblock.heatexchanger.2"));
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.heatexchanger.3"));
 		aList.add(Chat.WHITE    + LH.get("gt.tooltip.multiblock.heatexchanger.4"));
 		aList.add(Chat.CYAN     + LH.get(LH.RECIPES) + ": " + Chat.WHITE + LH.get(mRecipes.mNameInternal));

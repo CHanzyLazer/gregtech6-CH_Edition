@@ -803,7 +803,7 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         aRegistry.addReplacer(17199).recipe("FFF", "FMF", "FFF", 'M', aRegistry.getItem(18031), 'F', IL.FIELD_GENERATORS[6]);
         // 聚变反应堆改名为 MkI，且语言文件放入 GT6U 部分；目前不对输入输出做任何调整
         aRegistry.addReplacer(17198).regType(RegType.GT6U).localised("Fusion Reactor MkI");
-        // 钨热交换器部件改为 gt6u 的热部件 MARK output 32768 -> 16384 （不改变原版的输出效率） TODO 大型热交换器增加效率
+        // 钨热交换器部件从致密壁板改为 gt6u 的热部件 MARK output 32768 -> 16384 （不改变原版的输出效率） TODO 大型热交换器增加效率
         aRegistry.addReplacer(17197).regType(RegType.GT6U).localised("Large Heat Exchanger (Tungsten)").setParameters(NBT_OUTPUT, 16384, NBT_DESIGN, 18110, NBT_EFFICIENCY, 10000);
         
         // GTCH 的通用改动

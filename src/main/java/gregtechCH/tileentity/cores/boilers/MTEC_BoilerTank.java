@@ -104,6 +104,7 @@ public class MTEC_BoilerTank extends MTEC_BoilerTank_Greg {
         if (mEnergyEffSU < STEAM_PER_WATER * 2) {
             int tMul = (int) (mEnergy / mInput);
             if (tMul > 0) {
+                tMul = Math.min(tMul, 4); // 限制最高 4 倍的转换速度，输入在 2 倍到 4 倍会爆炸，而更高时会熔融
                 mEnergy -= mInput * tMul;
                 mEnergyEffSU += UT.Code.units(mOutput * tMul, 10000, mEfficiency, F);
             }

@@ -188,14 +188,8 @@
 
 	<!-- 判断靠近锅炉所受伤害数值 -->
 	<init>
-		function HeatDamageSU(enCap,SUCap,isChisel){
-			if(isChisel == 0){
-				if(parseInt((enCap + SUCap / 2) / 2000) < 10){
-					return parseInt((enCap + SUCap / 2) / 2000);
-				}
-				return 10;
-			}
-			return parseInt((enCap + SUCap / 2) / 2000)
+		function HeatDamageSU(enCap,SUCap){
+			return parseInt(Math.sqrt(enCap + SUCap / 2) / 20);
 		}
 	</init>
 
@@ -1082,48 +1076,48 @@
 
 		<line displayname = "烫伤警告1">
 			if((nbt['gt.energy'] != undefined) && (nbt['gt.tank.1']['Amount'] != undefined)){
-				if((nbt['gt.energy'] + nbt['gt.tank.1']['Amount'] / 2) > 2000){
-					return RED + "此时靠近锅炉会受到" + HeatDamageSU(nbt['gt.energy'],nbt['gt.tank.1']['Amount'],0) + "点伤害";
+				if((nbt['gt.energy'] + nbt['gt.tank.1']['Amount'] / 2) > 400){
+					return RED + "此时靠近锅炉会受到" + HeatDamageSU(nbt['gt.energy'],nbt['gt.tank.1']['Amount']) + "点伤害";
 				}
 			}
 
 			if(nbt['gt.energy'] != undefined){
 				if(nbt['gt.tank.1']['Amount'] != undefined){
-					if((nbt['gt.energy'] + nbt['gt.tank.1']['Amount'] / 2) > 2000){
-						return RED + "此时靠近锅炉会受到" + HeatDamageSU(nbt['gt.energy'],nbt['gt.tank.1']['Amount'],0) + "点伤害";
+					if((nbt['gt.energy'] + nbt['gt.tank.1']['Amount'] / 2) > 400){
+						return RED + "此时靠近锅炉会受到" + HeatDamageSU(nbt['gt.energy'],nbt['gt.tank.1']['Amount']) + "点伤害";
 					}
 				}
-				if((nbt['gt.energy']) > 2000){
-					return RED + "此时靠近锅炉会受到" + HeatDamageSU(nbt['gt.energy'],0,0) + "点伤害";
+				if((nbt['gt.energy']) > 400){
+					return RED + "此时靠近锅炉会受到" + HeatDamageSU(nbt['gt.energy'],0) + "点伤害";
 				}
 			}
 			if(nbt['gt.tank.1']['Amount'] != undefined){
-				if((nbt['gt.tank.1']['Amount'] / 2) > 2000){
-					return RED + "此时靠近锅炉会受到" + HeatDamageSU(0,nbt['gt.tank.1']['Amount'],0) + "点伤害";
+				if((nbt['gt.tank.1']['Amount'] / 2) > 400){
+					return RED + "此时靠近锅炉会受到" + HeatDamageSU(0,nbt['gt.tank.1']['Amount']) + "点伤害";
 				}
 			}
 		</line>
 
 		<line displayname = "烫伤警告2">
 			if((nbt['gt.energy'] != undefined) && (nbt['gt.tank.1']['Amount'] != undefined)){
-				if((nbt['gt.energy'] + nbt['gt.tank.1']['Amount'] / 2) > 2000){
-					return RED + "此时使用凿子清理锅炉会受到" + HeatDamageSU(nbt['gt.energy'],nbt['gt.tank.1']['Amount'],1) + "点伤害";
+				if((nbt['gt.energy'] + nbt['gt.tank.1']['Amount'] / 2) > 400){
+					return RED + "此时使用凿子清理锅炉会受到" + HeatDamageSU(nbt['gt.energy'],nbt['gt.tank.1']['Amount']) + "点伤害";
 				}
 			}
 
 			if(nbt['gt.energy'] != undefined){
 				if(nbt['gt.tank.1']['Amount'] != undefined){
-					if((nbt['gt.energy'] + nbt['gt.tank.1']['Amount'] / 2) > 2000){
-						return RED + "此时使用凿子清理锅炉会受到" + HeatDamageSU(nbt['gt.energy'],nbt['gt.tank.1']['Amount'],1) + "点伤害";
+					if((nbt['gt.energy'] + nbt['gt.tank.1']['Amount'] / 2) > 400){
+						return RED + "此时使用凿子清理锅炉会受到" + HeatDamageSU(nbt['gt.energy'],nbt['gt.tank.1']['Amount']) + "点伤害";
 					}
 				}
-				if((nbt['gt.energy']) > 2000){
-					return RED + "此时使用凿子清理锅炉会受到" + HeatDamageSU(nbt['gt.energy'],0,1) + "点伤害";
+				if((nbt['gt.energy']) > 400){
+					return RED + "此时使用凿子清理锅炉会受到" + HeatDamageSU(nbt['gt.energy'],0) + "点伤害";
 				}
 			}
 			if(nbt['gt.tank.1']['Amount'] != undefined){
-				if((nbt['gt.tank.1']['Amount'] / 2) > 2000){
-					return RED + "此时使用凿子清理锅炉会受到" + HeatDamageSU(0,nbt['gt.tank.1']['Amount'],1) + "点伤害";
+				if((nbt['gt.tank.1']['Amount'] / 2) > 400){
+					return RED + "此时使用凿子清理锅炉会受到" + HeatDamageSU(0,nbt['gt.tank.1']['Amount']) + "点伤害";
 				}
 			}
 		</line>
@@ -1211,24 +1205,24 @@
 
 		<line displayname = "烫伤警告">
 			if((nbt['gt.energy'] != undefined) && (nbt['gt.tank.1']['Amount'] != undefined)){
-				if((nbt['gt.energy'] + nbt['gt.tank.1']['Amount'] / 2) > 2000){
-					return RED + "此时使用凿子清理锅炉会受到" + HeatDamageSU(nbt['gt.energy'],nbt['gt.tank.1']['Amount'],1) + "点伤害";
+				if((nbt['gt.energy'] + nbt['gt.tank.1']['Amount'] / 2) > 400){
+					return RED + "此时使用凿子清理锅炉会受到" + HeatDamageSU(nbt['gt.energy'],nbt['gt.tank.1']['Amount']) + "点伤害";
 				}
 			}
 
 			if(nbt['gt.energy'] != undefined){
 				if(nbt['gt.tank.1']['Amount'] != undefined){
-					if((nbt['gt.energy'] + nbt['gt.tank.1']['Amount'] / 2) > 2000){
-						return RED + "此时使用凿子清理锅炉会受到" + HeatDamageSU(nbt['gt.energy'],nbt['gt.tank.1']['Amount'],1) + "点伤害";
+					if((nbt['gt.energy'] + nbt['gt.tank.1']['Amount'] / 2) > 400){
+						return RED + "此时使用凿子清理锅炉会受到" + HeatDamageSU(nbt['gt.energy'],nbt['gt.tank.1']['Amount']) + "点伤害";
 					}
 				}
-				if((nbt['gt.energy']) > 2000){
-					return RED + "此时使用凿子清理锅炉会受到" + HeatDamageSU(nbt['gt.energy'],0,1) + "点伤害";
+				if((nbt['gt.energy']) > 400){
+					return RED + "此时使用凿子清理锅炉会受到" + HeatDamageSU(nbt['gt.energy'],0) + "点伤害";
 				}
 			}
 			if(nbt['gt.tank.1']['Amount'] != undefined){
-				if((nbt['gt.tank.1']['Amount'] / 2) > 2000){
-					return RED + "此时使用凿子清理锅炉会受到" + HeatDamageSU(0,nbt['gt.tank.1']['Amount'],1) + "点伤害";
+				if((nbt['gt.tank.1']['Amount'] / 2) > 400){
+					return RED + "此时使用凿子清理锅炉会受到" + HeatDamageSU(0,nbt['gt.tank.1']['Amount']) + "点伤害";
 				}
 			}
 		</line>

@@ -96,6 +96,10 @@ public class MTEC_BoilerTank extends MTEC_BoilerTank_Greg {
         aChatReturn.add(mTanks[0].content(LH_CH.get("gtch.chat.boiler.nowater")));
     }
     
+    @Override protected float getHeatDamage() {
+        return (float) Math.sqrt(mEnergy+mTanks[1].amount()/2.0F) / 20.0F;
+    }
+    
     // 改写部分原版锅炉运行逻辑
     @Override public void onTickConvert(long aTimer) {
         // Convert HU to effective energy
@@ -175,7 +179,7 @@ public class MTEC_BoilerTank extends MTEC_BoilerTank_Greg {
             if (mBarometer > 15) {
                 mTE.explode(F);
             } else {
-                if (mEnergy+mTanks[1].amount()/STEAM_PER_EU > 2000) UT.Entities.applyHeatDamage(aPlayer, (mEnergy+mTanks[1].amount()/2.0F) / 2000.0F);
+                applyHeatDamage(aPlayer);
             }
             mTanks[1].setEmpty();
             mEnergy = 0;

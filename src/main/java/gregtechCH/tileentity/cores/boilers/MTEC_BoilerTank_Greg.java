@@ -155,7 +155,7 @@ public abstract class MTEC_BoilerTank_Greg implements IMTEC_ToolTips, IMTEC_Boil
                 if (mBarometer > 15) {
                     mTE.explode(F);
                 } else {
-                    if (mEnergy+mTanks[1].amount()/STEAM_PER_EU > 2000) UT.Entities.applyHeatDamage(aPlayer, (mEnergy+mTanks[1].amount()/2.0F) / 2000.0F);
+                    applyHeatDamage(aPlayer);
                     mTanks[1].setEmpty();
                     mEfficiency = 10000;
                     mEnergy = 0;
@@ -207,6 +207,13 @@ public abstract class MTEC_BoilerTank_Greg implements IMTEC_ToolTips, IMTEC_Boil
     public void explode(boolean aInstant, double aDivisor) {
         mTE.explode(aInstant, Math.max(1, Math.sqrt(mTanks[1].amount()) / aDivisor));
     }
+    protected float getHeatDamage() {
+        return (mEnergy+mTanks[1].amount()/(float)STEAM_PER_EU) / 2000.0F;
+    }
+    public void applyHeatDamage(Entity aEntity) {
+        float tDamage = getHeatDamage();
+        if (tDamage >= 1.0F) UT.Entities.applyHeatDamage(aEntity, tDamage);
+    }
     
     // data sync
     public boolean onTickCheck(long aTimer) {
@@ -227,7 +234,7 @@ public abstract class MTEC_BoilerTank_Greg implements IMTEC_ToolTips, IMTEC_Boil
     }
     
     // 烫伤计算
-    public void onEntityCollidedWithBlock(Entity aEntity) {if (mEnergy+mTanks[1].amount()/STEAM_PER_EU > 2000) UT.Entities.applyHeatDamage(aEntity, Math.min(10.0F, (mEnergy+mTanks[1].amount()/2.0F) / 2000.0F));}
+    public void onEntityCollidedWithBlock(Entity aEntity) {applyHeatDamage(aEntity);}
     
     public void onBreakBlock() {/**/}
     

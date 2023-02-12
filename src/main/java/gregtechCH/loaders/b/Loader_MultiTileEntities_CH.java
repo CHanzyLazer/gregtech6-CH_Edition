@@ -714,8 +714,8 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
     @Override protected void miscFinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
         /// 添加项
         // 新的基岩矿
-        aMat = MT.Coal;     aRegistry.add(RegType.GTCH, aMat.getLocal() + " Deposit"   , "Untyped"      , 23300, 32764, MultiTileEntityDeposit.class    ,                 0, 64, aStone         , UT.NBT.make(NBT_MATERIAL, aMat));
-        aMat = MT.Fe2O3;    aRegistry.add(RegType.GTCH, aMat.getLocal() + " Deposit"   , "Untyped"      , 23301, 32764, MultiTileEntityDeposit.class    ,                 0, 64, aStone         , UT.NBT.make(NBT_MATERIAL, aMat));
+        aMat = MT.Coal;     aRegistry.add(RegType.GTCH, aMat.getLocal() + " Deposit"   , "Untyped"      , 23300, 32764, MultiTileEntityDeposit.class    ,                 0, 64, aStone         , UT.NBT.make(NBT_MATERIAL, aMat, NBT_MAXDURABILITY+".0", 1000, NBT_MAXDURABILITY+".1", 2000, NBT_DURABILITY, 1000));
+        aMat = MT.Fe2O3;    aRegistry.add(RegType.GTCH, aMat.getLocal() + " Deposit"   , "Untyped"      , 23301, 32764, MultiTileEntityDeposit.class    ,                 0, 64, aStone         , UT.NBT.make(NBT_MATERIAL, aMat, NBT_MAXDURABILITY+".0", 2000, NBT_MAXDURABILITY+".1", 1000, NBT_DURABILITY, 2000));
     }
     
     

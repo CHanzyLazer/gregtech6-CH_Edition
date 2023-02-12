@@ -11,6 +11,7 @@ import gregapi.util.UT;
 import gregtech.loaders.b.Loader_MultiTileEntities;
 import gregtech.tileentity.energy.converters.MultiTileEntityDynamoElectric;
 import gregtech.tileentity.energy.generators.*;
+import gregtech.tileentity.misc.MultiTileEntityFluidSpring;
 import gregtech.tileentity.multiblocks.*;
 import gregtech.tileentity.tools.*;
 import gregtechCH.config.data.DataMultiTileEntity;
@@ -18,6 +19,7 @@ import gregtechCH.data.RM_CH;
 import gregtechCH.tileentity.batteries.eu.MultiTileEntityBatteryAdvEU8192;
 import gregtechCH.tileentity.batteries.eu.MultiTileEntityBatteryEU8192;
 import gregtechCH.tileentity.energy.MultiTileEntityMotorGas;
+import gregtechCH.tileentity.misc.MultiTileEntityDeposit;
 import gregtechCH.tileentity.multiblocks.*;
 import gregtechCH.tileentity.sensors.*;
 import net.minecraft.init.Blocks;
@@ -33,8 +35,9 @@ import static gregtechCH.data.CS_CH.*;
 /**
  * @author CHanzy
  * Extension of Loader_MultiTileEntities
- * EMPTY IDS: 23000 - 24999; 15000 - 16999; 9500 - 9999
- * 由于后续 greg 还有比较激进的添加，因此不按照 mod 来分划 id 使用区域
+ * EMPTY IDs: 23000 - 24999; 15000 - 16999; 9500 - 9999
+ * ID for GTCH: 23300 - 23399
+ * 由于后续 greg 可能还有比较激进的添加，因此不按照 mod 来分划 id 使用区域
  * TODO 想方法完善 id 改变时能够找到正确的新 id 的方法
  */
 @SuppressWarnings({"PointlessArithmeticExpression", "ConstantConditions"})
@@ -702,9 +705,19 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
     }
     @Override protected void sensorsFinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
         /// 添加项
-        aRegistry.add(RegType.GTCH, "Flow-O-Meter Sensor"                      , "Sensors"                             , 31030, 31015, MultiTileEntityFlowometer.class                      ,                 1, 16, aUtilMetal     , null, "WYW", "ZXZ", "WPW", 'P', OP.plateDouble.dat(MT.TinAlloy), 'W', OP.wireFine.dat(MT.RedAlloy), 'R', OD.itemRedstone, 'G', OD.blockGlassColorless, 'B', OP.bolt.dat(MT.TinAlloy), 'C', Items.comparator, 'X', OD.pressurePlateGold, 'Y', OP.rotor.dat(MT.TinAlloy), 'Z', OP.ring.dat(MT.Rubber));
-        aRegistry.add(RegType.GTCH, "Bucket Flow-O-Meter Sensor"               , "Sensors"                             , 31031, 31015, MultiTileEntityFlowometerBucket.class                ,                 1, 16, aUtilMetal     , null, "WYW", "ZXZ", "WPW", 'P', OP.plateDouble.dat(MT.TinAlloy), 'W', OP.wireFine.dat(MT.RedAlloy), 'R', OD.itemRedstone, 'G', OD.blockGlassColorless, 'B', OP.bolt.dat(MT.TinAlloy), 'C', Items.comparator, 'X', OD.pressurePlateIron, 'Y', OP.rotor.dat(MT.TinAlloy), 'Z', OP.ring.dat(MT.Rubber));
+        aRegistry.add(RegType.GTCH, "Flow-O-Meter Sensor"                      , "Sensors"                              , 31030, 31015, MultiTileEntityFlowometer.class                      ,                 1, 16, aUtilMetal     , null, "WYW", "ZXZ", "WPW", 'P', OP.plateDouble.dat(MT.TinAlloy), 'W', OP.wireFine.dat(MT.RedAlloy), 'R', OD.itemRedstone, 'G', OD.blockGlassColorless, 'B', OP.bolt.dat(MT.TinAlloy), 'C', Items.comparator, 'X', OD.pressurePlateGold, 'Y', OP.rotor.dat(MT.TinAlloy), 'Z', OP.ring.dat(MT.Rubber));
+        aRegistry.add(RegType.GTCH, "Bucket Flow-O-Meter Sensor"               , "Sensors"                              , 31031, 31015, MultiTileEntityFlowometerBucket.class                ,                 1, 16, aUtilMetal     , null, "WYW", "ZXZ", "WPW", 'P', OP.plateDouble.dat(MT.TinAlloy), 'W', OP.wireFine.dat(MT.RedAlloy), 'R', OD.itemRedstone, 'G', OD.blockGlassColorless, 'B', OP.bolt.dat(MT.TinAlloy), 'C', Items.comparator, 'X', OD.pressurePlateIron, 'Y', OP.rotor.dat(MT.TinAlloy), 'Z', OP.ring.dat(MT.Rubber));
     }
+    
+    
+    
+    @Override protected void miscFinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
+        /// 添加项
+        // 新的基岩矿
+        aMat = MT.Coal;     aRegistry.add(RegType.GTCH, aMat.getLocal() + " Deposit"   , "Untyped"      , 23300, 32764, MultiTileEntityDeposit.class    ,                 0, 64, aStone         , UT.NBT.make(NBT_MATERIAL, aMat));
+        aMat = MT.Fe2O3;    aRegistry.add(RegType.GTCH, aMat.getLocal() + " Deposit"   , "Untyped"      , 23301, 32764, MultiTileEntityDeposit.class    ,                 0, 64, aStone         , UT.NBT.make(NBT_MATERIAL, aMat));
+    }
+    
     
     
     /* GT6U stuff */

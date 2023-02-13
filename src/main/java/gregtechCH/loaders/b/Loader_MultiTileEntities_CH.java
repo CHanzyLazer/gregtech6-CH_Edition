@@ -11,7 +11,6 @@ import gregapi.util.UT;
 import gregtech.loaders.b.Loader_MultiTileEntities;
 import gregtech.tileentity.energy.converters.MultiTileEntityDynamoElectric;
 import gregtech.tileentity.energy.generators.*;
-import gregtech.tileentity.misc.MultiTileEntityFluidSpring;
 import gregtech.tileentity.multiblocks.*;
 import gregtech.tileentity.tools.*;
 import gregtechCH.config.data.DataMultiTileEntity;
@@ -30,6 +29,7 @@ import static gregapi.data.CS.*;
 import static gregtechCH.config.ConfigForge.DATA_GTCH;
 import static gregtechCH.config.ConfigJson.DATA_MULTITILEENTITY;
 import static gregtechCH.data.CS_CH.*;
+import static gregtechCH.tileentity.misc.MultiTileEntityDeposit.StateAttribute;
 
 
 /**
@@ -714,8 +714,8 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
     @Override protected void miscFinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
         /// 添加项
         // 新的基岩矿
-        aMat = MT.Coal;     aRegistry.add(RegType.GTCH, aMat.getLocal() + " Deposit"   , "Untyped"      , 23300, 32764, MultiTileEntityDeposit.class    ,                 0, 64, aStone         , UT.NBT.make(NBT_MATERIAL, aMat, NBT_MAXDURABILITY+".0", 1000, NBT_MAXDURABILITY+".1", 2000, NBT_DURABILITY, 1000));
-        aMat = MT.Fe2O3;    aRegistry.add(RegType.GTCH, aMat.getLocal() + " Deposit"   , "Untyped"      , 23301, 32764, MultiTileEntityDeposit.class    ,                 0, 64, aStone         , UT.NBT.make(NBT_MATERIAL, aMat, NBT_MAXDURABILITY+".0", 2000, NBT_MAXDURABILITY+".1", 1000, NBT_DURABILITY, 2000));
+        MultiTileEntityDeposit.addDeposit(23300, 32764, new StateAttribute[]{new StateAttribute(1000, 0, OP.oreRaw.mat(MT.Coal,  1), 50, 100, null, 50, 10), new StateAttribute(2000, 1, OP.oreRaw.mat(MT.Coal,  1), 10, 100, null, 50, 10)}, aRegistry, aStone, MultiTileEntityDeposit.class, MT.Coal);
+        MultiTileEntityDeposit.addDeposit(23301, 32764, new StateAttribute[]{new StateAttribute(2000, 0, OP.oreRaw.mat(MT.Fe2O3, 1), 50, 100, null, 50, 10), new StateAttribute(1000, 1, OP.oreRaw.mat(MT.Fe2O3, 1), 50, 100, null, 50, 10)}, aRegistry, aStone, MultiTileEntityDeposit.class, MT.Fe2O3);
     }
     
     

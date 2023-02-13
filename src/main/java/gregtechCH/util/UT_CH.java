@@ -481,6 +481,7 @@ public class UT_CH {
         }
         
         /* 判断 Object 的类型生成 NBT tag，减少原本的重复代码 */
+        @SuppressWarnings("SuspiciousIndentAfterControlStatement")
         public static NBTBase tag(Object aValue) {
             if (aValue == null) return null; // 注意需要交给 make 来排除整个 key 和 tag
             if (aValue instanceof Boolean)          return new NBTTagByte((byte) ((Boolean)aValue ? 1 : 0));
@@ -494,8 +495,8 @@ public class UT_CH {
             if (aValue instanceof NBTBase)          return (NBTBase)aValue;
             if (aValue instanceof FluidStack)       return FL.save((FluidStack)aValue);
             if (aValue instanceof OreDictMaterial)  return new NBTTagString(((OreDictMaterial)aValue).mNameInternal);
-            if (aValue instanceof Recipe.RecipeMap)        return new NBTTagString(((Recipe.RecipeMap)aValue).mNameInternal);
-            return new NBTTagString(aValue.toString());
+            if (aValue instanceof Recipe.RecipeMap) return new NBTTagString(((Recipe.RecipeMap)aValue).mNameInternal);
+                                                    return new NBTTagString(aValue.toString());
         }
         
         /* NBT 和 json 相互转换 */
@@ -545,7 +546,7 @@ public class UT_CH {
                 case "STRING": {return new JsonPrimitive(((NBTTagString)aNBT).func_150285_a_());}
                 case "LIST": {
                     JsonArray tJson = new JsonArray();
-                    for(int i = 0; i < ((NBTTagList)aNBT).tagCount(); ++i) {
+                    for (int i = 0; i < ((NBTTagList)aNBT).tagCount(); ++i) {
                         JsonElement tElement = NBT2Json(((NBTTagList)aNBT).getCompoundTagAt(i));
                         if (tElement != null) tJson.add(tElement);
                     }
@@ -553,9 +554,9 @@ public class UT_CH {
                 }
                 case "COMPOUND": {
                     JsonObject tJson = new JsonObject();
-                    for(Object obj : ((NBTTagCompound)aNBT).func_150296_c()) {
+                    for (Object obj : ((NBTTagCompound)aNBT).func_150296_c()) {
                         String key = (String)obj;
-                        JsonElement tElement = NBT2Json(((NBTTagCompound)aNBT).getCompoundTag(key));
+                        JsonElement tElement = NBT2Json(((NBTTagCompound)aNBT).getTag(key));
                         if (tElement != null) tJson.add(key, tElement);
                     }
                     return tJson;

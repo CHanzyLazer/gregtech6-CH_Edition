@@ -31,31 +31,34 @@ public class GT_ASM_UT {
         boolean aFound = false;
         // 遍历寻找旧数值
         while (at!=null) {
-            if (at.getOpcode() == Opcodes.ICONST_0 && aOldValue == 0) {aFound = true; break;}
-            if (at.getOpcode() == Opcodes.ICONST_1 && aOldValue == 1) {aFound = true; break;}
-            if (at.getOpcode() == Opcodes.ICONST_2 && aOldValue == 2) {aFound = true; break;}
-            if (at.getOpcode() == Opcodes.ICONST_3 && aOldValue == 3) {aFound = true; break;}
-            if (at.getOpcode() == Opcodes.ICONST_4 && aOldValue == 4) {aFound = true; break;}
-            if (at.getOpcode() == Opcodes.ICONST_5 && aOldValue == 5) {aFound = true; break;}
-            if (at.getOpcode() == Opcodes.LDC) {
-                LdcInsnNode tNode = (LdcInsnNode)at; if (tNode.cst instanceof Integer && (Integer)tNode.cst == aOldValue) {aFound = true; break;}}
-            if (at.getOpcode() == Opcodes.BIPUSH || at.getOpcode() == Opcodes.SIPUSH) {
-                IntInsnNode tNode = (IntInsnNode)at; if (tNode.operand == aOldValue) {aFound = true; break;}}
+            AbstractInsnNode tAt = at;
             at = at.getNext();
-        }
-        // 找到数值后替换
-        if (aFound) {
-            if      (aNewValue == 0) aMethod.instructions.set(at, new InsnNode(Opcodes.ICONST_0));
-            else if (aNewValue == 1) aMethod.instructions.set(at, new InsnNode(Opcodes.ICONST_1));
-            else if (aNewValue == 2) aMethod.instructions.set(at, new InsnNode(Opcodes.ICONST_2));
-            else if (aNewValue == 3) aMethod.instructions.set(at, new InsnNode(Opcodes.ICONST_3));
-            else if (aNewValue == 4) aMethod.instructions.set(at, new InsnNode(Opcodes.ICONST_4));
-            else if (aNewValue == 5) aMethod.instructions.set(at, new InsnNode(Opcodes.ICONST_5));
-            else if (aNewValue >= Byte.MIN_VALUE && aNewValue <= Byte.MAX_VALUE) aMethod.instructions.set(at, new IntInsnNode(Opcodes.BIPUSH, aNewValue));
-            else if (aNewValue >= Short.MIN_VALUE && aNewValue <= Short.MAX_VALUE) aMethod.instructions.set(at, new IntInsnNode(Opcodes.SIPUSH, aNewValue));
-            else aMethod.instructions.set(at, new LdcInsnNode(aNewValue));
+            // 找到数值后替换
+            if (foundValue(tAt, aOldValue)) {
+                aFound = true;
+                if      (aNewValue == 0) aMethod.instructions.set(tAt, new InsnNode(Opcodes.ICONST_0));
+                else if (aNewValue == 1) aMethod.instructions.set(tAt, new InsnNode(Opcodes.ICONST_1));
+                else if (aNewValue == 2) aMethod.instructions.set(tAt, new InsnNode(Opcodes.ICONST_2));
+                else if (aNewValue == 3) aMethod.instructions.set(tAt, new InsnNode(Opcodes.ICONST_3));
+                else if (aNewValue == 4) aMethod.instructions.set(tAt, new InsnNode(Opcodes.ICONST_4));
+                else if (aNewValue == 5) aMethod.instructions.set(tAt, new InsnNode(Opcodes.ICONST_5));
+                else if (aNewValue >= Byte.MIN_VALUE && aNewValue <= Byte.MAX_VALUE) aMethod.instructions.set(tAt, new IntInsnNode(Opcodes.BIPUSH, aNewValue));
+                else if (aNewValue >= Short.MIN_VALUE && aNewValue <= Short.MAX_VALUE) aMethod.instructions.set(tAt, new IntInsnNode(Opcodes.SIPUSH, aNewValue));
+                else aMethod.instructions.set(tAt, new LdcInsnNode(aNewValue));
+            }
         }
         return aFound;
+    }
+    private static boolean foundValue(AbstractInsnNode aAt, int aValue) {
+        if (aAt.getOpcode() == Opcodes.ICONST_0 && aValue == 0) return true;
+        if (aAt.getOpcode() == Opcodes.ICONST_1 && aValue == 1) return true;
+        if (aAt.getOpcode() == Opcodes.ICONST_2 && aValue == 2) return true;
+        if (aAt.getOpcode() == Opcodes.ICONST_3 && aValue == 3) return true;
+        if (aAt.getOpcode() == Opcodes.ICONST_4 && aValue == 4) return true;
+        if (aAt.getOpcode() == Opcodes.ICONST_5 && aValue == 5) return true;
+        if (aAt.getOpcode() == Opcodes.LDC) {LdcInsnNode tNode = (LdcInsnNode)aAt; if (tNode.cst instanceof Integer && (Integer)tNode.cst == aValue) return true;}
+        if (aAt.getOpcode() == Opcodes.BIPUSH || aAt.getOpcode() == Opcodes.SIPUSH) {IntInsnNode tNode = (IntInsnNode)aAt; if (tNode.operand == aValue) return true;}
+        return false;
     }
     
     // 修改 method 行内硬编码 bool 值的方法
@@ -64,13 +67,59 @@ public class GT_ASM_UT {
         boolean aFound = false;
         // 遍历寻找旧数值
         while (at!=null) {
-            if (at.getOpcode() == Opcodes.ICONST_0 && !aOldValue) {aFound = true; break;}
-            if (at.getOpcode() == Opcodes.ICONST_1 && aOldValue)  {aFound = true; break;}
+            AbstractInsnNode tAt = at;
             at = at.getNext();
+            // 找到数值后替换
+            if ((tAt.getOpcode() == Opcodes.ICONST_0 && !aOldValue) || (tAt.getOpcode() == Opcodes.ICONST_1 && aOldValue)) {
+                aFound = true;
+                aMethod.instructions.set(tAt, new InsnNode(aNewValue?Opcodes.ICONST_1:Opcodes.ICONST_0));
+            }
         }
-        // 找到数值后替换
-        if (aFound) {
-            aMethod.instructions.set(at, new InsnNode(aNewValue?Opcodes.ICONST_1:Opcodes.ICONST_0));
+        return aFound;
+    }
+    
+    // 修改 method 内某个变量的类型的方法，顺便会修改这个变量调用内部方法时的节点（过于复杂的情况不会考虑）
+    public static boolean transformInlinedFieldClazzMethod(MethodNode aMethod, Name aField, Name aNewClazz) {
+        AbstractInsnNode at = aMethod.instructions.getFirst();
+        String tOldClazz = aField.desc.substring(1, aField.desc.length()-1);
+        boolean aFound = false;
+        while (at != null) {
+            AbstractInsnNode tAt = at;
+            at = at.getNext();
+            if (tAt instanceof FieldInsnNode) {
+                FieldInsnNode tGetNode = (FieldInsnNode)tAt;
+                if (aField.matches(tGetNode)) {
+                    aFound = true;
+                    // 修改之前的调用成员函数（构造函数）
+                    AbstractInsnNode tAt1 = tAt.getPrevious();
+                    if (tAt1 instanceof MethodInsnNode) {
+                        // 如果是构造函数，还需要检测是否有 new
+                        if (tAt1.getOpcode() == Opcodes.INVOKESPECIAL) {
+                            AbstractInsnNode tAt2 = tAt1.getPrevious().getPrevious();
+                            if (tAt2 instanceof TypeInsnNode && tAt2.getOpcode() == Opcodes.NEW) {
+                                TypeInsnNode tNewNode = (TypeInsnNode)tAt2;
+                                if (tNewNode.desc.equals(tOldClazz)) aMethod.instructions.set(tNewNode, new TypeInsnNode(tNewNode.getOpcode(), aNewClazz.deobf));
+                            }
+                        }
+                        MethodInsnNode tInvokeNode = (MethodInsnNode)tAt1;
+                        if (tInvokeNode.owner.equals(tOldClazz)) aMethod.instructions.set(tInvokeNode, new MethodInsnNode(tInvokeNode.getOpcode(), aNewClazz.deobf, tInvokeNode.name, tInvokeNode.desc, false));
+                    }
+                    // 修改后续调用成员函数
+                    tAt1 = tAt.getNext();
+                    // 跳过各种加载输入参数的部分
+                    while (tAt1 != null && ((tAt1.getOpcode()<=Opcodes.ALOAD && tAt1.getOpcode()>=Opcodes.ILOAD) || tAt1.getOpcode()==Opcodes.GETFIELD || tAt1.getOpcode()==Opcodes.GETSTATIC || tAt1.getOpcode()==Opcodes.NEW || tAt1.getOpcode()==Opcodes.DUP)) tAt1 = tAt1.getNext();
+                    if (tAt1 instanceof MethodInsnNode) {
+                        MethodInsnNode tInvokeNode = (MethodInsnNode)tAt1;
+                        // 注意修改后原本的 at 会失效，因此需要重新指定
+                        if (tInvokeNode.owner.equals(tOldClazz)) {
+                            at = tAt1.getNext();
+                            aMethod.instructions.set(tInvokeNode, new MethodInsnNode(tInvokeNode.getOpcode(), aNewClazz.deobf, tInvokeNode.name, tInvokeNode.desc, false));
+                        }
+                    }
+                    // 无论怎样都要修改获取此 field 的节点
+                    aMethod.instructions.set(tGetNode, new FieldInsnNode (tGetNode.getOpcode(), tGetNode.owner, tGetNode.name, aNewClazz.toDesc()));
+                }
+            }
         }
         return aFound;
     }
@@ -109,6 +158,8 @@ public class GT_ASM_UT {
         C_String("java/lang/String"),
         C_List("java/util/List"),
         C_HashSet("java/util/HashSet"),
+        C_HashMap("java/util/HashMap"),
+        C_WeakHashMap("java/util/WeakHashMap"),
         C_ACL("net/minecraft/world/chunk/storage/AnvilChunkLoader", "aqk"),
         C_Block("net/minecraft/block/Block", "aji"),
         C_Chunk("net/minecraft/world/chunk/Chunk", "apx"),
@@ -146,6 +197,14 @@ public class GT_ASM_UT {
         C_NEI_ThreadOperationTimer("codechicken/nei/ThreadOperationTimer"),
         C_ForgeVersion("net/minecraftforge/common/ForgeVersion"),
         C_OptiFine_ShadersTess("shadersmod/client/ShadersTess"),
+        C_NEIEasySearch("com/pdos95/NEIEasySearch"),
+        C_NEIES_PinyinSearchProvider("com/pdos95/PinyinSearchProvider"),
+        C_NEIES_PinyinItemFilter("com/pdos95/PinyinSearchProvider$PinyinItemFilter"),
+        C_NEIES_EventItemSearchTooltip("com/pdos95/pinyin/EventItemSearchTooltip"),
+    
+        F_NEIES_itemSearchNames(C_NEIEasySearch, "itemSearchNames", null, null, toDesc(C_HashMap)),
+        F_NEIES_itemSearchNames_1(C_NEIES_PinyinSearchProvider, "itemSearchNames", null, null, toDesc(C_HashMap)),
+        F_NEIES_itemSearchNames_2(C_NEIES_EventItemSearchTooltip, "itemSearchNames", null, null, toDesc(C_WeakHashMap)),
         
         M_OptiFine_addVertex(C_OptiFine_ShadersTess, "addVertex", null, null, "(Lbmh;DDD)V"),
     
@@ -202,6 +261,8 @@ public class GT_ASM_UT {
         C_GTASM_LO("gregtech/interfaces/asm/LO_CH"),
         C_GTASM_R("gregtech/asm/transformers/replacements/Methods"),
         C_TimerNEI("gregtech/asm/transformers/replacements/TimerNEI"),
+        C_SyHashMap("gregtechCH/code/SynchronizedHashMap"),
+        C_SyWeakHashMap("gregtechCH/code/SynchronizedWeakHashMap"),
         M_TimerNEI_init(C_TimerNEI, "<init>", null, null, "()V"),
         M_TimerNEI_reset(C_TimerNEI, "reset", null, null, "("+toDesc(C_Object)+")V"),
         M_TimerNEI_check(C_TimerNEI, "check", null, null, "()V"),

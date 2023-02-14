@@ -207,6 +207,7 @@ dependencies {
 	compileOnly files("dirtyLibs/EnderCore-1.7.10-0.2.0.39_beta-dev.jar")
 	compileOnly files("dirtyLibs/EnderIO-1.7.10-2.3.0.429_beta-dev.jar")
 	compileOnly files("dirtyLibs/OptiFine_1.7.10_HD_U_E7.jar")
+	compileOnly files("dirtyLibs/neieasysearch-1.7.10-0.8.11.jar")
 	compileOnly "inventorytweaks:InventoryTweaks:1.59-dev:deobf"
 	compileOnly "net.electricalage.eln:ElectricalAge-jrddunbr:1.16.3:dev"
 	compileOnly "net.sengir.forestry:forestry_1.7.10:4.2.16.64:dev"

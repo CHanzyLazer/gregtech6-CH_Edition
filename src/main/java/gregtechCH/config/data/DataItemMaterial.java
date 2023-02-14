@@ -18,29 +18,18 @@ import static gregapi.data.CS.T;
  * @author CHanzy
  */
 public class DataItemMaterial extends DataJson {
-    public static class Item {
-        public ItemStack value = null;
-        public String name = null;
-    }
-    public static class ItemData {
-        public OreDictItemData value = null;
-        public String[] name = null;
-    }
     
     public static class ItemMaterial {
-        public Item item = null;
-        public ItemData data = null;
-        
-        public ItemStack item() {return item == null ? null : item.value;}
-        public OreDictItemData data() {return data == null ? null : data.value;}
+        public ItemStack item = null;
+        public OreDictItemData data = null;
     }
     
     // 指定需要的序列化和反序列化器
     @Override
     public GsonBuilder getGsonBuilder() {
         return super.getGsonBuilder()
-                .registerTypeAdapter(Item.class, new ItemAdapter())
-                .registerTypeAdapter(ItemData.class, new ItemDataAdapter())
+                .registerTypeAdapter(ItemStack.class, new ItemAdapter())
+                .registerTypeAdapter(OreDictItemData.class, new ItemDataAdapter())
                 ;
     }
     

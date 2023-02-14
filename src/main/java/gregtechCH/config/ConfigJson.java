@@ -26,13 +26,13 @@ public class ConfigJson {
         DATA_MULTITILEENTITY.initJsonFile("multiTileEntity.json", DataMultiTileEntity.class);
         DATA_ITEM_MATERIAL.initJsonFile("materials.json", DataItemMaterial.class);
         for (DataItemMaterial.ItemMaterial IM : DATA_ITEM_MATERIAL.IM_Init) {
-            OM.data(IM.item(), IM.data());
+            OM.data(IM.item, IM.data);
         }
     }
     
     public static void readJsonFilePost() {
         for (DataItemMaterial.ItemMaterial IM : ConfigJson.DATA_ITEM_MATERIAL.IM_PostInit) {
-            OM.data(IM.item(), IM.data());
+            OM.data(IM.item, IM.data);
         }
     }
 

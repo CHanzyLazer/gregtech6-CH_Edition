@@ -5,6 +5,7 @@ import gregapi.oredict.OreDictItemData;
 import gregapi.oredict.OreDictMaterial;
 import gregapi.oredict.OreDictMaterialStack;
 import gregapi.util.OM;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,14 +13,13 @@ import java.util.List;
 import static gregapi.data.CS.OUT;
 import static gregapi.data.CS.U;
 import static gregtechCH.data.CS_CH.GSON;
-import static gregtechCH.config.data.DataItemMaterial.ItemData;
 
 /**
  * @author CHanzy
  */
-public class ItemDataAdapter implements JsonDeserializer<ItemData>, JsonSerializer<ItemData> {
+public class ItemDataAdapter implements JsonDeserializer<OreDictItemData>, JsonSerializer<OreDictItemData> {
     @Override
-    public ItemData deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public OreDictItemData deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         if (!json.isJsonArray()) {
             OUT.println("Cant deserialize to String[], json: " + GSON.toJson(json));
             return null;
@@ -34,15 +34,15 @@ public class ItemDataAdapter implements JsonDeserializer<ItemData>, JsonSerializ
     }
     
     @Override
-    public JsonElement serialize(ItemData data, Type type, JsonSerializationContext jsonSerializationContext) {
-        if (data == null || data.value == null || data.name == null) return null;
+    public JsonElement serialize(OreDictItemData data, Type type, JsonSerializationContext jsonSerializationContext) {
+        if (data == null) return null;
         JsonArray json = new JsonArray();
-        for (String subDataName : data.name) json.add(new JsonPrimitive(subDataName));
+        if (data.mMaterial != null) json.add(new JsonPrimitive(data.mMaterial.mMaterial.mNameInternal + ":" + (double)data.mMaterial.mAmount/U));
+        if (data.mByProducts != null) for (OreDictMaterialStack tMaterialStack : data.mByProducts) json.add(new JsonPrimitive(tMaterialStack.mMaterial.mNameInternal + ":" + (double)tMaterialStack.mAmount/U));
         return json;
     }
     
-    
-    public static ItemData get(String[] aDataName) {
+    public static OreDictItemData get(String[] aDataName) {
         if (aDataName == null) return null;
         if (aDataName.length >= 1) {
             OreDictMaterialStack materialStackF = null;
@@ -67,10 +67,7 @@ public class ItemDataAdapter implements JsonDeserializer<ItemData>, JsonSerializ
                 }
                 ++i;
             }
-            ItemData data = new ItemData();
-            data.value = new OreDictItemData(materialStackF, materialStacks);
-            data.name = aDataName;
-            return data;
+            return new OreDictItemData(materialStackF, materialStacks);
         } else {
             return null;
         }

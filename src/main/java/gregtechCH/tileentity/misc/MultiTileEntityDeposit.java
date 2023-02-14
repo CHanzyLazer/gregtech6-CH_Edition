@@ -18,9 +18,9 @@ import gregapi.tileentity.data.ITileEntitySurface;
 import gregapi.tileentity.notick.TileEntityBase03MultiTileEntities;
 import gregapi.util.ST;
 import gregapi.util.UT;
-import gregapi.util.WD;
 import gregtechCH.code.Triplet;
 import gregtechCH.data.LH_CH;
+import gregtechCH.util.ST_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -91,7 +91,7 @@ public class MultiTileEntityDeposit extends TileEntityBase03MultiTileEntities im
             UT.NBT.setNumber(tNBT, NBT_LEVEL, mLevel);
             if (!mOreList.isEmpty()) {
                 NBTTagList tNBTOreList = new NBTTagList();
-                for (Triplet<ItemStack, Integer, Integer> tTriplet : mOreList) tNBTOreList.appendTag(UT.NBT.make("ore", ST.save(tTriplet.a), "prob", tTriplet.b, "dur", tTriplet.c));
+                for (Triplet<ItemStack, Integer, Integer> tTriplet : mOreList) tNBTOreList.appendTag(UT.NBT.make("ore", ST_CH.uniqueName(tTriplet.a), "prob", tTriplet.b, "dur", tTriplet.c));
                 tNBT.setTag("ore.list", tNBTOreList);
             }
             rNBT.setTag(aKey, tNBT);
@@ -112,7 +112,7 @@ public class MultiTileEntityDeposit extends TileEntityBase03MultiTileEntities im
             List<Triplet<ItemStack, Integer, Integer>> tOreProbList = new ArrayList<>(tNBTOreList.tagCount());
             for (int i = 0; i < tNBTOreList.tagCount(); ++i) {
                 NBTTagCompound tNBTOre = tNBTOreList.getCompoundTagAt(i);
-                tOreProbList.add(new Triplet<>(ST.load(tNBTOre, "ore"), tNBTOre.getInteger("prob"), tNBTOre.getInteger("dur")));
+                tOreProbList.add(new Triplet<>(ST_CH.make(tNBTOre.getString("ore")), tNBTOre.getInteger("prob"), tNBTOre.getInteger("dur")));
             }
             return new StateAttribute(tMaxDurability, tLevel, tOreProbList);
         }
@@ -232,7 +232,7 @@ public class MultiTileEntityDeposit extends TileEntityBase03MultiTileEntities im
             // 耐久度扣除
             mDurability -= mMaxProgress;
             if (mDurability <= 0) nextState();
-            if (mState >= maxSate()) {onLastState(); return null;},p,p,p
+            if (mState >= maxSate()) {onLastState(); return null;}
             // 随机选择下次的输出
             if (mStateAttributes[mState].mTotalProb > 0) {
                 int tRand = rng(mStateAttributes[mState].mTotalProb);

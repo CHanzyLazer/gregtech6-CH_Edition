@@ -67,7 +67,6 @@ public class RecipeAdapter implements JsonDeserializer<Recipe>, JsonSerializer<R
         --recipeSize;
 
         Object[] recipeObject = new Object[aRecipeName.length];
-        Field tField;
         int i = 0;
         for (String subRecipe : aRecipeName) {
             if (!subRecipe.isEmpty()) {
@@ -103,8 +102,7 @@ public class RecipeAdapter implements JsonDeserializer<Recipe>, JsonSerializer<R
                             recipeObject[i] = tRecipePair[1];
                         } else {
                             tRecipePair = subRecipe.split(":", 3);
-                            recipeObject[i] = ST.make(new ModData(tRecipePair[0], ""), tRecipePair[1], 1,
-                                    tRecipePair.length >= 3 ? Integer.parseInt(tRecipePair[2]) : 0);
+                            recipeObject[i] = ST.make(new ModData(tRecipePair[0], ""), tRecipePair[1], 1, tRecipePair.length >= 3 ? Integer.parseInt(tRecipePair[2]) : 0);
                         }
                     } else {
                         OUT.println("Invalid Recipe: " + Arrays.toString(aRecipeName));

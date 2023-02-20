@@ -231,6 +231,14 @@ public class UT_CH {
             }
             rRGB[0] += tM; rRGB[1] += tM; rRGB[2] += tM;
         }
+        
+        public static float getBrightness(int aRGB) {return getBrightness(getRGBArray(aRGB));}
+        public static float getBrightness(short[] aRGB) {
+            float[] tRGB = {aRGB[0]/255F, aRGB[1]/255F, aRGB[2]/255F};
+            float[] tHSV = new float[3];
+            RGB2HSV(tRGB, tHSV);
+            return tHSV[2];
+        }
         // 使用 RGB 到 HSV 相互转换的方式，计算更加准确的变暗变亮值
         // 输入负值来变暗
         public static int getBrighterRGB(int aRGB, float aAmount) {
@@ -254,11 +262,12 @@ public class UT_CH {
             float[] tHSV = new float[3];
             RGB2HSV(tRGB, tHSV);
             aAmount = Math.min(1.0F, Math.max(aAmount, 0.0F));
-            if (tHSV[2] < aAmount) {
+            if (tHSV[2] < aAmount + 0.1F) {
                 tHSV[2] += aAmount;
             } else {
                 tHSV[2] -= aAmount;
             }
+            tHSV[2] = Math.min(1.0F, Math.max(tHSV[2], 0.0F));
             HSV2RGB(tRGB, tHSV);
             tRGBArray[0] = (short) Math.round(tRGB[0]*255); tRGBArray[1] = (short) Math.round(tRGB[1]*255); tRGBArray[2] = (short) Math.round(tRGB[2]*255);
             return UT.Code.getRGBInt(tRGBArray);

@@ -5,13 +5,14 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.block.multitileentity.MultiTileEntityBlock;
 import gregapi.block.multitileentity.MultiTileEntityRegistry;
-import gregapi.data.*;
+import gregapi.data.LH;
+import gregapi.data.MT;
+import gregapi.data.TD;
 import gregapi.network.INetworkHandler;
 import gregapi.network.IPacket;
 import gregapi.old.Textures;
 import gregapi.oredict.OreDictMaterial;
 import gregapi.oredict.OreDictPrefix;
-import gregapi.render.BlockTextureCopied;
 import gregapi.render.BlockTextureDefault;
 import gregapi.render.BlockTextureMulti;
 import gregapi.render.ITexture;
@@ -20,9 +21,11 @@ import gregapi.tileentity.notick.TileEntityBase03MultiTileEntities;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregtechCH.code.Triplet;
+import gregtechCH.data.CS_CH;
 import gregtechCH.data.LH_CH;
 import gregtechCH.data.OP_CH;
 import gregtechCH.util.ST_CH;
+import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -133,6 +136,7 @@ public class MultiTileEntityDeposit extends TileEntityBase03MultiTileEntities im
     protected OreDictMaterial mMaterial = MT.Coal;  // 用于显示的材料类型
     protected OreDictPrefix mPrefix = null;         // 方块具体的表面材质种类，仅客户端有效
     protected byte mState = 0;                      // 决定矿藏的状态
+    protected int mDepositRGB;
     
     protected long mDurability = 0L;
     protected StateAttribute[] mStateAttributes = ZL_SA;
@@ -168,13 +172,18 @@ public class MultiTileEntityDeposit extends TileEntityBase03MultiTileEntities im
         if (aNBT.hasKey(NBT_PROGRESS)) mProgress = aNBT.getLong(NBT_PROGRESS);
         if (aNBT.hasKey(NBT_MAXPROGRESS)) mMaxProgress = aNBT.getLong(NBT_MAXPROGRESS);
         updatePrefix();
+    
+        float tV = UT_CH.Code.getBrightness(mMaterial.fRGBaSolid);
+        // 材料颜色过暗的需要使用更加激进的混合来防止看不清原矿
+        if (tV < 0.3F)  mDepositRGB = UT_CH.Code.getMixRGBIntSic(CS_CH.COLOR_DEPOSIT, UT_CH.Code.getBrighterRGB(UT.Code.getRGBInt(mMaterial.fRGBaSolid), -0.16F), 0.80F, 0.60F);
+        else            mDepositRGB = UT_CH.Code.getMixRGBIntSic(CS_CH.COLOR_DEPOSIT, UT_CH.Code.getBrighterRGB(UT.Code.getRGBInt(mMaterial.fRGBaSolid), -0.20F), 0.80F, 0.10F);
     }
     @Override
     public void writeToNBT2(NBTTagCompound aNBT) {
         super.writeToNBT2(aNBT);
         aNBT.setByte(NBT_DESIGN, mState);
         UT.NBT.setNumber(aNBT, NBT_DURABILITY, mDurability<=0 ? -1 : mDurability); // 设为 -1 来防止没有 NBT_DURABILITY 条目，然后变成默认值
-    
+        
         ST.save(aNBT, NBT_INV_OUT, mOre);
         UT.NBT.setNumber(aNBT, NBT_PROGRESS, mProgress);
         UT.NBT.setNumber(aNBT, NBT_MAXPROGRESS, mMaxProgress);
@@ -300,7 +309,7 @@ public class MultiTileEntityDeposit extends TileEntityBase03MultiTileEntities im
     @Override public boolean isSideSolid(byte aSide) {return T;}
     
     protected ITexture getTexturePrefix() {return mPrefix == null ? null : BlockTextureDefault.get(mMaterial, mPrefix, mMaterial.contains(TD.Properties.GLOWING));}
-    @Override public ITexture getTexture(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {return aShouldSideBeRendered[aSide] ? BlockTextureMulti.get(BlockTextureDefault.get(Textures.BlockIcons.DEPOSIT, mMaterial.fRGBaSolid), getTexturePrefix(), BlockTextureDefault.get(Textures.BlockIcons.getDepositDamage(mState), mMaterial.fRGBaSolid)) : null;}
+    @Override public ITexture getTexture(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {return aShouldSideBeRendered[aSide] ? BlockTextureMulti.get(BlockTextureDefault.get(Textures.BlockIcons.DEPOSIT, mDepositRGB), getTexturePrefix(), BlockTextureDefault.get(Textures.BlockIcons.getDepositDamage(mState), mDepositRGB)) : null;}
     @SideOnly(Side.CLIENT) @Override public int colorMultiplier() {return UT.Code.getRGBInt(mMaterial.fRGBaSolid);}
     
     @Override public String getTileEntityName() {return "gt.multitileentity.deposit";}

@@ -40,21 +40,22 @@ public class CS_CH {
     public static final int ALPHA_COLOR = 0xff000000;
     // 记录一些方块的颜色
     public static final int
-              COLOR_BEDROCK          = 0x333333
-            , COLOR_COBBLESTONE      = 0x6e6e6e
-            , COLOR_OBSIDIAN         = 0x1e182b
-            , COLOR_GLOWSTONE        = 0x726f49
-            , COLOR_END_PORTAL_FRAME = 0x427367
-            , COLOR_GRASS            = 0x426b27
-            , COLOR_SANDWICH         = 0xf3d5ae
-            , COLOR_LOG              = 0x6d5837
-            , COLOR_WOOD             = 0x926633
-            , COLOR_STONE            = 0x7f7f7f
-            , COLOR_SAND             = 0xddd5a0
-            , COLOR_NETHERRACK       = 0xa65959
-            , COLOR_END_STONE        = 0xebf8b6
-            , COLOR_GREG_O_LANTERN   = 0xe3901d
-            ;
+          COLOR_BEDROCK          = 0x333333
+        , COLOR_DEPOSIT          = 0x555555
+        , COLOR_COBBLESTONE      = 0x6e6e6e
+        , COLOR_OBSIDIAN         = 0x1e182b
+        , COLOR_GLOWSTONE        = 0x726f49
+        , COLOR_END_PORTAL_FRAME = 0x427367
+        , COLOR_GRASS            = 0x426b27
+        , COLOR_SANDWICH         = 0xf3d5ae
+        , COLOR_LOG              = 0x6d5837
+        , COLOR_WOOD             = 0x926633
+        , COLOR_STONE            = 0x7f7f7f
+        , COLOR_SAND             = 0xddd5a0
+        , COLOR_NETHERRACK       = 0xa65959
+        , COLOR_END_STONE        = 0xebf8b6
+        , COLOR_GREG_O_LANTERN   = 0xe3901d
+        ;
     // 更多的可选颜色
     public static final short[]
               CA_BLUE_LIGHT_10         = {  0,  10, 255, 255}

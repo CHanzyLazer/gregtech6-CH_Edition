@@ -60,6 +60,8 @@ public class Textures {
 		, INSULATION_AROUND, INSULATION_QUADRUPLE, INSULATION_NONUPLE
 		// GTCH
 		, AXLE_CLOCKWISE_FAST, AXLE_COUNTERCLOCKWISE_FAST, AXLE_DOWN_FAST, AXLE_UP_FAST, AXLE_LEFT_FAST, AXLE_RIGHT_FAST
+		// GTCH
+		, DEPOSIT, DEPOSIT_DAMAGE1, DEPOSIT_DAMAGE2
 		
 		, AXLE, AXLE_CLOCKWISE, AXLE_COUNTERCLOCKWISE, AXLE_VERTICAL, AXLE_DOWN, AXLE_UP, AXLE_HORIZONTAL, AXLE_LEFT, AXLE_RIGHT
 		, GEAR, GEAR_CLOCKWISE, GEAR_COUNTERCLOCKWISE, GEARBOX, GEARBOX_AXLE
@@ -703,20 +705,31 @@ public class Textures {
 		// GTCH, 还是统一使用 switch 来实现, 用于指明轴的材质
 		public static BlockIcons getAxle(CS_CH.IconType aIconType, boolean aStop, boolean aCounterClockwise, boolean aFast) {
 			switch (aIconType) {
-				case SIDE_UP:
-					return aStop ? AXLE_HORIZONTAL : (aCounterClockwise ? (aFast ? AXLE_RIGHT_FAST : AXLE_RIGHT) : (aFast ? AXLE_LEFT_FAST : AXLE_LEFT));
-				case SIDE_DOWN:
-					return aStop ? AXLE_HORIZONTAL : (aCounterClockwise ? (aFast ? AXLE_LEFT_FAST : AXLE_LEFT) : (aFast ? AXLE_RIGHT_FAST : AXLE_RIGHT));
-				case SIDE_LEFT:
-					return aStop ? AXLE_VERTICAL : (aCounterClockwise ? (aFast ? AXLE_UP_FAST : AXLE_UP) : (aFast ? AXLE_DOWN_FAST : AXLE_DOWN));
-				case SIDE_RIGHT:
-					return aStop ? AXLE_VERTICAL : (aCounterClockwise ? (aFast ? AXLE_DOWN_FAST : AXLE_DOWN) : (aFast ? AXLE_UP_FAST : AXLE_UP));
-				case FRONT:
-					return aStop ? AXLE : (aCounterClockwise ? (aFast ? AXLE_COUNTERCLOCKWISE_FAST : AXLE_COUNTERCLOCKWISE) : (aFast ? AXLE_CLOCKWISE_FAST : AXLE_CLOCKWISE));
-				case BACK:
-					return aStop ? AXLE : (aCounterClockwise ? (aFast ? AXLE_CLOCKWISE_FAST : AXLE_CLOCKWISE) : (aFast ? AXLE_COUNTERCLOCKWISE_FAST : AXLE_COUNTERCLOCKWISE));
-				case VOID: default:
-					return VOID;
+			case SIDE_UP:
+				return aStop ? AXLE_HORIZONTAL : (aCounterClockwise ? (aFast ? AXLE_RIGHT_FAST : AXLE_RIGHT) : (aFast ? AXLE_LEFT_FAST : AXLE_LEFT));
+			case SIDE_DOWN:
+				return aStop ? AXLE_HORIZONTAL : (aCounterClockwise ? (aFast ? AXLE_LEFT_FAST : AXLE_LEFT) : (aFast ? AXLE_RIGHT_FAST : AXLE_RIGHT));
+			case SIDE_LEFT:
+				return aStop ? AXLE_VERTICAL : (aCounterClockwise ? (aFast ? AXLE_UP_FAST : AXLE_UP) : (aFast ? AXLE_DOWN_FAST : AXLE_DOWN));
+			case SIDE_RIGHT:
+				return aStop ? AXLE_VERTICAL : (aCounterClockwise ? (aFast ? AXLE_DOWN_FAST : AXLE_DOWN) : (aFast ? AXLE_UP_FAST : AXLE_UP));
+			case FRONT:
+				return aStop ? AXLE : (aCounterClockwise ? (aFast ? AXLE_COUNTERCLOCKWISE_FAST : AXLE_COUNTERCLOCKWISE) : (aFast ? AXLE_CLOCKWISE_FAST : AXLE_CLOCKWISE));
+			case BACK:
+				return aStop ? AXLE : (aCounterClockwise ? (aFast ? AXLE_CLOCKWISE_FAST : AXLE_CLOCKWISE) : (aFast ? AXLE_COUNTERCLOCKWISE_FAST : AXLE_COUNTERCLOCKWISE));
+			case VOID: default:
+				return VOID;
+			}
+		}
+		// GTCH, 还是统一使用 switch 来实现, 用于获取矿藏的损伤材质
+		public static BlockIcons getDepositDamage(byte aState) {
+			switch (aState) {
+			case 2:
+				return DEPOSIT_DAMAGE1;
+			case 3:
+				return DEPOSIT_DAMAGE2;
+			case 0: case 1: default:
+				return VOID;
 			}
 		}
 		

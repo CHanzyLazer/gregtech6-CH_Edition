@@ -83,6 +83,7 @@ import gregapi.util.UT;
 import gregapi.worldgen.GT6WorldGenerator;
 import gregtechCH.config.ConfigForge;
 import gregtechCH.data.LH_CH;
+import gregtechCH.data.OP_CH;
 import gregtechCH.data.TD_CH;
 import gregtechCH.lang.LanguageHandler_CH;
 import net.minecraft.block.Block;
@@ -133,7 +134,7 @@ public class GT_API extends Abstract_Mod {
 		MT.init();
 		BI.BAROMETER.toString();
 		OP.ore.toString();
-//		OP_CH.wireLPGt16.toString(); // GTCH stuff
+		OP_CH.deposit.toString(); // GTCH stuff
 		TD_CH.init(); // GTCH stuff
 		MT.initLater(); // GTCH, 保证引用项正确初始化
 		
@@ -165,6 +166,11 @@ public class GT_API extends Abstract_Mod {
 		OP.oreGravel        .addTextureSet(MD.GT, F);
 		OP.oreDense         .addTextureSet(MD.GT, F);
 		OP.oreBedrock       .addTextureSet(MD.GT, F);
+		// GTCH stuff
+		OP_CH.depositRich   .addTextureSet(MD.GT, F);
+		OP_CH.deposit       .addTextureSet(MD.GT, F);
+		OP_CH.depositSmall  .addTextureSet(MD.GT, F);
+		OP_CH.depositPoor   .addTextureSet(MD.GT, F);
 		
 		OP.pipeTiny         .addTextureSet(MD.GT, F);
 		OP.pipeSmall        .addTextureSet(MD.GT, F);

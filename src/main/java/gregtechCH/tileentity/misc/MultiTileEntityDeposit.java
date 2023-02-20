@@ -8,6 +8,7 @@ import gregapi.block.multitileentity.MultiTileEntityRegistry;
 import gregapi.data.*;
 import gregapi.network.INetworkHandler;
 import gregapi.network.IPacket;
+import gregapi.old.Textures;
 import gregapi.oredict.OreDictMaterial;
 import gregapi.oredict.OreDictPrefix;
 import gregapi.render.BlockTextureCopied;
@@ -20,6 +21,7 @@ import gregapi.util.ST;
 import gregapi.util.UT;
 import gregtechCH.code.Triplet;
 import gregtechCH.data.LH_CH;
+import gregtechCH.data.OP_CH;
 import gregtechCH.util.ST_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -118,13 +120,13 @@ public class MultiTileEntityDeposit extends TileEntityBase03MultiTileEntities im
         }
     }
     // 提供一个方法比较方便的注册矿藏，并且顺便注册假的合成表
-    public static void addDeposit(int aID, int aCreativeTabID, StateAttribute[] aStateAttributes, MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aBlock, Class<? extends TileEntity> aClass, OreDictMaterial aMat) {
+    public static void addDeposit(int aID, int aCreativeTabID, boolean aIsBedrock, StateAttribute[] aStateAttributes, MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aBlock, Class<? extends TileEntity> aClass, OreDictMaterial aMat) {
         NBTTagCompound rNBT = UT.NBT.make(NBT_MATERIAL, aMat);
         if (aStateAttributes.length > 0) {
             for (int i=0; i<aStateAttributes.length; ++i) aStateAttributes[i].save(rNBT, NBT_ATTRIBUTE+"."+i);
             UT.NBT.setNumber(rNBT, NBT_DURABILITY, aStateAttributes[0].mMaxDurability);
         }
-        aRegistry.add(RegType.GTCH, aMat.getLocal() + " Deposit", "Untyped", aID, aCreativeTabID, aClass, 0, 64, aBlock, rNBT);
+        aRegistry.add(RegType.GTCH, (aIsBedrock ? "Bedrock " : "") + aMat.getLocal() + " Deposit", "Untyped", aID, aCreativeTabID, aClass, 0, 64, aBlock, rNBT);
     }
     
     /* Main Code */
@@ -142,12 +144,14 @@ public class MultiTileEntityDeposit extends TileEntityBase03MultiTileEntities im
     // 根据 mDesign 获取具体的 prefix 种类
     protected void updatePrefix() {
         switch (mState) {
-        case 0:  {mPrefix = OP.oreBedrock; break;}
-        case 1:  {mPrefix = OP.oreSmall; break;}
+        case 0:  {mPrefix = OP_CH.depositRich; break;}
+        case 1:  {mPrefix = OP_CH.deposit; break;}
+        case 2:  {mPrefix = OP_CH.depositSmall; break;}
+        case 3:  {mPrefix = OP_CH.depositPoor; break;}
         default: {mPrefix = null; break;}
         }
     }
-    protected byte maxSate() {return 2;}
+    protected byte maxSate() {return 4;}
     
     @Override
     public void readFromNBT2(NBTTagCompound aNBT) {
@@ -295,7 +299,8 @@ public class MultiTileEntityDeposit extends TileEntityBase03MultiTileEntities im
     @Override public boolean isSurfaceOpaque(byte aSide) {return T;}
     @Override public boolean isSideSolid(byte aSide) {return T;}
     
-    @Override public ITexture getTexture(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {return aShouldSideBeRendered[aSide] ? BlockTextureMulti.get(BlockTextureCopied.get(Blocks.bedrock, 0), mPrefix == null ? null : BlockTextureDefault.get(mMaterial, mPrefix, mMaterial.contains(TD.Properties.GLOWING))) : null;}
+    protected ITexture getTexturePrefix() {return mPrefix == null ? null : BlockTextureDefault.get(mMaterial, mPrefix, mMaterial.contains(TD.Properties.GLOWING));}
+    @Override public ITexture getTexture(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {return aShouldSideBeRendered[aSide] ? BlockTextureMulti.get(BlockTextureDefault.get(Textures.BlockIcons.DEPOSIT, mMaterial.fRGBaSolid), getTexturePrefix(), BlockTextureDefault.get(Textures.BlockIcons.getDepositDamage(mState), mMaterial.fRGBaSolid)) : null;}
     @SideOnly(Side.CLIENT) @Override public int colorMultiplier() {return UT.Code.getRGBInt(mMaterial.fRGBaSolid);}
     
     @Override public String getTileEntityName() {return "gt.multitileentity.deposit";}

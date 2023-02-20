@@ -18,6 +18,7 @@ import gregtechCH.data.RM_CH;
 import gregtechCH.tileentity.batteries.eu.MultiTileEntityBatteryAdvEU8192;
 import gregtechCH.tileentity.batteries.eu.MultiTileEntityBatteryEU8192;
 import gregtechCH.tileentity.energy.MultiTileEntityMotorGas;
+import gregtechCH.tileentity.misc.MultiTileEntityBedrockDeposit;
 import gregtechCH.tileentity.misc.MultiTileEntityDeposit;
 import gregtechCH.tileentity.multiblocks.*;
 import gregtechCH.tileentity.sensors.*;
@@ -714,8 +715,11 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
     @Override protected void miscFinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
         /// 添加项
         // 新的基岩矿
-        MultiTileEntityDeposit.addDeposit(23300, 32764, new StateAttribute[]{new StateAttribute(1000, 0, OP.oreRaw.mat(MT.Coal,  1), 50, 100, null, 50, 10), new StateAttribute(2000, 1, OP.oreRaw.mat(MT.Coal,  1), 10, 100, null, 50, 10)}, aRegistry, aStone, MultiTileEntityDeposit.class, MT.Coal);
-        MultiTileEntityDeposit.addDeposit(23301, 32764, new StateAttribute[]{new StateAttribute(2000, 0, OP.oreRaw.mat(MT.Fe2O3, 1), 50, 100, null, 50, 10), new StateAttribute(1000, 1, OP.oreRaw.mat(MT.Fe2O3, 1), 50, 100, null, 50, 10)}, aRegistry, aStone, MultiTileEntityDeposit.class, MT.Fe2O3);
+        MultiTileEntityDeposit.addDeposit(23399, 32764, F, new StateAttribute[]{new StateAttribute(1000, 0, OP.oreRaw.mat(MT.NULL,  1), 50, 100, null, 50, 10), new StateAttribute(2000, 1, OP.oreRaw.mat(MT.NULL,  1), 10, 100, null, 50, 10)}, aRegistry, aStone, MultiTileEntityDeposit.class       , MT.NULL);
+        MultiTileEntityDeposit.addDeposit(23300, 32764, F, new StateAttribute[]{new StateAttribute(1000, 0, OP.oreRaw.mat(MT.Coal,  1), 50, 100, null, 50, 10), new StateAttribute(2000, 1, OP.oreRaw.mat(MT.Coal,  1), 10, 100, null, 50, 10)}, aRegistry, aStone, MultiTileEntityDeposit.class       , MT.Coal);
+        MultiTileEntityDeposit.addDeposit(23301, 32764, F, new StateAttribute[]{new StateAttribute(2000, 0, OP.oreRaw.mat(MT.Fe2O3, 1), 50, 100, null, 50, 10), new StateAttribute(1000, 1, OP.oreRaw.mat(MT.Fe2O3, 1), 50, 100, null, 50, 10)}, aRegistry, aStone, MultiTileEntityDeposit.class       , MT.Fe2O3);
+        MultiTileEntityDeposit.addDeposit(23350, 32764, T, new StateAttribute[]{new StateAttribute(1000, 0, OP.oreRaw.mat(MT.Coal,  1), 50, 100, null, 50, 10), new StateAttribute(2000, 1, OP.oreRaw.mat(MT.Coal,  1), 10, 100, null, 50, 10)}, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, MT.Coal);
+        MultiTileEntityDeposit.addDeposit(23351, 32764, T, new StateAttribute[]{new StateAttribute(2000, 0, OP.oreRaw.mat(MT.Fe2O3, 1), 50, 100, null, 50, 10), new StateAttribute(1000, 1, OP.oreRaw.mat(MT.Fe2O3, 1), 50, 100, null, 50, 10)}, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, MT.Fe2O3);
     }
     
     

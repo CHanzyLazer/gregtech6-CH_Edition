@@ -4,6 +4,7 @@ package gregtechCH.tileentity.misc;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.block.multitileentity.MultiTileEntityBlock;
+import gregapi.block.multitileentity.MultiTileEntityClassContainer;
 import gregapi.block.multitileentity.MultiTileEntityRegistry;
 import gregapi.data.LH;
 import gregapi.data.MT;
@@ -165,6 +166,8 @@ public class MultiTileEntityDeposit extends TileEntityBase03MultiTileEntities im
     }
     
     /* Main Code */
+    protected final static float ERROR = 0.2F;      // 每个状态的耐久度误差，让矿物的耐久存在一定随机性，目前使用全局的统一值来设定
+    protected float mMultiplier = 1.0F;             // 实际耐久度的倍率，越远的矿藏耐久度倍率越高
     protected OreDictMaterial mMaterial = MT.Coal;  // 用于显示的材料类型
     protected OreDictPrefix mPrefix = null;         // 方块具体的表面材质种类，仅客户端有效
     protected byte mState = 0;                      // 决定矿藏的状态
@@ -196,6 +199,7 @@ public class MultiTileEntityDeposit extends TileEntityBase03MultiTileEntities im
         for (int i = 0; i < maxSate(); ++i) mStateAttributes[i] = StateAttribute.load(aNBT, NBT_ATTRIBUTE+"."+i);
         mStateAttributes[mStateAttributes.length-1] = StateAttribute.get(0, 0, 0); // 仅用于防止数组越界
         
+        if (aNBT.hasKey(NBT_MULTIPLIER)) mMultiplier = aNBT.getFloat(NBT_MULTIPLIER);
         if (aNBT.hasKey(NBT_MATERIAL)) mMaterial = OreDictMaterial.get(aNBT.getString(NBT_MATERIAL));
         if (aNBT.hasKey(NBT_DESIGN)) mState = aNBT.getByte(NBT_DESIGN);
         if (aNBT.hasKey(NBT_DURABILITY)) mDurability = UT.Code.bind(0, mStateAttributes[mState].mMaxDurability, aNBT.getLong(NBT_DURABILITY));
@@ -213,6 +217,7 @@ public class MultiTileEntityDeposit extends TileEntityBase03MultiTileEntities im
     @Override
     public void writeToNBT2(NBTTagCompound aNBT) {
         super.writeToNBT2(aNBT);
+        if (mMultiplier != 1.0F) aNBT.setFloat(NBT_MULTIPLIER, mMultiplier);
         aNBT.setByte(NBT_DESIGN, mState);
         UT.NBT.setNumber(aNBT, NBT_DURABILITY, mDurability<=0 ? -1 : mDurability); // 设为 -1 来防止没有 NBT_DURABILITY 条目，然后变成默认值
         
@@ -223,6 +228,7 @@ public class MultiTileEntityDeposit extends TileEntityBase03MultiTileEntities im
     @Override
     public final NBTTagCompound writeItemNBT(NBTTagCompound aNBT) {
         aNBT = super.writeItemNBT(aNBT);
+        if (mMultiplier != 1.0F) aNBT.setFloat(NBT_MULTIPLIER, mMultiplier);
         aNBT.setByte(NBT_DESIGN, mState);
         UT.NBT.setNumber(aNBT, NBT_DURABILITY, mDurability<=0 ? -1 : mDurability); // 设为 -1 来防止没有 NBT_DURABILITY 条目，然后变成默认值
         return aNBT;
@@ -268,7 +274,7 @@ public class MultiTileEntityDeposit extends TileEntityBase03MultiTileEntities im
     public void nextState() {
         ++mState;
         if (mState > maxSate()) mState = 0; // “周期边界条件”
-        mDurability = mStateAttributes[mState].mMaxDurability;
+        mDurability = (long) (mStateAttributes[mState].mMaxDurability * (double) (mMultiplier * (RNGSUS.nextFloat()*(ERROR*2.0F)-ERROR+1.0F)));
         sendClientData(F, null); // 只进行图像更新，不需要 sendAll
     }
     // 挖掘并且返回挖掘的结果，如果失败返回 null
@@ -307,8 +313,17 @@ public class MultiTileEntityDeposit extends TileEntityBase03MultiTileEntities im
     // 提供比较简单的放置方块的接口
     public static MultiTileEntityRegistry MTE_REGISTRY = null;
     @Override public void onRegistration(MultiTileEntityRegistry aRegistry, short aID) {MTE_REGISTRY = aRegistry;}
-    public static boolean setBlock(World aWorld, int aX, int aY, int aZ, short aMetaData, byte aState, byte aDurability) {
-        return MTE_REGISTRY.mBlock.placeBlock(aWorld, aX, aY, aZ, SIDE_UP, aMetaData, UT.NBT.make(NBT_DESIGN, aState, NBT_DURABILITY, aDurability), F, F);
+    public static boolean setBlock(World aWorld, int aX, int aY, int aZ, short aMetaData) {
+        MultiTileEntityClassContainer tClass = MTE_REGISTRY.getClassContainer(aMetaData);
+        byte aState = (byte)RNGSUS.nextInt(((MultiTileEntityDeposit)tClass.mCanonicalTileEntity).maxSate());
+        long aDurability = (long)(StateAttribute.load(tClass.mParameters, NBT_ATTRIBUTE+"."+aState).mMaxDurability * (double) (RNGSUS.nextFloat() * (RNGSUS.nextFloat()*(ERROR*2.0F)-ERROR+1.0F)));
+        return setBlock(aWorld, aX, aY, aZ, aMetaData, aState, aDurability);
+    }
+    public static boolean setBlock(World aWorld, int aX, int aY, int aZ, short aMetaData, byte aState, long aDurability) {
+        NBTTagCompound rNBT = UT.NBT.make(NBT_DESIGN, aState, NBT_DURABILITY, aDurability);
+        float tDis = (float)Math.sqrt((float)aX*(float)aX + (float)aY*(float)aY + (float)aZ*(float)aZ) - 1000.0F;
+        if (tDis > 0.0) rNBT.setFloat(NBT_MULTIPLIER, (float)Math.sqrt(1.0F + Math.min(tDis*0.001F, 63.0F)*(RNGSUS.nextFloat()*(ERROR*2.0F)-ERROR+1.0F)));
+        return MTE_REGISTRY.mBlock.placeBlock(aWorld, aX, aY, aZ, SIDE_UP, aMetaData, rNBT, F, F);
     }
     
     // 数据同步，材质改变时及时更新

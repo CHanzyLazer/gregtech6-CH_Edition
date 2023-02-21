@@ -148,6 +148,7 @@ public class CS_CH {
         , NBT_OUTPUT_SELF               = "gtch.output.self"            // Boolean, Is the main multiblock output energy self. CHanzy
         
         , NBT_FAST                      = "gtch.fast"                   // Boolean, Is fast animation. CHanzy
+        , NBT_RATE                      = "gtch.rate"                   // Long, Rate of something. CHanzy
         
         , NBT_PREHEAT                   = "gtch.preheat"                // Boolean, Is machine preheating, for OmniOcular usage. CHanzy
         , NBT_PREHEAT_ENERGY            = "gtch.preheat.energy"         // Long, Energy required for preheating. CHanzy

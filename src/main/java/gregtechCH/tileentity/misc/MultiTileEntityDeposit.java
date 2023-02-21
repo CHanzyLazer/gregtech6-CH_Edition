@@ -7,6 +7,7 @@ import gregapi.block.multitileentity.MultiTileEntityBlock;
 import gregapi.block.multitileentity.MultiTileEntityRegistry;
 import gregapi.data.LH;
 import gregapi.data.MT;
+import gregapi.data.OP;
 import gregapi.data.TD;
 import gregapi.network.INetworkHandler;
 import gregapi.network.IPacket;
@@ -37,6 +38,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,35 +58,55 @@ public class MultiTileEntityDeposit extends TileEntityBase03MultiTileEntities im
     // 每个 state 的通用属性，用于方便调用以及添加时使用
     public static class StateAttribute {
         static final StateAttribute[] ZL_SA = new StateAttribute[0];
+        static final Triplet<ItemStack, Integer, Long> EMPTY_ORE = new Triplet<>(null, 0, 0L);
         
         final long mMaxDurability; // 满耐久
         final int mLevel; // 需要的“挖掘等级”
-        final List<Triplet<ItemStack, Integer, Integer>> mOreList; // <ore, prob, durability> 矿石，概率权重，消耗的耐久度
+        final long mMinEnergy; // 最低挖掘速度
+        final List<Triplet<ItemStack, Integer, Long>> mOreList; // <ore, prob, durability> 矿石，概率权重，消耗的耐久度
         final int mTotalProb;
         
-        public StateAttribute(long aMaxDurability, int aLevel) {
-            mMaxDurability = Math.max(0, aMaxDurability);
-            mLevel = Math.max(0, aLevel);
-            mOreList = Collections.emptyList();
-            mTotalProb = 0;
+        // 按照 prob 随机获取对应的矿物 Triplet
+        public @NotNull Triplet<ItemStack, Integer, Long> getOre() {
+            if (mTotalProb <= 0) return EMPTY_ORE;
+            int tRand = RNGSUS.nextInt(mTotalProb);
+            int tUpper = 0;
+            for (Triplet<ItemStack, Integer, Long> tTriplet : mOreList) {
+                tUpper += tTriplet.b;
+                if (tUpper > tRand) return tTriplet;
+            }
+            return EMPTY_ORE;
         }
-        public StateAttribute(long aMaxDurability, int aLevel, ItemStack aFirstOre, int aFirstProb, int aFirstDurability, Object... aOreList) {
-            mMaxDurability = Math.max(0, aMaxDurability);
-            mLevel = Math.max(0, aLevel);
-            List<Triplet<ItemStack, Integer, Integer>> tOreProbList = new ArrayList<>(aOreList.length/2 + 1);
+        
+        public static StateAttribute get(long aMaxDurability, int aLevel, long aMinEnergy) {
+            return new StateAttribute(aMaxDurability, aLevel, aMinEnergy, Collections.emptyList());
+        }
+        public static StateAttribute get(long aMaxDurability, int aLevel, long aMinEnergy, List<OreDictMaterial> aByProducts, OreDictPrefix aProductsPrefix, int aProductsProb, long aProductsDurability, ItemStack aFirstOre, int aFirstProb, long aFirstDurability, Object... aOreList) {
+            if (aByProducts != null && !aByProducts.isEmpty()) {
+                Object[] nOreList = new Object[aOreList.length + aByProducts.size()*3];
+                System.arraycopy(aOreList, 0, nOreList, 0, aOreList.length);
+                for (int i = 0; i < aByProducts.size(); ++i) {
+                    nOreList[aOreList.length+i*3  ] = aProductsPrefix.mat(aByProducts.get(i), 1);
+                    nOreList[aOreList.length+i*3+1] = aProductsProb;
+                    nOreList[aOreList.length+i*3+2] = aProductsDurability;
+                }
+                aOreList = nOreList;
+            }
+            return get(aMaxDurability, aLevel, aMinEnergy, aFirstOre, aFirstProb, aFirstDurability, aOreList);
+        }
+        public static StateAttribute get(long aMaxDurability, int aLevel, long aMinEnergy, ItemStack aFirstOre, int aFirstProb, long aFirstDurability, Object... aOreList) {
+            List<Triplet<ItemStack, Integer, Long>> tOreProbList = new ArrayList<>(aOreList.length/2 + 1);
             tOreProbList.add(new Triplet<>(aFirstOre, Math.max(0, aFirstProb), Math.max(0, aFirstDurability)));
-            for (int i=2; i<aOreList.length; i+=3) tOreProbList.add(new Triplet<>((ItemStack)aOreList[i-2], Math.max(0, (Integer)aOreList[i-1]), Math.max(0, (Integer)aOreList[i])));
-            mOreList = Collections.unmodifiableList(tOreProbList);
-            int tTotalProb = 0;
-            for (Triplet<ItemStack, Integer, Integer> tTriplet : mOreList) tTotalProb += tTriplet.b;
-            mTotalProb = tTotalProb;
+            for (int i=2; i<aOreList.length; i+=3) tOreProbList.add(new Triplet<>((ItemStack)aOreList[i-2], Math.max(0, (Integer)aOreList[i-1]), Math.max(0, (Long)aOreList[i])));
+            return new StateAttribute(aMaxDurability, aLevel, aMinEnergy, tOreProbList);
         }
-        StateAttribute(long aMaxDurability, int aLevel, List<Triplet<ItemStack, Integer, Integer>> aOreProbList) {
+        StateAttribute(long aMaxDurability, int aLevel, long aMinEnergy, List<Triplet<ItemStack, Integer, Long>> aOreProbList) {
             mMaxDurability = Math.max(0, aMaxDurability);
             mLevel = Math.max(0, aLevel);
+            mMinEnergy = Math.max(0, aMinEnergy);
             mOreList = Collections.unmodifiableList(aOreProbList);
             int tTotalProb = 0;
-            for (Triplet<ItemStack, Integer, Integer> tTriplet : mOreList) tTotalProb += tTriplet.b;
+            for (Triplet<ItemStack, Integer, Long> tTriplet : mOreList) tTotalProb += tTriplet.b;
             mTotalProb = tTotalProb;
         }
         
@@ -94,35 +116,45 @@ public class MultiTileEntityDeposit extends TileEntityBase03MultiTileEntities im
             NBTTagCompound tNBT = UT.NBT.make();
             UT.NBT.setNumber(tNBT, NBT_MAXDURABILITY, mMaxDurability);
             UT.NBT.setNumber(tNBT, NBT_LEVEL, mLevel);
+            UT.NBT.setNumber(tNBT, NBT_MINENERGY, mMinEnergy);
             if (!mOreList.isEmpty()) {
                 NBTTagList tNBTOreList = new NBTTagList();
-                for (Triplet<ItemStack, Integer, Integer> tTriplet : mOreList) tNBTOreList.appendTag(UT.NBT.make("ore", ST_CH.uniqueName(tTriplet.a), "prob", tTriplet.b, "dur", tTriplet.c));
+                for (Triplet<ItemStack, Integer, Long> tTriplet : mOreList) tNBTOreList.appendTag(UT.NBT.make("ore", ST_CH.uniqueName(tTriplet.a), "prob", tTriplet.b, "dur", tTriplet.c));
                 tNBT.setTag("ore.list", tNBTOreList);
             }
             rNBT.setTag(aKey, tNBT);
         }
         public static StateAttribute load(NBTTagCompound aNBT, String aKey) {
-            if (!aNBT.hasKey(aKey)) return new StateAttribute(0, 0);
+            if (!aNBT.hasKey(aKey)) return get(0, 0, 0);
             NBTTagCompound tNBT = aNBT.getCompoundTag(aKey);
-            if (tNBT.hasNoTags()) return new StateAttribute(0, 0);
+            if (tNBT.hasNoTags()) return get(0, 0, 0);
             
             long tMaxDurability = tNBT.getLong(NBT_MAXDURABILITY);
             int tLevel = tNBT.getInteger(NBT_LEVEL);
-            if (!tNBT.hasKey("ore.list")) return new StateAttribute(tMaxDurability, tLevel);
+            long tMinEnergy = tNBT.getLong(NBT_MINENERGY);
+            if (!tNBT.hasKey("ore.list")) return get(tMaxDurability, tLevel, tMinEnergy);
             NBTBase tTag = tNBT.getTag("ore.list");
-            if (!(tTag instanceof NBTTagList)) return new StateAttribute(tMaxDurability, tLevel);
+            if (!(tTag instanceof NBTTagList)) return get(tMaxDurability, tLevel, tMinEnergy);
             NBTTagList tNBTOreList = (NBTTagList) tTag;
-            if (tNBTOreList.tagCount() == 0) return new StateAttribute(tMaxDurability, tLevel);
+            if (tNBTOreList.tagCount() == 0) return get(tMaxDurability, tLevel, tMinEnergy);
             
-            List<Triplet<ItemStack, Integer, Integer>> tOreProbList = new ArrayList<>(tNBTOreList.tagCount());
+            List<Triplet<ItemStack, Integer, Long>> tOreProbList = new ArrayList<>(tNBTOreList.tagCount());
             for (int i = 0; i < tNBTOreList.tagCount(); ++i) {
                 NBTTagCompound tNBTOre = tNBTOreList.getCompoundTagAt(i);
-                tOreProbList.add(new Triplet<>(ST_CH.make(tNBTOre.getString("ore")), tNBTOre.getInteger("prob"), tNBTOre.getInteger("dur")));
+                tOreProbList.add(new Triplet<>(ST_CH.make(tNBTOre.getString("ore")), tNBTOre.getInteger("prob"), tNBTOre.getLong("dur")));
             }
-            return new StateAttribute(tMaxDurability, tLevel, tOreProbList);
+            return new StateAttribute(tMaxDurability, tLevel, tMinEnergy, tOreProbList);
         }
     }
     // 提供一个方法比较方便的注册矿藏，并且顺便注册假的合成表
+    public static void addDeposit(int aID, int aCreativeTabID, boolean aIsBedrock, long aBaseMaxDurability, int aBaseLevel, long aBaseEnergy, long aBaseDurability, MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aBlock, Class<? extends TileEntity> aClass, OreDictMaterial aMat) {
+        StateAttribute[] aStateAttributes = new StateAttribute[4];
+        aStateAttributes[0] = StateAttribute.get(aBaseMaxDurability     , aBaseLevel  , aBaseEnergy   ,                                                      OP.oreRaw.mat(aMat, 1), 100, aBaseDurability  , null,  100, aBaseDurability/16L);
+        aStateAttributes[1] = StateAttribute.get(aBaseMaxDurability*10L , aBaseLevel+1, aBaseEnergy*2L, aMat.mByProducts, OP.oreRaw,  1, aBaseDurability*2L, OP.oreRaw.mat(aMat, 1), 100, aBaseDurability*2L, null,  400, aBaseDurability/2L );
+        aStateAttributes[2] = StateAttribute.get(aBaseMaxDurability*50L , aBaseLevel+2, aBaseEnergy*4L, aMat.mByProducts, OP.oreRaw, 10, aBaseDurability*4L, OP.oreRaw.mat(aMat, 1), 100, aBaseDurability*4L, null, 1600, aBaseDurability/2L );
+        aStateAttributes[3] = StateAttribute.get(aBaseMaxDurability*100L, aBaseLevel+3, aBaseEnergy*4L, aMat.mByProducts, OP.oreRaw, 20, aBaseDurability*4L, OP.oreRaw.mat(aMat, 1), 100, aBaseDurability*4L, null, 3200, aBaseDurability    );
+        addDeposit(aID, aCreativeTabID, aIsBedrock, aStateAttributes, aRegistry, aBlock, aClass, aMat);
+    }
     public static void addDeposit(int aID, int aCreativeTabID, boolean aIsBedrock, StateAttribute[] aStateAttributes, MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aBlock, Class<? extends TileEntity> aClass, OreDictMaterial aMat) {
         NBTTagCompound rNBT = UT.NBT.make(NBT_MATERIAL, aMat);
         if (aStateAttributes.length > 0) {
@@ -162,7 +194,7 @@ public class MultiTileEntityDeposit extends TileEntityBase03MultiTileEntities im
         super.readFromNBT2(aNBT);
         mStateAttributes = new StateAttribute[maxSate()+1];
         for (int i = 0; i < maxSate(); ++i) mStateAttributes[i] = StateAttribute.load(aNBT, NBT_ATTRIBUTE+"."+i);
-        mStateAttributes[mStateAttributes.length-1] = new StateAttribute(0, 0); // 仅用于防止数组越界
+        mStateAttributes[mStateAttributes.length-1] = StateAttribute.get(0, 0, 0); // 仅用于防止数组越界
         
         if (aNBT.hasKey(NBT_MATERIAL)) mMaterial = OreDictMaterial.get(aNBT.getString(NBT_MATERIAL));
         if (aNBT.hasKey(NBT_DESIGN)) mState = aNBT.getByte(NBT_DESIGN);
@@ -172,7 +204,7 @@ public class MultiTileEntityDeposit extends TileEntityBase03MultiTileEntities im
         if (aNBT.hasKey(NBT_PROGRESS)) mProgress = aNBT.getLong(NBT_PROGRESS);
         if (aNBT.hasKey(NBT_MAXPROGRESS)) mMaxProgress = aNBT.getLong(NBT_MAXPROGRESS);
         updatePrefix();
-    
+        
         float tV = UT_CH.Code.getBrightness(mMaterial.fRGBaSolid);
         // 材料颜色过暗的需要使用更加激进的混合来防止看不清原矿
         if (tV < 0.3F)  mDepositRGB = UT_CH.Code.getMixRGBIntSic(CS_CH.COLOR_DEPOSIT, UT_CH.Code.getBrighterRGB(UT.Code.getRGBInt(mMaterial.fRGBaSolid), -0.16F), 0.80F, 0.60F);
@@ -199,8 +231,13 @@ public class MultiTileEntityDeposit extends TileEntityBase03MultiTileEntities im
     
     @Override
     public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
-        aList.add(LH.Chat.CYAN + "mState: " + LH.Chat.WHITE + mState);
-        aList.add(LH.Chat.CYAN + "Durability: " + LH.Chat.WHITE + LH_CH.getToolTipEfficiencySimple(UT.Code.units(mDurability, mStateAttributes[mState].mMaxDurability, 10000, F)));
+        aList.add(LH.Chat.CYAN + LH_CH.get("gtch.chat.deposit.state")      + LH.Chat.WHITE + mState);
+        aList.add(LH.Chat.CYAN + LH_CH.get("gtch.chat.deposit.durability") + LH.Chat.WHITE + LH.percent(UT.Code.units(mDurability, mStateAttributes[mState].mMaxDurability, 10000, F)) + " %");
+    }
+    
+    static {
+        LH_CH.add("gtch.chat.deposit.state", "State:");
+        LH_CH.add("gtch.chat.deposit.durability", "Durability:");
     }
     
     // 目前用于 debug
@@ -212,11 +249,18 @@ public class MultiTileEntityDeposit extends TileEntityBase03MultiTileEntities im
             return 10000;
         }
         if (aTool.equals(TOOL_monkeywrench)) {
-            ItemStack tOre = dig(1, 10);
+            ItemStack tOre = dig(15, 128);
             if (tOre != null) {
                 if (!(aPlayer instanceof EntityPlayer) || !UT.Inventories.addStackToPlayerInventory((EntityPlayer) aPlayer, tOre)) ST.place(getWorld(), getOffset(aSide, 1), tOre);
             }
             return 10000;
+        }
+        if (aTool.equals(TOOL_magnifyingglass)) {
+            if (aChatReturn != null) {
+                aChatReturn.add(LH_CH.get("gtch.chat.deposit.state")      + mState);
+                aChatReturn.add(LH_CH.get("gtch.chat.deposit.durability") + mDurability + " (" + LH.percent(UT.Code.units(mDurability, mStateAttributes[mState].mMaxDurability, 10000, F)) + " %)");
+            }
+            return 1;
         }
         return 0;
     }
@@ -228,13 +272,14 @@ public class MultiTileEntityDeposit extends TileEntityBase03MultiTileEntities im
         sendClientData(F, null); // 只进行图像更新，不需要 sendAll
     }
     // 挖掘并且返回挖掘的结果，如果失败返回 null
-    public ItemStack dig(int aLevel, int aEnergy) {
+    public ItemStack dig(int aLevel, long aEnergy) {
         // 状态判断
         if (mState >= maxSate()) {onLastState(); return null;}
         if (mDurability <= 0) nextState();
         if (mState >= maxSate()) {onLastState(); return null;}
         // 挖掘等级判断
-        if (aEnergy <= 0 || aLevel < mStateAttributes[mState].mLevel) return null;
+        if (aEnergy < mStateAttributes[mState].mMinEnergy || aLevel < mStateAttributes[mState].mLevel) return null;
+        aEnergy = (long) Math.sqrt(aEnergy * mStateAttributes[mState].mMinEnergy); // 同样超过最低能量的会平方降低效率
         // 增加挖掘进度
         mProgress += aEnergy;
         // 挖掘完成判断
@@ -247,18 +292,9 @@ public class MultiTileEntityDeposit extends TileEntityBase03MultiTileEntities im
             if (mDurability <= 0) nextState();
             if (mState >= maxSate()) {onLastState(); return null;}
             // 随机选择下次的输出
-            if (mStateAttributes[mState].mTotalProb > 0) {
-                int tRand = rng(mStateAttributes[mState].mTotalProb);
-                int tUpper = 0;
-                for (Triplet<ItemStack, Integer, Integer> tTriplet : mStateAttributes[mState].mOreList) {
-                    tUpper += tTriplet.b;
-                    if (tUpper > tRand) {
-                        mOre = ST.copy(tTriplet.a);
-                        mMaxProgress = tTriplet.c;
-                        break;
-                    }
-                }
-            }
+            Triplet<ItemStack, Integer, Long> tTriplet = mStateAttributes[mState].getOre();
+            mOre = ST.copy(tTriplet.a);
+            mMaxProgress = tTriplet.c;
         }
         return tOutput;
     }

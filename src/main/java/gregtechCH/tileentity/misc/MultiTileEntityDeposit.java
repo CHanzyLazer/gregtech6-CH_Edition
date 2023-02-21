@@ -202,7 +202,7 @@ public class MultiTileEntityDeposit extends TileEntityBase03MultiTileEntities im
         if (aNBT.hasKey(NBT_MULTIPLIER)) mMultiplier = aNBT.getFloat(NBT_MULTIPLIER);
         if (aNBT.hasKey(NBT_MATERIAL)) mMaterial = OreDictMaterial.get(aNBT.getString(NBT_MATERIAL));
         if (aNBT.hasKey(NBT_DESIGN)) mState = aNBT.getByte(NBT_DESIGN);
-        if (aNBT.hasKey(NBT_DURABILITY)) mDurability = UT.Code.bind(0, mStateAttributes[mState].mMaxDurability, aNBT.getLong(NBT_DURABILITY));
+        if (aNBT.hasKey(NBT_DURABILITY)) mDurability = Math.max(0, aNBT.getLong(NBT_DURABILITY));
         
         if (aNBT.hasKey(NBT_INV_OUT)) mOre = ST.load(aNBT, NBT_INV_OUT);
         if (aNBT.hasKey(NBT_PROGRESS)) mProgress = aNBT.getLong(NBT_PROGRESS);
@@ -275,6 +275,7 @@ public class MultiTileEntityDeposit extends TileEntityBase03MultiTileEntities im
         ++mState;
         if (mState > maxSate()) mState = 0; // “周期边界条件”
         mDurability = (long) (mStateAttributes[mState].mMaxDurability * (double) (mMultiplier * (RNGSUS.nextFloat()*(ERROR*2.0F)-ERROR+1.0F)));
+        getWorld().playAuxSFXAtEntity(null, 2001, xCoord, yCoord, zCoord, Block.getIdFromBlock(getBlock(xCoord, yCoord, zCoord))+(getBlockMetadata()<<12));
         sendClientData(F, null); // 只进行图像更新，不需要 sendAll
     }
     // 挖掘并且返回挖掘的结果，如果失败返回 null

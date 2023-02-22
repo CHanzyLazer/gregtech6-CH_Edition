@@ -49,6 +49,7 @@ import static gregapi.block.multitileentity.IMultiTileEntity.*;
 import static gregapi.data.CS.*;
 import static gregtechCH.data.CS_CH.*;
 import static gregtechCH.tileentity.misc.MultiTileEntityDeposit.StateAttribute.ZL_SA;
+import static gregtechCH.config.ConfigForge.*;
 
 /**
  * @author CHanzy
@@ -322,8 +323,8 @@ public class MultiTileEntityDeposit extends TileEntityBase03MultiTileEntities im
     }
     public static boolean setBlock(World aWorld, int aX, int aY, int aZ, short aMetaData, byte aState, long aDurability) {
         NBTTagCompound rNBT = UT.NBT.make(NBT_DESIGN, aState, NBT_DURABILITY, aDurability);
-        float tDis = (float)Math.sqrt((float)aX*(float)aX + (float)aY*(float)aY + (float)aZ*(float)aZ) - 1000.0F;
-        if (tDis > 0.0) rNBT.setFloat(NBT_MULTIPLIER, (float)Math.sqrt(1.0F + Math.min(tDis*0.001F, 63.0F)*(RNGSUS.nextFloat()*(ERROR*2.0F)-ERROR+1.0F)));
+        float tDis = (float)Math.sqrt((float)aX*(float)aX + (float)aY*(float)aY + (float)aZ*(float)aZ) - DATA_GENERATE.minMultiplierDistance;
+        if (tDis > 0.0) rNBT.setFloat(NBT_MULTIPLIER, (float)Math.sqrt(1.0F + Math.min(tDis*DATA_GENERATE.multiplierRatio, DATA_GENERATE.maxMultiplier*DATA_GENERATE.maxMultiplier-1.0F)*(RNGSUS.nextFloat()*(ERROR*2.0F)-ERROR+1.0F)));
         return MTE_REGISTRY.mBlock.placeBlock(aWorld, aX, aY, aZ, SIDE_UP, aMetaData, rNBT, F, F);
     }
     

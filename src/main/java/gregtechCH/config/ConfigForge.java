@@ -51,6 +51,11 @@ public class ConfigForge {
         public static int targetRunTime;
         public static float growthFactor;
     }
+    public static class DATA_GENERATE {
+        public static float minMultiplierDistance;
+        public static float multiplierRatio;
+        public static float maxMultiplier;
+    }
     public static class DATA_MACHINES {
         public static boolean motorExplodeCheck;
         public static boolean motorExplodeByLength;
@@ -91,12 +96,12 @@ public class ConfigForge {
         
         DATA_GTCH.disableGTRerender         = ConfigsGTCH.GTCH.get(ConfigCategories_CH.optimize, "disable_GT_rerender_(gt6_false)",  F);
         DATA_GTCH.rerenderAll               = ConfigsGTCH.GTCH.get(ConfigCategories_CH.optimize, "rerender_all_(gt6_true)",  F);
-        DATA_GTCH.rerenderMainTick          = UT.Code.bind7(ConfigsGTCH.GTCH.get(ConfigCategories_CH.optimize, "rerender_main_tick_(gt6_?)",  2));
-        DATA_GTCH.rerenderAroundTick        = UT.Code.bind7(ConfigsGTCH.GTCH.get(ConfigCategories_CH.optimize, "rerender_around_tick_(gt6_?)",  1));
-        DATA_GTCH.rerenderSleepTick         = UT.Code.bind7(ConfigsGTCH.GTCH.get(ConfigCategories_CH.optimize, "rerender_sleep_tick_(gt6_?)",  0));
-        DATA_GTCH.rerenderChunkPerTick      = UT.Code.bind7(ConfigsGTCH.GTCH.get(ConfigCategories_CH.optimize, "rerender_chunk_per_tick_(gt6_?)",  1));
-        DATA_GTCH.rerenderMainLength        = UT.Code.bind7(ConfigsGTCH.GTCH.get(ConfigCategories_CH.optimize, "rerender_main_length_(gt6_?)",  4));
-        DATA_GTCH.rerenderAroundLength      = UT.Code.bind7(ConfigsGTCH.GTCH.get(ConfigCategories_CH.optimize, "rerender_around_length_(gt6_?)",  1));
+        DATA_GTCH.rerenderMainTick          = UT.Code.bind7(ConfigsGTCH.GTCH.get(ConfigCategories_CH.optimize, "rerender_main_tick_(gt6_?)", 2));
+        DATA_GTCH.rerenderAroundTick        = UT.Code.bind7(ConfigsGTCH.GTCH.get(ConfigCategories_CH.optimize, "rerender_around_tick_(gt6_?)", 1));
+        DATA_GTCH.rerenderSleepTick         = UT.Code.bind7(ConfigsGTCH.GTCH.get(ConfigCategories_CH.optimize, "rerender_sleep_tick_(gt6_?)", 0));
+        DATA_GTCH.rerenderChunkPerTick      = UT.Code.bind7(ConfigsGTCH.GTCH.get(ConfigCategories_CH.optimize, "rerender_chunk_per_tick_(gt6_?)", 1));
+        DATA_GTCH.rerenderMainLength        = UT.Code.bind7(ConfigsGTCH.GTCH.get(ConfigCategories_CH.optimize, "rerender_main_length_(gt6_?)", 4));
+        DATA_GTCH.rerenderAroundLength      = UT.Code.bind7(ConfigsGTCH.GTCH.get(ConfigCategories_CH.optimize, "rerender_around_length_(gt6_?)", 1));
         DATA_GTCH.rerenderMainMaxChunk = DATA_GTCH.rerenderMainTick * DATA_GTCH.rerenderChunkPerTick;
         DATA_GTCH.rerenderAroundMaxChunk = DATA_GTCH.rerenderAroundTick * DATA_GTCH.rerenderChunkPerTick;
         LinkedList<RerenderTick> tList = new LinkedList<>();
@@ -107,9 +112,13 @@ public class ConfigForge {
         tList.addFirst(RerenderTick.INIT); // 保证第一个是 INIT
         DATA_GTCH.rerenderTickList = tList.toArray(new RerenderTick[0]);
         
-        DATA_GTCH.overrideTickThread        = ConfigsGTCH.GTCH.get(ConfigCategories_CH.multithread, "override_tick_thread_(gt6_1)",  0);
-        DATA_GTCH.targetRunTime             = ConfigsGTCH.GTCH.get(ConfigCategories_CH.multithread, "target_run_time_(gt6_?)",  10);
-        DATA_GTCH.growthFactor              = (float)ConfigsGTCH.GTCH.get(ConfigCategories_CH.multithread, "growth_factor_(gt6_?)",  2.0F);
+        DATA_GTCH.overrideTickThread        = ConfigsGTCH.GTCH.get(ConfigCategories_CH.multithread, "override_tick_thread_(gt6_1)", 0);
+        DATA_GTCH.targetRunTime             = ConfigsGTCH.GTCH.get(ConfigCategories_CH.multithread, "target_run_time_(gt6_?)", 10);
+        DATA_GTCH.growthFactor              = (float)ConfigsGTCH.GTCH.get(ConfigCategories_CH.multithread, "growth_factor_(gt6_?)", 2.0F);
+    
+        DATA_GENERATE.minMultiplierDistance = (float)ConfigsGTCH.GTCH.get(ConfigCategories_CH.Generate.deposit, "min_multiplier_distance_(gt6_?)", 1000.0F);
+        DATA_GENERATE.multiplierRatio       = (float)ConfigsGTCH.GTCH.get(ConfigCategories_CH.Generate.deposit, "multiplier_ratio_(gt6_?)", 0.001F);
+        DATA_GENERATE.maxMultiplier         = (float)ConfigsGTCH.GTCH.get(ConfigCategories_CH.Generate.deposit, "max_multiplier_(gt6_?)", 8.0F);
         
         DATA_MACHINES.motorExplodeCheck     = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.generatorMotor, "motor_explode_check_(gt6_?)", T);
         DATA_MACHINES.motorExplodeByLength  = ConfigsGTCH.MACHINES.get(ConfigCategories_CH.Machines.generatorMotor, "motor_explode_by_length_(gt6_false)", T);

@@ -9,6 +9,10 @@ public enum ConfigCategories_CH {
     colour,
     optimize,
     multithread;
+    
+    public enum Generate {
+        deposit;
+    }
     public enum Machines {
         basic,
         boiler,

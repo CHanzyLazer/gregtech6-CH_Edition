@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -80,6 +80,7 @@ public class MultiTileEntityRegistry {
 	private static final HashMap<String, MultiTileEntityRegistry> NAMED_REGISTRIES = new HashMap<>();
 	private static final ItemStackMap<ItemStackContainer, MultiTileEntityRegistry> REGISTRIES = new ItemStackMap<>();
 	private static final HashSetNoNulls<Class<?>> sRegisteredTileEntities = new HashSetNoNulls<>();
+	private static final HashSetNoNulls<String> sRegisteredTileEntityClassNames = new HashSetNoNulls<>();
 	private final HashSetNoNulls<Class<?>> mRegisteredTileEntities = new HashSetNoNulls<>();
 	
 	public HashMap<Short, CreativeTab> mCreativeTabs = new HashMap<>();
@@ -110,7 +111,7 @@ public class MultiTileEntityRegistry {
 		mNameInternal = aNameInternal;
 		mBlock = aBlock;
 		mBlock.mMultiTileEntityRegistry = this;
-		REGISTRIES.put(new ItemStackContainer(mBlock, 1, W), this);
+		REGISTRIES.put(mBlock, W, this);
 		NAMED_REGISTRIES.put(mNameInternal, this);
 	}
 	
@@ -307,13 +308,13 @@ public class MultiTileEntityRegistry {
 			if (tFailed) return null;
 			assert aClassContainer != null;
 			// 目前所有的非 greg 的 MTE 都使用外置的语言文件
-			if (aClassContainer.mRegType == RegType.GREG) LH.add(mNameInternal+"."+ aClassContainer.mID+".name", aLocalised);
-			else LH_CH.add(aClassContainer.mRegType, mNameInternal+"."+ aClassContainer.mID+".name", aLocalised);
+			if (aClassContainer.mRegType == RegType.GREG) LH.add(mNameInternal+"."+ aClassContainer.mID, aLocalised);
+			else LH_CH.add(aClassContainer.mRegType, mNameInternal+"."+ aClassContainer.mID, aLocalised);
 			
 			mRegistry.put(aClassContainer.mID, aClassContainer);
 			mRegistrations.add(aClassContainer);
 			if (!mCreativeTabs.containsKey(aClassContainer.mCreativeTabID)) mCreativeTabs.put(aClassContainer.mCreativeTabID, new CreativeTab(mNameInternal+"."+ aClassContainer.mCreativeTabID, aCategoricalName, Item.getItemFromBlock(mBlock), aClassContainer.mCreativeTabID));
-			if (sRegisteredTileEntities.add(aClassContainer.mCanonicalTileEntity.getClass())) {
+			if (sRegisteredTileEntityClassNames.add(aClassContainer.mCanonicalTileEntity.getClass().getName()) && sRegisteredTileEntities.add(aClassContainer.mCanonicalTileEntity.getClass())) {
 				if (aClassContainer.mCanonicalTileEntity instanceof IMTE_OnRegistrationFirst) ((IMTE_OnRegistrationFirst) aClassContainer.mCanonicalTileEntity).onRegistrationFirst(MultiTileEntityRegistry.this, aClassContainer.mID);
 				if (CODE_CLIENT && aClassContainer.mCanonicalTileEntity instanceof IMTE_OnRegistrationFirstClient) ((IMTE_OnRegistrationFirstClient) aClassContainer.mCanonicalTileEntity).onRegistrationFirstClient(MultiTileEntityRegistry.this, aClassContainer.mID);
 			}
@@ -435,7 +436,7 @@ public class MultiTileEntityRegistry {
 	}
 	
 	// get 由于是共用的一个语言 map 所以可以不用改
-	public String getLocal(int aID) {return LH.get(mNameInternal+"."+aID+".name");}
+	public String getLocal(int aID) {return LH.get(mNameInternal+"."+aID);}
 	
 	public MultiTileEntityClassContainer getClassContainer(int aID) {return mRegistry.get((short)aID);}
 	public MultiTileEntityClassContainer getClassContainer(ItemStack aStack) {return getClassContainer(ST.meta_(aStack));}

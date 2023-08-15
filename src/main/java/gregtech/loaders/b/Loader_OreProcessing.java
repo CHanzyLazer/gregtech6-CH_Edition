@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -29,7 +29,6 @@ import gregapi.cover.CoverRegistry;
 import gregapi.cover.covers.CoverTextureMulti;
 import gregapi.cover.covers.CoverTextureSimple;
 import gregapi.data.*;
-import gregapi.data.CS.*;
 import gregapi.item.IItemGT;
 import gregapi.oredict.OreDictManager;
 import gregapi.oredict.OreDictMaterial;
@@ -181,8 +180,8 @@ public class Loader_OreProcessing implements Runnable {
 
 		arrowGtWood                 .addListener(new OreProcessing_Shapeless( 1, tCategory + "arrowsWooden"             , new Object[] {toolHeadArrow, arrowGtWood   .dat(MT.Empty)}, ANTIMATTER.NOT));
 		arrowGtPlastic              .addListener(new OreProcessing_Shapeless( 1, tCategory + "arrowsPlastic"            , new Object[] {toolHeadArrow, arrowGtPlastic.dat(MT.Empty)}, ANTIMATTER.NOT));
-		cableGt01                   .addListener(new OreProcessing_Shapeless( 1, null, new Object[] {wireGt01, plate.dat(MT.Rubber)                                         }, ANTIMATTER.NOT));
-		cableGt02                   .addListener(new OreProcessing_Shapeless( 1, null, new Object[] {wireGt02, plate.dat(MT.Rubber)                                         }, ANTIMATTER.NOT));
+		cableGt01                   .addListener(new OreProcessing_Shapeless( 1, null, new Object[] {wireGt01, plate.dat(ANY.Rubber)                                        }, ANTIMATTER.NOT));
+		cableGt02                   .addListener(new OreProcessing_Shapeless( 1, null, new Object[] {wireGt02, plate.dat(ANY.Rubber)                                        }, ANTIMATTER.NOT));
 		chemtube                    .addListener(new OreProcessing_Shapeless( 1, null, new Object[] {dustTiny, chemtube.mat(MT.Empty, 1)                                    }, (ICondition<OreDictMaterial>)ICondition.TRUE));
 		dustTiny                    .addListener(new OreProcessing_Shapeless( 1, null, new Object[] {chemtube                                                               }, meltmin(DEF_ENV_TEMP)));
 		toolHeadRawUniversalSpade   .addListener(new OreProcessing_Shapeless( 1, null, new Object[] {toolHeadShovel     , OreDictToolNames.file, OreDictToolNames.saw       }, new And(ANTIMATTER.NOT, COATED.NOT)));
@@ -237,7 +236,7 @@ public class Loader_OreProcessing implements Runnable {
 	public static class RecyclingProcessing implements IOreDictListenerRecyclable {
 		@Override
 		public void onRecycleableRegistration(OreDictRecyclingContainer aEvent) {
-			if (aEvent.mItemData == null || ST.container(aEvent.mStack, T) != null) return;
+			if (aEvent.mItemData == null || !ST.ingredable(aEvent.mStack)) return;
 			
 			List<OreDictMaterialStack> tList = new ArrayListNoNulls<>();
 			if (aEvent.mItemData.mPrefix == null) {
@@ -293,12 +292,10 @@ public class Loader_OreProcessing implements Runnable {
 	public static class OreProcessing_Ore implements IOreDictListenerEvent {
 		@Override
 		public void onOreRegistration(OreDictRegistrationContainer aEvent) {
-			boolean tIsRich = aEvent.mPrefix.contains(TD.Prefix.DENSE_ORE);
-
 			if (aEvent.mMaterial == MT.Oilsands) {
-				RM.Centrifuge.addRecipe1(T, 16, tIsRich?512:128, tIsRich?10000:5000, aEvent.mStack, NF, FL.Oil_Normal.make(tIsRich?1000:500), ST.make(Blocks.sand, 1, 0));
+				RM.Centrifuge.addRecipe1(T, 16, UT.Code.units(aEvent.mPrefix.mWeight, U, 64, T), aEvent.mStack, NF, FL.Oil_Normal.make(UT.Code.units(aEvent.mPrefix.mWeight, U, 250, T)), OM.dust(MT.Sand, aEvent.mPrefix.mWeight * 2), OM.dust(aEvent.mPrefix.byproduct(0)), OM.dust(aEvent.mPrefix.byproduct(1)), OM.dust(aEvent.mPrefix.byproduct(2)), OM.dust(aEvent.mPrefix.byproduct(3)), OM.dust(aEvent.mPrefix.byproduct(4)));
 			} else {
-				registerStandardOreRecipes(aEvent.mPrefix, aEvent.mMaterial, aEvent.mStack, aEvent.mMaterial.mOreProcessingMultiplier * (tIsRich?2:1));
+				registerStandardOreRecipes(aEvent.mPrefix, aEvent.mMaterial, aEvent.mStack, aEvent.mMaterial.mOreProcessingMultiplier * (aEvent.mPrefix.contains(TD.Prefix.DENSE_ORE)?2:1));
 			}
 		}
 		
@@ -387,19 +384,19 @@ public class Loader_OreProcessing implements Runnable {
 				FluidStack tFluid1 = aEvent.mMaterial.fluid(DEF_ENV_TEMP, mMaterialAmount<0?aEvent.mPrefix.mAmount:mMaterialAmount, F);
 				FluidStack tFluid2 = aEvent.mMaterial.fluid(DEF_ENV_TEMP, mMaterialAmount<0?aEvent.mPrefix.mAmount:mMaterialAmount, T);
 				
-				if (tFluid1 == null || tFluid1.amount <= 0 || FL.Error.is(tFluid1)) {
+				if (FL.zero(tFluid1)) {
 					tFluid1 = aEvent.mMaterial.liquid(mMaterialAmount<0?aEvent.mPrefix.mAmount:mMaterialAmount, F);
 					tFluid2 = aEvent.mMaterial.liquid(mMaterialAmount<0?aEvent.mPrefix.mAmount:mMaterialAmount, T);
 				}
-				if (tFluid1 == null || tFluid1.amount <= 0 || FL.Error.is(tFluid1)) {
+				if (FL.zero(tFluid1)) {
 					tFluid1 = aEvent.mMaterial.gas   (mMaterialAmount<0?aEvent.mPrefix.mAmount:mMaterialAmount, F);
 					tFluid2 = aEvent.mMaterial.gas   (mMaterialAmount<0?aEvent.mPrefix.mAmount:mMaterialAmount, T);
 				}
-				if (tFluid1 == null || tFluid1.amount <= 0 || FL.Error.is(tFluid1)) {
+				if (FL.zero(tFluid1)) {
 					tFluid1 = aEvent.mMaterial.plasma(mMaterialAmount<0?aEvent.mPrefix.mAmount:mMaterialAmount, F);
 					tFluid2 = aEvent.mMaterial.plasma(mMaterialAmount<0?aEvent.mPrefix.mAmount:mMaterialAmount, T);
 				}
-				if (tFluid1 == null || tFluid1.amount <= 0 || FL.Error.is(tFluid1)) {
+				if (FL.zero(tFluid1)) {
 					tFluid1 = null;
 					tFluid2 = null;
 				}
@@ -435,7 +432,7 @@ public class Loader_OreProcessing implements Runnable {
 			if (mCondition.isTrue(aEvent.mMaterial)) {
 				FluidStack tFluid = aEvent.mMaterial.fluid(DEF_ENV_TEMP, mOutputMaterialAmount<0?aEvent.mPrefix.mAmount:mOutputMaterialAmount, F);
 				ItemStack  tStack = OM.dust(aEvent.mMaterial, mOutputMaterialAmount<0?aEvent.mPrefix.mAmount:mOutputMaterialAmount);
-				if (tFluid == null || tFluid.amount <= 0 || FL.Error.is(tFluid)) tFluid = null;
+				if (FL.zero(tFluid)) tFluid = null;
 				if (tStack != null || tFluid != null) {
 					RM.Squeezer.addRecipe1(T, 16, UT.Code.units(aEvent.mPrefix.mAmount, U, 256+256*aEvent.mMaterial.mToolQuality, T), aEvent.mStack, NF, tFluid, tFluid==null?tStack:null);
 				}

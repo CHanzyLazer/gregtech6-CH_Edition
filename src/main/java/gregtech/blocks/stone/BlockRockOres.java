@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,13 +19,8 @@
 
 package gregtech.blocks.stone;
 
-import static gregapi.data.CS.*;
-
-import java.util.ArrayList;
-
 import gregapi.block.BlockBaseMeta;
-import gregapi.code.ArrayListNoNulls;
-import gregapi.data.CS.BlocksGT;
+import gregapi.data.CS.*;
 import gregapi.data.LH;
 import gregapi.data.MD;
 import gregapi.data.MT;
@@ -43,6 +38,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
+
+import static gregapi.data.CS.*;
+
 /** Dense Ores that typically generate in large Layers. */
 public class BlockRockOres extends BlockBaseMeta {
 	public static byte[] HARVEST_LEVELS = {0, 0, 1, 1, 2, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0};
@@ -52,15 +51,15 @@ public class BlockRockOres extends BlockBaseMeta {
 	
 	public BlockRockOres(String aUnlocalised) {
 		super(null, aUnlocalised, Material.rock, soundTypeStone, 9, Textures.BlockIcons.ROCK_ORES);
-		LH.add(getUnlocalizedName()+ ".0.name", "Anthracite Coal");
-		LH.add(getUnlocalizedName()+ ".1.name", "Lignite Coal");
-		LH.add(getUnlocalizedName()+ ".2.name", "Salt");
-		LH.add(getUnlocalizedName()+ ".3.name", "Rock Salt");
-		LH.add(getUnlocalizedName()+ ".4.name", "Bauxite");
-		LH.add(getUnlocalizedName()+ ".5.name", "Oil Shale");
-		LH.add(getUnlocalizedName()+ ".6.name", "Gypsum");
-		LH.add(getUnlocalizedName()+ ".7.name", "Milky Quartz");
-		LH.add(getUnlocalizedName()+ ".8.name", "Nether Quartz");
+		LH.add(getUnlocalizedName()+ ".0", "Anthracite Coal");
+		LH.add(getUnlocalizedName()+ ".1", "Lignite Coal");
+		LH.add(getUnlocalizedName()+ ".2", "Salt");
+		LH.add(getUnlocalizedName()+ ".3", "Rock Salt");
+		LH.add(getUnlocalizedName()+ ".4", "Bauxite");
+		LH.add(getUnlocalizedName()+ ".5", "Oil Shale");
+		LH.add(getUnlocalizedName()+ ".6", "Gypsum");
+		LH.add(getUnlocalizedName()+ ".7", "Milky Quartz");
+		LH.add(getUnlocalizedName()+ ".8", "Nether Quartz");
 		
 		for (int i = 0; i < maxMeta(); i++) OM.reg(ST.make(this, 1, i), OP.oreDense.dat(ORE_MATERIALS[i]));
 		
@@ -102,7 +101,7 @@ public class BlockRockOres extends BlockBaseMeta {
 	
 	@Override
 	public ArrayList<ItemStack> getDrops(World aWorld, int aX, int aY, int aZ, int aMeta, int aFortune) {
-		return new ArrayListNoNulls<>(F, OP.oreRaw.mat(ORE_MATERIALS[aMeta], aFortune>0?2+RNGSUS.nextInt(aFortune*2+2):2));
+		return ST.arraylist(OP.oreRaw.mat(ORE_MATERIALS[aMeta], aFortune>0?2+RNGSUS.nextInt(aFortune*2+2):2));
 	}
 	
 	@Override

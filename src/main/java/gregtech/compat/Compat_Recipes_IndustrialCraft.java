@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,24 +19,13 @@
 
 package gregtech.compat;
 
-import static gregapi.data.CS.*;
-
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import gregapi.api.Abstract_Mod;
 import gregapi.block.multitileentity.MultiTileEntityRegistry;
 import gregapi.code.ModData;
 import gregapi.compat.CompatMods;
 import gregapi.config.ConfigCategories;
-import gregapi.data.ANY;
-import gregapi.data.CS.BlocksGT;
-import gregapi.data.CS.ConfigsGT;
-import gregapi.data.FL;
-import gregapi.data.IL;
-import gregapi.data.MD;
-import gregapi.data.MT;
-import gregapi.data.OD;
-import gregapi.data.OP;
-import gregapi.data.RM;
+import gregapi.data.*;
 import gregapi.old.GT_BaseCrop;
 import gregapi.oredict.OreDictMaterial;
 import gregapi.oredict.event.IOreDictListenerEvent;
@@ -52,6 +41,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.fluids.FluidStack;
+
+import static gregapi.data.CS.*;
 
 public class Compat_Recipes_IndustrialCraft extends CompatMods {
 	public Compat_Recipes_IndustrialCraft(ModData aMod, Abstract_Mod aGTMod) {super(aMod, aGTMod);}
@@ -399,14 +390,6 @@ public class Compat_Recipes_IndustrialCraft extends CompatMods {
 		} // IC2 in general
 		//====================================================================================================
 		
-		if (!IL.HBM_Poison_Powder.exists()) {
-		if (IL.ERE_Herbicide.exists())
-		RM.pulverizing(IL.ERE_Herbicide                  .get(1), IL.IC2_Grin_Powder.get(1));
-		RM.pulverizing(IL.Food_Potato_Poisonous          .get(1), IL.IC2_Grin_Powder.get(1));
-		RM.pulverizing(ST.make(Blocks.red_mushroom       , 1, W), IL.IC2_Grin_Powder.get(1));
-		RM.pulverizing(ST.make(Items.spider_eye          , 1, W), IL.IC2_Grin_Powder.get(2));
-		RM.pulverizing(ST.make(Items.fermented_spider_eye, 1, W), IL.IC2_Grin_Powder.get(3));
-		}
 		RM.pulverizing(ST.make(Items.clay_ball, 1, W), OM.dust(MT.Clay, U));
 		RM.pulverizing(ST.make(Blocks.clay, 1, W), OM.dust(MT.Clay, U*4));
 		RM.pulverizing(IL.Clay_Ball_Brown .get(1), OM.dust(MT.ClayBrown, U));
@@ -455,15 +438,6 @@ public class Compat_Recipes_IndustrialCraft extends CompatMods {
 		RM.Boxinator        .addRecipe2(T, 16,   16, IL.IC2_Scrap.get(9), ST.tag(9), IL.IC2_Scrapbox.get(1));
 		RM.Unboxinator      .addFakeRecipe(F, ST.array(IL.IC2_Scrapbox.get(1)), ST.array(IL.IC2_Scrapbox.getWithName(1, "Random Drops, see Scrapbox Handler")), null, ZL_LONG, ZL_FS, ZL_FS, 16, 16, 0);
 		
-		if (!IL.HBM_Poison_Powder.exists()) {
-		if (IL.ERE_Herbicide.exists())
-		RM.Shredder         .addRecipe1(T, 16,   16, IL.ERE_Herbicide                            .get(1), IL.IC2_Grin_Powder.get(1));
-		RM.Shredder         .addRecipe1(T, 16,   16, IL.Food_Potato_Poisonous                    .get(1), IL.IC2_Grin_Powder.get(1));
-		RM.Shredder         .addRecipe1(T, 16,   16, ST.make(Blocks.red_mushroom                 , 1, W), IL.IC2_Grin_Powder.get(1));
-		RM.Shredder         .addRecipe1(T, 16,   16, ST.make(Items.spider_eye                    , 1, W), IL.IC2_Grin_Powder.get(2));
-		RM.Shredder         .addRecipe1(T, 16,   16, ST.make(Items.fermented_spider_eye          , 1, W), IL.IC2_Grin_Powder.get(3));
-		}
-		
 		for (OreDictMaterial tMat : ANY.Diamond.mToThis)
 		RM.Press            .addRecipeX(T, 64,  256, ST.array(IL.IC2_Advanced_Alloy.get(4), OP.plate.mat(MT.Ir, 4), OP.gem.mat(tMat, 1)), IL.IC2_Iridium_Alloy.get(1));
 		RM.Press            .addRecipe2(T, 16,   64, IL.IC2_Compressed_Coal_Ball.get(8), OP.dust.mat(MT.Obsidian, 9), IL.IC2_Compressed_Coal_Chunk.get(1));
@@ -486,10 +460,12 @@ public class Compat_Recipes_IndustrialCraft extends CompatMods {
 		RM.Wiremill         .addRecipe1(T, 16,  128, (tMat==MT.Enori?OP.plateGem:OP.plate).mat(tMat, 1) , ST.mkic("ironCableItem", 6));
 		RM.Wiremill         .addRecipe1(T, 16,  128, OP.plate.mat(MT.Au, 1)                             , ST.mkic("goldCableItem", 6));
 		
-		RM.Laminator        .addRecipe2(T, 16,   64, OP.plate.mat(MT.Rubber, 1), ST.mkic("tinCableItem"   , 1), ST.mkic("insulatedTinCableItem"   , 1));
-		RM.Laminator        .addRecipe2(T, 16,   64, OP.plate.mat(MT.Rubber, 1), ST.mkic("copperCableItem", 1), ST.mkic("insulatedCopperCableItem", 1));
-		RM.Laminator        .addRecipe2(T, 16,  128, OP.plate.mat(MT.Rubber, 2), ST.mkic("goldCableItem"  , 1), ST.mkic("insulatedGoldCableItem"  , 1));
-		RM.Laminator        .addRecipe2(T, 16,  192, OP.plate.mat(MT.Rubber, 3), ST.mkic("ironCableItem"  , 1), ST.mkic("insulatedIronCableItem"  , 1));
+		for (OreDictMaterial tMat : ANY.Rubber.mToThis) {
+		RM.Laminator.addRecipe2(T, 16,  64, OP.plate.mat(tMat, 1), ST.mkic("tinCableItem"   , 1), ST.mkic("insulatedTinCableItem"   , 1));
+		RM.Laminator.addRecipe2(T, 16,  64, OP.plate.mat(tMat, 1), ST.mkic("copperCableItem", 1), ST.mkic("insulatedCopperCableItem", 1));
+		RM.Laminator.addRecipe2(T, 16, 128, OP.plate.mat(tMat, 2), ST.mkic("goldCableItem"  , 1), ST.mkic("insulatedGoldCableItem"  , 1));
+		RM.Laminator.addRecipe2(T, 16, 192, OP.plate.mat(tMat, 3), ST.mkic("ironCableItem"  , 1), ST.mkic("insulatedIronCableItem"  , 1));
+		}
 		
 		for (FluidStack tCFoam : DYED_C_FOAMS)
 		RM.Drying           .addRecipe1(T, 16,   16, IL.IC2_Scaffold_Iron.get(1)                        , tCFoam, NF, IL.IC2_Wall_Reinforced.get(1));

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,11 +19,10 @@
 
 package gregtech.items;
 
-import gregapi.code.ItemStackContainer;
 import gregapi.cover.covers.*;
 import gregapi.data.*;
 import gregapi.item.CreativeTab;
-import gregapi.item.multiitem.MultiItemRandom;
+import gregapi.item.multiitem.MultiItemRandomWithCompat;
 import gregapi.oredict.OreDictItemData;
 import gregapi.oredict.OreDictMaterial;
 import gregapi.util.CR;
@@ -38,7 +37,7 @@ import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
 
 import static gregapi.data.CS.*;
 
-public class MultiItemTechnological extends MultiItemRandom {
+public class MultiItemTechnological extends MultiItemRandomWithCompat {
 	public MultiItemTechnological(String aModID, String aUnlocalized) {
 		super(aModID, aUnlocalized);
 		setCreativeTab(new CreativeTab(getUnlocalizedName(), "GregTech: Technology", this, (short)30501));
@@ -255,38 +254,38 @@ public class MultiItemTechnological extends MultiItemRandom {
 		CR.shaped(IL.Shape_Extruder_Pipe_Large      .get(1), CR.DEF_REV, "   ", " Px", "   ", 'P', IL.Shape_Extruder_Plate_Curved);
 		CR.shaped(IL.Shape_Extruder_Pipe_Huge       .get(1), CR.DEF_REV, "   ", " P ", "  x", 'P', IL.Shape_Extruder_Plate_Curved);
 		
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_Empty.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_Plate.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_Rod_Long.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_Bolt.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_Ring.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_Cell.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_Ingot.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_Wire.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_Casing.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_Pipe_Tiny.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_Pipe_Small.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_Pipe_Medium.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_Pipe_Large.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_Pipe_Huge.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_Block.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_Sword.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_Pickaxe.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_Shovel.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_Axe.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_Hoe.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_Hammer.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_File.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_Saw.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_Gear.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_Bottle.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_Plate_Curved.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_Gear_Small.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_Rod.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_CCC.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_Foil.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_Plate_Tiny.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Extruder_Wire_Fine.get(1)), (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_Empty, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_Plate, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_Rod_Long, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_Bolt, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_Ring, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_Cell, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_Ingot, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_Wire, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_Casing, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_Pipe_Tiny, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_Pipe_Small, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_Pipe_Medium, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_Pipe_Large, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_Pipe_Huge, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_Block, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_Sword, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_Pickaxe, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_Shovel, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_Axe, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_Hoe, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_Hammer, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_File, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_Saw, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_Gear, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_Bottle, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_Plate_Curved, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_Gear_Small, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_Rod, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_CCC, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_Foil, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_Plate_Tiny, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Extruder_Wire_Fine, (byte)45);
 		
 		
 		
@@ -364,38 +363,38 @@ public class MultiItemTechnological extends MultiItemRandom {
 		CR.shaped(IL.Shape_SimpleEx_Pipe_Large      .get(1), CR.DEF_REV, "   ", " Px", "   ", 'P', IL.Shape_SimpleEx_Plate_Curved);
 		CR.shaped(IL.Shape_SimpleEx_Pipe_Huge       .get(1), CR.DEF_REV, "   ", " P ", "  x", 'P', IL.Shape_SimpleEx_Plate_Curved);
 		
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_Empty.get(1)), (byte)55);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_Plate.get(1)), (byte)55);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_Rod_Long.get(1)), (byte)55);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_Bolt.get(1)), (byte)55);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_Ring.get(1)), (byte)55);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_Cell.get(1)), (byte)55);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_Ingot.get(1)), (byte)55);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_Wire.get(1)), (byte)55);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_Casing.get(1)), (byte)55);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_Pipe_Tiny.get(1)), (byte)55);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_Pipe_Small.get(1)), (byte)55);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_Pipe_Medium.get(1)), (byte)55);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_Pipe_Large.get(1)), (byte)55);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_Pipe_Huge.get(1)), (byte)55);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_Block.get(1)), (byte)55);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_Sword.get(1)), (byte)55);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_Pickaxe.get(1)), (byte)55);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_Shovel.get(1)), (byte)55);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_Axe.get(1)), (byte)55);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_Hoe.get(1)), (byte)55);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_Hammer.get(1)), (byte)55);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_File.get(1)), (byte)55);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_Saw.get(1)), (byte)55);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_Gear.get(1)), (byte)55);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_Bottle.get(1)), (byte)55);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_Plate_Curved.get(1)), (byte)55);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_Gear_Small.get(1)), (byte)55);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_Rod.get(1)), (byte)55);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_CCC.get(1)), (byte)55);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_Foil.get(1)), (byte)55);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_Plate_Tiny.get(1)), (byte)55);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_SimpleEx_Wire_Fine.get(1)), (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_Empty, (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_Plate, (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_Rod_Long, (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_Bolt, (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_Ring, (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_Cell, (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_Ingot, (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_Wire, (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_Casing, (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_Pipe_Tiny, (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_Pipe_Small, (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_Pipe_Medium, (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_Pipe_Large, (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_Pipe_Huge, (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_Block, (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_Sword, (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_Pickaxe, (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_Shovel, (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_Axe, (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_Hoe, (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_Hammer, (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_File, (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_Saw, (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_Gear, (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_Bottle, (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_Plate_Curved, (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_Gear_Small, (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_Rod, (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_CCC, (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_Foil, (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_Plate_Tiny, (byte)55);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_SimpleEx_Wire_Fine, (byte)55);
 		
 		
 		IL.Shape_Foodmold_Empty            .set(addItem(tLastID = 10800, "Empty Food Grade Mold"            , "", TC.stack(TC.FABRICO, 2), TC.stack(TC.METALLUM, 1)));
@@ -414,12 +413,12 @@ public class MultiItemTechnological extends MultiItemRandom {
 		CR.shaped(IL.Shape_Foodmold_Cylinder        .get(1), CR.DEF_REV, "   ", " Ph", "   ", 'P', IL.Shape_Foodmold_Empty);
 		CR.shaped(IL.Shape_Foodmold_Toast           .get(1), CR.DEF_REV, "   ", " P ", "  h", 'P', IL.Shape_Foodmold_Empty);
 		
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Foodmold_Empty.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Foodmold_Bun.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Foodmold_Bread.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Foodmold_Baguette.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Foodmold_Cylinder.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Foodmold_Toast.get(1)), (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Foodmold_Empty, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Foodmold_Bun, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Foodmold_Bread, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Foodmold_Baguette, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Foodmold_Cylinder, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Foodmold_Toast, (byte)45);
 		
 		
 		
@@ -432,9 +431,9 @@ public class MultiItemTechnological extends MultiItemRandom {
 		CR.shaped(IL.Shape_Press_Bullet_Casing_Medium.get(1), CR.DEF_REV, "TPT", "dyh", "SPS", 'S', OP.stick.dat(ANY.Steel), 'T', OP.screw.dat(ANY.Steel), 'P', OP.plateTriple.dat(ANY.Steel));
 		CR.shaped(IL.Shape_Press_Bullet_Casing_Large .get(1), CR.DEF_REV, "TPT", "dyh", "SPS", 'S', OP.stick.dat(ANY.Steel), 'T', OP.screw.dat(ANY.Steel), 'P', OP.plateQuadruple.dat(ANY.Steel));
 		
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Press_Bullet_Casing_Small .get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Press_Bullet_Casing_Medium.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Press_Bullet_Casing_Large .get(1)), (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Press_Bullet_Casing_Small , (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Press_Bullet_Casing_Medium, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Press_Bullet_Casing_Large , (byte)45);
 		
 		
 		
@@ -458,14 +457,14 @@ public class MultiItemTechnological extends MultiItemRandom {
 		CR.shaped(IL.Shape_Slicer_Quarters          .get(1), CR.DEF_REV, "fB ", "B s", " O ", 'O', IL.Shape_Slicer_Empty, 'B', OP.plateTiny.dat(MT.StainlessSteel));
 		CR.shaped(IL.Shape_Slicer_Quarters_Hollow   .get(1), CR.DEF_REV, "fB ", "BRs", " O ", 'O', IL.Shape_Slicer_Empty, 'B', OP.plateTiny.dat(MT.StainlessSteel), 'R', OP.ring.dat(MT.StainlessSteel));
 		
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Slicer_Empty.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Slicer_Flat.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Slicer_Grid.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Slicer_Eigths.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Slicer_Eigths_Hollow.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Slicer_Split.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Slicer_Quarters.get(1)), (byte)45);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.Shape_Slicer_Quarters_Hollow.get(1)), (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Slicer_Empty, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Slicer_Flat, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Slicer_Grid, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Slicer_Eigths, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Slicer_Eigths_Hollow, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Slicer_Split, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Slicer_Quarters, (byte)45);
+		BooksGT.BOOK_REGISTER.put(IL.Shape_Slicer_Quarters_Hollow, (byte)45);
 		
 		
 		IL.Comp_Laser_Gas_Empty            .set(addItem(tLastID = 11000, "Empty Gas Laser Emitter"          , "For Electric Lasers"                             , TC.stack(TC.LUX, 1), TC.stack(TC.VACUOS, 2)));
@@ -503,8 +502,8 @@ public class MultiItemTechnological extends MultiItemRandom {
 		CR.shaped(IL.MOTORS[9].get(1), CR.DEF_REV   , "CWR", "WIW", "PWC", 'I', OP.stickLong.dat(MT.NeodymiumMagnetic)  , 'P', OP.plateCurved.dat(MT.DATA.Electric_T[9]), 'R', OP.stick.dat(MT.DATA.Electric_T[9]), 'W', OP.wireGt09.dat(MT.AnnealedCopper), 'C', MT.DATA.CABLES_01[9]);
 		
 		for (int i = 0; i < 10; i++) {
-		CR.shaped(IL.PUMPS      [i].get(1), CR.DEF_REV, "TXO", "dPw", "OMT", 'M', IL.MOTORS[i], 'O', OP.ring.dat(MT.Rubber), 'X', OP.rotor.dat(MT.DATA.Electric_T[i]), 'T', OP.screw.dat(MT.DATA.Electric_T[i]), 'P', OP.plateCurved.dat(MT.DATA.Electric_T[i]));
-		CR.shaped(IL.CONVEYERS  [i].get(1), CR.DEF_REV, "RRR", "MCM", "RRR", 'M', IL.MOTORS[i], 'C', MT.DATA.CABLES_01[i], 'R', OP.plate.dat(MT.Rubber));
+		CR.shaped(IL.PUMPS      [i].get(1), CR.DEF_REV, "TXO", "dPw", "OMT", 'M', IL.MOTORS[i], 'O', OP.ring.dat(ANY.Rubber), 'X', OP.rotor.dat(MT.DATA.Electric_T[i]), 'T', OP.screw.dat(MT.DATA.Electric_T[i]), 'P', OP.plateCurved.dat(MT.DATA.Electric_T[i]));
+		CR.shaped(IL.CONVEYERS  [i].get(1), CR.DEF_REV, "RRR", "MCM", "RRR", 'M', IL.MOTORS[i], 'C', MT.DATA.CABLES_01[i], 'R', OP.plate.dat(ANY.Rubber));
 		CR.shaped(IL.PISTONS    [i].get(1), CR.DEF_REV, "TPP", "dSS", "TMG", 'M', IL.MOTORS[i], 'P', OP.plate.dat(MT.DATA.Electric_T[i]), 'S', OP.stick.dat(MT.DATA.Electric_T[i]), 'G', OP.gearGtSmall.dat(MT.DATA.Electric_T[i]), 'T', OP.screw.dat(MT.DATA.Electric_T[i]));
 		CR.shaped(IL.ROBOT_ARMS [i].get(1), CR.DEF_REV, "CCC", "MSM", "PES", 'M', IL.MOTORS[i], 'C', MT.DATA.CABLES_01[i], 'E', OD_CIRCUITS[i], 'S', OP.stick.dat(MT.DATA.Electric_T[i]), 'P', IL.PISTONS[i]);
 		}
@@ -546,29 +545,29 @@ public class MultiItemTechnological extends MultiItemRandom {
 		
 		
 		IL.Battery_Lead_Acid_Cell_Empty    .set(addItem(tLastID = 20000, "Lead-Acid Cell (Empty)"           , "Battery Part (doesn't require Canning Machine!)" , ItemsGT.NEI_DONT_SHOW_FLUIDS, TC.stack(TC.METALLUM, 2), TC.stack(TC.VACUOS , 2), new OreDictItemData(MT.Pb, U, MT.BatteryAlloy, U)));
-		IL.Battery_Lead_Acid_Cell_Filled   .set(addItem(tLastID = 20001, "Lead-Acid Cell (Filled)"          , "Battery Part"                                    , ItemsGT.NEI_DONT_SHOW_FLUIDS, TC.stack(TC.ELECTRUM, 2), TC.stack(TC.VENENUM, 2), new OreDictItemData(MT.Pb, U, MT.BatteryAlloy, U, MT.H2SO4, 2*U), new FluidContainerData(MT.H2SO4.liquid(2*U, T), ST.make(this, 1, 20001), ST.make(this, 1, 20000), F)));
+		IL.Battery_Lead_Acid_Cell_Filled   .set(addItem(tLastID = 20001, "Lead-Acid Cell (Filled)"          , "Battery Part"                                    , ItemsGT.NEI_DONT_SHOW_FLUIDS, TC.stack(TC.ELECTRUM, 2), TC.stack(TC.VENEMUM, 2), new OreDictItemData(MT.Pb, U, MT.BatteryAlloy, U, MT.H2SO4, 2*U), new FluidContainerData(MT.H2SO4.liquid(2*U, T), ST.make(this, 1, 20001), ST.make(this, 1, 20000), F)));
 		ItemsGT.addNEIRedirects(IL.Battery_Lead_Acid_Cell_Empty.get(1), IL.Battery_Lead_Acid_Cell_Filled.get(1));
 		CR.shaped(IL.Battery_Lead_Acid_Cell_Empty.get(1), CR.DEF_NCC, " Fh", "FPF", "xF ", 'P', OP.plateCurved.dat(MT.BatteryAlloy), 'F', OP.foil.dat(MT.Pb));
 		
-		IL.Battery_Alkaline_Cell_Empty     .set(addItem(tLastID = 20002, "Alkaline Button Cell (Empty)"     , "Battery Part (doesn't require Canning Machine!)" , ItemsGT.NEI_DONT_SHOW_FLUIDS, TC.stack(TC.METALLUM, 2), TC.stack(TC.VACUOS , 2), new OreDictItemData(OM.stack(MT.BatteryAlloy, U), OM.stack(MT.Al, U4), OM.stack(MT.StainlessSteel, U), OM.stack(MT.Plastic, U4), OM.stack(ANY.Iron, U2), OM.stack(ANY.C, U), OM.stack(MT.KOH, U), OM.stack(MT.Zn, U), OM.stack(MT.MnO2, U))));
-		IL.Battery_Alkaline_Cell_Filled    .set(addItem(tLastID = 20003, "Alkaline Button Cell (Filled)"    , "Battery Part"                                    , ItemsGT.NEI_DONT_SHOW_FLUIDS, TC.stack(TC.ELECTRUM, 2), TC.stack(TC.VENENUM, 2), new OreDictItemData(OM.stack(MT.BatteryAlloy, U), OM.stack(MT.Al, U4), OM.stack(MT.StainlessSteel, U), OM.stack(MT.Plastic, U4), OM.stack(ANY.Iron, U2), OM.stack(ANY.C, U), OM.stack(MT.KOH, U), OM.stack(MT.Zn, U), OM.stack(MT.MnO2, U), OM.stack(MT.H2O, U)), new FluidContainerData(FL.DistW.make(1000), ST.make(this, 1, tLastID), ST.make(this, 1, tLastID-1), F)));
+		IL.Battery_Alkaline_Cell_Empty     .set(addItem(tLastID = 20002, "Alkaline Button Cell (Empty)"     , "Battery Part (doesn't require Canning Machine!)" , ItemsGT.NEI_DONT_SHOW_FLUIDS, TC.stack(TC.METALLUM, 2), TC.stack(TC.VACUOS , 2), new OreDictItemData(OM.stack(MT.BatteryAlloy, U), OM.stack(MT.Al, U4), OM.stack(MT.StainlessSteel, U), OM.stack(ANY.Plastic, U4), OM.stack(ANY.Iron, U2), OM.stack(ANY.C, U), OM.stack(MT.KOH, U), OM.stack(MT.Zn, U), OM.stack(MT.MnO2, U))));
+		IL.Battery_Alkaline_Cell_Filled    .set(addItem(tLastID = 20003, "Alkaline Button Cell (Filled)"    , "Battery Part"                                    , ItemsGT.NEI_DONT_SHOW_FLUIDS, TC.stack(TC.ELECTRUM, 2), TC.stack(TC.VENEMUM, 2), new OreDictItemData(OM.stack(MT.BatteryAlloy, U), OM.stack(MT.Al, U4), OM.stack(MT.StainlessSteel, U), OM.stack(ANY.Plastic, U4), OM.stack(ANY.Iron, U2), OM.stack(ANY.C, U), OM.stack(MT.KOH, U), OM.stack(MT.Zn, U), OM.stack(MT.MnO2, U), OM.stack(MT.H2O, U)), new FluidContainerData(FL.DistW.make(1000), ST.make(this, 1, tLastID), ST.make(this, 1, tLastID-1), F)));
 		ItemsGT.addNEIRedirects(IL.Battery_Alkaline_Cell_Empty.get(1), IL.Battery_Alkaline_Cell_Filled.get(1));
-		CR.shaped(IL.Battery_Alkaline_Cell_Empty.get(1), CR.DEF_NCC, "KSM", "OPF", "CWZ", 'P', OP.plateCurved.dat(MT.BatteryAlloy), 'F', OP.foil.dat(MT.Al), 'S', OP.plateCurved.dat(MT.StainlessSteel), 'O', OP.ring.dat(MT.Plastic), 'W', OP.wireGt01.dat(ANY.Iron), 'C', OP.dust.dat(ANY.C), 'K', OP.dust.dat(MT.KOH), 'Z', OP.dust.dat(MT.Zn), 'M', OP.dust.dat(MT.MnO2));
+		CR.shaped(IL.Battery_Alkaline_Cell_Empty.get(1), CR.DEF_NCC, "KSM", "OPF", "CWZ", 'P', OP.plateCurved.dat(MT.BatteryAlloy), 'F', OP.foil.dat(MT.Al), 'S', OP.plateCurved.dat(MT.StainlessSteel), 'O', OP.ring.dat(ANY.Plastic), 'W', OP.wireGt01.dat(ANY.Iron), 'C', OP.dust.dat(ANY.C), 'K', OP.dust.dat(MT.KOH), 'Z', OP.dust.dat(MT.Zn), 'M', OP.dust.dat(MT.MnO2));
 		
-		IL.Battery_NiCd_Cell_Empty         .set(addItem(tLastID = 20004, "Nickel-Cadmium Cell (Empty)"      , "Battery Part (doesn't require Canning Machine!)" , ItemsGT.NEI_DONT_SHOW_FLUIDS, TC.stack(TC.METALLUM, 2), TC.stack(TC.VACUOS , 2), new OreDictItemData(OM.stack(MT.BatteryAlloy, U), OM.stack(MT.Al, U4), OM.stack(MT.StainlessSteel, U), OM.stack(MT.Plastic, U4), OM.stack(ANY.Iron, U2), OM.stack(MT.Graphite, U2), OM.stack(MT.KOH, U), OM.stack(MT.Ni, U), OM.stack(MT.Cd, U))));
-		IL.Battery_NiCd_Cell_Filled        .set(addItem(tLastID = 20005, "Nickel-Cadmium Cell (Filled)"     , "Battery Part"                                    , ItemsGT.NEI_DONT_SHOW_FLUIDS, TC.stack(TC.ELECTRUM, 2), TC.stack(TC.VENENUM, 2), new OreDictItemData(OM.stack(MT.BatteryAlloy, U), OM.stack(MT.Al, U4), OM.stack(MT.StainlessSteel, U), OM.stack(MT.Plastic, U4), OM.stack(ANY.Iron, U2), OM.stack(MT.Graphite, U2), OM.stack(MT.KOH, U), OM.stack(MT.Ni, U), OM.stack(MT.Cd, U), OM.stack(MT.H2O, U)), new FluidContainerData(FL.DistW.make(1000), ST.make(this, 1, tLastID), ST.make(this, 1, tLastID-1), F)));
+		IL.Battery_NiCd_Cell_Empty         .set(addItem(tLastID = 20004, "Nickel-Cadmium Cell (Empty)"      , "Battery Part (doesn't require Canning Machine!)" , ItemsGT.NEI_DONT_SHOW_FLUIDS, TC.stack(TC.METALLUM, 2), TC.stack(TC.VACUOS , 2), new OreDictItemData(OM.stack(MT.BatteryAlloy, U), OM.stack(MT.Al, U4), OM.stack(MT.StainlessSteel, U), OM.stack(ANY.Plastic, U4), OM.stack(ANY.Iron, U2), OM.stack(MT.Graphite, U2), OM.stack(MT.KOH, U), OM.stack(MT.Ni, U), OM.stack(MT.Cd, U))));
+		IL.Battery_NiCd_Cell_Filled        .set(addItem(tLastID = 20005, "Nickel-Cadmium Cell (Filled)"     , "Battery Part"                                    , ItemsGT.NEI_DONT_SHOW_FLUIDS, TC.stack(TC.ELECTRUM, 2), TC.stack(TC.VENEMUM, 2), new OreDictItemData(OM.stack(MT.BatteryAlloy, U), OM.stack(MT.Al, U4), OM.stack(MT.StainlessSteel, U), OM.stack(ANY.Plastic, U4), OM.stack(ANY.Iron, U2), OM.stack(MT.Graphite, U2), OM.stack(MT.KOH, U), OM.stack(MT.Ni, U), OM.stack(MT.Cd, U), OM.stack(MT.H2O, U)), new FluidContainerData(FL.DistW.make(1000), ST.make(this, 1, tLastID), ST.make(this, 1, tLastID-1), F)));
 		ItemsGT.addNEIRedirects(IL.Battery_NiCd_Cell_Empty.get(1), IL.Battery_NiCd_Cell_Filled.get(1));
-		CR.shaped(IL.Battery_NiCd_Cell_Empty.get(1), CR.DEF_NCC, "KSM", "OPF", "CWZ", 'P', OP.plateCurved.dat(MT.BatteryAlloy), 'F', OP.foil.dat(MT.Al), 'S', OP.plateCurved.dat(MT.StainlessSteel), 'O', OP.ring.dat(MT.Plastic), 'W', OP.wireGt01.dat(ANY.Iron), 'C', OP.stick.dat(MT.Graphite), 'K', OP.dust.dat(MT.KOH), 'Z', OP.plateCurved.dat(MT.Ni), 'M', OP.plateCurved.dat(MT.Cd));
+		CR.shaped(IL.Battery_NiCd_Cell_Empty.get(1), CR.DEF_NCC, "KSM", "OPF", "CWZ", 'P', OP.plateCurved.dat(MT.BatteryAlloy), 'F', OP.foil.dat(MT.Al), 'S', OP.plateCurved.dat(MT.StainlessSteel), 'O', OP.ring.dat(ANY.Plastic), 'W', OP.wireGt01.dat(ANY.Iron), 'C', OP.stick.dat(MT.Graphite), 'K', OP.dust.dat(MT.KOH), 'Z', OP.plateCurved.dat(MT.Ni), 'M', OP.plateCurved.dat(MT.Cd));
 		
-		IL.Battery_LiCoO2_Cell_Empty       .set(addItem(tLastID = 20006, "Lithium-Cobalt Cell (Empty)"      , "Battery Part (doesn't require Canning Machine!)" , ItemsGT.NEI_DONT_SHOW_FLUIDS, TC.stack(TC.METALLUM, 2), TC.stack(TC.VACUOS , 2), new OreDictItemData(OM.stack(MT.BatteryAlloy, U), OM.stack(MT.Co, U2), OM.stack(MT.Cr, U), OM.stack(MT.Plastic, U2), OM.stack(MT.Graphite, U2), OM.stack(MT.LiClO4, U*2))));
-		IL.Battery_LiCoO2_Cell_Filled      .set(addItem(tLastID = 20007, "Lithium-Cobalt Cell (Filled)"     , "Battery Part"                                    , ItemsGT.NEI_DONT_SHOW_FLUIDS, TC.stack(TC.ELECTRUM, 2), TC.stack(TC.VENENUM, 2), new OreDictItemData(OM.stack(MT.BatteryAlloy, U), OM.stack(MT.Co, U2), OM.stack(MT.Cr, U), OM.stack(MT.Plastic, U2), OM.stack(MT.Graphite, U2), OM.stack(MT.LiClO4, U*2), OM.stack(MT.HCl, U*2)), new FluidContainerData(MT.HCl.gas(U*2, T), ST.make(this, 1, tLastID), ST.make(this, 1, tLastID-1), F)));
+		IL.Battery_LiCoO2_Cell_Empty       .set(addItem(tLastID = 20006, "Lithium-Cobalt Cell (Empty)"      , "Battery Part (doesn't require Canning Machine!)" , ItemsGT.NEI_DONT_SHOW_FLUIDS, TC.stack(TC.METALLUM, 2), TC.stack(TC.VACUOS , 2), new OreDictItemData(OM.stack(MT.BatteryAlloy, U), OM.stack(MT.Co, U2), OM.stack(MT.Cr, U), OM.stack(ANY.Plastic, U2), OM.stack(MT.Graphite, U2), OM.stack(MT.LiClO4, U*2))));
+		IL.Battery_LiCoO2_Cell_Filled      .set(addItem(tLastID = 20007, "Lithium-Cobalt Cell (Filled)"     , "Battery Part"                                    , ItemsGT.NEI_DONT_SHOW_FLUIDS, TC.stack(TC.ELECTRUM, 2), TC.stack(TC.VENEMUM, 2), new OreDictItemData(OM.stack(MT.BatteryAlloy, U), OM.stack(MT.Co, U2), OM.stack(MT.Cr, U), OM.stack(ANY.Plastic, U2), OM.stack(MT.Graphite, U2), OM.stack(MT.LiClO4, U*2), OM.stack(MT.HCl, U*2)), new FluidContainerData(MT.HCl.gas(U*2, T), ST.make(this, 1, tLastID), ST.make(this, 1, tLastID-1), F)));
 		ItemsGT.addNEIRedirects(IL.Battery_LiCoO2_Cell_Empty.get(1), IL.Battery_LiCoO2_Cell_Filled.get(1));
-		CR.shaped(IL.Battery_LiCoO2_Cell_Empty.get(1), CR.DEF_NCC, "CLF", "XSG", "FLP", 'P', OP.plateCurved.dat(MT.BatteryAlloy), 'X', OP.stick.dat(MT.Co), 'G', OP.stick.dat(MT.Graphite), 'L', OP.dust.dat(MT.LiClO4), 'S', OP.plateCurved.dat(MT.Cr), 'F', OP.foil.dat(MT.Plastic), 'C', OD_CIRCUITS[4]);
+		CR.shaped(IL.Battery_LiCoO2_Cell_Empty.get(1), CR.DEF_NCC, "CLF", "XSG", "FLP", 'P', OP.plateCurved.dat(MT.BatteryAlloy), 'X', OP.stick.dat(MT.Co), 'G', OP.stick.dat(MT.Graphite), 'L', OP.dust.dat(MT.LiClO4), 'S', OP.plateCurved.dat(MT.Cr), 'F', OP.foil.dat(ANY.Plastic), 'C', OD_CIRCUITS[4]);
 		
-		IL.Battery_LiMn_Cell_Empty         .set(addItem(tLastID = 20008, "Lithium-Manganese Cell (Empty)"   , "Battery Part (doesn't require Canning Machine!)" , ItemsGT.NEI_DONT_SHOW_FLUIDS, TC.stack(TC.METALLUM, 2), TC.stack(TC.VACUOS , 2), new OreDictItemData(OM.stack(MT.BatteryAlloy, U), OM.stack(MT.Mn, U2), OM.stack(MT.Cr, U), OM.stack(MT.Plastic, U2), OM.stack(MT.Graphite, U2), OM.stack(MT.LiClO4, U*2))));
-		IL.Battery_LiMn_Cell_Filled        .set(addItem(tLastID = 20009, "Lithium-Manganese Cell (Filled)"  , "Battery Part"                                    , ItemsGT.NEI_DONT_SHOW_FLUIDS, TC.stack(TC.ELECTRUM, 2), TC.stack(TC.VENENUM, 2), new OreDictItemData(OM.stack(MT.BatteryAlloy, U), OM.stack(MT.Mn, U2), OM.stack(MT.Cr, U), OM.stack(MT.Plastic, U2), OM.stack(MT.Graphite, U2), OM.stack(MT.LiClO4, U*2), OM.stack(MT.HF, U*2)), new FluidContainerData(MT.HF.gas(U*2, T), ST.make(this, 1, tLastID), ST.make(this, 1, tLastID-1), F)));
+		IL.Battery_LiMn_Cell_Empty         .set(addItem(tLastID = 20008, "Lithium-Manganese Cell (Empty)"   , "Battery Part (doesn't require Canning Machine!)" , ItemsGT.NEI_DONT_SHOW_FLUIDS, TC.stack(TC.METALLUM, 2), TC.stack(TC.VACUOS , 2), new OreDictItemData(OM.stack(MT.BatteryAlloy, U), OM.stack(MT.Mn, U2), OM.stack(MT.Cr, U), OM.stack(ANY.Plastic, U2), OM.stack(MT.Graphite, U2), OM.stack(MT.LiClO4, U*2))));
+		IL.Battery_LiMn_Cell_Filled        .set(addItem(tLastID = 20009, "Lithium-Manganese Cell (Filled)"  , "Battery Part"                                    , ItemsGT.NEI_DONT_SHOW_FLUIDS, TC.stack(TC.ELECTRUM, 2), TC.stack(TC.VENEMUM, 2), new OreDictItemData(OM.stack(MT.BatteryAlloy, U), OM.stack(MT.Mn, U2), OM.stack(MT.Cr, U), OM.stack(ANY.Plastic, U2), OM.stack(MT.Graphite, U2), OM.stack(MT.LiClO4, U*2), OM.stack(MT.HF, U*2)), new FluidContainerData(MT.HF.gas(U*2, T), ST.make(this, 1, tLastID), ST.make(this, 1, tLastID-1), F)));
 		ItemsGT.addNEIRedirects(IL.Battery_LiMn_Cell_Empty.get(1), IL.Battery_LiMn_Cell_Filled.get(1));
-		CR.shaped(IL.Battery_LiMn_Cell_Empty.get(1), CR.DEF_NCC, "CLF", "XSG", "FLP", 'P', OP.plateCurved.dat(MT.BatteryAlloy), 'X', OP.stick.dat(MT.Mn), 'G', OP.stick.dat(MT.Graphite), 'L', OP.dust.dat(MT.LiClO4), 'S', OP.plateCurved.dat(MT.Cr), 'F', OP.foil.dat(MT.Plastic), 'C', OD_CIRCUITS[6]);
+		CR.shaped(IL.Battery_LiMn_Cell_Empty.get(1), CR.DEF_NCC, "CLF", "XSG", "FLP", 'P', OP.plateCurved.dat(MT.BatteryAlloy), 'X', OP.stick.dat(MT.Mn), 'G', OP.stick.dat(MT.Graphite), 'L', OP.dust.dat(MT.LiClO4), 'S', OP.plateCurved.dat(MT.Cr), 'F', OP.foil.dat(ANY.Plastic), 'C', OD_CIRCUITS[6]);
 		
 		
 		
@@ -580,7 +579,7 @@ public class MultiItemTechnological extends MultiItemRandom {
 		IL.Electrode_FR_Diamond             .set(addItem(tLastID = 29992, "Electrode (Diamond)"             , "Needs Glass Tube"                                , new OreDictItemData(ANY.Diamond       , 5*U4, MT.Redstone, U2), TC.stack(TC.ELECTRUM, 1), MD.FR.mLoaded ? null : TD.Creative.HIDDEN));
 		IL.Electrode_FR_Obsidian            .set(addItem(tLastID = 29993, "Electrode (Obsidian)"            , "Needs Glass Tube"                                , new OreDictItemData(MT.Obsidian       , 5*U4, MT.Redstone, U2), TC.stack(TC.ELECTRUM, 1), MD.FR.mLoaded ? null : TD.Creative.HIDDEN));
 		IL.Electrode_FR_Blaze               .set(addItem(tLastID = 29994, "Electrode (Blaze)"               , "Needs Glass Tube"                                , new OreDictItemData(MT.Blaze          , 5*U4, MT.Redstone, U2), TC.stack(TC.ELECTRUM, 1), MD.FR.mLoaded ? null : TD.Creative.HIDDEN));
-		IL.Electrode_FR_Rubber              .set(addItem(tLastID = 29995, "Electrode (Rubber)"              , "Needs Glass Tube"                                , new OreDictItemData(MT.Rubber         , 5*U4, MT.Redstone, U2), TC.stack(TC.ELECTRUM, 1), MD.FR.mLoaded ? null : TD.Creative.HIDDEN));
+		IL.Electrode_FR_Rubber              .set(addItem(tLastID = 29995, "Electrode (Rubber)"              , "Needs Glass Tube"                                , new OreDictItemData(ANY.Rubber        , 5*U4, MT.Redstone, U2), TC.stack(TC.ELECTRUM, 1), MD.FR.mLoaded ? null : TD.Creative.HIDDEN));
 		IL.Electrode_FR_Emerald             .set(addItem(tLastID = 29996, "Electrode (Emerald)"             , "Needs Glass Tube"                                , new OreDictItemData(ANY.Emerald       , 5*U4, MT.Redstone, U2), TC.stack(TC.ELECTRUM, 1), MD.FR.mLoaded ? null : TD.Creative.HIDDEN));
 		IL.Electrode_FR_Apatite             .set(addItem(tLastID = 29997, "Electrode (Apatite)"             , "Needs Glass Tube"                                , new OreDictItemData(MT.Apatite        , 5*U4, MT.Redstone, U2), TC.stack(TC.ELECTRUM, 1), MD.FR.mLoaded ? null : TD.Creative.HIDDEN));
 		IL.Electrode_FR_Lapis               .set(addItem(tLastID = 29998, "Electrode (Lapis)"               , "Needs Glass Tube"                                , new OreDictItemData(MT.Lapis          , 5*U4, MT.Redstone, U2), TC.stack(TC.ELECTRUM, 1), MD.FR.mLoaded ? null : TD.Creative.HIDDEN));
@@ -597,7 +596,8 @@ public class MultiItemTechnological extends MultiItemRandom {
 		RM.Press.addRecipeX(T, 16, 64, ST.array(OP.stick.mat(tMat           , 2), OP.bolt.mat(tMat       , 2), OP.dustSmall.mat(MT.Redstone, 2)), IL.Electrode_FR_Diamond    .get(1));
 		RM.Press.addRecipeX(T, 16, 64, ST.array(OP.stick.mat(MT.Obsidian    , 2), OP.bolt.mat(MT.Obsidian, 2), OP.dustSmall.mat(MT.Redstone, 2)), IL.Electrode_FR_Obsidian   .get(1));
 		RM.Press.addRecipeX(T, 16, 64, ST.array(OP.stick.mat(MT.Blaze       , 2), OP.bolt.mat(MT.Blaze   , 2), OP.dustSmall.mat(MT.Redstone, 2)), IL.Electrode_FR_Blaze      .get(1));
-		RM.Press.addRecipeX(T, 16, 64, ST.array(OP.stick.mat(MT.Rubber      , 2), OP.bolt.mat(MT.Rubber  , 2), OP.dustSmall.mat(MT.Redstone, 2)), IL.Electrode_FR_Rubber     .get(1));
+		for (OreDictMaterial tMat : ANY.Rubber.mToThis)
+		RM.Press.addRecipeX(T, 16, 64, ST.array(OP.stick.mat(tMat           , 2), OP.bolt.mat(tMat       , 2), OP.dustSmall.mat(MT.Redstone, 2)), IL.Electrode_FR_Rubber     .get(1));
 		for (OreDictMaterial tMat : ANY.Emerald.mToThis)
 		RM.Press.addRecipeX(T, 16, 64, ST.array(OP.stick.mat(tMat           , 2), OP.bolt.mat(tMat       , 2), OP.dustSmall.mat(MT.Redstone, 2)), IL.Electrode_FR_Emerald    .get(1));
 		RM.Press.addRecipeX(T, 16, 64, ST.array(OP.stick.mat(MT.Apatite     , 2), OP.bolt.mat(MT.Apatite , 2), OP.dustSmall.mat(MT.Redstone, 2)), IL.Electrode_FR_Apatite    .get(1));
@@ -615,7 +615,8 @@ public class MultiItemTechnological extends MultiItemRandom {
 		RM.Press.addRecipeX(T, 16, 64, ST.array(OP.stick.mat(tMat           , 4), OP.bolt.mat(tMat       , 4), OP.dust     .mat(MT.Redstone, 1)), IL.Electrode_FR_Diamond     .get(2));
 		RM.Press.addRecipeX(T, 16, 64, ST.array(OP.stick.mat(MT.Obsidian    , 4), OP.bolt.mat(MT.Obsidian, 4), OP.dust     .mat(MT.Redstone, 1)), IL.Electrode_FR_Obsidian    .get(2));
 		RM.Press.addRecipeX(T, 16, 64, ST.array(OP.stick.mat(MT.Blaze       , 4), OP.bolt.mat(MT.Blaze   , 4), OP.dust     .mat(MT.Redstone, 1)), IL.Electrode_FR_Blaze       .get(2));
-		RM.Press.addRecipeX(T, 16, 64, ST.array(OP.stick.mat(MT.Rubber      , 4), OP.bolt.mat(MT.Rubber  , 4), OP.dust     .mat(MT.Redstone, 1)), IL.Electrode_FR_Rubber      .get(2));
+		for (OreDictMaterial tMat : ANY.Rubber.mToThis)
+		RM.Press.addRecipeX(T, 16, 64, ST.array(OP.stick.mat(tMat           , 4), OP.bolt.mat(tMat       , 4), OP.dust     .mat(MT.Redstone, 1)), IL.Electrode_FR_Rubber      .get(2));
 		for (OreDictMaterial tMat : ANY.Emerald.mToThis)
 		RM.Press.addRecipeX(T, 16, 64, ST.array(OP.stick.mat(tMat           , 4), OP.bolt.mat(tMat       , 4), OP.dust     .mat(MT.Redstone, 1)), IL.Electrode_FR_Emerald     .get(2));
 		RM.Press.addRecipeX(T, 16, 64, ST.array(OP.stick.mat(MT.Apatite     , 4), OP.bolt.mat(MT.Apatite , 4), OP.dust     .mat(MT.Redstone, 1)), IL.Electrode_FR_Apatite     .get(2));
@@ -628,26 +629,28 @@ public class MultiItemTechnological extends MultiItemRandom {
 		RM.Press.addRecipeX(T, 16, 64, ST.array(ST.make(Blocks.end_stone, 5, W)                              , OP.gem      .mat(MT.EnderEye, 2)), IL.Electrode_FR_Ender       .get(4));
 		
 		
-		IL.Circuit_Plate_Empty             .set(addItem(tLastID = 30000, "Circuit Plate"                    , "Needs Circuit Wiring"                            , new OreDictItemData(ANY.SiO2, U, MT.Plastic, U), TC.stack(TC.FABRICO, 1)));
+		IL.Circuit_Plate_Empty             .set(addItem(tLastID = 30000, "Circuit Plate"                    , "Needs Circuit Wiring"                            , new OreDictItemData(ANY.SiO2, U, ANY.Plastic, U), TC.stack(TC.FABRICO, 1)));
 		
 		for (OreDictMaterial tMat : ANY.SiO2.mToThis) {
 			ItemStack tDust = OP.dust.mat(tMat, 1);
-			if (ST.valid(tDust)) RM.Press.addRecipe2(T, F, F, F, T, 16, 64, OP.plate.mat(MT.Plastic, 1), tDust, IL.Circuit_Plate_Empty.get(1));
+			if (ST.valid(tDust)) for (OreDictMaterial tMt2 : ANY.Plastic.mToThis) {
+				RM.Press.addRecipe2(T, F, F, F, T, 16, 64, OP.plate.mat(tMt2, 1), tDust, IL.Circuit_Plate_Empty.get(1));
+			}
 		}
 		
 		IL.Circuit_Wire_Copper             .set(addItem(tLastID = 30001, "Circuit Wiring (Copper)"          , "Needs to be placed on an empty Circuit Plate"    , new OreDictItemData(MT.Cu, U), TC.stack(TC.FABRICO, 1), TC.stack(TC.PERMUTATIO, 1)));
-		IL.Circuit_Plate_Copper            .set(addItem(tLastID = 30002, "Circuit Plate (Copper)"           , "Needs Circuit Parts"                             , new OreDictItemData(MT.Cu, U, ANY.SiO2, U, MT.Plastic, U), TC.stack(TC.FABRICO, 1), TC.stack(TC.PERMUTATIO, 1)));
+		IL.Circuit_Plate_Copper            .set(addItem(tLastID = 30002, "Circuit Plate (Copper)"           , "Needs Circuit Parts"                             , new OreDictItemData(MT.Cu, U, ANY.SiO2, U, ANY.Plastic, U), TC.stack(TC.FABRICO, 1), TC.stack(TC.PERMUTATIO, 1)));
 		IL.Circuit_Wire_Gold               .set(addItem(tLastID = 30003, "Circuit Wiring (Gold)"            , "Needs to be placed on an empty Circuit Plate"    , new OreDictItemData(MT.Au, U), TC.stack(TC.FABRICO, 1), TC.stack(TC.LUCRUM, 1)));
-		IL.Circuit_Plate_Gold              .set(addItem(tLastID = 30004, "Circuit Plate (Gold)"             , "Needs Circuit Parts"                             , new OreDictItemData(MT.Au, U, ANY.SiO2, U, MT.Plastic, U), TC.stack(TC.FABRICO, 1), TC.stack(TC.LUCRUM, 1), "oc:materialCircuitBoardPrinted"));
+		IL.Circuit_Plate_Gold              .set(addItem(tLastID = 30004, "Circuit Plate (Gold)"             , "Needs Circuit Parts"                             , new OreDictItemData(MT.Au, U, ANY.SiO2, U, ANY.Plastic, U), TC.stack(TC.FABRICO, 1), TC.stack(TC.LUCRUM, 1), "oc:materialCircuitBoardPrinted"));
 		IL.Circuit_Wire_Platinum           .set(addItem(tLastID = 30005, "Circuit Wiring (Platinum)"        , "Needs to be placed on an empty Circuit Plate"    , new OreDictItemData(MT.Pt, U), TC.stack(TC.FABRICO, 1), TC.stack(TC.NEBRISUM, 1)));
-		IL.Circuit_Plate_Platinum          .set(addItem(tLastID = 30006, "Circuit Plate (Platinum)"         , "Needs Circuit Parts"                             , new OreDictItemData(MT.Pt, U, ANY.SiO2, U, MT.Plastic, U), TC.stack(TC.FABRICO, 1), TC.stack(TC.NEBRISUM, 1)));
+		IL.Circuit_Plate_Platinum          .set(addItem(tLastID = 30006, "Circuit Plate (Platinum)"         , "Needs Circuit Parts"                             , new OreDictItemData(MT.Pt, U, ANY.SiO2, U, ANY.Plastic, U), TC.stack(TC.FABRICO, 1), TC.stack(TC.NEBRISUM, 1)));
 		
 		IL.Circuit_Wire_Magic              .set(addItem(tLastID = 30011, "Circuit Wiring (Magic)"           , "Needs to be placed on an empty Circuit Plate"    , TC.stack(TC.FABRICO, 1), TC.stack(TC.PRAECANTIO, 1)));
-		IL.Circuit_Plate_Magic             .set(addItem(tLastID = 30012, "Circuit Plate (Magic)"            , "Needs Circuit Parts"                             , new OreDictItemData(ANY.SiO2, U, MT.Plastic, U), TC.stack(TC.FABRICO, 1), TC.stack(TC.PRAECANTIO, 1)));
+		IL.Circuit_Plate_Magic             .set(addItem(tLastID = 30012, "Circuit Plate (Magic)"            , "Needs Circuit Parts"                             , new OreDictItemData(ANY.SiO2, U, ANY.Plastic, U), TC.stack(TC.FABRICO, 1), TC.stack(TC.PRAECANTIO, 1)));
 		IL.Circuit_Wire_Enderium           .set(addItem(tLastID = 30013, "Circuit Wiring (Enderium)"        , "Needs to be placed on an empty Circuit Plate"    , new OreDictItemData(MT.Enderium, U), TC.stack(TC.FABRICO, 1), TC.stack(TC.ALIENIS, 1)));
-		IL.Circuit_Plate_Enderium          .set(addItem(tLastID = 30014, "Circuit Plate (Enderium)"         , "Needs Circuit Parts"                             , new OreDictItemData(MT.Enderium, U, ANY.SiO2, U, MT.Plastic, U), TC.stack(TC.FABRICO, 1), TC.stack(TC.ALIENIS, 1)));
+		IL.Circuit_Plate_Enderium          .set(addItem(tLastID = 30014, "Circuit Plate (Enderium)"         , "Needs Circuit Parts"                             , new OreDictItemData(MT.Enderium, U, ANY.SiO2, U, ANY.Plastic, U), TC.stack(TC.FABRICO, 1), TC.stack(TC.ALIENIS, 1)));
 		IL.Circuit_Wire_Signalum           .set(addItem(tLastID = 30015, "Circuit Wiring (Signalum)"        , "Needs to be placed on an empty Circuit Plate"    , new OreDictItemData(MT.Signalum, U), TC.stack(TC.FABRICO, 1), TC.stack(TC.POTENTIA, 1)));
-		IL.Circuit_Plate_Signalum          .set(addItem(tLastID = 30016, "Circuit Plate (Signalum)"         , "Needs Circuit Parts"                             , new OreDictItemData(MT.Signalum, U, ANY.SiO2, U, MT.Plastic, U), TC.stack(TC.FABRICO, 1), TC.stack(TC.POTENTIA, 1)));
+		IL.Circuit_Plate_Signalum          .set(addItem(tLastID = 30016, "Circuit Plate (Signalum)"         , "Needs Circuit Parts"                             , new OreDictItemData(MT.Signalum, U, ANY.SiO2, U, ANY.Plastic, U), TC.stack(TC.FABRICO, 1), TC.stack(TC.POTENTIA, 1)));
 		
 		IL.Circuit_Plate_HSLA              .set(addItem(tLastID = 30099, "Circuit Plate (HSLA)"             , "Needs Circuit Parts"                             , new OreDictItemData(MT.HSLA, U, MT.Au, U), TC.stack(TC.FABRICO, 1), TC.stack(TC.MACHINA, 1), MD.RoC.mLoaded ? null : TD.Creative.HIDDEN));
 		
@@ -707,6 +710,9 @@ public class MultiItemTechnological extends MultiItemRandom {
 		RM.Press.addRecipeX(T, F, F, F, T, 16, 16, ST.array(OP.wireFine.mat(MT.Mithril       , 1), OP.wireFine.mat(MT.Signalum, 1), OP.plateGemTiny.mat(MT.Si           , 1)), IL.Circuit_Part_Magic        .get(1));
 		RM.Press.addRecipeX(T, F, F, F, T, 16, 16, ST.array(OP.wireFine.mat(MT.Mithril       , 1), OP.wireFine.mat(MT.Signalum, 1), OP.plateGemTiny.mat(MT.Ge           , 1)), IL.Circuit_Part_Magic        .get(1));
 		RM.Press.addRecipeX(T, F, F, F, T, 16, 16, ST.array(OP.wireFine.mat(MT.Mithril       , 1), OP.wireFine.mat(MT.Signalum, 1), OP.plateGemTiny.mat(MT.RedstoneAlloy, 1)), IL.Circuit_Part_Magic        .get(1));
+		RM.Press.addRecipeX(T, F, F, F, T, 16, 16, ST.array(OP.wireFine.mat(MT.Netherite     , 1), OP.wireFine.mat(MT.Signalum, 1), OP.plateGemTiny.mat(MT.Si           , 1)), IL.Circuit_Part_Magic        .get(1));
+		RM.Press.addRecipeX(T, F, F, F, T, 16, 16, ST.array(OP.wireFine.mat(MT.Netherite     , 1), OP.wireFine.mat(MT.Signalum, 1), OP.plateGemTiny.mat(MT.Ge           , 1)), IL.Circuit_Part_Magic        .get(1));
+		RM.Press.addRecipeX(T, F, F, F, T, 16, 16, ST.array(OP.wireFine.mat(MT.Netherite     , 1), OP.wireFine.mat(MT.Signalum, 1), OP.plateGemTiny.mat(MT.RedstoneAlloy, 1)), IL.Circuit_Part_Magic        .get(1));
 		RM.Press.addRecipeX(T, F, F, F, T, 16, 16, ST.array(OP.wireFine.mat(MT.Enderium      , 1), OP.wireFine.mat(MT.Signalum, 1), OP.plateGemTiny.mat(MT.RedstoneAlloy, 1)), IL.Circuit_Part_Enderium     .get(1));
 		RM.Press.addRecipeX(T, F, F, F, T, 16, 16, ST.array(OP.wireFine.mat(MT.Signalum      , 9), OP.dust    .mat(MT.Redstone, 1), OP.plateGemTiny.mat(MT.Si           , 9)), IL.Circuit_Part_Signalum     .get(9));
 		RM.Press.addRecipeX(T, F, F, F, T, 16, 16, ST.array(OP.wireFine.mat(MT.Signalum      , 9), OP.dust    .mat(MT.Redstone, 1), OP.plateGemTiny.mat(MT.Ge           , 9)), IL.Circuit_Part_Signalum     .get(9));
@@ -739,14 +745,14 @@ public class MultiItemTechnological extends MultiItemRandom {
 		IL.Circuit_Board_Enderium          .set(addItem(tLastID = 30213, "Circuit Board (Enderium)"         , "Needs to be soldered properly"                   , TC.stack(TC.FABRICO, 1)));
 		IL.Circuit_Board_Signalum          .set(addItem(tLastID = 30215, "Circuit Board (Signalum)"         , "Needs to be soldered properly"                   , TC.stack(TC.FABRICO, 1)));
 		
-		IL.Circuit_Board_BC_Redstone       .set(addItem(tLastID = 30280, "Circuit Board (BC Redstone)"      , "Needs to be soldered properly"                   , TC.stack(TC.FABRICO, 1), MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,  U), OM.stack(MT.Plastic, U), OM.stack(MT.Redstone, 4*U))));
-		IL.Circuit_Board_BC_Iron           .set(addItem(tLastID = 30281, "Circuit Board (BC Iron)"          , "Needs to be soldered properly"                   , TC.stack(TC.FABRICO, 1), MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,  U), OM.stack(MT.Plastic, U), OM.stack(MT.Redstone, 4*U), OM.stack(ANY.Fe, 4*U))));
-		IL.Circuit_Board_BC_Gold           .set(addItem(tLastID = 30282, "Circuit Board (BC Gold)"          , "Needs to be soldered properly"                   , TC.stack(TC.FABRICO, 1), MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,  U), OM.stack(MT.Plastic, U), OM.stack(MT.Redstone, 4*U), OM.stack(MT.Au, 4*U))));
-		IL.Circuit_Board_BC_Diamond        .set(addItem(tLastID = 30283, "Circuit Board (BC Diamond)"       , "Needs to be soldered properly"                   , TC.stack(TC.FABRICO, 1), MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,  U), OM.stack(MT.Plastic, U), OM.stack(MT.Redstone, 4*U), OM.stack(ANY.Diamond, 4*U))));
-		IL.Circuit_Board_BC_Ender          .set(addItem(tLastID = 30284, "Circuit Board (BC Ender)"         , "Needs to be soldered properly"                   , TC.stack(TC.FABRICO, 1), MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,  U), OM.stack(MT.Plastic, U), OM.stack(MT.Redstone, 4*U), OM.stack(MT.EnderPearl, 4*U))));
-		IL.Circuit_Board_BC_Quartz         .set(addItem(tLastID = 30285, "Circuit Board (BC Quartz)"        , "Needs to be soldered properly"                   , TC.stack(TC.FABRICO, 1), MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,5*U), OM.stack(MT.Plastic, U), OM.stack(MT.Redstone, 4*U))));
-		IL.Circuit_Board_BC_Comparator     .set(addItem(tLastID = 30286, "Circuit Board (BC Comparator)"    , "Needs to be soldered properly"                   , TC.stack(TC.FABRICO, 1), MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,  U), OM.stack(MT.Plastic, U), OM.stack(MT.Redstone,16*U))));
-		IL.Circuit_Board_BC_Emerald        .set(addItem(tLastID = 30287, "Circuit Board (BC Emerald)"       , "Needs to be soldered properly"                   , TC.stack(TC.FABRICO, 1), MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,  U), OM.stack(MT.Plastic, U), OM.stack(MT.Redstone, 4*U), OM.stack(ANY.Emerald, 4*U))));
+		IL.Circuit_Board_BC_Redstone       .set(addItem(tLastID = 30280, "Circuit Board (BC Redstone)"      , "Needs to be soldered properly"                   , TC.stack(TC.FABRICO, 1), MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,  U), OM.stack(ANY.Plastic, U), OM.stack(MT.Redstone, 4*U))));
+		IL.Circuit_Board_BC_Iron           .set(addItem(tLastID = 30281, "Circuit Board (BC Iron)"          , "Needs to be soldered properly"                   , TC.stack(TC.FABRICO, 1), MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,  U), OM.stack(ANY.Plastic, U), OM.stack(MT.Redstone, 4*U), OM.stack(ANY.Fe, 4*U))));
+		IL.Circuit_Board_BC_Gold           .set(addItem(tLastID = 30282, "Circuit Board (BC Gold)"          , "Needs to be soldered properly"                   , TC.stack(TC.FABRICO, 1), MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,  U), OM.stack(ANY.Plastic, U), OM.stack(MT.Redstone, 4*U), OM.stack(MT.Au, 4*U))));
+		IL.Circuit_Board_BC_Diamond        .set(addItem(tLastID = 30283, "Circuit Board (BC Diamond)"       , "Needs to be soldered properly"                   , TC.stack(TC.FABRICO, 1), MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,  U), OM.stack(ANY.Plastic, U), OM.stack(MT.Redstone, 4*U), OM.stack(ANY.Diamond, 4*U))));
+		IL.Circuit_Board_BC_Ender          .set(addItem(tLastID = 30284, "Circuit Board (BC Ender)"         , "Needs to be soldered properly"                   , TC.stack(TC.FABRICO, 1), MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,  U), OM.stack(ANY.Plastic, U), OM.stack(MT.Redstone, 4*U), OM.stack(MT.EnderPearl, 4*U))));
+		IL.Circuit_Board_BC_Quartz         .set(addItem(tLastID = 30285, "Circuit Board (BC Quartz)"        , "Needs to be soldered properly"                   , TC.stack(TC.FABRICO, 1), MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,5*U), OM.stack(ANY.Plastic, U), OM.stack(MT.Redstone, 4*U))));
+		IL.Circuit_Board_BC_Comparator     .set(addItem(tLastID = 30286, "Circuit Board (BC Comparator)"    , "Needs to be soldered properly"                   , TC.stack(TC.FABRICO, 1), MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,  U), OM.stack(ANY.Plastic, U), OM.stack(MT.Redstone,16*U))));
+		IL.Circuit_Board_BC_Emerald        .set(addItem(tLastID = 30287, "Circuit Board (BC Emerald)"       , "Needs to be soldered properly"                   , TC.stack(TC.FABRICO, 1), MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,  U), OM.stack(ANY.Plastic, U), OM.stack(MT.Redstone, 4*U), OM.stack(ANY.Emerald, 4*U))));
 		
 		IL.Circuit_Board_HSLA_Circuit      .set(addItem(tLastID = 30298, "Circuit Board (HSLA Circuit)"     , "Needs to be soldered properly"                   , TC.stack(TC.FABRICO, 1), MD.RoC.mLoaded ? null : TD.Creative.HIDDEN));
 		IL.Circuit_Board_Power_Module      .set(addItem(tLastID = 30299, "Circuit Board (Power Module)"     , "Needs to be soldered properly"                   , TC.stack(TC.FABRICO, 1), MD.RoC.mLoaded ? null : TD.Creative.HIDDEN));
@@ -788,14 +794,14 @@ public class MultiItemTechnological extends MultiItemRandom {
 		IL.Circuit_Enderium                .set(addItem(tLastID = 30313, "Circuit (Enderium)"               , "Computes simple Data somewhere else"             , OP.circuit.dat(MT.Enderium)));
 		IL.Circuit_Signalum                .set(addItem(tLastID = 30315, "Circuit (Signalum)"               , "Computes simple Logic"                           , OP.circuit.dat(MT.Signalum)));
 		
-		IL.Circuit_BC_Redstone             .set(addItem(tLastID = 30380, "Circuit (BC Redstone)"            , "Made for tweaking Recipes"                       , MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, TC.stack(TC.COGNITIO, 1), TC.stack(TC.POTENTIA, 3), TC.stack(TC.MACHINA, 1)     , new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,  U), OM.stack(MT.Plastic, U), OM.stack(MT.Redstone, 4*U))));
-		IL.Circuit_BC_Iron                 .set(addItem(tLastID = 30381, "Circuit (BC Iron)"                , "Made for tweaking Recipes"                       , MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, TC.stack(TC.COGNITIO, 2), TC.stack(TC.METALLUM, 4)                              , new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,  U), OM.stack(MT.Plastic, U), OM.stack(MT.Redstone, 4*U), OM.stack(ANY.Fe, 4*U))));
-		IL.Circuit_BC_Gold                 .set(addItem(tLastID = 30382, "Circuit (BC Gold)"                , "Made for tweaking Recipes"                       , MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, TC.stack(TC.COGNITIO, 3), TC.stack(TC.LUCRUM, 2), TC.stack(TC.METALLUM, 2)      , new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,  U), OM.stack(MT.Plastic, U), OM.stack(MT.Redstone, 4*U), OM.stack(MT.Au, 4*U))));
-		IL.Circuit_BC_Diamond              .set(addItem(tLastID = 30383, "Circuit (BC Diamond)"             , "Made for tweaking Recipes"                       , MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, TC.stack(TC.COGNITIO, 4), TC.stack(TC.LUCRUM, 2), TC.stack(TC.VITREUS, 2)       , new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,  U), OM.stack(MT.Plastic, U), OM.stack(MT.Redstone, 4*U), OM.stack(ANY.Diamond, 4*U))));
-		IL.Circuit_BC_Ender                .set(addItem(tLastID = 30384, "Circuit (BC Ender)"               , "Made for tweaking Recipes"                       , MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, TC.stack(TC.COGNITIO, 3), TC.stack(TC.ALIENIS, 4)                               , new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,  U), OM.stack(MT.Plastic, U), OM.stack(MT.Redstone, 4*U), OM.stack(MT.EnderPearl, 4*U))));
-		IL.Circuit_BC_Quartz               .set(addItem(tLastID = 30385, "Circuit (BC Quartz)"              , "Made for tweaking Recipes"                       , MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, TC.stack(TC.COGNITIO, 2), TC.stack(TC.POTENTIA, 2), TC.stack(TC.VITREUS, 2)     , new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,5*U), OM.stack(MT.Plastic, U), OM.stack(MT.Redstone, 4*U))));
-		IL.Circuit_BC_Comparator           .set(addItem(tLastID = 30386, "Circuit (BC Comparator)"          , "Made for tweaking Recipes"                       , MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, TC.stack(TC.COGNITIO, 2), TC.stack(TC.MACHINA, 4)                               , new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,  U), OM.stack(MT.Plastic, U), OM.stack(MT.Redstone,16*U))));
-		IL.Circuit_BC_Emerald              .set(addItem(tLastID = 30387, "Circuit (BC Emerald)"             , "Made for tweaking Recipes"                       , MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, TC.stack(TC.COGNITIO, 4), TC.stack(TC.LUCRUM, 2), TC.stack(TC.VITREUS, 2)       , new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,  U), OM.stack(MT.Plastic, U), OM.stack(MT.Redstone, 4*U), OM.stack(ANY.Emerald, 4*U))));
+		IL.Circuit_BC_Redstone             .set(addItem(tLastID = 30380, "Circuit (BC Redstone)"            , "Made for tweaking Recipes"                       , MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, TC.stack(TC.COGNITIO, 1), TC.stack(TC.POTENTIA, 3), TC.stack(TC.MACHINA, 1)     , new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,  U), OM.stack(ANY.Plastic, U), OM.stack(MT.Redstone, 4*U))));
+		IL.Circuit_BC_Iron                 .set(addItem(tLastID = 30381, "Circuit (BC Iron)"                , "Made for tweaking Recipes"                       , MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, TC.stack(TC.COGNITIO, 2), TC.stack(TC.METALLUM, 4)                              , new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,  U), OM.stack(ANY.Plastic, U), OM.stack(MT.Redstone, 4*U), OM.stack(ANY.Fe, 4*U))));
+		IL.Circuit_BC_Gold                 .set(addItem(tLastID = 30382, "Circuit (BC Gold)"                , "Made for tweaking Recipes"                       , MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, TC.stack(TC.COGNITIO, 3), TC.stack(TC.LUCRUM, 2), TC.stack(TC.METALLUM, 2)      , new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,  U), OM.stack(ANY.Plastic, U), OM.stack(MT.Redstone, 4*U), OM.stack(MT.Au, 4*U))));
+		IL.Circuit_BC_Diamond              .set(addItem(tLastID = 30383, "Circuit (BC Diamond)"             , "Made for tweaking Recipes"                       , MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, TC.stack(TC.COGNITIO, 4), TC.stack(TC.LUCRUM, 2), TC.stack(TC.VITREUS, 2)       , new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,  U), OM.stack(ANY.Plastic, U), OM.stack(MT.Redstone, 4*U), OM.stack(ANY.Diamond, 4*U))));
+		IL.Circuit_BC_Ender                .set(addItem(tLastID = 30384, "Circuit (BC Ender)"               , "Made for tweaking Recipes"                       , MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, TC.stack(TC.COGNITIO, 3), TC.stack(TC.ALIENIS, 4)                               , new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,  U), OM.stack(ANY.Plastic, U), OM.stack(MT.Redstone, 4*U), OM.stack(MT.EnderPearl, 4*U))));
+		IL.Circuit_BC_Quartz               .set(addItem(tLastID = 30385, "Circuit (BC Quartz)"              , "Made for tweaking Recipes"                       , MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, TC.stack(TC.COGNITIO, 2), TC.stack(TC.POTENTIA, 2), TC.stack(TC.VITREUS, 2)     , new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,5*U), OM.stack(ANY.Plastic, U), OM.stack(MT.Redstone, 4*U))));
+		IL.Circuit_BC_Comparator           .set(addItem(tLastID = 30386, "Circuit (BC Comparator)"          , "Made for tweaking Recipes"                       , MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, TC.stack(TC.COGNITIO, 2), TC.stack(TC.MACHINA, 4)                               , new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,  U), OM.stack(ANY.Plastic, U), OM.stack(MT.Redstone,16*U))));
+		IL.Circuit_BC_Emerald              .set(addItem(tLastID = 30387, "Circuit (BC Emerald)"             , "Made for tweaking Recipes"                       , MD.BC_SILICON.mLoaded ? null : TD.Creative.HIDDEN, TC.stack(TC.COGNITIO, 4), TC.stack(TC.LUCRUM, 2), TC.stack(TC.VITREUS, 2)       , new OreDictItemData(OM.stack(MT.Signalum, U), OM.stack(ANY.SiO2,  U), OM.stack(ANY.Plastic, U), OM.stack(MT.Redstone, 4*U), OM.stack(ANY.Emerald, 4*U))));
 		
 		RM.Bath.addRecipe1(T, F, F, F, T, 0, 64, IL.Circuit_Board_Basic         .get(1), MT.Pb              .liquid(U2, T), NF, IL.Circuit_Basic         .get(1));
 		RM.Bath.addRecipe1(T, F, F, F, T, 0, 64, IL.Circuit_Board_Basic         .get(1), MT.Sn              .liquid(U2, T), NF, IL.Circuit_Basic         .get(1));
@@ -878,10 +884,10 @@ public class MultiItemTechnological extends MultiItemRandom {
 		CR.shaped(IL.USB_Stick_3.get(1), CR.DEF_REV, "xWd", "PCP", "TCT", 'C', OD_CIRCUITS[5], 'W', MT.DATA.WIRES_01[5], 'P', OP.plate.dat(MT.Cr            ), 'T', OP.screw.dat(MT.Cr            ));
 		CR.shaped(IL.USB_Stick_4.get(1), CR.DEF_REV, "xWd", "PCP", "TCT", 'C', OD_CIRCUITS[6], 'W', MT.DATA.WIRES_01[6], 'P', OP.plate.dat(MT.Ti            ), 'T', OP.screw.dat(MT.Ti            ));
 		
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.USB_Stick_1.get(1)), (byte)54);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.USB_Stick_2.get(1)), (byte)54);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.USB_Stick_3.get(1)), (byte)54);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.USB_Stick_4.get(1)), (byte)54);
+		BooksGT.BOOK_REGISTER.put(IL.USB_Stick_1, (byte)54);
+		BooksGT.BOOK_REGISTER.put(IL.USB_Stick_2, (byte)54);
+		BooksGT.BOOK_REGISTER.put(IL.USB_Stick_3, (byte)54);
+		BooksGT.BOOK_REGISTER.put(IL.USB_Stick_4, (byte)54);
 		
 		
 		IL.USB_Cable_1                     .set(addItem(tLastID = 32011, "USB 1.0 Cable"                    , "Replaces USB Sticks when connected to USB Ports" , OD_USB_CABLES[1], TC.stack(TC.COGNITIO, 2), TC.stack(TC.ELECTRUM, 1)));
@@ -905,9 +911,9 @@ public class MultiItemTechnological extends MultiItemRandom {
 		CR.shaped(IL.USB_HDD_3.get(1), CR.DEF_REV, "PLT", "dRW", "TCP", 'C', OD_CIRCUITS[5], 'W', IL.USB_Cable_3, 'L', IL.Comp_Laser_Gas_He, 'R', OD.record, 'P', OP.plate.dat(MT.Cr            ), 'T', OP.screw.dat(MT.Cr            ));
 		CR.shaped(IL.USB_HDD_4.get(1), CR.DEF_REV, "PLT", "dRW", "TCP", 'C', OD_CIRCUITS[6], 'W', IL.USB_Cable_4, 'L', IL.Comp_Laser_Gas_He, 'R', OD.record, 'P', OP.plate.dat(MT.Ti            ), 'T', OP.screw.dat(MT.Ti            ));
 		
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.USB_HDD_1.get(1)), (byte)54);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.USB_HDD_2.get(1)), (byte)54);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.USB_HDD_3.get(1)), (byte)54);
-		BooksGT.BOOK_REGISTER.put(new ItemStackContainer(IL.USB_HDD_4.get(1)), (byte)54);
+		BooksGT.BOOK_REGISTER.put(IL.USB_HDD_1, (byte)54);
+		BooksGT.BOOK_REGISTER.put(IL.USB_HDD_2, (byte)54);
+		BooksGT.BOOK_REGISTER.put(IL.USB_HDD_3, (byte)54);
+		BooksGT.BOOK_REGISTER.put(IL.USB_HDD_4, (byte)54);
 	}
 }

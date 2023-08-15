@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,18 +19,11 @@
 
 package gregapi.tileentity.connectors;
 
-import static gregapi.data.CS.*;
-import static gregtechCH.data.CS_CH.*;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetDebugInfo;
 import gregapi.code.ArrayListNoNulls;
 import gregapi.code.HashSetNoNulls;
 import gregapi.code.TagData;
-import gregapi.data.CS.SFX;
+import gregapi.data.CS.*;
 import gregapi.data.LH;
 import gregapi.data.LH.Chat;
 import gregapi.data.MT;
@@ -55,6 +48,13 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.*;
 
 /**
  * @author Gregorius Techneticies
@@ -130,7 +130,7 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 				return 0;
 			}
 		}
-		if (aTool.equals(TOOL_magnifyingglass) && aSneaking) {
+		if (aTool.equals(TOOL_tachometer)) {
 			if (mTransferredLast > 0) {
 				if (aChatReturn != null) {
 					aChatReturn.add(mSpeedLast<0 ? "Counterclockwise" : "Clockwise");

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -24,7 +24,6 @@ import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetCollisionBoundingB
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetSelectedBoundingBoxFromPool;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_SetBlockBoundsBasedOnState;
 import gregapi.data.*;
-import gregapi.data.CS.*;
 import gregapi.data.LH.Chat;
 import gregapi.network.INetworkHandler;
 import gregapi.network.IPacket;
@@ -110,6 +109,8 @@ public class MultiTileEntitySiftingTable extends TileEntityBase07Paintable imple
 				if (IL.NeLi_Gravel                  .equal(tStack, T, T)) {mDisplayedInput =-11;} else
 				if (IL.EtFu_Gravel                  .equal(tStack, F, T)) {mDisplayedInput = -1;} else
 				if (IL.EtFu_Dirt                    .equal(tStack, F, T)) {mDisplayedInput = -3;} else
+				if (IL.BTL_Mud                      .equal(tStack, F, T)) {mDisplayedInput =-10;} else
+				if (IL.ERE_Mud                      .equal(tStack, F, T)) {mDisplayedInput =-10;} else
 				if (IL.BoP_Mud                      .equal(tStack, F, T)) {mDisplayedInput =-10;} else
 				if (IL.BoP_Quicksand                .equal(tStack, F, T)) {mDisplayedInput = -5;} else
 				if (IL.BoP_Sand_Hard                .equal(tStack, F, T)) {mDisplayedInput = -5;} else
@@ -143,6 +144,10 @@ public class MultiTileEntitySiftingTable extends TileEntityBase07Paintable imple
 				if (IL.EB_Grass_Inceptisol          .equal(tStack, F, T)) {mDisplayedInput = -7;} else
 				if (IL.EB_Grass_Mollisol            .equal(tStack, F, T)) {mDisplayedInput = -7;} else
 				if (IL.EB_Grass_Oxisol              .equal(tStack, F, T)) {mDisplayedInput = -7;} else
+				if (IL.Salt_Dirt_1                  .equal(tStack, F, T)) {mDisplayedInput = -2;} else
+				if (IL.Salt_Dirt_2                  .equal(tStack, F, T)) {mDisplayedInput = -2;} else
+				if (IL.Salt_Dirt_3                  .equal(tStack, F, T)) {mDisplayedInput = -2;} else
+				if (IL.Salt_Grass                   .equal(tStack, F, T)) {mDisplayedInput = -7;} else
 				{
 					OreDictItemData tData = OM.data_(tStack);
 					if (tData == null || tData.mMaterial == null) {
@@ -173,6 +178,8 @@ public class MultiTileEntitySiftingTable extends TileEntityBase07Paintable imple
 				if (IL.NeLi_Gravel                  .equal(tStack, T, T)) {mDisplayedOutput =-11;} else
 				if (IL.EtFu_Gravel                  .equal(tStack, F, T)) {mDisplayedOutput = -1;} else
 				if (IL.EtFu_Dirt                    .equal(tStack, F, T)) {mDisplayedOutput = -3;} else
+				if (IL.BTL_Mud                      .equal(tStack, F, T)) {mDisplayedOutput =-10;} else
+				if (IL.ERE_Mud                      .equal(tStack, F, T)) {mDisplayedOutput =-10;} else
 				if (IL.BoP_Mud                      .equal(tStack, F, T)) {mDisplayedOutput =-10;} else
 				if (IL.BoP_Quicksand                .equal(tStack, F, T)) {mDisplayedOutput = -5;} else
 				if (IL.BoP_Sand_Hard                .equal(tStack, F, T)) {mDisplayedOutput = -5;} else
@@ -206,6 +213,10 @@ public class MultiTileEntitySiftingTable extends TileEntityBase07Paintable imple
 				if (IL.EB_Grass_Inceptisol          .equal(tStack, F, T)) {mDisplayedOutput = -7;} else
 				if (IL.EB_Grass_Mollisol            .equal(tStack, F, T)) {mDisplayedOutput = -7;} else
 				if (IL.EB_Grass_Oxisol              .equal(tStack, F, T)) {mDisplayedOutput = -7;} else
+				if (IL.Salt_Dirt_1                  .equal(tStack, F, T)) {mDisplayedOutput = -2;} else
+				if (IL.Salt_Dirt_2                  .equal(tStack, F, T)) {mDisplayedOutput = -2;} else
+				if (IL.Salt_Dirt_3                  .equal(tStack, F, T)) {mDisplayedOutput = -2;} else
+				if (IL.Salt_Grass                   .equal(tStack, F, T)) {mDisplayedOutput = -7;} else
 				{
 					OreDictItemData tData = OM.data_(tStack);
 					if (tData == null || tData.mMaterial == null) {

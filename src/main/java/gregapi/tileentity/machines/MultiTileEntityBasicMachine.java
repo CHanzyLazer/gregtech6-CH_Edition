@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -552,7 +552,7 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 	
 	// Override the code in MTEC_BasicMachine instead
 //	public final int canOutput(Recipe aRecipe) {return mCore.canOutput(aRecipe);}
-	public final int checkRecipe(boolean aApplyRecipe, boolean aUseAutoInputs) {return mCore.checkRecipe(aApplyRecipe, aUseAutoInputs);}
+	public final int checkRecipe(boolean aApplyRecipe, boolean aUseAutoIO) {return mCore.checkRecipe(aApplyRecipe, aUseAutoIO);}
 	public final void doWork(long aTimer) {IMTEC_BasicMachine.Util.doWork(mCore, aTimer);}
 //	public final boolean doActive(long aTimer, long aEnergy) {return mCore.doActive(aTimer, aEnergy);}
 //	public final boolean doInactive(long aTimer) {return mCore.doInactive(aTimer);}
@@ -636,9 +636,16 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 		return getAdjacentTank(aSide);
 	}
 	
+	public void doInputItems() {
+		if (mDisabledItemInput) return;
+		byte tAutoInput = FACING_TO_SIDE[mFacing][mItemAutoInput];
+		if (SIDES_VALID[tAutoInput]) ST.moveAll(getItemInputTarget(tAutoInput), delegator(tAutoInput));
+	}
+	
 	public void doOutputItems() {
+		if (mDisabledItemOutput) return;
 		byte tAutoOutput = FACING_TO_SIDE[mFacing][mItemAutoOutput];
-		ST.moveAll(delegator(tAutoOutput), getItemOutputTarget(tAutoOutput));
+		if (SIDES_VALID[tAutoOutput]) ST.moveAll(delegator(tAutoOutput), getItemOutputTarget(tAutoOutput));
 	}
 	
 	public void doOutputFluids() {
@@ -667,7 +674,7 @@ public class MultiTileEntityBasicMachine extends TileEntityBase09FacingSingle im
 	@Override public boolean hasWork() {return mCore.hasWork();}
 	@Override public long getProgressValue(byte aSide) {return mCore.getProgressValue(aSide);}
 	@Override public long getProgressMax  (byte aSide) {return mCore.getProgressMax(aSide);}
-	@Override public long getGibblValue   (byte aSide) {long rGibbl = 0; for (FluidTankGT fluidTankGT : mTanksInput) rGibbl += fluidTankGT.amount(); return rGibbl;}
+	@Override public long getGibblValue   (byte aSide) {long rGibbl = 0; for (FluidTankGT fluidTankGT : mTanksInput) rGibbl += fluidTankGT.amount  (); return rGibbl;}
 	@Override public long getGibblMax     (byte aSide) {long rGibbl = 0; for (FluidTankGT fluidTankGT : mTanksInput) rGibbl += fluidTankGT.capacity(); return rGibbl;}
 	
 	@Override public boolean getStateRunningPossible    () {return mCouldUseRecipe || mActive || mCore.mMaxProgress > 0 || mCore.mChargeRequirement > 0 || (mIgnited > 0 && !mDisabledItemOutput && mOutputBlocked != 0);}

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -31,6 +31,7 @@ import gregapi.render.IIconContainer;
 import gregapi.render.ITexture;
 import gregapi.render.TextureSet;
 import gregapi.util.OM;
+import gregapi.util.ST;
 import gregapi.util.UT;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
@@ -86,9 +87,9 @@ public final class OreDictMaterial implements ITagDataContainer<OreDictMaterial>
 	 * <BR>[20000:20499] BloodAsp
 	 * <BR>[20500:20999] Axelandre42
 	 * <BR>[21000:21499] IceFrezze
-	 * <BR>[21500:21999] the next one who asks me (do not use unless I personally tell you to use this medium Range)
-	 * <BR>[22000:22499] Free
-	 * <BR>[22500:22999] Free
+	 * <BR>[21500:21999] the next one who asks me (do not use unless I personally tell you to use this medium Range), yes this is still correct
+	 * <BR>[22000:22499] kuzuanpa
+	 * <BR>[22500:22999] reserved for now, unsure if needed.
 	 * <BR>[23000:23499] Free
 	 * <BR>[23500:23999] Free
 	 * <BR>[24000:24499] Free
@@ -116,8 +117,8 @@ public final class OreDictMaterial implements ITagDataContainer<OreDictMaterial>
 	 * <BR>[30700:30799] Briareos81
 	 * <BR>[30800:30899] SuperCoder79
 	 * <BR>[30900:30999] ManaMetal Mod
-	 * <BR>[31000:31099] the next one who asks me (do not use unless I personally tell you to use this smaller Range)
-	 * <BR>[31100:31199] Free
+	 * <BR>[31000:31099] BioAstroiner
+	 * <BR>[31100:31199] the next one who asks me (do not use unless I personally tell you to use this smaller Range)
 	 * <BR>[31200:31299] Free
 	 * <BR>[31300:31399] Free
 	 * <BR>[31400:31499] Free
@@ -308,7 +309,7 @@ public final class OreDictMaterial implements ITagDataContainer<OreDictMaterial>
 	/** The Tags for this Material */
 	private final Set<TagData> mTags = new HashSetNoNulls<>();
 	/** Stores the Tool and Armor Enchants */
-	public final List<ObjectStack<Enchantment>> mEnchantmentTools = new ArrayListNoNulls<>(1), mEnchantmentWeapons = new ArrayListNoNulls<>(1), mEnchantmentAmmo = new ArrayListNoNulls<>(1), mEnchantmentRanged = new ArrayListNoNulls<>(1), mEnchantmentArmors = new ArrayListNoNulls<>(1);
+	public final List<ObjectStack<Enchantment>> mEnchantmentTools = new ArrayListNoNulls<>(1), mEnchantmentWeapons = new ArrayListNoNulls<>(1), mEnchantmentAmmo = new ArrayListNoNulls<>(1), mEnchantmentRanged = new ArrayListNoNulls<>(1), mEnchantmentFishing = new ArrayListNoNulls<>(1), mEnchantmentArmors = new ArrayListNoNulls<>(1);
 	
 	/** GTCH, Where is this Material registered, 15000-15999 For GregTech6-Unofficial，17000-17999 For GregTech6-CH_Edition */
 	public final RegType mRegType;
@@ -1175,6 +1176,12 @@ public final class OreDictMaterial implements ITagDataContainer<OreDictMaterial>
 		return this;
 	}
 	
+	public OreDictMaterial addEnchantmentForDamage(Enchantment aEnchantment, int aEnchantmentLevel) {
+		addEnchantmentForWeapons(aEnchantment, aEnchantmentLevel);
+		addEnchantmentForAmmo(aEnchantment, aEnchantmentLevel);
+		return this;
+	}
+	
 	public OreDictMaterial addEnchantmentForWeapons(Enchantment aEnchantment, int aEnchantmentLevel) {
 		mEnchantmentWeapons.add(new ObjectStack<>(aEnchantment, aEnchantmentLevel));
 		return this;
@@ -1187,6 +1194,11 @@ public final class OreDictMaterial implements ITagDataContainer<OreDictMaterial>
 	
 	public OreDictMaterial addEnchantmentForRanged(Enchantment aEnchantment, int aEnchantmentLevel) {
 		mEnchantmentRanged.add(new ObjectStack<>(aEnchantment, aEnchantmentLevel));
+		return this;
+	}
+	
+	public OreDictMaterial addEnchantmentForFishing(Enchantment aEnchantment, int aEnchantmentLevel) {
+		mEnchantmentFishing.add(new ObjectStack<>(aEnchantment, aEnchantment == Enchantment.field_151369_A ? Math.min(5, aEnchantmentLevel) : aEnchantmentLevel));
 		return this;
 	}
 	
@@ -1379,7 +1391,7 @@ public final class OreDictMaterial implements ITagDataContainer<OreDictMaterial>
 	}
 	
 	/** List of all valid Items, which are registered for this Material. */
-	public final ItemStackSet<ItemStackContainer> mRegisteredItems = new ItemStackSet<>();
+	public final ItemStackSet<ItemStackContainer> mRegisteredItems = ST.hashset();
 	/** This is used to determine if any of the ItemStacks belongs to this Material. */
 	public boolean contains(ItemStack... aStacks) {
 		if (aStacks == null) return F;

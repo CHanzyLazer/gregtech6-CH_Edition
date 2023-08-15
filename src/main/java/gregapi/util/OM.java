@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,18 +19,14 @@
 
 package gregapi.util;
 
-import static gregapi.data.CS.*;
-
 import gregapi.code.ModData;
 import gregapi.code.TagData;
 import gregapi.data.MT;
 import gregapi.data.OP;
-import gregapi.oredict.OreDictItemData;
-import gregapi.oredict.OreDictManager;
-import gregapi.oredict.OreDictMaterial;
-import gregapi.oredict.OreDictMaterialStack;
-import gregapi.oredict.OreDictPrefix;
+import gregapi.oredict.*;
 import net.minecraft.item.ItemStack;
+
+import static gregapi.data.CS.*;
 
 /**
  * @author Gregorius Techneticies
@@ -148,16 +144,16 @@ public class OM {
 		if (ST.valid(aStack)) OreDictManager.INSTANCE.addItemData_(aStack, new OreDictItemData(aMaterial, aAmount, OM.stack(aByProduct, aByProductAmount), OM.stack(aByProduct2, aByProduct2Amount), OM.stack(aByProduct3, aByProduct3Amount), OM.stack(aByProduct4, aByProduct4Amount), OM.stack(aByProduct5, aByProduct5Amount), OM.stack(aByProduct6, aByProduct6Amount), OM.stack(aByProduct7, aByProduct7Amount), OM.stack(aByProduct8, aByProduct8Amount)));
 	}
 	public static void dat2(ItemStack aStack, OreDictItemData aData) {
-		if (ST.valid(aStack)) OreDictManager.INSTANCE.addItemData_(ST.copyMeta(0, aStack), aData.setUseVanillaDamage());
+		if (ST.valid(aStack)) OreDictManager.INSTANCE.addItemData_(ST.copyMeta(0, aStack), aData.setUseVanillaDamage().setNotFurnaceFuel());
 	}
 	public static void dat2(ItemStack aStack, OreDictMaterialStack aMaterial, OreDictMaterialStack... aByProducts) {
-		if (ST.valid(aStack)) OreDictManager.INSTANCE.addItemData_(ST.copyMeta(0, aStack), new OreDictItemData(aMaterial, aByProducts).setUseVanillaDamage());
+		if (ST.valid(aStack)) OreDictManager.INSTANCE.addItemData_(ST.copyMeta(0, aStack), new OreDictItemData(aMaterial, aByProducts).setUseVanillaDamage().setNotFurnaceFuel());
 	}
 	public static void dat2(ItemStack aStack, OreDictMaterial aMaterial, long aAmount, OreDictMaterialStack... aByProducts) {
-		if (ST.valid(aStack)) OreDictManager.INSTANCE.addItemData_(ST.copyMeta(0, aStack), new OreDictItemData(aMaterial, aAmount, aByProducts).setUseVanillaDamage());
+		if (ST.valid(aStack)) OreDictManager.INSTANCE.addItemData_(ST.copyMeta(0, aStack), new OreDictItemData(aMaterial, aAmount, aByProducts).setUseVanillaDamage().setNotFurnaceFuel());
 	}
 	public static void dat2(ItemStack aStack, OreDictMaterial aMaterial, long aAmount, OreDictMaterial aByProduct, long aByProductAmount) {
-		if (ST.valid(aStack)) OreDictManager.INSTANCE.addItemData_(ST.copyMeta(0, aStack), new OreDictItemData(aMaterial, aAmount, aByProduct, aByProductAmount).setUseVanillaDamage());
+		if (ST.valid(aStack)) OreDictManager.INSTANCE.addItemData_(ST.copyMeta(0, aStack), new OreDictItemData(aMaterial, aAmount, aByProduct, aByProductAmount).setUseVanillaDamage().setNotFurnaceFuel());
 	}
 	
 	public static OreDictItemData data(String aOre) {
@@ -318,11 +314,11 @@ public class OM {
 	
 	public static double weight(ItemStack aStack) {
 		OreDictItemData tData = OM.anydata(aStack);
-		return tData == null ? 0 : aStack.stackSize * weight(tData.getAllMaterialStacks());
+		return tData == null ? 0 : aStack.stackSize * weight(tData.getAllMaterialWeights());
 	}
 	public static double weight_(ItemStack aStack) {
 		OreDictItemData tData = OM.anydata_(aStack);
-		return tData == null ? 0 : aStack.stackSize * weight(tData.getAllMaterialStacks());
+		return tData == null ? 0 : aStack.stackSize * weight(tData.getAllMaterialWeights());
 	}
 	
 	public static double weight(Iterable<OreDictMaterialStack> aList) {

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,21 +19,9 @@
 
 package gregtech.blocks;
 
-import static gregapi.data.CS.*;
-
-import java.util.ArrayList;
-
 import gregapi.block.BlockBaseMeta;
 import gregapi.block.IBlockOnWalkOver;
-import gregapi.code.ArrayListNoNulls;
-import gregapi.data.CS.BlocksGT;
-import gregapi.data.IL;
-import gregapi.data.LH;
-import gregapi.data.MD;
-import gregapi.data.MT;
-import gregapi.data.OD;
-import gregapi.data.OP;
-import gregapi.data.RM;
+import gregapi.data.*;
 import gregapi.old.Textures;
 import gregapi.render.BlockTextureCopied;
 import gregapi.util.OM;
@@ -51,18 +39,22 @@ import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import java.util.ArrayList;
+
+import static gregapi.data.CS.*;
+
 public class BlockDiggable extends BlockBaseMeta implements IBlockOnWalkOver {
 	public static boolean[] IS_CLAY = {F,T,F,T,T,T,T,F,F,F,F,F,F,F,F,F};
 	
 	public BlockDiggable(String aUnlocalised) {
 		super(null, aUnlocalised, Material.ground, soundTypeGravel, 7, Textures.BlockIcons.DIGGABLES);
-		LH.add(getUnlocalizedName()+ ".0.name", "Mud");
-		LH.add(getUnlocalizedName()+ ".1.name", "Brown Clay");
-		LH.add(getUnlocalizedName()+ ".2.name", "Turf");
-		LH.add(getUnlocalizedName()+ ".3.name", "Red Clay");
-		LH.add(getUnlocalizedName()+ ".4.name", "Yellow Clay");
-		LH.add(getUnlocalizedName()+ ".5.name", "Blue Clay");
-		LH.add(getUnlocalizedName()+ ".6.name", "White Clay");
+		LH.add(getUnlocalizedName()+ ".0", "Mud");
+		LH.add(getUnlocalizedName()+ ".1", "Brown Clay");
+		LH.add(getUnlocalizedName()+ ".2", "Turf");
+		LH.add(getUnlocalizedName()+ ".3", "Red Clay");
+		LH.add(getUnlocalizedName()+ ".4", "Yellow Clay");
+		LH.add(getUnlocalizedName()+ ".5", "Blue Clay");
+		LH.add(getUnlocalizedName()+ ".6", "White Clay");
 		
 		MT.UNUSED.Mud  .mTextureSolid = BlockTextureCopied.get(this, SIDE_TOP, 0);
 		MT.ClayBrown   .mTextureSolid = BlockTextureCopied.get(this, SIDE_TOP, 1);
@@ -77,6 +69,13 @@ public class BlockDiggable extends BlockBaseMeta implements IBlockOnWalkOver {
 		RM.generify(ST.make(this, 1, 4), ST.make(Blocks.clay, 1, 0));
 		RM.generify(ST.make(this, 1, 5), ST.make(Blocks.clay, 1, 0));
 		RM.generify(ST.make(this, 1, 6), ST.make(Blocks.clay, 1, 0));
+		RM.Drying.addRecipe1(T, 16, 64, ST.make(this       , 1, 0), NF, NF, ST.make(Blocks.dirt, 1, 1));
+		RM.Drying.addRecipe1(T, 16, 64, ST.make(Blocks.clay, 1, 0), NF, NF, ST.make(Blocks.hardened_clay, 1, 0));
+		RM.Drying.addRecipe1(T, 16, 64, ST.make(this       , 1, 1), NF, NF, ST.make(Blocks.hardened_clay, 1, 0));
+		RM.Drying.addRecipe1(T, 16, 64, ST.make(this       , 1, 3), NF, NF, ST.make(Blocks.hardened_clay, 1, 0));
+		RM.Drying.addRecipe1(T, 16, 64, ST.make(this       , 1, 4), NF, NF, ST.make(Blocks.hardened_clay, 1, 0));
+		RM.Drying.addRecipe1(T, 16, 64, ST.make(this       , 1, 5), NF, NF, ST.make(Blocks.hardened_clay, 1, 0));
+		RM.Drying.addRecipe1(T, 16, 64, ST.make(this       , 1, 6), NF, NF, ST.make(Blocks.hardened_clay, 1, 0));
 		RM.add_smelting(ST.make(this, 1, 0), ST.make(Blocks.dirt         , 1, 1), F, F, F);
 		RM.add_smelting(ST.make(this, 1, 1), ST.make(Blocks.hardened_clay, 1, 0), F, F, T);
 		RM.add_smelting(ST.make(this, 1, 3), ST.make(Blocks.hardened_clay, 1, 0), F, F, T);
@@ -89,6 +88,7 @@ public class BlockDiggable extends BlockBaseMeta implements IBlockOnWalkOver {
 		OM.data(ST.make(this, 1, 4), MT.Bentonite, U*4);
 		OM.data(ST.make(this, 1, 5), MT.Palygorskite, U*4);
 		OM.data(ST.make(this, 1, 6), MT.Kaolinite, U*4);
+		OM.reg(ST.make(this, 1, 0), OD.blockMud);
 		OM.reg(ST.make(this, 1, 1), OD.blockClay);
 		OM.reg(ST.make(this, 1, 3), OD.blockClay);
 		OM.reg(ST.make(this, 1, 4), OD.blockClay);
@@ -113,14 +113,14 @@ public class BlockDiggable extends BlockBaseMeta implements IBlockOnWalkOver {
 	@Override
 	public ArrayList<ItemStack> getDrops(World aWorld, int aX, int aY, int aZ, int aMeta, int aFortune) {
 		switch(aMeta) {
-		case  0: return new ArrayListNoNulls<>(F, IL.Mud_Ball.get(4));
-		case  1: return new ArrayListNoNulls<>(F, IL.Clay_Ball_Brown.get(4));
-		case  2: return new ArrayListNoNulls<>(F, OP.ingot.mat(MT.Peat, 4));
-		case  3: return new ArrayListNoNulls<>(F, IL.Clay_Ball_Red.get(4));
-		case  4: return new ArrayListNoNulls<>(F, IL.Clay_Ball_Yellow.get(4));
-		case  5: return new ArrayListNoNulls<>(F, IL.Clay_Ball_Blue.get(4));
-		case  6: return new ArrayListNoNulls<>(F, IL.Clay_Ball_White.get(4));
-		default: return new ArrayListNoNulls<>(F, ST.make(this, 1, aMeta));
+		case  0: return ST.arraylist(IL.Mud_Ball.get(4));
+		case  1: return ST.arraylist(IL.Clay_Ball_Brown.get(4));
+		case  2: return ST.arraylist(OP.ingot.mat(MT.Peat, 4));
+		case  3: return ST.arraylist(IL.Clay_Ball_Red.get(4));
+		case  4: return ST.arraylist(IL.Clay_Ball_Yellow.get(4));
+		case  5: return ST.arraylist(IL.Clay_Ball_Blue.get(4));
+		case  6: return ST.arraylist(IL.Clay_Ball_White.get(4));
+		default: return ST.arraylist(ST.make(this, 1, aMeta));
 		}
 	}
 	

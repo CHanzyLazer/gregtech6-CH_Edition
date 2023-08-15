@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -18,11 +18,6 @@
  */
 
 package gregapi.block.misc;
-
-import static gregapi.data.CS.*;
-
-import java.util.List;
-import java.util.Random;
 
 import gregapi.block.IBlockBase;
 import gregapi.block.IBlockToolable;
@@ -57,6 +52,11 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import java.util.List;
+import java.util.Random;
+
+import static gregapi.data.CS.*;
+
 /**
  * @author Gregorius Techneticies
  */
@@ -73,7 +73,7 @@ public class BlockBaseRail extends BlockRailBase implements IBlockBase, IBlockSe
 		setBlockName(mNameInternal = aNameInternal);
 		setCreativeTab(CreativeTabs.tabTransport);
 		ST.register(this, mNameInternal, aItemClass);
-		LH.add(mNameInternal+".name", aLocalName);
+		LH.add(mNameInternal, aLocalName);
 		mExplosionResistance = aExplosionResistance;
 		mHarvestLevel = aHarvestLevel;
 		mSpeed = aSpeed;
@@ -93,7 +93,7 @@ public class BlockBaseRail extends BlockRailBase implements IBlockBase, IBlockSe
 	
 	@Override public final String getUnlocalizedName() {return mNameInternal;}
 	@Override public String name(byte aMeta) {return mNameInternal;}
-	@Override public String getLocalizedName() {return StatCollector.translateToLocal(mNameInternal+ ".name");}
+	@Override public String getLocalizedName() {return StatCollector.translateToLocal(mNameInternal);}
 	@Override public float getBlockHardness(World aWorld, int aX, int aY, int aZ) {return Blocks.rail.getBlockHardness(aWorld, aX, aY, aZ);}
 	@Override public float getExplosionResistance(Entity aEntity, World aWorld, int aX, int aY, int aZ, double eX, double eY, double eZ) {return mExplosionResistance;}
 	@Override public float getExplosionResistance(Entity aEntity) {return mExplosionResistance;}
@@ -138,7 +138,7 @@ public class BlockBaseRail extends BlockRailBase implements IBlockBase, IBlockSe
 		if (!aWorld.isRemote) {
 			if (aTool.equals(TOOL_softhammer) && mPowerRail) {
 				aWorld.isRemote = T;
-				boolean tResult = aWorld.setBlock(aX, aY, aZ, this, (WD.meta(aWorld, aX, aY, aZ) + 8) % 16, 0);
+				boolean tResult = aWorld.setBlock(aX, aY, aZ, this, WD.meta(aWorld, aX, aY, aZ) ^ 8, 0);
 				aWorld.isRemote = F;
 				return tResult?10000:0;
 			}
@@ -334,7 +334,7 @@ public class BlockBaseRail extends BlockRailBase implements IBlockBase, IBlockSe
 		
 		if (!aPlayer.canPlayerEdit(aX, aY, aZ, aSide, aStack) || (aY == 255 && getMaterial().isSolid()) || !aWorld.canPlaceEntityOnSide(this, aX, aY, aZ, F, aSide, aPlayer, aStack)) return F;
 		
-		if (aItem.placeBlockAt(aStack, aPlayer, aWorld, aX, aY, aZ, aSide, aHitX, aHitY, aHitZ, onBlockPlaced(aWorld, aX, aY, aZ, aSide, aHitX, aHitY, aHitZ, aItem.getMetadata(aStack.getItemDamage())))) {
+		if (aItem.placeBlockAt(aStack, aPlayer, aWorld, aX, aY, aZ, aSide, aHitX, aHitY, aHitZ, SIDES_AXIS_X[UT.Code.getHorizontalForPlayerPlacing(aPlayer)] ? 1 : 0)) {
 			aWorld.playSoundEffect(aX+0.5F, aY+0.5F, aZ+0.5F, stepSound.func_150496_b(), (stepSound.getVolume() + 1.0F) / 2.0F, stepSound.getPitch() * 0.8F);
 			aStack.stackSize--;
 		}

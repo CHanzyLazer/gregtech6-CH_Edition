@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,24 +19,12 @@
 
 package gregtech.compat;
 
-import static gregapi.data.CS.*;
-
-import java.util.ArrayList;
-
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import gregapi.api.Abstract_Mod;
 import gregapi.code.ModData;
 import gregapi.compat.CompatMods;
-import gregapi.data.ANY;
-import gregapi.data.CS.FluidsGT;
-import gregapi.data.CS.FoodsGT;
-import gregapi.data.FL;
-import gregapi.data.IL;
-import gregapi.data.MD;
-import gregapi.data.MT;
-import gregapi.data.OD;
-import gregapi.data.OP;
-import gregapi.data.RM;
+import gregapi.data.*;
+import gregapi.oredict.OreDictItemData;
 import gregapi.oredict.OreDictMaterial;
 import gregapi.oredict.event.IOreDictListenerEvent;
 import gregapi.oredict.event.OreDictListenerEvent_Names;
@@ -52,6 +40,10 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+
+import java.util.ArrayList;
+
+import static gregapi.data.CS.*;
 
 public class Compat_Recipes_HarvestCraft extends CompatMods {
 	public Compat_Recipes_HarvestCraft(ModData aMod, Abstract_Mod aGTMod) {super(aMod, aGTMod);}
@@ -293,30 +285,39 @@ public class Compat_Recipes_HarvestCraft extends CompatMods {
 		}});
 		
 		addListener("listAllgrain", new IOreDictListenerEvent() {@Override public void onOreRegistration(OreDictRegistrationContainer aEvent) {
-			if (ST.container(aEvent.mStack, T) == null)
+			if (ST.ingredable(aEvent.mStack))
 			RM.Mixer    .addRecipe2(T, 16,   16, ST.make(Items.string, 1, W), ST.amount(3, aEvent.mStack), ST.make(MD.HaC, "grainbaitItem", 4));
 		}});
 		addListener("listAllveggie", new IOreDictListenerEvent() {@Override public void onOreRegistration(OreDictRegistrationContainer aEvent) {
-			if (ST.container(aEvent.mStack, T) == null)
+			if (ST.ingredable(aEvent.mStack))
 			RM.Mixer    .addRecipe2(T, 16,   16, ST.make(Items.string, 1, W), ST.amount(3, aEvent.mStack), ST.make(MD.HaC, "veggiebaitItem", 4));
 		}});
 		addListener("listAllfishraw", new IOreDictListenerEvent() {@Override public void onOreRegistration(OreDictRegistrationContainer aEvent) {
-			if (ST.container(aEvent.mStack, T) == null && !OD.listAllmeatsubstitute.is_(aEvent.mStack))
+			if (ST.ingredable(aEvent.mStack) && !OD.listAllmeatsubstitute.is_(aEvent.mStack))
 			RM.Mixer    .addRecipe2(T, 16,   16, ST.make(Items.string, 1, W), ST.amount(3, aEvent.mStack), ST.make(MD.HaC, "fishtrapbaitItem", 8));
 		}});
 		addListener("listAllfruit", new IOreDictListenerEvent() {@Override public void onOreRegistration(OreDictRegistrationContainer aEvent) {
-			if (ST.container(aEvent.mStack, T) == null)
+			if (ST.ingredable(aEvent.mStack))
 			RM.Mixer    .addRecipe2(T, 16,   16, ST.make(Items.string, 1, W), ST.amount(3, aEvent.mStack), ST.make(MD.HaC, "fruitbaitItem", 4));
 		}});
 		addListener("listAllegg", new IOreDictListenerEvent() {@Override public void onOreRegistration(OreDictRegistrationContainer aEvent) {
-			if (ST.container(aEvent.mStack, T) == null && !OD.listAllmeatsubstitute.is_(aEvent.mStack)) {
+			if (ST.ingredable(aEvent.mStack) && !OD.listAllmeatsubstitute.is_(aEvent.mStack)) {
 			RM.Mixer    .addRecipeX(T, 16,   16, ST.array(OM.dust(MT.Nutmeg), OM.dust(MT.Cinnamon), aEvent.mStack), FL.Milk   .make( 250), NF, ST.make(MD.HaC, "eggnogItem", 1));
 			RM.Mixer    .addRecipeX(T, 16,   16, ST.array(OM.dust(MT.Nutmeg), OM.dust(MT.Cinnamon), aEvent.mStack), FL.MilkGrC.make( 250), NF, ST.make(MD.HaC, "eggnogItem", 1));
 			RM.Mixer    .addRecipeX(T, 16,   16, ST.array(OM.dust(MT.Nutmeg), OM.dust(MT.Cinnamon), aEvent.mStack), FL.MilkSoy.make( 250), NF, ST.make(MD.HaC, "eggnogItem", 1));
 			}
 		}});
+		addListener("listAllsugar", new IOreDictListenerEvent() {@Override public void onOreRegistration(OreDictRegistrationContainer aEvent) {
+			OreDictItemData tData = OM.data(aEvent.mStack);
+			if (tData == null || tData.mMaterial == null) {
+			if (!MD.HaC.owns(aEvent.mStack))
+			RM.add_smelting(aEvent.mStack, ST.make(MD.HaC, "caramelItem", 1), F, T, F);
+			} else if (tData.mMaterial.mMaterial == MT.Sugar && tData.mMaterial.mAmount >= U) {
+			RM.add_smelting(aEvent.mStack, ST.make(MD.HaC, "caramelItem", tData.mMaterial.mAmount / U), F, T, F);
+			}
+		}});
 		addListener("foodBaconcooked", new IOreDictListenerEvent() {@Override public void onOreRegistration(OreDictRegistrationContainer aEvent) {
-			if (ST.container(aEvent.mStack, T) == null && !OD.listAllmeatsubstitute.is_(aEvent.mStack)) {
+			if (ST.ingredable(aEvent.mStack) && !OD.listAllmeatsubstitute.is_(aEvent.mStack)) {
 			RM.Bath     .addRecipe1(T,  0,   16, aEvent.mStack, MT.Chocolate.liquid(U4, T), NF, ST.make(MD.HaC, "chocolatebaconItem", 1));
 			RM.Mixer    .addRecipe1(T, 16,   16, aEvent.mStack, FL.Syrup_Maple.make(50), NF, ST.make(MD.HaC, "maplecandiedbaconItem", 1));
 			RM.Mixer    .addRecipe1(T, 16,   16, aEvent.mStack, FL.Sap_Rainbow.make(50), NF, ST.make(MD.HaC, "epicbaconItem", 1));
@@ -328,9 +329,6 @@ public class Compat_Recipes_HarvestCraft extends CompatMods {
 		}});
 		addListener("foodHoneydrop", "dropHoney", new IOreDictListenerEvent() {@Override public void onOreRegistration(OreDictRegistrationContainer aEvent) {
 			CR.remove(ST.make(MD.HaC, "potItem", 1), aEvent.mStack);
-		}});
-		addListener("dustSugar", new IOreDictListenerEvent() {@Override public void onOreRegistration(OreDictRegistrationContainer aEvent) {
-			RM.add_smelting(aEvent.mStack, ST.make(MD.HaC, "caramelItem", 1), F, T, F);
 		}});
 		addListener("dustRice", new IOreDictListenerEvent() {@Override public void onOreRegistration(OreDictRegistrationContainer aEvent) {
 			RM.add_smelting(aEvent.mStack, ST.make(MD.HaC, "ricecakeItem", 1), F, T, F);

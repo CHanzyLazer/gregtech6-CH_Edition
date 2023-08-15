@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2019 Gregorius Techneticies
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,19 +19,14 @@
 
 package gregapi.oredict;
 
-import static gregapi.data.CS.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import gregapi.code.ArrayListNoNulls;
 import gregapi.util.OM;
 import gregapi.util.ST;
 import net.minecraft.item.ItemStack;
+
+import java.util.*;
+
+import static gregapi.data.CS.*;
 
 /**
  * @author Gregorius Techneticies
@@ -40,6 +35,7 @@ public class OreDictItemData {
 	public boolean mBlackListed = F;
 	public boolean mBlocked = F;
 	public boolean mUseVanillaDamage = F;
+	public boolean mFurnaceFuel = T;
 	public ItemStack mUnificationTarget = null;
 	
 	/** The OreDictPrefix if there is one assigned to this. */
@@ -48,16 +44,20 @@ public class OreDictItemData {
 	public final OreDictMaterialStack mMaterial;
 	/** The OreDictMaterialStack containing the remaining Byproduct Materials of this Item. The Amount is in Material Units (U). */
 	public final OreDictMaterialStack[] mByProducts;
+	/** Caching the toString result. */
+	public final String mOreDictName;
 	
 	public OreDictItemData(OreDictPrefix aPrefix, OreDictMaterial aMaterial) {
 		mPrefix = aPrefix;
 		mMaterial = aMaterial==null?null:OM.stack(aMaterial, aPrefix.mAmount);
+		mOreDictName = (aMaterial == null ? "" : aPrefix.mNameInternal + aMaterial.mNameInternal);
 		mByProducts = aPrefix.mByProducts.isEmpty()?ZL_MS:aPrefix.mByProducts.toArray(ZL_MS);
 	}
 	
 	public OreDictItemData(OreDictMaterialStack aMaterial, OreDictMaterialStack... aByProducts) {
 		mPrefix = null;
 		mMaterial = aMaterial==null?null:aMaterial.clone();
+		mOreDictName = "";
 		mBlackListed = T;
 		if (aByProducts == null) {
 			mByProducts = ZL_MS;
@@ -100,6 +100,7 @@ public class OreDictItemData {
 	
 	public OreDictItemData(OreDictItemData... aData) {
 		mPrefix = null;
+		mOreDictName = "";
 		mBlackListed = T;
 		
 		ArrayList<OreDictMaterialStack> aList = new ArrayListNoNulls<>(), rList = new ArrayListNoNulls<>();
@@ -150,6 +151,20 @@ public class OreDictItemData {
 		return rList;
 	}
 	
+	/** Utility Function for getting a List containing both, the Main Material and all the Byproduct Materials. The Amount is in Material Units (U). */
+	public List<OreDictMaterialStack> getAllMaterialWeights() {
+		ArrayListNoNulls<OreDictMaterialStack> rList = new ArrayListNoNulls<>(mByProducts.length + 1);
+		if (hasValidMaterialData()) {
+			if (hasValidPrefixData()) {
+				rList.add(OM.stack(mMaterial.mMaterial, mPrefix.mWeight));
+			} else {
+				rList.add(mMaterial);
+			}
+		}
+		rList.addAll(Arrays.asList(mByProducts));
+		return rList;
+	}
+	
 	/** Utility Function for getting a Byproduct Material at a certain Index, if it exists. The Amount is in Material Units (U). */
 	public OreDictMaterialStack getByProduct(int aIndex) {
 		return aIndex>=0&&aIndex<mByProducts.length?mByProducts[aIndex]:null;
@@ -157,21 +172,6 @@ public class OreDictItemData {
 	
 	public ItemStack getStack(long aAmount) {
 		return mUnificationTarget == null ? mPrefix.mat(mMaterial.mMaterial, aAmount) : ST.amount(aAmount, mUnificationTarget);
-	}
-	
-	@Override
-	public String toString() {
-		if (mPrefix == null || mMaterial == null) return "";
-		return mPrefix.mNameInternal + mMaterial.mMaterial.mNameInternal;
-	}
-	
-	public OreDictItemData setUseVanillaDamage() {
-		mUseVanillaDamage = T;
-		return this;
-	}
-	
-	public static OreDictItemData copy(OreDictItemData aData) {
-		return aData == null ? null : aData.copy();
 	}
 	
 	public OreDictItemData copy() {
@@ -182,4 +182,11 @@ public class OreDictItemData {
 		rData.mBlocked = mBlocked;
 		return rData;
 	}
+	
+	public static OreDictItemData copy(OreDictItemData aData) {return aData == null ? null : aData.copy();}
+	
+	public OreDictItemData setUseVanillaDamage() {mUseVanillaDamage = T; return this;}
+	public OreDictItemData setNotFurnaceFuel() {mFurnaceFuel = F; return this;}
+	
+	@Override public String toString() {return mOreDictName;}
 }

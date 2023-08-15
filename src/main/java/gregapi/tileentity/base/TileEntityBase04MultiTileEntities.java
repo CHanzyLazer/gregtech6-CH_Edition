@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,8 +19,6 @@
 
 package gregapi.tileentity.base;
 
-import static gregapi.data.CS.*;
-
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -29,18 +27,8 @@ import gregapi.block.multitileentity.MultiTileEntityClassContainer;
 import gregapi.block.multitileentity.MultiTileEntityRegistry;
 import gregapi.code.ArrayListNoNulls;
 import gregapi.network.IPacket;
-import gregapi.network.packets.data.PacketSyncDataByte;
-import gregapi.network.packets.data.PacketSyncDataByteArray;
-import gregapi.network.packets.data.PacketSyncDataInteger;
-import gregapi.network.packets.data.PacketSyncDataLong;
-import gregapi.network.packets.data.PacketSyncDataName;
-import gregapi.network.packets.data.PacketSyncDataShort;
-import gregapi.network.packets.ids.PacketSyncDataByteAndIDs;
-import gregapi.network.packets.ids.PacketSyncDataByteArrayAndIDs;
-import gregapi.network.packets.ids.PacketSyncDataIDs;
-import gregapi.network.packets.ids.PacketSyncDataIntegerAndIDs;
-import gregapi.network.packets.ids.PacketSyncDataLongAndIDs;
-import gregapi.network.packets.ids.PacketSyncDataShortAndIDs;
+import gregapi.network.packets.data.*;
+import gregapi.network.packets.ids.*;
 import gregapi.render.IRenderedBlockObject;
 import gregapi.render.IRenderedBlockObjectSideCheck;
 import gregapi.util.ST;
@@ -63,6 +51,8 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 
+import static gregapi.data.CS.*;
+
 /**
  * @author Gregorius Techneticies
  */
@@ -70,6 +60,7 @@ public abstract class TileEntityBase04MultiTileEntities extends TileEntityBase03
 	private short mMTEID = W, mMTERegistry = W;
 	private String mCustomName = null;
 	
+	// Function has to stay even though I moved it up to the root class, because compatibility.
 	/** return the internal Name of this TileEntity to be registered. DO NOT START YOUR NAME WITH "gt."!!! */
 	public abstract String getTileEntityName();
 	
@@ -121,6 +112,8 @@ public abstract class TileEntityBase04MultiTileEntities extends TileEntityBase03
 		if (aNBT.hasKey("x")) oX = xCoord = aNBT.getInteger("x");
 		if (aNBT.hasKey("y")) oY = yCoord = aNBT.getInteger("y");
 		if (aNBT.hasKey("z")) oZ = zCoord = aNBT.getInteger("z");
+		// make sure Y is not negative because this causes crashes.
+		if (yCoord < 0) WD.invalidateTileEntityWithNegativeYCoord(xCoord, yCoord, zCoord, this);
 		// read the custom Name.
 		if (aNBT.hasKey("display")) mCustomName = aNBT.getCompoundTag("display").getString("Name");
 		// And now your custom readFromNBT.
@@ -184,7 +177,7 @@ public abstract class TileEntityBase04MultiTileEntities extends TileEntityBase03
 	
 	@Override
 	public ArrayListNoNulls<ItemStack> getDrops(int aFortune, boolean aSilkTouch) {
-		ArrayListNoNulls<ItemStack> rList = new ArrayListNoNulls<>();
+		ArrayListNoNulls<ItemStack> rList = ST.arraylist();
 		MultiTileEntityRegistry tRegistry = MultiTileEntityRegistry.getRegistry(mMTERegistry);
 		if (tRegistry != null) rList.add(tRegistry.getItem(mMTEID, writeItemNBT(UT.NBT.make())));
 		return rList;

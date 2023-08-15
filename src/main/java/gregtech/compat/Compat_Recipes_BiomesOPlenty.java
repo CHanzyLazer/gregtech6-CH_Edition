@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,40 +19,33 @@
 
 package gregtech.compat;
 
-import static gregapi.data.CS.*;
-import static gregapi.util.CR.*;
-
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import gregapi.api.Abstract_Mod;
 import gregapi.code.ModData;
 import gregapi.compat.CompatMods;
-import gregapi.data.FL;
-import gregapi.data.IL;
-import gregapi.data.MD;
-import gregapi.data.MT;
-import gregapi.data.OP;
-import gregapi.data.RM;
+import gregapi.data.*;
 import gregapi.util.CR;
 import gregapi.util.OM;
 import gregapi.util.ST;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 
+import static gregapi.data.CS.*;
+import static gregapi.util.CR.DEF;
+
 public class Compat_Recipes_BiomesOPlenty extends CompatMods {
 	public Compat_Recipes_BiomesOPlenty(ModData aMod, Abstract_Mod aGTMod) {super(aMod, aGTMod);}
 	
 	@Override public void onPostLoad(FMLPostInitializationEvent aInitEvent) {OUT.println("GT_Mod: Doing BoP Recipes.");
-		RM.add_smelting(IL.Mud_Ball    .get(1), IL.BoP_Mud_Brick.get(1), F, F, T);
-		RM.add_smelting(IL.BoP_Mud_Ball.get(1), IL.BoP_Mud_Brick.get(1), F, F, T);
+		RM.add_smelting(IL.BoP_Mud     .get(1), IL.BoP_Mud_Brick.get(1), T, F, T);
 		
-		RM.generify(IL.Mud_Ball.get(1), IL.BoP_Mud_Ball.get(1));
-		RM.generify(IL.BoP_Mud_Ball.get(1), IL.Mud_Ball.get(1));
+		RM.compactsmash (IL.BoP_Celestial.get(4), 4, IL.BoP_Celestial_Block.get(1));
+		RM.compact      (IL.BoP_Flesh    .get(4), 4, IL.BoP_Flesh_Block.get(1));
+		RM.compactsmash (IL.BoP_Mud_Brick.get(4), 4, IL.BoP_Mud_Bricks.get(1));
+		RM.compactunpack(IL.BoP_Mud_Ball .get(4), 4, IL.BoP_Mud.get(1));
+		RM.compact      (IL.BoP_Ashes    .get(4), 4, IL.BoP_Ashes_Block.get(1));
 		
-		RM.compactsmash(IL.BoP_Celestial.get(4), 4, IL.BoP_Celestial_Block.get(1));
-		RM.compact     (IL.BoP_Flesh    .get(4), 4, IL.BoP_Flesh_Block.get(1));
-		RM.compactsmash(IL.BoP_Mud_Brick.get(4), 4, IL.BoP_Mud_Bricks.get(1));
-		RM.compact     (IL.BoP_Mud_Ball .get(4), 4, IL.BoP_Mud.get(1));
-		RM.compact     (IL.BoP_Ashes    .get(4), 4, IL.BoP_Ashes_Block.get(1));
+		CR.shapeless(IL.BoP_Mud_Ball.get(4), CR.DEF_NCC, new Object[] {IL.BoP_Mud});
 		
 		RM.biomass(ST.make(MD.BoP, "flowers", 16, W));
 		RM.biomass(ST.make(MD.BoP, "flowers2", 16, W));
@@ -73,9 +66,9 @@ public class Compat_Recipes_BiomesOPlenty extends CompatMods {
 		CR.shapeless(OP.dust.mat(MT.White, 1), DEF, new Object[] {IL.BoP_Bone_Small});
 		CR.shapeless(OP.dust.mat(MT.White, 2), DEF, new Object[] {IL.BoP_Bone_Medium});
 		CR.shapeless(OP.dust.mat(MT.White, 4), DEF, new Object[] {IL.BoP_Bone_Large});
-		RM.Mortar       .addRecipe1(T, 16, 16, IL.BoP_Bone_Small.get(1), IL.Dye_Bonemeal.get(2));
-		RM.Mortar       .addRecipe1(T, 16, 32, IL.BoP_Bone_Medium.get(1), IL.Dye_Bonemeal.get(4));
-		RM.Mortar       .addRecipe1(T, 16, 64, IL.BoP_Bone_Large.get(1), IL.Dye_Bonemeal.get(8));
+		RM.mortarize(2, IL.BoP_Bone_Small.get(1), IL.Dye_Bonemeal.get(2));
+		RM.mortarize(4, IL.BoP_Bone_Medium.get(1), IL.Dye_Bonemeal.get(4));
+		RM.mortarize(8, IL.BoP_Bone_Large.get(1), IL.Dye_Bonemeal.get(8));
 		
 		RM.smash(IL.BoP_Hard_Ice.get(1), OM.dust(MT.Ice, 2*U));
 		RM.Squeezer     .addRecipe1(T, 16, 128, IL.BoP_Hard_Ice.get(1), NF, FL.Ice.make(2000), NI);
@@ -92,15 +85,14 @@ public class Compat_Recipes_BiomesOPlenty extends CompatMods {
 		RM.Juicer       .addRecipe1(T, 16, 256, ST.make(MD.BoP, "hive", 1, 0), OM.dust(MT.WaxBee, U*4));
 		RM.Juicer       .addRecipe1(T, 16, 256, ST.make(MD.BoP, "hive", 1, 2), OM.dust(MT.WaxBee, U*4));
 		RM.Juicer       .addRecipe1(T, 16, 256, ST.make(MD.BoP, "hive", 1, 3), NF, FL.Honey.make(360), OM.dust(MT.WaxBee, U*4));
-		RM.Mortar       .addRecipe1(T, 16, 256, ST.make(MD.BoP, "hive", 1, 0), OM.dust(MT.WaxBee, U*4));
-		RM.Mortar       .addRecipe1(T, 16, 256, ST.make(MD.BoP, "hive", 1, 2), OM.dust(MT.WaxBee, U*4));
-		RM.Mortar       .addRecipe1(T, 16, 256, ST.make(MD.BoP, "hive", 1, 3), OM.dust(MT.WaxBee, U*4));
-		
+		RM.mortarize(4, ST.make(MD.BoP, "hive", 1, 0), OM.dust(MT.WaxBee, U*4));
+		RM.mortarize(4, ST.make(MD.BoP, "hive", 1, 2), OM.dust(MT.WaxBee, U*4));
+		RM.mortarize(4, ST.make(MD.BoP, "hive", 1, 3), OM.dust(MT.WaxBee, U*4));
 		RM.unpack(ST.make(MD.BoP, "hive", 1, 0), IL.BoP_Comb.get(4));
 		RM.unpack(ST.make(MD.BoP, "hive", 1, 2), IL.BoP_Comb.get(4));
 		RM.unpack(ST.make(MD.BoP, "hive", 1, 3), IL.BoP_HoneyComb.get(4));
 		
-		RM.Shredder.addRecipe1(T, 16, 16, ST.make(MD.BoP, "mushrooms"   , 1, 0), IL.BoP_ShroomPowder.get(2));
+		RM.mortarize(ST.make(MD.BoP, "mushrooms", 1, 0), IL.BoP_ShroomPowder.get(2));
 		
 		RM.Squeezer.addRecipe1(T, 16, 16, ST.make(MD.BoP, "mushrooms"   , 1, 0), IL.BoP_ShroomPowder.get(2));
 		RM.Squeezer.addRecipe1(T, 16, 16, ST.make(MD.BoP, "mushrooms"   , 1, 2), NF, DYE_FLUIDS_FLOWER[DYE_INDEX_Blue], IL.BoP_Dye_Blue.get(1));
@@ -163,8 +155,39 @@ public class Compat_Recipes_BiomesOPlenty extends CompatMods {
 		RM.Juicer.addRecipe1(T, 16, 16, ST.make(MD.BoP, "flowers2"      , 1, 8), NF, DYE_FLUIDS_FLOWER[DYE_INDEX_Red], ST.make(Items.dye, 1, DYE_INDEX_Red));
 		
 		
+		RM.stonetypes(MT.STONES.Limestone, F, OP.rockGt.mat(MT.STONES.Limestone, 4), OP.blockDust.mat(MT.STONES.Limestone, 1)
+		, ST.make(MD.BoP, "rocks", 1, 0)
+		, NI
+		, NI
+		, NI
+		, NI
+		, ST.make(MD.BoP, "rocks", 1, 1)
+		, NI
+		, NI
+		);
 		
-		RM.pulverizing(ST.make(MD.BoP, "mushrooms", 1, 0), IL.BoP_ShroomPowder.get(2));
+		RM.stonetypes(MT.STONES.Siltstone, F, OP.rockGt.mat(MT.STONES.Siltstone, 4), OP.blockDust.mat(MT.STONES.Siltstone, 1)
+		, ST.make(MD.BoP, "rocks", 1, 2)
+		, NI
+		, NI
+		, NI
+		, NI
+		, ST.make(MD.BoP, "rocks", 1, 3)
+		, NI
+		, NI
+		);
+		
+		RM.stonetypes(MT.STONES.Shale, F, OP.rockGt.mat(MT.STONES.Shale, 4), OP.blockDust.mat(MT.STONES.Shale, 1)
+		, ST.make(MD.BoP, "rocks", 1, 4)
+		, NI
+		, NI
+		, NI
+		, NI
+		, ST.make(MD.BoP, "rocks", 1, 5)
+		, NI
+		, NI
+		);
+		
 		
 		if (ENABLE_ADDING_IC2_EXTRACTOR_RECIPES) {
 		RM.ic2_extractor(ST.make(MD.BoP, "mushrooms"        , 1, 0), IL.BoP_ShroomPowder.get(2));

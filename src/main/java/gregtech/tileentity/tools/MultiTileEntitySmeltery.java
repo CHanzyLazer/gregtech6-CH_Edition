@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -37,6 +37,7 @@ import gregapi.render.BlockTextureDefault;
 import gregapi.render.ITexture;
 import gregapi.tileentity.ITileEntityServerTickPost;
 import gregapi.tileentity.base.TileEntityBase07Paintable;
+import gregapi.tileentity.data.ITileEntityGibbl;
 import gregapi.tileentity.data.ITileEntityTemperature;
 import gregapi.tileentity.data.ITileEntityWeight;
 import gregapi.tileentity.energy.ITileEntityEnergy;
@@ -73,7 +74,7 @@ import static gregapi.data.CS.*;
 /**
  * @author Gregorius Techneticies
  */
-public class MultiTileEntitySmeltery extends TileEntityBase07Paintable implements ITileEntityCrucible, ITileEntityEnergy, ITileEntityWeight, ITileEntityTemperature, ITileEntityMold, ITileEntityServerTickPost, IMTE_RemovedByPlayer, IMTE_OnEntityCollidedWithBlock, IMTE_GetCollisionBoundingBoxFromPool, IMTE_AddToolTips, IMTE_OnPlaced {
+public class MultiTileEntitySmeltery extends TileEntityBase07Paintable implements ITileEntityCrucible, ITileEntityEnergy, ITileEntityGibbl, ITileEntityWeight, ITileEntityTemperature, ITileEntityMold, ITileEntityServerTickPost, IMTE_RemovedByPlayer, IMTE_OnEntityCollidedWithBlock, IMTE_GetCollisionBoundingBoxFromPool, IMTE_AddToolTips, IMTE_OnPlaced {
 	private static int GAS_RANGE = 3, FLAME_RANGE = 3;
 	private static long MAX_AMOUNT = 16*U, KG_PER_ENERGY = 100;
 	private static double HEAT_RESISTANCE_BONUS = 1.25;
@@ -248,7 +249,7 @@ public class MultiTileEntitySmeltery extends TileEntityBase07Paintable implement
 		for (int i = 0; i < mContent.size(); i++) {
 			OreDictMaterialStack tMaterial = mContent.get(i);
 			if (tMaterial == null || tMaterial.mMaterial == MT.NULL || tMaterial.mMaterial == MT.Air || tMaterial.mAmount <= 0) {
-				GarbageGT.trash(mContent.remove(i--));
+				mContent.remove(i--);
 			} else if (tMaterial.mMaterial.mGramPerCubicCentimeter <= WEIGHT_AIR_G_PER_CUBIC_CENTIMETER) {
 				GarbageGT.trash(mContent.remove(i--));
 				UT.Sounds.send(SFX.MC_FIZZ, this);
@@ -257,10 +258,15 @@ public class MultiTileEntitySmeltery extends TileEntityBase07Paintable implement
 				UT.Sounds.send(SFX.MC_FIZZ, this);
 				if (tMaterial.mMaterial.mBoilingPoint >=  320) try {for (EntityLivingBase tLiving : (List<EntityLivingBase>)worldObj.getEntitiesWithinAABB(EntityLivingBase.class, box(-GAS_RANGE, -1, -GAS_RANGE, GAS_RANGE+1, GAS_RANGE+1, GAS_RANGE+1))) UT.Entities.applyTemperatureDamage(tLiving, tMaterial.mMaterial.mBoilingPoint, 2);} catch(Throwable e) {e.printStackTrace(ERR);}
 				if (tMaterial.mMaterial.mBoilingPoint >= 2000) for (int j = 0, k = Math.max(1, UT.Code.bindInt((9 * tMaterial.mAmount) / U)); j < k; j++) WD.fire(worldObj, xCoord-FLAME_RANGE+rng(2*FLAME_RANGE+1), yCoord-1+rng(2+FLAME_RANGE), zCoord-FLAME_RANGE+rng(2*FLAME_RANGE+1), rng(3) != 0);
-				if (tMaterial.mMaterial.contains(TD.Properties.EXPLOSIVE)) explode(UT.Code.scale(tMaterial.mAmount, MAX_AMOUNT, 6, F));
-				return;
+				if (tMaterial.mMaterial.contains(TD.Properties.EXPLOSIVE)) {
+					GarbageGT.trash(mContent);
+					GarbageGT.trash(tToBeAdded);
+					explode(UT.Code.scale(tMaterial.mAmount, MAX_AMOUNT, 6, F));
+					return;
+				}
 			} else if (!mAcidProof && tMaterial.mMaterial.contains(TD.Properties.ACID)) {
-				GarbageGT.trash(mContent.remove(i--));
+				GarbageGT.trash(mContent);
+				GarbageGT.trash(tToBeAdded);
 				UT.Sounds.send(SFX.MC_FIZZ, this);
 				setToAir();
 				return;
@@ -274,9 +280,7 @@ public class MultiTileEntitySmeltery extends TileEntityBase07Paintable implement
 		}
 		for (int i = 0; i < tToBeAdded.size(); i++) {
 			OreDictMaterialStack tMaterial = tToBeAdded.get(i);
-			if (tMaterial == null || tMaterial.mMaterial == MT.NULL || tMaterial.mMaterial == MT.Air || tMaterial.mAmount <= 0) {
-				GarbageGT.trash(tToBeAdded.remove(i--));
-			} else {
+			if (tMaterial != null && tMaterial.mAmount > 0 && tMaterial.mMaterial != MT.NULL && tMaterial.mMaterial != MT.Air) {
 				tMaterial.addToList(mContent);
 			}
 		}
@@ -452,7 +456,7 @@ public class MultiTileEntitySmeltery extends TileEntityBase07Paintable implement
 							long tTemperature = FL.temperature(tLightest.mMaterial.mLiquid);
 							if (mTemperature >= tLightest.mMaterial.mMeltingPoint && (tTemperature < 320 || mTemperature >= tTemperature)) {
 								tFluid = tLightest.mMaterial.liquid(tLightest.mAmount, F);
-								if (!FL.Error.is(tFluid)) {
+								if (FL.nonzero(tFluid)) {
 									int tAmount = tFluid.amount;
 									ItemStack tStack = FL.fill(tFluid, ST.amount(1, aStack), T, T, T, T);
 									if (ST.valid(tStack)) {
@@ -678,6 +682,9 @@ public class MultiTileEntitySmeltery extends TileEntityBase07Paintable implement
 	@Override public boolean isSurfaceSolid         (byte aSide) {return !SIDES_TOP[aSide];}
 	@Override public boolean isSurfaceOpaque2       (byte aSide) {return !SIDES_TOP[aSide];}
 	@Override public boolean isSideSolid2           (byte aSide) {return !SIDES_TOP[aSide];}
+	
+	@Override public long getGibblValue(byte aSide) {return UT.Code.divup(OM.total(mContent)*1000, U9);}
+	@Override public long getGibblMax  (byte aSide) {return UT.Code.divup(MAX_AMOUNT*1000, U9);}
 	
 	@Override public boolean canDrop(int aInventorySlot) {return T;}
 	@Override public boolean allowCovers(byte aSide) {return F;}

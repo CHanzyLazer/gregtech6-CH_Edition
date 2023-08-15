@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -59,7 +59,7 @@ public enum IL implements IItemContainer {
 	FR_Candle,
 	FR_Mulch, FR_Fertilizer, FR_Compost,
 	FR_HoneyPot, FR_Ambrosia, FR_TinCapsule, FR_WaxCapsule, FR_RefractoryCapsule, FR_MagicCapsule,
-	FR_Water_Can, FR_Water_Capsule, FR_Water_RefractoryCapsule, FR_Lava_RefractoryCapsule, FR_Honey_Bucket, FR_Honey_Can, FR_Honey_Capsule, FR_Honey_RefractoryCapsule, FR_SeedOil_Bucket, FR_SeedOil_Can, FR_SeedOil_Capsule, FR_SeedOil_RefractoryCapsule,
+	FR_Water_Can, FR_Water_Capsule, FR_Water_RefractoryCapsule, FR_Lava_Can, FR_Lava_RefractoryCapsule, FR_Honey_Bucket, FR_Honey_Can, FR_Honey_Capsule, FR_Honey_RefractoryCapsule, FR_Juice_Bucket, FR_Juice_Can, FR_Juice_Capsule, FR_Juice_RefractoryCapsule, FR_SeedOil_Bucket, FR_SeedOil_Can, FR_SeedOil_Capsule, FR_SeedOil_RefractoryCapsule,
 	FR_Stick,
 	FR_Scoop,
 	FR_Casing_Impregnated, FR_Casing_Sturdy, FR_Casing_Hardened,
@@ -130,15 +130,18 @@ public enum IL implements IItemContainer {
 	TC_Block_Flesh, TC_Block_Tallow, TC_Block_Amber, TC_Block_Amber_Bricks,
 	TC_Nitor, TC_Alumentum, TC_Tallow, TC_Phial,
 	TC_Bucket_Death, TC_Bucket_Pure,
-	TF_Roots, TF_Liveroots,
+	TC_Flux_Goo, TC_Flux_Gas,
+	TF_Roots, TF_Liveroots, TF_Firefly, TF_Firefly_Jar,
 	TF_LiveRoot, TF_Torchberries, TF_NagaScale, TF_BorerEssence, TF_Carminite, TF_Mushgloom, TF_Tall_Grass, TF_Fiddlehead, TF_Dry_Bush,
 	TF_Vial_FieryBlood, TF_Vial_FieryTears, TF_Transformation_Powder,
 	TF_Hydrachop_Raw, TF_Meef_Raw, TF_Meef_Cooked, TF_Venison_Raw, TF_Venison_Cooked,
 	TF_Log_Oak, TF_Log_Canopy, TF_Log_Mangrove, TF_Log_Darkwood, TF_Log_Time, TF_Log_Trans, TF_Log_Mine, TF_Log_Sorting, TF_Core_Time, TF_Core_Trans, TF_Core_Mine, TF_Core_Sorting,
-	TF_Nagastone, TF_Deadrock, TF_Deadrock_Cracked, TF_Deadrock_Weathered, TF_Trollsteinn, TF_Mazestone, TF_Mazehedge,
+	TF_Nagastone, TF_Deadrock, TF_Deadrock_Cracked, TF_Deadrock_Weathered, TF_Trollsteinn, TF_Mazestone, TF_Mazehedge, TF_Towerwood,
 	TF_Giant_Cobble, TF_Giant_Obsidian, TF_Giant_Log, TF_Giant_Leaves,
 	TF_Uncrafting, TF_Pick_Giant, TF_Sword_Giant, TF_Lamp_of_Cinders, TF_Cube_of_Annihilation,
 	TF_Trophy, TF_Trophy_Naga, TF_Trophy_Lich, TF_Trophy_Hydra, TF_Trophy_Urghast, TF_Trophy_Snowqueen,
+	TF_Magic_Map, TF_Magic_Map_Empty, TF_Magic_Map_Focus, TF_Maze_Map, TF_Maze_Map_Empty, TF_Maze_Map_Focus, TF_Ore_Map, TF_Ore_Map_Empty,
+	DRPG_Bucket_Tar,
 	HiL_Ironwood,
 	HaC_Log_Cinnamon, HaC_Log_Maple, HaC_Log_Paperbark,
 	HaC_Cinnamon, HaC_Royal_Jelly,
@@ -155,14 +158,15 @@ public enum IL implements IItemContainer {
 	CANDY_Sapling_Chocolate, CANDY_Sapling_Caramel, CANDY_Sapling_White, CANDY_Sapling_Cherry,
 	CANDY_Leaves_Chocolate, CANDY_Leaves_Caramel, CANDY_Leaves_White, CANDY_Leaves_Cherry,
 	BTL_Swamp_Talisman, BTL_Tainted_Potion, BTL_Chest,
-	BTL_Bedrock, BTL_Betweenstone, BTL_Pitstone, BTL_Weedwood_Log, BTL_Weedwood_Beam, BTL_Weedwood_Planks, BTL_Weedwood_Bark, BTL_Weedwood_Sapling, BTL_Weedwood_Leaves, BTL_Weedwood_RottenBark, BTL_Portal_Bark,
-	BTL_Bark, BTL_Dry_Bark, BTL_Resin, BTL_Rubber, BTL_Skin, BTL_Tar,
-	ERE_Mud_Brick, ERE_Spray_Repellant, ERE_Herbicide, ERE_Compost, ERE_Bamboo, ERE_Gaean_Gem, ERE_Gaean_Staff, ERE_Umberstone, ERE_Umbercobble, ERE_White_Planks, ERE_White_Slab, ERE_White_Stairs, ERE_Crate, ERE_Pole, ERE_Ladder, ERE_Pot, ERE_Pot_Raw, ERE_Pot_Cooked,
+	BTL_Bedrock, BTL_Betweenstone, BTL_Pitstone, BTL_Cragrock, BTL_Templebrick, BTL_Limestone, BTL_Mud, BTL_Mud_Brick, BTL_Mud_Bricks, BTL_Peat, BTL_Weedwood_Log, BTL_Weedwood_Beam, BTL_Weedwood_Planks, BTL_Weedwood_Bark, BTL_Weedwood_Sapling, BTL_Weedwood_Leaves, BTL_Weedwood_RottenBark, BTL_Portal_Bark,
+	BTL_Bark, BTL_Dry_Bark, BTL_Coral_Mire, BTL_Coral_Deep, BTL_Resin, BTL_Rubber, BTL_Skin, BTL_Tar, BTL_Compost,
+	ERE_Mud, ERE_Mud_Brick, ERE_Mud_Bricks, ERE_Spray_Repellant, ERE_Herbicide, ERE_Compost, ERE_Bamboo, ERE_Gaean_Gem, ERE_Gaean_Staff, ERE_Umberstone, ERE_Umbercobble, ERE_White_Planks, ERE_White_Slab, ERE_White_Stairs, ERE_Crate, ERE_Pole, ERE_Ladder, ERE_Pot, ERE_Pot_Raw, ERE_Pot_Cooked,
 	ERE_Bambucket_Empty, ERE_Bambucket_Water, ERE_Bambucket_Milk, ERE_Bambucket_Honey, ERE_Bambucket_AntiVenom, ERE_Bambucket_FormicAcid, ERE_Bambucket_BeetleJuice,
 	AETHER_Skyroot_Planks, AETHER_Skyroot_Log, AETHER_Skyroot_Log_Gold, AETHER_Skyroot_Log_Small, AETHER_Torch_Ambrosium, AETHER_Bowl, AETHER_Apple, AETHER_Tall_Grass, AETHER_Sand, AETHER_Glass, AETHER_Glass_Pane, AETHER_Dirt, AETHER_Grass, AETHER_Grass_Enchanted, AETHER_Grass_Enchanted_Vanilla, AETHER_Chest,
 	AETHER_Skyroot_Sapling_Gold, AETHER_Skyroot_Sapling_Green, AETHER_Skyroot_Sapling_Blue, AETHER_Skyroot_Sapling_Dark, AETHER_Skyroot_Sapling_Purple,
 	AETHER_Skyroot_Leaves_Gold, AETHER_Skyroot_Leaves_Green, AETHER_Skyroot_Leaves_Blue, AETHER_Skyroot_Leaves_Dark, AETHER_Skyroot_Leaves_Purple, AETHER_Skyroot_Leaves_Apple,
 	AETHER_Bucket_Empty, AETHER_Bucket_Water, AETHER_Bucket_Milk, AETHER_Bucket_Poison,
+	Salt_Mud_Ball, Salt_Mud, Salt_Mud_Bricks, Salt_Dirt_1, Salt_Dirt_2, Salt_Dirt_3, Salt_Grass,
 	GrC_Honey_Jar, GrC_Honey_Bucket, GrC_Honey_Bottle, GrC_Milk_Bucket, GrC_Milk_Bottle,
 	GrC_Applecore, GrC_Grape_Purple, GrC_Grape_Green, GrC_Grape_Red,
 	GrC_Cheese_Cheddar, GrC_Cheese_Gorgonzola, GrC_Cheese_Swiss, GrC_Cheese_Appenzeller, GrC_Cheese_Asiago, GrC_Cheese_Parmesan, GrC_Cheese_Monterey, GrC_Cheese_Ricotta,
@@ -171,6 +175,7 @@ public enum IL implements IItemContainer {
 	GrC_Bamboo, GrC_Bamboo_Charcoal,
 	GrC_Paddy,
 	TiC_Stonetorch,
+	AE_Torch_Quartz,
 	MaCu_Dye_White, MaCu_Dye_Blue, MaCu_Dye_Green, MaCu_Dye_Yellow, MaCu_Dye_Red, MaCu_Dye_Brown, MaCu_Bait_Worm, MaCu_Bait_Ant, MaCu_Bait_Maggot, MaCu_Bait_Grasshopper, MaCu_Bait_Bee, MaCu_Polished_Planks, MaCu_Polished_Logs,
 	MoCr_Crab_Raw, MoCr_Crab_Cooked, MoCr_Turkey_Raw, MoCr_Turkey_Cooked, MoCr_Rat_Raw, MoCr_Rat_Cooked, MoCr_Ostrich_Raw, MoCr_Ostrich_Cooked, MoCr_Turtle_Raw,
 	AA_Dye_Black, AA_Fertilizer, AA_Dough_Rice, AA_Bread_Rice, AA_XP,
@@ -247,10 +252,10 @@ public enum IL implements IItemContainer {
 	Measuring_Pot, Measuring_Pot_Raw,
 	Ceramic_Jug, Ceramic_Jug_Raw,
 	Porcelain_Cup, Porcelain_Cup_Raw,
-	Compound_Bronze, Compound_Brass, Compound_BismuthBronze,
+	Compound_Bronze, Compound_Brass, Compound_BismuthBronze, Compound_ArsenicCopper, Compound_ArsenicBronze,
 	Pellet_Wood,
 	Bag_Sap_Resin,
-	Rope, Rope_Silk, Rope_Grass, Rope_Plastic,
+	Rope, Rope_Silk, Rope_Grass, Rope_Vine, Rope_Plastic,
 	Slimeball_Borax,
 	Cerublossom, DesertNova, Resin,
 	Comb_Honey, Comb_Water, Comb_Magic, Comb_Nether, Comb_End, Comb_Rock, Comb_Jungle, Comb_Frozen, Comb_Shroom, Comb_Sandy, Comb_Clay, Comb_Sticky, Comb_Royal, Comb_Soul, Comb_Amnesic, Comb_Military, Comb_Pyro, Comb_Cryo, Comb_Aero, Comb_Tera,
@@ -259,7 +264,7 @@ public enum IL implements IItemContainer {
 	ThermosCan_Dark_Coffee, ThermosCan_Dark_Cafe_au_lait, ThermosCan_Coffee, ThermosCan_Cafe_au_lait, ThermosCan_Lait_au_cafe, ThermosCan_Dark_Chocolate_Milk,
 	ThermosCan_Chocolate_Milk,
 	ThermosCan_Tea, ThermosCan_Sweet_Tea, ThermosCan_Ice_Tea,
-	Bottle_Empty, Bottle_Milk, Bottle_Milk_Spoiled, Bottle_Blood, Bottle_Rotten_Drink, Bottle_Glue, Bottle_Lubricant, Bottle_Mercury, Bottle_Holy_Water, Bottle_Beer, Bottle_Purple_Drink,
+	Bottle_Empty, Bottle_Milk, Bottle_Milk_Spoiled, Bottle_Blood, Bottle_Rotten_Drink, Bottle_Tar, Bottle_Glue, Bottle_Lubricant, Bottle_Mercury, Bottle_Holy_Water, Bottle_Beer, Bottle_Purple_Drink,
 	Pill_Empty,
 	Pill_Mint, Pill_Red, Pill_Blue,
 	Pill_Iodine,
@@ -397,7 +402,7 @@ public enum IL implements IItemContainer {
 	USB_HDD_1, USB_HDD_2, USB_HDD_3, USB_HDD_4,
 	USB_SSD_1, USB_SSD_2, USB_SSD_3, USB_SSD_4,
 	Tool_Remote_Activator,
-	Thermometer_Quicksilver, Geiger_Counter, Geiger_Counter_Empty,
+	Thermometer_Quicksilver, Geiger_Counter, Geiger_Counter_Empty, Electro_Meter, Tacho_Meter,
 	Electric_Motor_ULV, Electric_Motor_LV, Electric_Motor_MV, Electric_Motor_HV, Electric_Motor_EV, Electric_Motor_IV, Electric_Motor_LuV, Electric_Motor_ZPM, Electric_Motor_UV, Electric_Motor_PUV1, Electric_Motor_PUV2, Electric_Motor_PUV3, Electric_Motor_PUV4, Electric_Motor_PUV5, Electric_Motor_OMEGA,
 	Electric_Pump_ULV, Electric_Pump_LV, Electric_Pump_MV, Electric_Pump_HV, Electric_Pump_EV, Electric_Pump_IV, Electric_Pump_LuV, Electric_Pump_ZPM, Electric_Pump_UV, Electric_Pump_PUV1, Electric_Pump_PUV2, Electric_Pump_PUV3, Electric_Pump_PUV4, Electric_Pump_PUV5, Electric_Pump_OMEGA,
 	Conveyor_Module_ULV, Conveyor_Module_LV, Conveyor_Module_MV, Conveyor_Module_HV, Conveyor_Module_EV, Conveyor_Module_IV, Conveyor_Module_LuV, Conveyor_Module_ZPM, Conveyor_Module_UV, Conveyor_Module_PUV1, Conveyor_Module_PUV2, Conveyor_Module_PUV3, Conveyor_Module_PUV4, Conveyor_Module_PUV5, Conveyor_Module_OMEGA,
@@ -407,6 +412,7 @@ public enum IL implements IItemContainer {
 	Emitter_ULV, Emitter_LV, Emitter_MV, Emitter_HV, Emitter_EV, Emitter_IV, Emitter_LuV, Emitter_ZPM, Emitter_UV, Emitter_PUV1, Emitter_PUV2, Emitter_PUV3, Emitter_PUV4, Emitter_PUV5, Emitter_OMEGA,
 	Sensor_ULV, Sensor_LV, Sensor_MV, Sensor_HV, Sensor_EV, Sensor_IV, Sensor_LuV, Sensor_ZPM, Sensor_UV, Sensor_PUV1, Sensor_PUV2, Sensor_PUV3, Sensor_PUV4, Sensor_PUV5, Sensor_OMEGA,
 	Robot_Tip_Wrench, Robot_Tip_Screwdriver, Robot_Tip_Saw, Robot_Tip_Hammer, Robot_Tip_Cutter, Robot_Tip_Chisel, Robot_Tip_Rubber, Robot_Tip_Blade, Robot_Tip_Drill, Robot_Tip_File,
+	Tool_Token_Wrench, Tool_Token_Screwdriver, Tool_Token_Saw, Tool_Token_Hammer, Tool_Token_Cutter, Tool_Token_Chisel, Tool_Token_Rubber, Tool_Token_Blade, Tool_Token_Drill, Tool_Token_File,
 	Battery_RE_ULV_Tantalum, ZPM,
 	Power_Cell_Empty, Power_Cell_H,
 	Aneutronic_Fusion_Empty, Aneutronic_Fusion_He3,
@@ -572,6 +578,7 @@ public enum IL implements IItemContainer {
 			return this;
 		}
 		mStack = ST.amount(1, aStack);
+		if (ST.meta_(mStack) == W) ST.meta_(mStack, 0);
 		if (aData != null && !OM.reg(aData.toString(), ST.amount(1, aStack))) OM.data(ST.amount(1, aStack), aData);
 		for (Object tOreDict : aOreDict) OM.reg(tOreDict, ST.amount(1, aStack));
 		return this;

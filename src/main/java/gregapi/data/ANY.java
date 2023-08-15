@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,11 +19,11 @@
 
 package gregapi.data;
 
+import gregapi.oredict.OreDictMaterial;
+
 import static gregapi.data.CS.*;
 import static gregapi.data.TD.Processing.*;
 import static gregapi.data.TD.Properties.*;
-
-import gregapi.oredict.OreDictMaterial;
 
 /**
  * @author Gregorius Techneticies
@@ -79,6 +79,9 @@ public class ANY {
 	WoodTreated     = any("Any Treated Wood"    ),
 	WoodUntreated   = any("Any Untreated Wood"  ),
 	WoodPlastic     = any("Any Wood Or Plastic" ),
+	Rubber          = any("Any Rubber"          ),
+	Plastic         = any("Any Plastic"         ),
+	PlasticHard     = any("Any Hard Plastic"    ),
 	
 	_Steel          = any("Any Steel"           ),
 	_Bronze         = any("Any Bronze"          ),
@@ -112,15 +115,15 @@ public class ANY {
 		Fe              .stealLooks(MT.Fe             ).steal(MT.Fe             ).setLocal("Iron"               ).setAllToTheOutputOf(MT.Fe             ).put(SMITHABLE, MELTING                                     ).addReRegistrationToThis(MT.Fe, MT.WroughtIron, MT.IronCast, MT.IronCompressed, MT.PigIron, MT.MeteoricIron, MT.Meteorite, MT.Enori);
 		Iron            .stealLooks(MT.Fe             ).steal(MT.Fe             ).setLocal("Iron"               ).setAllToTheOutputOf(MT.Fe             ).put(SMITHABLE, MELTING                                     ).addReRegistrationToThis(MT.Fe, MT.WroughtIron, MT.IronCast, MT.IronCompressed, MT.PigIron, MT.MeteoricIron, MT.Meteorite, MT.Enori, MT.Steel, MT.Knightmetal, MT.MeteoricSteel);
 		Steel           .stealLooks(MT.Steel          ).steal(MT.Steel          ).setLocal("Steel"              ).setAllToTheOutputOf(MT.Steel          ).put(SMITHABLE, MELTING                                     ).addReRegistrationToThis(MT.Steel, MT.Knightmetal, MT.MeteoricSteel);
-		BlackSteel      .stealLooks(MT.BlackSteel     ).steal(MT.BlackSteel     ).setLocal("Black Steel"        ).setAllToTheOutputOf(MT.BlackSteel     ).put(SMITHABLE, MELTING                                     ).addReRegistrationToThis(MT.BlackSteel, MT.MeteoricBlackSteel);
-		BlueSteel       .stealLooks(MT.BlueSteel      ).steal(MT.BlueSteel      ).setLocal("Blue Steel"         ).setAllToTheOutputOf(MT.BlueSteel      ).put(SMITHABLE, MELTING                                     ).addReRegistrationToThis(MT.BlueSteel, MT.MeteoricBlueSteel);
-		RedSteel        .stealLooks(MT.RedSteel       ).steal(MT.RedSteel       ).setLocal("Red Steel"          ).setAllToTheOutputOf(MT.RedSteel       ).put(SMITHABLE, MELTING                                     ).addReRegistrationToThis(MT.RedSteel, MT.MeteoricRedSteel);
+		BlackSteel      .stealLooks(MT.BlackSteel     ).steal(MT.BlackSteel     ).setLocal("Black Steel"        ).setAllToTheOutputOf(MT.BlackSteel     ).put(SMITHABLE, MELTING                                     ).addReRegistrationToThis(MT.BlackSteel, MT.MeteoricBlackSteel, MT.MeteoflameBlackSteel);
+		BlueSteel       .stealLooks(MT.BlueSteel      ).steal(MT.BlueSteel      ).setLocal("Blue Steel"         ).setAllToTheOutputOf(MT.BlueSteel      ).put(SMITHABLE, MELTING                                     ).addReRegistrationToThis(MT.BlueSteel, MT.MeteoricBlueSteel, MT.MeteoflameBlueSteel);
+		RedSteel        .stealLooks(MT.RedSteel       ).steal(MT.RedSteel       ).setLocal("Red Steel"          ).setAllToTheOutputOf(MT.RedSteel       ).put(SMITHABLE, MELTING                                     ).addReRegistrationToThis(MT.RedSteel, MT.MeteoricRedSteel, MT.MeteoflameRedSteel);
 		Cu              .stealLooks(MT.Cu             ).steal(MT.Cu             ).setLocal("Copper"             ).setAllToTheOutputOf(MT.Cu             ).put(SMITHABLE, MELTING                                     ).addReRegistrationToThis(MT.Cu, MT.AnnealedCopper);
 		Ash             .stealLooks(MT.Ash            ).steal(MT.Ash            ).setLocal("Ashes"              ).setAllToTheOutputOf(MT.Ash            ).put(BRITTLE                                                ).addReRegistrationToThis(MT.Ash, MT.DarkAsh, MT.VolcanicAsh);
 		C               .stealLooks(MT.C              ).steal(MT.C              ).setLocal("Carbon"             ).setAllToTheOutputOf(MT.C              ).put(                                                       ).addReRegistrationToThis(MT.C, MT.Graphite, MT.Graphene);
 		Coal            .stealLooks(MT.C              ).steal(MT.C              ).setLocal("Carbon"             ).setAllToTheOutputOf(MT.C              ).put(                                                       ).addReRegistrationToThis(MT.C, MT.Graphite, MT.Graphene, MT.CoalCoke, MT.Coal, MT.Charcoal);
 		Si              .stealLooks(MT.Si             ).steal(MT.Si             ).setLocal("Silicon"            ).setAllToTheOutputOf(MT.Si             ).put(SMITHABLE, MELTING                                     ).addReRegistrationToThis(MT.Si);
-		SiO2            .stealLooks(MT.SiO2           ).steal(MT.SiO2           ).setLocal("Silicon Dioxide"    ).setAllToTheOutputOf(MT.SiO2           ).put(BRITTLE, MELTING                                       ).addReRegistrationToThis(MT.STONES.Quartzite, MT.SiO2, MT.Sand, MT.RedSand, MT.EndSand, MT.Glass, MT.Flint);
+		SiO2            .stealLooks(MT.SiO2           ).steal(MT.SiO2           ).setLocal("Silicon Dioxide"    ).setAllToTheOutputOf(MT.SiO2           ).put(BRITTLE, MELTING                                       ).addReRegistrationToThis(MT.STONES.Quartzite, MT.SiO2, MT.Sand, MT.RedSand, MT.EndSandWhite, MT.EndSandBlack, MT.Glass, MT.Flint);
 		Quartz          .stealLooks(MT.MilkyQuartz    ).steal(MT.MilkyQuartz    ).setLocal("Quartz"             ).setAllToTheOutputOf(MT.SiO2           ).put(BRITTLE, MELTING, QUARTZ                               ).addReRegistrationToThis(MT.STONES.Quartzite);
 		Sand            .stealLooks(MT.Sand           ).steal(MT.Sand           ).setLocal("Sand"               ).setAllToTheOutputOf(MT.Sand           ).put(BRITTLE, MELTING                                       ).addReRegistrationToThis(MT.Sand, MT.RedSand);
 		W               .stealLooks(MT.W              ).steal(MT.W              ).setLocal("Tungsten"           ).setAllToTheOutputOf(MT.W              ).put(SMITHABLE, MELTING, UNBURNABLE                         ).addReRegistrationToThis(MT.W, MT.TungstenSintered);
@@ -132,7 +135,10 @@ public class ANY {
 		WoodTreated     .stealLooks(MT.WoodTreated    ).steal(MT.Wood           ).setLocal("Treated Wood"       ).setAllToTheOutputOf(MT.Wood           ).put(WOOD, FLAMMABLE                                        ).addReRegistrationToThis(MT.WoodTreated, MT.WoodPolished).setFurnaceBurnTime(TICKS_PER_SMELT/2);
 		WoodUntreated   .stealLooks(MT.WOODS.Spruce   ).steal(MT.Wood           ).setLocal("Untreated Wood"     ).setAllToTheOutputOf(MT.Wood           ).put(WOOD, FLAMMABLE                                        ).addReRegistrationToThis(ANY.WoodMagical.mToThis.toArray(ZL_MT)).addReRegistrationToThis(ANY.WoodNormal.mToThis.toArray(ZL_MT)).setFurnaceBurnTime(TICKS_PER_SMELT/2);
 		Wood            .stealLooks(MT.WOODS.Spruce   ).steal(MT.Wood           ).setLocal("Wood"               ).setAllToTheOutputOf(MT.Wood           ).put(WOOD, FLAMMABLE                                        ).setFurnaceBurnTime(TICKS_PER_SMELT/2);
-		WoodPlastic     .stealLooks(MT.WOODS.Spruce   ).steal(MT.Wood                                                                                   ).put(DONT_SHOW_THIS_COMPONENT                               ).addReRegistrationToThis(MT.Plastic, MT.PetrifiedWood);
+		PlasticHard     .stealLooks(MT.Polycarbonate  ).steal(MT.Polycarbonate  ).setLocal("Hard Plastic"       ).setAllToTheOutputOf(MT.Plastic        ).put(                                                       ).addReRegistrationToThis(MT.Polycarbonate, MT.PVC);
+		Plastic         .stealLooks(MT.Plastic        ).steal(MT.Plastic        ).setLocal("Plastic"            ).setAllToTheOutputOf(MT.Plastic        ).put(                                                       ).addReRegistrationToThis(MT.Polycarbonate, MT.PVC, MT.Teflon, MT.Bakelite, MT.Plastic);
+		Rubber          .stealLooks(MT.Rubber         ).steal(MT.Rubber         ).setLocal("Rubber"             ).setAllToTheOutputOf(MT.Rubber         ).put(                                                       ).addReRegistrationToThis(MT.Rubber);
+		WoodPlastic     .stealLooks(MT.WOODS.Spruce   ).steal(MT.Wood                                                                                   ).put(DONT_SHOW_THIS_COMPONENT                               ).addReRegistrationToThis(ANY.Plastic, MT.PetrifiedWood);
 		
 		_Steel          .stealLooks(MT.Steel          ).put(DONT_SHOW_THIS_COMPONENT);
 		_Bronze         .stealLooks(MT.Bronze         ).put(DONT_SHOW_THIS_COMPONENT);

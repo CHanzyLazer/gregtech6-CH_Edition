@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,14 +19,8 @@
 
 package gregtech.blocks;
 
-import static gregapi.data.CS.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import gregapi.block.BlockBaseMeta;
-import gregapi.code.ArrayListNoNulls;
-import gregapi.data.CS.BlocksGT;
+import gregapi.data.CS.*;
 import gregapi.data.LH;
 import gregapi.data.RM;
 import gregapi.old.Textures;
@@ -45,25 +39,30 @@ import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static gregapi.data.CS.*;
+
 public class BlockGrass extends BlockBaseMeta {
 	public BlockGrass(String aUnlocalised) {
 		super(null, aUnlocalised, Material.grass, soundTypeGrass, 4, Textures.BlockIcons.GRASSES_TOP);
-		LH.add(getUnlocalizedName()+ ".0.name", "Grass");
-		LH.add(getUnlocalizedName()+ ".1.name", "Grass");
-		LH.add(getUnlocalizedName()+ ".2.name", "Grass");
-		LH.add(getUnlocalizedName()+ ".3.name", "Grass");
-		LH.add(getUnlocalizedName()+ ".4.name", "Grass");
-		LH.add(getUnlocalizedName()+ ".5.name", "Grass");
-		LH.add(getUnlocalizedName()+ ".6.name", "Grass");
-		LH.add(getUnlocalizedName()+ ".7.name", "Grass");
-		LH.add(getUnlocalizedName()+ ".8.name", "Grass");
-		LH.add(getUnlocalizedName()+ ".9.name", "Grass");
-		LH.add(getUnlocalizedName()+ ".10.name", "Grass");
-		LH.add(getUnlocalizedName()+ ".11.name", "Grass");
-		LH.add(getUnlocalizedName()+ ".12.name", "Grass");
-		LH.add(getUnlocalizedName()+ ".13.name", "Grass");
-		LH.add(getUnlocalizedName()+ ".14.name", "Grass");
-		LH.add(getUnlocalizedName()+ ".15.name", "Grass");
+		LH.add(getUnlocalizedName()+ ".0", "Grass");
+		LH.add(getUnlocalizedName()+ ".1", "Grass");
+		LH.add(getUnlocalizedName()+ ".2", "Grass");
+		LH.add(getUnlocalizedName()+ ".3", "Grass");
+		LH.add(getUnlocalizedName()+ ".4", "Grass");
+		LH.add(getUnlocalizedName()+ ".5", "Grass");
+		LH.add(getUnlocalizedName()+ ".6", "Grass");
+		LH.add(getUnlocalizedName()+ ".7", "Grass");
+		LH.add(getUnlocalizedName()+ ".8", "Grass");
+		LH.add(getUnlocalizedName()+ ".9", "Grass");
+		LH.add(getUnlocalizedName()+".10", "Grass");
+		LH.add(getUnlocalizedName()+".11", "Grass");
+		LH.add(getUnlocalizedName()+".12", "Grass");
+		LH.add(getUnlocalizedName()+".13", "Grass");
+		LH.add(getUnlocalizedName()+".14", "Grass");
+		LH.add(getUnlocalizedName()+".15", "Grass");
 		
 		BlocksGT.drillableDynamite.add(this);
 		BlocksGT.harvestableSpade.add(this);
@@ -102,7 +101,7 @@ public class BlockGrass extends BlockBaseMeta {
 	public static final IconContainerCopied DIRT = new IconContainerCopied(Blocks.dirt, 0, SIDE_BOTTOM);
 	
 	@Override public IIcon getIcon(int aSide, int aMeta) {return (SIDES_BOTTOM[aSide]?DIRT:(SIDES_TOP[aSide]?Textures.BlockIcons.GRASSES_TOP:Textures.BlockIcons.GRASSES_SIDE)[aMeta % 16]).getIcon(0);}
-	@Override public ArrayList<ItemStack> getDrops(World aWorld, int aX, int aY, int aZ, int aMeta, int aFortune) {return new ArrayListNoNulls<>(F, ST.make(Blocks.dirt, 1, 0));}
+	@Override public ArrayList<ItemStack> getDrops(World aWorld, int aX, int aY, int aZ, int aMeta, int aFortune) {return ST.arraylist(ST.make(Blocks.dirt, 1, 0));}
 	@Override public boolean doesPistonPush  (byte aMeta) {return T;}
 	@Override public boolean canCreatureSpawn(byte aMeta) {return F;}
 	@Override public boolean isSealable      (byte aMeta, byte aSide) {return F;}

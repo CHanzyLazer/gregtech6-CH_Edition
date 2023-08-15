@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -21,7 +21,6 @@ package gregtech.blocks;
 
 import gregapi.block.BlockBaseMeta;
 import gregapi.block.IBlockOnWalkOver;
-import gregapi.code.ArrayListNoNulls;
 import gregapi.data.IL;
 import gregapi.data.LH;
 import gregapi.old.Textures;
@@ -31,6 +30,7 @@ import gregapi.util.WD;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -40,6 +40,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static gregapi.data.CS.*;
 
@@ -47,22 +48,22 @@ public class BlockPath extends BlockBaseMeta implements IBlockOnWalkOver, IRende
 	public BlockPath(String aUnlocalised) {
 		super(null, aUnlocalised, Material.grass, soundTypeGrass, 12, Textures.BlockIcons.DIRTS);
 		setCreativeTab(CreativeTabs.tabTransport);
-		LH.add(getUnlocalizedName()+  ".0.name", "Path");
-		LH.add(getUnlocalizedName()+  ".1.name", "Aether Path");
-		LH.add(getUnlocalizedName()+  ".2.name", "Loamy Path");
-		LH.add(getUnlocalizedName()+  ".3.name", "Sandy Path");
-		LH.add(getUnlocalizedName()+  ".4.name", "Silty Path");
-		LH.add(getUnlocalizedName()+  ".5.name", "Alfisol Path");
-		LH.add(getUnlocalizedName()+  ".6.name", "Andisol Path");
-		LH.add(getUnlocalizedName()+  ".7.name", "Gelisol Path");
-		LH.add(getUnlocalizedName()+  ".8.name", "Histosol Path");
-		LH.add(getUnlocalizedName()+  ".9.name", "Inceptisol Path");
-		LH.add(getUnlocalizedName()+ ".10.name", "Mollisol Path");
-		LH.add(getUnlocalizedName()+ ".11.name", "Oxisol Path");
-		LH.add(getUnlocalizedName()+ ".12.name", "Path");
-		LH.add(getUnlocalizedName()+ ".13.name", "Path");
-		LH.add(getUnlocalizedName()+ ".14.name", "Path");
-		LH.add(getUnlocalizedName()+ ".15.name", "Path");
+		LH.add(getUnlocalizedName()+ ".0", "Path");
+		LH.add(getUnlocalizedName()+ ".1", "Aether Path");
+		LH.add(getUnlocalizedName()+ ".2", "Loamy Path");
+		LH.add(getUnlocalizedName()+ ".3", "Sandy Path");
+		LH.add(getUnlocalizedName()+ ".4", "Silty Path");
+		LH.add(getUnlocalizedName()+ ".5", "Alfisol Path");
+		LH.add(getUnlocalizedName()+ ".6", "Andisol Path");
+		LH.add(getUnlocalizedName()+ ".7", "Gelisol Path");
+		LH.add(getUnlocalizedName()+ ".8", "Histosol Path");
+		LH.add(getUnlocalizedName()+ ".9", "Inceptisol Path");
+		LH.add(getUnlocalizedName()+".10", "Mollisol Path");
+		LH.add(getUnlocalizedName()+".11", "Oxisol Path");
+		LH.add(getUnlocalizedName()+".12", "Path");
+		LH.add(getUnlocalizedName()+".13", "Path");
+		LH.add(getUnlocalizedName()+".14", "Path");
+		LH.add(getUnlocalizedName()+".15", "Path");
 		setBlockBounds(0, 0, 0, 1, PIXELS_NEG[1], 1);
 		
 		if (COMPAT_FR  != null) COMPAT_FR.addToBackpacks("digger", ST.make(this, 1, W));
@@ -71,18 +72,18 @@ public class BlockPath extends BlockBaseMeta implements IBlockOnWalkOver, IRende
 	@Override
 	public ArrayList<ItemStack> getDrops(World aWorld, int aX, int aY, int aZ, int aMeta, int aFortune) {
 		switch(aMeta) {
-		case  1: return new ArrayListNoNulls<>(F, IL.AETHER_Dirt.get(1));
-		case  2: return new ArrayListNoNulls<>(F, IL.BoP_Dirt_Loamy.get(1));
-		case  3: return new ArrayListNoNulls<>(F, IL.BoP_Dirt_Sandy.get(1));
-		case  4: return new ArrayListNoNulls<>(F, IL.BoP_Dirt_Silty.get(1));
-		case  5: return new ArrayListNoNulls<>(F, IL.EB_Dirt_Alfisol.get(1));
-		case  6: return new ArrayListNoNulls<>(F, IL.EB_Dirt_Andisol.get(1));
-		case  7: return new ArrayListNoNulls<>(F, IL.EB_Dirt_Gelisol.get(1));
-		case  8: return new ArrayListNoNulls<>(F, IL.EB_Dirt_Histosol.get(1));
-		case  9: return new ArrayListNoNulls<>(F, IL.EB_Dirt_Inceptisol.get(1));
-		case 10: return new ArrayListNoNulls<>(F, IL.EB_Dirt_Mollisol.get(1));
-		case 11: return new ArrayListNoNulls<>(F, IL.EB_Dirt_Oxisol.get(1));
-		default: return new ArrayListNoNulls<>(F, ST.make(Blocks.dirt, 1, 0));
+		case  1: return ST.arraylist(IL.AETHER_Dirt.get(1));
+		case  2: return ST.arraylist(IL.BoP_Dirt_Loamy.get(1));
+		case  3: return ST.arraylist(IL.BoP_Dirt_Sandy.get(1));
+		case  4: return ST.arraylist(IL.BoP_Dirt_Silty.get(1));
+		case  5: return ST.arraylist(IL.EB_Dirt_Alfisol.get(1));
+		case  6: return ST.arraylist(IL.EB_Dirt_Andisol.get(1));
+		case  7: return ST.arraylist(IL.EB_Dirt_Gelisol.get(1));
+		case  8: return ST.arraylist(IL.EB_Dirt_Histosol.get(1));
+		case  9: return ST.arraylist(IL.EB_Dirt_Inceptisol.get(1));
+		case 10: return ST.arraylist(IL.EB_Dirt_Mollisol.get(1));
+		case 11: return ST.arraylist(IL.EB_Dirt_Oxisol.get(1));
+		default: return ST.arraylist(ST.make(Blocks.dirt, 1, 0));
 		}
 	}
 	
@@ -129,14 +130,23 @@ public class BlockPath extends BlockBaseMeta implements IBlockOnWalkOver, IRende
 	
 	@Override public boolean usesRenderPass(int aRenderPass, ItemStack aStack                                                                     ) {return T;}
 	@Override public boolean usesRenderPass(int aRenderPass, IBlockAccess aWorld, int aX, int aY, int aZ, boolean[] aShouldSideBeRendered         ) {return T;}
-	@Override public boolean setBlockBounds(int aRenderPass, ItemStack aStack                                                                     ) {setBlockBounds(0, 0, 0, 1,                                                PIXELS_NEG[1] , 1); return T;}
-	@Override public boolean setBlockBounds(int aRenderPass, IBlockAccess aWorld, int aX, int aY, int aZ, boolean[] aShouldSideBeRendered         ) {setBlockBounds(0, 0, 0, 1, (isHalfBlock(aWorld, aX, aY, aZ)?PIXELS_NEG[9]:PIXELS_NEG[1]), 1); return T;}
+	@Override public boolean setBlockBounds(int aRenderPass, ItemStack aStack                                                                     ) {setBlockBounds(0, 0, 0, 1,                                          PX_N[1] , 1); return T;}
+	@Override public boolean setBlockBounds(int aRenderPass, IBlockAccess aWorld, int aX, int aY, int aZ, boolean[] aShouldSideBeRendered         ) {setBlockBounds(0, 0, 0, 1, (isHalfBlock(aWorld, aX, aY, aZ)?PX_N[9]:PX_N[1]), 1); return T;}
 	@Override public int getRenderPasses(ItemStack aStack                                                                                         ) {return 1;}
 	@Override public int getRenderPasses(IBlockAccess aWorld, int aX, int aY, int aZ, boolean[] aShouldSideBeRendered                             ) {return 1;}
 	@Override public IRenderedBlockObject passRenderingToObject(ItemStack aStack                                                                  ) {return null;}
 	@Override public IRenderedBlockObject passRenderingToObject(IBlockAccess aWorld, int aX, int aY, int aZ                                       ) {return null;}
-	
 	@Override public IIcon getIcon(int aSide, int aMeta) {return (SIDES_TOP[aSide]?Textures.BlockIcons.PATH_TOP:Textures.BlockIcons.DIRTS[aMeta % 16]).getIcon(0);}
+	
+	
+	@Override @SuppressWarnings({"unchecked"})
+	public void addCollisionBoxesToList(World aWorld, int aX, int aY, int aZ, AxisAlignedBB aAABB, List aList, Entity aEntity) {
+		AxisAlignedBB
+		tAABB = AxisAlignedBB.getBoundingBox(aX, aY, aZ, aX+1, aY+0.5  , aZ+1); if (tAABB.intersectsWith(aAABB)) aList.add(tAABB);
+		if (isHalfBlock(aWorld, aX, aY, aZ)) return;
+		tAABB = AxisAlignedBB.getBoundingBox(aX, aY, aZ, aX+1, aY+0.875, aZ+1); if (tAABB.intersectsWith(aAABB)) aList.add(tAABB);
+		tAABB = AxisAlignedBB.getBoundingBox(aX, aY, aZ, aX+1, aY+1    , aZ+1); if (tAABB.intersectsWith(aAABB)) aList.add(tAABB);
+	}
 	@Override public AxisAlignedBB getCollisionBoundingBoxFromPool(World aWorld, int aX, int aY, int aZ) {return AxisAlignedBB.getBoundingBox(aX, aY, aZ, aX+1, aY+(isHalfBlock(aWorld, aX, aY, aZ)?0.5:1), aZ+1);}
 	@Override public AxisAlignedBB getSelectedBoundingBoxFromPool (World aWorld, int aX, int aY, int aZ) {return AxisAlignedBB.getBoundingBox(aX, aY, aZ, aX+1, aY+(isHalfBlock(aWorld, aX, aY, aZ)?0.5:1), aZ+1);}
 	@Override public void setBlockBoundsBasedOnState(IBlockAccess aWorld, int aX, int aY, int aZ) {setBlockBounds(0, 0, 0, 1, (isHalfBlock(aWorld, aX, aY, aZ)?0.5F:1), 1);}

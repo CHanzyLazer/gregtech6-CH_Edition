@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,16 +19,10 @@
 
 package gregapi.block.tree;
 
-import static gregapi.data.CS.*;
-
-import java.util.ArrayList;
-import java.util.Random;
-
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.code.ArrayListNoNulls;
-import gregapi.data.CS.ModIDs;
 import gregapi.data.MD;
 import gregapi.data.OP;
 import gregapi.render.IIconContainer;
@@ -50,6 +44,11 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.ArrayList;
+import java.util.Random;
+
+import static gregapi.data.CS.*;
 
 /**
  * @author Gregorius Techneticies
@@ -90,7 +89,7 @@ public abstract class BlockBaseLeaves extends BlockBaseTree implements IShearabl
 	@Override public int getLightOpacity() {return LIGHT_OPACITY_LEAVES;}
 	@Override public int getItemStackLimit(ItemStack aStack) {return UT.Code.bindStack(OP.treeLeaves.mDefaultStackSize);}
 	@Override public IIcon getIcon(int aSide, int aMeta) {return mIcons[(aMeta&7)|(Blocks.leaves.isOpaqueCube()?8:0)].getIcon(0);}
-	@Override public ArrayList<ItemStack> onSheared(ItemStack aItem, IBlockAccess aWorld, int aX, int aY, int aZ, int aFortune) {return new ArrayListNoNulls<>(F, ST.make(this, 1, WD.meta(aWorld, aX, aY, aZ) & 7));}
+	@Override public ArrayList<ItemStack> onSheared(ItemStack aItem, IBlockAccess aWorld, int aX, int aY, int aZ, int aFortune) {return ST.arraylist(ST.make(this, 1, WD.meta(aWorld, aX, aY, aZ) & 7));}
 	@Override public AxisAlignedBB getCollisionBoundingBoxFromPool(World aWorld, int aX, int aY, int aZ) {return MD.TFC.mLoaded || MD.TFCP.mLoaded ? null : super.getCollisionBoundingBoxFromPool(aWorld, aX, aY, aZ);}
 	@Override public void onOxygenAdded(World aWorld, int aX, int aY, int aZ) {/**/}
 	@Override public void onOxygenRemoved(World aWorld, int aX, int aY, int aZ) {if (!aWorld.isRemote) {aWorld.scheduleBlockUpdate(aX, aY, aZ, this, 201+RNGSUS.nextInt(100)); return;}}
@@ -112,7 +111,7 @@ public abstract class BlockBaseLeaves extends BlockBaseTree implements IShearabl
 		if (aWorld.isRemote) return;
 		if (!WD.oxygen(aWorld, aX, aY, aZ)) {aWorld.scheduleBlockUpdate(aX, aY, aZ, this, 201+RNGSUS.nextInt(100)); return;}
 		if (WD.meta(aWorld, aX, aY, aZ) < 8) return;
-		aWorld.scheduleBlockUpdate(aX, aY, aZ, this, 1+RNGSUS.nextInt(100));
+		aWorld.scheduleBlockUpdate(aX, aY, aZ, this, 10+RNGSUS.nextInt(SLOW_LEAF_DECAY ? 6400 : 100));
 	}
 	
 	@Override
@@ -133,7 +132,7 @@ public abstract class BlockBaseLeaves extends BlockBaseTree implements IShearabl
 	
 	@Override
 	public ArrayList<ItemStack> getDrops(World aWorld, int aX, int aY, int aZ, int aMeta, int aFortune) {
-		ArrayListNoNulls<ItemStack> rDrops = new ArrayListNoNulls<>();
+		ArrayListNoNulls<ItemStack> rDrops = ST.arraylist();
 		int tChance = 50;
 		if (aFortune > 0) {
 			tChance -= 5 << aFortune;

@@ -36,7 +36,6 @@ import gregapi.tileentity.machines.ITileEntityRunningActively;
 import gregapi.tileentity.machines.ITileEntitySwitchableOnOff;
 import gregapi.util.ST;
 import gregapi.util.UT;
-import gregtechCH.util.UT_CH;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -249,6 +248,9 @@ public abstract class MultiTileEntityReactorCore extends TileEntityBase10FacingD
 	@Override public byte getDefaultSecondSide() {return SIDE_BOTTOM;}
 	@Override public boolean[] getValidSides() {return SIDES_VALID;}
 	
+//	@Override public void updateTanks() {/**/} // GTCH, 我觉得这个还是需要保留父类的更新
+	@Override public void updateInventory() {super.updateInventory(); updateClientData();}
+	
 	@Override
 	protected IFluidTank getFluidTankFillable2(byte aSide, FluidStack aFluidToFill) {
 		return FL.Coolant_IC2.is(aFluidToFill)
@@ -292,19 +294,6 @@ public abstract class MultiTileEntityReactorCore extends TileEntityBase10FacingD
 			)) return 0;
 		return mTanks[0].fill(aFluid, aDoFill);
 	}
-	@Override public void updateTanks() {/**/}
-	@Override public final void updateInventory() {
-		super.updateInventory();
-		// GTCH, 改为仅检测每个存储槽内是否发生了改变
-		if (isServerSide() && checkInventory()) {
-			updateClientData();
-			inventoryChecked();
-		}
-	}
-	
-	protected boolean checkInventory() {return F;}
-	protected void inventoryChecked() {/**/}
-	
 	
 	@Override
 	public FluidStack tapDrain(byte aSide, int aMaxDrain, boolean aDoDrain) {

@@ -998,10 +998,10 @@ public class CS {
 	
 	/** For Internal Usage. Even though after 2 years I still don't use this one... */
 	public static INetworkHandler NW_GT;
-
+	
 	/** For using the API internal Network Functionality for the already existing Packets. */
 	public static INetworkHandler NW_API, NW_AP2;
-
+	
 	/** Used to register IC2 Stuff, this Object might be null if IC2 isn't installed. */
 	public static ICompatIC2        COMPAT_IC2;
 	/** Used to register IC2 Stuff, this Object might be null if IC2 isn't installed. */
@@ -1023,7 +1023,7 @@ public class CS {
 	
 	/** Date and Time of when the Game launched. */
 	public static final String DATE_OF_GAME_START = UT.Code.dateAndTime();
-
+	
 	/** A Set of different Tool Names. */
 	public static final String
 	  TOOL_LOCALISER_PREFIX = "gt.lang.tool.name."
@@ -1070,7 +1070,7 @@ public class CS {
 	, TOOL_prospector       = "prospector"
 	, TOOL_ducttape         = "ducttape"
 	;
-
+	
 	static {
 		LH.add(TOOL_LOCALISER_PREFIX + TOOL_rotator         , "Rotation Tool");
 		LH.add(TOOL_LOCALISER_PREFIX + TOOL_igniter         , "Igniting Tool");
@@ -1110,7 +1110,7 @@ public class CS {
 		LH.add(TOOL_LOCALISER_PREFIX + TOOL_geigercounter   , "Geiger Counter");
 		LH.add(TOOL_LOCALISER_PREFIX + TOOL_prospector      , "Prospector");
 		LH.add(TOOL_LOCALISER_PREFIX + TOOL_ducttape        , "Duct Tape");
-
+		
 		LH.add(TOOL_TOOLTIP_PREFIX + TOOL_rotator           , "Rotating things");
 		LH.add(TOOL_TOOLTIP_PREFIX + TOOL_igniter           , "Igniting things");
 		LH.add(TOOL_TOOLTIP_PREFIX + TOOL_extinguisher      , "Extinguishing things");
@@ -1406,7 +1406,7 @@ public class CS {
 			if (aMaterials == null) return 0;
 			long rTrashed = 0;
 			Iterator<OreDictMaterialStack> tIterator = aMaterials.iterator();
-			while (tIterator.hasNext()) {rTrashed += trash(tIterator.next()); tIterator.remove();};
+			while (tIterator.hasNext()) {rTrashed += trash(tIterator.next()); tIterator.remove();}
 			return rTrashed;
 		}
 		
@@ -1511,7 +1511,7 @@ public class CS {
 		, LIQUID           = new HashSetNoNulls<>(F, "fluxgoo", "fluiddeath", "fluidpure", "poison", "liquidnitrogen", "liquiddna")
 		, GAS              = new HashSetNoNulls<>(F, "fluxgas")
 		, PLASMA           = new HashSetNoNulls<>(F, "heliumplasma", "nitrogenplasma", "rc fusion plasma")
-		, HIDDEN           = new HashSetNoNulls<>(F) // REMOVED "heliumplasma", "nitrogenplasma"
+		, HIDDEN           = new HashSetNoNulls<>() // REMOVED "heliumplasma", "nitrogenplasma"
 		, AIR              = new HashSetNoNulls<>()
 		, OXYGEN           = new HashSetNoNulls<>()
 		, LIQUID_OXYGEN    = new HashSetNoNulls<>()
@@ -1670,20 +1670,20 @@ public class CS {
 		;
 		
 		public static final Set<Object> stoneOverridable      = new HashSetNoNulls<>(F);
-		public static final Set<Object> instaharvest          = new HashSetNoNulls<Object>(F, Blocks.torch, Blocks.redstone_torch, Blocks.unlit_redstone_torch, Blocks.redstone_wire, Blocks.powered_comparator, Blocks.unpowered_comparator, Blocks.powered_repeater, Blocks.unpowered_repeater, Blocks.skull, Blocks.monster_egg);
-		public static final Set<Object> breakableGlass        = new HashSetNoNulls<Object>(F, Blocks.glass, Blocks.glass_pane, Blocks.stained_glass, Blocks.stained_glass_pane);
-		public static final Set<Object> openableCrowbar       = new HashSetNoNulls<Object>(F, Blocks.iron_block, Blocks.gold_block, Blocks.lapis_block, Blocks.diamond_block, Blocks.emerald_block, Blocks.redstone_block, Blocks.coal_block);
-		public static final Set<Object> drillableDynamite     = new HashSetNoNulls<Object>(F, Blocks.grass, Blocks.dirt, Blocks.mycelium, Blocks.clay, Blocks.snow, Blocks.gravel, Blocks.sandstone, Blocks.cobblestone, Blocks.mossy_cobblestone, Blocks.netherrack, Blocks.end_stone, Blocks.hardened_clay, Blocks.stained_hardened_clay, Blocks.iron_ore, Blocks.gold_ore, Blocks.lapis_ore, Blocks.diamond_ore, Blocks.emerald_ore, Blocks.redstone_ore, Blocks.lit_redstone_ore, Blocks.coal_ore, Blocks.quartz_ore, Blocks.monster_egg);
-		public static final Set<Object> harvestableJackhammer = new HashSetNoNulls<Object>(F, Blocks.stone, Blocks.sandstone, Blocks.cobblestone, Blocks.mossy_cobblestone, Blocks.netherrack, Blocks.end_stone, Blocks.hardened_clay, Blocks.stained_hardened_clay, Blocks.monster_egg);
-		public static final Set<Object> harvestableSpade      = new HashSetNoNulls<Object>(F, Blocks.grass, Blocks.dirt, Blocks.mycelium, Blocks.clay, Blocks.snow, Blocks.gravel);
-		public static final Set<Object> plantableGreens       = new HashSetNoNulls<Object>(F, Blocks.grass, Blocks.dirt, Blocks.farmland);
-		public static final Set<Object> plantableTrees        = new HashSetNoNulls<Object>(F, Blocks.grass, Blocks.dirt);
-		public static final Set<Object> plantableGrass        = new HashSetNoNulls<Object>(F, Blocks.grass);
+		public static final Set<Object> instaharvest          = new HashSetNoNulls<>(F, Blocks.torch, Blocks.redstone_torch, Blocks.unlit_redstone_torch, Blocks.redstone_wire, Blocks.powered_comparator, Blocks.unpowered_comparator, Blocks.powered_repeater, Blocks.unpowered_repeater, Blocks.skull, Blocks.monster_egg);
+		public static final Set<Object> breakableGlass        = new HashSetNoNulls<>(F, Blocks.glass, Blocks.glass_pane, Blocks.stained_glass, Blocks.stained_glass_pane);
+		public static final Set<Object> openableCrowbar       = new HashSetNoNulls<>(F, Blocks.iron_block, Blocks.gold_block, Blocks.lapis_block, Blocks.diamond_block, Blocks.emerald_block, Blocks.redstone_block, Blocks.coal_block);
+		public static final Set<Object> drillableDynamite     = new HashSetNoNulls<>(F, Blocks.grass, Blocks.dirt, Blocks.mycelium, Blocks.clay, Blocks.snow, Blocks.gravel, Blocks.sandstone, Blocks.cobblestone, Blocks.mossy_cobblestone, Blocks.netherrack, Blocks.end_stone, Blocks.hardened_clay, Blocks.stained_hardened_clay, Blocks.iron_ore, Blocks.gold_ore, Blocks.lapis_ore, Blocks.diamond_ore, Blocks.emerald_ore, Blocks.redstone_ore, Blocks.lit_redstone_ore, Blocks.coal_ore, Blocks.quartz_ore, Blocks.monster_egg);
+		public static final Set<Object> harvestableJackhammer = new HashSetNoNulls<>(F, Blocks.stone, Blocks.sandstone, Blocks.cobblestone, Blocks.mossy_cobblestone, Blocks.netherrack, Blocks.end_stone, Blocks.hardened_clay, Blocks.stained_hardened_clay, Blocks.monster_egg);
+		public static final Set<Object> harvestableSpade      = new HashSetNoNulls<>(F, Blocks.grass, Blocks.dirt, Blocks.mycelium, Blocks.clay, Blocks.snow, Blocks.gravel);
+		public static final Set<Object> plantableGreens       = new HashSetNoNulls<>(F, Blocks.grass, Blocks.dirt, Blocks.farmland);
+		public static final Set<Object> plantableTrees        = new HashSetNoNulls<>(F, Blocks.grass, Blocks.dirt);
+		public static final Set<Object> plantableGrass        = new HashSetNoNulls<>(F, Blocks.grass);
 		
 		/** Blocks to not generate Ores in. */
 		public static ItemStackSet<ItemStackContainer> sDontGenerateOresIn = ST.hashset();
 		
-		public static final Set<Object> FLOWERS = new HashSetNoNulls<Object>(F, Blocks.yellow_flower, Blocks.red_flower);
+		public static final Set<Object> FLOWERS = new HashSetNoNulls<>(F, Blocks.yellow_flower, Blocks.red_flower);
 		
 		public static final Block[] POT_FLOWER_TILES = {Blocks.cactus, Blocks.brown_mushroom, Blocks.red_mushroom, Blocks.yellow_flower, Blocks.red_flower, Blocks.red_flower, Blocks.red_flower, Blocks.red_flower, Blocks.red_flower, Blocks.red_flower, Blocks.red_flower, Blocks.red_flower, Blocks.red_flower};
 		public static final byte [] POT_FLOWER_METAS = {0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8};
@@ -1916,6 +1916,7 @@ public class CS {
 		MATERIAL,
 		OREPROCESSING;
 		
+		@SuppressWarnings("DeprecatedIsStillUsed")
 		@Deprecated public static Config SPECIAL, MACHINES, OVERPOWERED;
 	}
 

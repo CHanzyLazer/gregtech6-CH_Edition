@@ -44,6 +44,7 @@ import gregapi.tileentity.data.ITileEntityProgress;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.util.ST;
 import gregapi.util.UT;
+import gregtechCH.data.LH_CH;
 import gregtechCH.tileentity.compat.PipeCompat;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.IInventory;
@@ -111,10 +112,13 @@ public class MultiTileEntityPipeItem extends TileEntityBase10ConnectorRendered i
 	}
 	
 	@Override
-	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
+	protected void toolTipsDescribe(List<String> aList) {
 		aList.add(Chat.CYAN + LH.get(LH.PIPE_STATS_STEPSIZE) + UT.Code.makeString(mStepSize));
 		aList.add(Chat.CYAN + LH.get(LH.PIPE_STATS_BANDWIDTH) + Chat.WHITE + UT.Code.makeString(getPipeCapacity()) + "/s");
-		super.addToolTips(aList, aStack, aF3_H);
+	}
+	@Override
+	protected void toolTipsOther(List<String> aList, ItemStack aStack, boolean aF3_H) {
+		super.toolTipsOther(aList, aStack, aF3_H);
 		aList.add(Chat.DGRAY + LH.get(LH.TOOL_TO_SET_INPUT_MONKEY_WRENCH));
 		aList.add(Chat.DGRAY + LH.get(LH.TOOL_TO_SET_OUTPUT_MONKEY_WRENCH));
 	}

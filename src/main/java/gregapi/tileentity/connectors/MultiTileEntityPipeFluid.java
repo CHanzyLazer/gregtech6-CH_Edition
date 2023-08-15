@@ -406,7 +406,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		// TODO: 使用阀门控制容量
 		// GTCH，暂定直接使用螺丝刀调整容量
 		if (aTool.equals(TOOL_screwdriver)) {
-			mCapacityLimit = aSneaking ? changeModeRed(mCapacityLimit, MAX_LIMIT) : changeModeAdd(mCapacityLimit, MAX_LIMIT);
+			mCapacityLimit = aSneaking ? changeModeRed(mCapacityLimit) : changeModeAdd(mCapacityLimit);
 			long tCapacity = mCapacity >> mCapacityLimit;
 			if (tCapacity <= 0 || mCapacityLimit == MAX_LIMIT) tCapacity = 0;
 			// 调整容量之前先将多余流体尝试输出到相邻的容器
@@ -446,11 +446,11 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		}
 	}
 	
-	private byte changeModeAdd(byte aCurrentMode, byte aMaxMode) {
-		return aCurrentMode < aMaxMode ? (byte) (aCurrentMode + 1) : 0;
+	private byte changeModeAdd(byte aCurrentMode) {
+		return aCurrentMode < MAX_LIMIT ? (byte) (aCurrentMode + 1) : 0;
 	}
-	private byte changeModeRed(byte aCurrentMode, byte aMaxMode) {
-		return aCurrentMode > 0 ? (byte) (aCurrentMode - 1) : aMaxMode;
+	private byte changeModeRed(byte aCurrentMode) {
+		return aCurrentMode > 0 ? (byte) (aCurrentMode - 1) : MAX_LIMIT;
 	}
 	
 	static {
@@ -460,17 +460,13 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 	}
 	
 	@Override
-	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
-		toolTipsDescribe(aList);
-		toolTipsUseful(aList);
-		super.addToolTips(aList, aStack, aF3_H);
-	}
 	protected void toolTipsDescribe(List<String> aList) {
 		aList.add(Chat.CYAN     + LH.get(LH.PIPE_STATS_BANDWIDTH) + UT.Code.makeString(mCapacity/2) + " L/t");
 		aList.add(Chat.CYAN     + LH.get(LH.PIPE_STATS_CAPACITY) + UT.Code.makeString(mCapacity) + " L");
 		if (mTanks.length > 1)
 		aList.add(Chat.CYAN     + LH.get(LH.PIPE_STATS_AMOUNT) + mTanks.length);
 	}
+	@Override
 	protected void toolTipsUseful(List<String> aList) {
 		if (mAllowSwitchFC && !mFlowControl) aList.add(Chat.GREEN + LH_CH.get("gtch.tooltip.pipefluid.custom.2"));
 		if(mFlowControl) aList.add(Chat.GREEN + LH_CH.get("gtch.tooltip.pipefluid.custom.3"));

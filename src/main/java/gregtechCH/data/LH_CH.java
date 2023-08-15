@@ -16,30 +16,32 @@ import static gregtechCH.data.CS_CH.RegType;
  */
 public class LH_CH {
     public static final String
-              AXLE_STATS_SPEED                          = "gtch.lang.axle.stats.speed"
-            , AXLE_STATS_POWER                          = "gtch.lang.axle.stats.power"
-            , TOOLTIP_PREHEAT                           = "gtch.lang.preheat"
-            , TOOLTIP_LENGTH                            = "gtch.lang.motor.length"
-            , ENERGY_LENGTH                             = "gtch.lang.energy.motor.length"
-            , ENERGY_TO                                 = "gtch.lang.energy.to"
-            , ENERGY_UPTO                               = "gtch.lang.energy.upto"
-            , ENERGY_PARALLEL                           = "gtch.lang.energy.parallel"
-            , OVERCLOCK_GENERATOR                       = "gtch.lang.overclock.generator"
-            , OVERCLOCK_CHEAP                           = "gtch.lang.overclock.cheap"
-            , OVERCLOCK_EXPENSIVE                       = "gtch.lang.overclock.expensive"
-            , OVERCLOCK_SQRT                            = "gtch.lang.overclock.sqrt"
-            , OVERCLOCK_PARALLEL                        = "gtch.lang.overclock.parallel"
-            , OVERCLOCK_PARALLEL_TU                     = "gtch.lang.overclock.parallel.tu"
-            , FACE_HEAT_TRANS                           = "gtch.lang.face.heattransmitter"
-            , FACE_PIPE_HOLE                            = "gtch.lang.face.pipehole"
-            , TOOL_TO_DETAIL_MAGNIFYINGGLASS_SNEAK      = "gtch.lang.use.sneak.magnifyingglass.to.detail"
-            , TOOL_TO_SET_MODE_MONKEY_WRENCH            = "gtch.lang.use.monkey.wrench.to.set.mode.side"
-            , TOOL_TO_SET_IO_MONKEY_WRENCH              = "gtch.lang.use.monkey.wrench.to.set.io.side"
-            , TRANSFORMER_NORMAL                        = "gtch.lang.transformer.normal"
-            , TRANSFORMER_REVERSED                      = "gtch.lang.transformer.reversed"
-            , HAZARD_EXPLOSION_LENGTH                   = "gtch.lang.hazard.explosion.motor.length"
-            , WIRE_STATS_RESISTANCE                     = "gtch.lang.wire.stats.resistance"
-            ;
+          AXLE_STATS_SPEED                          = "gtch.lang.axle.stats.speed"
+        , AXLE_STATS_POWER                          = "gtch.lang.axle.stats.power"
+        , TOOLTIP_PREHEAT                           = "gtch.lang.preheat"
+        , TOOLTIP_LENGTH                            = "gtch.lang.motor.length"
+        , ENERGY_LENGTH                             = "gtch.lang.energy.motor.length"
+        , ENERGY_TO                                 = "gtch.lang.energy.to"
+        , ENERGY_UPTO                               = "gtch.lang.energy.upto"
+        , ENERGY_PARALLEL                           = "gtch.lang.energy.parallel"
+        , OVERCLOCK_GENERATOR                       = "gtch.lang.overclock.generator"
+        , OVERCLOCK_CHEAP                           = "gtch.lang.overclock.cheap"
+        , OVERCLOCK_EXPENSIVE                       = "gtch.lang.overclock.expensive"
+        , OVERCLOCK_SQRT                            = "gtch.lang.overclock.sqrt"
+        , OVERCLOCK_PARALLEL                        = "gtch.lang.overclock.parallel"
+        , OVERCLOCK_PARALLEL_TU                     = "gtch.lang.overclock.parallel.tu"
+        , FACE_HEAT_TRANS                           = "gtch.lang.face.heattransmitter"
+        , FACE_PIPE_HOLE                            = "gtch.lang.face.pipehole"
+        , TOOL_TO_DETAIL_MAGNIFYINGGLASS_SNEAK      = "gtch.lang.use.sneak.magnifyingglass.to.detail"
+        , TOOL_TO_MEASURE_TACHOMETER                = "gtch.lang.use.tachometer.to.measure"
+        , TOOL_TO_MEASURE_ELECTOMETER               = "gtch.lang.use.electrometer.to.measure"
+        , TOOL_TO_SET_MODE_MONKEY_WRENCH            = "gtch.lang.use.monkey.wrench.to.set.mode.side"
+        , TOOL_TO_SET_IO_MONKEY_WRENCH              = "gtch.lang.use.monkey.wrench.to.set.io.side"
+        , TRANSFORMER_NORMAL                        = "gtch.lang.transformer.normal"
+        , TRANSFORMER_REVERSED                      = "gtch.lang.transformer.reversed"
+        , HAZARD_EXPLOSION_LENGTH                   = "gtch.lang.hazard.explosion.motor.length"
+        , WIRE_STATS_RESISTANCE                     = "gtch.lang.wire.stats.resistance"
+        ;
 
     public static final String add(String aKey, String aEnglish) {LanguageHandler_CH.add(RegType.GTCH, aKey, aEnglish); return aKey;}
     public static final String add(RegType aRegType, String aKey, String aEnglish) {LanguageHandler_CH.add(aRegType, aKey, aEnglish); return aKey;}
@@ -55,11 +57,11 @@ public class LH_CH {
     
     // 用于避免重复代码，添加 prefix + material 的物品的语言文件
     public static void addOredict(OreDictPrefix aPrefix, OreDictMaterial aMaterial) {
-        if (aMaterial.mRegType==RegType.GREG && aPrefix.mRegType==RegType.GREG) LH.add("oredict." + aPrefix.dat(aMaterial).toString() + ".name", LanguageHandler.getLocalName(aPrefix, aMaterial));
+        if (aMaterial.mRegType==RegType.GREG && aPrefix.mRegType==RegType.GREG) LH.add("oredict." + aPrefix.dat(aMaterial).toString(), LanguageHandler.getLocalName(aPrefix, aMaterial));
         else {
             // 以 aPrefix 优先语言文件的位置
-            if (aPrefix.mRegType==RegType.GREG) LH_CH.add(aMaterial.mRegType, "oredict." + aPrefix.dat(aMaterial).toString() + ".name", LanguageHandler.getLocalName(aPrefix, aMaterial));
-            else LH_CH.add(aPrefix.mRegType, "oredict." + aPrefix.dat(aMaterial).toString() + ".name", LanguageHandler.getLocalName(aPrefix, aMaterial));
+            if (aPrefix.mRegType==RegType.GREG) LH_CH.add(aMaterial.mRegType, "oredict." + aPrefix.dat(aMaterial).toString(), LanguageHandler.getLocalName(aPrefix, aMaterial));
+            else LH_CH.add(aPrefix.mRegType, "oredict." + aPrefix.dat(aMaterial).toString(), LanguageHandler.getLocalName(aPrefix, aMaterial));
         }
     }
 
@@ -81,6 +83,8 @@ public class LH_CH {
         add(FACE_HEAT_TRANS,                            "Heat Transmitters");
         add(FACE_PIPE_HOLE,                             "Pipe Holes");
         add(TOOL_TO_DETAIL_MAGNIFYINGGLASS_SNEAK,       "Use Magnifying Glass in sneaking to see more Details");
+        add(TOOL_TO_MEASURE_TACHOMETER,                 "Use Tachometer to Measure");
+        add(TOOL_TO_MEASURE_ELECTOMETER,                "Use Electrometer to Measure");
         add(TOOL_TO_SET_MODE_MONKEY_WRENCH,             "Use Monkeywrench to Change Mode");
         add(TOOL_TO_SET_IO_MONKEY_WRENCH,               "Use Monkeywrench to set Input and Output Side");
         add(TRANSFORMER_NORMAL,                         "Normal Mode:");

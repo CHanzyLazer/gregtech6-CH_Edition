@@ -48,7 +48,6 @@ import vazkii.botania.api.subtile.SubTileEntity;
 
 import java.util.List;
 
-import static java.lang.Thread.sleep;
 import static gregapi.data.CS.*;
 
 /**

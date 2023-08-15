@@ -121,20 +121,14 @@ public class MultiTileEntityWireElectric extends TileEntityBase10ConnectorRender
 		super.writeToNBT2(aNBT);
 	}
 	
-	@Override
-	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
-		mCore.addToolTips(aList);
+	@Override protected void toolTipsDescribe(List<String> aList) {mCore.toolTipsDescribe(aList);}
+	@Override protected void toolTipsUseful(List<String> aList)  {mCore.toolTipsUseful(aList);}
+	@Override protected void toolTipsHazard(List<String> aList) {
 		if (mContactDamage) aList.add(LH.Chat.DRED     + LH.get(LH.HAZARD_CONTACT));
-		super.addToolTips(aList, aStack, aF3_H);
 	}
-	
-	@Override
-	public long onToolClick2(String aTool, long aRemainingDurability, long aQuality, Entity aPlayer, List<String> aChatReturn, IInventory aPlayerInventory, boolean aSneaking, ItemStack aStack, byte aSide, float aHitX, float aHitY, float aHitZ) {
-		if (aTool.equals(TOOL_electrometer) && isServerSide()) {
-			if (aChatReturn != null) aChatReturn.add(mWattageLast + " EU/t");
-			return 1;
-		}
-		return super.onToolClick2(aTool, aRemainingDurability, aQuality, aPlayer, aChatReturn, aPlayerInventory, aSneaking, aStack, aSide, aHitX, aHitY, aHitZ);
+	@Override protected void toolTipsOther(List<String> aList, ItemStack aStack, boolean aF3_H) {
+		super.toolTipsOther(aList, aStack, aF3_H);
+		mCore.toolTipsOther(aList);
 	}
 	
 	@Override public boolean breakBlock() {mCore.markUpdateManager(); return super.breakBlock();}

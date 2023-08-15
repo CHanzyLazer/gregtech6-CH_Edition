@@ -23,14 +23,12 @@ import gregapi.data.FL;
 import gregapi.data.MT;
 import gregapi.item.IItemReactorRod;
 import gregapi.network.INetworkHandler;
-import gregapi.network.IPacket;
 import gregapi.old.Textures;
 import gregapi.render.*;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.tileentity.machines.ITileEntitySwitchableMode;
 import gregapi.util.ST;
 import gregapi.util.UT;
-import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -38,31 +36,16 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 import static gregapi.data.CS.*;
-import static gregtechCH.data.CS_CH.NBT_IDMETA;
 
 /**
  * @author Gregorius Techneticies
  */
 public class MultiTileEntityReactorCore2x2 extends MultiTileEntityReactorCore implements ITileEntitySwitchableMode {
-	@Override
-	public void readFromNBT2(NBTTagCompound aNBT) {
-		super.readFromNBT2(aNBT);
-		oSlotIdMeta = new int[4];
-		for (int i = 0; i < oSlotIdMeta.length; ++i) oSlotIdMeta[i] = aNBT.getInteger(NBT_IDMETA+"."+i);
-	}
-	
-	@Override
-	public void writeToNBT2(NBTTagCompound aNBT) {
-		super.writeToNBT2(aNBT);
-		for (int i = 0; i < oSlotIdMeta.length; ++i) UT.NBT.setNumber(aNBT, NBT_IDMETA+"."+i, oSlotIdMeta[i]);
-	}
-	
 	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void onServerTickPost(boolean aFirst) {
@@ -424,15 +407,6 @@ public class MultiTileEntityReactorCore2x2 extends MultiTileEntityReactorCore im
 		new Textures.BlockIcons.CustomIcon("machines/generators/reactor_core_2x2/overlay/face1"),
 		new Textures.BlockIcons.CustomIcon("machines/generators/reactor_core_2x2/overlay/face2")
 	};
-	
-	private int[] oSlotIdMeta = ZL_INTEGER;
-	protected boolean checkInventory() {
-		for (int i = 0; i < oSlotIdMeta.length; ++i) if (oSlotIdMeta[i] != UT_CH.Code.combine(ST.id(slot(i)), ST.meta(slot(i)))) return T;
-		return F;
-	}
-	protected void inventoryChecked() {
-		for (int i = 0; i < oSlotIdMeta.length; ++i) oSlotIdMeta[i] = UT_CH.Code.combine(ST.id(slot(i)), ST.meta(slot(i)));
-	}
 	
 	@Override public ItemStack[] getDefaultInventory(NBTTagCompound aNBT) {return new ItemStack[4];}
 	@Override public int[] getAccessibleSlotsFromSide2(byte aSide) {return aSide == SIDE_DOWN || aSide == SIDE_TOP ? UT.Code.getAscendingArray(4) : ZL_INTEGER;}

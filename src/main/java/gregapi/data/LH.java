@@ -274,7 +274,7 @@ public class LH {
 			return LH.Chat.DGRAY + "Hand-Harvestable";
 		}
 		if (UT.Code.stringValid(aHarvestTool)) {
-			if (aHarvestLevel > 1) switch (aHarvestLevel) {
+			if (aHarvestLevel > 0) switch (aHarvestLevel) {
 			case  1: return LH.Chat.DGRAY + LH.get(LH.TOOL_TO_HARVEST) + ": " + LH.Chat.WHITE + LH.get(TOOL_LOCALISER_PREFIX + aHarvestTool, UT.Code.capitalise(aHarvestTool)) + " ("+aHarvestLevel+", "+MT.Stone.getLocal()+")";
 			case  2: return LH.Chat.DGRAY + LH.get(LH.TOOL_TO_HARVEST) + ": " + LH.Chat.WHITE + LH.get(TOOL_LOCALISER_PREFIX + aHarvestTool, UT.Code.capitalise(aHarvestTool)) + " ("+aHarvestLevel+", "+MT.Fe.getLocal()+")";
 			case  3: return LH.Chat.DGRAY + LH.get(LH.TOOL_TO_HARVEST) + ": " + LH.Chat.WHITE + LH.get(TOOL_LOCALISER_PREFIX + aHarvestTool, UT.Code.capitalise(aHarvestTool)) + " ("+aHarvestLevel+", "+MT.Diamond.getLocal()+")";

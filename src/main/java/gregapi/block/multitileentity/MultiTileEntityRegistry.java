@@ -459,9 +459,9 @@ public class MultiTileEntityRegistry {
 		rContainer.mTileEntity.setWorldObj(aWorld);
 		// 由于还会从 nbt 中读取坐标，所以原本直接设置是无效的，必须要直接设置到 nbt 中（需要注意即使这样也不能保证坐标是一定准确的）
 		NBTTagCompound tNBT = aNBT == null || aNBT.hasNoTags() ? tClass.mParameters : UT.NBT.fuse(aNBT, tClass.mParameters);
-		tNBT.setInteger("x", aX);
-		tNBT.setInteger("y", aY);
-		tNBT.setInteger("z", aZ);
+		UT.NBT.setNumber(tNBT, "x", aX);
+		UT.NBT.setNumber(tNBT, "y", aY);
+		UT.NBT.setNumber(tNBT, "z", aZ);
 		((IMultiTileEntity)rContainer.mTileEntity).initFromNBT(tNBT, (short)aID, (short)Block.getIdFromBlock(mBlock));
 		return rContainer;
 	}

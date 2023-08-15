@@ -28,7 +28,6 @@ import gregapi.render.*;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.util.ST;
 import gregapi.util.UT;
-import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -36,29 +35,16 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 import static gregapi.data.CS.*;
-import static gregtechCH.data.CS_CH.NBT_IDMETA;
 
 /**
  * @author Gregorius Techneticies
  */
 public class MultiTileEntityReactorCore1x1 extends MultiTileEntityReactorCore {
-	@Override
-	public void readFromNBT2(NBTTagCompound aNBT) {
-		super.readFromNBT2(aNBT);
-		oSlotIdMeta = aNBT.getInteger(NBT_IDMETA);
-	}
-	
-	@Override
-	public void writeToNBT2(NBTTagCompound aNBT) {
-		super.writeToNBT2(aNBT);
-		UT.NBT.setNumber(aNBT, NBT_IDMETA, oSlotIdMeta);
-	}
 	
 	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -361,10 +347,6 @@ public class MultiTileEntityReactorCore1x1 extends MultiTileEntityReactorCore {
 		new Textures.BlockIcons.CustomIcon("machines/generators/reactor_core_1x1/overlay/face1"),
 		new Textures.BlockIcons.CustomIcon("machines/generators/reactor_core_1x1/overlay/face2")
 	};
-	
-	private int oSlotIdMeta = 0;
-	protected boolean checkInventory() {return oSlotIdMeta != UT_CH.Code.combine(ST.id(slot(0)), ST.meta(slot(0)));}
-	protected void inventoryChecked() {oSlotIdMeta = UT_CH.Code.combine(ST.id(slot(0)), ST.meta(slot(0)));}
 	
 	@Override public ItemStack[] getDefaultInventory(NBTTagCompound aNBT) {return new ItemStack[1];}
 	@Override public int[] getAccessibleSlotsFromSide2(byte aSide) {return aSide == SIDE_DOWN || aSide == SIDE_TOP ? UT.Code.getAscendingArray(1) : ZL_INTEGER;}

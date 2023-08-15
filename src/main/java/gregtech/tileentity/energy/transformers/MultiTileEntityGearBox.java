@@ -107,7 +107,7 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 		aList.add(Chat.DGRAY + LH_CH.get(LH_CH.TOOL_TO_SET_IO_MONKEY_WRENCH));
 		aList.add(Chat.DGRAY + LH.get(LH.TOOL_TO_TOGGLE_SOFT_HAMMER));
 		aList.add(Chat.DGRAY + LH.get(LH.TOOL_TO_DETAIL_MAGNIFYINGGLASS));
-		aList.add(Chat.DGRAY + LH_CH.get(LH_CH.TOOL_TO_DETAIL_MAGNIFYINGGLASS_SNEAK));
+		aList.add(Chat.DGRAY + LH_CH.get(LH_CH.TOOL_TO_MEASURE_TACHOMETER));
 	}
 	
 	@Override
@@ -191,18 +191,6 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 			return 10000;
 		}
 		
-		if (aTool.equals(TOOL_magnifyingglass) && aSneaking) {
-			mGearsWork = checkGears();
-			if (mGearsWork  && !mJammed) {
-				if (aChatReturn != null) {
-					aChatReturn.add("Speed: " + Math.abs(mSpeedLast));
-					aChatReturn.add("Power: " + mPowerLast);
-				}
-			} else {
-				if (aChatReturn != null) aChatReturn.add("Inactive");
-			}
-			return 1;
-		}
 		if (aTool.equals(TOOL_magnifyingglass)) {
 			mGearsWork = checkGears();
 			if (aChatReturn != null) {
@@ -231,7 +219,12 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 				if (FACE_CONNECTED[3][mAxleGear & 63] || AXIS_XYZ[(mAxleGear >>> 6) & 3][3]) aChatReturn.add(FACE_CONNECTED[3][mInputtedSides] ? "Accepts from South"  : "Emits to South");
 				if (FACE_CONNECTED[4][mAxleGear & 63] || AXIS_XYZ[(mAxleGear >>> 6) & 3][4]) aChatReturn.add(FACE_CONNECTED[4][mInputtedSides] ? "Accepts from West"   : "Emits to West");
 				if (FACE_CONNECTED[5][mAxleGear & 63] || AXIS_XYZ[(mAxleGear >>> 6) & 3][5]) aChatReturn.add(FACE_CONNECTED[5][mInputtedSides] ? "Accepts from East"   : "Emits to East");
-				aChatReturn.add(mTransferredLast + " RU/t");
+				
+				if (mTransferredLast > 0) {
+					aChatReturn.add(String.format("%d RU/t (Speed: %d, Power: %d)", mTransferredLast, Math.abs(mSpeedLast), mPowerLast));
+				} else {
+					aChatReturn.add("No transferred energy");
+				}
 			}
 			return 1;
 		}

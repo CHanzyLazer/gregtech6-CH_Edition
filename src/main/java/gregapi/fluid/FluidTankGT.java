@@ -290,7 +290,7 @@ public class FluidTankGT implements IFluidTank {
 	/** Sets Fluid Content and Amount */
 	public FluidTankGT setFluid(FluidStack aFluid, long aAmount) {
 		if (aFluid == null) return setEmpty();
-		if (!mFixedFluid || contains(aTank.mFluid)) {
+		if (!mFixedFluid || contains(aFluid)) {
 			if (!FL.equal(mFluid, aFluid)) mChangedFluids = T;
 			mFluid  = aFluid;
 			mAmount = aAmount;
@@ -368,7 +368,7 @@ public class FluidTankGT implements IFluidTank {
 	public FluidStack make(int aAmount) {return FL.make(fluid(), aAmount);}
 	
 	public FluidStack get() {return mFluid;}
-	public FluidStack get(long aMax) {return mFluid == null || aMax <= 0 ? null : new FluidStack(mFluid, UT.Code.bindInt(mAmount < aMax ? mAmount : aMax));}
+	public FluidStack get(long aMax) {return mFluid == null || aMax <= 0 ? null : new FluidStack(mFluid, UT.Code.bindInt(Math.min(mAmount, aMax)));}
 	
 	@Override public FluidStack getFluid() {if (mFluid != null) mFluid.amount = UT.Code.bindInt(mAmount); return mFluid;}
 	@Override public int getFluidAmount() {return UT.Code.bindInt(mAmount);}

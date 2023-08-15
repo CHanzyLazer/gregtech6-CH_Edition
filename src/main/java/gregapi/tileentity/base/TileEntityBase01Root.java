@@ -134,11 +134,17 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 	@Override
 	public void readFromNBT(NBTTagCompound aNBT) {
 		// load ID and Coords
-		if (aNBT.hasKey("x")) xCoord = aNBT.getInteger("x");
-		if (aNBT.hasKey("y")) yCoord = aNBT.getInteger("y");
-		if (aNBT.hasKey("z")) zCoord = aNBT.getInteger("z");
+		xCoord = aNBT.getInteger("x");
+		yCoord = aNBT.getInteger("y");
+		zCoord = aNBT.getInteger("z");
 		// make sure Y is not negative because this causes crashes.
 		if (yCoord < 0) WD.invalidateTileEntityWithNegativeYCoord(xCoord, yCoord, zCoord, this);
+		
+		// GTCH, 仅服务端加入计划，因为不好加入世界加载和区块加载时的载入，为了避免客户端卡顿只向服务端加入计划
+		if (isServerSide() && this instanceof IMTEScheduledUpdate_CH) {
+			pushScheduled(T, (IMTEScheduledUpdate_CH)this);
+			mMarkNBTFinished = T;
+		}
 	}
 	
 	@Override
@@ -147,9 +153,9 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 		if (yCoord < 0) WD.invalidateTileEntityWithNegativeYCoord(xCoord, yCoord, zCoord, this);
 		// save ID and Coords
 		aNBT.setString("id", getTileEntityName());
-		aNBT.setInteger("x", xCoord);
-		aNBT.setInteger("y", yCoord);
-		aNBT.setInteger("z", zCoord);
+		UT.NBT.setNumber(aNBT, "x", xCoord);
+		UT.NBT.setNumber(aNBT, "y", yCoord);
+		UT.NBT.setNumber(aNBT, "z", zCoord);
 	}
 	
 	/** return the internal Name of this TileEntity to be registered. DO NOT START YOUR NAME WITH "gt."!!! */
@@ -473,16 +479,6 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 	}
 	// 用来标记 NBT 设置完成，然后在初始化方块完全结束后再去调用
 	private boolean mMarkNBTFinished = F;
-	// GTCH, 添加这个方法来统一执行，避免重复代码
-	@Override
-	public void readFromNBT(NBTTagCompound aNBT) {
-		super.readFromNBT(aNBT);
-		// 仅服务端加入计划，因为不好加入世界加载和区块加载时的载入，为了避免客户端卡顿只向服务端加入计划
-		if (isServerSide() && this instanceof IMTEScheduledUpdate_CH) {
-			pushScheduled(T, (IMTEScheduledUpdate_CH)this);
-			mMarkNBTFinished = T;
-		}
-	}
 	
 	@Override
 	public long getTimer() {

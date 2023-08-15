@@ -96,7 +96,6 @@ public abstract class TileEntityBase03MultiTileEntities extends TileEntityBase02
 	
 	@Override
 	public final void readFromNBT(NBTTagCompound aNBT) {
-		super.readFromNBT(aNBT);
 		// Check if this is a World/Chunk Loading Process calling readFromNBT.
 		if (mMTEID == W || mMTERegistry == W) {
 			// Yes it is, so read the ID Tags first.
@@ -112,12 +111,8 @@ public abstract class TileEntityBase03MultiTileEntities extends TileEntityBase02
 				}
 			}
 		}
-		// read the Coords if it has them.
-		if (aNBT.hasKey("x")) xCoord = aNBT.getInteger("x");
-		if (aNBT.hasKey("y")) yCoord = aNBT.getInteger("y");
-		if (aNBT.hasKey("z")) zCoord = aNBT.getInteger("z");
-		// make sure Y is not negative because this causes crashes.
-		if (yCoord < 0) WD.invalidateTileEntityWithNegativeYCoord(xCoord, yCoord, zCoord, this);
+		// read the Coords and so on
+		super.readFromNBT(aNBT);
 		// read the custom Name.
 		if (aNBT.hasKey("display")) mCustomName = aNBT.getCompoundTag("display").getString("Name");
 		// And now your custom readFromNBT.

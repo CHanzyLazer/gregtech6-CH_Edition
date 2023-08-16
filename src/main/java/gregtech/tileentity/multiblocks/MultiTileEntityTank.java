@@ -19,7 +19,6 @@
 
 package gregtech.tileentity.multiblocks;
 
-import gregapi.data.CS.*;
 import gregapi.data.FL;
 import gregapi.data.LH;
 import gregapi.data.LH.Chat;

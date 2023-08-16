@@ -134,9 +134,9 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 	@Override
 	public void readFromNBT(NBTTagCompound aNBT) {
 		// load ID and Coords
-		xCoord = aNBT.getInteger("x");
-		yCoord = aNBT.getInteger("y");
-		zCoord = aNBT.getInteger("z");
+		if (aNBT.hasKey("x")) xCoord = aNBT.getInteger("x");
+		if (aNBT.hasKey("y")) yCoord = aNBT.getInteger("y");
+		if (aNBT.hasKey("z")) zCoord = aNBT.getInteger("z");
 		// make sure Y is not negative because this causes crashes.
 		if (yCoord < 0) WD.invalidateTileEntityWithNegativeYCoord(xCoord, yCoord, zCoord, this);
 		
@@ -153,9 +153,9 @@ public abstract class TileEntityBase01Root extends TileEntity implements ITileEn
 		if (yCoord < 0) WD.invalidateTileEntityWithNegativeYCoord(xCoord, yCoord, zCoord, this);
 		// save ID and Coords
 		aNBT.setString("id", getTileEntityName());
-		UT.NBT.setNumber(aNBT, "x", xCoord);
-		UT.NBT.setNumber(aNBT, "y", yCoord);
-		UT.NBT.setNumber(aNBT, "z", zCoord);
+		aNBT.setInteger("x", xCoord);
+		aNBT.setInteger("y", yCoord);
+		aNBT.setInteger("z", zCoord);
 	}
 	
 	/** return the internal Name of this TileEntity to be registered. DO NOT START YOUR NAME WITH "gt."!!! */

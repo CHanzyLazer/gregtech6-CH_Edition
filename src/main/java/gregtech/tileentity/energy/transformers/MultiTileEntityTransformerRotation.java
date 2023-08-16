@@ -47,7 +47,7 @@ public class MultiTileEntityTransformerRotation extends TileEntityBase09FacingSi
         if (aNBT.hasKey(NBT_ENERGY)) mEnergy = aNBT.getLong(NBT_ENERGY);
         if (aNBT.hasKey(NBT_STOPPED)) mStopped = aNBT.getBoolean(NBT_STOPPED);
         if (aNBT.hasKey(NBT_REVERSED)) mReversed = aNBT.getBoolean(NBT_REVERSED);
-        if (aNBT.hasKey(NBT_REVERSED)) mCounterClockwise = aNBT.getBoolean(NBT_REVERSED);
+        if (aNBT.hasKey(NBT_REVERSED+".rotation")) mCounterClockwise = aNBT.getBoolean(NBT_REVERSED+".rotation");
         
         if (aNBT.hasKey(NBT_OUTPUT)) mRate = aNBT.getLong(NBT_OUTPUT);
         if (aNBT.hasKey(NBT_MULTIPLIER)) mMultiplier = aNBT.getLong(NBT_MULTIPLIER);
@@ -60,7 +60,7 @@ public class MultiTileEntityTransformerRotation extends TileEntityBase09FacingSi
         UT.NBT.setNumber(aNBT, NBT_ENERGY, mEnergy);
         UT.NBT.setBoolean(aNBT, NBT_STOPPED, mStopped);
         UT.NBT.setBoolean(aNBT, NBT_REVERSED, mReversed);
-        UT.NBT.setBoolean(aNBT, NBT_REVERSED, mCounterClockwise);
+        UT.NBT.setBoolean(aNBT, NBT_REVERSED+".rotation", mCounterClockwise);
     }
     
     // tooltips

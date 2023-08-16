@@ -205,7 +205,7 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 					if (FACE_CONNECTED[aTargetSide][mDisabledOutputs]) {
 						aChatReturn.add("Only Accept energy from Selected Side");
 					} else {
-						aChatReturn.add("Accept and Emit energy from Selected Side");
+						aChatReturn.add("Accept and Emit energy from Selected Side (if possible)");
 					}
 				}
 			}
@@ -214,6 +214,14 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 		if (aTool.equals(TOOL_tachometer)) {
 			if (aChatReturn != null) {
 				if (mTransferredLast > 0) {
+					byte tSide = UT.Code.getSideWrenching(aSide, aHitX, aHitY, aHitZ);
+					if (FACE_CONNECTED[tSide][mAxleGear & 63]) {
+						long tSideSpeed = (mRotationData & B[tSide])!=0 ? +mSpeedLast : -mSpeedLast;
+						aChatReturn.add(tSideSpeed<0 ? "Counterclockwise of Selected Side" : "Clockwise of Selected Side");
+					} else if (AXIS_XYZ[(mAxleGear >>> 6) & 3][tSide] && FACE_CONNECTED[OPOS[tSide]][mAxleGear & 63]) {
+						long tSideSpeed = (mRotationData & B[OPOS[tSide]])==0 ? +mSpeedLast : -mSpeedLast;
+						aChatReturn.add(tSideSpeed<0 ? "Counterclockwise of Selected Side" : "Clockwise of Selected Side");
+					}
 					aChatReturn.add(String.format("%d RU/t (Speed: %d, Power: %d)", mTransferredLast, Math.abs(mSpeedLast), mPowerLast));
 				} else {
 					aChatReturn.add("No transferred energy");
@@ -475,7 +483,7 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 	@Override public long getEnergySizeInputMax         (TagData aEnergyType, byte aSide) {return mMaxThroughPut;}
 	@Override public Collection<TagData> getEnergyTypes(byte aSide) {return TD.Energy.RU.AS_LIST;}
 	
-	@Override public boolean isUsingWrenchingOverlay(ItemStack aStack, byte aSide) {return super.isUsingWrenchingOverlay(aStack, aSide) || ToolsGT.contains(TOOL_wrench, aStack) || ToolsGT.contains(TOOL_monkeywrench, aStack);}
+	@Override public boolean isUsingWrenchingOverlay(ItemStack aStack, byte aSide) {return super.isUsingWrenchingOverlay(aStack, aSide) || ToolsGT.contains(TOOL_wrench, aStack) || ToolsGT.contains(TOOL_monkeywrench, aStack) || ToolsGT.contains(TOOL_tachometer, aStack);}
 	@Override public boolean isConnectedWrenchingOverlay(ItemStack aStack, byte aSide) {return FACE_CONNECTED[aSide][mAxleGear & 63];}
 	
 	@Override public boolean canDrop(int aInventorySlot) {return F;}

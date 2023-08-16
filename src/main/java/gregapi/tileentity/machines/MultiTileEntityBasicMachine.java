@@ -54,7 +54,6 @@ import gregtechCH.tileentity.connectors.ITEInterceptModConnectItem;
 import gregtechCH.tileentity.cores.basicmachines.IMTEC_BasicMachine;
 import gregtechCH.tileentity.cores.IMTEC_ToolTips;
 import gregtechCH.tileentity.cores.basicmachines.IMTEC_HasBasicMachine;
-import gregtechCH.tileentity.cores.basicmachines.MTEC_BasicMachine_Greg;
 import gregtechCH.tileentity.cores.basicmachines.MTEC_BasicMachine;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;

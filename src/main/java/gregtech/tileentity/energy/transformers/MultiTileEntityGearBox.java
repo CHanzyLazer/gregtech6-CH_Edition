@@ -41,6 +41,7 @@ import gregapi.util.OM;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregtechCH.data.LH_CH;
+import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -169,6 +170,7 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 				mDisabledOutputs |= B[aTargetSide];
 				mDisabledInputs  &= ~B[aTargetSide];
 				if (aChatReturn != null) aChatReturn.add("Only Accept energy from Selected Side");
+				updateClientData();
 				return 2500;
 			}
 			if (FACE_CONNECTED[aTargetSide][mDisabledOutputs]) {
@@ -176,12 +178,14 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 				mDisabledOutputs &= ~B[aTargetSide];
 				mDisabledInputs  &= ~B[aTargetSide];
 				if (aChatReturn != null) aChatReturn.add("Accept and Emit energy from Selected Side");
+				updateClientData();
 				return 2500;
 			}
 			// 转为限制只能输出
 			mDisabledOutputs &= ~B[aTargetSide];
 			mDisabledInputs  |= B[aTargetSide];
 			if (aChatReturn != null) aChatReturn.add("Only Emit energy from Selected Side");
+			updateClientData();
 			return 2500;
 		}
 		if (aTool.equals(TOOL_softhammer)) {
@@ -217,11 +221,9 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 				if (mTransferredLast > 0) {
 					byte tSide = UT.Code.getSideWrenching(aSide, aHitX, aHitY, aHitZ);
 					if (FACE_CONNECTED[tSide][mAxleGear & 63]) {
-						long tSideSpeed = (mRotationData & B[tSide])!=0 ? +mSpeedLast : -mSpeedLast;
-						aChatReturn.add(tSideSpeed<0 ? "Counterclockwise of Selected Side" : "Clockwise of Selected Side");
+						aChatReturn.add((mRotationData & B[tSide])==0 ? "Counterclockwise of Selected Side" : "Clockwise of Selected Side");
 					} else if (AXIS_XYZ[(mAxleGear >>> 6) & 3][tSide] && FACE_CONNECTED[OPOS[tSide]][mAxleGear & 63]) {
-						long tSideSpeed = (mRotationData & B[OPOS[tSide]])==0 ? +mSpeedLast : -mSpeedLast;
-						aChatReturn.add(tSideSpeed<0 ? "Counterclockwise of Selected Side" : "Clockwise of Selected Side");
+						aChatReturn.add((mRotationData & B[OPOS[tSide]])!=0 ? "Counterclockwise of Selected Side" : "Clockwise of Selected Side");
 					}
 					aChatReturn.add(String.format("%d RU/t (Speed: %d, Power: %d)", mTransferredLast, Math.abs(mSpeedLast), mPowerLast));
 				} else {
@@ -255,7 +257,7 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 						// GTCH，限制输出
 						if (!FACE_CONNECTED[tSide][mInputtedSides] && !FACE_CONNECTED[tSide][mDisabledOutputs]) {
 							if (FACE_CONNECTED[tSide][mAxleGear & 63]) {
-								long tUsed = ITileEntityEnergy.Util.insertEnergyInto(TD.Energy.RU, (mRotationData & B[          tSide ]) != 0 ? +mCurrentSpeed : -mCurrentSpeed, tUsable, this, getAdjacentTileEntity(tSide));
+								long tUsed = ITileEntityEnergy.Util.insertEnergyInto(TD.Energy.RU, (mRotationData & B[tSide]) != 0 ? +mCurrentSpeed : -mCurrentSpeed, tUsable, this, getAdjacentTileEntity(tSide));
 								if (tUsed > 0) {
 									mCurrentPower -= tUsed;
 									if (mCurrentPower <= 0) {temp = F; break;}
@@ -377,16 +379,21 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 	public void writeToClientDataPacketByteList(@NotNull List<Byte> rList) {
 		super.writeToClientDataPacketByteList(rList);
 		rList.add(4, (byte)mAxleGear);
+		rList.add(5, mDisabledOutputs);
+		rList.add(6, mDisabledInputs);
 	}
 	
 	@Override
 	public boolean receiveDataByteArray(byte[] aData, INetworkHandler aNetworkHandler) {
 		super.receiveDataByteArray(aData, aNetworkHandler);
 		mAxleGear = UT.Code.unsignB(aData[4]);
+		mDisabledOutputs = aData[5];
+		mDisabledInputs = aData[6];
 		return T;
 	}
 	
 	public ITexture mTextureGearA, mTextureAxleGearA, mTextureGearB, mTextureAxleGearB, mTexture, mTextureAxle;
+	private ITexture mTextureMarkerIn, mTextureMarkerOut;
 	
 	@Override
 	public int getRenderPasses2(Block aBlock, boolean[] aShouldSideBeRendered) {
@@ -396,11 +403,19 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 		mTextureAxleGearA = BlockTextureMulti.get(mTextureAxle, BlockTextureDefault.get((mRotationData & B[6]) == 0 ? Textures.BlockIcons.GEAR : Textures.BlockIcons.GEAR_CLOCKWISE       , mRGBa));
 		mTextureGearB     = BlockTextureMulti.get(mTexture    , BlockTextureDefault.get((mRotationData & B[6]) == 0 ? Textures.BlockIcons.GEAR : Textures.BlockIcons.GEAR_COUNTERCLOCKWISE, mRGBa));
 		mTextureAxleGearB = BlockTextureMulti.get(mTextureAxle, BlockTextureDefault.get((mRotationData & B[6]) == 0 ? Textures.BlockIcons.GEAR : Textures.BlockIcons.GEAR_COUNTERCLOCKWISE, mRGBa));
+		
+		int tRGBaMark = UT_CH.Code.getMarkRGB(mRGBa);
+		mTextureMarkerIn  = BlockTextureDefault.get(Textures.BlockIcons.ARROW_IN , tRGBaMark);
+		mTextureMarkerOut = BlockTextureDefault.get(Textures.BlockIcons.ARROW_OUT, tRGBaMark);
 		return 1;
 	}
 	
 	@Override
 	public ITexture getTexture2(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
+		ITexture tTexture = getTexture3(aBlock, aRenderPass, aSide, aShouldSideBeRendered);
+		return tTexture==null ? null : (FACE_CONNECTED[aSide][mDisabledInputs] ? BlockTextureMulti.get(tTexture, mTextureMarkerOut) : (FACE_CONNECTED[aSide][mDisabledOutputs] ? BlockTextureMulti.get(tTexture, mTextureMarkerIn) : tTexture));
+	}
+	protected ITexture getTexture3(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
 		return aShouldSideBeRendered[aSide] ? FACE_CONNECTED[aSide][mAxleGear & 63] ? FACE_CONNECTED[aSide][mRotationData & 63] ? AXIS_XYZ[(mAxleGear >>> 6) & 3][aSide]?mTextureAxleGearA:mTextureGearA : AXIS_XYZ[(mAxleGear >>> 6) & 3][aSide]?mTextureAxleGearB:mTextureGearB : AXIS_XYZ[(mAxleGear >>> 6) & 3][aSide]?mTextureAxle:mTexture : null;
 	}
 	
@@ -434,7 +449,7 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 		}
 		
 		// Free Axle means it is always a Passthrough.
-		if (AXIS_XYZ[(mAxleGear >>> 6) & 3][aSide] && !FACE_CONNECTED[aSide][mAxleGear & 63] && !FACE_CONNECTED[OPOS[aSide]][mAxleGear & 63]) {
+		if (AXIS_XYZ[(mAxleGear >>> 6) & 3][aSide] && !FACE_CONNECTED[aSide][mAxleGear & 63] && !FACE_CONNECTED[OPOS[aSide]][mAxleGear & 63] && !FACE_CONNECTED[aSide][mDisabledOutputs]) {
 			return ITileEntityEnergy.Util.insertEnergyInto(TD.Energy.RU, aSpeed, aPower, this, getAdjacentTileEntity(OPOS[aSide]));
 		}
 		

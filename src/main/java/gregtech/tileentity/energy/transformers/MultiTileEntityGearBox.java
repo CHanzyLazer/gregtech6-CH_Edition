@@ -166,25 +166,46 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 		if (aTool.equals(TOOL_monkeywrench)) {
 			byte aTargetSide = UT.Code.getSideWrenching(aSide, aHitX, aHitY, aHitZ);
 			if (FACE_CONNECTED[aTargetSide][mDisabledInputs]) {
-				// 转为限制只能输入
-				mDisabledOutputs |= B[aTargetSide];
-				mDisabledInputs  &= ~B[aTargetSide];
-				if (aChatReturn != null) aChatReturn.add("Only Accept energy from Selected Side");
+				if (aSneaking) {
+					// 复位输入输出限制
+					mDisabledOutputs &= ~B[aTargetSide];
+					mDisabledInputs  &= ~B[aTargetSide];
+					if (aChatReturn != null) aChatReturn.add("Accept and Emit energy from Selected Side");
+				} else {
+					// 转为限制只能输入
+					mDisabledOutputs |= B[aTargetSide];
+					mDisabledInputs  &= ~B[aTargetSide];
+					if (aChatReturn != null) aChatReturn.add("Only Accept energy from Selected Side");
+				}
 				updateClientData();
 				return 2500;
 			}
 			if (FACE_CONNECTED[aTargetSide][mDisabledOutputs]) {
-				// 复位输入输出限制
-				mDisabledOutputs &= ~B[aTargetSide];
-				mDisabledInputs  &= ~B[aTargetSide];
-				if (aChatReturn != null) aChatReturn.add("Accept and Emit energy from Selected Side");
+				if (aSneaking) {
+					// 转为限制只能输出
+					mDisabledOutputs &= ~B[aTargetSide];
+					mDisabledInputs  |= B[aTargetSide];
+					if (aChatReturn != null) aChatReturn.add("Only Emit energy from Selected Side");
+				} else {
+					// 复位输入输出限制
+					mDisabledOutputs &= ~B[aTargetSide];
+					mDisabledInputs  &= ~B[aTargetSide];
+					if (aChatReturn != null) aChatReturn.add("Accept and Emit energy from Selected Side");
+				}
 				updateClientData();
 				return 2500;
 			}
-			// 转为限制只能输出
-			mDisabledOutputs &= ~B[aTargetSide];
-			mDisabledInputs  |= B[aTargetSide];
-			if (aChatReturn != null) aChatReturn.add("Only Emit energy from Selected Side");
+			if (aSneaking) {
+				// 转为限制只能输入
+				mDisabledOutputs |= B[aTargetSide];
+				mDisabledInputs  &= ~B[aTargetSide];
+				if (aChatReturn != null) aChatReturn.add("Only Accept energy from Selected Side");
+			} else {
+				// 转为限制只能输出
+				mDisabledOutputs &= ~B[aTargetSide];
+				mDisabledInputs  |= B[aTargetSide];
+				if (aChatReturn != null) aChatReturn.add("Only Emit energy from Selected Side");
+			}
 			updateClientData();
 			return 2500;
 		}
@@ -204,6 +225,13 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 			byte aTargetSide = UT.Code.getSideWrenching(aSide, aHitX, aHitY, aHitZ);
 			if (!isCovered(aTargetSide)) {
 				if (aChatReturn != null) {
+					if (mTransferredLast > 0) {
+						if (FACE_CONNECTED[aTargetSide][mAxleGear & 63]) {
+							aChatReturn.add((mRotationData & B[aTargetSide])==0 ? "Counterclockwise of Selected Side" : "Clockwise of Selected Side");
+						} else if (AXIS_XYZ[(mAxleGear >>> 6) & 3][aTargetSide] && FACE_CONNECTED[OPOS[aTargetSide]][mAxleGear & 63]) {
+							aChatReturn.add((mRotationData & B[OPOS[aTargetSide]])!=0 ? "Counterclockwise of Selected Side" : "Clockwise of Selected Side");
+						}
+					}
 					if (FACE_CONNECTED[aTargetSide][mDisabledInputs]) {
 						aChatReturn.add("Only Emit energy from Selected Side");
 					} else
@@ -217,19 +245,7 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 			return 1;
 		}
 		if (aTool.equals(TOOL_tachometer)) {
-			if (aChatReturn != null) {
-				if (mTransferredLast > 0) {
-					byte tSide = UT.Code.getSideWrenching(aSide, aHitX, aHitY, aHitZ);
-					if (FACE_CONNECTED[tSide][mAxleGear & 63]) {
-						aChatReturn.add((mRotationData & B[tSide])==0 ? "Counterclockwise of Selected Side" : "Clockwise of Selected Side");
-					} else if (AXIS_XYZ[(mAxleGear >>> 6) & 3][tSide] && FACE_CONNECTED[OPOS[tSide]][mAxleGear & 63]) {
-						aChatReturn.add((mRotationData & B[OPOS[tSide]])!=0 ? "Counterclockwise of Selected Side" : "Clockwise of Selected Side");
-					}
-					aChatReturn.add(String.format("%d RU/t (Speed: %d, Power: %d)", mTransferredLast, Math.abs(mSpeedLast), mPowerLast));
-				} else {
-					aChatReturn.add("No transferred energy");
-				}
-			}
+			if (aChatReturn != null) aChatReturn.add(mTransferredLast>0 ? String.format("%d RU/t (Speed: %d, Power: %d)", mTransferredLast, Math.abs(mSpeedLast), mPowerLast) : "No transferred energy");
 			return 1;
 		}
 		return 0;

@@ -126,7 +126,7 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 			byte aTargetSide = UT.Code.getSideWrenching(aSide, aHitX, aHitY, aHitZ);
 			if (connected(aTargetSide)) {
 				mEnergyDir = (mEnergyDir == aTargetSide) ? SIDE_ANY : aTargetSide;
-//				if (aChatReturn != null) aChatReturn.add(mEnergyDir == SIDE_ANY?"Can transfer energy to both sides":"Only transfer energy to Selected Side");
+				if (aChatReturn != null) aChatReturn.add(mEnergyDir==SIDE_ANY ? "Can transfer energy to both sides" : "Only transfer energy to Selected Side");
 				return 2500;
 			} else {
 				return 0;
@@ -139,19 +139,13 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 				mOutMark = T;
 			}
 			if (aChatReturn != null) {
-				aChatReturn.add((mEnergyDir == SIDE_ANY)?"Can transfer energy to both sides":"Only transfer energy to Marked Side");
+				if (mTransferredLast > 0) aChatReturn.add(mSpeedLast<0 ? "Counterclockwise" : "Clockwise");
+				aChatReturn.add((mEnergyDir==SIDE_ANY) ? "Can transfer energy to both sides" : "Only transfer energy to Marked Side");
 			}
 			return 1;
 		}
 		if (aTool.equals(TOOL_tachometer)) {
-			if (aChatReturn != null) {
-				if (mTransferredLast > 0) {
-					aChatReturn.add(mSpeedLast<0 ? "Counterclockwise" : "Clockwise");
-					aChatReturn.add(String.format("%d RU/t (Speed: %d, Power: %d)", mTransferredLast, Math.abs(mSpeedLast), mPowerLast));
-				} else {
-					aChatReturn.add("No transferred energy");
-				}
-			}
+			if (aChatReturn != null) aChatReturn.add(mTransferredLast>0 ? String.format("%d RU/t (Speed: %d, Power: %d)", mTransferredLast, Math.abs(mSpeedLast), mPowerLast) : "No transferred energy");
 			return 1;
 		}
 		return 0;

@@ -164,8 +164,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 			oAmounts = new long[tTankCount];
 			for (int i = 0; i < tTankCount; ++i) oAmounts[i] = aNBT.getLong(NBT_TANK+".o."+i);
 			mInBuffers.clear();
-			for (int i = 0; i < tTankCount; ++i)
-				mInBuffers.add(aNBT.hasKey(NBT_INPUT_BUFFER +"."+i) ? UT_CH.STL.toList(UT_CH.NBT.getNumberArray(aNBT, NBT_INPUT_BUFFER +"."+i), BUFFER_LENGTH) : new LinkedList<Long>());
+			for (int i = 0; i < tTankCount; ++i) mInBuffers.add(aNBT.hasKey(NBT_INPUT_BUFFER +"."+i) ? UT_CH.STL.toList(UT_CH.NBT.getNumberArray(aNBT, NBT_INPUT_BUFFER +"."+i), BUFFER_LENGTH) : new LinkedList<>());
 			
 			mTanks = new FluidTankGT[tTankCount];
 			mLastReceivedFrom = new byte[mTanks.length];
@@ -183,7 +182,7 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 			oAmounts = new long[1];
 			oAmounts[0] = aNBT.getLong(NBT_TANK+".o."+0);
 			mInBuffers.clear();
-			mInBuffers.add(aNBT.hasKey(NBT_INPUT_BUFFER +"."+0) ? UT_CH.STL.toList(UT_CH.NBT.getNumberArray(aNBT, NBT_INPUT_BUFFER +"."+0), BUFFER_LENGTH) : new LinkedList<Long>());
+			mInBuffers.add(aNBT.hasKey(NBT_INPUT_BUFFER +"."+0) ? UT_CH.STL.toList(UT_CH.NBT.getNumberArray(aNBT, NBT_INPUT_BUFFER +"."+0), BUFFER_LENGTH) : new LinkedList<>());
 			
 			mTanks = new FluidTankGT(aNBT, NBT_TANK+".0", tCapacity).AS_ARRAY;
 			
@@ -379,10 +378,9 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 			if (aChatReturn != null) {
 				aChatReturn.add(mFlowControl?"Stable Flow Rate":"Unstable Flow Rate");
 				switch (mFluidMode) {
-					case LIMIT: aChatReturn.add("Limit Mode, Only output to Marked Side");break;
-					case PRIORITY: aChatReturn.add("Priority Mode, output to Marked Side First");break;
-					case DEFAULT:
-					default: aChatReturn.add("Default Mode");break;
+				case LIMIT: aChatReturn.add("Limit Mode, Only output to Marked Side"); break;
+				case PRIORITY: aChatReturn.add("Priority Mode, output to Marked Side First"); break;
+				case DEFAULT: default: aChatReturn.add("Default Mode"); break;
 				}
 				if (mCapacityLimit > 0) {
 					aChatReturn.add("Capacity Limited: ");
@@ -397,6 +395,11 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 			byte aTargetSide = UT.Code.getSideWrenching(aSide, aHitX, aHitY, aHitZ);
 			if (connected(aTargetSide)) {
 				changeFluidMode(aTargetSide, aSneaking);
+				switch (mFluidMode) {
+				case LIMIT: aChatReturn.add("Switch to Limit Mode"); break;
+				case PRIORITY: aChatReturn.add("Switch to Priority Mode"); break;
+				case DEFAULT: default: aChatReturn.add("Switch to Default Mode"); break;
+				}
 				return 2500;
 			} else {
 				return 0;
@@ -426,9 +429,9 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 		checkConnection();
 		// 切换模式
 		if (mFluidDir == aTargetSide && mFluidMode == PipeMode.LIMIT) {
-			if (aReverse)
+			if (aReverse) {
 				mFluidMode = PipeMode.PRIORITY;
-			else {
+			} else {
 				mFluidDir = SIDE_ANY;
 				mFluidMode = PipeMode.DEFAULT;
 			}
@@ -437,9 +440,9 @@ public class MultiTileEntityPipeFluid extends TileEntityBase10ConnectorRendered 
 			if (aReverse) {
 				mFluidDir = SIDE_ANY;
 				mFluidMode = PipeMode.DEFAULT;
-			}
-			else
+			} else {
 				mFluidMode = PipeMode.LIMIT;
+			}
 		} else {
 			mFluidDir = aTargetSide;
 			mFluidMode = aReverse? PipeMode.LIMIT: PipeMode.PRIORITY;

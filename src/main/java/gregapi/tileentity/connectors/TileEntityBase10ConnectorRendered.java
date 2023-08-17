@@ -212,7 +212,7 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 	}
 	
 	@Override
-	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
+	public final void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
 		toolTipsDescribe(aList);
 		toolTipsUseful(aList);
 		toolTipsImportant(aList);

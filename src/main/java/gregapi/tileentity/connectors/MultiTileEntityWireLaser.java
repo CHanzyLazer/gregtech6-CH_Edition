@@ -39,6 +39,7 @@ import gregapi.tileentity.ITileEntityQuickObstructionCheck;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.tileentity.energy.ITileEntityEnergyDataConductor;
+import gregtechCH.data.LH_CH;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
@@ -49,9 +50,8 @@ public class MultiTileEntityWireLaser extends TileEntityBase10ConnectorRendered 
 	public long mTransferred = 0, mTransferredLast = 0;
 	
 	@Override
-	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
+	protected void toolTipsDescribe(List<String> aList) {
 		aList.add(Chat.CYAN + LH.get(LH.WIRE_STATS_LOSSLESS) + " (" + TD.Energy.LU.getLocalisedChatNameShort()+Chat.CYAN + ")");
-		super.addToolTips(aList, aStack, aF3_H);
 	}
 	
 	@Override

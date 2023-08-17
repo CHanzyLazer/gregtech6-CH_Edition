@@ -35,10 +35,10 @@ public class WD_CH {
         if (!DATA_GTCH.disableGTRerender) doChunkRerender(aTimer);
     }
     
-    public static <WorldType> boolean isServerSide(WorldType aWorld) {
+    public static <W> boolean isServerSide(W aWorld) {
         return (aWorld instanceof World) ? (!((World)aWorld).isRemote) : cpw.mods.fml.common.FMLCommonHandler.instance().getEffectiveSide().isServer();
     }
-    public static <WorldType> boolean isClientSide(WorldType aWorld) {
+    public static <W> boolean isClientSide(W aWorld) {
         return (aWorld instanceof World) ? ((World)aWorld).isRemote : cpw.mods.fml.common.FMLCommonHandler.instance().getEffectiveSide().isClient();
     }
     
@@ -55,8 +55,7 @@ public class WD_CH {
                         formMainChunkList();
                         formAroundChunkList();
                     } catch (Exception e) {
-                        //noinspection SynchronizeOnNonFinalField
-                        synchronized (ERR) {e.printStackTrace(ERR);}
+                        e.printStackTrace(ERR);
                     }
                 });
                 sUpdated = F;
@@ -86,67 +85,70 @@ public class WD_CH {
     
     /* 玩家视觉的区块 */
     @SideOnly(Side.CLIENT) private static void formMainChunkList() {
-        synchronized(sMainChunkRenderList) {sMainChunkRenderList.clear();}
-        // 用来构造的坐标 list
-        LinkedList<ChunkCoordinates> tCoordList = new LinkedList<>();
-        Vec3 tPlayerView = UT_CH.Code.getPlayerViewVec3(sPlayer);
-        ChunkCoordinates tPlayerChunkCoord = UT_CH.Code.getPlayerChunkCoord(sPlayer);
-        ChunkCoordinates tChunkCoord = new ChunkCoordinates(tPlayerChunkCoord);
-        Vec3 tNextChunkCoord = tPlayerView.addVector(tChunkCoord.posX, tChunkCoord.posY, tChunkCoord.posZ);
-        tCoordList.add(new ChunkCoordinates(tChunkCoord));
-        int tAddIdx = 0;
-        // 直接使用循环的方式添加，使用随机位置插入的方法来得到随机排序的 list
-        while (tCoordList.size()<DATA_GTCH.rerenderMainLength) {
-            tChunkCoord.posX = (int)Math.round(tNextChunkCoord.xCoord);
-            tChunkCoord.posY = (int)Math.round(tNextChunkCoord.yCoord);
-            tChunkCoord.posZ = (int)Math.round(tNextChunkCoord.zCoord);
-            if (!tChunkCoord.equals(tCoordList.get(tAddIdx))) {
-                tAddIdx = RNGSUS.nextInt(tCoordList.size()+1);
-                tCoordList.add(tAddIdx, new ChunkCoordinates(tChunkCoord));
+        synchronized(sMainChunkRenderList) {
+            sMainChunkRenderList.clear();
+            // 用来构造的坐标 list
+            LinkedList<ChunkCoordinates> tCoordList = new LinkedList<>();
+            Vec3 tPlayerView = UT_CH.Code.getPlayerViewVec3(sPlayer);
+            ChunkCoordinates tPlayerChunkCoord = UT_CH.Code.getPlayerChunkCoord(sPlayer);
+            ChunkCoordinates tChunkCoord = new ChunkCoordinates(tPlayerChunkCoord);
+            Vec3 tNextChunkCoord = tPlayerView.addVector(tChunkCoord.posX, tChunkCoord.posY, tChunkCoord.posZ);
+            tCoordList.add(new ChunkCoordinates(tChunkCoord));
+            int tAddIdx = 0;
+            // 直接使用循环的方式添加，使用随机位置插入的方法来得到随机排序的 list
+            while (tCoordList.size()<DATA_GTCH.rerenderMainLength) {
+                tChunkCoord.posX = (int)Math.round(tNextChunkCoord.xCoord);
+                tChunkCoord.posY = (int)Math.round(tNextChunkCoord.yCoord);
+                tChunkCoord.posZ = (int)Math.round(tNextChunkCoord.zCoord);
+                if (!tChunkCoord.equals(tCoordList.get(tAddIdx))) {
+                    tAddIdx = RNGSUS.nextInt(tCoordList.size()+1);
+                    tCoordList.add(tAddIdx, new ChunkCoordinates(tChunkCoord));
+                }
+                tNextChunkCoord.xCoord += tPlayerView.xCoord;
+                tNextChunkCoord.yCoord += tPlayerView.yCoord;
+                tNextChunkCoord.zCoord += tPlayerView.zCoord;
             }
-            tNextChunkCoord.xCoord += tPlayerView.xCoord;
-            tNextChunkCoord.yCoord += tPlayerView.yCoord;
-            tNextChunkCoord.zCoord += tPlayerView.zCoord;
-        }
-        // 从中随机选取放入队列，需要满足要求并且记得移除主序列的元素
-        while (sMainChunkRenderList.size()<DATA_GTCH.rerenderMainMaxChunk && !tCoordList.isEmpty()) {
-            tChunkCoord = tCoordList.poll();
-            Runnable tRender = checkAndGetRerender(tChunkCoord);
-            if (tRender != null) synchronized(sMainChunkRenderList) {sMainChunkRenderList.add(tRender);}
+            // 从中随机选取放入队列，需要满足要求并且记得移除主序列的元素
+            while (sMainChunkRenderList.size()<DATA_GTCH.rerenderMainMaxChunk && !tCoordList.isEmpty()) {
+                tChunkCoord = tCoordList.poll();
+                Runnable tRender = checkAndGetRerender(tChunkCoord);
+                if (tRender != null) sMainChunkRenderList.add(tRender);
+            }
         }
     }
     
     /* 玩家周边的区块 */
     @SideOnly(Side.CLIENT) private static void formAroundChunkList() {
-        synchronized(sAroundChunkRenderList) {sAroundChunkRenderList.clear();}
-        // 用来构造的坐标 list
-        LinkedList<ChunkCoordinates> tCoordList = new LinkedList<>();
-        ChunkCoordinates tPlayerChunkCoord = UT_CH.Code.getPlayerChunkCoord(sPlayer);
-        ChunkCoordinates tChunkCoord = new ChunkCoordinates(tPlayerChunkCoord);
-        // 使用循环的方式添加，也使用随机位置插入的方法来得到随机排序的 list
-        for (int tX = -DATA_GTCH.rerenderAroundLength; tX <= DATA_GTCH.rerenderAroundLength; ++tX)
+        synchronized(sAroundChunkRenderList) {
+            sAroundChunkRenderList.clear();
+            // 用来构造的坐标 list
+            LinkedList<ChunkCoordinates> tCoordList = new LinkedList<>();
+            ChunkCoordinates tPlayerChunkCoord = UT_CH.Code.getPlayerChunkCoord(sPlayer);
+            ChunkCoordinates tChunkCoord = new ChunkCoordinates(tPlayerChunkCoord);
+            // 使用循环的方式添加，也使用随机位置插入的方法来得到随机排序的 list
+            for (int tX = -DATA_GTCH.rerenderAroundLength; tX <= DATA_GTCH.rerenderAroundLength; ++tX)
             for (int tY = -DATA_GTCH.rerenderAroundLength; tY <= DATA_GTCH.rerenderAroundLength; ++tY)
-                for (int tZ = -DATA_GTCH.rerenderAroundLength; tZ <= DATA_GTCH.rerenderAroundLength; ++tZ) {
-                    tChunkCoord.posX = tPlayerChunkCoord.posX + tX;
-                    tChunkCoord.posY = tPlayerChunkCoord.posY + tY;
-                    tChunkCoord.posZ = tPlayerChunkCoord.posZ + tZ;
-                    tCoordList.add(RNGSUS.nextInt(tCoordList.size()+1), new ChunkCoordinates(tChunkCoord));
-                }
-        // 从中随机选取放入队列，需要满足要求并且记得移除主序列的元素
-        while (sAroundChunkRenderList.size()<DATA_GTCH.rerenderAroundMaxChunk && !tCoordList.isEmpty()) {
-            tChunkCoord = tCoordList.poll();
-            Runnable tRender = checkAndGetRerender(tChunkCoord);
-            if (tRender != null) synchronized(sAroundChunkRenderList) {sAroundChunkRenderList.add(tRender);}
+            for (int tZ = -DATA_GTCH.rerenderAroundLength; tZ <= DATA_GTCH.rerenderAroundLength; ++tZ) {
+                tChunkCoord.posX = tPlayerChunkCoord.posX + tX;
+                tChunkCoord.posY = tPlayerChunkCoord.posY + tY;
+                tChunkCoord.posZ = tPlayerChunkCoord.posZ + tZ;
+                tCoordList.add(RNGSUS.nextInt(tCoordList.size()+1), new ChunkCoordinates(tChunkCoord));
+            }
+            // 从中随机选取放入队列，需要满足要求并且记得移除主序列的元素
+            while (sAroundChunkRenderList.size()<DATA_GTCH.rerenderAroundMaxChunk && !tCoordList.isEmpty()) {
+                tChunkCoord = tCoordList.poll();
+                Runnable tRender = checkAndGetRerender(tChunkCoord);
+                if (tRender != null) sAroundChunkRenderList.add(tRender);
+            }
         }
     }
     
     // 检测坐标是否需要重新渲染，不合理的返回 null，现在不再检测是否超时
     @SideOnly(Side.CLIENT)
     private static Runnable checkAndGetRerender(ChunkCoordinates aChunkCoordToRender) {
-        if (!sChunkRenderList.containsKey(aChunkCoordToRender)) return null;
-        Runnable tRender = sChunkRenderList.get(aChunkCoordToRender);
-        synchronized(sChunkRenderList) {sChunkRenderList.remove(aChunkCoordToRender);}
-        return tRender;
+        synchronized(sChunkRenderList) {
+            return sChunkRenderList.remove(aChunkCoordToRender);
+        }
     }
     
     @SideOnly(Side.CLIENT)
@@ -172,8 +174,7 @@ public class WD_CH {
     // 记录是否成功更新，没有则不能刷新下次渲染队列
     @SideOnly(Side.CLIENT) private static boolean sUpdated = T;
     // 清空的接口，客户端世界加载或者卸载时清空渲染队列
-    @SideOnly(Side.CLIENT)
-    public static void clearStatic(boolean aIsServerSide) {
+    @SideOnly(Side.CLIENT) public static void clearStatic(boolean aIsServerSide) {
         if (!aIsServerSide) {
             sChunkRenderList.clear();
             sMainChunkRenderList.clear();
@@ -185,13 +186,15 @@ public class WD_CH {
     
     // 标记方块（所在区块）用于计划重新渲染
     @SideOnly(Side.CLIENT)
-    public static <WorldType> void markBlockForRerender(WorldType aWorld, int aX, int aY, int aZ, boolean aImmediate) {
+    public static synchronized <W> void markBlockForRerender(W aWorld, int aX, int aY, int aZ, boolean aImmediate) {
         if (aWorld instanceof World) {
             ChunkCoordinates tCoord = new ChunkCoordinates(aX>>4, aY>>4, aZ>>4);
-            synchronized(sChunkRenderList) {sChunkRenderList.put(tCoord, new ChunkRender((World)aWorld, aX, aY, aZ));}
-            if (aImmediate) {
-                Runnable tRender = checkAndGetRerender(tCoord);
-                if (tRender != null) tRender.run();
+            synchronized(sChunkRenderList) {
+                sChunkRenderList.put(tCoord, new ChunkRender((World)aWorld, aX, aY, aZ));
+                if (aImmediate) {
+                    Runnable tRender = checkAndGetRerender(tCoord);
+                    if (tRender != null) tRender.run();
+                }
             }
         }
     }

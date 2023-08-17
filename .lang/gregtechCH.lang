@@ -6,19 +6,19 @@ enablelangfile {
 
 
 languagefile {
-    S:gt.multitileentity.10110.name=发电机 (ULV)
-    S:gt.multitileentity.29903.name=新电线 (WIP)
-    S:gt.multitileentity.29904.name=新电线 (WIP)
-    S:gt.multitileentity.31030.name=流体流速传感器 (单位: 升/tick)
-    S:gt.multitileentity.31031.name=流体流速传感器 (单位: 桶/tick)
-    S:gt.multitileentity.31032.name=电压传感器
-    S:gt.multitileentity.31033.name=大量程电压传感器
-    S:gt.multitileentity.31034.name=电流传感器
-    S:gt.multitileentity.31040.name=大量程锅炉压力传感器 (单位: 千 Gibbl)
-    S:gt.multitileentity.31041.name=大量程盖革传感器
-    S:gt.multitileentity.31042.name=大量程电力传感器
-    S:gt.multitileentity.31043.name=大量程转速传感器
-    S:gt.multitileentity.31044.name=大量程激光传感器
+    S:gt.multitileentity.10110=发电机 (ULV)
+    S:gt.multitileentity.29903=新电线 (WIP)
+    S:gt.multitileentity.29904=新电线 (WIP)
+    S:gt.multitileentity.31030=流体流速传感器 (单位: 升/tick)
+    S:gt.multitileentity.31031=流体流速传感器 (单位: 桶/tick)
+    S:gt.multitileentity.31032=电压传感器
+    S:gt.multitileentity.31033=大量程电压传感器
+    S:gt.multitileentity.31034=电流传感器
+    S:gt.multitileentity.31040=大量程锅炉压力传感器 (单位: 千 Gibbl)
+    S:gt.multitileentity.31041=大量程盖革传感器
+    S:gt.multitileentity.31042=大量程电力传感器
+    S:gt.multitileentity.31043=大量程转速传感器
+    S:gt.multitileentity.31044=大量程激光传感器
     S:gt.tooltip.sensor.amperageometer=测量电流 (包的数目)
     S:gt.tooltip.sensor.electrometerkilo=测量电力流 (单位: 千 EU)
     S:gt.tooltip.sensor.flowometer=测量流体流速 (单位: 升/tick)
@@ -51,9 +51,11 @@ languagefile {
     S:gtch.lang.preheat=这个机器需要预热
     S:gtch.lang.transformer.normal=正常模式:
     S:gtch.lang.transformer.reversed=反向模式:
+    S:gtch.lang.use.electrometer.to.measure=使用电力计来测量电力
     S:gtch.lang.use.monkey.wrench.to.set.io.side=使用活动扳手设置输出输入方向
     S:gtch.lang.use.monkey.wrench.to.set.mode.side=使用活动扳手来改变模式
     S:gtch.lang.use.sneak.magnifyingglass.to.detail=潜行使用放大镜观察更多细节
+    S:gtch.lang.use.tachometer.to.measure=使用转速表来测量转速
     S:gtch.lang.wire.stats.resistance=电阻:
     S:gtch.tooltip.gearbox.custom.1=齿轮不吻合!
     S:gtch.tooltip.gearbox.custom.2=使用扳手来装上物品栏里的齿轮
@@ -76,6 +78,7 @@ languagefile {
     S:gtch.tooltip.pipefluid.custom.1=潜行使用扳手来装上物品栏里的橡胶圈
     S:gtch.tooltip.pipefluid.custom.2=安装橡胶圈来保证流速稳定
     S:gtch.tooltip.pipefluid.custom.3=流速稳定
+    S:gtch.tooltip.transformer.electric.1=反向模式下拥有和正常模式同样的最高输入电压
     S:gtch.tooltip.transformer.rotation.1=反向模式下会保留至少 1 功率
     S:gtch.tooltip.wire.ohm=电流越大，实际的损耗越大 (欧姆定律)
 }

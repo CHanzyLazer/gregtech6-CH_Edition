@@ -110,5 +110,5 @@ public abstract class TileEntityBase11Motor extends TileEntityBase10EnergyConver
 	}
 	
 	@Override public byte getVisualData() {return (byte)(super.getVisualData() | (mCounterClockwise?4:0) | (mConverter.mFast?8:0));}
-	@Override public void setVisualData(byte aData) {super.setVisualData((byte)(aData & 3)); mCounterClockwise = ((aData & 4) != 0); mConverter.mFast = ((aData & 8) != 0);}
+	@Override public void setVisualData(byte aData) {super.setVisualData((byte)((aData & 3) | (aData<0?B[7]:0))); mCounterClockwise = ((aData & 4) != 0); mConverter.mFast = ((aData & 8) != 0);}
 }

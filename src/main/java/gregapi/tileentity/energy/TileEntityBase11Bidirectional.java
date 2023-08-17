@@ -38,7 +38,7 @@ import static gregapi.data.CS.*;
  * @author Gregorius Techneticies
  */
 public abstract class TileEntityBase11Bidirectional extends TileEntityBase10EnergyConverter implements ITileEntityAdjacentOnOff {
-	protected boolean mReversed = F;
+	protected boolean mReversed = F, oReversed = F;
 	
 	public TE_Behavior_Energy_Converter mConRevert = null;
 	
@@ -93,4 +93,9 @@ public abstract class TileEntityBase11Bidirectional extends TileEntityBase10Ener
 		}
 		return 0;
 	}
+	
+	@Override public boolean onTickCheck(long aTimer) {return super.onTickCheck(aTimer) || mReversed != oReversed;}
+	@Override public void onTickResetChecks(long aTimer, boolean aIsServerSide) {super.onTickResetChecks(aTimer, aIsServerSide); oReversed = mReversed;}
+	@Override public byte getVisualData() {return (byte)(super.getVisualData() | (mReversed?4:0));}
+	@Override public void setVisualData(byte aData) {super.setVisualData((byte)((aData & 3) | (aData<0?B[7]:0))); mReversed = ((aData & 4)!=0);}
 }

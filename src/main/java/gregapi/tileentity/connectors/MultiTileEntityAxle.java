@@ -127,6 +127,8 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 			if (connected(aTargetSide)) {
 				mEnergyDir = (mEnergyDir == aTargetSide) ? SIDE_ANY : aTargetSide;
 				if (aChatReturn != null) aChatReturn.add(mEnergyDir==SIDE_ANY ? "Can transfer energy to both sides" : "Only transfer energy to Selected Side");
+				causeBlockUpdate();
+				doEnetUpdate();
 				return 2500;
 			} else {
 				return 0;

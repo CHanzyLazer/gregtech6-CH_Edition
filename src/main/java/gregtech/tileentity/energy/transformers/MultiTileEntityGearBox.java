@@ -125,6 +125,7 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 			mGearsWork = checkGears();
 			updateClientData();
 			causeBlockUpdate();
+			doEnetUpdate();
 			return 10000;
 		}
 		if (aTool.equals(TOOL_wrench)) {
@@ -138,6 +139,7 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 				mGearsWork = checkGears();
 				updateClientData();
 				causeBlockUpdate();
+				doEnetUpdate();
 				return 10000;
 			}
 			if (UT.Entities.hasInfiniteItems(aPlayer)) {
@@ -146,6 +148,7 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 				mGearsWork = checkGears();
 				updateClientData();
 				causeBlockUpdate();
+				doEnetUpdate();
 				return 10000;
 			}
 			if (aPlayerInventory != null) for (int i = 0, j = aPlayerInventory.getSizeInventory(); i < j; i++) {
@@ -157,6 +160,7 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 					mGearsWork = checkGears();
 					updateClientData();
 					causeBlockUpdate();
+					doEnetUpdate();
 					return 10000;
 				}
 			}
@@ -178,6 +182,8 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 					if (aChatReturn != null) aChatReturn.add("Only Accept energy from Selected Side");
 				}
 				updateClientData();
+				causeBlockUpdate();
+				doEnetUpdate();
 				return 2500;
 			}
 			if (FACE_CONNECTED[aTargetSide][mDisabledOutputs]) {
@@ -193,6 +199,8 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 					if (aChatReturn != null) aChatReturn.add("Accept and Emit energy from Selected Side");
 				}
 				updateClientData();
+				causeBlockUpdate();
+				doEnetUpdate();
 				return 2500;
 			}
 			if (aSneaking) {
@@ -207,6 +215,8 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 				if (aChatReturn != null) aChatReturn.add("Only Emit energy from Selected Side");
 			}
 			updateClientData();
+			causeBlockUpdate();
+			doEnetUpdate();
 			return 2500;
 		}
 		if (aTool.equals(TOOL_softhammer)) {
@@ -214,6 +224,7 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 			mGearsWork = checkGears();
 			updateClientData();
 			causeBlockUpdate();
+			doEnetUpdate();
 			return 10000;
 		}
 		

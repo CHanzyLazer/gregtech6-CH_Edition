@@ -109,8 +109,11 @@ public abstract class TileEntityBase10EnergyConverter extends TileEntityBase09Fa
 	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
 		addToolTipsEfficiency(aList, aStack, aF3_H);
 		addToolTipsEnergy(aList, aStack, aF3_H);
+		addToolTipsUseful(aList, aStack, aF3_H);
 		super.addToolTips(aList, aStack, aF3_H);
 	}
+	
+	public void addToolTipsUseful(List<String> aList, ItemStack aStack, boolean aF3_H) {/**/}
 	
 	public void addToolTipsEnergy(List<String> aList, ItemStack aStack, boolean aF3_H) {
 		mConverter.mEnergyIN .addToolTips(aList, aStack, aF3_H, getLocalisedInputSide (), F);

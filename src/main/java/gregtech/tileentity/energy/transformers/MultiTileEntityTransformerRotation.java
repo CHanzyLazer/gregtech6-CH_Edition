@@ -66,7 +66,7 @@ public class MultiTileEntityTransformerRotation extends TileEntityBase09FacingSi
     
     // tooltips
     static {
-        LH_CH.add("gtch.tooltip.transformer.rotation.1", "Retain at least 1 Power in Reversed Mode");
+        LH_CH.add("gtch.tooltip.transformer.rotation.1", "Retain at least 1 Power in Reversed mode");
     }
     @Override
     public final void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
@@ -76,6 +76,7 @@ public class MultiTileEntityTransformerRotation extends TileEntityBase09FacingSi
         toolTipsOther(aList, aStack, aF3_H);
     }
     protected void toolTipsEnergy(List<String> aList) {
+        aList.add(LH.getToolTipEfficiency(10000));
         aList.add(LH.Chat.CYAN 	+ LH_CH.get(LH_CH.TRANSFORMER_NORMAL));
         aList.add(LH.Chat.GREEN	+ LH.get(LH.ENERGY_INPUT ) + ": " + LH.Chat.WHITE 						+ getESIRecN() + " " + mEnergyTypeAccepted.getLocalisedChatNameShort() + LH.Chat.WHITE + "/t (" + LH_CH.getNumber(LH_CH.ENERGY_TO, getESIMinN(), getESIMaxN()) + ", "+getLocalisedInputSide()  +")");
         aList.add(LH.Chat.RED	+ LH.get(LH.ENERGY_OUTPUT) + ": " + LH.Chat.WHITE + mMultiplier + "x " 	+ getESORecN() + " " + mEnergyTypeEmitted.getLocalisedChatNameShort()  + LH.Chat.WHITE + "/t (" + LH_CH.getNumber(LH_CH.ENERGY_TO, getESOMinN(), getESOMaxN()) + ", "+getLocalisedOutputSide() +")");

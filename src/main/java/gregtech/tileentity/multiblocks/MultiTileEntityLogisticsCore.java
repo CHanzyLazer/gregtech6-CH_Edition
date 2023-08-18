@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,18 +19,8 @@
 
 package gregtech.tileentity.multiblocks;
 
-import static gregapi.data.CS.*;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-
 import gregapi.GT_API_Proxy;
-import gregapi.code.ArrayListNoNulls;
-import gregapi.code.HashSetNoNulls;
-import gregapi.code.ItemStackContainer;
-import gregapi.code.ItemStackSet;
-import gregapi.code.TagData;
+import gregapi.code.*;
 import gregapi.cover.CoverData;
 import gregapi.cover.covers.*;
 import gregapi.data.FL;
@@ -45,11 +35,7 @@ import gregapi.tileentity.energy.ITileEntityEnergyDataCapacitor;
 import gregapi.tileentity.logistics.ITileEntityLogistics;
 import gregapi.tileentity.logistics.ITileEntityLogisticsSemiFilteredItem;
 import gregapi.tileentity.logistics.ITileEntityLogisticsStorage;
-import gregapi.tileentity.multiblocks.IMultiBlockEnergy;
-import gregapi.tileentity.multiblocks.IMultiBlockFluidHandler;
-import gregapi.tileentity.multiblocks.ITileEntityMultiBlockController;
-import gregapi.tileentity.multiblocks.MultiTileEntityMultiBlockPart;
-import gregapi.tileentity.multiblocks.TileEntityBase10MultiBlockBase;
+import gregapi.tileentity.multiblocks.*;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
@@ -61,6 +47,12 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fluids.IFluidTank;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
+import static gregapi.data.CS.*;
 
 /**
  * @author Gregorius Techneticies
@@ -220,7 +212,7 @@ public class MultiTileEntityLogisticsCore extends TileEntityBase10MultiBlockBase
 			if (isStructureOkay() && mEnergy >= 128L + mCPU_Logic * 64L * mCPU_Conversion) {
 				int tX = getOffsetXN(mFacing, 2), tY = getOffsetYN(mFacing, 2), tZ = getOffsetZN(mFacing, 2);
 				
-				ItemStackSet<ItemStackContainer> tFilteredFor = new ItemStackSet<>();
+				ItemStackSet<ItemStackContainer> tFilteredFor = ST.hashset();
 				
 				final List<LogisticsData>
 				  tStackImportsGeneric  = new ArrayListNoNulls<>()
@@ -563,7 +555,7 @@ public class MultiTileEntityLogisticsCore extends TileEntityBase10MultiBlockBase
 		if (aImport.mItemFilter != null) {
 			if (aExport.mItemFilter != null) {
 				if (ST.equal(aImport.mItemFilter, aExport.mItemFilter, T)) for (int j = 0; j < mCPU_Conversion; j++) {
-					long tMoved = ST.move(aImport.mTarget, aExport.mTarget, new ItemStackSet<>(aImport.mItemFilter), F, F, F, F, aExport.mStackSize == 0 ? 64 : aExport.mStackSize, aExport.mStackSize == 0 ? 1 : aExport.mStackSize, aImport.mStackSize == 0 ? 64 : aImport.mStackSize, aImport.mStackSize == 0 ? 1 : aImport.mStackSize);
+					long tMoved = ST.move(aImport.mTarget, aExport.mTarget, ST.hashset(aImport.mItemFilter), F, F, F, F, aExport.mStackSize == 0 ? 64 : aExport.mStackSize, aExport.mStackSize == 0 ? 1 : aExport.mStackSize, aImport.mStackSize == 0 ? 64 : aImport.mStackSize, aImport.mStackSize == 0 ? 1 : aImport.mStackSize);
 					if (tMoved > 0) {
 						oCPU_Conversion = Math.max(oCPU_Conversion, j+1);
 						mEnergy -= tMoved;
@@ -574,7 +566,7 @@ public class MultiTileEntityLogisticsCore extends TileEntityBase10MultiBlockBase
 				}
 			} else {
 				for (int j = 0; j < mCPU_Conversion; j++) {
-					long tMoved = ST.move(aImport.mTarget, aExport.mTarget, new ItemStackSet<>(aImport.mItemFilter), F, F, F, F, aExport.mStackSize == 0 ? 64 : aExport.mStackSize, aExport.mStackSize == 0 ? 1 : aExport.mStackSize, aImport.mStackSize == 0 ? 64 : aImport.mStackSize, aImport.mStackSize == 0 ? 1 : aImport.mStackSize);
+					long tMoved = ST.move(aImport.mTarget, aExport.mTarget, ST.hashset(aImport.mItemFilter), F, F, F, F, aExport.mStackSize == 0 ? 64 : aExport.mStackSize, aExport.mStackSize == 0 ? 1 : aExport.mStackSize, aImport.mStackSize == 0 ? 64 : aImport.mStackSize, aImport.mStackSize == 0 ? 1 : aImport.mStackSize);
 					if (tMoved > 0) {
 						oCPU_Conversion = Math.max(oCPU_Conversion, j+1);
 						mEnergy -= tMoved;
@@ -587,7 +579,7 @@ public class MultiTileEntityLogisticsCore extends TileEntityBase10MultiBlockBase
 		} else {
 			if (aExport.mItemFilter != null) {
 				for (int j = 0; j < mCPU_Conversion; j++) {
-					long tMoved = ST.move(aImport.mTarget, aExport.mTarget, new ItemStackSet<>(aExport.mItemFilter), F, F, F, F, aExport.mStackSize == 0 ? 64 : aExport.mStackSize, aExport.mStackSize == 0 ? 1 : aExport.mStackSize, aImport.mStackSize == 0 ? 64 : aImport.mStackSize, aImport.mStackSize == 0 ? 1 : aImport.mStackSize);
+					long tMoved = ST.move(aImport.mTarget, aExport.mTarget, ST.hashset(aExport.mItemFilter), F, F, F, F, aExport.mStackSize == 0 ? 64 : aExport.mStackSize, aExport.mStackSize == 0 ? 1 : aExport.mStackSize, aImport.mStackSize == 0 ? 64 : aImport.mStackSize, aImport.mStackSize == 0 ? 1 : aImport.mStackSize);
 					if (tMoved > 0) {
 						oCPU_Conversion = Math.max(oCPU_Conversion, j+1);
 						mEnergy -= tMoved;
@@ -617,7 +609,7 @@ public class MultiTileEntityLogisticsCore extends TileEntityBase10MultiBlockBase
 		public final Fluid mFluidFilter;
 		public final ItemStack mItemFilter;
 		public final int mStackSize;
-
+		
 		public LogisticsData(DelegatorTileEntity<TileEntity> aTarget, Fluid aFluidFilter, ItemStack aItemFilter, int aStackSize) {
 			mTarget = aTarget;
 			mFluidFilter = aFluidFilter;

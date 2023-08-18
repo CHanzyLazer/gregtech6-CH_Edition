@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -36,7 +36,6 @@ import gregapi.tileentity.machines.ITileEntityRunningActively;
 import gregapi.tileentity.machines.ITileEntitySwitchableOnOff;
 import gregapi.util.ST;
 import gregapi.util.UT;
-import gregtechCH.util.UT_CH;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -136,7 +135,7 @@ public abstract class MultiTileEntityReactorCore extends TileEntityBase10FacingD
 				GT_API_Proxy.SERVER_TICK_PO2T.add(this);
 				mHasToAddTimer = F;
 			}
-			if (mTanks[0].isHalf() && mSecondFacing != mFacing) FL.move(mTanks[0], getAdjacentTank(mSecondFacing), mTanks[0].amount() - mTanks[0].capacity() / 2);
+			if (mTanks[0].overHalf() && mSecondFacing != mFacing) FL.move(mTanks[0], getAdjacentTank(mSecondFacing), mTanks[0].amount() - mTanks[0].capacity() / 2);
 			if (mTanks[1].has()) FL.move(mTanks[1], getAdjacentTank(mFacing));
 			
 			if (mTanks[0].check()) updateClientData();
@@ -249,6 +248,9 @@ public abstract class MultiTileEntityReactorCore extends TileEntityBase10FacingD
 	@Override public byte getDefaultSecondSide() {return SIDE_BOTTOM;}
 	@Override public boolean[] getValidSides() {return SIDES_VALID;}
 	
+//	@Override public void updateTanks() {/**/} // GTCH, 我觉得这个还是需要保留父类的更新
+	@Override public void updateInventory() {super.updateInventory(); updateClientData();}
+	
 	@Override
 	protected IFluidTank getFluidTankFillable2(byte aSide, FluidStack aFluidToFill) {
 		return FL.Coolant_IC2.is(aFluidToFill)
@@ -290,27 +292,11 @@ public abstract class MultiTileEntityReactorCore extends TileEntityBase10FacingD
 			|| MT.He.mGas.isFluidEqual(aFluid)
 			|| MT.CO2.mGas.isFluidEqual(aFluid)
 			)) return 0;
-		updateInventory();
 		return mTanks[0].fill(aFluid, aDoFill);
 	}
 	
 	@Override
-	public final void updateInventory() {
-		super.updateInventory();
-		// GTCH, 改为仅检测每个存储槽内是否发生了改变
-		if (isServerSide() && checkInventory()) {
-			updateClientData();
-			inventoryChecked();
-		}
-	}
-	
-	protected boolean checkInventory() {return F;}
-	protected void inventoryChecked() {/**/}
-	
-	
-	@Override
 	public FluidStack tapDrain(byte aSide, int aMaxDrain, boolean aDoDrain) {
-		updateInventory();
 		return mTanks[mTanks[1].has() ? 1 : 0].drain(aMaxDrain, aDoDrain);
 	}
 	

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -102,7 +102,7 @@ public final class OreDictManager {
 	, "hempBrick", "hempBlock", "savehempBrick", "savehempBlock", "saveplatedHempBrick", "saveplatedHempBlock", "platedHempBrick", "platedHempBlock", "platedHemp", "savehemp", "saveplatedHemp"
 	);
 	/** Lists all Names which should not be processed due to technical Issues. */
-	private final Set<String> mIgnoredNames = new HashSetNoNulls<>(F, "rawRubber", "plateTungCar", "ingotRefinedGlowstone", "ingotRefinedObsidian", "oreCompass", "oreBentonite", "oreFullersEarth", "oreKaolinite", "dustRefinedObsidian", "dustRefinedGlowstone", "oreNetherQuartz", "oreNetherite", "oreBasalticMineralSand", "oreLifeCrystal", "cropMaplesyrup", "oreTritanium", "oreDuranium", "plateLapis", "shardEntropy", "shardAir", "shardWater", "shardEarth", "shardFire", "shardOrder", "greggy_greg_do_please_kindly_stuff_a_sock_in_it", "halfSheetCylinderMetal", "halfSheetMetal", "quarterSheetMetal", "sheetCurvedFourMetal", "sheetCurvedOneMetal", "sheetCurvedThreeMetal", "sheetCurvedTwoMetal", "sheetCylinderMetal", "sheetMediumConeMetal", "sheetMetal", "sheetMicroConeMetal", "sheetMicroFinMetal", "sheetSmallConeMetal", "sheetSmallCylinderMetal", "sheetSmallFinMetal", "shirtSheetMetal", "rivetSheetMetal", "triangleSheetMetal");
+	private final Set<String> mIgnoredNames = new HashSetNoNulls<>(F, "rawMeat", "cookedMeat", "rawRubber", "plateTungCar", "ingotRefinedGlowstone", "ingotRefinedObsidian", "oreCompass", "oreBentonite", "oreFullersEarth", "oreKaolinite", "dustRefinedObsidian", "dustRefinedGlowstone", "oreNetherQuartz", "oreNetherite", "oreBasalticMineralSand", "oreLifeCrystal", "cropMaplesyrup", "oreTritanium", "oreDuranium", "plateLapis", "shardEntropy", "shardAir", "shardWater", "shardEarth", "shardFire", "shardOrder", "greggy_greg_do_please_kindly_stuff_a_sock_in_it", "halfSheetCylinderMetal", "halfSheetMetal", "quarterSheetMetal", "sheetCurvedFourMetal", "sheetCurvedOneMetal", "sheetCurvedThreeMetal", "sheetCurvedTwoMetal", "sheetCylinderMetal", "sheetMediumConeMetal", "sheetMetal", "sheetMicroConeMetal", "sheetMicroFinMetal", "sheetSmallConeMetal", "sheetSmallCylinderMetal", "sheetSmallFinMetal", "shirtSheetMetal", "rivetSheetMetal", "triangleSheetMetal");
 	/** Lists all Names which have already been registered. Used for the OreDict Listeners, so that certain Recipes (such as Crafting) don't get registered twice.*/
 	private final Set<String> mAlreadyRegisteredNames = new HashSetNoNulls<>();
 	/** Used to check if Recipe Outputs accidentally contain uncopied OreDict Items. */
@@ -464,7 +464,7 @@ public final class OreDictManager {
 	
 	private final Map<String, ItemStack> sName2StackMap = new HashMap<>();
 	private final Map<ItemStackContainer, OreDictItemData> sItemStack2DataMap = new ItemStackMap<>();
-	private final ItemStackSet<ItemStackContainer> sNoUnificationSet = new ItemStackSet<>();
+	private final ItemStackSet<ItemStackContainer> sNoUnificationSet = ST.hashset();
 	private int isRegisteringOre = 0, isAddingOre = 0;
 	
 	/**
@@ -494,7 +494,7 @@ public final class OreDictManager {
 	
 	public boolean setTarget(OreDictPrefix aPrefix, OreDictMaterial aMaterial, ModData aMod, Object aName, long aMeta) {
 		ItemStack aStack = ST.make(aMod, aName.toString(), 1, aMeta);
-		if (aMod.mLoaded && aStack == null) DEB.println("Item does not exist for Unification Target despite being loaded: " + aMod.mID + ":" + aName);
+		if (aMod.mLoaded && aStack == null) ERR.println("Item does not exist for Unification Target despite Mod being loaded: " + aMod.mID + ":" + aName);
 		return setTarget(aPrefix, aMaterial, aStack, T, F, T);
 	}
 	public boolean setTarget(OreDictPrefix aPrefix, OreDictMaterial aMaterial, ItemStack aStack) {
@@ -722,8 +722,7 @@ public final class OreDictManager {
 	}
 	
 	public static boolean isItemStackInstanceOf(ItemStack aStack, Object aName) {
-		if (UT.Code.stringInvalid(aName) || ST.invalid(aStack)) return F;
-		return isItemStackInstanceOf_(aStack, aName);
+		return UT.Code.stringValid(aName) && ST.valid(aStack) && isItemStackInstanceOf_(aStack, aName);
 	}
 	public static boolean isItemStackInstanceOf_(ItemStack aStack, Object aName) {
 		for (ItemStack tOreStack : getOres(aName.toString(), F)) if (ST.equal(tOreStack, aStack, T)) return T;
@@ -732,7 +731,7 @@ public final class OreDictManager {
 	
 	public static void registerOreSafe(Object aName, ItemStack aStack) {
 		try {
-			OreDictionary.registerOre(aName.toString(), aStack);
+			if (ST.valid(aStack)) OreDictionary.registerOre(aName.toString(), aStack);
 		} catch(Throwable e) {
 			e.printStackTrace(ERR);
 		}

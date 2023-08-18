@@ -148,7 +148,7 @@ public abstract class TileEntityBase09Connector extends TileEntityBase08Directio
 	@Override public final boolean isUsingFullBlockOverlay(ItemStack aStack, byte aSide) {
 		if (super.isUsingFullBlockOverlay(aStack, aSide)) return T;
 		TileEntity tTE = UT_CH.getItemTE(aStack);
-		return tTE!=null? isFullBlockTE(tTE, aSide):F;
+		return tTE!=null ? isFullBlockTE(tTE, aSide) : F;
 	}
 	// GTCH, 改为相同的连接性质即可
 	public boolean isFullBlockTE(TileEntity aHand, byte aSide) {return SIDES_VALID[aSide] && (aHand instanceof ITileEntityConnector) && UT.Code.haveOneCommonElement(((ITileEntityConnector)aHand).getConnectorTypes(OPOS[aSide]), getConnectorTypes(aSide));}

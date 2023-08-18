@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -23,7 +23,6 @@ import gregapi.GT_API_Proxy;
 import gregapi.block.multitileentity.MultiTileEntityBlock;
 import gregapi.block.multitileentity.MultiTileEntityRegistry;
 import gregapi.code.ArrayListNoNulls;
-import gregapi.code.ItemStackSet;
 import gregapi.code.TagData;
 import gregapi.cover.CoverData;
 import gregapi.cover.covers.CoverFilterItem;
@@ -45,6 +44,7 @@ import gregapi.tileentity.data.ITileEntityProgress;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.util.ST;
 import gregapi.util.UT;
+import gregtechCH.data.LH_CH;
 import gregtechCH.tileentity.compat.PipeCompat;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.IInventory;
@@ -80,7 +80,6 @@ public class MultiTileEntityPipeItem extends TileEntityBase10ConnectorRendered i
 		OreDictManager.INSTANCE.setTarget_(OP.pipeRestrictiveMedium    , aMat, aRegistry.add("Restrictive " + aMat.getLocal() + " Item Pipe"       , "Item Pipes", aID+ 5, aCreativeTabID, aClass, aMat.mToolQuality, 64, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 6.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 1, NBT_DIAMETER, PX_P[ 8], NBT_PIPESIZE, aStepSize * 100, NBT_INV_SIZE, aInvSize  , NBT_OPAQUE, aBlocking), aRecipe?new Object[]{" h ", "RPR", " R ", 'P', OP.pipeMedium.dat(aMat), 'R', OP.ring.dat(ANY.Steel)}:ZL), T, F, T);
 		OreDictManager.INSTANCE.setTarget_(OP.pipeRestrictiveLarge     , aMat, aRegistry.add("Restrictive Large " + aMat.getLocal() + " Item Pipe" , "Item Pipes", aID+ 6, aCreativeTabID, aClass, aMat.mToolQuality, 32, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 6.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 1, NBT_DIAMETER, PX_P[12], NBT_PIPESIZE, aStepSize *  50, NBT_INV_SIZE, aInvSize*2, NBT_OPAQUE, aBlocking), aRecipe?new Object[]{"hR ", "RPR", " R ", 'P', OP.pipeLarge.dat(aMat), 'R', OP.ring.dat(ANY.Steel)}:ZL), T, F, T);
 		OreDictManager.INSTANCE.setTarget_(OP.pipeRestrictiveHuge      , aMat, aRegistry.add("Restrictive Huge " + aMat.getLocal() + " Item Pipe"  , "Item Pipes", aID+ 7, aCreativeTabID, aClass, aMat.mToolQuality, 16, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 6.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 1, NBT_DIAMETER, PX_P[16], NBT_PIPESIZE, aStepSize *  25, NBT_INV_SIZE, aInvSize*4, NBT_OPAQUE, aBlocking), aRecipe?new Object[]{" h ", "RPR", "RRR", 'P', OP.pipeHuge.dat(aMat), 'R', OP.ring.dat(ANY.Steel)}:ZL), T, F, T);
-		// Continue with ID 10!
 	}
 	
 	@Override
@@ -113,10 +112,13 @@ public class MultiTileEntityPipeItem extends TileEntityBase10ConnectorRendered i
 	}
 	
 	@Override
-	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
+	protected void toolTipsDescribe(List<String> aList) {
 		aList.add(Chat.CYAN + LH.get(LH.PIPE_STATS_STEPSIZE) + UT.Code.makeString(mStepSize));
 		aList.add(Chat.CYAN + LH.get(LH.PIPE_STATS_BANDWIDTH) + Chat.WHITE + UT.Code.makeString(getPipeCapacity()) + "/s");
-		super.addToolTips(aList, aStack, aF3_H);
+	}
+	@Override
+	protected void toolTipsOther(List<String> aList, ItemStack aStack, boolean aF3_H) {
+		super.toolTipsOther(aList, aStack, aF3_H);
 		aList.add(Chat.DGRAY + LH.get(LH.TOOL_TO_SET_INPUT_MONKEY_WRENCH));
 		aList.add(Chat.DGRAY + LH.get(LH.TOOL_TO_SET_OUTPUT_MONKEY_WRENCH));
 	}
@@ -220,7 +222,7 @@ public class MultiTileEntityPipeItem extends TileEntityBase10ConnectorRendered i
 					CoverData tCovers = getCoverData();
 					if (tCovers != null && tCovers.mBehaviours[aSide] instanceof CoverFilterItem && tCovers.mNBTs[aSide] != null) {
 						ItemStack tStack = ST.load(tCovers.mNBTs[aSide], "gt.filter.item");
-						return ST.valid(tStack) && ST.move(new DelegatorTileEntity<>((TileEntity)aSender, SIDE_ANY), tDelegator, new ItemStackSet<>(tStack), F, F, tCovers.mVisuals[aSide] != 0, T, 64, 1, 64, 1) > 0;
+						return ST.valid(tStack) && ST.move(new DelegatorTileEntity<>((TileEntity)aSender, SIDE_ANY), tDelegator, ST.hashset(tStack), F, F, tCovers.mVisuals[aSide] != 0, T, 64, 1, 64, 1) > 0;
 					}
 					// well normal case is this.
 					return ST.move(new DelegatorTileEntity<>((TileEntity)aSender, SIDE_ANY), tDelegator) > 0;

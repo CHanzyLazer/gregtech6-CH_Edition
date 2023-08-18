@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,12 +19,6 @@
 
 package gregtech.tileentity.extenders;
 
-import static gregapi.data.CS.*;
-
-import java.util.List;
-
-import org.lwjgl.opengl.GL11;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.code.ItemStackContainer;
@@ -33,9 +27,11 @@ import gregapi.data.FL;
 import gregapi.data.IL;
 import gregapi.data.LH;
 import gregapi.data.LH.Chat;
+import gregapi.data.TD;
 import gregapi.gui.ContainerClient;
 import gregapi.gui.ContainerCommon;
 import gregapi.gui.Slot_Holo;
+import gregapi.oredict.OreDictItemData;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.tileentity.logistics.ITileEntityLogisticsSemiFilteredItem;
 import gregapi.util.OM;
@@ -49,11 +45,17 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
+import org.lwjgl.opengl.GL11;
+
+import java.util.List;
+
+import static gregapi.data.CS.*;
 
 /**
  * @author Gregorius Techneticies
@@ -85,6 +87,7 @@ public class MultiTileEntityFilter extends MultiTileEntityExtender implements IT
 		return super.writeItemNBT2(aNBT);
 	}
 	
+	@Override public DelegatorTileEntity<TileEntity> getDelegateTileEntity(byte aSide) {return delegator(aSide);}
 	@Override public Object getGUIClient2(int aGUIID, EntityPlayer aPlayer) {return new MultiTileEntityGUIClientFilter(aPlayer.inventory, this, aGUIID);}
 	@Override public Object getGUIServer2(int aGUIID, EntityPlayer aPlayer) {return new MultiTileEntityGUICommonFilter(aPlayer.inventory, this, aGUIID);}
 	@Override public int getSizeInventoryGUI() {return mFilter==null?0:mFilter.length;}
@@ -111,7 +114,7 @@ public class MultiTileEntityFilter extends MultiTileEntityExtender implements IT
 	
 	@Override
 	public ItemStackSet<ItemStackContainer> getLogisticsFilter(byte aSide) {
-		return mInverted ? null : new ItemStackSet<>(mFilter);
+		return mInverted ? null : ST.hashset(mFilter);
 	}
 	
 	@Override
@@ -150,7 +153,7 @@ public class MultiTileEntityFilter extends MultiTileEntityExtender implements IT
 	
 	@Override
 	public boolean isItemValidForSlot(int aSlot, ItemStack aStack) {
-		if ((mModes & MODE_INV) != 0 && ST.valid(aStack) && (mLastSide == mFacing || allowInput(aStack))) {
+		if ((mModes & EXTENDER_INV) != 0 && ST.valid(aStack) && (mLastSide == mFacing || allowInput(aStack))) {
 			DelegatorTileEntity<IInventory> tTileEntity = getAdjacentInventory(getExtenderTargetSide(mLastSide), F, T);
 			if (tTileEntity.mTileEntity != null) return tTileEntity.mTileEntity.isItemValidForSlot(aSlot, aStack);
 		}
@@ -160,7 +163,7 @@ public class MultiTileEntityFilter extends MultiTileEntityExtender implements IT
 	@Override
 	public boolean canInsertItem2(int aSlot, ItemStack aStack, byte aSide) {
 		mLastSide = aSide;
-		if ((mModes & MODE_INV) != 0 && ST.valid(aStack) && (mLastSide == mFacing || allowInput(aStack))) {
+		if ((mModes & EXTENDER_INV) != 0 && ST.valid(aStack) && (mLastSide == mFacing || allowInput(aStack))) {
 			DelegatorTileEntity<IInventory> tTileEntity = getAdjacentInventory(getExtenderTargetSide(mLastSide), F, T);
 			if (tTileEntity.mTileEntity instanceof ISidedInventory) return ((ISidedInventory)tTileEntity.mTileEntity).canInsertItem(aSlot, aStack, tTileEntity.mSideOfTileEntity);
 			if (tTileEntity.mTileEntity != null) return T;
@@ -171,7 +174,7 @@ public class MultiTileEntityFilter extends MultiTileEntityExtender implements IT
 	@Override
 	public boolean canExtractItem2(int aSlot, ItemStack aStack, byte aSide) {
 		mLastSide = aSide;
-		if ((mModes & MODE_INV) != 0 && ST.valid(aStack) && (mLastSide == mFacing || allowInput(aStack))) {
+		if ((mModes & EXTENDER_INV) != 0 && ST.valid(aStack) && (mLastSide == mFacing || allowInput(aStack))) {
 			DelegatorTileEntity<IInventory> tTileEntity = getAdjacentInventory(getExtenderTargetSide(mLastSide), F, T);
 			if (tTileEntity.mTileEntity instanceof ISidedInventory) return ((ISidedInventory)tTileEntity.mTileEntity).canExtractItem(aSlot, aStack, tTileEntity.mSideOfTileEntity);
 			if (tTileEntity.mTileEntity != null) return T;
@@ -182,7 +185,7 @@ public class MultiTileEntityFilter extends MultiTileEntityExtender implements IT
 	@Override
 	public int fill(ForgeDirection aDirection, FluidStack aFluid, boolean aDoFill) {
 		byte aSide = UT.Code.side(aDirection);
-		if ((mModes & MODE_TANK) != 0 && (aSide == mFacing || allowInput(aFluid))) {
+		if ((mModes & EXTENDER_TANK) != 0 && (aSide == mFacing || allowInput(aFluid))) {
 			if (hasCovers() && SIDES_VALID[aSide] && mCovers.mBehaviours[aSide] != null && mCovers.mBehaviours[aSide].interceptFluidFill(aSide, mCovers, aSide, aFluid)) return 0;
 			DelegatorTileEntity<IFluidHandler> tTileEntity = getAdjacentTank(getExtenderTargetSide(aSide), F, T);
 			if (tTileEntity.mTileEntity != null) return tTileEntity.mTileEntity.fill(tTileEntity.getForgeSideOfTileEntity(), aFluid, aDoFill);
@@ -192,7 +195,7 @@ public class MultiTileEntityFilter extends MultiTileEntityExtender implements IT
 	@Override
 	public FluidStack drain(ForgeDirection aDirection, FluidStack aFluid, boolean aDoDrain) {
 		byte aSide = UT.Code.side(aDirection);
-		if ((mModes & MODE_TANK) != 0 && (aSide == mFacing || allowInput(aFluid))) {
+		if ((mModes & EXTENDER_TANK) != 0 && (aSide == mFacing || allowInput(aFluid))) {
 			if (hasCovers() && SIDES_VALID[aSide] && mCovers.mBehaviours[aSide] != null && mCovers.mBehaviours[aSide].interceptFluidDrain(aSide, mCovers, aSide, aFluid)) return null;
 			DelegatorTileEntity<IFluidHandler> tTileEntity = getAdjacentTank(getExtenderTargetSide(aSide), F, T);
 			if (tTileEntity.mTileEntity != null) return tTileEntity.mTileEntity.drain(tTileEntity.getForgeSideOfTileEntity(), aFluid, aDoDrain);
@@ -201,7 +204,7 @@ public class MultiTileEntityFilter extends MultiTileEntityExtender implements IT
 	}
 	@Override
 	public FluidStack drain(ForgeDirection aDirection, int aToDrain, boolean aDoDrain) {
-		if ((mModes & MODE_TANK) != 0) {
+		if ((mModes & EXTENDER_TANK) != 0) {
 			byte aSide = UT.Code.side(aDirection);
 			if (hasCovers() && SIDES_VALID[aSide] && mCovers.mBehaviours[aSide] != null && mCovers.mBehaviours[aSide].interceptFluidDrain(aSide, mCovers, aSide, null)) return null;
 			DelegatorTileEntity<IFluidHandler> tTileEntity = getAdjacentTank(getExtenderTargetSide(aSide), F, T);
@@ -213,7 +216,7 @@ public class MultiTileEntityFilter extends MultiTileEntityExtender implements IT
 	@Override
 	public boolean canFill(ForgeDirection aDirection, Fluid aFluid) {
 		byte aSide = UT.Code.side(aDirection);
-		if ((mModes & MODE_TANK) != 0 && (aSide == mFacing || allowInput(aFluid))) {
+		if ((mModes & EXTENDER_TANK) != 0 && (aSide == mFacing || allowInput(aFluid))) {
 			if (hasCovers() && SIDES_VALID[aSide] && mCovers.mBehaviours[aSide] != null && mCovers.mBehaviours[aSide].interceptFluidFill(aSide, mCovers, aSide, FL.make(aFluid, 1))) return F;
 			DelegatorTileEntity<IFluidHandler> tTileEntity = getAdjacentTank(getExtenderTargetSide(aSide), F, T);
 			if (tTileEntity.mTileEntity != null) return tTileEntity.mTileEntity.canFill(tTileEntity.getForgeSideOfTileEntity(), aFluid);
@@ -223,7 +226,7 @@ public class MultiTileEntityFilter extends MultiTileEntityExtender implements IT
 	@Override
 	public boolean canDrain(ForgeDirection aDirection, Fluid aFluid) {
 		byte aSide = UT.Code.side(aDirection);
-		if ((mModes & MODE_TANK) != 0 && (aSide == mFacing || allowInput(aFluid))) {
+		if ((mModes & EXTENDER_TANK) != 0 && (aSide == mFacing || allowInput(aFluid))) {
 			if (hasCovers() && SIDES_VALID[aSide] && mCovers.mBehaviours[aSide] != null && mCovers.mBehaviours[aSide].interceptFluidDrain(aSide, mCovers, aSide, FL.make(aFluid, 1))) return F;
 			DelegatorTileEntity<IFluidHandler> tTileEntity = getAdjacentTank(getExtenderTargetSide(aSide), F, T);
 			if (tTileEntity.mTileEntity != null) return tTileEntity.mTileEntity.canDrain(tTileEntity.getForgeSideOfTileEntity(), aFluid);
@@ -255,7 +258,7 @@ public class MultiTileEntityFilter extends MultiTileEntityExtender implements IT
 				if (tSlot != null) {
 					ItemStack tStack = tSlot.getStack();
 					if (tStack != null) {
-						if ((((MultiTileEntityFilter)mTileEntity).mModes & MODE_INV) == 0) {
+						if ((((MultiTileEntityFilter)mTileEntity).mModes & EXTENDER_INV) == 0) {
 							FluidStack tFluid = FL.getFluid(tStack, T);
 							if (tFluid != null && ((MultiTileEntityFilter)mTileEntity).allowInput(tFluid) == ((MultiTileEntityFilter)mTileEntity).mInverted) {
 								for (int i = 0; i < ((MultiTileEntityFilter)mTileEntity).mFilter.length; i++) if (ST.invalid(((MultiTileEntityFilter)mTileEntity).mFilter[i])) {
@@ -284,26 +287,41 @@ public class MultiTileEntityFilter extends MultiTileEntityExtender implements IT
 					tStack = tSlot.getStack();
 					if (aMouseclick == 0) {
 						tSlot.putStack(null);
-					} else {
-						if (tStack != null) {
-							FluidStack tFluid = FL.getFluid(tStack, T);
-							if (tFluid != null && (((MultiTileEntityFilter)mTileEntity).mModes & MODE_TANK) != 0) {
-								tSlot.putStack(FL.display(tFluid.getFluid()));
-							} else {
-								if (tStack.hasTagCompound() && ST.meta_(tStack) != W) {
-									tStack.setTagCompound(null);
-								} else {
-									tStack.setItemDamage(W);
+					} else if (tStack != null && !IL.Display_Fluid.equal(tStack, T, T)) {
+						FluidStack tFluid = null;
+						if ((((MultiTileEntityFilter)mTileEntity).mModes & EXTENDER_TANK) != 0) {
+							tFluid = FL.getFluid(tStack, T);
+							if (tFluid == null) {
+								OreDictItemData tData = OM.anyassociation_(tStack);
+								if (tData != null && tData.mPrefix.contains(TD.Prefix.IS_CONTAINER) && !tData.mPrefix.contains(TD.Prefix.IS_CRATE)) {
+									tFluid = tData.mMaterial.mMaterial.fluid(U, T);
 								}
+							}
+						}
+						if (FL.valid(tFluid)) {
+							tSlot.putStack(FL.display(tFluid.getFluid()));
+						} else {
+							if (tStack.hasTagCompound()) {
+								tStack.setTagCompound(null);
+							} else {
+								ST.meta(tStack, W);
 							}
 						}
 					}
 				} else {
-					FluidStack tFluid = FL.getFluid(tStack, T);
-					if (tFluid != null && (((MultiTileEntityFilter)mTileEntity).mModes & MODE_INV) == 0) {
-						tSlot.putStack(FL.display(tFluid.getFluid()));
-					} else {
+					if ((((MultiTileEntityFilter)mTileEntity).mModes & EXTENDER_INV) != 0) {
 						tSlot.putStack(ST.amount(1, tStack));
+					} else {
+						FluidStack tFluid = FL.getFluid(tStack, T);
+						if (tFluid == null) {
+							OreDictItemData tData = OM.anyassociation_(tStack);
+							if (tData != null) {
+								tFluid = tData.mMaterial.mMaterial.fluid(U, T);
+							}
+						}
+						if (FL.valid(tFluid)) {
+							tSlot.putStack(FL.display(tFluid.getFluid()));
+						}
 					}
 				}
 			}

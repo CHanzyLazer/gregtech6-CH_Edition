@@ -42,6 +42,7 @@ import gregapi.tileentity.data.ITileEntityProgress;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.tileentity.machines.ITileEntitySwitchableMode;
 import gregapi.util.UT;
+import gregtechCH.data.LH_CH;
 import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRedstoneWire;
@@ -97,10 +98,9 @@ public class MultiTileEntityWireRedstoneInsulated extends TileEntityBase10Connec
 	}
 	
 	@Override
-	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
+	protected void toolTipsDescribe(List<String> aList) {
 		aList.add(Chat.CYAN + LH.get(LH.PIPE_STATS_RANGE) + (MAX_RANGE / mLoss));
 		aList.add(Chat.CYAN + LH.get(LH.PIPE_STATS_BANDWIDTH) + 1);
-		super.addToolTips(aList, aStack, aF3_H);
 	}
 	
 	@Override

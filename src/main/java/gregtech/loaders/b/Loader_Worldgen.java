@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -67,6 +67,7 @@ public class Loader_Worldgen implements Runnable {
 		, new StoneLayerOres(MT.Cu                                      , F, U16,  0, 32, ST.block(MD.EtFu, "deepslate_copper_ore"), BIOMES_DESERT, BIOMES_SAVANNA)
 		, new StoneLayerOres(MT.Fe                                      , F, U16,  0, 32, ST.block(MD.EtFu, "deepslate_iron_ore"), BIOMES_SWAMP, BIOMES_WOODS)
 		, new StoneLayerOres(MT.Coal                                    , F, U16,  0, 32, ST.block(MD.EtFu, "deepslate_coal_ore"), BIOMES_PLAINS, BIOMES_SHROOM)
+		, MD.Salt    .mLoaded ? new StoneLayerOres(MT.NaCl              , F, U32, 20, 32, ST.block(MD.Salt, "saltDeepslateOre")) : null
 		,!MT.Nikolite.mHidden ? new StoneLayerOres(MT.Nikolite          , F, U32,  0, 20) : null
 		, MD.HEX     .mLoaded ? new StoneLayerOres(MT.HexoriumBlack     , F, U32,  0, 16) : null
 		, MD.HEX     .mLoaded ? new StoneLayerOres(MT.HexoriumWhite     , F, U32,  0, 16) : null
@@ -114,6 +115,9 @@ public class Loader_Worldgen implements Runnable {
 		, MD.TC      .mLoaded ? new StoneLayerOres(MT.InfusedWater      , U64, 48, 64, ST.block(MD.TC , "blockCustomOre"  ), 3, BIOMES_MAGICAL_GOOD) : null
 		, MD.TC      .mLoaded ? new StoneLayerOres(MT.InfusedEarth      , U64,  0, 16, ST.block(MD.TC , "blockCustomOre"  ), 4, BIOMES_MAGICAL_GOOD) : null
 		, MD.TC      .mLoaded ? new StoneLayerOres(MT.OREMATS.Cinnabar  , U32, 16, 40, ST.block(MD.TC , "blockCustomOre"  ), 0, BIOMES_MAGICAL_GOOD) : null
+		, MD.DRPG    .mLoaded ? new StoneLayerOres(MT.UNUSED.Rupee      , U96,  5, 60, ST.block(MD.DRPG, "rupeeOre"            )) : null
+		, MD.DRPG    .mLoaded ? new StoneLayerOres(MT.UNUSED.Arlemite   , U96,  5, 60, ST.block(MD.DRPG, "arlemiteOre"         )) : null
+		, MD.DRPG    .mLoaded ? new StoneLayerOres(MT.UNUSED.Realmite   , U96,  5, 60, ST.block(MD.DRPG, "realmiteOre"         )) : null
 		));
 		StoneLayer.LAYERS.add(new StoneLayer(null
 		, MD.HBM     .mLoaded ? new StoneLayerOres(MT.OREMATS.Uraninite , U16,  0, 48, ST.block(MD.HBM, "tile.ore_uranium"), 0) : null
@@ -122,6 +126,9 @@ public class Loader_Worldgen implements Runnable {
 		, MD.TC      .mLoaded ? new StoneLayerOres(MT.InfusedEntropy    , U64, 24, 40, ST.block(MD.TC , "blockCustomOre"  ), 6, BIOMES_MAGICAL_GOOD) : null
 		, MD.TC      .mLoaded ? new StoneLayerOres(MT.InfusedAir        , U64, 48, 64, ST.block(MD.TC , "blockCustomOre"  ), 1, BIOMES_MAGICAL_GOOD) : null
 		, MD.TC      .mLoaded ? new StoneLayerOres(MT.InfusedFire       , U64,  0, 16, ST.block(MD.TC , "blockCustomOre"  ), 2, BIOMES_MAGICAL_GOOD) : null
+		, MD.DRPG    .mLoaded ? new StoneLayerOres(MT.UNUSED.Rupee      , U96,  5, 60, ST.block(MD.DRPG, "rupeeOre"            )) : null
+		, MD.DRPG    .mLoaded ? new StoneLayerOres(MT.UNUSED.Arlemite   , U96,  5, 60, ST.block(MD.DRPG, "arlemiteOre"         )) : null
+		, MD.DRPG    .mLoaded ? new StoneLayerOres(MT.UNUSED.Realmite   , U96,  5, 60, ST.block(MD.DRPG, "realmiteOre"         )) : null
 		));
 		StoneLayer.LAYERS.add(new StoneLayer(null
 		, new StoneLayerOres(MT.Emerald                 , F, U48, 16, 60, Blocks.emerald_ore, BIOMES_MOUNTAINS)
@@ -131,10 +138,14 @@ public class Loader_Worldgen implements Runnable {
 		, new StoneLayerOres(MT.OREMATS.Cinnabar        , F,U128,  8, 24, ST.block(MD.TC, "blockCustomOre"), 0)
 		, new StoneLayerOres(MT.Au                      , F, U64,  8, 32, Blocks.gold_ore)
 		, new StoneLayerOres(MT.Au                      , F, U32, 33, 64, Blocks.gold_ore, BIOMES_MESA)
-		, new StoneLayerOres(MT.Cu                      , F, U16, 20, 50, ST.block(MD.EtFu, "copper_ore"), BIOMES_MESA, BIOMES_DESERT, BIOMES_SAVANNA)
+		, new StoneLayerOres(MT.Cu                      , F, U16, 20, 50, ST.block(MD.EtFu, "copper_ore"), 0, BIOMES_MESA, BIOMES_DESERT, BIOMES_SAVANNA)
 		, new StoneLayerOres(MT.Fe                      , F, U16, 40, 80, Blocks.iron_ore)
 		, new StoneLayerOres(MT.Coal                    , F, U8 , 60,100, Blocks.coal_ore)
 		, new StoneLayerOres(MT.Stone                   , F, U48,  0,255, Blocks.monster_egg)
+		, new StoneLayerOres(MT.NaCl                    , F, U32, 50, 80, ST.block(MD.Salt, "saltOre"), 0)
+		, MD.DRPG    .mLoaded ? new StoneLayerOres(MT.UNUSED.Rupee      , U96,  5, 60, ST.block(MD.DRPG, "rupeeOre"            )) : null
+		, MD.DRPG    .mLoaded ? new StoneLayerOres(MT.UNUSED.Arlemite   , U96,  5, 60, ST.block(MD.DRPG, "arlemiteOre"         )) : null
+		, MD.DRPG    .mLoaded ? new StoneLayerOres(MT.UNUSED.Realmite   , U96,  5, 60, ST.block(MD.DRPG, "realmiteOre"         )) : null
 		));
 		StoneLayer.LAYERS.add(new StoneLayer(null
 		, new StoneLayerOres(MT.Fe2O3                   , U6 , 30, 70)
@@ -150,6 +161,9 @@ public class Loader_Worldgen implements Runnable {
 		, new StoneLayerOres(MT.TigerEyeBlue            , U64, 32, 64, BIOMES_RIVER_LAKE)
 		, new StoneLayerOres(MT.TigerEyeBlack           , U64, 32, 64, BIOMES_MESA)
 		, new StoneLayerOres(MT.TigerIron               , U64, 32, 64, BIOMES_SHROOM)
+		, MD.DRPG    .mLoaded ? new StoneLayerOres(MT.UNUSED.Rupee      , U96,  5, 60, ST.block(MD.DRPG, "rupeeOre"            )) : null
+		, MD.DRPG    .mLoaded ? new StoneLayerOres(MT.UNUSED.Arlemite   , U96,  5, 60, ST.block(MD.DRPG, "arlemiteOre"         )) : null
+		, MD.DRPG    .mLoaded ? new StoneLayerOres(MT.UNUSED.Realmite   , U96,  5, 60, ST.block(MD.DRPG, "realmiteOre"         )) : null
 		));
 		StoneLayer.LAYERS.add(new StoneLayer(null
 		, MD.HEX     .mLoaded ? new StoneLayerOres(MT.HexoriumRed       , U64,  0, 64, ST.block(MD.HEX, "blockHexoriumOreRed"  )) : null
@@ -157,6 +171,9 @@ public class Loader_Worldgen implements Runnable {
 		, MD.HEX     .mLoaded ? new StoneLayerOres(MT.HexoriumBlue      , U64,  0, 64, ST.block(MD.HEX, "blockHexoriumOreBlue" )) : null
 		, MD.HEX     .mLoaded ? new StoneLayerOres(MT.HexoriumBlack     , U64,  0, 20, ST.block(MD.HEX, "blockHexoriumOreBlack")) : null
 		, MD.HEX     .mLoaded ? new StoneLayerOres(MT.HexoriumWhite     , U64,  0, 20, ST.block(MD.HEX, "blockHexoriumOreWhite")) : null
+		, MD.DRPG    .mLoaded ? new StoneLayerOres(MT.UNUSED.Rupee      , U96,  5, 60, ST.block(MD.DRPG, "rupeeOre"            )) : null
+		, MD.DRPG    .mLoaded ? new StoneLayerOres(MT.UNUSED.Arlemite   , U96,  5, 60, ST.block(MD.DRPG, "arlemiteOre"         )) : null
+		, MD.DRPG    .mLoaded ? new StoneLayerOres(MT.UNUSED.Realmite   , U96,  5, 60, ST.block(MD.DRPG, "realmiteOre"         )) : null
 		));
 		
 		

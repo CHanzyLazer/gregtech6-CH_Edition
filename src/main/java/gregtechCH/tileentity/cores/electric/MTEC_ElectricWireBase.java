@@ -172,11 +172,16 @@ public class MTEC_ElectricWireBase implements IMTEServerTickParallel, ITileEntit
     }
     
     // tooltips
-    public void addToolTips(List<String> aList) {
+    public void toolTipsDescribe(List<String> aList) {
         aList.add(LH.Chat.CYAN     + LH.get(LH.WIRE_STATS_VOLTAGE)          + mMaxVoltage + " " + TD.Energy.EU.getLocalisedNameShort() + " (" + VN[UT.Code.tierMin(mMaxVoltage)] + ")");
         aList.add(LH.Chat.CYAN     + LH.get(LH.WIRE_STATS_AMPERAGE)         + mMaxAmperage);
         aList.add(LH.Chat.CYAN     + LH_CH.get(LH_CH.WIRE_STATS_RESISTANCE) + LH.numberU(mResistance) + " " + "Ω/m");
+    }
+    public void toolTipsUseful(List<String> aList) {
         aList.add(LH.Chat.GREEN    + LH_CH.get("gtch.tooltip.wire.ohm"));
+    }
+    public void toolTipsOther(List<String> aList) {
+        aList.add(LH.Chat.DGRAY    + LH_CH.get(LH_CH.TOOL_TO_MEASURE_ELECTOMETER));
     }
     static {
         LH_CH.add("gtch.tooltip.wire.ohm", "The Larger the Amperage, the Greater the actual Loss (Ohm's Law)");
@@ -202,6 +207,15 @@ public class MTEC_ElectricWireBase implements IMTEServerTickParallel, ITileEntit
             }
             return 1;
         }
+        if (aTool.equals(TOOL_electrometer)) {
+            if (aChatReturn != null) {
+                long tVoltage = getVoltage();
+                long tAmperage = getAmperage();
+                aChatReturn.add(String.format("%d EU/t (Voltage: %d, Amperage: %d)", tAmperage*tVoltage, tVoltage, tAmperage));
+            }
+            return 1;
+        }
+        
         return 0;
     }
     

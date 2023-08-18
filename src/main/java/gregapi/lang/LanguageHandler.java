@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -44,11 +44,12 @@ import static gregapi.data.CS.*;
  */
 public class LanguageHandler {
 	public static Configuration sLangFile;
+	public static boolean sUseFile = F;
 	
 	private static final HashMap<String, String> TEMPMAP = new HashMap<>();
 	private static final HashMap<String, String> BUFFERMAP = new HashMap<>();
 	protected static final HashMap<String, String> BACKUPMAP = new HashMap<>();
-	private static boolean mWritingEnabled = F, mUseFile = F;
+	private static boolean mWritingEnabled = F;
 	
 	public static void save() {
 		if (sLangFile != null) {
@@ -57,36 +58,54 @@ public class LanguageHandler {
 		}
 	}
 	
+	public static synchronized void set(String aKey, String aEnglish) {
+		BACKUPMAP.put(aKey, aEnglish);
+		TEMPMAP.put(aKey        , aEnglish);
+		TEMPMAP.put(aKey+".name", aEnglish);
+		LanguageRegistry.instance().injectLanguage("en_US", TEMPMAP);
+		TEMPMAP.clear();
+	}
+	
 	public static synchronized void add(String aKey, String aEnglish) {
 		if (aKey == null) return;
 		aKey = aKey.trim();
 		if (aKey.length() <= 0) return;
+		boolean tSave = F;
 		BACKUPMAP.put(aKey, aEnglish);
 		if (sLangFile == null) {
 			BUFFERMAP.put(aKey, aEnglish);
 		} else {
 			if (!BUFFERMAP.isEmpty()) {
-				mUseFile = sLangFile.get("EnableLangFile", "UseThisFileAsLanguageFile", F).getBoolean(F);
+				tSave = T;
 				for (Entry<String, String> tEntry : BUFFERMAP.entrySet()) {
 					Property tProperty = sLangFile.get("LanguageFile", tEntry.getKey(), tEntry.getValue());
-					TEMPMAP.put(tEntry.getKey(), mUseFile?tProperty.getString():tEntry.getValue());
+					TEMPMAP.put(tEntry.getKey()        , sUseFile?tProperty.getString():tEntry.getValue());
+					TEMPMAP.put(tEntry.getKey()+".name", sUseFile?tProperty.getString():tEntry.getValue());
 					LanguageRegistry.instance().injectLanguage("en_US", TEMPMAP);
 					TEMPMAP.clear();
 				}
-				if (mWritingEnabled) sLangFile.save();
 				BUFFERMAP.clear();
 			}
 			Property tProperty = sLangFile.get("LanguageFile", aKey, aEnglish);
-			if (!tProperty.wasRead() && mWritingEnabled) sLangFile.save();
-			TEMPMAP.put(aKey, mUseFile?tProperty.getString():aEnglish);
+			tSave |= tProperty.wasRead();
+			TEMPMAP.put(aKey        , sUseFile?tProperty.getString():aEnglish);
+			TEMPMAP.put(aKey+".name", sUseFile?tProperty.getString():aEnglish);
 			LanguageRegistry.instance().injectLanguage("en_US", TEMPMAP);
 			TEMPMAP.clear();
 		}
+		if (tSave && mWritingEnabled) sLangFile.save();
 	}
 	
 	public static String get(String aKey, String aDefault) {
 		add(aKey, aDefault);
 		return translate(aKey, aDefault);
+	}
+	
+	public static String langfile(String aKey, String aEnglish) {
+		if (sLangFile == null) return aEnglish;
+		Property tProperty = sLangFile.get("LanguageFile", aKey, aEnglish);
+		if (tProperty.wasRead() && mWritingEnabled) sLangFile.save();
+		return tProperty.getString();
 	}
 	
 	public static String translate(String aKey) {
@@ -98,9 +117,9 @@ public class LanguageHandler {
 		return rOut;
 	}
 	private static String translate_(String aKey, String aDefault) {
-		if (aKey == null) return "";
+		if (aKey == null || aKey.length() < 2) return "";
 		aKey = aKey.trim();
-		if (aKey.isEmpty()) return "";
+		if (aKey.length() < 2) return "";
 		String
 		rTranslation = LanguageRegistry.instance().getStringLocalization(aKey);
 		if (UT.Code.stringValid(rTranslation) && !aKey.equals(rTranslation)) return rTranslation;
@@ -151,6 +170,18 @@ public class LanguageHandler {
 		if (aPrefix == OP.crateGtPlate    || aPrefix == OP.crateGt64Plate    || aPrefix == OP.blockPlate   ) return aPrefix.mMaterialPre + getLocalName(OP.plate   , aMaterial);
 		if (aPrefix == OP.crateGtPlateGem || aPrefix == OP.crateGt64PlateGem || aPrefix == OP.blockPlateGem) return aPrefix.mMaterialPre + getLocalName(OP.plateGem, aMaterial);
 		
+		if (APRIL_FOOLS) {
+			if (aMaterial == MT.Empty) {
+			if (aPrefix == OP.bulletGtSmall)                                        return aPrefix.mMaterialPre + "Bolt Shaft";
+			if (aPrefix == OP.bulletGtMedium)                                       return aPrefix.mMaterialPre + "Bolt Shaft";
+			if (aPrefix == OP.bulletGtLarge)                                        return aPrefix.mMaterialPre + "Bolt Shaft";
+			} else {
+			if (aPrefix == OP.bulletGtSmall)                                        return aPrefix.mMaterialPre + aMaterial.mNameLocal + " Bolt";
+			if (aPrefix == OP.bulletGtMedium)                                       return aPrefix.mMaterialPre + aMaterial.mNameLocal + " Bolt";
+			if (aPrefix == OP.bulletGtLarge)                                        return aPrefix.mMaterialPre + aMaterial.mNameLocal + " Bolt";
+			}
+		}
+		
 		if (aMaterial == MT.Empty) {
 			if (aPrefix == OP.chemtube)                                             return "Empty Glass Tube";
 			if (aPrefix == OP.arrowGtWood)                                          return "Headless Wood Arrow";
@@ -178,7 +209,7 @@ public class LanguageHandler {
 			if (aPrefix.mNameInternal.startsWith("dust"))                           return aPrefix.mMaterialPre + "Netherite Scrap Powder";
 			if (aPrefix.mNameInternal.startsWith("ingot"))                          return aPrefix.mMaterialPre + "Netherite Scrap";
 		} else
-		if (aMaterial == MT.Sand || aMaterial == MT.RedSand || aMaterial == MT.SoulSand || aMaterial == MT.EndSand) {
+		if (aMaterial == MT.Sand || aMaterial == MT.RedSand || aMaterial == MT.SoulSand || aMaterial == MT.EndSandWhite || aMaterial == MT.EndSandBlack) {
 			if (aPrefix == OP.crushed)                                              return "Ground " + aMaterial.mNameLocal;
 			if (aPrefix == OP.crushedTiny)                                          return "Tiny Ground " + aMaterial.mNameLocal;
 			if (aPrefix.mNameInternal.startsWith("ore"))                            return aMaterial.mNameLocal;
@@ -366,13 +397,6 @@ public class LanguageHandler {
 			if (aPrefix == OP.nugget)                                               return aPrefix.mMaterialPre + aMaterial.mNameLocal + " Chip";
 			if (aPrefix.mNameInternal.startsWith("plate"))                          return aPrefix.mMaterialPre + "Treated Plank";
 		} else
-		if (aMaterial == MT.Plastic || aMaterial == MT.Rubber) {
-			if (aPrefix.mNameInternal.startsWith("dust"))                           return aPrefix.mMaterialPre + aMaterial.mNameLocal + " Pulp";
-			if (aPrefix.mNameInternal.startsWith("plate"))                          return aPrefix.mMaterialPre + aMaterial.mNameLocal + " Sheet";
-			if (aPrefix.mNameInternal.startsWith("ingot"))                          return aPrefix.mMaterialPre + aMaterial.mNameLocal + " Bar";
-			if (aPrefix == OP.nugget)                                               return aPrefix.mMaterialPre + aMaterial.mNameLocal + " Chip";
-			if (aPrefix.mNameInternal.startsWith("foil"))                           return "Thin " + aMaterial.mNameLocal + " Sheet";
-		} else
 		if (aMaterial == MT.FierySteel) {
 			if (aPrefix.contains(TD.Prefix.IS_CONTAINER))                           return aPrefix.mMaterialPre + "Fiery Blood" + aPrefix.mMaterialPost;
 		} else
@@ -388,7 +412,9 @@ public class LanguageHandler {
 			if (aPrefix.mNameInternal.startsWith("dust"))                           return aPrefix.mMaterialPre + aMaterial.mNameLocal + " Powder";
 		} else
 		if (aMaterial == MT.Bone) {
+			if (aPrefix.mNameInternal.startsWith("ore"))                            return aPrefix.mMaterialPre + "Fossil";
 			if (aPrefix.mNameInternal.startsWith("dust"))                           return aPrefix.mMaterialPre + "Bonemeal";
+			if (aPrefix.mNameInternal.startsWith("crushed"))                        return aPrefix.mMaterialPre + "Bones";
 		} else
 		if (aMaterial == MT.Flint) {
 			if (aPrefix == OP.rockGt)                                               return "Mario";
@@ -439,11 +465,6 @@ public class LanguageHandler {
 		} else
 		if (aMaterial == MT.Butter || aMaterial == MT.ButterSalted) {
 			if (aPrefix.mNameInternal.startsWith("ingot"))                          return aPrefix.mMaterialPre + aMaterial.mNameLocal;
-		} else
-		if (ANY.Blaze.mToThis.contains(aMaterial)) {
-			if (aPrefix.mNameInternal.startsWith("dust"))                           return aPrefix.mMaterialPre + aMaterial.mNameLocal + " Powder";
-			if (aPrefix.mNameInternal.startsWith("stick"))                          return aPrefix.mMaterialPre + aMaterial.mNameLocal + " Rod";
-			if (aPrefix.mNameInternal.startsWith("ingot"))                          return aPrefix.mMaterialPre + aMaterial.mNameLocal + " Bar";
 		} else
 		if (aMaterial == MT.Indigo || aMaterial == MT.ConstructionFoam || aMaterial == MT.Cocoa || aMaterial == MT.Curry || aMaterial == MT.Chocolate || aMaterial == MT.Coffee || aMaterial == MT.Chili || aMaterial == MT.Cheese || aMaterial == MT.Snow) {
 			if (aPrefix.mNameInternal.startsWith("dust"))                           return aPrefix.mMaterialPre + aMaterial.mNameLocal + " Powder";
@@ -500,8 +521,20 @@ public class LanguageHandler {
 			if (aPrefix == OP.scrapGt)                                              return "Brittle Ceramic Scraps";
 			if (aPrefix.mNameInternal.startsWith("dust"))                           return aPrefix.mMaterialPre + "Dry Clay Powder";
 		} else
+		if (ANY.Blaze.mToThis.contains(aMaterial)) {
+			if (aPrefix.mNameInternal.startsWith("dust"))                           return aPrefix.mMaterialPre + aMaterial.mNameLocal + " Powder";
+			if (aPrefix.mNameInternal.startsWith("stick"))                          return aPrefix.mMaterialPre + aMaterial.mNameLocal + " Rod";
+			if (aPrefix.mNameInternal.startsWith("ingot"))                          return aPrefix.mMaterialPre + aMaterial.mNameLocal + " Bar";
+		} else
 		if (ANY.Clay.mToThis.contains(aMaterial)) {
 			if (aPrefix.mNameInternal.startsWith("dust"))                           return aPrefix.mMaterialPre + aMaterial.mNameLocal + " Powder";
+		} else
+		if (ANY.Plastic.mToThis.contains(aMaterial) || ANY.Rubber.mToThis.contains(aMaterial)) {
+			if (aPrefix.mNameInternal.startsWith("dust"))                           return aPrefix.mMaterialPre + aMaterial.mNameLocal + " Pulp";
+			if (aPrefix.mNameInternal.startsWith("plate"))                          return aPrefix.mMaterialPre + aMaterial.mNameLocal + " Sheet";
+			if (aPrefix.mNameInternal.startsWith("ingot"))                          return aPrefix.mMaterialPre + aMaterial.mNameLocal + " Bar";
+			if (aPrefix == OP.nugget)                                               return aPrefix.mMaterialPre + aMaterial.mNameLocal + " Chip";
+			if (aPrefix.mNameInternal.startsWith("foil"))                           return "Thin " + aMaterial.mNameLocal + " Sheet";
 		} else
 		if (aMaterial == MT.Dilithium) {
 			if (aPrefix.mNameInternal.startsWith("gem"))                            return aPrefix.mMaterialPre + aMaterial.mNameLocal + " Crystal";
@@ -531,7 +564,7 @@ public class LanguageHandler {
 			if (aPrefix.mNameInternal.startsWith("plate"))                          return aPrefix.mMaterialPre + aMaterial.mNameLocal + " Plank";
 		}
 		if (aMaterial.contains(TD.Properties.STONE)) {
-			if (aPrefix == OP.rockGt)                                               return aMaterial.mNameLocal + " Rock";
+			if (aPrefix == OP.rockGt)                                               return aMaterial.mNameLocal.endsWith("rock") ? (aMaterial.mNameLocal+" §§§").replaceFirst("rock §§§", " Rock") : aMaterial.mNameLocal + " Rock";
 			if (aPrefix == OP.scrapGt)                                              return aMaterial.mNameLocal + " Pebbles";
 		}
 		if (aMaterial.mID > 0 && aMaterial.mID <= 830 && aMaterial.mID % 10 == 0 && aMaterial.mMeltingPoint > C && aMaterial.mTargetCrushing.mMaterial == aMaterial && aMaterial.contains(TD.Processing.SMITHABLE)) {

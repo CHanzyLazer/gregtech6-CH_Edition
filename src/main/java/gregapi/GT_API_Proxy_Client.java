@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -243,11 +243,11 @@ public class GT_API_Proxy_Client extends GT_API_Proxy {
 				}
 				if (MD.RC.mLoaded && "Railcraft:part.plate".equalsIgnoreCase(aRegName)) {
 					switch(aMeta) {
-					case 0: aEvent.toolTip.set(0, LH.Chat.WHITE+LH.get("oredict.plateIron.name")); break;
-					case 1: aEvent.toolTip.set(0, LH.Chat.WHITE+LH.get("oredict.plateSteel.name")); break;
-					case 2: aEvent.toolTip.set(0, LH.Chat.WHITE+LH.get("oredict.plateTinAlloy.name")); break;
-					case 3: aEvent.toolTip.set(0, LH.Chat.WHITE+LH.get("oredict.plateCopper.name")); break;
-					case 4: aEvent.toolTip.set(0, LH.Chat.WHITE+LH.get("oredict.plateLead.name")); break;
+					case 0: aEvent.toolTip.set(0, LH.Chat.WHITE+LH.get("oredict.plateIron")); break;
+					case 1: aEvent.toolTip.set(0, LH.Chat.WHITE+LH.get("oredict.plateSteel")); break;
+					case 2: aEvent.toolTip.set(0, LH.Chat.WHITE+LH.get("oredict.plateTinAlloy")); break;
+					case 3: aEvent.toolTip.set(0, LH.Chat.WHITE+LH.get("oredict.plateCopper")); break;
+					case 4: aEvent.toolTip.set(0, LH.Chat.WHITE+LH.get("oredict.plateLead")); break;
 					}
 				}
 			}
@@ -331,7 +331,7 @@ public class GT_API_Proxy_Client extends GT_API_Proxy {
 				}
 				if (tData.hasValidMaterialData()) {
 					boolean tUnburnable = F;
-					for (OreDictMaterialStack tMaterial : tData.getAllMaterialStacks()) {
+					for (OreDictMaterialStack tMaterial : tData.getAllMaterialWeights()) {
 						if (tMaterial.mMaterial.contains(TD.Properties.UNBURNABLE)) tUnburnable = T;
 						for (IOreDictListenerItem tListener : tMaterial.mMaterial.mListenersItem) {
 							String tToolTip = tListener.getListenerToolTip(tData.mPrefix, tData.mMaterial.mMaterial, aEvent.itemStack);
@@ -402,6 +402,12 @@ public class GT_API_Proxy_Client extends GT_API_Proxy {
 								tToolTip.append(tEnchantment.mObject.getTranslatedName((int)tEnchantment.mAmount));
 							}
 							if (tToolTip != null) aEvent.toolTip.add(tToolTip.toString());
+							tToolTip = null;
+							for (ObjectStack<Enchantment> tEnchantment : tData.mMaterial.mMaterial.mEnchantmentFishing) {
+								if (tToolTip == null) tToolTip = new StringBuilder(LH.Chat.PURPLE).append(LH.get(LH.TOOLTIP_POSSIBLE_FISHING_ENCHANTS)).append(LH.Chat.PINK); else tToolTip.append(", ");
+								tToolTip.append(tEnchantment.mObject.getTranslatedName((int)tEnchantment.mAmount));
+							}
+							if (tToolTip != null) aEvent.toolTip.add(tToolTip.toString());
 							
 							if (!tData.mPrefix.containsAny(TD.Prefix.TOOL_HEAD, TD.Prefix.WEAPON_ALIKE, TD.Prefix.AMMO_ALIKE, TD.Prefix.TOOL_ALIKE)) {
 								tToolTip = null;
@@ -413,7 +419,7 @@ public class GT_API_Proxy_Client extends GT_API_Proxy {
 								
 								
 								
-								if ((IL.TF_Mazestone.exists() || IL.TF_Mazehedge.exists()) && tData.mMaterial.mMaterial.contains(TD.Properties.MAZEBREAKER)) {
+								if (MD.TF.mLoaded && tData.mMaterial.mMaterial.contains(TD.Properties.MAZEBREAKER)) {
 									aEvent.toolTip.add(LH.Chat.PINK + LH.get(LH.TOOLTIP_TWILIGHT_MAZE_BREAKING));
 								}
 							}
@@ -439,7 +445,7 @@ public class GT_API_Proxy_Client extends GT_API_Proxy {
 				
 				if (aEvent.showAdvancedItemTooltips) {
 					boolean temp = T;
-					for (OreDictMaterialStack tMaterial : tData.getAllMaterialStacks()) if (tMaterial.mAmount != 0 && !tMaterial.mMaterial.contains(TD.Properties.DONT_SHOW_THIS_COMPONENT)) {
+					for (OreDictMaterialStack tMaterial : tData.getAllMaterialWeights()) if (tMaterial.mAmount != 0 && !tMaterial.mMaterial.contains(TD.Properties.DONT_SHOW_THIS_COMPONENT)) {
 						if (temp) {
 							aEvent.toolTip.add(LH.Chat.DCYAN + LH.get(LH.TOOLTIP_CONTAINED_MATERIALS));
 							temp = F;

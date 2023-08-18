@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2019 Gregorius Techneticies
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,13 +19,8 @@
 
 package gregapi.tileentity.energy;
 
-import static gregapi.data.CS.*;
-
-import java.util.List;
-
 import gregapi.data.LH;
 import gregapi.data.LH.Chat;
-import gregapi.data.TD;
 import gregapi.tileentity.behavior.TE_Behavior_Energy_Converter;
 import gregapi.tileentity.behavior.TE_Behavior_Energy_Stats;
 import gregapi.tileentity.machines.ITileEntityAdjacentOnOff;
@@ -35,11 +30,15 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import java.util.List;
+
+import static gregapi.data.CS.*;
+
 /**
  * @author Gregorius Techneticies
  */
 public abstract class TileEntityBase11Bidirectional extends TileEntityBase10EnergyConverter implements ITileEntityAdjacentOnOff {
-	protected boolean mReversed = F;
+	protected boolean mReversed = F, oReversed = F;
 	
 	public TE_Behavior_Energy_Converter mConRevert = null;
 	
@@ -56,8 +55,8 @@ public abstract class TileEntityBase11Bidirectional extends TileEntityBase10Ener
 		TE_Behavior_Energy_Stats
 		tEnergyIN  = new TE_Behavior_Energy_Stats(this, aNBT, mEnergyOUT.mType, mStorage, mEnergyOUT.mMin <= 8 ? 1 : mEnergyOUT.mMin, mEnergyIN.mRec, Math.max(mEnergyIN.mRec, mEnergyOUT.mMax*tMultiplier)),
 		tEnergyOUT = new TE_Behavior_Energy_Stats(this, aNBT, mEnergyIN .mType, mStorage, (mEnergyIN.mRec*3)/4, mEnergyIN.mRec, mEnergyIN.mMax);
-		mConverter = new TE_Behavior_Energy_Converter(this, aNBT, mStorage, mEnergyIN, mEnergyOUT, tMultiplier, aNBT.getBoolean(NBT_WASTE_ENERGY), F, aNBT.hasKey(NBT_LIMIT_CONSUMPTION) ? aNBT.getBoolean(NBT_LIMIT_CONSUMPTION) : TD.Energy.ALL_COMSUMPTION_LIMITED.contains(mEnergyIN.mType));
-		mConRevert = new TE_Behavior_Energy_Converter(this, aNBT, mStorage, tEnergyIN, tEnergyOUT,           1, aNBT.getBoolean(NBT_WASTE_ENERGY), F, aNBT.hasKey(NBT_LIMIT_CONSUMPTION) ? aNBT.getBoolean(NBT_LIMIT_CONSUMPTION) : TD.Energy.ALL_COMSUMPTION_LIMITED.contains(mEnergyIN.mType));
+		mConverter = new TE_Behavior_Energy_Converter(this, aNBT, mStorage, mEnergyIN, mEnergyOUT, tMultiplier, aNBT.getBoolean(NBT_WASTE_ENERGY), F, aNBT.getBoolean(NBT_LIMIT_CONSUMPTION));
+		mConRevert = new TE_Behavior_Energy_Converter(this, aNBT, mStorage, tEnergyIN, tEnergyOUT,           1, aNBT.getBoolean(NBT_WASTE_ENERGY), F, aNBT.getBoolean(NBT_LIMIT_CONSUMPTION));
 		if (mReversed) {TE_Behavior_Energy_Converter tConverter = mConverter; mConverter = mConRevert; mConRevert = tConverter;}
 		mEfficiency = LH.getEfficiencyConverter(mConverter);
 	}
@@ -80,7 +79,8 @@ public abstract class TileEntityBase11Bidirectional extends TileEntityBase10Ener
 		
 		if (isClientSide()) return 0;
 		if (aTool.equals(TOOL_monkeywrench)) {
-			mReversed=!mReversed;
+			mStorage.mEnergy = 0; // Makes it less likely to cause overcharge when switching Modes by accident.
+			mReversed = !mReversed;
 			TE_Behavior_Energy_Converter tConverter = mConverter; mConverter = mConRevert; mConRevert = tConverter;
 			if (aChatReturn != null) aChatReturn.add(mReversed ? "Reversed" : "Normal");
 			causeBlockUpdate();
@@ -93,4 +93,9 @@ public abstract class TileEntityBase11Bidirectional extends TileEntityBase10Ener
 		}
 		return 0;
 	}
+	
+	@Override public boolean onTickCheck(long aTimer) {return super.onTickCheck(aTimer) || mReversed != oReversed;}
+	@Override public void onTickResetChecks(long aTimer, boolean aIsServerSide) {super.onTickResetChecks(aTimer, aIsServerSide); oReversed = mReversed;}
+	@Override public byte getVisualData() {return (byte)(super.getVisualData() | (mReversed?4:0));}
+	@Override public void setVisualData(byte aData) {super.setVisualData((byte)((aData & 3) | (aData<0?B[7]:0))); mReversed = ((aData & 4)!=0);}
 }

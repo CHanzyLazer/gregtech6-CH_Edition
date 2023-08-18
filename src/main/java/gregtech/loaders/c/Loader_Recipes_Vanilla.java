@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -117,7 +117,7 @@ public class Loader_Recipes_Vanilla implements Runnable {
 		}
 		tMat = ingot.mat(MT.Rubber, 1);
 		if (ConfigsGT.RECIPES.get(ConfigCategories.Recipes.recipereplacements, "Rubber.Sheet", T))          if (null != (tStack = CR.remove(tMat, tMat, tMat, tMat, tMat, tMat, null, null, null))) {
-			CR.shaped(tStack, DEF | DEL_OTHER_SHAPED_RECIPES, "XXX", "XXX", 'X', plate.dat(MT.Rubber));
+			CR.shaped(tStack, DEF | DEL_OTHER_SHAPED_RECIPES, "XXX", "XXX", 'X', plate.dat(ANY.Rubber));
 		}
 		
 		CR.shaped(ST.make(Blocks.wooden_pressure_plate, 1, 0)   , DEF, "PP", 'P', OD.plankAnyWood);
@@ -240,6 +240,7 @@ public class Loader_Recipes_Vanilla implements Runnable {
 			
 			CR.shaped(tItems[i].get(6), DEF, "X", "S", 'S', tSticks[i], 'X', IL.TF_Torchberries);
 			CR.shaped(tItems[i].get(4), DEF, "X", "S", 'S', tSticks[i], 'X', IL.NeLi_ShroomLight);
+			CR.shaped(tItems[i].get(4), DEF, "X", "S", 'S', tSticks[i], 'X', OD.itemTar);
 			CR.shaped(tItems[i].get(4), DEF, "X", "S", 'S', tSticks[i], 'X', OD.itemResin);
 			CR.shaped(tItems[i].get(1), DEF, "X", "S", 'S', tSticks[i], 'X', OD.itemGrassDry);
 			
@@ -365,6 +366,11 @@ public class Loader_Recipes_Vanilla implements Runnable {
 		CR.shapeless(plateDouble.mat(MT.Paper, 3), DEF, new Object[] {OD.paperEmpty, OD.paperEmpty, OD.paperEmpty, OD.paperEmpty, OD.paperEmpty, OD.paperEmpty, OD.itemGlue});
 		CR.shapeless(plateDouble.mat(MT.Paper, 4), DEF, new Object[] {OD.paperEmpty, OD.paperEmpty, OD.paperEmpty, OD.paperEmpty, OD.paperEmpty, OD.paperEmpty, OD.paperEmpty, OD.paperEmpty, OD.itemGlue});
 		
+		CR.shaped(ST.make(Items.leather                 , 1, 0), DEF                            ,         "Ak"       , 'A', ST.make(Items.leather_helmet    , 1, W));
+		CR.shaped(ST.make(Items.leather                 , 2, 0), DEF                            ,         "Ak"       , 'A', ST.make(Items.leather_chestplate, 1, W));
+		CR.shaped(ST.make(Items.leather                 , 2, 0), DEF                            ,         "Ak"       , 'A', ST.make(Items.leather_leggings  , 1, W));
+		CR.shaped(ST.make(Items.leather                 , 1, 0), DEF                            ,         "Ak"       , 'A', ST.make(Items.leather_boots     , 1, W));
+		CR.shaped(ST.make(Items.leather                 , 1, 0), DEF                            ,         "Ak"       , 'A', OD.craftingFur);
 		
 		CR.shaped(ST.make(Items.lead                    , 1, 0), DEF_MIR                        , " SS", " GS", "S  ", 'S', OD.itemString, 'G', OD.itemTar);
 		CR.shaped(ST.make(Items.lead                    , 1, 0), DEF_MIR                        , " SS", " GS", "S  ", 'S', OD.itemString, 'G', OD.itemGlue);
@@ -465,9 +471,9 @@ public class Loader_Recipes_Vanilla implements Runnable {
 		CR.shapeless(arrowGtWood .mat(MT.Empty, 1), DEF_NCC, new Object[] {Items.arrow});
 		
 		CR.shaped(arrowGtWood    .mat(MT.Empty, 1), CR.DEF_NCC_MIR, " S", "F ", 'S', stick.dat(ANY.Wood), 'F', OD.craftingFeather);
-		CR.shaped(arrowGtPlastic .mat(MT.Empty, 1), CR.DEF_NCC_MIR, " S", "F ", 'S', stick.dat(MT.Plastic), 'F', OD.craftingFeather);
-		CR.shaped(arrowGtWood    .mat(MT.Empty, 1), CR.DEF_NCC_MIR, "PS", "sP", 'S', stick.dat(ANY.Wood), 'P', plateTiny.dat(MT.Plastic));
-		CR.shaped(arrowGtPlastic .mat(MT.Empty, 1), CR.DEF_NCC_MIR, "PS", "sP", 'S', stick.dat(MT.Plastic), 'P', plateTiny.dat(MT.Plastic));
+		CR.shaped(arrowGtPlastic .mat(MT.Empty, 1), CR.DEF_NCC_MIR, " S", "F ", 'S', stick.dat(ANY.Plastic), 'F', OD.craftingFeather);
+		CR.shaped(arrowGtWood    .mat(MT.Empty, 1), CR.DEF_NCC_MIR, "PS", "sP", 'S', stick.dat(ANY.Wood), 'P', plateTiny.dat(ANY.Plastic));
+		CR.shaped(arrowGtPlastic .mat(MT.Empty, 1), CR.DEF_NCC_MIR, "PS", "sP", 'S', stick.dat(ANY.Plastic), 'P', plateTiny.dat(ANY.Plastic));
 		
 		CR.shaped(ST.make(Blocks.stained_glass, 8, 0), DEF, "GGG", "GDG", "GGG", 'G', Blocks.glass, 'D', DYE_OREDICTS[15]);
 		CR.shaped(ST.make(Items.speckled_melon, 1, 0), DEF | DEL_OTHER_SHAPED_RECIPES, "GGG", "GMG", "GGG", 'M', "cropMelon", 'G', nugget.dat(MT.Au));
@@ -545,12 +551,16 @@ public class Loader_Recipes_Vanilla implements Runnable {
 		
 		RM.glowstone(ST.make(Blocks.glowstone, 1, 0), MT.Glowstone);
 		
+		RM.moss    (ST.make(Blocks.cobblestone, 1, 0), ST.make(Blocks.mossy_cobblestone, 1, 0));
+		RM.moss    (ST.make(Blocks.stonebrick , 1, 0), ST.make(Blocks.stonebrick, 1, 1));
+		RM.growmoss(ST.make(Blocks.stonebrick , 1, 2), ST.make(Blocks.stonebrick, 1, 1));
+		
 		for (OreDictMaterial tMaterial : ANY.Wood.mToThis) {
 		RM.sawing(16,  16, F,   3, stick.mat(tMaterial, 1), bolt.mat(tMaterial, 4));
 		RM.sawing(16,  16, F,   1, stickLong.mat(tMaterial, 1), stick.mat(tMaterial, 2));
 		}
 		for (byte i = 0; i < 16; i++) {
-		RM.sawing(16,  32, F,  50, ST.make(Blocks.stained_glass             , 3, i), ST.make(Blocks.stained_glass_pane, 8, i));
+		RM.sawing(16,  32, F,  50, ST.make(Blocks.stained_glass             , 1, i), ST.make(Blocks.stained_glass_pane, 9, i));
 		RM.sawing(16,  32, F,  50, ST.make(Blocks.wool                      , 2, i), ST.make(Blocks.carpet, 3, i));
 		}
 		RM.sawing(16,  32, F,  50, ST.make(Blocks.glass                     , 1, 0), ST.make(Blocks.glass_pane, 9, 0));
@@ -728,7 +738,7 @@ public class Loader_Recipes_Vanilla implements Runnable {
 		for (OreDictMaterial tMat2 : ANY.Fe.mToThis) if (tMat2 != MT.Enori)
 		RM.RollBender   .addRecipe1(T, 16,  256, plateCurved.mat(tMat2, 3), ST.make(Items.bucket, 1, 0));
 		
-		RM.Chisel       .addRecipe1(T, 16,   16, ST.make(Blocks.stone, 1, W), ST.make(Blocks.stonebrick, 1, 3));
+		RM.Chisel       .addRecipe1(T, 16,   16, ST.make(Blocks.stone     , 1, W), ST.make(Blocks.stonebrick, 1, 3));
 		RM.Chisel       .addRecipe1(T, 16,   16, ST.make(Blocks.stonebrick, 1, 0), ST.make(Blocks.stonebrick, 1, 2));
 		
 		

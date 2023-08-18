@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -27,6 +27,7 @@ import gregapi.code.ArrayListNoNulls;
 import gregapi.data.FL;
 import gregapi.data.LH;
 import gregapi.item.IItemGT;
+import gregapi.lang.LanguageHandler;
 import gregapi.render.RendererBlockFluid;
 import gregapi.tileentity.data.ITileEntitySurface;
 import gregapi.util.ST;
@@ -70,9 +71,8 @@ public abstract class BlockWaterlike extends BlockFluidClassic implements IBlock
 		setResistance(30);
 		setBlockName(aName);
 		ST.register(this, aName, ItemBlock.class);
-		LH.add(getLocalizedName()+".name", getLocalizedName()); // WAILA is retarded...
-		LH.add(getUnlocalizedName()+".name", getLocalizedName());
 		LH.add(getUnlocalizedName(), getLocalizedName());
+		LanguageHandler.set(getLocalizedName(), getLocalizedName()); // WAILA is retarded...
 		setFluidStack(FL.make(aFluid, 1000));
 		if (aHide) ST.hide(this);
 	}
@@ -225,7 +225,7 @@ public abstract class BlockWaterlike extends BlockFluidClassic implements IBlock
 	
 	@Override
 	public void onHeadInside(EntityLivingBase aEntity, World aWorld, int aX, int aY, int aZ) {
-		if (!mEffects.isEmpty() && (FL.gas(mFluid) ? !UT.Entities.isImmuneToBreathingGases(aEntity) : !UT.Entities.isWearingFullChemHazmat(aEntity))) {
+		if (!aWorld.isRemote && !mEffects.isEmpty() && (FL.gas(mFluid) ? !UT.Entities.isImmuneToBreathingGases(aEntity) : !UT.Entities.isWearingFullChemHazmat(aEntity))) {
 			for (int[] tEffects : mEffects) UT.Entities.applyPotion(aEntity, tEffects[0], tEffects[1], tEffects[2], F);
 			if (getMaterial() != Material.water && SERVER_TIME % 20 == 0) aEntity.attackEntityFrom(DamageSource.drown, 2.0F);
 		}

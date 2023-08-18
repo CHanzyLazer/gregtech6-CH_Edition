@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,18 +19,10 @@
 
 package gregapi.tileentity.connectors;
 
-import static gregapi.data.CS.*;
-import static gregtechCH.data.CS_CH.*;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetDebugInfo;
 import gregapi.code.ArrayListNoNulls;
 import gregapi.code.HashSetNoNulls;
 import gregapi.code.TagData;
-import gregapi.data.CS.SFX;
 import gregapi.data.LH;
 import gregapi.data.LH.Chat;
 import gregapi.data.MT;
@@ -55,6 +47,13 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.*;
 
 /**
  * @author Gregorius Techneticies
@@ -104,13 +103,16 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 	}
 	
 	@Override
-	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
+	protected void toolTipsDescribe(List<String> aList) {
 		aList.add(Chat.CYAN + LH_CH.get(LH_CH.AXLE_STATS_SPEED) + mSpeed + " " + TD.Energy.RU.getLocalisedNameShort());
 		aList.add(Chat.CYAN + LH_CH.get(LH_CH.AXLE_STATS_POWER) + mPower);
-		super.addToolTips(aList, aStack, aF3_H);
+	}
+	@Override
+	protected void toolTipsOther(List<String> aList, ItemStack aStack, boolean aF3_H) {
+		super.toolTipsOther(aList, aStack, aF3_H);
 		aList.add(Chat.DGRAY + LH.get(LH.TOOL_TO_SET_OUTPUT_MONKEY_WRENCH));
 		aList.add(Chat.DGRAY + LH.get(LH.TOOL_TO_DETAIL_MAGNIFYINGGLASS));
-		aList.add(LH.Chat.DGRAY + LH_CH.get(LH_CH.TOOL_TO_DETAIL_MAGNIFYINGGLASS_SNEAK));
+		aList.add(Chat.DGRAY + LH_CH.get(LH_CH.TOOL_TO_MEASURE_TACHOMETER));
 	}
 	
 	// GTCH, 使用活动扳手调整限制输出方向
@@ -124,23 +126,13 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 			byte aTargetSide = UT.Code.getSideWrenching(aSide, aHitX, aHitY, aHitZ);
 			if (connected(aTargetSide)) {
 				mEnergyDir = (mEnergyDir == aTargetSide) ? SIDE_ANY : aTargetSide;
-//				if (aChatReturn != null) aChatReturn.add(mEnergyDir == SIDE_ANY?"Can transfer energy to both sides":"Only transfer energy to Selected Side");
+				if (aChatReturn != null) aChatReturn.add(mEnergyDir==SIDE_ANY ? "Can transfer energy to both sides" : "Only transfer energy to Selected Side");
+				causeBlockUpdate();
+				doEnetUpdate();
 				return 2500;
 			} else {
 				return 0;
 			}
-		}
-		if (aTool.equals(TOOL_magnifyingglass) && aSneaking) {
-			if (mTransferredLast > 0) {
-				if (aChatReturn != null) {
-					aChatReturn.add(mSpeedLast<0 ? "Counterclockwise" : "Clockwise");
-					aChatReturn.add("Speed: " + Math.abs(mSpeedLast));
-					aChatReturn.add("Power: " + mPowerLast);
-				}
-			} else {
-				if (aChatReturn != null) aChatReturn.add("No transferred energy");
-			}
-			return 1;
 		}
 		if (aTool.equals(TOOL_magnifyingglass)) {
 			checkConnection();
@@ -149,8 +141,13 @@ public class MultiTileEntityAxle extends TileEntityBase11ConnectorStraight imple
 				mOutMark = T;
 			}
 			if (aChatReturn != null) {
-				aChatReturn.add((mEnergyDir == SIDE_ANY)?"Can transfer energy to both sides":"Only transfer energy to Marked Side");
+				if (mTransferredLast > 0) aChatReturn.add(mSpeedLast<0 ? "Counterclockwise" : "Clockwise");
+				aChatReturn.add((mEnergyDir==SIDE_ANY) ? "Can transfer energy to both sides" : "Only transfer energy to Marked Side");
 			}
+			return 1;
+		}
+		if (aTool.equals(TOOL_tachometer)) {
+			if (aChatReturn != null) aChatReturn.add(mTransferredLast>0 ? String.format("%d RU/t (Speed: %d, Power: %d)", mTransferredLast, Math.abs(mSpeedLast), mPowerLast) : "No transferred energy");
 			return 1;
 		}
 		return 0;

@@ -15,6 +15,7 @@ import gregapi.tileentity.machines.ITileEntityRunningActively;
 import gregapi.util.UT;
 import gregtechCH.data.LH_CH;
 import gregtechCH.tileentity.ITileEntityNameCompat;
+import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.IInventory;
@@ -31,7 +32,7 @@ public class MultiTileEntityTransformerRotation extends TileEntityBase09FacingSi
     
     public long mPower = 0, mSpeed = 0, mEnergy = 0;
     public boolean mStopped = F;
-    public boolean mReversed = F;
+    public boolean mReversed = F, oReversed = F;
     public boolean mCounterClockwise = F, oCounterClockwise = F;
     
     public boolean mActive = F, oActive = F;
@@ -47,7 +48,7 @@ public class MultiTileEntityTransformerRotation extends TileEntityBase09FacingSi
         if (aNBT.hasKey(NBT_ENERGY)) mEnergy = aNBT.getLong(NBT_ENERGY);
         if (aNBT.hasKey(NBT_STOPPED)) mStopped = aNBT.getBoolean(NBT_STOPPED);
         if (aNBT.hasKey(NBT_REVERSED)) mReversed = aNBT.getBoolean(NBT_REVERSED);
-        if (aNBT.hasKey(NBT_REVERSED)) mCounterClockwise = aNBT.getBoolean(NBT_REVERSED);
+        if (aNBT.hasKey(NBT_REVERSED+".rotation")) mCounterClockwise = aNBT.getBoolean(NBT_REVERSED+".rotation");
         
         if (aNBT.hasKey(NBT_OUTPUT)) mRate = aNBT.getLong(NBT_OUTPUT);
         if (aNBT.hasKey(NBT_MULTIPLIER)) mMultiplier = aNBT.getLong(NBT_MULTIPLIER);
@@ -60,12 +61,12 @@ public class MultiTileEntityTransformerRotation extends TileEntityBase09FacingSi
         UT.NBT.setNumber(aNBT, NBT_ENERGY, mEnergy);
         UT.NBT.setBoolean(aNBT, NBT_STOPPED, mStopped);
         UT.NBT.setBoolean(aNBT, NBT_REVERSED, mReversed);
-        UT.NBT.setBoolean(aNBT, NBT_REVERSED, mCounterClockwise);
+        UT.NBT.setBoolean(aNBT, NBT_REVERSED+".rotation", mCounterClockwise);
     }
     
     // tooltips
     static {
-        LH_CH.add("gtch.tooltip.transformer.rotation.1", "Retain at least 1 Power in Reversed Mode");
+        LH_CH.add("gtch.tooltip.transformer.rotation.1", "Retain at least 1 Power in Reversed mode");
     }
     @Override
     public final void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
@@ -75,6 +76,7 @@ public class MultiTileEntityTransformerRotation extends TileEntityBase09FacingSi
         toolTipsOther(aList, aStack, aF3_H);
     }
     protected void toolTipsEnergy(List<String> aList) {
+        aList.add(LH.getToolTipEfficiency(10000));
         aList.add(LH.Chat.CYAN 	+ LH_CH.get(LH_CH.TRANSFORMER_NORMAL));
         aList.add(LH.Chat.GREEN	+ LH.get(LH.ENERGY_INPUT ) + ": " + LH.Chat.WHITE 						+ getESIRecN() + " " + mEnergyTypeAccepted.getLocalisedChatNameShort() + LH.Chat.WHITE + "/t (" + LH_CH.getNumber(LH_CH.ENERGY_TO, getESIMinN(), getESIMaxN()) + ", "+getLocalisedInputSide()  +")");
         aList.add(LH.Chat.RED	+ LH.get(LH.ENERGY_OUTPUT) + ": " + LH.Chat.WHITE + mMultiplier + "x " 	+ getESORecN() + " " + mEnergyTypeEmitted.getLocalisedChatNameShort()  + LH.Chat.WHITE + "/t (" + LH_CH.getNumber(LH_CH.ENERGY_TO, getESOMinN(), getESOMaxN()) + ", "+getLocalisedOutputSide() +")");
@@ -106,6 +108,7 @@ public class MultiTileEntityTransformerRotation extends TileEntityBase09FacingSi
             return 10000;
         }
         if (aTool.equals(TOOL_magnifyingglass)) {
+            if (mActive) aChatReturn.add(mCounterClockwise ? "Counterclockwise" : "Clockwise");
             if (aChatReturn != null) aChatReturn.add(mReversed ? "Reversed" : "Normal");
             return 1;
         }
@@ -269,31 +272,37 @@ public class MultiTileEntityTransformerRotation extends TileEntityBase09FacingSi
         {sOverlayFrontActiveL, sOverlayBackActiveL, sOverlaySideActiveL},
     };
     
-    @Override
-    public boolean onTickCheck(long aTimer) {
-        return oActive != mActive || mCounterClockwise != oCounterClockwise || super.onTickCheck(aTimer);
+    @Override public boolean onTickCheck(long aTimer) {
+        return oActive != mActive || mCounterClockwise != oCounterClockwise || mReversed != oReversed || super.onTickCheck(aTimer);
     }
-    @Override
-    public void onTickResetChecks(long aTimer, boolean aIsServerSide) {
+    @Override public void onTickResetChecks(long aTimer, boolean aIsServerSide) {
         super.onTickResetChecks(aTimer, aIsServerSide);
         oActive = mActive;
         oCounterClockwise = mCounterClockwise;
+        oReversed = mReversed;
     }
     @Override public void setVisualData(byte aData) {
         mActive     		= ((aData & 1)  != 0);
         mCounterClockwise   = ((aData & 2)  != 0);
+        mReversed           = ((aData & 4)  != 0);
     }
-    @Override public byte getVisualData() {return (byte)((mActive?1:0) | (mCounterClockwise?2:0));}
+    @Override public byte getVisualData() {return (byte)((mActive?1:0) | (mCounterClockwise?2:0) | (mReversed?4:0));}
     
     @Override public byte getDefaultSide() {return SIDE_DOWN;}
     
-    @Override
-    public ITexture getTexture2(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
+    // GTCH, 统一计算标记颜色
+    protected int mRGBaMark;
+    @Override public int getRenderPasses2(Block aBlock, boolean[] aShouldSideBeRendered) {mRGBaMark = UT_CH.Code.getMarkRGB(mRGBa); return 1;}
+    
+    @Override public ITexture getTexture2(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
         if (!aShouldSideBeRendered[aSide]) return null;
         int aIndex1, aIndex2;
         aIndex1 = mActive ? (mCounterClockwise? 2 : 1) : 0;
         aIndex2 = (aSide == mFacing)? 0 : ((aSide == OPOS[mFacing])? 1 : 2);
-        return BlockTextureMulti.get(BlockTextureDefault.get(sColoreds[aIndex1][aIndex2], mRGBa), BlockTextureDefault.get(sOverlays[aIndex1][aIndex2], mRGBa));
+        ITexture tTexture = BlockTextureMulti.get(BlockTextureDefault.get(sColoreds[aIndex1][aIndex2], mRGBa), BlockTextureDefault.get(sOverlays[aIndex1][aIndex2], mRGBa));
+        if (aSide ==      mFacing ) tTexture = BlockTextureMulti.get(tTexture, BlockTextureDefault.get(mReversed ? Textures.BlockIcons.ARROW_OUT : Textures.BlockIcons.ARROW_IN, mRGBaMark));
+        if (aSide == OPOS[mFacing]) tTexture = BlockTextureMulti.get(tTexture, BlockTextureDefault.get(mReversed ? Textures.BlockIcons.ARROW_IN : Textures.BlockIcons.ARROW_OUT, mRGBaMark));
+        return tTexture;
     }
     
     @Override public String getTileEntityName() {return "gt.multitileentity.transformers.transformer_rotation";}

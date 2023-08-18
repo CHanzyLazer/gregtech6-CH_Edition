@@ -25,8 +25,7 @@ public abstract class TickTask<TE extends ITileEntityUnloadable & ITileEntityErr
         } catch (Throwable e) {
             mError = T;
             mTE.setError(errorMessage() + e);
-            //noinspection SynchronizeOnNonFinalField
-            synchronized (ERR) {e.printStackTrace(ERR);}
+            e.printStackTrace(ERR);
         }
     }
     // 重写 hashCode 以及 equals 来方便移除

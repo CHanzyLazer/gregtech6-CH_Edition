@@ -212,17 +212,20 @@ public abstract class TileEntityBase10ConnectorRendered extends TileEntityBase09
 	}
 	
 	@Override
-	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
+	public final void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
+		toolTipsDescribe(aList);
+		toolTipsUseful(aList);
 		toolTipsImportant(aList);
 		toolTipsHazard(aList);
 //		if (Keyboard.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode())) // 可以实现按键显示更多 tooltips
 		toolTipsOther(aList, aStack, aF3_H);
 	}
+	protected void toolTipsDescribe(List<String> aList) {/**/}
+	protected void toolTipsUseful(List<String> aList) {/**/}
 	protected void toolTipsImportant(List<String> aList) {
 		if (mOwnable) aList.add(Chat.ORANGE + LH.get(LH.OWNER_CONTROLLED));
 	}
-	protected void toolTipsHazard(List<String> aList) {
-	}
+	protected void toolTipsHazard(List<String> aList) {/**/}
 	protected void toolTipsOther(List<String> aList, ItemStack aStack, boolean aF3_H) {
 		super.addToolTips(aList, aStack, aF3_H);
 	}

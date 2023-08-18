@@ -176,6 +176,8 @@ public abstract class MTEC_BasicMachine_Greg implements IMTEC_BasicMachine, IMTE
     // 配方处理相关
     // 你不会希望重写这么复杂的函数的，将其中的一些过程改成独立的函数单独重写
     protected final int canOutput(Recipe aRecipe) {
+        mTE.doOutputItems();
+        
         int rMaxTimes = calMaxProcessCountFirst(aRecipe);
         
         for (int i = 0, j = mTE.mRecipes.mInputItemsCount; i < mTE.mRecipes.mOutputItemsCount && i < aRecipe.mOutputs.length; i++, j++) if (ST.valid(aRecipe.mOutputs[i])) {
@@ -243,15 +245,11 @@ public abstract class MTEC_BasicMachine_Greg implements IMTEC_BasicMachine, IMTE
      * @return see constants above
      */
     // 你不会希望重写这么复杂的函数的，将其中的一些过程改成独立的函数单独重写
-    public final int checkRecipe(boolean aApplyRecipe, boolean aUseAutoInputs) {
+    public final int checkRecipe(boolean aApplyRecipe, boolean aUseAutoIO) {
         mTE.mCouldUseRecipe = F;
         if (mTE.mRecipes == null) return DID_NOT_FIND_RECIPE;
         
-        byte tAutoInput = FACING_TO_SIDE[mTE.mFacing][mTE.mItemAutoInput];
-        
-        if (aUseAutoInputs && !mTE.mDisabledItemInput && SIDES_VALID[tAutoInput]) {
-            ST.moveAll(mTE.getItemInputTarget(tAutoInput), mTE.delegator(tAutoInput));
-        }
+        if (aUseAutoIO) mTE.doInputItems();
         
         int tInputItemsCount = 0, tInputFluidsCount = 0;
         ItemStack[] tInputs = new ItemStack[mTE.mRecipes.mInputItemsCount];
@@ -260,8 +258,8 @@ public abstract class MTEC_BasicMachine_Greg implements IMTEC_BasicMachine, IMTE
             if (ST.valid(tInputs[i])) tInputItemsCount++;
         }
         
-        tAutoInput = FACING_TO_SIDE[mTE.mFacing][mTE.mFluidAutoInput];
-        if (aUseAutoInputs && !mTE.mDisabledFluidInput && SIDES_VALID[tAutoInput]) {
+        byte tAutoInput = FACING_TO_SIDE[mTE.mFacing][mTE.mFluidAutoInput];
+        if (aUseAutoIO && !mTE.mDisabledFluidInput && SIDES_VALID[tAutoInput]) {
             DelegatorTileEntity<IFluidHandler> tTileEntity = mTE.getFluidInputTarget(tAutoInput);
             if (tTileEntity != null && tTileEntity.mTileEntity != null) {
                 FluidTankInfo[] tInfos = tTileEntity.mTileEntity.getTankInfo(FORGE_DIR[tTileEntity.mSideOfTileEntity]);
@@ -345,19 +343,19 @@ public abstract class MTEC_BasicMachine_Greg implements IMTEC_BasicMachine, IMTE
     // 根据并行数，配方类型等计算处理需要的能量和最低能量，用于重写
     protected void calMaxProgress(int aProcessCount, Recipe aRecipe) {
         if (mParallelDuration) {
-            mMinEnergy = Math.max(1, (mTE.mEnergyTypeAccepted == TD.Energy.RF ? aRecipe.mEUt * RF_PER_EU : mTE.mEnergyTypeAccepted == TD.Energy.TU ? aRecipe.mEUt : aRecipe.mEUt));
+            mMinEnergy = Math.max(1, (mTE.mEnergyTypeAccepted == TD.Energy.RF ? aRecipe.mEUt * RF_PER_EU : aRecipe.mEUt));
             mMaxProgress = Math.max(1, UT.Code.units(mMinEnergy * Math.max(1, aRecipe.mDuration) * aProcessCount, mTE.mEfficiency, 10000, T));
         } else {
             mMinEnergy = Math.max(1, (mTE.mEnergyTypeAccepted == TD.Energy.RF ? aRecipe.mEUt * RF_PER_EU * aProcessCount : mTE.mEnergyTypeAccepted == TD.Energy.TU ? aRecipe.mEUt : aRecipe.mEUt * aProcessCount));
             mMaxProgress = Math.max(1, UT.Code.units(mMinEnergy * Math.max(1, aRecipe.mDuration), mTE.mEfficiency, 10000, T));
         }
-        if (mMinEnergy > 0 && !mTE.mCheapOverclocking) while (mMinEnergy < mInputMin && mMinEnergy * 4 <= mInputMax) {mMinEnergy *= 4; mMaxProgress *= 2;}
+        if (!mTE.mCheapOverclocking) while (mMinEnergy < mInputMin && mMinEnergy * 4 <= mInputMax) {mMinEnergy *= 4; mMaxProgress *= 2;}
     }
     
     @Override public void doWorkFirst(long aTimer) {/**/}
     
     @Override public boolean doWorkCheck(long aTimer) {
-        return (mEnergy >= mInputMin || mTE.mEnergyTypeAccepted == TD.Energy.TU) && mEnergy >= mMinEnergy && mTE.isStructureOkay();
+        return mEnergy >= mInputMin && mEnergy >= mMinEnergy && mTE.isStructureOkay();
     }
     @Override public void doWorkActive(long aTimer) {
         mTE.mActive = doActive(aTimer, Math.min(mInputMax, mEnergy));
@@ -480,6 +478,7 @@ public abstract class MTEC_BasicMachine_Greg implements IMTEC_BasicMachine, IMTE
     protected boolean doInactive(long aTimer) {
         if (mTE.mActive) {
             mTE.doSoundInterrupt();
+            mTE.doOutputItems();
             if (!mTE.mDisabledItemOutput) mTE.doOutputItems();
         }
         if (CONSTANT_ENERGY && !mTE.mNoConstantEnergy) mProgress = 0;
@@ -491,8 +490,8 @@ public abstract class MTEC_BasicMachine_Greg implements IMTEC_BasicMachine, IMTE
     
     
     public boolean hasWork() {return mMaxProgress > 0 || mChargeRequirement > 0;}
-    public long getProgressValue(byte aSide) {return mTE.mSuccessful ? getProgressMax(aSide) : mMinEnergy < 1 ? mProgress    : mProgress    / mMinEnergy + (mProgress    % mMinEnergy == 0 ? 0 : 1) ;}
-    public long getProgressMax  (byte aSide) {return Math.max(1,                           mMinEnergy < 1 ? mMaxProgress : mMaxProgress / mMinEnergy + (mMaxProgress % mMinEnergy == 0 ? 0 : 1));}
+    public long getProgressValue(byte aSide) {return mTE.mSuccessful ? getProgressMax(aSide) : mMinEnergy < 1 ? mProgress    : UT.Code.divup(mProgress    , mMinEnergy ) ;}
+    public long getProgressMax  (byte aSide) {return Math.max(1,                               mMinEnergy < 1 ? mMaxProgress : UT.Code.divup(mMaxProgress , mMinEnergy ));}
     
     public boolean canFillExtra(FluidStack aFluid) {
         if (mCanFillSteam) return FL.anysteam(aFluid);

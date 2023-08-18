@@ -88,7 +88,7 @@ public class ConfigForge {
         
         DATA_GTCH.disableAllStoragePowerconducting = ConfigsGTCH.GTCH.get(ConfigCategories_CH.general, "disable_all_storage_powerconducting_(gt6_false)", T);
         
-        DATA_GTCH.markRatio = Math.min(1.0F, Math.max((float)ConfigsGTCH.GTCH.get(ConfigCategories_CH.colour, "mark_ratio_(gt6_?)", 0.125), 0.0F));
+        DATA_GTCH.markRatio = Math.min(1.0F, Math.max((float)ConfigsGTCH.GTCH.get(ConfigCategories_CH.colour, "mark_ratio_(gt6_?)", 0.25), 0.0F));
         DATA_GTCH.mixBaseRatio = Math.min(1.0F, Math.max((float)ConfigsGTCH.GTCH.get(ConfigCategories_CH.colour, "colour_mix_base_ratio_(gt6_0.0)", 0.5), 0.0F));
         DATA_GTCH.mixPaintRatio = Math.min(1.0F, Math.max((float)ConfigsGTCH.GTCH.get(ConfigCategories_CH.colour, "colour_mix_paint_ratio_(gt6_1.0)", 0.15), 0.0F));
         

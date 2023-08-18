@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021 GregTech-6 Team
+ * Copyright (c) 2023 GregTech-6 Team
  *
  * This file is part of GregTech.
  *
@@ -19,16 +19,11 @@
 
 package gregtech.blocks.tree;
 
-import static gregapi.data.CS.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.block.tree.BlockBaseLeaves;
 import gregapi.code.ArrayListNoNulls;
-import gregapi.data.CS.BlocksGT;
+import gregapi.data.CS.*;
 import gregapi.data.IL;
 import gregapi.data.LH;
 import gregapi.data.OP;
@@ -42,25 +37,30 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static gregapi.data.CS.*;
+
 public class BlockTreeLeavesCD extends BlockBaseLeaves implements Runnable {
 	public BlockTreeLeavesCD(String aUnlocalised, Block aSaplings) {
 		super(null, aUnlocalised, Material.leaves, soundTypeGrass, 1, Textures.BlockIcons.LEAVES_CD, aSaplings, new Block[] {BlocksGT.LogC, BlocksGT.LogC, BlocksGT.LogC, BlocksGT.LogC, BlocksGT.LogD, BlocksGT.LogD, BlocksGT.LogD, BlocksGT.LogD}, new byte[] {0, 1, 2, 3, 0, 1, 2, 3});
-		LH.add(getUnlocalizedName()+ ".0.name", "Blue Spruce Leaves");
-	//  LH.add(getUnlocalizedName()+ ".1.name", " Leaves");
-	//  LH.add(getUnlocalizedName()+ ".2.name", " Leaves");
-	//  LH.add(getUnlocalizedName()+ ".3.name", " Leaves");
-	//  LH.add(getUnlocalizedName()+ ".4.name", " Leaves");
-	//  LH.add(getUnlocalizedName()+ ".5.name", " Leaves");
-	//  LH.add(getUnlocalizedName()+ ".6.name", " Leaves");
-	//  LH.add(getUnlocalizedName()+ ".7.name", " Leaves");
-		LH.add(getUnlocalizedName()+ ".8.name", "Blue Spruce Leaves");
-	//  LH.add(getUnlocalizedName()+ ".9.name", " Leaves");
-	//  LH.add(getUnlocalizedName()+".10.name", " Leaves");
-	//  LH.add(getUnlocalizedName()+".11.name", " Leaves");
-	//  LH.add(getUnlocalizedName()+".12.name", " Leaves");
-	//  LH.add(getUnlocalizedName()+".13.name", " Leaves");
-	//  LH.add(getUnlocalizedName()+".14.name", " Leaves");
-	//  LH.add(getUnlocalizedName()+".15.name", " Leaves");
+		LH.add(getUnlocalizedName()+ ".0", "Blue Spruce Leaves");
+	//  LH.add(getUnlocalizedName()+ ".1", " Leaves");
+	//  LH.add(getUnlocalizedName()+ ".2", " Leaves");
+	//  LH.add(getUnlocalizedName()+ ".3", " Leaves");
+	//  LH.add(getUnlocalizedName()+ ".4", " Leaves");
+	//  LH.add(getUnlocalizedName()+ ".5", " Leaves");
+	//  LH.add(getUnlocalizedName()+ ".6", " Leaves");
+	//  LH.add(getUnlocalizedName()+ ".7", " Leaves");
+		LH.add(getUnlocalizedName()+ ".8", "Blue Spruce Leaves");
+	//  LH.add(getUnlocalizedName()+ ".9", " Leaves");
+	//  LH.add(getUnlocalizedName()+".10", " Leaves");
+	//  LH.add(getUnlocalizedName()+".11", " Leaves");
+	//  LH.add(getUnlocalizedName()+".12", " Leaves");
+	//  LH.add(getUnlocalizedName()+".13", " Leaves");
+	//  LH.add(getUnlocalizedName()+".14", " Leaves");
+	//  LH.add(getUnlocalizedName()+".15", " Leaves");
 		
 		for (int i = 0; i < maxMeta(); i++) {
 			OM.reg(ST.make(this, 1, i), OP.treeLeaves);
@@ -96,7 +96,7 @@ public class BlockTreeLeavesCD extends BlockBaseLeaves implements Runnable {
 	
 	@Override
 	public ArrayList<ItemStack> getDrops(World aWorld, int aX, int aY, int aZ, int aMeta, int aFortune) {
-		ArrayListNoNulls<ItemStack> rDrops = new ArrayListNoNulls<>();
+		ArrayListNoNulls<ItemStack> rDrops = ST.arraylist();
 		int tChance = 50;
 		if (aFortune > 0) {
 			tChance -= 5 << aFortune;

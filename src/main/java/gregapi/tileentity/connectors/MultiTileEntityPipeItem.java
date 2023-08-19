@@ -26,11 +26,8 @@ import gregapi.code.ArrayListNoNulls;
 import gregapi.code.TagData;
 import gregapi.cover.CoverData;
 import gregapi.cover.covers.CoverFilterItem;
-import gregapi.data.ANY;
-import gregapi.data.LH;
+import gregapi.data.*;
 import gregapi.data.LH.Chat;
-import gregapi.data.OP;
-import gregapi.data.TD;
 import gregapi.old.Textures;
 import gregapi.oredict.OreDictManager;
 import gregapi.oredict.OreDictMaterial;
@@ -44,7 +41,6 @@ import gregapi.tileentity.data.ITileEntityProgress;
 import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.util.ST;
 import gregapi.util.UT;
-import gregtechCH.data.LH_CH;
 import gregtechCH.tileentity.compat.PipeCompat;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.IInventory;
@@ -78,8 +74,12 @@ public class MultiTileEntityPipeItem extends TileEntityBase10ConnectorRendered i
 		OreDictManager.INSTANCE.setTarget_(OP.pipeLarge                , aMat, aRegistry.add("Large " + aMat.getLocal() + " Item Pipe"             , "Item Pipes", aID+ 3, aCreativeTabID, aClass, aMat.mToolQuality, 32, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 6.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[12], NBT_PIPESIZE, aStepSize /   2, NBT_INV_SIZE, aInvSize*2, NBT_OPAQUE, aBlocking), aRecipe?new Object[]{"PPP", "wzh", "PPP", 'P', OP.plateCurved.dat(aMat)}:ZL), T, F, T);
 		OreDictManager.INSTANCE.setTarget_(OP.pipeHuge                 , aMat, aRegistry.add("Huge " + aMat.getLocal() + " Item Pipe"              , "Item Pipes", aID+ 4, aCreativeTabID, aClass, aMat.mToolQuality, 16, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 6.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[16], NBT_PIPESIZE, aStepSize /   4, NBT_INV_SIZE, aInvSize*4, NBT_OPAQUE, aBlocking), aRecipe?new Object[]{"PPP", "wzh", "PPP", 'P', OP.plateDouble.dat(aMat)}:ZL), T, F, T);
 		OreDictManager.INSTANCE.setTarget_(OP.pipeRestrictiveMedium    , aMat, aRegistry.add("Restrictive " + aMat.getLocal() + " Item Pipe"       , "Item Pipes", aID+ 5, aCreativeTabID, aClass, aMat.mToolQuality, 64, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 6.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 1, NBT_DIAMETER, PX_P[ 8], NBT_PIPESIZE, aStepSize * 100, NBT_INV_SIZE, aInvSize  , NBT_OPAQUE, aBlocking), aRecipe?new Object[]{" h ", "RPR", " R ", 'P', OP.pipeMedium.dat(aMat), 'R', OP.ring.dat(ANY.Steel)}:ZL), T, F, T);
-		OreDictManager.INSTANCE.setTarget_(OP.pipeRestrictiveLarge     , aMat, aRegistry.add("Restrictive Large " + aMat.getLocal() + " Item Pipe" , "Item Pipes", aID+ 6, aCreativeTabID, aClass, aMat.mToolQuality, 32, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 6.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 1, NBT_DIAMETER, PX_P[12], NBT_PIPESIZE, aStepSize *  50, NBT_INV_SIZE, aInvSize*2, NBT_OPAQUE, aBlocking), aRecipe?new Object[]{"hR ", "RPR", " R ", 'P', OP.pipeLarge.dat(aMat), 'R', OP.ring.dat(ANY.Steel)}:ZL), T, F, T);
-		OreDictManager.INSTANCE.setTarget_(OP.pipeRestrictiveHuge      , aMat, aRegistry.add("Restrictive Huge " + aMat.getLocal() + " Item Pipe"  , "Item Pipes", aID+ 7, aCreativeTabID, aClass, aMat.mToolQuality, 16, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 6.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 1, NBT_DIAMETER, PX_P[16], NBT_PIPESIZE, aStepSize *  25, NBT_INV_SIZE, aInvSize*4, NBT_OPAQUE, aBlocking), aRecipe?new Object[]{" h ", "RPR", "RRR", 'P', OP.pipeHuge.dat(aMat), 'R', OP.ring.dat(ANY.Steel)}:ZL), T, F, T);
+		OreDictManager.INSTANCE.setTarget_(OP.pipeRestrictiveLarge     , aMat, aRegistry.add("Restrictive Large " + aMat.getLocal() + " Item Pipe" , "Item Pipes", aID+ 6, aCreativeTabID, aClass, aMat.mToolQuality, 32, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 6.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 1, NBT_DIAMETER, PX_P[12], NBT_PIPESIZE, aStepSize *  50, NBT_INV_SIZE, aInvSize*2, NBT_OPAQUE, aBlocking), aRecipe?new Object[]{"hR ", "RPR", " R ", 'P', OP.pipeLarge .dat(aMat), 'R', OP.ring.dat(ANY.Steel)}:ZL), T, F, T);
+		OreDictManager.INSTANCE.setTarget_(OP.pipeRestrictiveHuge      , aMat, aRegistry.add("Restrictive Huge " + aMat.getLocal() + " Item Pipe"  , "Item Pipes", aID+ 7, aCreativeTabID, aClass, aMat.mToolQuality, 16, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 6.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 1, NBT_DIAMETER, PX_P[16], NBT_PIPESIZE, aStepSize *  25, NBT_INV_SIZE, aInvSize*4, NBT_OPAQUE, aBlocking), aRecipe?new Object[]{" h ", "RPR", "RRR", 'P', OP.pipeHuge  .dat(aMat), 'R', OP.ring.dat(ANY.Steel)}:ZL), T, F, T);
+		
+//		// GTCH, 四合一物品管道
+//		OreDictManager.INSTANCE.setTarget_(OP.pipeQuadruple             , aMat, aRegistry.add("Quadruple " + aMat.getLocal() + " Item Pipe"        , "Item Pipes", aID+19, aCreativeTabID, aClass, aMat.mToolQuality, 16, aBlock, UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS, 2.0F, NBT_RESISTANCE, 6.0F, NBT_COLOR, UT.Code.getRGBInt(aMat.fRGBaSolid), NBT_PIPERENDER, 0, NBT_DIAMETER, PX_P[16], NBT_PIPESIZE, aStepSize * 4  , NBT_INV_SIZE, aInvSize  , NBT_OPAQUE, aBlocking), aRecipe?new Object[]{"PP" , "PP"        , 'P', OP.pipeMedium.dat(aMat)}:ZL), T, F, T);
+//		CR.shapeless(aRegistry.getItem(aID+2, 4), CR.DEF_NCC, new Object[] {aRegistry.getItem(aID+19)});
 	}
 	
 	@Override

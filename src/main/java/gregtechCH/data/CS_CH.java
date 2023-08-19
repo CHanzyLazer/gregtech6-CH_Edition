@@ -40,28 +40,28 @@ public class CS_CH {
     public static final int ALPHA_COLOR = 0xff000000;
     // 记录一些方块的颜色
     public static final int
-              COLOR_BEDROCK          = 0x333333
-            , COLOR_COBBLESTONE      = 0x6e6e6e
-            , COLOR_OBSIDIAN         = 0x1e182b
-            , COLOR_GLOWSTONE        = 0x726f49
-            , COLOR_END_PORTAL_FRAME = 0x427367
-            , COLOR_GRASS            = 0x426b27
-            , COLOR_SANDWICH         = 0xf3d5ae
-            , COLOR_LOG              = 0x6d5837
-            , COLOR_WOOD             = 0x926633
-            , COLOR_STONE            = 0x7f7f7f
-            , COLOR_SAND             = 0xddd5a0
-            , COLOR_NETHERRACK       = 0xa65959
-            , COLOR_END_STONE        = 0xebf8b6
-            , COLOR_GREG_O_LANTERN   = 0xe3901d
-            ;
+          COLOR_BEDROCK          = 0x333333
+        , COLOR_COBBLESTONE      = 0x6e6e6e
+        , COLOR_OBSIDIAN         = 0x1e182b
+        , COLOR_GLOWSTONE        = 0x726f49
+        , COLOR_END_PORTAL_FRAME = 0x427367
+        , COLOR_GRASS            = 0x426b27
+        , COLOR_SANDWICH         = 0xf3d5ae
+        , COLOR_LOG              = 0x6d5837
+        , COLOR_WOOD             = 0x926633
+        , COLOR_STONE            = 0x7f7f7f
+        , COLOR_SAND             = 0xddd5a0
+        , COLOR_NETHERRACK       = 0xa65959
+        , COLOR_END_STONE        = 0xebf8b6
+        , COLOR_GREG_O_LANTERN   = 0xe3901d
+        ;
     // 更多的可选颜色
     public static final short[]
-              CA_BLUE_LIGHT_10         = {  0,  10, 255, 255}
-            , CA_BLUE_LIGHT_30         = {  0,  30, 255, 255}
-            , CA_BLUE_LIGHT_50         = {  0,  50, 255, 255}
-            , CA_BLUE_LIGHT_70         = {  0,  70, 255, 255}
-            ;
+          CA_BLUE_LIGHT_10         = {  0,  10, 255, 255}
+        , CA_BLUE_LIGHT_30         = {  0,  30, 255, 255}
+        , CA_BLUE_LIGHT_50         = {  0,  50, 255, 255}
+        , CA_BLUE_LIGHT_70         = {  0,  70, 255, 255}
+        ;
     // 事先计算的一些方块的颜色，可以避免调用时频繁计算颜色值
     public static final int[] DYES_INT_Asphalt  = new int[DYES_INT.length];
     public static final int[] DYES_INT_CFoam    = new int[DYES_INT.length];
@@ -82,22 +82,22 @@ public class CS_CH {
     
     /** 将连接 byte 转换为侧边 byte， 没有连接的为 6，并且会优先排列在轴上前后都连接的（用于优化管道的环境光遮蔽），使用 CONNECTED_SIDE_AXIS[connection][0] 可以调用最长的连接方向，相同长度时优先级为 x z y */
     public static final byte[][] CONNECTED_SIDE_AXIS = {
-            {6,6,6,6,6,6}, {0,6,6,6,6,6}, {1,6,6,6,6,6}, {0,1,6,6,6,6},
-            {2,6,6,6,6,6}, {2,0,6,6,6,6}, {2,1,6,6,6,6}, {0,1,2,6,6,6},
-            {3,6,6,6,6,6}, {3,0,6,6,6,6}, {3,1,6,6,6,6}, {0,1,3,6,6,6},
-            {2,3,6,6,6,6}, {2,3,0,6,6,6}, {2,3,1,6,6,6}, {2,3,0,1,6,6},
-            {4,6,6,6,6,6}, {4,0,6,6,6,6}, {4,1,6,6,6,6}, {0,1,4,6,6,6},
-            {4,2,6,6,6,6}, {4,2,0,6,6,6}, {4,2,1,6,6,6}, {0,1,2,4,6,6},
-            {4,3,6,6,6,6}, {4,3,0,6,6,6}, {4,3,1,6,6,6}, {0,1,3,4,6,6},
-            {2,3,4,6,6,6}, {2,3,0,4,6,6}, {2,3,1,4,6,6}, {2,3,0,1,4,6},
-            {5,6,6,6,6,6}, {5,0,6,6,6,6}, {5,1,6,6,6,6}, {0,1,5,6,6,6},
-            {5,2,6,6,6,6}, {5,2,0,6,6,6}, {5,2,1,6,6,6}, {0,1,2,5,6,6},
-            {5,3,6,6,6,6}, {5,3,0,6,6,6}, {5,3,1,6,6,6}, {0,1,3,5,6,6},
-            {2,3,5,6,6,6}, {2,3,0,5,6,6}, {2,3,1,5,6,6}, {2,3,0,1,5,6},
-            {4,5,6,6,6,6}, {4,5,0,6,6,6}, {4,5,1,6,6,6}, {4,5,0,1,6,6},
-            {4,5,2,6,6,6}, {4,5,0,2,6,6}, {4,5,1,2,6,6}, {4,5,0,1,2,6},
-            {4,5,3,6,6,6}, {4,5,0,3,6,6}, {4,5,1,3,6,6}, {4,5,0,1,3,6},
-            {4,5,2,3,6,6}, {4,5,0,2,3,6}, {4,5,1,2,3,6}, {4,5,0,1,2,3}
+        {6,6,6,6,6,6}, {0,6,6,6,6,6}, {1,6,6,6,6,6}, {0,1,6,6,6,6},
+        {2,6,6,6,6,6}, {2,0,6,6,6,6}, {2,1,6,6,6,6}, {0,1,2,6,6,6},
+        {3,6,6,6,6,6}, {3,0,6,6,6,6}, {3,1,6,6,6,6}, {0,1,3,6,6,6},
+        {2,3,6,6,6,6}, {2,3,0,6,6,6}, {2,3,1,6,6,6}, {2,3,0,1,6,6},
+        {4,6,6,6,6,6}, {4,0,6,6,6,6}, {4,1,6,6,6,6}, {0,1,4,6,6,6},
+        {4,2,6,6,6,6}, {4,2,0,6,6,6}, {4,2,1,6,6,6}, {0,1,2,4,6,6},
+        {4,3,6,6,6,6}, {4,3,0,6,6,6}, {4,3,1,6,6,6}, {0,1,3,4,6,6},
+        {2,3,4,6,6,6}, {2,3,0,4,6,6}, {2,3,1,4,6,6}, {2,3,0,1,4,6},
+        {5,6,6,6,6,6}, {5,0,6,6,6,6}, {5,1,6,6,6,6}, {0,1,5,6,6,6},
+        {5,2,6,6,6,6}, {5,2,0,6,6,6}, {5,2,1,6,6,6}, {0,1,2,5,6,6},
+        {5,3,6,6,6,6}, {5,3,0,6,6,6}, {5,3,1,6,6,6}, {0,1,3,5,6,6},
+        {2,3,5,6,6,6}, {2,3,0,5,6,6}, {2,3,1,5,6,6}, {2,3,0,1,5,6},
+        {4,5,6,6,6,6}, {4,5,0,6,6,6}, {4,5,1,6,6,6}, {4,5,0,1,6,6},
+        {4,5,2,6,6,6}, {4,5,0,2,6,6}, {4,5,1,2,6,6}, {4,5,0,1,2,6},
+        {4,5,3,6,6,6}, {4,5,0,3,6,6}, {4,5,1,3,6,6}, {4,5,0,1,3,6},
+        {4,5,2,3,6,6}, {4,5,0,2,3,6}, {4,5,1,2,3,6}, {4,5,0,1,2,3}
     };
     // 用于指明带有方向的方块材质每个面的方向 [aSide][mDir]
     public static final IconType[][] DIR_ICON = {
@@ -128,83 +128,83 @@ public class CS_CH {
     public static final Set<OreDictPrefix> ALL_CABLE_PREFIX = Sets.newHashSet(cableGt01, cableGt02, cableGt04, cableGt08, cableGt12);
     
     public static final String
-              NBT_CANFILL_STEAM             = "gtch.canfill.steam"          // Boolean, Is this machine can fill steam. CHanzy
-            
-            , NBT_EFFICIENCY_CH             = "gtch.eff"                    // Short from 0 to 10000 describing the global Efficiency, or just for OmniOcular usage. CHanzy
-            , NBT_EFFICIENCY_WATER          = "gtch.eff.water"              // Short from 0 to 10000 describing the water Efficiency. CHanzy
-            , NBT_EFFICIENCY_OC             = "gtch.eff.oc"                 // Short from 0 to 10000 describing the overclocking Efficiency. CHanzy
-            , NBT_EFFICIENCY_NUM            = "gtch.eff.numerical"          // Short from 0 to 10000 describing the numerical Efficiency. CHanzy
-            
-            , NBT_ENERGY_EFF                = "gtch.energy.eff"             // Long, The effective energy of boiler. CHanzy
-            , NBT_ENERGY_PRE                = "gtch.energy.pre"             // Long, The previous energy of boiler. CHanzy
-            , NBT_ENERGY_SU_PRE             = "gtch.energy.su.pre"          // Long, The previous steam of turbines. CHanzy
-            
-            , NBT_INPUT_REC                 = "gtch.input.rec"              // Long, Recommend input energy, for OmniOcular usage. CHanzy
-            , NBT_INPUT_NOW                 = "gtch.input.now"              // Long, Current input energy, for OmniOcular usage. CHanzy
-            , NBT_INPUT_BUFFER              = "gtch.input.buffer"           // Long, Input Buffer to let output smooth. CHanzy
-            , NBT_OUTPUT_REC                = "gtch.output.rec"             // Long, Recommend output energy, for OmniOcular usage. CHanzy
-            , NBT_OUTPUT_NOW                = "gtch.output.now"             // Long, Current output energy, for OmniOcular usage. CHanzy
-            , NBT_OUTPUT_SELF               = "gtch.output.self"            // Boolean, Is the main multiblock output energy self. CHanzy
-            
-            , NBT_FAST                      = "gtch.fast"                   // Boolean, Is fast animation. CHanzy
-            
-            , NBT_PREHEAT                   = "gtch.preheat"                // Boolean, Is machine preheating, for OmniOcular usage. CHanzy
-            , NBT_PREHEAT_ENERGY            = "gtch.preheat.energy"         // Long, Energy required for preheating. CHanzy
-            , NBT_PREHEAT_RATE              = "gtch.preheat.rate"           // Long, Rate in preheating. CHanzy
-            , NBT_PREHEAT_COST              = "gtch.preheat.cost"           // Long, Energy cost Rate in preheating. CHanzy
-            
-            , NBT_PROGRESS_RATE             = "gtch.progress.rate"          // Long, Rate of progress of machine. CHanzy
-            
-            , NBT_COOLDOWN_CH               = "gtch.cooldown"               // Boolean, Is machine cooldown, for OmniOcular usage. CHanzy
-            , NBT_COOLDOWN_RATE             = "gtch.cooldown.rate"          // Long, Rate of cooldown. CHanzy
-            , NBT_COOLDOWN_COUNTER          = "gtch.cooldown.counter"       // Byte, counter of cooldown. CHanzy
-            
-            , NBT_BURNING                   = "gtch.burning"                // Boolean, Is machine burning, for mechine need burning and preheat. CHanzy
-            
-            , NBT_LENGTH_MIN                = "gtch.length.min"             // Integer, The minimum length of turbines or something else. CHanzy
-            , NBT_LENGTH_MAX                = "gtch.length.max"             // Integer, The maximum length of turbines or something else. CHanzy
-            , NBT_LENGTH_MID                = "gtch.length.mid"             // Integer, The middle length of turbines or something else. CHanzy
-            , NBT_LENGTH                    = "gtch.length"                 // Integer, The current length of turbines or something else. CHanzy
-            , NBT_LENGTH_PRE                = "gtch.length.pre"             // Integer, The previous length of turbines or something else. CHanzy
-    
-            , NBT_WIDTH_MIN                = "gtch.width.min"             // Integer, The minimum width of turbines or something else. CHanzy
-            , NBT_WIDTH_MAX                = "gtch.width.max"             // Integer, The maximum width of turbines or something else. CHanzy
-            , NBT_WIDTH_MID                = "gtch.width.mid"             // Integer, The middle width of turbines or something else. CHanzy
-            , NBT_WIDTH                    = "gtch.width"                 // Integer, The current width of turbines or something else. CHanzy
-            , NBT_WIDTH_PRE                = "gtch.width.pre"             // Integer, The previous width of turbines or something else. CHanzy
-            
-            , NBT_LIGHT_VALUE               = "gtch.light.value"            // Byte, The light value of block. CHanzy
-            , NBT_LIGHT_OPACITY             = "gtch.light.opacity"          // Short, The light opacity of block. CHanzy
-            
-            , NBT_BEGIN                     = "gtch.begin"                  // Byte
-            , NBT_END                       = "gtch.end"                    // Byte
-            
-            , NBT_TICK                      = "gtch.tick"                   // Byte
-            
-            , NBT_COLOR_BOTTOM              = "gtch.color.bottom"           // Integer, The bottom (or base) color of paint. CHanzy
-            , NBT_COLOR_ORIGIN              = "gtch.color.origin"           // Integer, The origin color of painted block. CHanzy
-            
-            , NBT_IDMETA                    = "gtch.idmeta"                 // Integer, Containing the combination of the id and meta, CHanzy
-            
-            , NBT_ADD_BOOL                  = "gtch.add.bool"               // Boolean, The additional boolean information that have random name, CHanzy
-            , NBT_ADD_BYTE                  = "gtch.add.byte"               // Byte, The additional byte information that have random name, CHanzy
-            , NBT_ADD_SHORT                 = "gtch.add.short"              // Short, The additional byte information that have random name, CHanzy
-            , NBT_ADD_INT                   = "gtch.add.int"                // Integer, The additional byte information that have random name, CHanzy
-            , NBT_ADD_LONG                  = "gtch.add.long"               // Long, The additional byte information that have random name, CHanzy
-            ;
+          NBT_CANFILL_STEAM             = "gtch.canfill.steam"          // Boolean, Is this machine can fill steam. CHanzy
+        
+        , NBT_EFFICIENCY_CH             = "gtch.eff"                    // Short from 0 to 10000 describing the global Efficiency, or just for OmniOcular usage. CHanzy
+        , NBT_EFFICIENCY_WATER          = "gtch.eff.water"              // Short from 0 to 10000 describing the water Efficiency. CHanzy
+        , NBT_EFFICIENCY_OC             = "gtch.eff.oc"                 // Short from 0 to 10000 describing the overclocking Efficiency. CHanzy
+        , NBT_EFFICIENCY_NUM            = "gtch.eff.numerical"          // Short from 0 to 10000 describing the numerical Efficiency. CHanzy
+        
+        , NBT_ENERGY_EFF                = "gtch.energy.eff"             // Long, The effective energy of boiler. CHanzy
+        , NBT_ENERGY_PRE                = "gtch.energy.pre"             // Long, The previous energy of boiler. CHanzy
+        , NBT_ENERGY_SU_PRE             = "gtch.energy.su.pre"          // Long, The previous steam of turbines. CHanzy
+        
+        , NBT_INPUT_REC                 = "gtch.input.rec"              // Long, Recommend input energy, for OmniOcular usage. CHanzy
+        , NBT_INPUT_NOW                 = "gtch.input.now"              // Long, Current input energy, for OmniOcular usage. CHanzy
+        , NBT_INPUT_BUFFER              = "gtch.input.buffer"           // Long, Input Buffer to let output smooth. CHanzy
+        , NBT_OUTPUT_REC                = "gtch.output.rec"             // Long, Recommend output energy, for OmniOcular usage. CHanzy
+        , NBT_OUTPUT_NOW                = "gtch.output.now"             // Long, Current output energy, for OmniOcular usage. CHanzy
+        , NBT_OUTPUT_SELF               = "gtch.output.self"            // Boolean, Is the main multiblock output energy self. CHanzy
+        
+        , NBT_FAST                      = "gtch.fast"                   // Boolean, Is fast animation. CHanzy
+        
+        , NBT_PREHEAT                   = "gtch.preheat"                // Boolean, Is machine preheating, for OmniOcular usage. CHanzy
+        , NBT_PREHEAT_ENERGY            = "gtch.preheat.energy"         // Long, Energy required for preheating. CHanzy
+        , NBT_PREHEAT_RATE              = "gtch.preheat.rate"           // Long, Rate in preheating. CHanzy
+        , NBT_PREHEAT_COST              = "gtch.preheat.cost"           // Long, Energy cost Rate in preheating. CHanzy
+        
+        , NBT_PROGRESS_RATE             = "gtch.progress.rate"          // Long, Rate of progress of machine. CHanzy
+        
+        , NBT_COOLDOWN_CH               = "gtch.cooldown"               // Boolean, Is machine cooldown, for OmniOcular usage. CHanzy
+        , NBT_COOLDOWN_RATE             = "gtch.cooldown.rate"          // Long, Rate of cooldown. CHanzy
+        , NBT_COOLDOWN_COUNTER          = "gtch.cooldown.counter"       // Byte, counter of cooldown. CHanzy
+        
+        , NBT_BURNING                   = "gtch.burning"                // Boolean, Is machine burning, for mechine need burning and preheat. CHanzy
+        
+        , NBT_LENGTH_MIN                = "gtch.length.min"             // Integer, The minimum length of turbines or something else. CHanzy
+        , NBT_LENGTH_MAX                = "gtch.length.max"             // Integer, The maximum length of turbines or something else. CHanzy
+        , NBT_LENGTH_MID                = "gtch.length.mid"             // Integer, The middle length of turbines or something else. CHanzy
+        , NBT_LENGTH                    = "gtch.length"                 // Integer, The current length of turbines or something else. CHanzy
+        , NBT_LENGTH_PRE                = "gtch.length.pre"             // Integer, The previous length of turbines or something else. CHanzy
+        
+        , NBT_WIDTH_MIN                 = "gtch.width.min"              // Integer, The minimum width of turbines or something else. CHanzy
+        , NBT_WIDTH_MAX                 = "gtch.width.max"              // Integer, The maximum width of turbines or something else. CHanzy
+        , NBT_WIDTH_MID                 = "gtch.width.mid"              // Integer, The middle width of turbines or something else. CHanzy
+        , NBT_WIDTH                     = "gtch.width"                  // Integer, The current width of turbines or something else. CHanzy
+        , NBT_WIDTH_PRE                 = "gtch.width.pre"              // Integer, The previous width of turbines or something else. CHanzy
+        
+        , NBT_LIGHT_VALUE               = "gtch.light.value"            // Byte, The light value of block. CHanzy
+        , NBT_LIGHT_OPACITY             = "gtch.light.opacity"          // Short, The light opacity of block. CHanzy
+        
+        , NBT_BEGIN                     = "gtch.begin"                  // Byte
+        , NBT_END                       = "gtch.end"                    // Byte
+        
+        , NBT_TICK                      = "gtch.tick"                   // Byte
+        
+        , NBT_COLOR_BOTTOM              = "gtch.color.bottom"           // Integer, The bottom (or base) color of paint. CHanzy
+        , NBT_COLOR_ORIGIN              = "gtch.color.origin"           // Integer, The origin color of painted block. CHanzy
+        
+        , NBT_IDMETA                    = "gtch.idmeta"                 // Integer, Containing the combination of the id and meta, CHanzy
+        
+        , NBT_ADD_BOOL                  = "gtch.add.bool"               // Boolean, The additional boolean information that have random name, CHanzy
+        , NBT_ADD_BYTE                  = "gtch.add.byte"               // Byte, The additional byte information that have random name, CHanzy
+        , NBT_ADD_SHORT                 = "gtch.add.short"              // Short, The additional byte information that have random name, CHanzy
+        , NBT_ADD_INT                   = "gtch.add.int"                // Integer, The additional byte information that have random name, CHanzy
+        , NBT_ADD_LONG                  = "gtch.add.long"               // Long, The additional byte information that have random name, CHanzy
+        ;
     
     public static class DirectoriesGTCH {
         public static File
-                CONFIG_GTCH,
-                JSON_GTCH;
+            CONFIG_GTCH,
+            JSON_GTCH;
     }
     
     /** Configs CH */
     public static class ConfigsGTCH {
         public static Config
-                GTCH,
-                MACHINES,
-                REACTORS;
+            GTCH,
+            MACHINES,
+            REACTORS;
     }
     
     /* 注册来源的种类 */

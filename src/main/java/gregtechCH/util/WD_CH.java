@@ -186,7 +186,7 @@ public class WD_CH {
     
     // 标记方块（所在区块）用于计划重新渲染
     @SideOnly(Side.CLIENT)
-    public static synchronized <W> void markBlockForRerender(W aWorld, int aX, int aY, int aZ, boolean aImmediate) {
+    public static <W> void markBlockForRerender(W aWorld, int aX, int aY, int aZ, boolean aImmediate) {
         if (aWorld instanceof World) {
             ChunkCoordinates tCoord = new ChunkCoordinates(aX>>4, aY>>4, aZ>>4);
             synchronized(sChunkRenderList) {

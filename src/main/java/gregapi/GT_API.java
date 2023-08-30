@@ -84,6 +84,7 @@ import gregapi.util.UT;
 import gregapi.worldgen.GT6WorldGenerator;
 import gregtechCH.config.ConfigForge;
 import gregtechCH.data.LH_CH;
+import gregtechCH.data.RM_CH;
 import gregtechCH.data.OP_CH;
 import gregtechCH.data.TD_CH;
 import gregtechCH.lang.LanguageHandler_CH;
@@ -310,8 +311,11 @@ public class GT_API extends Abstract_Mod {
 		// Deprecated Config Files.
 		ConfigsGT.OVERPOWERED = ConfigsGT.MACHINES = ConfigsGT.SPECIAL = ConfigsGT.GREGTECH;
 		
-		//CH config init config
+		// GTCH config init config
 		ConfigForge.initConfig();
+		// GTCH config 初始化完成后才能执行的操作
+		MT_CH.initAfterConfig();
+		RM_CH.initAfterConfig();
 		
 		tFile = new File(DirectoriesGT.CONFIG_GT, "Stacksizes.cfg");
 		if (!tFile.exists()) tFile = new File(DirectoriesGT.CONFIG_GT, "stacksizes.cfg");

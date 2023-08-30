@@ -29,106 +29,131 @@ public class MT_CH extends MT {
     static OreDictMaterial element      (int aID, String aNameOreDict, String aSymbol, long aProtons, long aElectrons, long aNeutrons, long aMeltingPoint, long aBoilingPoint, double aGramPerCubicCentimeter, TextureSet[] aSets, long aR, long aG, long aB, long aA, Object... aRandomData) {return create      (aID, aNameOreDict, aSets, aR, aG, aB, aA, aRandomData).setStatsElement(aProtons, aElectrons, aNeutrons, 0, aGramPerCubicCentimeter).heat(aMeltingPoint, aBoilingPoint).put(ELEMENT).tooltip(aSymbol);}
     static OreDictMaterial element      (int aID, String aNameOreDict, String aSymbol, long aProtons, long aElectrons, long aNeutrons, TextureSet[] aSets, long aR, long aG, long aB, long aA, Object... aRandomData) {return element(aID, aNameOreDict, aSymbol, aProtons, aElectrons, aNeutrons, 1, 1, 0, aSets, aR, aG, aB, aA, aRandomData);}
     /* 15000-15999 For GregTech6-Unofficial */
-    public static final OreDictMaterial
-    // 碳化铌钛 // MARK ADDED UNBURNABLE; Nb2Ti3C4 -> Nb2Ti3C5; REMOVED alloyCentrifuge()
-    Nb2Ti3C5                = (!DATA_GTCH.enableGT6U) ? unused("Titanium Niobium Carbide")  : alloymachine  (15000, "Titanium Niobium Carbide"                      , 153, 153, 204     , MOLTEN, UNBURNABLE).qual(3, 16.0, 7680, 4).uumMcfg( 0, Nb, 2*U, Ti, 3*U, C, 5*U).aspects(TC.METALLUM, 2, TC.GELUM, 2).heat(4196),
+    public static OreDictMaterial
+      Nb2Ti3C5
+    , H3PO4, PhosphoricAcid
+    , Naphtha
+    , H_Ion, H_p
+    , He_Ion, He_pp, Alpha
+    , ElectroEtchingSolution
+    , H2S2O8
+    , PF5
+    , COCl2
+    , C5H10O3
+    , C4H8O3
+    , C3H6O3
+    , PTFE
+    , PE
+    , PVC
+    , Epoxid
+    , Na2CrO4
+    , Na2Cr2O7
+    , Cr2O3
+    , AlCl3
+    , P2O5
+    , LiF
+    , LiPF6
+    , CaO
+    , Coconut
+    , HB, HiggsBoson
+    ;
     
+    private static boolean INITIALIZED_AFTER_CONFIG = false;
     
-    // 磷酸
-    H3PO4                   = (!DATA_GTCH.enableGT6U) ? unused("Phosphoric Acid")           : lqudaciddcmp  (15200, "Phosphoric Acid"                               , 255, 255,  61, 255, LIQUID).uumMcfg( 0, H, 3*U, P, 1*U, O, 4*U).heat( 200,  400), PhosphoricAcid = H3PO4,
-    // 石脑油 // MARK lquddcmp -> lqudexpl
-    Naphtha                 = (!DATA_GTCH.enableGT6U) ? unused("Naphtha")                   : lqudexpl      (15201, "Naphtha"                                       , 255, 255, 102, 255).heat( 100,  400),
-    // 电离氢 // MARK lquddcmp -> element // TODO '+' 以后自动生成
-    H_Ion                   = (!DATA_GTCH.enableGT6U) ? unused("Ionized Hydrogen")          : element       (15202, "Ionized Hydrogen", "H+"                , 1, 0, 1, SET_PLASMA, 255, 255, 102, 255), H_p = H_Ion,
-    // 电离氦 // MARK lquddcmp -> element
-    He_Ion                  = (!DATA_GTCH.enableGT6U) ? unused("Ionized Helium")            : element       (15203, "Ionized Helium", "He++"                , 2, 0, 2, SET_PLASMA, 255, 255, 102, 255), He_pp = He_Ion, Alpha = He_pp,
-    // 电蚀刻溶液
-    ElectroEtchingSolution  = (!DATA_GTCH.enableGT6U) ? unused("Electro-Etching Solution")  : lqudacidcent  (15204, "Electro-Etching Solution"                      , 193, 255, 193, 255, LIQUID).uumMcfg( 0, H2O, 3*U, HCl, 1*U, H2O2, 2*U).heat( 200,  400),
-    // 过氧化二硫酸
-    H2S2O8                  = (!DATA_GTCH.enableGT6U) ? unused("Peroxydisulfuric Acid"   )  : lqudaciddcmp  (15205, "Peroxydisulfuric Acid"                         , 255, 250, 205, 255, LIQUID).uumMcfg( 0, H  , 2*U, S  , 2*U, O   , 8*U).heat( 200,  400),
-    // 五氟化磷 // MARK GASSES -> GASES （去掉过时用法）; RGB 241, 220, 207 -> 211, 241, 181
-    PF5                     = (!DATA_GTCH.enableGT6U) ? unused("Phosphorus Pentafluoride")  : gaschemelec   (15206, "Phosphorus Pentafluoride"                      , 211, 241, 181, 100, GASES).uumMcfg( 0, P  , 1*U, F  , 5*U),
-    // 碳酰氯 // MARK GASSES -> GASES; RGB 241, 220, 207 -> 143, 209, 123
-    COCl2                   = (!DATA_GTCH.enableGT6U) ? unused("Phosgen"               )    : gaschemelec   (15207, "Phosgen"                                       , 143, 209, 123, 100, GASES).uumMcfg( 0, C  , 1*U, O  , 1*U, Cl  , 2*U),
-    // 碳酸二乙酯 // MARK aA 100 -> 255
-    C5H10O3                 = (!DATA_GTCH.enableGT6U) ? unused("Diethyl Carbonate"     )    : lqudchemelec  (15208, "Diethyl Carbonate"                             , 241, 220, 207, 255, LIQUID).uumMcfg( 0, C  , 5*U, H  , 10*U,O   , 3*U),
-    // 碳酸甲酯乙酯 // MARK aA 100 -> 255
-    C4H8O3                  = (!DATA_GTCH.enableGT6U) ? unused("Ethyl Methyl Carbonate")    : lqudchemelec  (15209, "Ethyl Methyl Carbonate"                        , 241, 200, 207, 255, LIQUID).uumMcfg( 0, C  , 4*U, H  , 8*U, O   , 3*U),
-    // 碳酸二甲酯 // MARK aA 100 -> 255
-    C3H6O3                  = (!DATA_GTCH.enableGT6U) ? unused("Dimethyl Carbonate"    )    : lqudchemelec  (15210, "Dimethyl Carbonate"                            , 241, 180, 207, 255, LIQUID).uumMcfg( 0, C  , 3*U, H  , 6*U, O   , 3*U),
-    
-    // TODO 塑料的熔融态在量杯中不显示（Polytetrafluoroethylene icon 透明，opengl bug?），坩埚和实际的颜色不同啊啊啊
-    // 聚四氟乙烯 // MARK aDurability 32 -> 256
-    PTFE                    = (!DATA_GTCH.enableGT6U) ? unused("Polytetrafluoroethylene")   : create        (15400, "Polytetrafluoroethylene",SET_DULL              , 250, 250, 250, 255, G_INGOT_MACHINE, APPROXIMATE, FLAMMABLE, EXTRUDER, EXTRUDER_SIMPLE, WIRES, MORTAR, BOUNCY, BRITTLE, FURNACE).uumMcfg( 0, C, 2*U, F, 4*U)              .aspects(TC.MOTUS, 2).heat(423).setBurning(Ash, U9).setSmelting(null, 2*U3).qual(1, 3.0, 256, 1),
-    // 聚乙烯 // MARK aDurability 32 -> 256
-    PE                      = (!DATA_GTCH.enableGT6U) ? unused("Polyethylene"          )    : create        (15401, "Polyethylene"          , SET_DULL              , 200, 200, 200, 255, G_INGOT_MACHINE, APPROXIMATE, FLAMMABLE, EXTRUDER, EXTRUDER_SIMPLE, WIRES, MORTAR, BOUNCY, BRITTLE, FURNACE).uumMcfg( 0, C, 1*U, H, 2*U)              .aspects(TC.MOTUS, 2).heat(423).setBurning(Ash, U9).setSmelting(null, 2*U3).qual(1, 3.0, 256, 1),
-    // 聚氯乙烯 // MARK aDurability 32 -> 256
-    PVC                     = (!DATA_GTCH.enableGT6U) ? unused("Polyvinylchloride"     )    : create        (15402, "Polyvinylchloride"     , SET_DULL              , 144, 238, 144, 255, G_INGOT_MACHINE, APPROXIMATE, FLAMMABLE, EXTRUDER, EXTRUDER_SIMPLE, WIRES, MORTAR, BOUNCY, BRITTLE, FURNACE).uumMcfg( 0, C, 2*U, H, 3*U, Cl   , 1*U)  .aspects(TC.MOTUS, 2).heat(600).setBurning(Ash, U9).setSmelting(null, 2*U3).qual(1, 3.0, 256, 1),
-    // 环氧树脂 // MARK aDurability 32 -> 256
-    Epoxid                  = (!DATA_GTCH.enableGT6U) ? unused("Epoxid"                )    : create        (15403, "Epoxid"                , SET_DULL              , 192, 255,  62, 255, G_INGOT_MACHINE, APPROXIMATE, FLAMMABLE, EXTRUDER, EXTRUDER_SIMPLE, WIRES, MORTAR, BOUNCY, BRITTLE, FURNACE).uumMcfg( 0, C, 11*U,H, 12*U, O   , 3*U)  .aspects(TC.MOTUS, 2).heat(423).setBurning(Ash, U9).setSmelting(null, 2*U3).qual(1, 3.0, 256, 1),
-    
-    
-    // 铬酸钠 // MARK ADD MELTING POINT
-    Na2CrO4                 = (!DATA_GTCH.enableGT6U) ? unused("Sodium Chromate"       )    : dustdcmp      (15600, "Sodium Chromate"       , SET_FINE              , 255, 255,   0, 255, MELTING).setMcfg( 0, Na, 2*U, Cr, 1*U, O , 4*U).heat(1065),
-    // 重铬酸钠 // MARK ADD MELTING POINT
-    Na2Cr2O7                = (!DATA_GTCH.enableGT6U) ? unused("Sodium Dichromate"     )    : dustdcmp      (15601, "Sodium Dichromate"     , SET_FINE              , 255,  69,   0, 255, MELTING).setMcfg( 0, Na, 2*U, Cr, 2*U, O , 7*U).heat(630, 673),
-    // 氧化铬 // MARK ADD MELTING POINT
-    Cr2O3                   = (!DATA_GTCH.enableGT6U) ? unused("Chromium Oxide"        )    : dustdcmp      (15602, "Chromium Oxide"        , SET_FINE              ,   0, 139,   0, 255, MELTING).setMcfg( 0, Cr, 2*U, O , 3*U).heat(2708, 4270),
-    // 氯化铝 // MARK ADD MELTING POINT
-    AlCl3                   = (!DATA_GTCH.enableGT6U) ? unused("Aluminium Chloride"    )    : dustdcmp      (15603, "Aluminium Chloride"    , SET_FINE              , 255, 250, 205, 255, MELTING).setMcfg( 0, Al, 1*U, Cl, 3*U).heat(453),
-    // 五氧化二磷 // MARK ADD MELTING POINT; ADD MELTING
-    P2O5                    = (!DATA_GTCH.enableGT6U) ? unused("Phosphorus Pentoxide"  )    : dustdcmp      (15604, "Phosphorus Pentoxide"  , SET_DULL              , 255, 250, 205, 255, MELTING).setMcfg( 0, P , 2*U, O , 5*U).heat(613, 633),
-    // 氟化锂 // MARK ADD MELTING POINT
-    LiF                     = (!DATA_GTCH.enableGT6U) ? unused("Lithium Fluoride"      )    : dustdcmp      (15605, "Lithium Fluoride"      , SET_CUBE              , 204, 218, 218, 255, MELTING).setMcfg( 0, Li, 1*U, F , 1*U).heat(1118, 1949),
-    // 六氟磷酸锂 // MARK ADD MELTING POINT; ADD MELTING
-    LiPF6                   = (!DATA_GTCH.enableGT6U) ? unused("Lithium Hexafluorophosphate"):dustdcmp      (15606, "Lithium Hexafluorophosphate", SET_FINE         , 229, 209, 226, 255, MELTING).setMcfg( 0, Li, 1*U, P , 1*U, F, 6*U).heat(473),
-    // 氧化钙 // MARK ADD MELTING POINT
-    CaO                     = (!DATA_GTCH.enableGT6U) ? unused("Calcium Oxide")             : dustdcmp      (15607, "Calcium Oxide"         , SET_FINE              , 255, 255, 255, 255, MELTING).setMcfg( 0, Ca, 1*U, O , 1*U).heat(2886, 3120);
-    
-    public static final OreDictMaterial
-    // 椰子食物，和原版的椰子木不同
-    Coconut                 = (!DATA_GTCH.enableGT6U) ? unused("Coconut")                   : dustfood      (15777, "Coconut" ,                                             240, 150, 140, 255, TICKS_PER_SMELT/2).aspects(TC.FAMES, 1).setOriginalMod(MD.BINNIE),
-    // 希格斯玻色子 // MARK ID 6 -> 15906
-    HB, HiggsBoson = HB     = (!DATA_GTCH.enableGT6U) ? unused("Higgs-Boson")               : create        (15906, "Higgs-Boson").setStatsElement( 0, 0, 0, 0, 0).heat(0,0,0).setRGBa(255, 255, 255, 255).put(PARTICLE).tooltip("HB").hide();
+    /** 由于 MT 成员的静态变量默认早于一切初始化，但是这里需要参考配置文件来决定，因此要专门的晚于配置文件的顺序生成 */
+    public static void initAfterConfig() {
+        if (INITIALIZED_AFTER_CONFIG) return;
+        INITIALIZED_AFTER_CONFIG = true;
+        
+        /* GT6U stuff, 15000-15999 For GregTech6-Unofficial */
+        Nb2Ti3C5                = (!DATA_GTCH.enableGT6U) ? unused("Titanium Niobium Carbide")  : alloymachine  (15000, "Titanium Niobium Carbide"                      , 153, 153, 204     , MOLTEN, UNBURNABLE).qual(3, 16.0, 7680, 4).uumMcfg( 0, Nb, 2*U, Ti, 3*U, C, 5*U).aspects(TC.METALLUM, 2, TC.GELUM, 2).heat(4196);
+        // 磷酸
+        H3PO4                   = (!DATA_GTCH.enableGT6U) ? unused("Phosphoric Acid")           : lqudaciddcmp  (15200, "Phosphoric Acid"                               , 255, 255,  61, 255, LIQUID).uumMcfg( 0, H, 3*U, P, 1*U, O, 4*U).heat( 200,  400); PhosphoricAcid = H3PO4;
+        // 石脑油 // MARK lquddcmp -> lqudexpl
+        Naphtha                 = (!DATA_GTCH.enableGT6U) ? unused("Naphtha")                   : lqudexpl      (15201, "Naphtha"                                       , 255, 255, 102, 255).heat( 100,  400);
+        // 电离氢 // MARK lquddcmp -> element // TODO '+' 以后自动生成
+        H_Ion                   = (!DATA_GTCH.enableGT6U) ? unused("Ionized Hydrogen")          : element       (15202, "Ionized Hydrogen", "H+"                , 1, 0, 1, SET_PLASMA, 255, 255, 102, 255); H_p = H_Ion;
+        // 电离氦 // MARK lquddcmp -> element
+        He_Ion                  = (!DATA_GTCH.enableGT6U) ? unused("Ionized Helium")            : element       (15203, "Ionized Helium", "He++"                , 2, 0, 2, SET_PLASMA, 255, 255, 102, 255); He_pp = He_Ion; Alpha = He_pp;
+        // 电蚀刻溶液
+        ElectroEtchingSolution  = (!DATA_GTCH.enableGT6U) ? unused("Electro-Etching Solution")  : lqudacidcent  (15204, "Electro-Etching Solution"                      , 193, 255, 193, 255, LIQUID).uumMcfg( 0, H2O, 3*U, HCl, 1*U, H2O2, 2*U).heat( 200,  400);
+        // 过氧化二硫酸
+        H2S2O8                  = (!DATA_GTCH.enableGT6U) ? unused("Peroxydisulfuric Acid"   )  : lqudaciddcmp  (15205, "Peroxydisulfuric Acid"                         , 255, 250, 205, 255, LIQUID).uumMcfg( 0, H  , 2*U, S  , 2*U, O   , 8*U).heat( 200,  400);
+        // 五氟化磷 // MARK GASSES -> GASES （去掉过时用法）; RGB 241, 220, 207 -> 211, 241, 181
+        PF5                     = (!DATA_GTCH.enableGT6U) ? unused("Phosphorus Pentafluoride")  : gaschemelec   (15206, "Phosphorus Pentafluoride"                      , 211, 241, 181, 100, GASES).uumMcfg( 0, P  , 1*U, F  , 5*U).heat( 100,  200);
+        // 碳酰氯 // MARK GASSES -> GASES; RGB 241, 220, 207 -> 143, 209, 123
+        COCl2                   = (!DATA_GTCH.enableGT6U) ? unused("Phosgen"               )    : gaschemelec   (15207, "Phosgen"                                       , 143, 209, 123, 100, GASES).uumMcfg( 0, C  , 1*U, O  , 1*U, Cl  , 2*U).heat( 100,  200);
+        // 碳酸二乙酯 // MARK aA 100 -> 255
+        C5H10O3                 = (!DATA_GTCH.enableGT6U) ? unused("Diethyl Carbonate"     )    : lqudchemelec  (15208, "Diethyl Carbonate"                             , 241, 220, 207, 255, LIQUID).uumMcfg( 0, C  , 5*U, H  , 10*U,O   , 3*U).heat( 200,  400);
+        // 碳酸甲酯乙酯 // MARK aA 100 -> 255
+        C4H8O3                  = (!DATA_GTCH.enableGT6U) ? unused("Ethyl Methyl Carbonate")    : lqudchemelec  (15209, "Ethyl Methyl Carbonate"                        , 241, 200, 207, 255, LIQUID).uumMcfg( 0, C  , 4*U, H  , 8*U, O   , 3*U).heat( 200,  400);
+        // 碳酸二甲酯 // MARK aA 100 -> 255
+        C3H6O3                  = (!DATA_GTCH.enableGT6U) ? unused("Dimethyl Carbonate"    )    : lqudchemelec  (15210, "Dimethyl Carbonate"                            , 241, 180, 207, 255, LIQUID).uumMcfg( 0, C  , 3*U, H  , 6*U, O   , 3*U).heat( 200,  400);
+        
+        // TODO 塑料的熔融态在量杯中不显示（Polytetrafluoroethylene icon 透明，opengl bug?），坩埚和实际的颜色不同啊啊啊
+        // 聚四氟乙烯 // MARK aDurability 32 -> 256
+        PTFE                    = (!DATA_GTCH.enableGT6U) ? unused("Polytetrafluoroethylene")   : create        (15400, "Polytetrafluoroethylene",SET_DULL              , 250, 250, 250, 255, G_INGOT_MACHINE, APPROXIMATE, FLAMMABLE, EXTRUDER, EXTRUDER_SIMPLE, WIRES, MORTAR, BOUNCY, BRITTLE, FURNACE).uumMcfg( 0, C, 2*U, F, 4*U)              .aspects(TC.MOTUS, 2).heat(423).setBurning(Ash, U9).setSmelting(null, 2*U3).qual(1, 3.0, 256, 1);
+        // 聚乙烯 // MARK aDurability 32 -> 256
+        PE                      = (!DATA_GTCH.enableGT6U) ? unused("Polyethylene"          )    : create        (15401, "Polyethylene"          , SET_DULL              , 200, 200, 200, 255, G_INGOT_MACHINE, APPROXIMATE, FLAMMABLE, EXTRUDER, EXTRUDER_SIMPLE, WIRES, MORTAR, BOUNCY, BRITTLE, FURNACE).uumMcfg( 0, C, 1*U, H, 2*U)              .aspects(TC.MOTUS, 2).heat(423).setBurning(Ash, U9).setSmelting(null, 2*U3).qual(1, 3.0, 256, 1);
+        // 聚氯乙烯 // MARK aDurability 32 -> 256
+        PVC                     = (!DATA_GTCH.enableGT6U) ? unused("Polyvinylchloride"     )    : create        (15402, "Polyvinylchloride"     , SET_DULL              , 144, 238, 144, 255, G_INGOT_MACHINE, APPROXIMATE, FLAMMABLE, EXTRUDER, EXTRUDER_SIMPLE, WIRES, MORTAR, BOUNCY, BRITTLE, FURNACE).uumMcfg( 0, C, 2*U, H, 3*U, Cl   , 1*U)  .aspects(TC.MOTUS, 2).heat(600).setBurning(Ash, U9).setSmelting(null, 2*U3).qual(1, 3.0, 256, 1);
+        // 环氧树脂 // MARK aDurability 32 -> 256
+        Epoxid                  = (!DATA_GTCH.enableGT6U) ? unused("Epoxid"                )    : create        (15403, "Epoxid"                , SET_DULL              , 192, 255,  62, 255, G_INGOT_MACHINE, APPROXIMATE, FLAMMABLE, EXTRUDER, EXTRUDER_SIMPLE, WIRES, MORTAR, BOUNCY, BRITTLE, FURNACE).uumMcfg( 0, C, 11*U,H, 12*U, O   , 3*U)  .aspects(TC.MOTUS, 2).heat(423).setBurning(Ash, U9).setSmelting(null, 2*U3).qual(1, 3.0, 256, 1);
+        
+        // 铬酸钠 // MARK ADD MELTING POINT
+        Na2CrO4                 = (!DATA_GTCH.enableGT6U) ? unused("Sodium Chromate"       )    : dustdcmp      (15600, "Sodium Chromate"       , SET_FINE              , 255, 255,   0, 255, MELTING).setMcfg( 0, Na, 2*U, Cr, 1*U, O , 4*U).heat(1065);
+        // 重铬酸钠 // MARK ADD MELTING POINT
+        Na2Cr2O7                = (!DATA_GTCH.enableGT6U) ? unused("Sodium Dichromate"     )    : dustdcmp      (15601, "Sodium Dichromate"     , SET_FINE              , 255,  69,   0, 255, MELTING).setMcfg( 0, Na, 2*U, Cr, 2*U, O , 7*U).heat(630, 673);
+        // 氧化铬 // MARK ADD MELTING POINT
+        Cr2O3                   = (!DATA_GTCH.enableGT6U) ? unused("Chromium Oxide"        )    : dustdcmp      (15602, "Chromium Oxide"        , SET_FINE              ,   0, 139,   0, 255, MELTING).setMcfg( 0, Cr, 2*U, O , 3*U).heat(2708, 4270);
+        // 氯化铝 // MARK ADD MELTING POINT
+        AlCl3                   = (!DATA_GTCH.enableGT6U) ? unused("Aluminium Chloride"    )    : dustdcmp      (15603, "Aluminium Chloride"    , SET_FINE              , 255, 250, 205, 255, MELTING).setMcfg( 0, Al, 1*U, Cl, 3*U).heat(453);
+        // 五氧化二磷 // MARK ADD MELTING POINT; ADD MELTING
+        P2O5                    = (!DATA_GTCH.enableGT6U) ? unused("Phosphorus Pentoxide"  )    : dustdcmp      (15604, "Phosphorus Pentoxide"  , SET_DULL              , 255, 250, 205, 255, MELTING).setMcfg( 0, P , 2*U, O , 5*U).heat(613, 633);
+        // 氟化锂 // MARK ADD MELTING POINT
+        LiF                     = (!DATA_GTCH.enableGT6U) ? unused("Lithium Fluoride"      )    : dustdcmp      (15605, "Lithium Fluoride"      , SET_CUBE              , 204, 218, 218, 255, MELTING).setMcfg( 0, Li, 1*U, F , 1*U).heat(1118, 1949);
+        // 六氟磷酸锂 // MARK ADD MELTING POINT; ADD MELTING
+        LiPF6                   = (!DATA_GTCH.enableGT6U) ? unused("Lithium Hexafluorophosphate"):dustdcmp      (15606, "Lithium Hexafluorophosphate", SET_FINE         , 229, 209, 226, 255, MELTING).setMcfg( 0, Li, 1*U, P , 1*U, F, 6*U).heat(473);
+        // 氧化钙 // MARK ADD MELTING POINT
+        CaO                     = (!DATA_GTCH.enableGT6U) ? unused("Calcium Oxide")             : dustdcmp      (15607, "Calcium Oxide"         , SET_FINE              , 255, 255, 255, 255, MELTING).setMcfg( 0, Ca, 1*U, O , 1*U).heat(2886, 3120);
+        // 椰子食物，和原版的椰子木不同
+        Coconut                 = (!DATA_GTCH.enableGT6U) ? unused("Coconut")                   : dustfood      (15777, "Coconut" ,                                             240, 150, 140, 255, TICKS_PER_SMELT/2).aspects(TC.FAMES, 1).setOriginalMod(MD.BINNIE);
+        // 希格斯玻色子 // MARK ID 6 -> 15906
+        HiggsBoson = HB         = (!DATA_GTCH.enableGT6U) ? unused("Higgs-Boson")               : create        (15906, "Higgs-Boson").setStatsElement( 0, 0, 0, 0, 0).heat(0,0,0).setRGBa(255, 255, 255, 255).put(PARTICLE).tooltip("HB").hide();
+        
+        // 然后作 GT6U 的附加属性设置
+        if (DATA_GTCH.enableGT6U) TECH.initGT6U();
+    }
     
     public static class TECH {
-        private static boolean INITIALIZED = false;
-        static void init() {
-            if (INITIALIZED) return;
-            INITIALIZED = true;
-            
-            initGT6U();
-        }
-        
         private static void initGT6U() {
-            if (!DATA_GTCH.enableGT6U) return;
-            
             /* 标记来源 mod，greg 内部使用 */
-            Nb2Ti3C5.put(MD.GT6U);
-            H3PO4.put(MD.GT6U);
-            Naphtha.put(MD.GT6U);
-            H_Ion.put(MD.GT6U);
-            He_Ion.put(MD.GT6U);
-            ElectroEtchingSolution.put(MD.GT6U);
-            H2S2O8.put(MD.GT6U);
-            PF5.put(MD.GT6U);
-            COCl2.put(MD.GT6U);
-            C5H10O3.put(MD.GT6U);
-            C4H8O3.put(MD.GT6U);
-            C3H6O3.put(MD.GT6U);
-            PTFE.put(MD.GT6U);
-            PE.put(MD.GT6U);
-            PVC.put(MD.GT6U);
-            Epoxid.put(MD.GT6U);
-            Na2CrO4.put(MD.GT6U);
-            Na2Cr2O7.put(MD.GT6U);
-            Cr2O3.put(MD.GT6U);
-            AlCl3.put(MD.GT6U);
-            P2O5.put(MD.GT6U);
-            LiF.put(MD.GT6U);
-            LiPF6.put(MD.GT6U);
-            CaO.put(MD.GT6U);
-            HB.put(MD.GT6U);
+            Nb2Ti3C5                .put(MD.GT6U);
+            H3PO4                   .put(MD.GT6U);
+            Naphtha                 .put(MD.GT6U);
+            H_Ion                   .put(MD.GT6U);
+            He_Ion                  .put(MD.GT6U);
+            ElectroEtchingSolution  .put(MD.GT6U);
+            H2S2O8                  .put(MD.GT6U);
+            PF5                     .put(MD.GT6U);
+            COCl2                   .put(MD.GT6U);
+            C5H10O3                 .put(MD.GT6U);
+            C4H8O3                  .put(MD.GT6U);
+            C3H6O3                  .put(MD.GT6U);
+            PTFE                    .put(MD.GT6U);
+            PE                      .put(MD.GT6U);
+            PVC                     .put(MD.GT6U);
+            Epoxid                  .put(MD.GT6U);
+            Na2CrO4                 .put(MD.GT6U);
+            Na2Cr2O7                .put(MD.GT6U);
+            Cr2O3                   .put(MD.GT6U);
+            AlCl3                   .put(MD.GT6U);
+            P2O5                    .put(MD.GT6U);
+            LiF                     .put(MD.GT6U);
+            LiPF6                   .put(MD.GT6U);
+            CaO                     .put(MD.GT6U);
+            Coconut                 .put(MD.GT6U);
+            HB                      .put(MD.GT6U);
             
             /* 其他对原版材料的修改 */
             Proton.put(FUSION);

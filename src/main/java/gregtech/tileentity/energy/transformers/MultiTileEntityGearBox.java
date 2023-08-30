@@ -103,7 +103,7 @@ public class MultiTileEntityGearBox extends TileEntityBase07Paintable implements
 	@Override
 	public void addToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
 		if (!mGearsWork) aList.add(Chat.BLINKING_RED + LH_CH.get("gtch.tooltip.gearbox.custom.1"));
-		aList.add(Chat.CYAN + LH_CH.get(LH_CH.AXLE_STATS_SPEED) + " " + mMaxThroughPut + " " + TD.Energy.RU.getLocalisedNameShort());
+		aList.add(Chat.CYAN + LH_CH.get(LH_CH.AXLE_STATS_SPEED) + mMaxThroughPut + " " + TD.Energy.RU.getLocalisedNameShort());
 		aList.add(Chat.DGRAY + LH_CH.get("gtch.tooltip.gearbox.custom.2"));
 		aList.add(Chat.DGRAY + LH_CH.get("gtch.tooltip.gearbox.custom.3"));
 		aList.add(Chat.DGRAY + LH_CH.get(LH_CH.TOOL_TO_SET_IO_MONKEY_WRENCH));

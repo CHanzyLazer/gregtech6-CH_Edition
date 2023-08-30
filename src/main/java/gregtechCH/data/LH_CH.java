@@ -16,32 +16,36 @@ import static gregtechCH.data.CS_CH.RegType;
  */
 public class LH_CH {
     public static final String
-          AXLE_STATS_SPEED                          = "gtch.lang.axle.stats.speed"
-        , AXLE_STATS_POWER                          = "gtch.lang.axle.stats.power"
-        , TOOLTIP_PREHEAT                           = "gtch.lang.preheat"
-        , TOOLTIP_LENGTH                            = "gtch.lang.motor.length"
-        , ENERGY_LENGTH                             = "gtch.lang.energy.motor.length"
-        , ENERGY_TO                                 = "gtch.lang.energy.to"
-        , ENERGY_UPTO                               = "gtch.lang.energy.upto"
-        , ENERGY_PARALLEL                           = "gtch.lang.energy.parallel"
-        , OVERCLOCK_GENERATOR                       = "gtch.lang.overclock.generator"
-        , OVERCLOCK_CHEAP                           = "gtch.lang.overclock.cheap"
-        , OVERCLOCK_EXPENSIVE                       = "gtch.lang.overclock.expensive"
-        , OVERCLOCK_SQRT                            = "gtch.lang.overclock.sqrt"
-        , OVERCLOCK_PARALLEL                        = "gtch.lang.overclock.parallel"
-        , OVERCLOCK_PARALLEL_TU                     = "gtch.lang.overclock.parallel.tu"
-        , FACE_HEAT_TRANS                           = "gtch.lang.face.heattransmitter"
-        , FACE_PIPE_HOLE                            = "gtch.lang.face.pipehole"
-        , TOOL_TO_DETAIL_MAGNIFYINGGLASS_SNEAK      = "gtch.lang.use.sneak.magnifyingglass.to.detail"
-        , TOOL_TO_MEASURE_TACHOMETER                = "gtch.lang.use.tachometer.to.measure"
-        , TOOL_TO_MEASURE_ELECTOMETER               = "gtch.lang.use.electrometer.to.measure"
-        , TOOL_TO_SET_MODE_MONKEY_WRENCH            = "gtch.lang.use.monkey.wrench.to.set.mode.side"
-        , TOOL_TO_SET_IO_MONKEY_WRENCH              = "gtch.lang.use.monkey.wrench.to.set.io.side"
-        , TRANSFORMER_NORMAL                        = "gtch.lang.transformer.normal"
-        , TRANSFORMER_REVERSED                      = "gtch.lang.transformer.reversed"
-        , HAZARD_EXPLOSION_LENGTH                   = "gtch.lang.hazard.explosion.motor.length"
-        , WIRE_STATS_RESISTANCE                     = "gtch.lang.wire.stats.resistance"
-        ;
+      AXLE_STATS_SPEED                          = "gtch.lang.axle.stats.speed"
+    , AXLE_STATS_POWER                          = "gtch.lang.axle.stats.power"
+    , DEPOSIT_LEVEL                             = "gtch.lang.deposit.level"
+    , AUTO                                      = "gtch.lang.auto"
+    , AUTO_OTHERWISE_ANY                        = "gtch.lang.autootherwiseany"
+    , NO_AUTO                                   = "gtch.lang.noauto"
+    , TOOLTIP_PREHEAT                           = "gtch.lang.preheat"
+    , TOOLTIP_LENGTH                            = "gtch.lang.motor.length"
+    , ENERGY_LENGTH                             = "gtch.lang.energy.motor.length"
+    , ENERGY_TO                                 = "gtch.lang.energy.to"
+    , ENERGY_UPTO                               = "gtch.lang.energy.upto"
+    , ENERGY_PARALLEL                           = "gtch.lang.energy.parallel"
+    , OVERCLOCK_GENERATOR                       = "gtch.lang.overclock.generator"
+    , OVERCLOCK_CHEAP                           = "gtch.lang.overclock.cheap"
+    , OVERCLOCK_EXPENSIVE                       = "gtch.lang.overclock.expensive"
+    , OVERCLOCK_SQRT                            = "gtch.lang.overclock.sqrt"
+    , OVERCLOCK_PARALLEL                        = "gtch.lang.overclock.parallel"
+    , OVERCLOCK_PARALLEL_TU                     = "gtch.lang.overclock.parallel.tu"
+    , FACE_HEAT_TRANS                           = "gtch.lang.face.heattransmitter"
+    , FACE_PIPE_HOLE                            = "gtch.lang.face.pipehole"
+    , TOOL_TO_DETAIL_MAGNIFYINGGLASS_SNEAK      = "gtch.lang.use.sneak.magnifyingglass.to.detail"
+    , TOOL_TO_MEASURE_TACHOMETER                = "gtch.lang.use.tachometer.to.measure"
+    , TOOL_TO_MEASURE_ELECTOMETER               = "gtch.lang.use.electrometer.to.measure"
+    , TOOL_TO_SET_MODE_MONKEY_WRENCH            = "gtch.lang.use.monkey.wrench.to.set.mode.side"
+    , TOOL_TO_SET_IO_MONKEY_WRENCH              = "gtch.lang.use.monkey.wrench.to.set.io.side"
+    , TRANSFORMER_NORMAL                        = "gtch.lang.transformer.normal"
+    , TRANSFORMER_REVERSED                      = "gtch.lang.transformer.reversed"
+    , HAZARD_EXPLOSION_LENGTH                   = "gtch.lang.hazard.explosion.motor.length"
+    , WIRE_STATS_RESISTANCE                     = "gtch.lang.wire.stats.resistance"
+    ;
 
     public static final String add(String aKey, String aEnglish) {LanguageHandler_CH.add(RegType.GTCH, aKey, aEnglish); return aKey;}
     public static final String add(RegType aRegType, String aKey, String aEnglish) {LanguageHandler_CH.add(aRegType, aKey, aEnglish); return aKey;}
@@ -68,6 +72,10 @@ public class LH_CH {
     public static void init() {
         add(AXLE_STATS_SPEED,                           "Speed limit:");
         add(AXLE_STATS_POWER,                           "Power limit:");
+        add(DEPOSIT_LEVEL,                              "Level:");
+        add(AUTO,                                       "auto");
+        add(AUTO_OTHERWISE_ANY,                         "auto, otherwise any");
+        add(NO_AUTO,                                    "no auto");
         add(TOOLTIP_PREHEAT,                            "This machine needs preheating");
         add(TOOLTIP_LENGTH,                             "Improve power and efficiency by increasing length");
         add(ENERGY_LENGTH,                              "At length %d:");

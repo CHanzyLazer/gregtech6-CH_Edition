@@ -19,6 +19,7 @@ import gregtechCH.data.RM_CH;
 import gregtechCH.tileentity.batteries.eu.MultiTileEntityBatteryAdvEU8192;
 import gregtechCH.tileentity.batteries.eu.MultiTileEntityBatteryEU8192;
 import gregtechCH.tileentity.energy.MultiTileEntityMotorGas;
+import gregtechCH.tileentity.miner.MultiTileEntityDepositDrill;
 import gregtechCH.tileentity.misc.MultiTileEntityBedrockDeposit;
 import gregtechCH.tileentity.misc.MultiTileEntityDeposit;
 import gregtechCH.tileentity.multiblocks.*;
@@ -31,14 +32,13 @@ import static gregapi.data.CS.*;
 import static gregtechCH.config.ConfigForge.DATA_GTCH;
 import static gregtechCH.config.ConfigJson.DATA_MULTITILEENTITY;
 import static gregtechCH.data.CS_CH.*;
-import static gregtechCH.tileentity.misc.MultiTileEntityDeposit.StateAttribute;
 
 
 /**
  * @author CHanzy
  * Extension of Loader_MultiTileEntities
  * EMPTY IDs: 23000 - 24999; 15000 - 16999; 9500 - 9999
- * ID for GTCH: 23300 - 23399
+ * ID for GTCH: 23300 - 23499
  * 由于后续 greg 可能还有比较激进的添加，因此不按照 mod 来分划 id 使用区域
  * TODO 想方法完善 id 改变时能够找到正确的新 id 的方法
  */
@@ -371,6 +371,15 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         aRegistry.addReplacer(20002).setParameters(NBT_PARALLEL,  8, NBT_PARALLEL_DURATION, T);
         aRegistry.addReplacer(20003).setParameters(NBT_PARALLEL, 16, NBT_PARALLEL_DURATION, T);
         aRegistry.addReplacer(20004).setParameters(NBT_PARALLEL, 32, NBT_PARALLEL_DURATION, T);
+    }
+    @Override protected void machines1FinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
+        /// 添加项
+        // 矿藏钻头 ID: 23400-23450
+        aClass = MultiTileEntityDepositDrill.class;
+        aMat = MT.DATA.Kinetic_T[1];    aRegistry.add("Deposit Mining Drill ("+aMat.getLocal()+")", "Basic Machines"                      , 23400, 20001, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   7.0F, NBT_RESISTANCE,   7.0F, NBT_INPUT,   32, NBT_LEVEL, 0, NBT_EFFICIENCY, 10000));
+        aMat = MT.DATA.Kinetic_T[2];    aRegistry.add("Deposit Mining Drill ("+aMat.getLocal()+")", "Basic Machines"                      , 23401, 20001, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_INPUT,  128, NBT_LEVEL, 2, NBT_EFFICIENCY, 10000));
+        aMat = MT.DATA.Kinetic_T[3];    aRegistry.add("Deposit Mining Drill ("+aMat.getLocal()+")", "Basic Machines"                      , 23402, 20001, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   9.0F, NBT_RESISTANCE,   9.0F, NBT_INPUT,  512, NBT_LEVEL, 4, NBT_EFFICIENCY, 10000));
+        aMat = MT.DATA.Kinetic_T[4];    aRegistry.add("Deposit Mining Drill ("+aMat.getLocal()+")", "Basic Machines"                      , 23403, 20001, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_INPUT, 2048, NBT_LEVEL, 6, NBT_EFFICIENCY, 10000));
     }
     
     
@@ -757,8 +766,8 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
     
     @Override protected void miscFinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
         /// 添加项
-        // 新的基岩矿
-        aMat = MT.NULL                ; MultiTileEntityDeposit.addDeposit(23399, 32764, F,      1000, 0  ,  16,    128, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        // 新的基岩矿 ID: 23300-23399
+        aMat = MT.NULL                ; MultiTileEntityDeposit.addDeposit(23399, 32764, F,      1000, 0  ,   8,    128, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
         aMat = MT.Diamond             ; MultiTileEntityDeposit.addDeposit(23300, 32764, F,   4000000, 3  ,  64,  65536, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
         aMat = MT.OREMATS.Tungstate   ; MultiTileEntityDeposit.addDeposit(23301, 32764, F, 256000000, 5  , 256, 262144, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
         aMat = MT.OREMATS.Ferberite   ; MultiTileEntityDeposit.addDeposit(23302, 32764, F, 256000000, 5  , 256, 262144, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
@@ -772,15 +781,15 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         aMat = MT.OREMATS.Pitchblende ; MultiTileEntityDeposit.addDeposit(23310, 32764, F, 256000000, 4  , 128, 262144, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
         aMat = MT.Au                  ; MultiTileEntityDeposit.addDeposit(23311, 32764, F,   4000000, 2  ,  32,  16384, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
         aMat = MT.OREMATS.Cooperite   ; MultiTileEntityDeposit.addDeposit(23313, 32764, F, 512000000, 5  , 256, 524288, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
-        aMat = MT.Cu                  ; MultiTileEntityDeposit.addDeposit(23314, 32764, F,   8000000, 0  ,  16,   8192, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        aMat = MT.Cu                  ; MultiTileEntityDeposit.addDeposit(23314, 32764, F,   8000000, 0  ,   8,   8192, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
         aMat = MT.Monazite            ; MultiTileEntityDeposit.addDeposit(23315, 32764, F,  32000000, 2  ,  32,  32768, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat); // Not Sure
         aMat = MT.OREMATS.Powellite   ; MultiTileEntityDeposit.addDeposit(23316, 32764, F,  32000000, 2  ,  32,  32768, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat); // Not Sure
         aMat = MT.OREMATS.Bastnasite  ; MultiTileEntityDeposit.addDeposit(23317, 32764, F,  32000000, 2  ,  32,  32768, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat); // Not Sure
         aMat = MT.OREMATS.Arsenopyrite; MultiTileEntityDeposit.addDeposit(23318, 32764, F,  32000000, 2  ,  32,  32768, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat); // Not Sure
         aMat = MT.Redstone            ; MultiTileEntityDeposit.addDeposit(23319, 32764, F,  32000000, 2  ,  16,   8192, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
         aMat = MT.V2O5                ; MultiTileEntityDeposit.addDeposit(23320, 32764, F,  32000000, 2  ,  32,  32768, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
-        aMat = MT.OREMATS.Galena      ; MultiTileEntityDeposit.addDeposit(23321, 32764, F,   8000000, 0  ,  16,   8192, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
-        aMat = MT.Coal                ; MultiTileEntityDeposit.addDeposit(23322, 32764, F,   4000000, 0  ,  16,   4096, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        aMat = MT.OREMATS.Galena      ; MultiTileEntityDeposit.addDeposit(23321, 32764, F,   8000000, 0  ,   8,   8192, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        aMat = MT.Coal                ; MultiTileEntityDeposit.addDeposit(23322, 32764, F,   4000000, 0  ,   8,   4096, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
         aMat = MT.Graphite            ; MultiTileEntityDeposit.addDeposit(23323, 32764, F,   8000000, 1  ,  16,  16384, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
         aMat = MT.OREMATS.Stibnite    ; MultiTileEntityDeposit.addDeposit(23324, 32764, F,  32000000, 2  ,  32,  32768, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat); // Not Sure
         aMat = MT.Fe2O3               ; MultiTileEntityDeposit.addDeposit(23325, 32764, F,  16000000, 1  ,  16,  16384, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
@@ -789,8 +798,8 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         aMat = MT.OREMATS.Pentlandite ; MultiTileEntityDeposit.addDeposit(23328, 32764, F,  32000000, 2  ,  32,  32768, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat); // Not Sure
         aMat = MT.Niter               ; MultiTileEntityDeposit.addDeposit(23329, 32764, F,  16000000, 1  ,  16,  16384, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
         aMat = MT.OREMATS.Bauxite     ; MultiTileEntityDeposit.addDeposit(23330, 32764, F, 128000000, 2  ,  32,  65536, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
-        aMat = MT.OREMATS.Cassiterite ; MultiTileEntityDeposit.addDeposit(23331, 32764, F,   8000000, 0  ,  16,   8192, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
-        aMat = MT.OREMATS.Chalcopyrite; MultiTileEntityDeposit.addDeposit(23332, 32764, F,   8000000, 0  ,  16,   8192, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        aMat = MT.OREMATS.Cassiterite ; MultiTileEntityDeposit.addDeposit(23331, 32764, F,   8000000, 0  ,   8,   8192, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        aMat = MT.OREMATS.Chalcopyrite; MultiTileEntityDeposit.addDeposit(23332, 32764, F,   8000000, 0  ,   8,   8192, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
         
         aMat = MT.Diamond             ; MultiTileEntityDeposit.addDeposit(23350, 32764, T,  12000000, 3+1,  64,  65536, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
         aMat = MT.OREMATS.Tungstate   ; MultiTileEntityDeposit.addDeposit(23351, 32764, T, 384000000, 5+1, 256, 262144, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
@@ -805,15 +814,15 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         aMat = MT.OREMATS.Pitchblende ; MultiTileEntityDeposit.addDeposit(23360, 32764, T, 384000000, 4+1, 128, 262144, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
         aMat = MT.Au                  ; MultiTileEntityDeposit.addDeposit(23361, 32764, T,   8000000, 2+1,  32,  16384, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
         aMat = MT.OREMATS.Cooperite   ; MultiTileEntityDeposit.addDeposit(23363, 32764, T, 768000000, 5+1, 256, 524288, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
-        aMat = MT.Cu                  ; MultiTileEntityDeposit.addDeposit(23364, 32764, T,  12000000, 0+1,  16,   8192, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
+        aMat = MT.Cu                  ; MultiTileEntityDeposit.addDeposit(23364, 32764, T,  12000000, 0+1,   8,   8192, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
         aMat = MT.Monazite            ; MultiTileEntityDeposit.addDeposit(23365, 32764, T,  48000000, 2+1,  32,  32768, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat); // Not Sure
         aMat = MT.OREMATS.Powellite   ; MultiTileEntityDeposit.addDeposit(23366, 32764, T,  48000000, 2+1,  32,  32768, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat); // Not Sure
         aMat = MT.OREMATS.Bastnasite  ; MultiTileEntityDeposit.addDeposit(23367, 32764, T,  48000000, 2+1,  32,  32768, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat); // Not Sure
         aMat = MT.OREMATS.Arsenopyrite; MultiTileEntityDeposit.addDeposit(23368, 32764, T,  48000000, 2+1,  32,  32768, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat); // Not Sure
         aMat = MT.Redstone            ; MultiTileEntityDeposit.addDeposit(23369, 32764, T,  48000000, 2+1,  16,   8192, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
         aMat = MT.V2O5                ; MultiTileEntityDeposit.addDeposit(23370, 32764, T,  48000000, 2+1,  32,  32768, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
-        aMat = MT.OREMATS.Galena      ; MultiTileEntityDeposit.addDeposit(23371, 32764, T,  12000000, 0+1,  16,   8192, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
-        aMat = MT.Coal                ; MultiTileEntityDeposit.addDeposit(23372, 32764, T,   6000000, 0+1,  16,   4096, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
+        aMat = MT.OREMATS.Galena      ; MultiTileEntityDeposit.addDeposit(23371, 32764, T,  12000000, 0+1,   8,   8192, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
+        aMat = MT.Coal                ; MultiTileEntityDeposit.addDeposit(23372, 32764, T,   6000000, 0+1,   8,   4096, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
         aMat = MT.Graphite            ; MultiTileEntityDeposit.addDeposit(23373, 32764, T,  12000000, 1+1,  16,  16384, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
         aMat = MT.OREMATS.Stibnite    ; MultiTileEntityDeposit.addDeposit(23374, 32764, T,  48000000, 2+1,  32,  32768, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat); // Not Sure
         aMat = MT.Fe2O3               ; MultiTileEntityDeposit.addDeposit(23375, 32764, T,  24000000, 1+1,  16,  16384, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
@@ -822,8 +831,8 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         aMat = MT.OREMATS.Pentlandite ; MultiTileEntityDeposit.addDeposit(23378, 32764, T,  48000000, 2+1,  32,  32768, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat); // Not Sure
         aMat = MT.Niter               ; MultiTileEntityDeposit.addDeposit(23379, 32764, T,  24000000, 1+1,  16,  16384, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
         aMat = MT.OREMATS.Bauxite     ; MultiTileEntityDeposit.addDeposit(23380, 32764, T, 192000000, 2+1,  32,  65536, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
-        aMat = MT.OREMATS.Cassiterite ; MultiTileEntityDeposit.addDeposit(23381, 32764, T,  24000000, 0+1,  16,   8192, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
-        aMat = MT.OREMATS.Chalcopyrite; MultiTileEntityDeposit.addDeposit(23382, 32764, T,  24000000, 0+1,  16,   8192, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
+        aMat = MT.OREMATS.Cassiterite ; MultiTileEntityDeposit.addDeposit(23381, 32764, T,  24000000, 0+1,   8,   8192, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
+        aMat = MT.OREMATS.Chalcopyrite; MultiTileEntityDeposit.addDeposit(23382, 32764, T,  24000000, 0+1,   8,   8192, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
     }
     
     

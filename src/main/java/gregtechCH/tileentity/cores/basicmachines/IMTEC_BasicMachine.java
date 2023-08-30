@@ -20,8 +20,7 @@ public interface IMTEC_BasicMachine {
             aCore.doWorkFirst(aTimer);
             if (aCore.doWorkCheck(aTimer)) {
                 aCore.doWorkActive(aTimer);
-            }
-            else {
+            } else {
                 aCore.doWorkInactive(aTimer);
             }
             aCore.doWorkFinal(aTimer);

@@ -27,6 +27,8 @@ public abstract class Timer {
             }
             // 注意需要串行加入计划
             synchronized (mScheduledThread) {
+                // 如果已经 shutdown 则直接 return
+                if (mScheduledThread.isShutdown()) return;
                 mScheduledThread.schedule(this, 20, TimeUnit.MILLISECONDS); // 如果没有停止则在 20 ms 后重新检测
             }
         }
@@ -42,6 +44,8 @@ public abstract class Timer {
     public abstract StoppableAndTimeoutable getSubTimer(Object aObject);
     
     public final void reset(Object aObject) {
+        // 只允许存在一个 timer，如果有旧的还没 stop 则需要手动停止
+        if (mCurrentTimer != null) mCurrentTimer.setStop(true);
         mCurrentTimer = getSubTimer(aObject);
         // 注意需要串行加入计划
         synchronized (mScheduledThread) {
@@ -50,7 +54,13 @@ public abstract class Timer {
     }
     public final void check() {
         mCurrentTimer.setStop(true);
+        mCurrentTimer = null;
     }
     // 由于是可以实时创建的，提供一个关闭线程池的接口
-    public final void close() {mScheduledThread.shutdown();}
+    public final void close() {
+        if (mCurrentTimer != null) mCurrentTimer.setStop(true);
+        synchronized (mScheduledThread) {
+            mScheduledThread.shutdown();
+        }
+    }
 }

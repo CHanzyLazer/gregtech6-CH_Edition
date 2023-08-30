@@ -179,22 +179,19 @@ public class MultiTileEntityTransformerRotation extends TileEntityBase09FacingSi
     // 能量注入
     @Override
     public long doInject(TagData aEnergyType, byte aSide, long aSpeed, long aPower, boolean aDoInject) {
-        if (!aDoInject) return aPower; // 默认消耗能量
+        if (!aDoInject || mStopped) return aPower; // 默认消耗能量
         
         long tSpeed = Math.abs(aSpeed);
-        
         // 判断是否超载
         if (tSpeed > getEnergySizeInputMax(mEnergyTypeAccepted, SIDE_ANY)) {
             if (mTimer < 10) return aPower;
             overcharge(aSpeed, mEnergyTypeAccepted);
             return aPower;
         }
-        // 获取能量，保险起见判断是否没有停止
-        if (!mStopped) {
-            mCounterClockwise = aSpeed < 0;
-            mSpeed = (mSpeed==0) ? tSpeed : Math.min(tSpeed, mSpeed);
-            mPower += aPower;
-        }
+        // 获取能量
+        mCounterClockwise = aSpeed < 0;
+        mSpeed = (mSpeed==0) ? tSpeed : Math.min(tSpeed, mSpeed);
+        mPower += aPower;
         
         return aPower;
     }
@@ -221,7 +218,7 @@ public class MultiTileEntityTransformerRotation extends TileEntityBase09FacingSi
     public String getLocalisedOutputSide() {return LH.get(LH.FACE_BACK);}
     
     @Override public boolean isEnergyType(TagData aEnergyType, byte aSide, boolean aEmitting) {return aEmitting ? aEnergyType == mEnergyTypeEmitted : aEnergyType == mEnergyTypeAccepted;}
-    @Override public boolean isEnergyAcceptingFrom(TagData aEnergyType, byte aSide, boolean aTheoretical) {return (aTheoretical || (!mStopped )) && (SIDES_INVALID[aSide] || isInput (aSide)) && super.isEnergyAcceptingFrom(aEnergyType, aSide, aTheoretical);}
+    @Override public boolean isEnergyAcceptingFrom(TagData aEnergyType, byte aSide, boolean aTheoretical) {return (aTheoretical || (!mStopped)) && (SIDES_INVALID[aSide] || isInput(aSide)) && super.isEnergyAcceptingFrom(aEnergyType, aSide, aTheoretical);}
     @Override public boolean isEnergyEmittingTo(TagData aEnergyType, byte aSide, boolean aTheoretical) {return (SIDES_INVALID[aSide] || isOutput(aSide)) && super.isEnergyEmittingTo(aEnergyType, aSide, aTheoretical);}
     @Override public long getEnergySizeOutputRecommended(TagData aEnergyType, byte aSide) {return mReversed?getESORecR():getESORecN();}
     @Override public long getEnergySizeOutputMin(TagData aEnergyType, byte aSide) {return mReversed?getESOMinR():getESOMinN();}

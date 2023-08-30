@@ -19,39 +19,35 @@
 
 package gregtech.tileentity.energy.generators;
 
-import static gregapi.data.CS.*;
-
-import java.util.Collection;
-import java.util.List;
-
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_GetCollisionBoundingBoxFromPool;
 import gregapi.block.multitileentity.IMultiTileEntity.IMTE_OnEntityCollidedWithBlock;
 import gregapi.code.TagData;
-import gregapi.data.*;
+import gregapi.data.FM;
+import gregapi.data.IL;
+import gregapi.data.LH;
 import gregapi.data.LH.Chat;
-import gregapi.oredict.OreDictItemData;
-import gregapi.oredict.OreDictMaterialStack;
-import gregapi.oredict.OreDictPrefix;
+import gregapi.data.TD;
 import gregapi.recipes.Recipe;
 import gregapi.recipes.Recipe.RecipeMap;
 import gregapi.tileentity.base.TileEntityBase09FacingSingle;
 import gregapi.tileentity.energy.ITileEntityEnergy;
 import gregapi.tileentity.machines.ITileEntityRunningActively;
-import gregapi.util.OM;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregapi.util.WD;
-import gregtechCH.code.Triplet;
 import gregtechCH.tileentity.cores.dust.IMTEC_HasDusts;
 import gregtechCH.tileentity.cores.dust.MTEC_Dusts;
-import gregtechCH.util.OM_CH;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.Collection;
+import java.util.List;
+
+import static gregapi.data.CS.*;
 
 /**
  * @author Gregorius Techneticies
@@ -188,11 +184,15 @@ public abstract class MultiTileEntityGeneratorSolid extends TileEntityBase09Faci
 	
 	
 	// 破坏时释放 buffer 的灰烬
-	@Override
-	public boolean breakBlock() {
+	@Override public boolean breakBlock() {
 		if (isServerSide()) {
 			ST.drop(worldObj, getCoords(), mDust.item(0));
 			mDust.kill(0);
+			// 补充，尝试释放 buffer 的物品
+			if (mOutput1 != null) {
+				ST.drop(worldObj, getCoords(), mOutput1);
+				mOutput1 = null;
+			}
 		}
 		return super.breakBlock();
 	}

@@ -129,7 +129,7 @@ public class MTEC_Dusts {
     // 将对应槽的 buffer 转换为 item
     public ItemStack item(int aIdx) {return mDustBuffers[aIdx] == null ? null : OM.dust(mDustBuffers[aIdx].mMaterial, mDustBuffers[aIdx].mAmount);}
     // 清空对应 buffer
-    public void kill(int aIdx) {mDustBuffers[aIdx] = null ;}
+    public void kill(int aIdx) {mDustBuffers[aIdx] = null;}
     // 返回对应槽
     public OreDictMaterialStack stack(int aIdx) {return mDustBuffers[aIdx];}
 }

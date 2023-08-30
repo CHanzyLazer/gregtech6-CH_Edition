@@ -37,7 +37,7 @@ public class MTEC_BasicMachine extends MTEC_BasicMachine_Greg {
     public void toolTipsEnergy(List<String> aList) {
         aList.add(LH.Chat.CYAN + LH.get(LH.RECIPES) + ": " + LH.Chat.WHITE + LH.get(mTE.mRecipes.mNameInternal) + (mParallel > 1 ? " (" + LH_CH.getNumber(LH_CH.ENERGY_PARALLEL, mParallel) + ")" : ""));
         if (mTE.mEfficiency != 10000)
-            aList.add(LH.getToolTipEfficiency(mTE.mEfficiency));
+        aList.add(LH.getToolTipEfficiency(mTE.mEfficiency));
     }
     @Override
     public void toolTipsUseful(List<String> aList) {

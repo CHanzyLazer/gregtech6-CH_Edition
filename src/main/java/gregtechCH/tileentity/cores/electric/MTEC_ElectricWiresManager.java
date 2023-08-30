@@ -32,7 +32,7 @@ public class MTEC_ElectricWiresManager implements IMTEServerTickParallel {
     boolean mHasToAddTimerPar = T;
     
     // 通用电力 buffer，标记电压电流和能量
-    static class EnergyBuffer {
+    protected static class EnergyBuffer {
         public long mVoltage = 128, mAmperage = 1, mEnergy = 0; // 为了让代码简洁，保证实际 buffer 的电流都大于等于 1
         // 消耗电流量的能量
         public void emit(long aAmperage) {
@@ -46,7 +46,7 @@ public class MTEC_ElectricWiresManager implements IMTEServerTickParallel {
     }
     
     // 输入类和输出类以及通用部分（输入或输出的 core 和方向以及对应的 TE）
-    static class IOObject {
+    protected static class IOObject {
         protected final MTEC_ElectricWireBase mIOCore;
         protected final byte mIOSide;
         protected final TileEntity mIOTE;
@@ -60,7 +60,7 @@ public class MTEC_ElectricWiresManager implements IMTEServerTickParallel {
         @Override public int hashCode() {return Objects.hash(mIOCore, mIOSide);}
     }
     // 输入需要暂存电压电流用来统计此 tick 所有的输入，buffer 能量来比较简单实现能量守恒
-    static class InputObject extends IOObject {
+    protected static class InputObject extends IOObject {
         protected final EnergyBuffer mEnergyBuffer = new EnergyBuffer();
         private InputObject(MTEC_ElectricWireBase aInputCore, byte aInputSide, TileEntity aInputTE) {super(aInputCore, aInputSide, aInputTE);}
         private InputObject(MTEC_ElectricWireBase aInputCore, byte aInputSide) {this(aInputCore, aInputSide, aInputCore.mTE.getAdjacentTileEntity(aInputSide).mTileEntity);}
@@ -84,7 +84,7 @@ public class MTEC_ElectricWiresManager implements IMTEServerTickParallel {
         }
     }
     // 输出需要 buffer 所有的能量，用来保证可以预知输出是否成功，由于有多输入以及电阻，输出会有多组电压电流和对应的 buffer
-    static class OutputObject extends IOObject {
+    protected static class OutputObject extends IOObject {
         // 不再限制电流，不容易实现并且会有更多的问题，导线熔断判断时注意添加持续时间考虑（或后期直接使用温度和散热）
         protected final Map<InputObject, Long> mInputAmperages = new LinkedHashMap<>(); // linked 用于加速遍历，用来暂存注入时需要的电流值
         

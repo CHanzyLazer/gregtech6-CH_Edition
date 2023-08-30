@@ -77,9 +77,9 @@ public abstract class MTEC_BasicMachine_Greg implements IMTEC_BasicMachine, IMTE
     @Override public void toolTipsEnergy(List<String> aList) {
         aList.add(LH.Chat.CYAN + LH.get(LH.RECIPES) + ": " + LH.Chat.WHITE + LH.get(mTE.mRecipes.mNameInternal) + (mParallel > 1 ? " (up to "+mParallel+"x processed per run)" : ""));
         if (mTE.mCheapOverclocking)
-            aList.add(LH.Chat.YELLOW + LH.get(LH.CHEAP_OVERCLOCKING));
+        aList.add(LH.Chat.YELLOW + LH.get(LH.CHEAP_OVERCLOCKING));
         if (mTE.mEfficiency != 10000)
-            aList.add(LH.getToolTipEfficiency(mTE.mEfficiency));
+        aList.add(LH.getToolTipEfficiency(mTE.mEfficiency));
     }
     @Override public void toolTipsUseful(List<String> aList) {/**/}
     @Override public void toolTipsImportant(List<String> aList) {
@@ -89,9 +89,9 @@ public abstract class MTEC_BasicMachine_Greg implements IMTEC_BasicMachine, IMTE
     @Override public void toolTipsOther(List<String> aList, ItemStack aStack, boolean aF3_H) {
         aList.add(LH.Chat.DGRAY    + LH.get(LH.TOOL_TO_TOGGLE_SCREWDRIVER));
         if (SIDES_VALID[mTE.mFluidAutoInput] || SIDES_VALID[mTE.mItemAutoInput])
-            aList.add(LH.Chat.DGRAY    + LH.get(LH.TOOL_TO_TOGGLE_AUTO_INPUTS_MONKEY_WRENCH));
+        aList.add(LH.Chat.DGRAY    + LH.get(LH.TOOL_TO_TOGGLE_AUTO_INPUTS_MONKEY_WRENCH));
         if (SIDES_VALID[mTE.mFluidAutoOutput] || SIDES_VALID[mTE.mItemAutoOutput])
-            aList.add(LH.Chat.DGRAY    + LH.get(LH.TOOL_TO_TOGGLE_AUTO_OUTPUTS_MONKEY_WRENCH));
+        aList.add(LH.Chat.DGRAY    + LH.get(LH.TOOL_TO_TOGGLE_AUTO_OUTPUTS_MONKEY_WRENCH));
         aList.add(LH.Chat.DGRAY    + LH.get(LH.TOOL_TO_RESET_SOFT_HAMMER));
         aList.add(LH.Chat.DGRAY    + LH.get(LH.TOOL_TO_DETAIL_MAGNIFYINGGLASS));
     }
@@ -438,7 +438,7 @@ public abstract class MTEC_BasicMachine_Greg implements IMTEC_BasicMachine, IMTE
                     mTE.mOutputFluids = ZL_FS;
                     mTE.mSuccessful = T;
                     mTE.mIgnited = 40;
-
+                    
                     for (byte tSide : ALL_SIDES_VALID_FIRST[FACING_TO_SIDE[mTE.mFacing][mTE.mItemAutoOutput]]) if (FACE_CONNECTED[FACING_ROTATIONS[mTE.mFacing][tSide]][mTE.mItemOutputs]) {
                         DelegatorTileEntity<TileEntity> tDelegator = mTE.getItemOutputTarget(tSide);
                         if (tDelegator != null && tDelegator.mTileEntity instanceof ITileEntityAdjacentInventoryUpdatable) {

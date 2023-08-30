@@ -1893,7 +1893,6 @@ public class MT {
 		INITIALIZED = true;
 		// Making sure shit is statically loaded, damn it.
 		H.getClass();
-		MT_CH.Nb2Ti3C5.getClass(); // GTCH stuff
 		OREMATS.Magnetite.getClass();
 		WOODS.Oak.getClass();
 		AM.Hydrogen.getClass();
@@ -1904,13 +1903,14 @@ public class MT {
 	
 	// 最后的初始化，避免过多的引用导致其他静态类过早的初始化
 	public static void initLater() {
-		if (!INITIALIZED || INITIALIZED_LATER) return;
+		if (INITIALIZED_LATER) return;
 		INITIALIZED_LATER = true;
+		if (!INITIALIZED) init();
 		DATA.Dye_Materials.getClass();
 		TECH.init();
 		ANY.init();
 //		MT_CH.DATA.FIBERCABLES_04.getClass(); // GTCH stuff
-		MT_CH.TECH.init(); // GTCH stuff
+//		MT_CH.TECH.init(); // GTCH stuff
 	}
 	
 	/** I had to remove the full length names of Elements from this List, but in order to keep Compat with Mods that used some, such as IHL or Tinkers Gregworks, I got a few of them here. */

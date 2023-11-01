@@ -96,7 +96,7 @@ public class MultiTileEntityDepositDrill extends TileEntityBase09FacingSingle im
         aList.add(LH.Chat.YELLOW + LH_CH.get(LH_CH.OVERCLOCK_EXPENSIVE)+ " (" + LH_CH.get(LH_CH.OVERCLOCK_SQRT) + ")");
     }
     static {
-        LH_CH.add("gtch.tooltip.deposit.drill.1", "Input Lubricant can increase 1 mining level");
+        LH_CH.add("gtch.tooltip.deposit.drill.1", "Input Lubricant can increase efficiency and 1 mining level");
     }
     
     
@@ -238,25 +238,29 @@ public class MultiTileEntityDepositDrill extends TileEntityBase09FacingSingle im
     
     @Override public ITexture getTexture2(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
         if (!aShouldSideBeRendered[aSide]) return null;
-        int aIndex = SIDES_TOP[aSide]?2:SIDES_BOTTOM[aSide]?1:0;
+        int aIndex = SIDES_TOP[aSide]?3:SIDES_BOTTOM[aSide]?2:aSide==mFacing?1:0;
         return BlockTextureMulti.get(BlockTextureDefault.get(sColoreds[aIndex], mRGBa), BlockTextureDefault.get(sOverlaysBase[FACING_ROTATIONS[mFacing][aSide]]), BlockTextureDefault.get((mActive||worldObj==null?sOverlaysActive:mRunning?sOverlaysRunning:sOverlays)[aIndex]));
     }
     
     // Icons
     public static IIconContainer[] sColoreds = new IIconContainer[] {
         new Textures.BlockIcons.CustomIcon("machines/depositdrill/colored/side"),
+        new Textures.BlockIcons.CustomIcon("machines/depositdrill/colored/front"),
         new Textures.BlockIcons.CustomIcon("machines/depositdrill/colored/bottom"),
         new Textures.BlockIcons.CustomIcon("machines/depositdrill/colored/top"),
     }, sOverlays = new IIconContainer[] {
         new Textures.BlockIcons.CustomIcon("machines/depositdrill/overlay/side"),
+        new Textures.BlockIcons.CustomIcon("machines/depositdrill/overlay/front"),
         new Textures.BlockIcons.CustomIcon("machines/depositdrill/overlay/bottom"),
         new Textures.BlockIcons.CustomIcon("machines/depositdrill/overlay/top"),
     }, sOverlaysActive = new IIconContainer[] {
         new Textures.BlockIcons.CustomIcon("machines/depositdrill/overlay_active/side"),
+        new Textures.BlockIcons.CustomIcon("machines/depositdrill/overlay_active/front"),
         new Textures.BlockIcons.CustomIcon("machines/depositdrill/overlay_active/bottom"),
         new Textures.BlockIcons.CustomIcon("machines/depositdrill/overlay_active/top"),
     }, sOverlaysRunning = new IIconContainer[] {
         new Textures.BlockIcons.CustomIcon("machines/depositdrill/overlay_running/side"),
+        new Textures.BlockIcons.CustomIcon("machines/depositdrill/overlay_running/front"),
         new Textures.BlockIcons.CustomIcon("machines/depositdrill/overlay_running/bottom"),
         new Textures.BlockIcons.CustomIcon("machines/depositdrill/overlay_running/top"),
     }, sOverlaysBase = new IIconContainer[] {

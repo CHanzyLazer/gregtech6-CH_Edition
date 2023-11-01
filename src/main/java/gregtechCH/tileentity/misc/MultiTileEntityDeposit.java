@@ -152,9 +152,9 @@ public class MultiTileEntityDeposit extends TileEntityBase03MultiTileEntities im
     public static void addDeposit(int aID, int aCreativeTabID, boolean aIsBedrock, long aBaseMaxDurability, int aBaseLevel, long aBaseEnergy, long aBaseDurability, MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aBlock, Class<? extends TileEntity> aClass, OreDictMaterial aMat) {
         StateAttribute[] aStateAttributes = new StateAttribute[4];
         aStateAttributes[0] = StateAttribute.get(aBaseMaxDurability     , aBaseLevel  , aBaseEnergy   ,                                                      OP.oreRaw.mat(aMat, 1), 100, aBaseDurability  , null,  100, aBaseDurability/16L);
-        aStateAttributes[1] = StateAttribute.get(aBaseMaxDurability*10L , aBaseLevel+1, aBaseEnergy*2L, aMat.mByProducts, OP.oreRaw,  1, aBaseDurability*2L, OP.oreRaw.mat(aMat, 1), 100, aBaseDurability*2L, null,  400, aBaseDurability/2L );
-        aStateAttributes[2] = StateAttribute.get(aBaseMaxDurability*50L , aBaseLevel+2, aBaseEnergy*4L, aMat.mByProducts, OP.oreRaw, 10, aBaseDurability*4L, OP.oreRaw.mat(aMat, 1), 100, aBaseDurability*4L, null, 1600, aBaseDurability/2L );
-        aStateAttributes[3] = StateAttribute.get(aBaseMaxDurability*100L, aBaseLevel+3, aBaseEnergy*4L, aMat.mByProducts, OP.oreRaw, 20, aBaseDurability*4L, OP.oreRaw.mat(aMat, 1), 100, aBaseDurability*4L, null, 3200, aBaseDurability    );
+        aStateAttributes[1] = StateAttribute.get(aBaseMaxDurability*10L , aBaseLevel+1, aBaseEnergy*2L, aMat.mByProducts, OP.oreRaw,  1, aBaseDurability   , OP.oreRaw.mat(aMat, 1), 100, aBaseDurability   , null,  200, aBaseDurability/2L );
+        aStateAttributes[2] = StateAttribute.get(aBaseMaxDurability*50L , aBaseLevel+2, aBaseEnergy*4L, aMat.mByProducts, OP.oreRaw, 10, aBaseDurability*2L, OP.oreRaw.mat(aMat, 1), 100, aBaseDurability*2L, null,  800, aBaseDurability/2L );
+        aStateAttributes[3] = StateAttribute.get(aBaseMaxDurability*100L, aBaseLevel+3, aBaseEnergy*8L, aMat.mByProducts, OP.oreRaw, 20, aBaseDurability*4L, OP.oreRaw.mat(aMat, 1), 100, aBaseDurability*4L, null, 1600, aBaseDurability    );
         addDeposit(aID, aCreativeTabID, aIsBedrock, aStateAttributes, aRegistry, aBlock, aClass, aMat);
     }
     public static void addDeposit(int aID, int aCreativeTabID, boolean aIsBedrock, StateAttribute[] aStateAttributes, MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aBlock, Class<? extends TileEntity> aClass, OreDictMaterial aMat) {

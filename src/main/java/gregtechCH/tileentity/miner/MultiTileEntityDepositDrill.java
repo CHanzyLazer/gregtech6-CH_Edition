@@ -96,7 +96,7 @@ public class MultiTileEntityDepositDrill extends TileEntityBase09FacingSingle im
         aList.add(LH.Chat.YELLOW + LH_CH.get(LH_CH.OVERCLOCK_EXPENSIVE)+ " (" + LH_CH.get(LH_CH.OVERCLOCK_SQRT) + ")");
     }
     static {
-        LH_CH.add("gtch.tooltip.deposit.drill.1", "Input Lubricant can increase efficiency and 1 mining level");
+        LH_CH.add("gtch.tooltip.deposit.drill.1", "Input Lubricant to increase efficiency and 1 mining level");
     }
     
     

@@ -10,6 +10,7 @@ import gregapi.tileentity.delegate.DelegatorTileEntity;
 import gregapi.tileentity.machines.MultiTileEntityBasicMachine;
 import gregapi.util.ST;
 import gregapi.util.UT;
+import gregtechCH.data.LH_CH;
 import gregtechCH.tileentity.cores.IMTEC_ToolTips;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -113,45 +114,45 @@ public abstract class MTEC_BasicMachine_Greg implements IMTEC_BasicMachine, IMTE
         }
         if (mTE.mRecipes.mInputItemsCount > 0) {
             if (mTE.mItemInputs != 127) {
-                for (byte tSide : ALL_SIDES_VALID) if (FACE_CONNECTED[tSide][mTE.mItemInputs  ]) {tSideNames += (UT.Code.stringValid(tSideNames)?", ":"")+LH.get(LH.FACES[tSide])+(tSide==mTE.mItemAutoInput  ?" (auto)":"");}
+                for (byte tSide : ALL_SIDES_VALID) if (FACE_CONNECTED[tSide][mTE.mItemInputs  ]) {tSideNames += (UT.Code.stringValid(tSideNames)?", ":"")+LH.get(LH.FACES[tSide])+(tSide==mTE.mItemAutoInput  ?(" ("+LH_CH.get(LH_CH.AUTO)+")"):"");}
                 if (UT.Code.stringValid(tSideNames)) aList.add(LH.Chat.GREEN   + LH.get(LH.ITEM_INPUT)     + ": " + LH.Chat.WHITE + tSideNames);
                 tSideNames = "";
             } else if (SIDES_VALID[mTE.mItemAutoInput]) {
-                aList.add(LH.Chat.GREEN + LH.get(LH.ITEM_INPUT) + ": " + LH.Chat.WHITE + LH.get(LH.FACES[mTE.mItemAutoInput]) + " (auto, otherwise any)");
+                aList.add(LH.Chat.GREEN + LH.get(LH.ITEM_INPUT) + ": " + LH.Chat.WHITE + LH.get(LH.FACES[mTE.mItemAutoInput]) + " (" + LH_CH.get(LH_CH.AUTO_OTHERWISE_ANY) + ")");
             } else {
-                aList.add(LH.Chat.GREEN + LH.get(LH.ITEM_INPUT) + ": " + LH.Chat.WHITE + LH.get(LH.FACE_ANY) + " (no auto)");
+                aList.add(LH.Chat.GREEN + LH.get(LH.ITEM_INPUT) + ": " + LH.Chat.WHITE + LH.get(LH.FACE_ANY) + " (" + LH_CH.get(LH_CH.NO_AUTO) + ")");
             }
         }
         if (mTE.mRecipes.mOutputItemsCount > 0) {
             if (mTE.mItemOutputs != 127) {
-                for (byte tSide : ALL_SIDES_VALID) if (FACE_CONNECTED[tSide][mTE.mItemOutputs ]) {tSideNames += (UT.Code.stringValid(tSideNames)?", ":"")+LH.get(LH.FACES[tSide])+(tSide==mTE.mItemAutoOutput ?" (auto)":"");}
+                for (byte tSide : ALL_SIDES_VALID) if (FACE_CONNECTED[tSide][mTE.mItemOutputs ]) {tSideNames += (UT.Code.stringValid(tSideNames)?", ":"")+LH.get(LH.FACES[tSide])+(tSide==mTE.mItemAutoOutput ?(" ("+LH_CH.get(LH_CH.AUTO)+")"):"");}
                 if (UT.Code.stringValid(tSideNames)) aList.add(LH.Chat.RED     + LH.get(LH.ITEM_OUTPUT)    + ": " + LH.Chat.WHITE + tSideNames);
                 tSideNames = "";
             } else if (SIDES_VALID[mTE.mItemAutoOutput]) {
-                aList.add(LH.Chat.RED + LH.get(LH.ITEM_OUTPUT) + ": " + LH.Chat.WHITE + LH.get(LH.FACES[mTE.mItemAutoOutput]) + " (auto, otherwise any)");
+                aList.add(LH.Chat.RED + LH.get(LH.ITEM_OUTPUT) + ": " + LH.Chat.WHITE + LH.get(LH.FACES[mTE.mItemAutoOutput]) + " (" + LH_CH.get(LH_CH.AUTO_OTHERWISE_ANY) + ")");
             } else {
-                aList.add(LH.Chat.RED + LH.get(LH.ITEM_OUTPUT) + ": " + LH.Chat.WHITE + LH.get(LH.FACE_ANY) + " (no auto)");
+                aList.add(LH.Chat.RED + LH.get(LH.ITEM_OUTPUT) + ": " + LH.Chat.WHITE + LH.get(LH.FACE_ANY) + " (" + LH_CH.get(LH_CH.NO_AUTO) + ")");
             }
         }
         if (mTE.mRecipes.mInputFluidCount > 0) {
             if (mTE.mFluidInputs != 127) {
-                for (byte tSide : ALL_SIDES_VALID) if (FACE_CONNECTED[tSide][mTE.mFluidInputs ]) {tSideNames += (UT.Code.stringValid(tSideNames)?", ":"")+LH.get(LH.FACES[tSide])+(tSide==mTE.mFluidAutoInput ?" (auto)":"");}
+                for (byte tSide : ALL_SIDES_VALID) if (FACE_CONNECTED[tSide][mTE.mFluidInputs ]) {tSideNames += (UT.Code.stringValid(tSideNames)?", ":"")+LH.get(LH.FACES[tSide])+(tSide==mTE.mFluidAutoInput ?(" ("+LH_CH.get(LH_CH.AUTO)+")"):"");}
                 if (UT.Code.stringValid(tSideNames)) aList.add(LH.Chat.GREEN   + LH.get(LH.FLUID_INPUT)    + ": " + LH.Chat.WHITE + tSideNames);
                 tSideNames = "";
             } else if (SIDES_VALID[mTE.mFluidAutoInput]) {
-                aList.add(LH.Chat.GREEN + LH.get(LH.FLUID_INPUT) + ": " + LH.Chat.WHITE + LH.get(LH.FACES[mTE.mFluidAutoInput]) + " (auto, otherwise any)");
+                aList.add(LH.Chat.GREEN + LH.get(LH.FLUID_INPUT) + ": " + LH.Chat.WHITE + LH.get(LH.FACES[mTE.mFluidAutoInput]) + " (" + LH_CH.get(LH_CH.AUTO_OTHERWISE_ANY) + ")");
             } else {
-                aList.add(LH.Chat.GREEN + LH.get(LH.FLUID_INPUT) + ": " + LH.Chat.WHITE + LH.get(LH.FACE_ANY) + " (no auto)");
+                aList.add(LH.Chat.GREEN + LH.get(LH.FLUID_INPUT) + ": " + LH.Chat.WHITE + LH.get(LH.FACE_ANY) + " (" + LH_CH.get(LH_CH.NO_AUTO) + ")");
             }
         }
         if (mTE.mRecipes.mOutputFluidCount > 0) {
             if (mTE.mFluidOutputs != 127) {
-                for (byte tSide : ALL_SIDES_VALID) if (FACE_CONNECTED[tSide][mTE.mFluidOutputs]) {tSideNames += (UT.Code.stringValid(tSideNames)?", ":"")+LH.get(LH.FACES[tSide])+(tSide==mTE.mFluidAutoOutput?" (auto)":"");}
+                for (byte tSide : ALL_SIDES_VALID) if (FACE_CONNECTED[tSide][mTE.mFluidOutputs]) {tSideNames += (UT.Code.stringValid(tSideNames)?", ":"")+LH.get(LH.FACES[tSide])+(tSide==mTE.mFluidAutoOutput?(" ("+LH_CH.get(LH_CH.AUTO)+")"):"");}
                 if (UT.Code.stringValid(tSideNames)) aList.add(LH.Chat.RED     + LH.get(LH.FLUID_OUTPUT)   + ": " + LH.Chat.WHITE + tSideNames);
             } else if (SIDES_VALID[mTE.mFluidAutoOutput]) {
-                aList.add(LH.Chat.RED + LH.get(LH.FLUID_OUTPUT) + ": " + LH.Chat.WHITE + LH.get(LH.FACES[mTE.mFluidAutoOutput]) + " (auto, otherwise any)");
+                aList.add(LH.Chat.RED + LH.get(LH.FLUID_OUTPUT) + ": " + LH.Chat.WHITE + LH.get(LH.FACES[mTE.mFluidAutoOutput]) + " (" + LH_CH.get(LH_CH.AUTO_OTHERWISE_ANY) + ")");
             } else {
-                aList.add(LH.Chat.RED + LH.get(LH.FLUID_OUTPUT) + ": " + LH.Chat.WHITE + LH.get(LH.FACE_ANY) + " (no auto)");
+                aList.add(LH.Chat.RED + LH.get(LH.FLUID_OUTPUT) + ": " + LH.Chat.WHITE + LH.get(LH.FACE_ANY) + " (" + LH_CH.get(LH_CH.NO_AUTO) + ")");
             }
         }
     }

@@ -37,6 +37,7 @@ import gregapi.tileentity.machines.ITileEntityAdjacentOnOff;
 import gregapi.tileentity.machines.ITileEntityRunningActively;
 import gregapi.tileentity.machines.ITileEntitySwitchableMode;
 import gregapi.util.UT;
+import gregtechCH.util.UT_CH;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.IInventory;
@@ -47,6 +48,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static gregapi.data.CS.*;
+import static gregtechCH.data.CS_CH.NBT_EFFICIENCY_NUM;
 
 public class MultiTileEntityEngineElectric extends TileEntityBase09FacingSingle implements ITileEntityAdjacentOnOff, ITileEntityEnergyFluxHandler, ITileEntityEnergyElectricityAcceptor, ITileEntityRunningActively, ITileEntitySwitchableMode {
 	/** The Array containing the different Engine State Colours from Blue over Green to Red */
@@ -66,8 +68,19 @@ public class MultiTileEntityEngineElectric extends TileEntityBase09FacingSingle 
 		if (aNBT.hasKey(NBT_ACTIVE)) mActive = aNBT.getBoolean(NBT_ACTIVE);
 		if (aNBT.hasKey(NBT_MODE)) mState = aNBT.getByte(NBT_MODE);
 		if (aNBT.hasKey(NBT_PISTON)) mPiston = aNBT.getByte(NBT_PISTON);
-		if (aNBT.hasKey(NBT_INPUT)) mInput = aNBT.getLong(NBT_INPUT);
-		if (aNBT.hasKey(NBT_OUTPUT)) mOutput = aNBT.getLong(NBT_OUTPUT);
+		// GTCH, 使其可以输入效率作为参数，注意为了代码简洁，这里不考虑能量类型，仅做数值效率
+		if (aNBT.hasKey(NBT_EFFICIENCY_NUM)) {
+			if (aNBT.hasKey(NBT_INPUT)) {
+				mInput = aNBT.getLong(NBT_INPUT);
+				mOutput = UT.Code.units(mInput, 10000, UT.Code.bind_(0, 10000, aNBT.getShort(NBT_EFFICIENCY_NUM)), F);
+			} else {
+				mOutput = aNBT.getLong(NBT_OUTPUT);
+				mInput = UT.Code.units(mOutput, UT.Code.bind_(0, 10000, aNBT.getShort(NBT_EFFICIENCY_NUM)), 10000, T);
+			}
+		} else {
+			mInput = aNBT.getLong(NBT_INPUT);
+			mOutput = aNBT.getLong(NBT_OUTPUT);
+		}
 		if (aNBT.hasKey(NBT_ENERGY_ACCEPTED)) mEnergyTypeAccepted = TagData.createTagData(aNBT.getString(NBT_ENERGY_ACCEPTED));
 		if (aNBT.hasKey(NBT_ENERGY_EMITTED)) mEnergyTypeEmitted = TagData.createTagData(aNBT.getString(NBT_ENERGY_EMITTED));
 	}
@@ -101,16 +114,16 @@ public class MultiTileEntityEngineElectric extends TileEntityBase09FacingSingle 
 	public void addToolTipsEfficiency(List<String> aList, ItemStack aStack, boolean aF3_H) {
 		if (TD.Energy.ALL_EU.contains(mEnergyTypeAccepted)) {
 			if (TD.Energy.ALL_EU.contains(mEnergyTypeEmitted)) {
-				aList.add(LH.getToolTipEfficiency(UT.Code.units(10000, mInput, mOutput, F)));
+				aList.add(LH.getToolTipEfficiency(UT_CH.Code.effNormalizeRound((int)UT.Code.units(10000, mInput, mOutput, F))));
 			} else {
 				if (mEnergyTypeEmitted == TD.Energy.RF) {
-					aList.add(LH.getToolTipEfficiency(UT.Code.units(10000, mInput*RF_PER_EU, mOutput, F)));
+					aList.add(LH.getToolTipEfficiency(UT_CH.Code.effNormalizeRound(UT.Code.units(10000, mInput*RF_PER_EU, mOutput, F))));
 				}
 			}
 		} else {
 			if (TD.Energy.ALL_EU.contains(mEnergyTypeEmitted)) {
-				if (mEnergyTypeAccepted == TD.Energy.RF   ) aList.add(LH.getToolTipEfficiency(UT.Code.units(10000, mInput, mOutput*RF_PER_EU, F)));
-				if (mEnergyTypeAccepted == TD.Energy.STEAM) aList.add(LH.getToolTipEfficiency(UT.Code.units(10000, mInput, mOutput*STEAM_PER_EU, F)));
+				if (mEnergyTypeAccepted == TD.Energy.RF   ) aList.add(LH.getToolTipEfficiency(UT_CH.Code.effNormalizeRound(UT.Code.units(10000, mInput, mOutput*RF_PER_EU, F))));
+				if (mEnergyTypeAccepted == TD.Energy.STEAM) aList.add(LH.getToolTipEfficiency(UT_CH.Code.effNormalizeRound(UT.Code.units(10000, mInput, mOutput*STEAM_PER_EU, F))));
 			}
 		}
 	}

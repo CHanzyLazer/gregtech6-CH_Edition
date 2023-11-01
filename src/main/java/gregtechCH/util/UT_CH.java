@@ -169,13 +169,13 @@ public class UT_CH {
             return UT.Code.bind_(0, 10000, (aEff - tEff40 < aEff - tEff30) ? tEff40 : tEff30);
         }
         
-        public static long effNormalizeRound(int aEff) {
-            int[] tEffArray = {
-                    (aEff / 250) * 10000 / 40,
+        public static long effNormalizeRound(long aEff) {
+            long[] tEffArray = {
+                    (aEff / 125) * 10000 / 80,
                     (aEff / 333) * 10000 / 30,
-                    (int) UT.Code.divup(aEff, 250) * 10000 / 40,
-                    (int) UT.Code.divup(aEff, 333) * 10000 / 30};
-            int tMinEff = tEffArray[0];
+                    UT.Code.divup(aEff, 125) * 10000 / 80,
+                    UT.Code.divup(aEff, 333) * 10000 / 30};
+            long tMinEff = tEffArray[0];
             for (int i = 1; i < 4; ++i) {
                 if (Math.abs(tEffArray[i] - aEff) < Math.abs(tMinEff - aEff)) tMinEff = tEffArray[i];
             }
@@ -349,9 +349,9 @@ public class UT_CH {
             tRGBPaint[1] *= aWeightPaint;
             tRGBPaint[2] *= aWeightPaint;
             // 直接两者进行混合，注意混合后需要保证亮度不变
-            tRGBBase[0] += tRGBPaint[0]; tRGBBase[0] *= 0.5;
-            tRGBBase[1] += tRGBPaint[1]; tRGBBase[1] *= 0.5;
-            tRGBBase[2] += tRGBPaint[2]; tRGBBase[2] *= 0.5;
+            tRGBBase[0] += tRGBPaint[0]; tRGBBase[0] *= 0.5F;
+            tRGBBase[1] += tRGBPaint[1]; tRGBBase[1] *= 0.5F;
+            tRGBBase[2] += tRGBPaint[2]; tRGBBase[2] *= 0.5F;
             // 使用 HSV 来保证亮度值不变
             RGB2HSV(tRGBBase, tHSV);
             tHSV[2] = tV;

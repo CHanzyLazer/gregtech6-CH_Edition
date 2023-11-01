@@ -32,6 +32,9 @@ import gregapi.tileentity.machines.ITileEntitySwitchableMode;
 import net.minecraft.block.Block;
 
 public class MultiTileEntityCoolerElectric extends TileEntityBase11Twotypes implements ITileEntityEnergyElectricityAcceptor, ITileEntitySwitchableMode {
+	
+	@Override protected long minConsiderInput() {return 4;}
+	
 	@Override
 	public ITexture getTexture2(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
 		if (!aShouldSideBeRendered[aSide]) return null;

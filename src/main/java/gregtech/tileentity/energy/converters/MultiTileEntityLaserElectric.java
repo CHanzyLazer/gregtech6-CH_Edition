@@ -42,6 +42,8 @@ public class MultiTileEntityLaserElectric extends TileEntityBase10EnergyConverte
 //      aList.add(Chat.DRED     + LH.get(LH.HAZARD_CONTACT) + " (" + LH.get(LH.FACE_FRONT) + ")");
 	}
 	
+	@Override protected long minConsiderInput() {return 4;}
+	
 	@Override
 	public ITexture getTexture2(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
 		if (!aShouldSideBeRendered[aSide]) return null;

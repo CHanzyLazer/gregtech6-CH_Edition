@@ -37,14 +37,14 @@ public class MultiTileEntityDynamoElectric extends TileEntityBase10EnergyConvert
 	@Override public String getLocalisedInputSide () {return LH.get(LH.FACE_BACK);}
 	@Override public String getLocalisedOutputSide() {return LH.get(LH.FACE_FRONT);}
 	
+	@Override protected long minConsiderInput() {return 4;}
+	
 	@Override
 	public ITexture getTexture2(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
 		if (!aShouldSideBeRendered[aSide]) return null;
 		int aIndex = aSide==mFacing?0:aSide==OPOS[mFacing]?1:2;
 		return BlockTextureMulti.get(BlockTextureDefault.get(sColoreds[aIndex], mRGBa), BlockTextureDefault.get((mActivity.mState>0?sOverlaysActive:sOverlays)[aIndex]));
 	}
-	
-	@Override protected long minConsiderInput() {return 1;}
 	
 	// Icons
 	public static IIconContainer sColoreds[] = new IIconContainer[] {

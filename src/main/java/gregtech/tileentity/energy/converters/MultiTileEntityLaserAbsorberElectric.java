@@ -37,6 +37,8 @@ public class MultiTileEntityLaserAbsorberElectric extends TileEntityBase10Energy
 	@Override public String getLocalisedInputSide () {return LH.get(LH.FACE_BACK);}
 	@Override public String getLocalisedOutputSide() {return LH.get(LH.FACE_FRONT);}
 	
+	@Override protected long minConsiderInput() {return 4;}
+	
 	@Override
 	public ITexture getTexture2(Block aBlock, int aRenderPass, byte aSide, boolean[] aShouldSideBeRendered) {
 		if (!aShouldSideBeRendered[aSide]) return null;

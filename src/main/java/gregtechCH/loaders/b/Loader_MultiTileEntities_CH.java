@@ -10,7 +10,7 @@ import gregapi.util.OM;
 import gregapi.util.ST;
 import gregapi.util.UT;
 import gregtech.loaders.b.Loader_MultiTileEntities;
-import gregtech.tileentity.energy.converters.MultiTileEntityDynamoElectric;
+import gregtech.tileentity.energy.converters.*;
 import gregtech.tileentity.energy.generators.*;
 import gregtech.tileentity.multiblocks.*;
 import gregtech.tileentity.tools.*;
@@ -210,14 +210,14 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         aRegistry.addReplacer(9159).setParameters(NBT_OUTPUT, 256*8); // Dense TantalumHafniumCarbide
         
         // Diesel Engines 效率降低，合成变贵，增加预热相关
-        aMat = MT.Bronze;           aRegistry.addReplacer(9147).setParameters(NBT_OUTPUT,  16, NBT_EFFICIENCY, 2750, NBT_PREHEAT_ENERGY,  16*1000, NBT_PREHEAT_RATE ,  16*4, NBT_PREHEAT_COST,  16/16, NBT_COOLDOWN_RATE,  16).recipe("PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeQuadruple.dat(aMat)     , 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
-        aMat = MT.ArsenicCopper;    aRegistry.addReplacer(9146).setParameters(NBT_OUTPUT,  16, NBT_EFFICIENCY, 2875, NBT_PREHEAT_ENERGY,  16*1000, NBT_PREHEAT_RATE ,  16*4, NBT_PREHEAT_COST,  16/16, NBT_COOLDOWN_RATE,  16).recipe("PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeQuadruple.dat(MT.Bronze), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
-        aMat = MT.ArsenicBronze;    aRegistry.addReplacer(9145).setParameters(NBT_OUTPUT,  24, NBT_EFFICIENCY, 3000, NBT_PREHEAT_ENERGY,  24*1000, NBT_PREHEAT_RATE ,  24*4, NBT_PREHEAT_COST,  24/16, NBT_COOLDOWN_RATE,  16).recipe("PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeQuadruple.dat(MT.Bronze), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
-        aMat = ANY.Steel;           aRegistry.addReplacer(9148).setParameters(NBT_OUTPUT,  32, NBT_EFFICIENCY, 2500, NBT_PREHEAT_ENERGY,  32*1000, NBT_PREHEAT_RATE ,  32*4, NBT_PREHEAT_COST,  32/16, NBT_COOLDOWN_RATE,  32).recipe("PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeQuadruple.dat(aMat)     , 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
-        aMat = MT.Invar;            aRegistry.addReplacer(9149).setParameters(NBT_OUTPUT,  64, NBT_EFFICIENCY, 3500, NBT_PREHEAT_ENERGY,  64*1000, NBT_PREHEAT_RATE ,  64*4, NBT_PREHEAT_COST,  64/16, NBT_COOLDOWN_RATE,  64).recipe("PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeQuadruple.dat(aMat)     , 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
-        aMat = MT.Ti;               aRegistry.addReplacer(9197).setParameters(NBT_OUTPUT, 128, NBT_EFFICIENCY, 2750, NBT_PREHEAT_ENERGY, 128*1000, NBT_PREHEAT_RATE , 128*4, NBT_PREHEAT_COST, 128/16, NBT_COOLDOWN_RATE, 128).recipe("PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeQuadruple.dat(aMat)     , 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
-        aMat = MT.TungstenSteel;    aRegistry.addReplacer(9198).setParameters(NBT_OUTPUT, 256, NBT_EFFICIENCY, 3000, NBT_PREHEAT_ENERGY, 256*1000, NBT_PREHEAT_RATE , 256*4, NBT_PREHEAT_COST, 256/16, NBT_COOLDOWN_RATE, 256).recipe("PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeQuadruple.dat(aMat)     , 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
-        aMat = MT.Ir;               aRegistry.addReplacer(9199).setParameters(NBT_OUTPUT, 512, NBT_EFFICIENCY, 3333, NBT_PREHEAT_ENERGY, 512*1000, NBT_PREHEAT_RATE , 512*4, NBT_PREHEAT_COST, 512/16, NBT_COOLDOWN_RATE, 512).recipe("PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeQuadruple.dat(aMat)     , 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = MT.Bronze;           aRegistry.addReplacer(9147).setParameters(NBT_OUTPUT,  16, NBT_EFFICIENCY, 2750, NBT_PREHEAT_ENERGY,  16*1000, NBT_PREHEAT_RATE ,  16*2, NBT_PREHEAT_COST,  16/16, NBT_COOLDOWN_RATE,  16).recipe("PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeQuadruple.dat(aMat)     , 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = MT.ArsenicCopper;    aRegistry.addReplacer(9146).setParameters(NBT_OUTPUT,  16, NBT_EFFICIENCY, 2875, NBT_PREHEAT_ENERGY,  16*1000, NBT_PREHEAT_RATE ,  16*2, NBT_PREHEAT_COST,  16/16, NBT_COOLDOWN_RATE,  16).recipe("PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeQuadruple.dat(MT.Bronze), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = MT.ArsenicBronze;    aRegistry.addReplacer(9145).setParameters(NBT_OUTPUT,  24, NBT_EFFICIENCY, 3000, NBT_PREHEAT_ENERGY,  24*1000, NBT_PREHEAT_RATE ,  24*2, NBT_PREHEAT_COST,  24/16, NBT_COOLDOWN_RATE,  16).recipe("PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeQuadruple.dat(MT.Bronze), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = ANY.Steel;           aRegistry.addReplacer(9148).setParameters(NBT_OUTPUT,  32, NBT_EFFICIENCY, 2500, NBT_PREHEAT_ENERGY,  32*1000, NBT_PREHEAT_RATE ,  32*2, NBT_PREHEAT_COST,  32/16, NBT_COOLDOWN_RATE,  32).recipe("PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeQuadruple.dat(aMat)     , 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = MT.Invar;            aRegistry.addReplacer(9149).setParameters(NBT_OUTPUT,  64, NBT_EFFICIENCY, 3500, NBT_PREHEAT_ENERGY,  64*1000, NBT_PREHEAT_RATE ,  64*2, NBT_PREHEAT_COST,  64/16, NBT_COOLDOWN_RATE,  64).recipe("PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeQuadruple.dat(aMat)     , 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = MT.Ti;               aRegistry.addReplacer(9197).setParameters(NBT_OUTPUT, 128, NBT_EFFICIENCY, 2750, NBT_PREHEAT_ENERGY, 128*1000, NBT_PREHEAT_RATE , 128*2, NBT_PREHEAT_COST, 128/16, NBT_COOLDOWN_RATE, 128).recipe("PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeQuadruple.dat(aMat)     , 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = MT.TungstenSteel;    aRegistry.addReplacer(9198).setParameters(NBT_OUTPUT, 256, NBT_EFFICIENCY, 3000, NBT_PREHEAT_ENERGY, 256*1000, NBT_PREHEAT_RATE , 256*2, NBT_PREHEAT_COST, 256/16, NBT_COOLDOWN_RATE, 256).recipe("PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeQuadruple.dat(aMat)     , 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = MT.Ir;               aRegistry.addReplacer(9199).setParameters(NBT_OUTPUT, 512, NBT_EFFICIENCY, 3333, NBT_PREHEAT_ENERGY, 512*1000, NBT_PREHEAT_RATE , 512*2, NBT_PREHEAT_COST, 512/16, NBT_COOLDOWN_RATE, 512).recipe("PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeQuadruple.dat(aMat)     , 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
         
         // Steam Boilers 增加效率参数，输入调整
         aRegistry.addReplacer(1200).setParameters(NBT_INPUT,  16*2, NBT_EFFICIENCY_CH, 4500, NBT_CAPACITY,  16*1000, NBT_CAPACITY_SU,  16*10000).removeParameters(NBT_OUTPUT_SU); // Lead
@@ -278,24 +278,24 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         aRegistry.addReplacer(1358).setParameters(NBT_OUTPUT, 128*4/STEAM_PER_EU, NBT_EFFICIENCY, 3750, NBT_CAPACITY, 128*4000, NBT_EFFICIENCY_WATER, 8000); // Strong Tungstensteel
     
         // Steam Turbines 效率调整，预热相关
-        aRegistry.addReplacer(1512).setParameters(NBT_OUTPUT,   16, NBT_EFFICIENCY, 3500, NBT_PREHEAT_ENERGY,   16*4000, NBT_PREHEAT_COST,   16/16, NBT_COOLDOWN_RATE,   16, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // Bronze BronzeRotor
-        aRegistry.addReplacer(1515).setParameters(NBT_OUTPUT,   24, NBT_EFFICIENCY, 3500, NBT_PREHEAT_ENERGY,   24*4000, NBT_PREHEAT_COST,   24/16, NBT_COOLDOWN_RATE,   24, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // Bronze BrassRotor
-        aRegistry.addReplacer(1518).setParameters(NBT_OUTPUT,   32, NBT_EFFICIENCY, 4000, NBT_PREHEAT_ENERGY,   32*4000, NBT_PREHEAT_COST,   32/16, NBT_COOLDOWN_RATE,   32, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // Bronze InvarRotor
+        aRegistry.addReplacer(1512).setParameters(NBT_OUTPUT,   16, NBT_EFFICIENCY, 3500, NBT_PREHEAT_ENERGY,   16*2000, NBT_PREHEAT_COST,   16/16, NBT_COOLDOWN_RATE,   16, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // Bronze BronzeRotor
+        aRegistry.addReplacer(1515).setParameters(NBT_OUTPUT,   24, NBT_EFFICIENCY, 3500, NBT_PREHEAT_ENERGY,   24*2000, NBT_PREHEAT_COST,   24/16, NBT_COOLDOWN_RATE,   24, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // Bronze BrassRotor
+        aRegistry.addReplacer(1518).setParameters(NBT_OUTPUT,   32, NBT_EFFICIENCY, 4000, NBT_PREHEAT_ENERGY,   32*2000, NBT_PREHEAT_COST,   32/16, NBT_COOLDOWN_RATE,   32, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // Bronze InvarRotor
         
-        aRegistry.addReplacer(1522).setParameters(NBT_OUTPUT,   64, NBT_EFFICIENCY, 3000, NBT_PREHEAT_ENERGY,   64*4000, NBT_PREHEAT_COST,   64/16, NBT_COOLDOWN_RATE,   64, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // AnyIronSteel AnyIronSteelRotor
-        aRegistry.addReplacer(1525).setParameters(NBT_OUTPUT,   96, NBT_EFFICIENCY, 4000, NBT_PREHEAT_ENERGY,   96*4000, NBT_PREHEAT_COST,   96/16, NBT_COOLDOWN_RATE,   96, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // AnyIronSteel ChromiumRotor
-        aRegistry.addReplacer(1527).setParameters(NBT_OUTPUT,  128, NBT_EFFICIENCY, 4750, NBT_PREHEAT_ENERGY,  128*4000, NBT_PREHEAT_COST,  128/16, NBT_COOLDOWN_RATE,  128, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // AnyIronSteel IronwoodRotor
-        aRegistry.addReplacer(1528).setParameters(NBT_OUTPUT,  128, NBT_EFFICIENCY, 4500, NBT_PREHEAT_ENERGY,  128*4000, NBT_PREHEAT_COST,  128/16, NBT_COOLDOWN_RATE,  128, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // AnyIronSteel SteeleafRotor
-        aRegistry.addReplacer(1529).setParameters(NBT_OUTPUT,  128, NBT_EFFICIENCY, 4000, NBT_PREHEAT_ENERGY,  128*4000, NBT_PREHEAT_COST,  128/16, NBT_COOLDOWN_RATE,  128, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // AnyIronSteel ThaumiumRotor
+        aRegistry.addReplacer(1522).setParameters(NBT_OUTPUT,   64, NBT_EFFICIENCY, 3000, NBT_PREHEAT_ENERGY,   64*2000, NBT_PREHEAT_COST,   64/16, NBT_COOLDOWN_RATE,   64, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // AnyIronSteel AnyIronSteelRotor
+        aRegistry.addReplacer(1525).setParameters(NBT_OUTPUT,   96, NBT_EFFICIENCY, 4000, NBT_PREHEAT_ENERGY,   96*2000, NBT_PREHEAT_COST,   96/16, NBT_COOLDOWN_RATE,   96, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // AnyIronSteel ChromiumRotor
+        aRegistry.addReplacer(1527).setParameters(NBT_OUTPUT,  128, NBT_EFFICIENCY, 4750, NBT_PREHEAT_ENERGY,  128*2000, NBT_PREHEAT_COST,  128/16, NBT_COOLDOWN_RATE,  128, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // AnyIronSteel IronwoodRotor
+        aRegistry.addReplacer(1528).setParameters(NBT_OUTPUT,  128, NBT_EFFICIENCY, 4500, NBT_PREHEAT_ENERGY,  128*2000, NBT_PREHEAT_COST,  128/16, NBT_COOLDOWN_RATE,  128, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // AnyIronSteel SteeleafRotor
+        aRegistry.addReplacer(1529).setParameters(NBT_OUTPUT,  128, NBT_EFFICIENCY, 4000, NBT_PREHEAT_ENERGY,  128*2000, NBT_PREHEAT_COST,  128/16, NBT_COOLDOWN_RATE,  128, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // AnyIronSteel ThaumiumRotor
         
-        aRegistry.addReplacer(1530).setParameters(NBT_OUTPUT,  256, NBT_EFFICIENCY, 4500, NBT_PREHEAT_ENERGY,  256*4000, NBT_PREHEAT_COST,  256/16, NBT_COOLDOWN_RATE,  256, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // Titanium TitaniumRotor
-        aRegistry.addReplacer(1531).setParameters(NBT_OUTPUT,  256, NBT_EFFICIENCY, 3500, NBT_PREHEAT_ENERGY,  256*4000, NBT_PREHEAT_COST,  256/16, NBT_COOLDOWN_RATE,  256, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // Titanium FierySteelRotor
-        aRegistry.addReplacer(1535).setParameters(NBT_OUTPUT,  384, NBT_EFFICIENCY, 5000, NBT_PREHEAT_ENERGY,  384*4000, NBT_PREHEAT_COST,  384/16, NBT_COOLDOWN_RATE,  384, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // Titanium AluminiumRotor
-        aRegistry.addReplacer(1538).setParameters(NBT_OUTPUT,  512, NBT_EFFICIENCY, 5250, NBT_PREHEAT_ENERGY,  512*4000, NBT_PREHEAT_COST,  512/16, NBT_COOLDOWN_RATE,  512, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // Titanium MagnaliumRotor
+        aRegistry.addReplacer(1530).setParameters(NBT_OUTPUT,  256, NBT_EFFICIENCY, 4500, NBT_PREHEAT_ENERGY,  256*2000, NBT_PREHEAT_COST,  256/16, NBT_COOLDOWN_RATE,  256, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // Titanium TitaniumRotor
+        aRegistry.addReplacer(1531).setParameters(NBT_OUTPUT,  256, NBT_EFFICIENCY, 3500, NBT_PREHEAT_ENERGY,  256*2000, NBT_PREHEAT_COST,  256/16, NBT_COOLDOWN_RATE,  256, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // Titanium FierySteelRotor
+        aRegistry.addReplacer(1535).setParameters(NBT_OUTPUT,  384, NBT_EFFICIENCY, 5000, NBT_PREHEAT_ENERGY,  384*2000, NBT_PREHEAT_COST,  384/16, NBT_COOLDOWN_RATE,  384, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // Titanium AluminiumRotor
+        aRegistry.addReplacer(1538).setParameters(NBT_OUTPUT,  512, NBT_EFFICIENCY, 5250, NBT_PREHEAT_ENERGY,  512*2000, NBT_PREHEAT_COST,  512/16, NBT_COOLDOWN_RATE,  512, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // Titanium MagnaliumRotor
         
-        aRegistry.addReplacer(1540).setParameters(NBT_OUTPUT,  768, NBT_EFFICIENCY, 5750, NBT_PREHEAT_ENERGY,  768*4000, NBT_PREHEAT_COST,  768/16, NBT_COOLDOWN_RATE,  768, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // Tungstensteel VoidMetalRotor
-        aRegistry.addReplacer(1545).setParameters(NBT_OUTPUT, 1024, NBT_EFFICIENCY, 5250, NBT_PREHEAT_ENERGY, 1024*4000, NBT_PREHEAT_COST, 1024/16, NBT_COOLDOWN_RATE, 1024, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // Tungstensteel TrinitaniumRotor
-        aRegistry.addReplacer(1548).setParameters(NBT_OUTPUT, 2048, NBT_EFFICIENCY, 5250, NBT_PREHEAT_ENERGY, 2048*4000, NBT_PREHEAT_COST, 2048/16, NBT_COOLDOWN_RATE, 2048, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // Tungstensteel GrapheneRotor
+        aRegistry.addReplacer(1540).setParameters(NBT_OUTPUT,  768, NBT_EFFICIENCY, 5750, NBT_PREHEAT_ENERGY,  768*2000, NBT_PREHEAT_COST,  768/16, NBT_COOLDOWN_RATE,  768, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // Tungstensteel VoidMetalRotor
+        aRegistry.addReplacer(1545).setParameters(NBT_OUTPUT, 1024, NBT_EFFICIENCY, 5250, NBT_PREHEAT_ENERGY, 1024*2000, NBT_PREHEAT_COST, 1024/16, NBT_COOLDOWN_RATE, 1024, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // Tungstensteel TrinitaniumRotor
+        aRegistry.addReplacer(1548).setParameters(NBT_OUTPUT, 2048, NBT_EFFICIENCY, 5250, NBT_PREHEAT_ENERGY, 2048*2000, NBT_PREHEAT_COST, 2048/16, NBT_COOLDOWN_RATE, 2048, NBT_EFFICIENCY_WATER, 8000, NBT_EFFICIENCY_OC, 5000).removeParameters(NBT_INPUT, NBT_WASTE_ENERGY); // Tungstensteel GrapheneRotor
         
         
         /// 删除项
@@ -308,7 +308,35 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         /// 修改项
         // 修改 Power Cell (Hydrogen) 的 NBT_COLOR 改成 NBT_COLOR_BOTTOM
         aRegistry.addReplacer(14701).setParameters(NBT_COLOR_BOTTOM, UT.Code.getRGBInt(MT.H.fRGBaGas)).removeParameters(NBT_COLOR);
-    
+        
+        // Heaters 电加热器效率改为 100%
+        aRegistry.addReplacer(10000).setParameters(NBT_INPUT ,    8, NBT_EFFICIENCY_NUM,10000).removeParameters(NBT_OUTPUT);
+        aRegistry.addReplacer(10001).setParameters(NBT_INPUT ,   32, NBT_EFFICIENCY_NUM,10000).removeParameters(NBT_OUTPUT);
+        aRegistry.addReplacer(10002).setParameters(NBT_INPUT ,  128, NBT_EFFICIENCY_NUM,10000).removeParameters(NBT_OUTPUT);
+        aRegistry.addReplacer(10003).setParameters(NBT_INPUT ,  512, NBT_EFFICIENCY_NUM,10000).removeParameters(NBT_OUTPUT);
+        aRegistry.addReplacer(10004).setParameters(NBT_INPUT , 2048, NBT_EFFICIENCY_NUM,10000).removeParameters(NBT_OUTPUT);
+        aRegistry.addReplacer(10005).setParameters(NBT_INPUT , 8192, NBT_EFFICIENCY_NUM,10000).removeParameters(NBT_OUTPUT);
+        // Engines 电动引擎效率改为 90%
+        aRegistry.addReplacer(10010).setParameters(NBT_INPUT ,    8, NBT_EFFICIENCY_NUM, 9000).removeParameters(NBT_OUTPUT);
+        aRegistry.addReplacer(10011).setParameters(NBT_INPUT ,   32, NBT_EFFICIENCY_NUM, 9000).removeParameters(NBT_OUTPUT);
+        aRegistry.addReplacer(10012).setParameters(NBT_INPUT ,  128, NBT_EFFICIENCY_NUM, 9000).removeParameters(NBT_OUTPUT);
+        aRegistry.addReplacer(10013).setParameters(NBT_INPUT ,  512, NBT_EFFICIENCY_NUM, 9000).removeParameters(NBT_OUTPUT);
+        aRegistry.addReplacer(10014).setParameters(NBT_INPUT , 2048, NBT_EFFICIENCY_NUM, 9000).removeParameters(NBT_OUTPUT);
+        aRegistry.addReplacer(10015).setParameters(NBT_INPUT , 8192, NBT_EFFICIENCY_NUM, 9000).removeParameters(NBT_OUTPUT);
+        // Motors 电动机效率改为 90%
+        aRegistry.addReplacer(10020).setParameters(NBT_INPUT ,    8, NBT_EFFICIENCY_NUM, 9000).removeParameters(NBT_OUTPUT);
+        aRegistry.addReplacer(10021).setParameters(NBT_INPUT ,   32, NBT_EFFICIENCY_NUM, 9000).removeParameters(NBT_OUTPUT);
+        aRegistry.addReplacer(10022).setParameters(NBT_INPUT ,  128, NBT_EFFICIENCY_NUM, 9000).removeParameters(NBT_OUTPUT);
+        aRegistry.addReplacer(10023).setParameters(NBT_INPUT ,  512, NBT_EFFICIENCY_NUM, 9000).removeParameters(NBT_OUTPUT);
+        aRegistry.addReplacer(10024).setParameters(NBT_INPUT , 2048, NBT_EFFICIENCY_NUM, 9000).removeParameters(NBT_OUTPUT);
+        aRegistry.addReplacer(10025).setParameters(NBT_INPUT , 8192, NBT_EFFICIENCY_NUM, 9000).removeParameters(NBT_OUTPUT);
+        // Lasers 镭射器效率改为 90%
+        aRegistry.addReplacer(10100).setParameters(NBT_INPUT ,    8, NBT_EFFICIENCY_NUM, 9000).removeParameters(NBT_OUTPUT);
+        aRegistry.addReplacer(10101).setParameters(NBT_INPUT ,   32, NBT_EFFICIENCY_NUM, 9000).removeParameters(NBT_OUTPUT);
+        aRegistry.addReplacer(10102).setParameters(NBT_INPUT ,  128, NBT_EFFICIENCY_NUM, 9000).removeParameters(NBT_OUTPUT);
+        aRegistry.addReplacer(10103).setParameters(NBT_INPUT ,  512, NBT_EFFICIENCY_NUM, 9000).removeParameters(NBT_OUTPUT);
+        aRegistry.addReplacer(10104).setParameters(NBT_INPUT , 2048, NBT_EFFICIENCY_NUM, 9000).removeParameters(NBT_OUTPUT);
+        aRegistry.addReplacer(10105).setParameters(NBT_INPUT , 8192, NBT_EFFICIENCY_NUM, 9000).removeParameters(NBT_OUTPUT);
         // Dynamos 小发电机效率改为 60%
         aRegistry.addReplacer(10110).setParameters(NBT_OUTPUT,    8, NBT_EFFICIENCY_NUM, 6000).removeParameters(NBT_INPUT);
         aRegistry.addReplacer(10111).setParameters(NBT_OUTPUT,   32, NBT_EFFICIENCY_NUM, 6000).removeParameters(NBT_INPUT);
@@ -316,11 +344,79 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         aRegistry.addReplacer(10113).setParameters(NBT_OUTPUT,  512, NBT_EFFICIENCY_NUM, 6000).removeParameters(NBT_INPUT);
         aRegistry.addReplacer(10114).setParameters(NBT_OUTPUT, 2048, NBT_EFFICIENCY_NUM, 6000).removeParameters(NBT_INPUT);
         aRegistry.addReplacer(10115).setParameters(NBT_OUTPUT, 8192, NBT_EFFICIENCY_NUM, 6000).removeParameters(NBT_INPUT);
+        // Coolers 半导体制冷机效率改为 50%
+        aRegistry.addReplacer(10160).setParameters(NBT_INPUT ,    8, NBT_EFFICIENCY_NUM, 5000).removeParameters(NBT_OUTPUT);
+        aRegistry.addReplacer(10161).setParameters(NBT_INPUT ,   32, NBT_EFFICIENCY_NUM, 5000).removeParameters(NBT_OUTPUT);
+        aRegistry.addReplacer(10162).setParameters(NBT_INPUT ,  128, NBT_EFFICIENCY_NUM, 5000).removeParameters(NBT_OUTPUT);
+        aRegistry.addReplacer(10163).setParameters(NBT_INPUT ,  512, NBT_EFFICIENCY_NUM, 5000).removeParameters(NBT_OUTPUT);
+        aRegistry.addReplacer(10164).setParameters(NBT_INPUT , 2048, NBT_EFFICIENCY_NUM, 5000).removeParameters(NBT_OUTPUT);
+        aRegistry.addReplacer(10165).setParameters(NBT_INPUT , 8192, NBT_EFFICIENCY_NUM, 5000).removeParameters(NBT_OUTPUT);
+        
+        // RF Stuffs 效率改为原本的 1/4
+        aRegistry.addReplacer(11001).setParameters(NBT_INPUT,  128*2, NBT_OUTPUT,   16/2);
+        aRegistry.addReplacer(11002).setParameters(NBT_INPUT,  512*2, NBT_OUTPUT,   64/2);
+        aRegistry.addReplacer(11003).setParameters(NBT_INPUT, 2048*2, NBT_OUTPUT,  256/2);
+        aRegistry.addReplacer(11004).setParameters(NBT_INPUT, 8192*2, NBT_OUTPUT, 1024/2);
+        aRegistry.addReplacer(11005).setParameters(NBT_INPUT,32768*2, NBT_OUTPUT, 4096/2);
+        aRegistry.addReplacer(11011).setParameters(NBT_INPUT,  128*2, NBT_OUTPUT,   16/2);
+        aRegistry.addReplacer(11012).setParameters(NBT_INPUT,  512*2, NBT_OUTPUT,   64/2);
+        aRegistry.addReplacer(11013).setParameters(NBT_INPUT, 2048*2, NBT_OUTPUT,  256/2);
+        aRegistry.addReplacer(11014).setParameters(NBT_INPUT, 8192*2, NBT_OUTPUT, 1024/2);
+        aRegistry.addReplacer(11015).setParameters(NBT_INPUT,32768*2, NBT_OUTPUT, 4096/2);
+        aRegistry.addReplacer(11021).setParameters(NBT_INPUT,  128*2, NBT_OUTPUT,   16/2);
+        aRegistry.addReplacer(11022).setParameters(NBT_INPUT,  512*2, NBT_OUTPUT,   64/2);
+        aRegistry.addReplacer(11023).setParameters(NBT_INPUT, 2048*2, NBT_OUTPUT,  256/2);
+        aRegistry.addReplacer(11024).setParameters(NBT_INPUT, 8192*2, NBT_OUTPUT, 1024/2);
+        aRegistry.addReplacer(11025).setParameters(NBT_INPUT,32768*2, NBT_OUTPUT, 4096/2);
+        aRegistry.addReplacer(11031).setParameters(NBT_INPUT,  128*2, NBT_OUTPUT,   16/2);
+        aRegistry.addReplacer(11032).setParameters(NBT_INPUT,  512*2, NBT_OUTPUT,   64/2);
+        aRegistry.addReplacer(11033).setParameters(NBT_INPUT, 2048*2, NBT_OUTPUT,  256/2);
+        aRegistry.addReplacer(11034).setParameters(NBT_INPUT, 8192*2, NBT_OUTPUT, 1024/2);
+        aRegistry.addReplacer(11035).setParameters(NBT_INPUT,32768*2, NBT_OUTPUT, 4096/2);
+        aRegistry.addReplacer(11101).setParameters(NBT_INPUT,  128*2, NBT_OUTPUT,   16/2);
+        aRegistry.addReplacer(11102).setParameters(NBT_INPUT,  512*2, NBT_OUTPUT,   64/2);
+        aRegistry.addReplacer(11103).setParameters(NBT_INPUT, 2048*2, NBT_OUTPUT,  256/2);
+        aRegistry.addReplacer(11104).setParameters(NBT_INPUT, 8192*2, NBT_OUTPUT, 1024/2);
+        aRegistry.addReplacer(11105).setParameters(NBT_INPUT,32768*2, NBT_OUTPUT, 4096/2);
+        aRegistry.addReplacer(11161).setParameters(NBT_INPUT,  128*2, NBT_OUTPUT,    8/2);
+        aRegistry.addReplacer(11162).setParameters(NBT_INPUT,  512*2, NBT_OUTPUT,   32/2);
+        aRegistry.addReplacer(11163).setParameters(NBT_INPUT, 2048*2, NBT_OUTPUT,  128/2);
+        aRegistry.addReplacer(11164).setParameters(NBT_INPUT, 8192*2, NBT_OUTPUT,  512/2);
+        aRegistry.addReplacer(11165).setParameters(NBT_INPUT,32768*2, NBT_OUTPUT, 2048/2);
+        
         
         /// 添加项
+        // Heaters
+        aClass = MultiTileEntityHeaterElectric.class;
+        aMat = MT.DATA.Electric_T[0];   aRegistry.appendAddBefore(10001, "Electric Heater ("              +VN[0]+")", "Heaters"                             , 10000, 10001, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   4.0F, NBT_RESISTANCE,   4.0F, NBT_INPUT,    8, NBT_OUTPUT,    4, NBT_WASTE_ENERGY, T, NBT_ENERGY_ACCEPTED, TD.Energy.EU, NBT_ENERGY_EMITTED, TD.Energy.HU), "TCT", "CMC", "TCd", 'M', OP.casingMachineDouble.dat(aMat), 'T', OP.screw.dat(aMat), 'C', OP.wireGt01.dat(ANY.Cu       ));
+        // Engines
+        aClass = MultiTileEntityEngineElectric.class;
+        aMat = MT.DATA.Electric_T[0];   aRegistry.appendAddBefore(10011, "Electric Engine ("              +VN[0]+")", "Engines"                             , 10010,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   4.0F, NBT_RESISTANCE,   4.0F, NBT_INPUT,    8, NBT_OUTPUT,    4, NBT_WASTE_ENERGY, T, NBT_ENERGY_ACCEPTED, TD.Energy.EU, NBT_ENERGY_EMITTED, TD.Energy.KU), "PhP", "CIC", "PwP", 'P', OP.plateTriple.dat(aMat), 'I', OP.stickLong.dat(MT.IronMagnetic        ), 'C', OP.wireGt01.dat(ANY.Cu));
+        // Motors
+        aClass = MultiTileEntityMotorElectric.class;
+        aMat = MT.DATA.Electric_T[0];   aRegistry.appendAddBefore(10021, "Electric Motor ("               +VN[0]+")", "Motors"                              , 10020, 10021, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   4.0F, NBT_RESISTANCE,   4.0F, NBT_INPUT,    8, NBT_OUTPUT,    4, NBT_WASTE_ENERGY, T, NBT_ENERGY_ACCEPTED, TD.Energy.EU, NBT_ENERGY_EMITTED, TD.Energy.RU), "TIT", "CMC", "TGd", 'M', OP.casingMachineDouble.dat(aMat), 'G', OP.gearGt.dat(aMat), 'T', OP.screw.dat(aMat), 'I', OP.stickLong.dat(MT.IronMagnetic         ), 'C', OP.wireGt01.dat(ANY.Cu));
+        // Lasers
+        aClass = MultiTileEntityLaserElectric.class;
+        aMat = MT.DATA.Electric_T[0];   aRegistry.appendAddBefore(10101, "Electric CO2 Laser ("           +VN[0]+")", "Lasers"                              , 10100, 10071, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   4.0F, NBT_RESISTANCE,   4.0F, NBT_INPUT,    8, NBT_OUTPUT,    4, NBT_WASTE_ENERGY, T, NBT_ENERGY_ACCEPTED, TD.Energy.EU, NBT_ENERGY_EMITTED, TD.Energy.LU), " L ", " W ", "CMC", 'M', OP.casingMachine.dat(aMat), 'L', IL.Comp_Laser_Gas_CO2, 'C', OD_CIRCUITS[0], 'W', MT.DATA.CABLES_01[0]);
         // Dynamos
         aClass = MultiTileEntityDynamoElectric.class;
         aMat = MT.DATA.Electric_T[0];   aRegistry.appendAddBefore(10111, "Electric Dynamo ("              +VN[0]+")", "Dynamos"                             , 10110, 10111, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   4.0F, NBT_RESISTANCE,   4.0F, NBT_INPUT,   14, NBT_OUTPUT,    8, NBT_WASTE_ENERGY, T, NBT_ENERGY_ACCEPTED, TD.Energy.RU, NBT_ENERGY_EMITTED, TD.Energy.EU), "TGT", "CMC", "TId", 'M', OP.casingMachineDouble.dat(aMat), 'T', OP.screw.dat(aMat), 'G', OP.gearGt.dat(aMat), 'I', OP.stickLong.dat(MT.IronMagnetic     ), 'C', OP.wireGt01.dat(ANY.Cu));
+        // Laser Absorbers
+        aClass = MultiTileEntityLaserAbsorberElectric.class;
+        aMat = MT.DATA.Electric_T[0];   aRegistry.appendAddBefore(10151, "Laser Absorber ("               +VN[0]+")", "Laser Absorbers"                     , 10150, 10151, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   4.0F, NBT_RESISTANCE,   4.0F, NBT_INPUT,    8, NBT_OUTPUT,    4, NBT_WASTE_ENERGY, T, NBT_ENERGY_ACCEPTED, TD.Energy.LU, NBT_ENERGY_EMITTED, TD.Energy.EU), "SCW", "SMP", "SCW", 'M', OP.casingMachine.dat(aMat), 'S', OP.plateGem.dat(ANY.Si), 'W', MT.DATA.CABLES_01[0], 'C', OD_CIRCUITS[1], 'P', IL.Processor_Crystal_Sapphire);
+        // Coolers
+        aClass = MultiTileEntityCoolerElectric.class;
+        aMat = MT.DATA.Electric_T[0];   aRegistry.appendAddBefore(10161, "Thermoelectric Cooler ("        +VN[0]+")", "Coolers"                             , 10160, 10161, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   4.0F, NBT_RESISTANCE,   4.0F, NBT_INPUT,    8, NBT_OUTPUT,    2, NBT_WASTE_ENERGY, T, NBT_ENERGY_ACCEPTED, TD.Energy.EU, NBT_ENERGY_EMITTED, TD.Energy.CU, NBT_ENERGY_EMITTED_2, TD.Energy.HU), "WPw", "CMC", "xPW", 'M', OP.casingMachine.dat(aMat), 'W', MT.DATA.CABLES_01[1], 'P', OP.plate           .dat(MT.Si), 'C', OP.plate          .dat(ANY.Cu));
+    }
+    @Override protected void unsorted2FinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
+        /// 添加项
+        // 矿藏钻头 ID: 23400-23450
+        aClass = MultiTileEntityDepositDrill.class;
+        aMat = MT.Pb;               aRegistry.add(RegType.GTCH, "Deposit Mining Drill ("+aMat.getLocal()+")", "Auto Mining", 23400, 23401, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   7.0F, NBT_RESISTANCE,   7.0F, NBT_INPUT,    8, NBT_LEVEL, 0, NBT_EFFICIENCY, 5000));
+        aMat = MT.Bronze;           aRegistry.add(RegType.GTCH, "Deposit Mining Drill ("+aMat.getLocal()+")", "Auto Mining", 23401, 23401, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   7.0F, NBT_RESISTANCE,   7.0F, NBT_INPUT,   32, NBT_LEVEL, 2, NBT_EFFICIENCY, 5000));
+        aMat = ANY.Steel;           aRegistry.add(RegType.GTCH, "Deposit Mining Drill ("+aMat.getLocal()+")", "Auto Mining", 23402, 23401, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_INPUT,  128, NBT_LEVEL, 4, NBT_EFFICIENCY, 5000));
+        aMat = MT.Ti;               aRegistry.add(RegType.GTCH, "Deposit Mining Drill ("+aMat.getLocal()+")", "Auto Mining", 23403, 23401, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   9.0F, NBT_RESISTANCE,   9.0F, NBT_INPUT,  512, NBT_LEVEL, 6, NBT_EFFICIENCY, 5000));
+        aMat = MT.TungstenSteel;    aRegistry.add(RegType.GTCH, "Deposit Mining Drill ("+aMat.getLocal()+")", "Auto Mining", 23404, 23401, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_INPUT, 2048, NBT_LEVEL, 8, NBT_EFFICIENCY, 5000));
     }
     
     
@@ -345,16 +441,16 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         aRegistry.addReplacer(17204).setParameters(NBT_INPUT, 131072, NBT_EFFICIENCY_CH, 8000, NBT_CAPACITY, 131072*1000, NBT_CAPACITY_SU,131072L*40000L).removeParameters(NBT_OUTPUT_SU); // Adamantium
         
         // Steam Turbines 各长度的参数，增加预热相关
-        aRegistry.addReplacer(17211).setParameters(NBT_EFFICIENCY_WATER, 9500, NBT_EFFICIENCY_OC, 5000, NBT_LENGTH_MIN, 1, NBT_LENGTH_MAX, 10, NBT_LENGTH_MID, 4).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY).setParameterArray(NBT_OUTPUT,  1365, 2560,  3431,  4096,  4618,  5041,  5389,  5681,  5930,  6144).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY,  24576000,  49152000,   73728000,   98304000,  122880000,  147456000,  172032000,  196608000,  221184000,  245760000).setParameterArray(NBT_PREHEAT_COST,  11, 22,  32,  43,  54,  64,  75,  86,  96, 107).setParameterArray(NBT_COOLDOWN_RATE,  1024, 2048, 3072,  4096,  5120,  6144,  7168,  8192,  9216, 10240); // StainlessSteel
-        aRegistry.addReplacer(17212).setParameters(NBT_EFFICIENCY_WATER, 9500, NBT_EFFICIENCY_OC, 5000, NBT_LENGTH_MIN, 1, NBT_LENGTH_MAX, 10, NBT_LENGTH_MID, 4).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY).setParameterArray(NBT_OUTPUT,  2730, 5120,  6863,  8192,  9237, 10082, 10778, 11363, 11860, 12288).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY,  49152000,  98304000,  147456000,  196608000,  245760000,  294912000,  344064000,  393216000,  442368000,  491520000).setParameterArray(NBT_PREHEAT_COST,  22, 43,  64,  86, 107, 128, 150, 171, 192, 214).setParameterArray(NBT_COOLDOWN_RATE,  2048, 4096, 6144,  8192, 10240, 12288, 14336, 16384, 18432, 20480); // Titanium
-        aRegistry.addReplacer(17213).setParameters(NBT_EFFICIENCY_WATER, 9500, NBT_EFFICIENCY_OC, 5000, NBT_LENGTH_MIN, 1, NBT_LENGTH_MAX, 10, NBT_LENGTH_MID, 4).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY).setParameterArray(NBT_OUTPUT,  5461,10240, 13727, 16384, 18475, 20164, 21557, 22726, 23720, 24576).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY,  98304000, 196608000,  294912000,  393216000,  491520000,  589824000,  688128000,  786432000,  884736000,  983040000).setParameterArray(NBT_PREHEAT_COST,  43, 86, 128, 171, 214, 256, 299, 342, 384, 427).setParameterArray(NBT_COOLDOWN_RATE,  4096, 8192,12288, 16384, 20480, 24576, 28672, 32768, 36864, 40960); // Tungstensteel
-        aRegistry.addReplacer(17214).setParameters(NBT_EFFICIENCY_WATER, 9500, NBT_EFFICIENCY_OC, 5000, NBT_LENGTH_MIN, 1, NBT_LENGTH_MAX, 10, NBT_LENGTH_MID, 4).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY).setParameterArray(NBT_OUTPUT, 43690,81920,109817,131072,147804,161319,172463,181809,189760,196608).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY, 786432000,1572864000,2359296000L,3145728000L,3932160000L,4718592000L,5505024000L,6291456000L,7077888000L,7864320000L).setParameterArray(NBT_PREHEAT_COST, 342,683,1024,1366,1707,2048,2390,2731,3072,3414).setParameterArray(NBT_COOLDOWN_RATE, 32768,65536,98304,131072,163840,196608,229376,262144,294912,327680); // Adamantium
+        aRegistry.addReplacer(17211).setParameters(NBT_EFFICIENCY_WATER, 9500, NBT_EFFICIENCY_OC, 5000, NBT_LENGTH_MIN, 1, NBT_LENGTH_MAX, 10, NBT_LENGTH_MID, 4).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY).setParameterArray(NBT_OUTPUT,  1365, 2560,  3431,  4096,  4618,  5041,  5389,  5681,  5930,  6144).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY,   4096000,   8192000,  12288000,  16384000,  20480000,  24576000,  28672000,   32768000,   36864000,   40960000).setParameterArray(NBT_PREHEAT_COST,  11, 22,  32,  43,  54,  64,  75,  86,  96, 107).setParameterArray(NBT_COOLDOWN_RATE,  1024, 2048, 3072,  4096,  5120,  6144,  7168,  8192,  9216, 10240); // StainlessSteel
+        aRegistry.addReplacer(17212).setParameters(NBT_EFFICIENCY_WATER, 9500, NBT_EFFICIENCY_OC, 5000, NBT_LENGTH_MIN, 1, NBT_LENGTH_MAX, 10, NBT_LENGTH_MID, 4).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY).setParameterArray(NBT_OUTPUT,  2730, 5120,  6863,  8192,  9237, 10082, 10778, 11363, 11860, 12288).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY,   8192000,  16384000,  24576000,  32768000,  40960000,  49152000,  57344000,   65536000,   73728000,   81920000).setParameterArray(NBT_PREHEAT_COST,  22, 43,  64,  86, 107, 128, 150, 171, 192, 214).setParameterArray(NBT_COOLDOWN_RATE,  2048, 4096, 6144,  8192, 10240, 12288, 14336, 16384, 18432, 20480); // Titanium
+        aRegistry.addReplacer(17213).setParameters(NBT_EFFICIENCY_WATER, 9500, NBT_EFFICIENCY_OC, 5000, NBT_LENGTH_MIN, 1, NBT_LENGTH_MAX, 10, NBT_LENGTH_MID, 4).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY).setParameterArray(NBT_OUTPUT,  5461,10240, 13727, 16384, 18475, 20164, 21557, 22726, 23720, 24576).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY,  16384000,  32768000,  49152000,  65536000,  81920000,  98304000, 114688000,  131072000,  147456000,  163840000).setParameterArray(NBT_PREHEAT_COST,  43, 86, 128, 171, 214, 256, 299, 342, 384, 427).setParameterArray(NBT_COOLDOWN_RATE,  4096, 8192,12288, 16384, 20480, 24576, 28672, 32768, 36864, 40960); // Tungstensteel
+        aRegistry.addReplacer(17214).setParameters(NBT_EFFICIENCY_WATER, 9500, NBT_EFFICIENCY_OC, 5000, NBT_LENGTH_MIN, 1, NBT_LENGTH_MAX, 10, NBT_LENGTH_MID, 4).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY).setParameterArray(NBT_OUTPUT, 43690,81920,109817,131072,147804,161319,172463,181809,189760,196608).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY, 131072000, 262144000, 393216000, 524288000, 655360000, 786432000, 917504000, 1048576000, 1179648000, 1310720000).setParameterArray(NBT_PREHEAT_COST, 342,683,1024,1366,1707,2048,2390,2731,3072,3414).setParameterArray(NBT_COOLDOWN_RATE, 32768,65536,98304,131072,163840,196608,229376,262144,294912,327680); // Adamantium
         
         // Gas Turbines 合成变贵，各长度的参数，增加预热相关
-        aRegistry.addReplacer(17231).setParameters(NBT_LENGTH_MIN, 3, NBT_LENGTH_MAX, 12, NBT_LENGTH_MID, 6).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY, NBT_LIMIT_CONSUMPTION, NBT_ENERGY_ACCEPTED).setParameterArray(NBT_OUTPUT,  1365, 2560,  3431,  4096,  4618,  5041,  5389,  5681,  5930,  6144).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY,  24576000,  49152000,   73728000,   98304000,  122880000,  147456000,  172032000,  196608000,  221184000,  245760000).setParameterArray(NBT_PREHEAT_RATE,  1365, 2560,  3431,  4096,  4618,  5041,  5389,  5681,  5930,  6144).setParameterArray(NBT_PREHEAT_COST,  11, 22,  32,  43,  54,  64,  75,  86,  96, 107).setParameterArray(NBT_COOLDOWN_RATE,  1024, 2048, 3072,  4096,  5120,  6144,  7168,  8192,  9216, 10240).recipe("PwP", "BMC", "PEP", 'M', aRegistry.getItem(17211), 'B', "gt:re-battery1", 'C', IL.Processor_Crystal_Diamond, 'E', IL.MOTORS[1], 'P', OP.plateDense.dat(MT.Invar));         // StainlessSteel
-        aRegistry.addReplacer(17232).setParameters(NBT_LENGTH_MIN, 3, NBT_LENGTH_MAX, 12, NBT_LENGTH_MID, 6).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY, NBT_LIMIT_CONSUMPTION, NBT_ENERGY_ACCEPTED).setParameterArray(NBT_OUTPUT,  2730, 5120,  6863,  8192,  9237, 10082, 10778, 11363, 11860, 12288).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY,  49152000,  98304000,  147456000,  196608000,  245760000,  294912000,  344064000,  393216000,  442368000,  491520000).setParameterArray(NBT_PREHEAT_RATE,  2730, 5120,  6863,  8192,  9237, 10082, 10778, 11363, 11860, 12288).setParameterArray(NBT_PREHEAT_COST,  22, 43,  64,  86, 107, 128, 150, 171, 192, 214).setParameterArray(NBT_COOLDOWN_RATE,  2048, 4096, 6144,  8192, 10240, 12288, 14336, 16384, 18432, 20480).recipe("PwP", "BMC", "PEP", 'M', aRegistry.getItem(17212), 'B', "gt:re-battery2", 'C', IL.Processor_Crystal_Diamond, 'E', IL.MOTORS[2], 'P', OP.plateDense.dat(MT.TungstenSteel)); // Titanium
-        aRegistry.addReplacer(17233).setParameters(NBT_LENGTH_MIN, 3, NBT_LENGTH_MAX, 12, NBT_LENGTH_MID, 6).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY, NBT_LIMIT_CONSUMPTION, NBT_ENERGY_ACCEPTED).setParameterArray(NBT_OUTPUT,  5461,10240, 13727, 16384, 18475, 20164, 21557, 22726, 23720, 24576).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY,  98304000, 196608000,  294912000,  393216000,  491520000,  589824000,  688128000,  786432000,  884736000,  983040000).setParameterArray(NBT_PREHEAT_RATE,  5461,10240, 13727, 16384, 18475, 20164, 21557, 22726, 23720, 24576).setParameterArray(NBT_PREHEAT_COST,  43, 86, 128, 171, 214, 256, 299, 342, 384, 427).setParameterArray(NBT_COOLDOWN_RATE,  4096, 8192,12288, 16384, 20480, 24576, 28672, 32768, 36864, 40960).recipe("PwP", "BMC", "PEP", 'M', aRegistry.getItem(17213), 'B', "gt:re-battery3", 'C', IL.Processor_Crystal_Diamond, 'E', IL.MOTORS[3], 'P', OP.plateDense.dat(MT.W));             // Tungstensteel
-        aRegistry.addReplacer(17234).setParameters(NBT_LENGTH_MIN, 3, NBT_LENGTH_MAX, 12, NBT_LENGTH_MID, 6).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY, NBT_LIMIT_CONSUMPTION, NBT_ENERGY_ACCEPTED).setParameterArray(NBT_OUTPUT, 43690,81920,109817,131072,147804,161319,172463,181809,189760,196608).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY, 786432000,1572864000,2359296000L,3145728000L,3932160000L,4718592000L,5505024000L,6291456000L,7077888000L,7864320000L).setParameterArray(NBT_PREHEAT_RATE, 43690,81920,109817,131072,147804,161319,172463,181809,189760,196608).setParameterArray(NBT_PREHEAT_COST, 342,683,1024,1366,1707,2048,2390,2731,3072,3414).setParameterArray(NBT_COOLDOWN_RATE, 32768,65536,98304,131072,163840,196608,229376,262144,294912,327680).recipe("PwP", "BMC", "PEP", 'M', aRegistry.getItem(17214), 'B', "gt:re-battery5", 'C', IL.Processor_Crystal_Diamond, 'E', IL.MOTORS[5], 'P', OP.plateDense.dat(MT.Ad));            // Adamantium
+        aRegistry.addReplacer(17231).setParameters(NBT_LENGTH_MIN, 3, NBT_LENGTH_MAX, 12, NBT_LENGTH_MID, 6).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY, NBT_LIMIT_CONSUMPTION, NBT_ENERGY_ACCEPTED).setParameterArray(NBT_OUTPUT,  1365, 2560,  3431,  4096,  4618,  5041,  5389,  5681,  5930,  6144).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY,   4096000,   8192000,  12288000,  16384000,  20480000,  24576000,  28672000,   32768000,   36864000,   40960000).setParameterArray(NBT_PREHEAT_RATE,  1365, 2560,  3431,  4096,  4618,  5041,  5389,  5681,  5930,  6144).setParameterArray(NBT_PREHEAT_COST,  11, 22,  32,  43,  54,  64,  75,  86,  96, 107).setParameterArray(NBT_COOLDOWN_RATE,  1024, 2048, 3072,  4096,  5120,  6144,  7168,  8192,  9216, 10240).recipe("PwP", "BMC", "PEP", 'M', aRegistry.getItem(17211), 'B', "gt:re-battery1", 'C', IL.Processor_Crystal_Diamond, 'E', IL.MOTORS[1], 'P', OP.plateDense.dat(MT.Invar));         // StainlessSteel
+        aRegistry.addReplacer(17232).setParameters(NBT_LENGTH_MIN, 3, NBT_LENGTH_MAX, 12, NBT_LENGTH_MID, 6).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY, NBT_LIMIT_CONSUMPTION, NBT_ENERGY_ACCEPTED).setParameterArray(NBT_OUTPUT,  2730, 5120,  6863,  8192,  9237, 10082, 10778, 11363, 11860, 12288).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY,   8192000,  16384000,  24576000,  32768000,  40960000,  49152000,  57344000,   65536000,   73728000,   81920000).setParameterArray(NBT_PREHEAT_RATE,  2730, 5120,  6863,  8192,  9237, 10082, 10778, 11363, 11860, 12288).setParameterArray(NBT_PREHEAT_COST,  22, 43,  64,  86, 107, 128, 150, 171, 192, 214).setParameterArray(NBT_COOLDOWN_RATE,  2048, 4096, 6144,  8192, 10240, 12288, 14336, 16384, 18432, 20480).recipe("PwP", "BMC", "PEP", 'M', aRegistry.getItem(17212), 'B', "gt:re-battery2", 'C', IL.Processor_Crystal_Diamond, 'E', IL.MOTORS[2], 'P', OP.plateDense.dat(MT.TungstenSteel)); // Titanium
+        aRegistry.addReplacer(17233).setParameters(NBT_LENGTH_MIN, 3, NBT_LENGTH_MAX, 12, NBT_LENGTH_MID, 6).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY, NBT_LIMIT_CONSUMPTION, NBT_ENERGY_ACCEPTED).setParameterArray(NBT_OUTPUT,  5461,10240, 13727, 16384, 18475, 20164, 21557, 22726, 23720, 24576).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY,  16384000,  32768000,  49152000,  65536000,  81920000,  98304000, 114688000,  131072000,  147456000,  163840000).setParameterArray(NBT_PREHEAT_RATE,  5461,10240, 13727, 16384, 18475, 20164, 21557, 22726, 23720, 24576).setParameterArray(NBT_PREHEAT_COST,  43, 86, 128, 171, 214, 256, 299, 342, 384, 427).setParameterArray(NBT_COOLDOWN_RATE,  4096, 8192,12288, 16384, 20480, 24576, 28672, 32768, 36864, 40960).recipe("PwP", "BMC", "PEP", 'M', aRegistry.getItem(17213), 'B', "gt:re-battery3", 'C', IL.Processor_Crystal_Diamond, 'E', IL.MOTORS[3], 'P', OP.plateDense.dat(MT.W));             // Tungstensteel
+        aRegistry.addReplacer(17234).setParameters(NBT_LENGTH_MIN, 3, NBT_LENGTH_MAX, 12, NBT_LENGTH_MID, 6).removeParameters(NBT_OUTPUT, NBT_EFFICIENCY, NBT_INPUT, NBT_WASTE_ENERGY, NBT_LIMIT_CONSUMPTION, NBT_ENERGY_ACCEPTED).setParameterArray(NBT_OUTPUT, 43690,81920,109817,131072,147804,161319,172463,181809,189760,196608).setParameterArray(NBT_EFFICIENCY, 3250,5000,6000,6500,7000,7250,7333,7500,7666,7750).setParameterArray(NBT_PREHEAT_ENERGY, 131072000, 262144000, 393216000, 524288000, 655360000, 786432000, 917504000, 1048576000, 1179648000, 1310720000).setParameterArray(NBT_PREHEAT_RATE, 43690,81920,109817,131072,147804,161319,172463,181809,189760,196608).setParameterArray(NBT_PREHEAT_COST, 342,683,1024,1366,1707,2048,2390,2731,3072,3414).setParameterArray(NBT_COOLDOWN_RATE, 32768,65536,98304,131072,163840,196608,229376,262144,294912,327680).recipe("PwP", "BMC", "PEP", 'M', aRegistry.getItem(17214), 'B', "gt:re-battery5", 'C', IL.Processor_Crystal_Diamond, 'E', IL.MOTORS[5], 'P', OP.plateDense.dat(MT.Ad));            // Adamantium
         
         // Dynamo 大型发电机效率调整为 95%
         aRegistry.addReplacer(17221).setParameters(NBT_OUTPUT,   4096, NBT_EFFICIENCY_NUM, 9500).removeParameters(NBT_INPUT);
@@ -371,16 +467,6 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         aRegistry.addReplacer(20002).setParameters(NBT_PARALLEL,  8, NBT_PARALLEL_DURATION, T);
         aRegistry.addReplacer(20003).setParameters(NBT_PARALLEL, 16, NBT_PARALLEL_DURATION, T);
         aRegistry.addReplacer(20004).setParameters(NBT_PARALLEL, 32, NBT_PARALLEL_DURATION, T);
-    }
-    @Override protected void machines1FinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
-        /// 添加项
-        // 矿藏钻头 ID: 23400-23450
-        aClass = MultiTileEntityDepositDrill.class;
-        aMat = MT.Pb;               aRegistry.add("Deposit Mining Drill ("+aMat.getLocal()+")", "Basic Machines", 23409, 20001, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   7.0F, NBT_RESISTANCE,   7.0F, NBT_INPUT,    8, NBT_LEVEL, 0, NBT_EFFICIENCY, 5000));
-        aMat = MT.Bronze;           aRegistry.add("Deposit Mining Drill ("+aMat.getLocal()+")", "Basic Machines", 23400, 20001, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   7.0F, NBT_RESISTANCE,   7.0F, NBT_INPUT,   32, NBT_LEVEL, 2, NBT_EFFICIENCY, 5000));
-        aMat = ANY.Steel;           aRegistry.add("Deposit Mining Drill ("+aMat.getLocal()+")", "Basic Machines", 23401, 20001, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_INPUT,  128, NBT_LEVEL, 4, NBT_EFFICIENCY, 5000));
-        aMat = MT.Ti;               aRegistry.add("Deposit Mining Drill ("+aMat.getLocal()+")", "Basic Machines", 23402, 20001, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   9.0F, NBT_RESISTANCE,   9.0F, NBT_INPUT,  512, NBT_LEVEL, 6, NBT_EFFICIENCY, 5000));
-        aMat = MT.TungstenSteel;    aRegistry.add("Deposit Mining Drill ("+aMat.getLocal()+")", "Basic Machines", 23403, 20001, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,  12.5F, NBT_RESISTANCE,  12.5F, NBT_INPUT, 2048, NBT_LEVEL, 8, NBT_EFFICIENCY, 5000));
     }
     
     
@@ -406,65 +492,65 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         /// 修改项
         // Axles 调整功率限制
         // Wood
-        aRegistry.addReplacer(24800).setParameters(NBT_PIPEBANDWIDTH,  1);
-        aRegistry.addReplacer(24801).setParameters(NBT_PIPEBANDWIDTH,  4);
-        aRegistry.addReplacer(24802).setParameters(NBT_PIPEBANDWIDTH, 16);
-        aRegistry.addReplacer(24803).setParameters(NBT_PIPEBANDWIDTH, 64);
+        aRegistry.addReplacer(24800).setParameters(NBT_PIPEBANDWIDTH, 1);
+        aRegistry.addReplacer(24801).setParameters(NBT_PIPEBANDWIDTH, 2);
+        aRegistry.addReplacer(24802).setParameters(NBT_PIPEBANDWIDTH, 4);
+        aRegistry.addReplacer(24803).setParameters(NBT_PIPEBANDWIDTH, 8);
         // Bronze
-        aRegistry.addReplacer(24810).setParameters(NBT_PIPEBANDWIDTH,  1);
-        aRegistry.addReplacer(24811).setParameters(NBT_PIPEBANDWIDTH,  4);
-        aRegistry.addReplacer(24812).setParameters(NBT_PIPEBANDWIDTH, 16);
-        aRegistry.addReplacer(24813).setParameters(NBT_PIPEBANDWIDTH, 64);
+        aRegistry.addReplacer(24810).setParameters(NBT_PIPEBANDWIDTH, 1);
+        aRegistry.addReplacer(24811).setParameters(NBT_PIPEBANDWIDTH, 2);
+        aRegistry.addReplacer(24812).setParameters(NBT_PIPEBANDWIDTH, 4);
+        aRegistry.addReplacer(24813).setParameters(NBT_PIPEBANDWIDTH, 8);
         // ArsenicCopper
-        aRegistry.addReplacer(24780).setParameters(NBT_PIPEBANDWIDTH,  1);
-        aRegistry.addReplacer(24781).setParameters(NBT_PIPEBANDWIDTH,  4);
-        aRegistry.addReplacer(24782).setParameters(NBT_PIPEBANDWIDTH, 16);
-        aRegistry.addReplacer(24783).setParameters(NBT_PIPEBANDWIDTH, 64);
+        aRegistry.addReplacer(24780).setParameters(NBT_PIPEBANDWIDTH, 1);
+        aRegistry.addReplacer(24781).setParameters(NBT_PIPEBANDWIDTH, 2);
+        aRegistry.addReplacer(24782).setParameters(NBT_PIPEBANDWIDTH, 4);
+        aRegistry.addReplacer(24783).setParameters(NBT_PIPEBANDWIDTH, 8);
         // ArsenicBronze
-        aRegistry.addReplacer(24790).setParameters(NBT_PIPEBANDWIDTH,  1);
-        aRegistry.addReplacer(24791).setParameters(NBT_PIPEBANDWIDTH,  4);
-        aRegistry.addReplacer(24792).setParameters(NBT_PIPEBANDWIDTH, 16);
-        aRegistry.addReplacer(24793).setParameters(NBT_PIPEBANDWIDTH, 64);
+        aRegistry.addReplacer(24790).setParameters(NBT_PIPEBANDWIDTH, 1);
+        aRegistry.addReplacer(24791).setParameters(NBT_PIPEBANDWIDTH, 2);
+        aRegistry.addReplacer(24792).setParameters(NBT_PIPEBANDWIDTH, 4);
+        aRegistry.addReplacer(24793).setParameters(NBT_PIPEBANDWIDTH, 8);
         // AnyIronSteel
-        aRegistry.addReplacer(24820).setParameters(NBT_PIPEBANDWIDTH,  1);
-        aRegistry.addReplacer(24821).setParameters(NBT_PIPEBANDWIDTH,  4);
-        aRegistry.addReplacer(24822).setParameters(NBT_PIPEBANDWIDTH, 16);
-        aRegistry.addReplacer(24823).setParameters(NBT_PIPEBANDWIDTH, 64);
+        aRegistry.addReplacer(24820).setParameters(NBT_PIPEBANDWIDTH, 1);
+        aRegistry.addReplacer(24821).setParameters(NBT_PIPEBANDWIDTH, 2);
+        aRegistry.addReplacer(24822).setParameters(NBT_PIPEBANDWIDTH, 4);
+        aRegistry.addReplacer(24823).setParameters(NBT_PIPEBANDWIDTH, 8);
         // Titanium
-        aRegistry.addReplacer(24830).setParameters(NBT_PIPEBANDWIDTH,  1);
-        aRegistry.addReplacer(24831).setParameters(NBT_PIPEBANDWIDTH,  4);
-        aRegistry.addReplacer(24832).setParameters(NBT_PIPEBANDWIDTH, 16);
-        aRegistry.addReplacer(24833).setParameters(NBT_PIPEBANDWIDTH, 64);
+        aRegistry.addReplacer(24830).setParameters(NBT_PIPEBANDWIDTH, 1);
+        aRegistry.addReplacer(24831).setParameters(NBT_PIPEBANDWIDTH, 2);
+        aRegistry.addReplacer(24832).setParameters(NBT_PIPEBANDWIDTH, 4);
+        aRegistry.addReplacer(24833).setParameters(NBT_PIPEBANDWIDTH, 8);
         // Tungstensteel
-        aRegistry.addReplacer(24840).setParameters(NBT_PIPEBANDWIDTH,  1);
-        aRegistry.addReplacer(24841).setParameters(NBT_PIPEBANDWIDTH,  4);
-        aRegistry.addReplacer(24842).setParameters(NBT_PIPEBANDWIDTH, 16);
-        aRegistry.addReplacer(24843).setParameters(NBT_PIPEBANDWIDTH, 64);
+        aRegistry.addReplacer(24840).setParameters(NBT_PIPEBANDWIDTH, 1);
+        aRegistry.addReplacer(24841).setParameters(NBT_PIPEBANDWIDTH, 2);
+        aRegistry.addReplacer(24842).setParameters(NBT_PIPEBANDWIDTH, 4);
+        aRegistry.addReplacer(24843).setParameters(NBT_PIPEBANDWIDTH, 8);
         // Iridium
-        aRegistry.addReplacer(24850).setParameters(NBT_PIPEBANDWIDTH,  1);
-        aRegistry.addReplacer(24851).setParameters(NBT_PIPEBANDWIDTH,  4);
-        aRegistry.addReplacer(24852).setParameters(NBT_PIPEBANDWIDTH, 16);
-        aRegistry.addReplacer(24853).setParameters(NBT_PIPEBANDWIDTH, 64);
+        aRegistry.addReplacer(24850).setParameters(NBT_PIPEBANDWIDTH, 1);
+        aRegistry.addReplacer(24851).setParameters(NBT_PIPEBANDWIDTH, 2);
+        aRegistry.addReplacer(24852).setParameters(NBT_PIPEBANDWIDTH, 4);
+        aRegistry.addReplacer(24853).setParameters(NBT_PIPEBANDWIDTH, 8);
         // TitaniumIridium
-        aRegistry.addReplacer(24860).setParameters(NBT_PIPEBANDWIDTH,  1);
-        aRegistry.addReplacer(24861).setParameters(NBT_PIPEBANDWIDTH,  4);
-        aRegistry.addReplacer(24862).setParameters(NBT_PIPEBANDWIDTH, 16);
-        aRegistry.addReplacer(24863).setParameters(NBT_PIPEBANDWIDTH, 64);
+        aRegistry.addReplacer(24860).setParameters(NBT_PIPEBANDWIDTH, 1);
+        aRegistry.addReplacer(24861).setParameters(NBT_PIPEBANDWIDTH, 2);
+        aRegistry.addReplacer(24862).setParameters(NBT_PIPEBANDWIDTH, 4);
+        aRegistry.addReplacer(24863).setParameters(NBT_PIPEBANDWIDTH, 8);
         // Trinitanium
-        aRegistry.addReplacer(24870).setParameters(NBT_PIPEBANDWIDTH,  1);
-        aRegistry.addReplacer(24871).setParameters(NBT_PIPEBANDWIDTH,  4);
-        aRegistry.addReplacer(24872).setParameters(NBT_PIPEBANDWIDTH, 16);
-        aRegistry.addReplacer(24873).setParameters(NBT_PIPEBANDWIDTH, 64);
+        aRegistry.addReplacer(24870).setParameters(NBT_PIPEBANDWIDTH, 1);
+        aRegistry.addReplacer(24871).setParameters(NBT_PIPEBANDWIDTH, 2);
+        aRegistry.addReplacer(24872).setParameters(NBT_PIPEBANDWIDTH, 4);
+        aRegistry.addReplacer(24873).setParameters(NBT_PIPEBANDWIDTH, 8);
         // Trinaquadalloy
-        aRegistry.addReplacer(24880).setParameters(NBT_PIPEBANDWIDTH,  1);
-        aRegistry.addReplacer(24881).setParameters(NBT_PIPEBANDWIDTH,  4);
-        aRegistry.addReplacer(24882).setParameters(NBT_PIPEBANDWIDTH, 16);
-        aRegistry.addReplacer(24883).setParameters(NBT_PIPEBANDWIDTH, 64);
+        aRegistry.addReplacer(24880).setParameters(NBT_PIPEBANDWIDTH, 1);
+        aRegistry.addReplacer(24881).setParameters(NBT_PIPEBANDWIDTH, 2);
+        aRegistry.addReplacer(24882).setParameters(NBT_PIPEBANDWIDTH, 4);
+        aRegistry.addReplacer(24883).setParameters(NBT_PIPEBANDWIDTH, 8);
         // Adamantium
-        aRegistry.addReplacer(24890).setParameters(NBT_PIPEBANDWIDTH,  1);
-        aRegistry.addReplacer(24891).setParameters(NBT_PIPEBANDWIDTH,  4);
-        aRegistry.addReplacer(24892).setParameters(NBT_PIPEBANDWIDTH, 16);
-        aRegistry.addReplacer(24893).setParameters(NBT_PIPEBANDWIDTH, 64);
+        aRegistry.addReplacer(24890).setParameters(NBT_PIPEBANDWIDTH, 1);
+        aRegistry.addReplacer(24891).setParameters(NBT_PIPEBANDWIDTH, 2);
+        aRegistry.addReplacer(24892).setParameters(NBT_PIPEBANDWIDTH, 4);
+        aRegistry.addReplacer(24893).setParameters(NBT_PIPEBANDWIDTH, 8);
         
         // Engine rotations 降低造价
         aMat = MT.WoodTreated;      aRegistry.addReplacer(24807).recipe("PSP", "wAL", "GAG", 'S', OP.gearGtSmall.dat(aMat), 'G', OP.gearGt.dat(aMat), 'P', OP.plate        .dat(aMat), 'L', OD.itemLubricantEarly, 'A', aRegistry.getItem(24800));
@@ -768,72 +854,72 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
     @Override protected void miscFinishLoad(MultiTileEntityRegistry aRegistry, MultiTileEntityBlock aMetal, MultiTileEntityBlock aMetalChips, MultiTileEntityBlock aMetalWires, MultiTileEntityBlock aMachine, MultiTileEntityBlock aWooden, MultiTileEntityBlock aBush, MultiTileEntityBlock aStone, MultiTileEntityBlock aWool, MultiTileEntityBlock aTNT, MultiTileEntityBlock aHive, MultiTileEntityBlock aUtilMetal, MultiTileEntityBlock aUtilStone, MultiTileEntityBlock aUtilWood, MultiTileEntityBlock aUtilWool, OreDictMaterial aMat, Class<? extends TileEntity> aClass) {
         /// 添加项
         // 新的基岩矿 ID: 23300-23399
-        aMat = MT.NULL                ; MultiTileEntityDeposit.addDeposit(23399, 32764, F,      1000, 0  ,   8,    128, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
-        aMat = MT.Diamond             ; MultiTileEntityDeposit.addDeposit(23300, 32764, F,   4000000, 3  ,  64,  65536, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
-        aMat = MT.OREMATS.Tungstate   ; MultiTileEntityDeposit.addDeposit(23301, 32764, F, 256000000, 5  , 256, 262144, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
-        aMat = MT.OREMATS.Ferberite   ; MultiTileEntityDeposit.addDeposit(23302, 32764, F, 256000000, 5  , 256, 262144, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
-        aMat = MT.OREMATS.Wolframite  ; MultiTileEntityDeposit.addDeposit(23303, 32764, F, 256000000, 5  , 256, 262144, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
-        aMat = MT.OREMATS.Stolzite    ; MultiTileEntityDeposit.addDeposit(23304, 32764, F, 256000000, 5  , 256, 262144, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
-        aMat = MT.OREMATS.Scheelite   ; MultiTileEntityDeposit.addDeposit(23305, 32764, F, 256000000, 5  , 256, 262144, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
-        aMat = MT.OREMATS.Huebnerite  ; MultiTileEntityDeposit.addDeposit(23306, 32764, F, 256000000, 5  , 256, 262144, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
-        aMat = MT.OREMATS.Russellite  ; MultiTileEntityDeposit.addDeposit(23307, 32764, F, 256000000, 5  , 256, 262144, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
-        aMat = MT.OREMATS.Pinalite    ; MultiTileEntityDeposit.addDeposit(23308, 32764, F, 256000000, 5  , 256, 262144, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
-        aMat = MT.OREMATS.Uraninite   ; MultiTileEntityDeposit.addDeposit(23309, 32764, F, 128000000, 4  , 128, 262144, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
-        aMat = MT.OREMATS.Pitchblende ; MultiTileEntityDeposit.addDeposit(23310, 32764, F, 256000000, 4  , 128, 262144, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
-        aMat = MT.Au                  ; MultiTileEntityDeposit.addDeposit(23311, 32764, F,   4000000, 2  ,  32,  16384, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
-        aMat = MT.OREMATS.Cooperite   ; MultiTileEntityDeposit.addDeposit(23313, 32764, F, 512000000, 5  , 256, 524288, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
-        aMat = MT.Cu                  ; MultiTileEntityDeposit.addDeposit(23314, 32764, F,   8000000, 0  ,   8,   8192, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
-        aMat = MT.Monazite            ; MultiTileEntityDeposit.addDeposit(23315, 32764, F,  32000000, 2  ,  32,  32768, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat); // Not Sure
-        aMat = MT.OREMATS.Powellite   ; MultiTileEntityDeposit.addDeposit(23316, 32764, F,  32000000, 2  ,  32,  32768, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat); // Not Sure
-        aMat = MT.OREMATS.Bastnasite  ; MultiTileEntityDeposit.addDeposit(23317, 32764, F,  32000000, 2  ,  32,  32768, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat); // Not Sure
-        aMat = MT.OREMATS.Arsenopyrite; MultiTileEntityDeposit.addDeposit(23318, 32764, F,  32000000, 2  ,  32,  32768, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat); // Not Sure
-        aMat = MT.Redstone            ; MultiTileEntityDeposit.addDeposit(23319, 32764, F,  32000000, 2  ,  16,   8192, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
-        aMat = MT.V2O5                ; MultiTileEntityDeposit.addDeposit(23320, 32764, F,  32000000, 2  ,  32,  32768, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
-        aMat = MT.OREMATS.Galena      ; MultiTileEntityDeposit.addDeposit(23321, 32764, F,   8000000, 0  ,   8,   8192, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
-        aMat = MT.Coal                ; MultiTileEntityDeposit.addDeposit(23322, 32764, F,   8000000, 0  ,   8,   2048, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
-        aMat = MT.Graphite            ; MultiTileEntityDeposit.addDeposit(23323, 32764, F,   8000000, 1  ,  16,  16384, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
-        aMat = MT.OREMATS.Stibnite    ; MultiTileEntityDeposit.addDeposit(23324, 32764, F,  32000000, 2  ,  32,  32768, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat); // Not Sure
-        aMat = MT.Fe2O3               ; MultiTileEntityDeposit.addDeposit(23325, 32764, F,  16000000, 1  ,  16,  16384, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
-        aMat = MT.OREMATS.Sphalerite  ; MultiTileEntityDeposit.addDeposit(23326, 32764, F,  16000000, 1  ,  16,  16384, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
-        aMat = MT.OREMATS.Smithsonite ; MultiTileEntityDeposit.addDeposit(23327, 32764, F,  32000000, 2  ,  32,  32768, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat); // Not Sure
-        aMat = MT.OREMATS.Pentlandite ; MultiTileEntityDeposit.addDeposit(23328, 32764, F,  32000000, 2  ,  32,  32768, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat); // Not Sure
-        aMat = MT.Niter               ; MultiTileEntityDeposit.addDeposit(23329, 32764, F,  16000000, 1  ,  16,  16384, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
-        aMat = MT.OREMATS.Bauxite     ; MultiTileEntityDeposit.addDeposit(23330, 32764, F, 128000000, 2  ,  32,  65536, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
-        aMat = MT.OREMATS.Cassiterite ; MultiTileEntityDeposit.addDeposit(23331, 32764, F,   8000000, 0  ,   8,   8192, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
-        aMat = MT.OREMATS.Chalcopyrite; MultiTileEntityDeposit.addDeposit(23332, 32764, F,   8000000, 0  ,   8,   8192, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        aMat = MT.NULL                ; MultiTileEntityDeposit.addDeposit(23399, 23401, F,      1000, 0  ,   8,    128, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        aMat = MT.Diamond             ; MultiTileEntityDeposit.addDeposit(23300, 23401, F,   4000000, 3  ,  64,  65536, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        aMat = MT.OREMATS.Tungstate   ; MultiTileEntityDeposit.addDeposit(23301, 23401, F, 256000000, 5  , 256, 262144, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        aMat = MT.OREMATS.Ferberite   ; MultiTileEntityDeposit.addDeposit(23302, 23401, F, 256000000, 5  , 256, 262144, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        aMat = MT.OREMATS.Wolframite  ; MultiTileEntityDeposit.addDeposit(23303, 23401, F, 256000000, 5  , 256, 262144, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        aMat = MT.OREMATS.Stolzite    ; MultiTileEntityDeposit.addDeposit(23304, 23401, F, 256000000, 5  , 256, 262144, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        aMat = MT.OREMATS.Scheelite   ; MultiTileEntityDeposit.addDeposit(23305, 23401, F, 256000000, 5  , 256, 262144, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        aMat = MT.OREMATS.Huebnerite  ; MultiTileEntityDeposit.addDeposit(23306, 23401, F, 256000000, 5  , 256, 262144, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        aMat = MT.OREMATS.Russellite  ; MultiTileEntityDeposit.addDeposit(23307, 23401, F, 256000000, 5  , 256, 262144, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        aMat = MT.OREMATS.Pinalite    ; MultiTileEntityDeposit.addDeposit(23308, 23401, F, 256000000, 5  , 256, 262144, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        aMat = MT.OREMATS.Uraninite   ; MultiTileEntityDeposit.addDeposit(23309, 23401, F, 128000000, 4  , 128, 262144, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        aMat = MT.OREMATS.Pitchblende ; MultiTileEntityDeposit.addDeposit(23310, 23401, F, 256000000, 4  , 128, 262144, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        aMat = MT.Au                  ; MultiTileEntityDeposit.addDeposit(23311, 23401, F,   4000000, 2  ,  32,  16384, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        aMat = MT.OREMATS.Cooperite   ; MultiTileEntityDeposit.addDeposit(23313, 23401, F, 512000000, 5  , 256, 524288, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        aMat = MT.Cu                  ; MultiTileEntityDeposit.addDeposit(23314, 23401, F,   8000000, 0  ,   8,   8192, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        aMat = MT.Monazite            ; MultiTileEntityDeposit.addDeposit(23315, 23401, F,  32000000, 2  ,  32,  32768, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat); // Not Sure
+        aMat = MT.OREMATS.Powellite   ; MultiTileEntityDeposit.addDeposit(23316, 23401, F,  32000000, 2  ,  32,  32768, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat); // Not Sure
+        aMat = MT.OREMATS.Bastnasite  ; MultiTileEntityDeposit.addDeposit(23317, 23401, F,  32000000, 2  ,  32,  32768, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat); // Not Sure
+        aMat = MT.OREMATS.Arsenopyrite; MultiTileEntityDeposit.addDeposit(23318, 23401, F,  32000000, 2  ,  32,  32768, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat); // Not Sure
+        aMat = MT.Redstone            ; MultiTileEntityDeposit.addDeposit(23319, 23401, F,  32000000, 2  ,  16,   8192, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        aMat = MT.V2O5                ; MultiTileEntityDeposit.addDeposit(23320, 23401, F,  32000000, 2  ,  32,  32768, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        aMat = MT.OREMATS.Galena      ; MultiTileEntityDeposit.addDeposit(23321, 23401, F,   8000000, 0  ,   8,   8192, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        aMat = MT.Coal                ; MultiTileEntityDeposit.addDeposit(23322, 23401, F,   8000000, 0  ,   8,   2048, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        aMat = MT.Graphite            ; MultiTileEntityDeposit.addDeposit(23323, 23401, F,   8000000, 1  ,  16,  16384, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        aMat = MT.OREMATS.Stibnite    ; MultiTileEntityDeposit.addDeposit(23324, 23401, F,  32000000, 2  ,  32,  32768, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat); // Not Sure
+        aMat = MT.Fe2O3               ; MultiTileEntityDeposit.addDeposit(23325, 23401, F,  16000000, 1  ,  16,  16384, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        aMat = MT.OREMATS.Sphalerite  ; MultiTileEntityDeposit.addDeposit(23326, 23401, F,  16000000, 1  ,  16,  16384, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        aMat = MT.OREMATS.Smithsonite ; MultiTileEntityDeposit.addDeposit(23327, 23401, F,  32000000, 2  ,  32,  32768, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat); // Not Sure
+        aMat = MT.OREMATS.Pentlandite ; MultiTileEntityDeposit.addDeposit(23328, 23401, F,  32000000, 2  ,  32,  32768, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat); // Not Sure
+        aMat = MT.Niter               ; MultiTileEntityDeposit.addDeposit(23329, 23401, F,  16000000, 1  ,  16,  16384, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        aMat = MT.OREMATS.Bauxite     ; MultiTileEntityDeposit.addDeposit(23330, 23401, F, 128000000, 2  ,  32,  65536, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        aMat = MT.OREMATS.Cassiterite ; MultiTileEntityDeposit.addDeposit(23331, 23401, F,   8000000, 0  ,   8,   8192, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
+        aMat = MT.OREMATS.Chalcopyrite; MultiTileEntityDeposit.addDeposit(23332, 23401, F,   8000000, 0  ,   8,   8192, aRegistry, aStone, MultiTileEntityDeposit.class       , aMat);
         
-        aMat = MT.Diamond             ; MultiTileEntityDeposit.addDeposit(23350, 32764, T,  12000000, 3+1,  64,  65536, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
-        aMat = MT.OREMATS.Tungstate   ; MultiTileEntityDeposit.addDeposit(23351, 32764, T, 384000000, 5+1, 256, 262144, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
-        aMat = MT.OREMATS.Ferberite   ; MultiTileEntityDeposit.addDeposit(23352, 32764, T, 384000000, 5+1, 256, 262144, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
-        aMat = MT.OREMATS.Wolframite  ; MultiTileEntityDeposit.addDeposit(23353, 32764, T, 384000000, 5+1, 256, 262144, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
-        aMat = MT.OREMATS.Stolzite    ; MultiTileEntityDeposit.addDeposit(23354, 32764, T, 384000000, 5+1, 256, 262144, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
-        aMat = MT.OREMATS.Scheelite   ; MultiTileEntityDeposit.addDeposit(23355, 32764, T, 384000000, 5+1, 256, 262144, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
-        aMat = MT.OREMATS.Huebnerite  ; MultiTileEntityDeposit.addDeposit(23356, 32764, T, 384000000, 5+1, 256, 262144, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
-        aMat = MT.OREMATS.Russellite  ; MultiTileEntityDeposit.addDeposit(23357, 32764, T, 384000000, 5+1, 256, 262144, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
-        aMat = MT.OREMATS.Pinalite    ; MultiTileEntityDeposit.addDeposit(23358, 32764, T, 384000000, 5+1, 256, 262144, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
-        aMat = MT.OREMATS.Uraninite   ; MultiTileEntityDeposit.addDeposit(23359, 32764, T, 192000000, 4+1, 128, 262144, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
-        aMat = MT.OREMATS.Pitchblende ; MultiTileEntityDeposit.addDeposit(23360, 32764, T, 384000000, 4+1, 128, 262144, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
-        aMat = MT.Au                  ; MultiTileEntityDeposit.addDeposit(23361, 32764, T,   8000000, 2+1,  32,  16384, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
-        aMat = MT.OREMATS.Cooperite   ; MultiTileEntityDeposit.addDeposit(23363, 32764, T, 768000000, 5+1, 256, 524288, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
-        aMat = MT.Cu                  ; MultiTileEntityDeposit.addDeposit(23364, 32764, T,  12000000, 0+1,   8,   8192, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
-        aMat = MT.Monazite            ; MultiTileEntityDeposit.addDeposit(23365, 32764, T,  48000000, 2+1,  32,  32768, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat); // Not Sure
-        aMat = MT.OREMATS.Powellite   ; MultiTileEntityDeposit.addDeposit(23366, 32764, T,  48000000, 2+1,  32,  32768, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat); // Not Sure
-        aMat = MT.OREMATS.Bastnasite  ; MultiTileEntityDeposit.addDeposit(23367, 32764, T,  48000000, 2+1,  32,  32768, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat); // Not Sure
-        aMat = MT.OREMATS.Arsenopyrite; MultiTileEntityDeposit.addDeposit(23368, 32764, T,  48000000, 2+1,  32,  32768, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat); // Not Sure
-        aMat = MT.Redstone            ; MultiTileEntityDeposit.addDeposit(23369, 32764, T,  48000000, 2+1,  16,   8192, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
-        aMat = MT.V2O5                ; MultiTileEntityDeposit.addDeposit(23370, 32764, T,  48000000, 2+1,  32,  32768, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
-        aMat = MT.OREMATS.Galena      ; MultiTileEntityDeposit.addDeposit(23371, 32764, T,  12000000, 0+1,   8,   8192, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
-        aMat = MT.Coal                ; MultiTileEntityDeposit.addDeposit(23372, 32764, T,  12000000, 0+1,   8,   2048, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
-        aMat = MT.Graphite            ; MultiTileEntityDeposit.addDeposit(23373, 32764, T,  12000000, 1+1,  16,  16384, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
-        aMat = MT.OREMATS.Stibnite    ; MultiTileEntityDeposit.addDeposit(23374, 32764, T,  48000000, 2+1,  32,  32768, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat); // Not Sure
-        aMat = MT.Fe2O3               ; MultiTileEntityDeposit.addDeposit(23375, 32764, T,  24000000, 1+1,  16,  16384, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
-        aMat = MT.OREMATS.Sphalerite  ; MultiTileEntityDeposit.addDeposit(23376, 32764, T,  24000000, 1+1,  16,  16384, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
-        aMat = MT.OREMATS.Smithsonite ; MultiTileEntityDeposit.addDeposit(23377, 32764, T,  48000000, 2+1,  32,  32768, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat); // Not Sure
-        aMat = MT.OREMATS.Pentlandite ; MultiTileEntityDeposit.addDeposit(23378, 32764, T,  48000000, 2+1,  32,  32768, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat); // Not Sure
-        aMat = MT.Niter               ; MultiTileEntityDeposit.addDeposit(23379, 32764, T,  24000000, 1+1,  16,  16384, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
-        aMat = MT.OREMATS.Bauxite     ; MultiTileEntityDeposit.addDeposit(23380, 32764, T, 192000000, 2+1,  32,  65536, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
-        aMat = MT.OREMATS.Cassiterite ; MultiTileEntityDeposit.addDeposit(23381, 32764, T,  24000000, 0+1,   8,   8192, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
-        aMat = MT.OREMATS.Chalcopyrite; MultiTileEntityDeposit.addDeposit(23382, 32764, T,  24000000, 0+1,   8,   8192, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
+        aMat = MT.Diamond             ; MultiTileEntityDeposit.addDeposit(23350, 23401, T,  12000000, 3+1,  64,  65536, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
+        aMat = MT.OREMATS.Tungstate   ; MultiTileEntityDeposit.addDeposit(23351, 23401, T, 384000000, 5+1, 256, 262144, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
+        aMat = MT.OREMATS.Ferberite   ; MultiTileEntityDeposit.addDeposit(23352, 23401, T, 384000000, 5+1, 256, 262144, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
+        aMat = MT.OREMATS.Wolframite  ; MultiTileEntityDeposit.addDeposit(23353, 23401, T, 384000000, 5+1, 256, 262144, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
+        aMat = MT.OREMATS.Stolzite    ; MultiTileEntityDeposit.addDeposit(23354, 23401, T, 384000000, 5+1, 256, 262144, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
+        aMat = MT.OREMATS.Scheelite   ; MultiTileEntityDeposit.addDeposit(23355, 23401, T, 384000000, 5+1, 256, 262144, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
+        aMat = MT.OREMATS.Huebnerite  ; MultiTileEntityDeposit.addDeposit(23356, 23401, T, 384000000, 5+1, 256, 262144, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
+        aMat = MT.OREMATS.Russellite  ; MultiTileEntityDeposit.addDeposit(23357, 23401, T, 384000000, 5+1, 256, 262144, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
+        aMat = MT.OREMATS.Pinalite    ; MultiTileEntityDeposit.addDeposit(23358, 23401, T, 384000000, 5+1, 256, 262144, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
+        aMat = MT.OREMATS.Uraninite   ; MultiTileEntityDeposit.addDeposit(23359, 23401, T, 192000000, 4+1, 128, 262144, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
+        aMat = MT.OREMATS.Pitchblende ; MultiTileEntityDeposit.addDeposit(23360, 23401, T, 384000000, 4+1, 128, 262144, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
+        aMat = MT.Au                  ; MultiTileEntityDeposit.addDeposit(23361, 23401, T,   8000000, 2+1,  32,  16384, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
+        aMat = MT.OREMATS.Cooperite   ; MultiTileEntityDeposit.addDeposit(23363, 23401, T, 768000000, 5+1, 256, 524288, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
+        aMat = MT.Cu                  ; MultiTileEntityDeposit.addDeposit(23364, 23401, T,  12000000, 0+1,   8,   8192, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
+        aMat = MT.Monazite            ; MultiTileEntityDeposit.addDeposit(23365, 23401, T,  48000000, 2+1,  32,  32768, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat); // Not Sure
+        aMat = MT.OREMATS.Powellite   ; MultiTileEntityDeposit.addDeposit(23366, 23401, T,  48000000, 2+1,  32,  32768, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat); // Not Sure
+        aMat = MT.OREMATS.Bastnasite  ; MultiTileEntityDeposit.addDeposit(23367, 23401, T,  48000000, 2+1,  32,  32768, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat); // Not Sure
+        aMat = MT.OREMATS.Arsenopyrite; MultiTileEntityDeposit.addDeposit(23368, 23401, T,  48000000, 2+1,  32,  32768, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat); // Not Sure
+        aMat = MT.Redstone            ; MultiTileEntityDeposit.addDeposit(23369, 23401, T,  48000000, 2+1,  16,   8192, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
+        aMat = MT.V2O5                ; MultiTileEntityDeposit.addDeposit(23370, 23401, T,  48000000, 2+1,  32,  32768, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
+        aMat = MT.OREMATS.Galena      ; MultiTileEntityDeposit.addDeposit(23371, 23401, T,  12000000, 0+1,   8,   8192, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
+        aMat = MT.Coal                ; MultiTileEntityDeposit.addDeposit(23372, 23401, T,  12000000, 0+1,   8,   2048, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
+        aMat = MT.Graphite            ; MultiTileEntityDeposit.addDeposit(23373, 23401, T,  12000000, 1+1,  16,  16384, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
+        aMat = MT.OREMATS.Stibnite    ; MultiTileEntityDeposit.addDeposit(23374, 23401, T,  48000000, 2+1,  32,  32768, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat); // Not Sure
+        aMat = MT.Fe2O3               ; MultiTileEntityDeposit.addDeposit(23375, 23401, T,  24000000, 1+1,  16,  16384, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
+        aMat = MT.OREMATS.Sphalerite  ; MultiTileEntityDeposit.addDeposit(23376, 23401, T,  24000000, 1+1,  16,  16384, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
+        aMat = MT.OREMATS.Smithsonite ; MultiTileEntityDeposit.addDeposit(23377, 23401, T,  48000000, 2+1,  32,  32768, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat); // Not Sure
+        aMat = MT.OREMATS.Pentlandite ; MultiTileEntityDeposit.addDeposit(23378, 23401, T,  48000000, 2+1,  32,  32768, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat); // Not Sure
+        aMat = MT.Niter               ; MultiTileEntityDeposit.addDeposit(23379, 23401, T,  24000000, 1+1,  16,  16384, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
+        aMat = MT.OREMATS.Bauxite     ; MultiTileEntityDeposit.addDeposit(23380, 23401, T, 192000000, 2+1,  32,  65536, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
+        aMat = MT.OREMATS.Cassiterite ; MultiTileEntityDeposit.addDeposit(23381, 23401, T,  24000000, 0+1,   8,   8192, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
+        aMat = MT.OREMATS.Chalcopyrite; MultiTileEntityDeposit.addDeposit(23382, 23401, T,  24000000, 0+1,   8,   8192, aRegistry, aStone, MultiTileEntityBedrockDeposit.class, aMat);
     }
     
     
@@ -885,15 +971,15 @@ public class Loader_MultiTileEntities_CH extends Loader_MultiTileEntities  {
         aMat = ANY.W;                   aRegistry.appendAddAfter(9198, RegType.GT6U, "Diesel Engine ("                  +aMat.getLocal()+")", "Engines"                             ,  9190,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Engine, NBT_EFFICIENCY,  3500, NBT_OUTPUT,  256, NBT_PREHEAT_ENERGY,  256*1000, NBT_PREHEAT_RATE,  256*4, NBT_PREHEAT_COST,  256/16, NBT_COOLDOWN_RATE,  256, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeQuadruple.dat(aMat), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
         // 小燃气涡轮 // MARK ID CHANGED
         aClass = MultiTileEntityMotorGas.class;
-        aMat = MT.Bronze;               aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9167,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  2750, NBT_OUTPUT,   32, NBT_PREHEAT_ENERGY,   32*4000, NBT_PREHEAT_RATE,   32*1, NBT_PREHEAT_COST,   32/16, NBT_COOLDOWN_RATE,   32, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat)     , 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
-        aMat = MT.ArsenicCopper;        aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9166,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  2875, NBT_OUTPUT,   32, NBT_PREHEAT_ENERGY,   32*4000, NBT_PREHEAT_RATE,   32*1, NBT_PREHEAT_COST,   32/16, NBT_COOLDOWN_RATE,   32, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(MT.Bronze), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
-        aMat = MT.ArsenicBronze;        aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9165,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  3000, NBT_OUTPUT,   48, NBT_PREHEAT_ENERGY,   48*4000, NBT_PREHEAT_RATE,   48*1, NBT_PREHEAT_COST,   48/16, NBT_COOLDOWN_RATE,   48, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(MT.Bronze), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
-        aMat = ANY.Steel;               aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9168,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  2500, NBT_OUTPUT,   64, NBT_PREHEAT_ENERGY,   64*4000, NBT_PREHEAT_RATE,   64*1, NBT_PREHEAT_COST,   64/16, NBT_COOLDOWN_RATE,   64, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat)     , 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
-        aMat = MT.Invar;                aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9169,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  3500, NBT_OUTPUT,  128, NBT_PREHEAT_ENERGY,  128*4000, NBT_PREHEAT_RATE,  128*1, NBT_PREHEAT_COST,  128/16, NBT_COOLDOWN_RATE,  128, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat)     , 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
-        aMat = MT.Ti;                   aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9187,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  2750, NBT_OUTPUT,  256, NBT_PREHEAT_ENERGY,  256*4000, NBT_PREHEAT_RATE,  256*1, NBT_PREHEAT_COST,  256/16, NBT_COOLDOWN_RATE,  256, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat)     , 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
-        aMat = MT.TungstenSteel;        aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9188,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  3000, NBT_OUTPUT,  512, NBT_PREHEAT_ENERGY,  512*4000, NBT_PREHEAT_RATE,  512*1, NBT_PREHEAT_COST,  512/16, NBT_COOLDOWN_RATE,  512, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat)     , 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
-        aMat = ANY.W;                   aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9180,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  3500, NBT_OUTPUT,  512, NBT_PREHEAT_ENERGY,  512*4000, NBT_PREHEAT_RATE,  512*1, NBT_PREHEAT_COST,  512/16, NBT_COOLDOWN_RATE,  512, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat)     , 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
-        aMat = MT.Ir;                   aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9189,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  3333, NBT_OUTPUT, 1024, NBT_PREHEAT_ENERGY, 1024*4000, NBT_PREHEAT_RATE, 1024*1, NBT_PREHEAT_COST, 1024/16, NBT_COOLDOWN_RATE, 1024, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat)     , 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = MT.Bronze;               aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9167,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  2750, NBT_OUTPUT,   32, NBT_PREHEAT_ENERGY,   32*2000, NBT_PREHEAT_RATE,   32*1, NBT_PREHEAT_COST,   32/16, NBT_COOLDOWN_RATE,   32, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat)     , 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = MT.ArsenicCopper;        aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9166,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  2875, NBT_OUTPUT,   32, NBT_PREHEAT_ENERGY,   32*2000, NBT_PREHEAT_RATE,   32*1, NBT_PREHEAT_COST,   32/16, NBT_COOLDOWN_RATE,   32, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(MT.Bronze), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = MT.ArsenicBronze;        aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9165,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  3000, NBT_OUTPUT,   48, NBT_PREHEAT_ENERGY,   48*2000, NBT_PREHEAT_RATE,   48*1, NBT_PREHEAT_COST,   48/16, NBT_COOLDOWN_RATE,   48, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(MT.Bronze), 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = ANY.Steel;               aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9168,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  2500, NBT_OUTPUT,   64, NBT_PREHEAT_ENERGY,   64*2000, NBT_PREHEAT_RATE,   64*1, NBT_PREHEAT_COST,   64/16, NBT_COOLDOWN_RATE,   64, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat)     , 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = MT.Invar;                aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9169,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  3500, NBT_OUTPUT,  128, NBT_PREHEAT_ENERGY,  128*2000, NBT_PREHEAT_RATE,  128*1, NBT_PREHEAT_COST,  128/16, NBT_COOLDOWN_RATE,  128, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat)     , 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = MT.Ti;                   aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9187,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  2750, NBT_OUTPUT,  256, NBT_PREHEAT_ENERGY,  256*2000, NBT_PREHEAT_RATE,  256*1, NBT_PREHEAT_COST,  256/16, NBT_COOLDOWN_RATE,  256, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat)     , 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = MT.TungstenSteel;        aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9188,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  3000, NBT_OUTPUT,  512, NBT_PREHEAT_ENERGY,  512*2000, NBT_PREHEAT_RATE,  512*1, NBT_PREHEAT_COST,  512/16, NBT_COOLDOWN_RATE,  512, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat)     , 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = ANY.W;                   aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9180,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  3500, NBT_OUTPUT,  512, NBT_PREHEAT_ENERGY,  512*2000, NBT_PREHEAT_RATE,  512*1, NBT_PREHEAT_COST,  512/16, NBT_COOLDOWN_RATE,  512, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat)     , 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
+        aMat = MT.Ir;                   aRegistry.appendAddAfter(9199, RegType.GT6U, "Small Gas Turbine ("              +aMat.getLocal()+")", "Engines"                             ,  9189,  1304, aClass, aMat.mToolQuality, 16, aMachine     , UT.NBT.make(NBT_MATERIAL, aMat, NBT_HARDNESS,   6.0F, NBT_RESISTANCE,   6.0F, NBT_FUELMAP, FM.Gas,    NBT_EFFICIENCY,  3333, NBT_OUTPUT, 1024, NBT_PREHEAT_ENERGY, 1024*2000, NBT_PREHEAT_RATE, 1024*1, NBT_PREHEAT_COST, 1024/16, NBT_COOLDOWN_RATE, 1024, NBT_ENERGY_EMITTED, TD.Energy.RU), "PLP", "SMS", "GOC", 'M', OP.casingMachineDense.dat(aMat), 'O', OP.pipeHuge.dat(aMat)     , 'P', OP.rotor.dat(aMat), 'S', OP.stickLong.dat(aMat), 'G', OP.gearGt.dat(aMat), 'C', OP.gearGtSmall.dat(aMat), 'L', OD.itemLubricant);
     }
     
     

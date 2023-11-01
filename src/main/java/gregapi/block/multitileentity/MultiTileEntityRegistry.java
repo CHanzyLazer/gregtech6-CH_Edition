@@ -263,7 +263,7 @@ public class MultiTileEntityRegistry {
 	private final Map<Short, List<AddObject>> mAppendingAddBeforeList = new HashMap<>(); // 存储需要在指定位置之前添加的项
 	private final Map<Short, List<AddObject>> mAppendingAddAfterList = new HashMap<>(); // 存储需要在指定位置之后添加的项
 	private final Map<Short, AddReplacer> mReplacingAddList = new HashMap<>(); // 存储将要替换的项目
-	private class AddObject {
+	public class AddObject {
 		private final String aLocalised;
 		private final String aCategoricalName;
 		private final MultiTileEntityClassContainer aClassContainer;
@@ -313,7 +313,7 @@ public class MultiTileEntityRegistry {
 			
 			mRegistry.put(aClassContainer.mID, aClassContainer);
 			mRegistrations.add(aClassContainer);
-			if (!mCreativeTabs.containsKey(aClassContainer.mCreativeTabID)) mCreativeTabs.put(aClassContainer.mCreativeTabID, new CreativeTab(mNameInternal+"."+ aClassContainer.mCreativeTabID, aCategoricalName, Item.getItemFromBlock(mBlock), aClassContainer.mCreativeTabID));
+			if (!mCreativeTabs.containsKey(aClassContainer.mCreativeTabID)) mCreativeTabs.put(aClassContainer.mCreativeTabID, new CreativeTab(aClassContainer.mRegType, mNameInternal+"."+ aClassContainer.mCreativeTabID, aCategoricalName, Item.getItemFromBlock(mBlock), aClassContainer.mCreativeTabID));
 			if (sRegisteredTileEntityClassNames.add(aClassContainer.mCanonicalTileEntity.getClass().getName()) && sRegisteredTileEntities.add(aClassContainer.mCanonicalTileEntity.getClass())) {
 				if (aClassContainer.mCanonicalTileEntity instanceof IMTE_OnRegistrationFirst) ((IMTE_OnRegistrationFirst) aClassContainer.mCanonicalTileEntity).onRegistrationFirst(MultiTileEntityRegistry.this, aClassContainer.mID);
 				if (CODE_CLIENT && aClassContainer.mCanonicalTileEntity instanceof IMTE_OnRegistrationFirstClient) ((IMTE_OnRegistrationFirstClient) aClassContainer.mCanonicalTileEntity).onRegistrationFirstClient(MultiTileEntityRegistry.this, aClassContainer.mID);

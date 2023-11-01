@@ -20,6 +20,8 @@
 package gregapi.item;
 
 import gregapi.data.LH;
+import gregtechCH.data.CS_CH.RegType;
+import gregtechCH.data.LH_CH;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 
@@ -30,12 +32,15 @@ public class CreativeTab extends CreativeTabs {
 	public final Item mItem;
 	public final short mMetaData;
 	
-	public CreativeTab(String aName, String aLocal, Item aItem, short aMetaData) {
+	// GTCH, 增加语言文件指定
+	public CreativeTab(RegType aRegType, String aName, String aLocal, Item aItem, short aMetaData) {
 		super(aName);
-		LH.add("itemGroup." + aName, aLocal);
+		if (aRegType == RegType.GREG) LH.add("itemGroup." + aName, aLocal);
+		else LH_CH.add("itemGroup." + aName, aLocal);
 		mItem = aItem;
 		mMetaData = aMetaData;
 	}
+	public CreativeTab(String aName, String aLocal, Item aItem, short aMetaData) {this(RegType.GREG, aName, aLocal, aItem, aMetaData);}
 	
 	@Override
 	public Item getTabIconItem() {
